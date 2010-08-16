@@ -222,7 +222,14 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4OrderOutbound(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.ORDEROUT.getUuid(), Status.find("Sales_OrderOutboundStatus", "Open"));
+        final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Status status;
+        if (props.containsKey("Status")) {
+            status = Status.find(CISales.OrderOutboundStatus.uuid, (String) props.get("Status"));
+        } else {
+            status = Status.find(CISales.OrderOutboundStatus.uuid, "Open");
+        }
+        return autoComplete4Doc(_parameter, Sales.ORDEROUT.getUuid(), status);
     }
 
     /**
@@ -476,11 +483,13 @@ public abstract class AbstractDocument_Base
             print.addSelect("type.label");
             print.execute();
 
+            final Map<? ,?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final String field = props.containsKey("field") ?  (String) props.get("field") : "info";
             final StringBuilder bldr = new StringBuilder();
             bldr.append(print.getSelect("type.label")).append(" - ").append(print.getAttribute("Name"))
                 .append(" - ").append(print.<DateTime> getAttribute("Date").toString(
                                      DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
-            map.put("info", StringEscapeUtils.escapeJavaScript(bldr.toString()));
+            map.put(field, StringEscapeUtils.escapeJavaScript(bldr.toString()));
 
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getCleanJS(_parameter));
             list.add(map);
