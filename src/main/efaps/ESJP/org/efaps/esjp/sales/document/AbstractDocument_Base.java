@@ -59,7 +59,10 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SearchQuery;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
@@ -236,7 +239,6 @@ public abstract class AbstractDocument_Base
         return autoComplete4Doc(_parameter, Sales.QUOTATION.getUuid(), null);
     }
 
-
     /**
      * Used by the AutoCompleteField used in the select doc form
      * for Receipts.
@@ -250,6 +252,21 @@ public abstract class AbstractDocument_Base
     {
         return autoComplete4Doc(_parameter, Sales.RECEIPT.getUuid(), null);
     }
+
+    /**
+     * Used by the AutoCompleteField used in the select doc form
+     * for Receipts.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for autocomplete
+     * @throws EFapsException on error
+     */
+    public Return autoComplete4RecievingTicket(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, Sales.RECIEVINGTICKET.getUuid(), null);
+    }
+
 
     /**
      * Used by the AutoCompleteField used in the select doc form
@@ -337,6 +354,19 @@ public abstract class AbstractDocument_Base
         return updateFields4Doc(_parameter);
     }
 
+    /**
+     * Used by the update event used in the select doc form
+     * for IncomingInvoice.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4RecievingTicket(final Parameter _parameter)
+        throws EFapsException
+    {
+        return updateFields4Doc(_parameter);
+    }
 
     /**
      * Used by the update event used in the select doc form
@@ -655,28 +685,10 @@ public abstract class AbstractDocument_Base
             final String oid = copy ? _parameter.getParameterValue("selectedRow")
                                     : _parameter.getParameterValue("selectedDoc");
             final Instance instance = Instance.get(oid);
-            String expand = null;
-            if (CISales.Quotation.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_QuotationPosition\\Quotation";
-            } else if (CISales.Invoice.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_InvoicePosition\\Invoice";
-            } else if (CISales.Quotation.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_QuotationPosition\\Quotation";
-            } else if (CISales.Receipt.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_ReceiptPosition\\Receipt";
-            } else if (CISales.OrderOutbound.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_OrderOutboundPosition\\Order";
-            } else if (CISales.DeliveryNote.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_DeliveryNotePosition\\DeliveryNote";
-            } else if (CISales.CreditNote.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_CreditNotePosition\\CreditNote";
-            } else if (CISales.CostSheet.uuid.equals(instance.getType().getUUID())) {
-                expand = "Sales_CostSheetPosition\\CostSheet";
-            }
-            if (expand != null) {
+            if (instance.isValid()) {
                 js.append("ele.value='").append(oid).append("';")
                     .append("ele.name='").append(copy ? "copy" : "derived").append("';")
-                    .append(getSetValuesString(oid, expand));
+                    .append(getSetValuesString(instance));
             }
         }
         js.append("</script>");
@@ -685,29 +697,34 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the javascript part for setting the values.
-     * @param _oid      oid of the instance to be copied
-     * @param _expand   expand string
+     * @param Instance  instance to be copied
      * @return  javascritp
      * @throws EFapsException on error
      */
-    protected String getSetValuesString(final String _oid,
-                                        final String _expand)
+    protected String getSetValuesString(final Instance _instance)
         throws EFapsException
     {
 
         final StringBuilder js = new StringBuilder();
-        final PrintQuery print = new PrintQuery(_oid);
-        print.addAttribute("RateNetTotal", "RateCrossTotal", "Name", "Note", "Rate");
-        print.addSelect("linkto[Contact].oid", "linkto[Contact].attribute[Name]");
+        final PrintQuery print = new PrintQuery(_instance);
+        print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal,
+                           CISales.DocumentSumAbstract.RateCrossTotal,
+                           CISales.DocumentSumAbstract.Rate,
+                           CIERP.DocumentAbstract.Name,
+                           CIERP.DocumentAbstract.Note);
+        final SelectBuilder selContOID = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).oid();
+        final SelectBuilder selContName = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact)
+                .attribute(CIContacts.Contact.Name);
+        print.addSelect(selContOID, selContName);
         print.execute();
 
-        final BigDecimal netTotal = print.<BigDecimal>getAttribute("RateNetTotal");
-        final BigDecimal crossTotal = print.<BigDecimal>getAttribute("RateCrossTotal");
-        final String contactOid = print.<String>getSelect("linkto[Contact].oid");
-        final String contactName = print.<String>getSelect("linkto[Contact].attribute[Name]");
+        final BigDecimal netTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final String contactOid = print.<String>getSelect(selContOID);
+        final String contactName = print.<String>getSelect(selContName);
         final String contactData = getFieldValue4Contact(Instance.get(contactOid));
-        final String note = print.<String>getAttribute("Note");
-        final Object[] rates = print.<Object[]>getAttribute("Rate");
+        final String note = print.<String>getAttribute(CIERP.DocumentAbstract.Note);
+        final Object[] rates = print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
 
         final DecimalFormat formater = getTwoDigitsformater();
 
@@ -745,41 +762,53 @@ public abstract class AbstractDocument_Base
             .append("}")
             .append("function setRows() {");
 
-        final SearchQuery query = new SearchQuery();
-        query.setExpand(_oid, _expand);
-        query.addSelect("PositionNumber");
-        query.addSelect("Product.OID");
-        query.addSelect("Product.Name");
-        query.addSelect("Product.Dimension");
-        query.addSelect("ProductDesc");
-        query.addSelect("Quantity");
-        query.addSelect("UoM");
-        query.addSelect("CrossUnitPrice");
-        query.addSelect("NetUnitPrice");
-        query.addSelect("DiscountNetUnitPrice");
-        query.addSelect("CrossPrice");
-        query.addSelect("NetPrice");
-        query.addSelect("Tax");
-        query.addSelect("Discount");
-        query.execute();
-        final Map<Long, Object[]> values = new TreeMap<Long, Object[]>();
-        while (query.next()) {
-            final Object[] value = new Object[] { query.get("Quantity"), query.get("Product.Name"),
-                        query.get("Product.OID"), query.get("ProductDesc"), query.get("UoM"),
-                        (rate != null ? ((BigDecimal) query.get("NetUnitPrice"))
-                                        .divide(rate, BigDecimal.ROUND_HALF_UP) : query.get("NetUnitPrice")),
-                        (rate != null ? ((BigDecimal) query.get("Discount"))
-                                        .divide(rate, BigDecimal.ROUND_HALF_UP) : query.get("Discount")),
-                        (rate != null ? ((BigDecimal) query.get("DiscountNetUnitPrice"))
-                                        .divide(rate, BigDecimal.ROUND_HALF_UP) : query.get("DiscountNetUnitPrice")),
-                        (rate != null ? ((BigDecimal) query.get("NetPrice"))
-                                        .divide(rate, BigDecimal.ROUND_HALF_UP) : query.get("NetPrice")),
-                        query.get("Product.Dimension") };
-            values.put((Long) query.get("PositionNumber"), value);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
+                           CISales.PositionAbstract.ProductDesc,
+                           CISales.PositionAbstract.Quantity,
+                           CISales.PositionAbstract.UoM,
+                           CISales.PositionAbstract.CrossUnitPrice,
+                           CISales.PositionAbstract.NetUnitPrice,
+                           CISales.PositionAbstract.DiscountNetUnitPrice,
+                           CISales.PositionAbstract.CrossPrice,
+                           CISales.PositionAbstract.NetPrice,
+                           CISales.PositionAbstract.Tax,
+                           CISales.PositionAbstract.Discount);
+        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionAbstract.Product).oid();
+        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
+            .attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
+            .attribute(CIProducts.ProductAbstract.Dimension);;
+        multi.addSelect(selProdOID, selProdName, selProdDim);
+        multi.execute();
+
+        final Map<Integer, Object[]> values = new TreeMap<Integer, Object[]>();
+        while (multi.next()) {
+
+            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetUnitPrice);
+            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Discount);
+            final BigDecimal discountNetUnitPrice = multi.
+                    <BigDecimal>getAttribute(CISales.PositionAbstract.DiscountNetUnitPrice);
+            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetPrice);
+
+            final Object[] value = new Object[] { multi.getAttribute(CISales.PositionAbstract.Quantity),
+                            multi.getSelect(selProdName),
+                            multi.getSelect(selProdOID),
+                            multi.getAttribute(CISales.PositionAbstract.ProductDesc),
+                            multi.getAttribute(CISales.PositionAbstract.UoM),
+                        (rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice),
+                        (rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount),
+                        (rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) :
+                            discountNetUnitPrice),
+                        (rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice),
+                        multi.getSelect(selProdDim)};
+            values.put(multi.<Integer>getAttribute(CISales.PositionAbstract.PositionNumber), value);
         }
         int i = 0;
         if (!values.isEmpty()) {
-            for (final Entry<Long, Object[]> entry : values.entrySet()) {
+            for (final Entry<Integer, Object[]> entry : values.entrySet()) {
                 js.append("setValues(").append(i).append(", new Array('")
                     .append(((BigDecimal) entry.getValue()[0]).stripTrailingZeros().toPlainString()).append("','")
                     .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[1])).append("','")
