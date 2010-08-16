@@ -17,9 +17,9 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 4519 $
-  Last Changed:    $Date: 2010-05-23 17:29:38 -0500 (Sun, 23 May 2010) $
-  Last Changed By: $Author: jan.moxter $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 
@@ -27,8 +27,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>102abd6d-7112-4e8c-a543-775a20d9c897</uuid>
-    <file-application>eFaps-ERP-Sales</file-application>
-    <file-revision>$Rev: 4519 $</file-revision>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentSum_RecalculateForm</name>

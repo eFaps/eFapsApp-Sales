@@ -33,8 +33,8 @@
     * Module Definition
     ************************************************************************* -->
     <packaging>jar</packaging>
-    <groupId>org.efaps.module</groupId>
-    <artifactId>efaps-erp-sales</artifactId>
+    <groupId>org.efaps.apps</groupId>
+    <artifactId>sales</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <name>eFaps ERP Sales Module</name>
     <description>
@@ -75,7 +75,7 @@
         <name>The eFaps Team</name>
         <url>http://www.efaps.org</url>
     </organization>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -331,8 +331,8 @@
     <dependencies>
         <!-- eFaps ERP Products Module -->
         <dependency>
-            <groupId>org.efaps.module</groupId>
-            <artifactId>efaps-erp-products</artifactId>
+            <groupId>org.efaps.apps</groupId>
+            <artifactId>products</artifactId>
             <version>${project.version}</version>
         </dependency>
     </dependencies>

@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 4687 $
- Last Changed:    $Date: 2010-06-07 00:19:07 -0500 (Mon, 07 Jun 2010) $
- Last Changed By: $Author: jan.moxter $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 
@@ -27,8 +27,8 @@
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e3bd6bce-801d-4482-9285-97c5104ef0d8</uuid>
-    <file-application>eFaps-ERP-Sales</file-application>
-    <file-revision>$Rev: 4687 $</file-revision>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
     <description>Abstract type for Documeent that have the only porpuse to document stock movements.</description>
     <definition>
         <version-expression>(version==latest)</version-expression>
