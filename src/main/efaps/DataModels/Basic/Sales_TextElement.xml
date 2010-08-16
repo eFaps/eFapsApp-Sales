@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2010 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-type  xmlns="http://www.efaps.org/xsd" 
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+  <uuid>9d51b0e9-cac8-4467-9b23-ff4eb67acbef</uuid>
+  <file-application>eFaps-ERP-Sales</file-application>
+  <file-revision>$Rev$</file-revision>
+  
+  <definition>
+  
+    <version-expression>(version==latest)</version-expression>
+    <name>Sales_TextElement</name>
+    
+    <attribute>
+      <name>OID</name>
+      <type>OID</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>ID</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>ID</name>
+      <type>Long</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>ID</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>TextModule</name>
+      <type>Link</type>
+      <typelink>Sales_TextModule</typelink>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>MODULEID</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>ShortText</name>
+      <type>String</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>SHORTTEXT</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>LongText</name>
+      <type>String</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>LONGTEXT</sqlcolumn>
+    </attribute>
+    
+    <attribute>
+      <name>Creator</name>
+      <type>CreatorLink</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>CREATOR</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>Created</name>
+      <type>Created</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>CREATED</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>Modifier</name>
+      <type>ModifierLink</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>MODIFIER</sqlcolumn>
+    </attribute>
+    <attribute>
+      <name>Modified</name>
+      <type>Modified</type>
+      <sqltable>Sales_TextElementSQLTable</sqltable>
+      <sqlcolumn>MODIFIED</sqlcolumn>
+    </attribute>
+    
+  </definition>
+</datamodel-type>

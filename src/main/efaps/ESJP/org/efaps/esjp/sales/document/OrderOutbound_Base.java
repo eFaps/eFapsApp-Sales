@@ -1,0 +1,116 @@
+/*
+ * Copyright 2003 - 2009 The eFaps Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
+ */
+
+package org.efaps.esjp.sales.document;
+
+import java.math.BigDecimal;
+import java.util.List;
+
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.SearchQuery;
+import org.efaps.esjp.sales.Calculator;
+import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+
+/**
+ * TODO comment!
+ *
+ * @author The eFaps Team
+ * @version $Id$
+ */
+@EFapsUUID("bd08a90e-91ce-4f03-b1bc-921a53b71948")
+@EFapsRevision("$Rev$")
+public abstract class OrderOutbound_Base
+    extends DocumentSum
+{
+
+    public Return create(final Parameter _parameter) throws EFapsException
+    {
+        final String date = _parameter.getParameterValue("date");
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
+        final Insert insert = new Insert("Sales_OrderOutbound");
+        insert.add("Contact", contactid.toString());
+        insert.add("CrossTotal", getCrossTotalStr(calcList));
+        insert.add("NetTotal", getNetTotalStr(calcList));
+        insert.add("DiscountTotal", BigDecimal.ZERO);
+        insert.add("Date", date);
+        insert.add("Salesperson", _parameter.getParameterValue("salesperson"));
+        insert.add("Name", _parameter.getParameterValue("name4create"));
+        insert.add("Status", Status.find("Sales_OrderOutboundStatus", "Open").getId());
+        insert.add("CurrencyId", 1);
+        insert.add("RateCurrencyId", 1);
+        insert.add("Rate", BigDecimal.ONE);
+        insert.execute();
+        Integer i = 0;
+        for (final Calculator calc : calcList) {
+            final Insert posIns = new Insert("Sales_OrderOutboundPosition");
+            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
+            posIns.add("Order", insert.getId());
+            posIns.add("PositionNumber", i.toString());
+            posIns.add("Product", productdId.toString());
+            posIns.add("ProductDesc", _parameter.getParameterValues("productAutoComplete")[i]);
+            posIns.add("Quantity", calc.getQuantityStr());
+            posIns.add("UoM", _parameter.getParameterValues("uom")[i]);
+            posIns.add("CrossUnitPrice", calc.getCrossUnitPriceStr());
+            posIns.add("NetUnitPrice", calc.getNetUnitPriceStr());
+            posIns.add("CrossPrice", calc.getCrossPriceStr());
+            posIns.add("DiscountPrice", BigDecimal.ZERO);
+            posIns.add("NetPrice", calc.getNetPriceStr());
+            posIns.add("Tax", (calc.getTaxId()).toString());
+            posIns.add("Discount", calc.getDiscountStr());
+            posIns.add("CurrencyId", 1);
+            posIns.add("RateCurrencyId", 1);
+            posIns.add("Rate", BigDecimal.ZERO);
+            posIns.execute();
+            i++;
+        }
+        return new Return();
+    }
+
+    protected BigDecimal getPrice(final String _oid) throws EFapsException
+    {
+        final DateTime now = new DateTime();
+        final SearchQuery query = new SearchQuery();
+        BigDecimal ret = null;
+        query.setExpand(_oid, "Products_ProductPricelistPurchase\\Product");
+        query.addWhereExprLessValue("ValidFrom", now);
+        query.addWhereExprGreaterValue("ValidUntil", now);
+        query.addSelect("OID");
+        query.execute();
+        if (query.next()) {
+            final String oid = (String) query.get("OID");
+            final SearchQuery query2 = new SearchQuery();
+            query2.setExpand(oid, "Products_ProductPricelistPosition\\ProductPricelist");
+            query2.addSelect("Price");
+            query2.execute();
+            if (query2.next()) {
+                ret = (BigDecimal) query2.get("Price");
+            }
+        }
+        return ret;
+    }
+}

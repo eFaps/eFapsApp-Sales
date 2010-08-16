@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>611bbf4c-ea17-4974-b88f-7f48e3d015b0</uuid>
+    <file-application>eFaps-ERP-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_DocumentSumAbstract</name>
+        <parent>Sales_DocumentAbstract</parent>
+        <purpose abstract="true"/>
+        <attribute>
+            <name>CrossTotal</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>CROSSTOTAL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>NetTotal</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>NETTOTAL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DiscountTotal</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>DISCOUNTTOTAL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>CurrencyId</name>
+            <type>LinkWithRanges</type>
+            <typelink>ERP_Currency</typelink>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>CURRENCYID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+                <property name="Value">Name</property>
+                <property name="Type">ERP_Currency</property>
+            </trigger>
+        </attribute>
+         <attribute>
+            <name>Rate</name>
+            <type>Rate</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>RATE,RATEDENOM</sqlcolumn>
+            <trigger program="org.efaps.esjp.erp.Currency"
+                method="getRateValue"
+                name="Sales_PositionAbstract.Rate.RATE_VALUE"
+                event="RATE_VALUE"/>
+            <property name="CurrencyAttribute4Rate">RateCurrencyId</property>
+            <property name="TargetCurrencyAttribute4Rate">CurrencyId</property>
+        </attribute>
+        <attribute>
+            <name>RateCrossTotal</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>RATECROSSTOTAL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>RateNetTotal</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>RATENETTOTAL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>RateDiscountTotal</name>
+            <type>Decimal</type>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>RATEDISCOUNTTOTAL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>RateCurrencyId</name>
+            <type>LinkWithRanges</type>
+            <typelink>ERP_Currency</typelink>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>RATECURRENCYID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+                <property name="Value">Name</property>
+                <property name="Type">ERP_Currency</property>
+            </trigger>
+        </attribute>
+        <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            name="Sales_Receipt.ACCESSCHECK" event="ACCESSCHECK" />
+    </definition>
+</datamodel-type>

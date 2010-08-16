@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+  <uuid>e7006e88-d882-4be2-a553-41c51b05bbfd</uuid>
+  <file-application>eFaps-ERP-Sales</file-application>
+  <file-revision>$Rev$</file-revision>
+
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <name>Sales_DocumentSumsSQLTable</name>
+    <parent>ERP_DocumentAbstractSQLTable</parent>
+    <database>
+      <table-name>T_SALESDOCSUMS</table-name>
+      <parent-table>T_ERPDOC</parent-table>
+      <!-- columns -->
+      <column name="CROSSTOTAL"        type="DECIMAL"         not-null="true" length="10" scale="2"/>
+      <column name="NETTOTAL"          type="DECIMAL"         not-null="true" length="10" scale="2"/>
+      <column name="DISCOUNTTOTAL"     type="DECIMAL"         not-null="true" length="10" scale="2"/>
+      <column name="CURRENCYID"        type="INTEGER"         not-null="true"/>
+      <column name="RATE"              type="DECIMAL"         not-null="true" length="14" scale="6"/>
+      <column name="RATEDENOM"         type="DECIMAL"                         length="14" scale="6" />
+      <column name="RATECROSSTOTAL"    type="DECIMAL"         not-null="true" length="10" scale="2"/>
+      <column name="RATENETTOTAL"      type="DECIMAL"         not-null="true" length="10" scale="2"/>
+      <column name="RATEDISCOUNTTOTAL" type="DECIMAL"         not-null="true" length="10" scale="2"/>
+      <column name="RATECURRENCYID"    type="INTEGER"         not-null="true"/>
+      <foreign name="T_SALESDOCSUMS_CURRENCYID"      key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
+      <foreign name="T_SALESDOCSUMS_RATECURRENCYID"  key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
+    </database>
+  </definition>
+</datamodel-sqltable>

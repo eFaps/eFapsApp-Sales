@@ -1,0 +1,180 @@
+/*
+ * Copyright 2003 - 2009 The eFaps Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
+ */
+
+package org.efaps.esjp.sales;
+
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.SearchQuery;
+import org.efaps.db.Update;
+import org.efaps.util.EFapsException;
+
+/**
+ * TODO comment!
+ *
+ * @author The eFaps Team
+ * @version $Id$
+ */
+@EFapsUUID("417d2eff-b3ab-4f1a-91f4-c75da34570f6")
+@EFapsRevision("$Rev$")
+public abstract class Transaction_Base
+{
+    /**
+     * Method is called from within the form Sales_TransactionAbstractForm to
+     * retrieve the value for the Account on Edit or Create.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return value4Account(final Parameter _parameter) throws EFapsException
+    {
+        final Return retVal = new Return();
+        final Instance instance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
+        final TreeMap<String, Long> map = new TreeMap<String, Long>();
+        long actual = 0;
+        if (instance != null && instance.getType().isKindOf(Type.get("Sales_TransactionAbstract"))) {
+            final SearchQuery query = new SearchQuery();
+            query.setObject(instance);
+            query.addSelect("Account");
+            query.execute();
+            if (query.next()) {
+                actual = (Long) query.get("Account");
+            }
+        }
+        final SearchQuery query2 = new SearchQuery();
+        query2.setQueryTypes("Sales_AccountAbstract");
+        query2.setExpandChildTypes(true);
+        query2.addSelect("ID");
+        query2.addSelect("Name");
+        query2.execute();
+        while (query2.next()) {
+            map.put((String) query2.get("Name"), (Long) query2.get("ID"));
+        }
+        query2.close();
+
+        final StringBuilder ret = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        ret.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
+        for (final Map.Entry<String, Long> entry : map.entrySet()) {
+            ret.append("<option");
+
+            if (entry.getValue().equals(actual)) {
+                ret.append(" selected=\"selected\" ");
+            }
+            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</option>");
+        }
+
+        ret.append("</select>");
+        retVal.put(ReturnValues.SNIPLETT, ret.toString());
+
+        return retVal;
+    }
+
+    /**
+     * Method is executed as trigger after the insert of an
+     * Products_TransactionInbound.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return inboundTrigger(final Parameter _parameter) throws EFapsException
+    {
+        addRemoveFromAccount(_parameter, true);
+        return new Return();
+    }
+
+    /**
+     * Method is executed as trigger after the insert of an
+     * Products_TransactionOutbound.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return outboundTrigger(final Parameter _parameter) throws EFapsException
+    {
+        addRemoveFromAccount(_parameter, false);
+        return new Return();
+    }
+
+    /**
+     * Add or subtract from the Inventory.
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @param _add if true the quantity will be added else subtracted
+     * @throws EFapsException on error
+     */
+    protected void addRemoveFromAccount(final Parameter _parameter, final boolean _add) throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        // get the transaction
+        final PrintQuery query = new PrintQuery(instance);
+        query.addAttribute("Amount", "Account", "CurrencyId");
+        BigDecimal amount = null;
+        Long account = null;
+        Long currency = null;
+        if (query.execute()) {
+            amount = (BigDecimal) query.getAttribute("Amount");
+            account = (Long) query.getAttribute("Account");
+            currency = (Long) query.getAttribute("CurrencyId");
+        }
+
+        // search for the correct inventory
+        final SearchQuery query2 = new SearchQuery();
+        query2.setQueryTypes("Sales_Balance");
+        query2.addWhereExprEqValue("Account", account);
+        query2.addWhereExprEqValue("Currency", currency);
+        query2.addSelect("Amount");
+        query2.addSelect("OID");
+        query2.execute();
+
+        Update update;
+        if (query2.next()) {
+            update = new Update((String) query2.get("OID"));
+            final BigDecimal current = (BigDecimal) query2.get("Amount");
+            if (_add) {
+                amount = current.add(amount);
+            } else {
+                amount = current.subtract(amount);
+            }
+        } else {
+            update = new Insert("Sales_Balance");
+            update.add("Currency", currency);
+            update.add("Account", account);
+        }
+        update.add("Amount", amount);
+        update.execute();
+    }
+}

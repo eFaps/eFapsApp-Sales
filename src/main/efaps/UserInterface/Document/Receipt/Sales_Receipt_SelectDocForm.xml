@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2009 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>22175130-f45c-4dd6-9e01-de21a7dc5773</uuid>
+    <file-application>eFaps-ERP-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Receipt_SelectDocForm</name>
+        <!-- fields -->
+        <field name="quotation">
+            <property name="Label">Sales_Quotation.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="autoComplete4Quotation"
+                name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Quotation"
+                name="Sales_Invoice_SelectDocForm.quotation.UI_Field_Update"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="invoice">
+            <property name="Label">Sales_Receipt.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="autoComplete4Receipt"
+                name="Sales_Invoice_SelectDocForm.quotation.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Receipt"
+                name="Sales_Receipt_SelectDocForm.quotation.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="info">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_Receipt_SelectDocForm.info.Label</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="getJS4SelectDocumentForm"
+                name="Sales_Receipt_SelectDocForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" />
+        </field>
+    </definition>
+</ui-form>

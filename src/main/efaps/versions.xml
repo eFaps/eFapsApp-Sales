@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<install xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <application>eFaps-ERP-Sales</application>
+    <dependencies>
+        <dependency order="0">
+            <groupId>org.efaps</groupId>
+            <artifactId>efaps-kernel-install</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="1">
+            <groupId>org.efaps</groupId>
+            <artifactId>efaps-webapp-install</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="2">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-crm-contacts</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="3">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-erp-commons</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency order="4">
+            <groupId>org.efaps.module</groupId>
+            <artifactId>efaps-erp-products</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+    <version number="1" reloadCache="false" login="true" compile="true">
+    <description>Install ERP-Sales Basic Modul.</description>
+    <script type="groovy">
+        import org.efaps.admin.runlevel.RunLevel;
+        import org.efaps.db.Context;
+        import org.efaps.db.SearchQuery;
+        import org.efaps.esjp.admin.ui.UIUpdate;
+        import org.efaps.importer.DataImport;
+
+        import java.net.URL
+        import java.io.File;
+
+        EFAPS_LOGGER.info("Importing Data for eFaps-ERP-Sales");
+
+        SearchQuery query = new SearchQuery();
+        query.setQueryTypes("Admin_User_JAASKey");
+        query.addWhereExprEqValue("Key", "Sales_Admin");
+        query.addSelect("OID");
+        query.execute();
+        if (!query.next()) {
+
+            RunLevel.init("shell");
+            RunLevel.execute();
+
+            URL url1 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Currency.xml");
+            DataImport imp1 = DataImport.readFile(url1);
+            imp1.updateInDB();
+
+            URL url2 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Taxes.xml");
+            DataImport imp2 = DataImport.readFile(url2);
+            imp2.updateInDB();
+
+            URL url3 = new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml");
+            DataImport imp3 = DataImport.readFile(url3);
+            imp3.updateInDB();
+        }
+        UIUpdate update = new UIUpdate();
+        <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
+        update.add2Menu("70b1b5b6-11e5-4b05-ab5d-da6a25612234", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
+
+        <!-- connect the Sales_ContactTree_Documents command to the tree menu from contacts -->
+        update.add2Menu("cc930e6c-4ed6-467e-a5d6-10f460c13118", "6de1b9bb-6a03-4c3b-82dd-363fde0aea0a", -1);
+
+        <!-- Sales_Products_VirtualInventoryMyDesk -->
+        update.add2Menu("0d47fc3e-f6a4-4678-9e57-92331986c23f", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
+
+        update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
+    </script>
+    </version>
+</install>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+  <uuid>810c5ffd-bf09-4d20-a7d9-dcff780d4e82</uuid>
+  <file-application>eFaps-ERP-Products</file-application>
+  <file-revision>$Rev$</file-revision>
+
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <name>Products_ProductSQLTable</name>
+    <database>
+      <table-name>T_PRODPRODUCT</table-name>
+      <!-- columns -->
+      <column name="TYPEID"    type="INTEGER"        not-null="true"/>
+      <column name="COMPANYID" type="INTEGER"        not-null="true"/>
+      <column name="NAME"      type="STRING_SHORT"   not-null="true"  length="255"/>
+      <column name="DESCR"     type="STRING_SHORT"                    length="255"/>
+      <column name="DIMID"     type="INTEGER"         not-null="true" />
+      <column name="ACTIVE"    type="BOOLEAN"/>
+      <!-- adding two new columns for salesunit and taxcatogory -->
+      <column name="SALESUNIT" type="DECIMAL"                         length="8" scale="4"/>
+      <column name="TAXCATID"  type="INTEGER"/>
+      <unique name="T_PRODPRODUCT_UK_NAME" columns="NAME"/>
+      <foreign name="T_PRODPRODUCT_FK_DIMID"    key="DIMID"    reference="T_DMDIM(ID)"/>
+      <foreign name="T_PRODPRODUCT_FK_TAXCATID" key="TAXCATID" reference="T_SALESTAXCAT(ID)"/>
+     </database>
+  </definition>
+
+</datamodel-sqltable>

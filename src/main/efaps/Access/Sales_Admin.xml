@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2009 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<access-set xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>34e45134-e0bf-48f3-ab74-03a616ca3230</uuid>
+    <file-application>eFaps-ERP-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+
+        <name>Sales_Admin</name>
+
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
+        <access-type>statusModify</access-type>
+        <access-type>delete</access-type>
+
+        <type>Sales_CostSheet</type>
+        <type>Sales_Quotation</type>
+        <type>Sales_Invoice</type>
+        <type>Sales_PartialInvoice</type>
+        <type>Sales_Receipt</type>
+        <type>Sales_DeliveryNote</type>
+        <type>Contacts_Contact</type>
+        <type>Sales_RecievingTicket</type>
+        <type>Sales_CashDeskBalance</type>
+        <type>Sales_CreditNote</type>
+        <type>Sales_Reminder</type>
+        <type>Sales_IncomingInvoice</type>
+        <type>Sales_ReturnSlip</type>
+        <type>Sales_OrderInbound</type>
+        <type>Sales_OrderOutbound</type>
+        <type>Sales_Reservation</type>
+        <type>Sales_GoodsIssueSlip</type>
+        <type>Sales_PettyCashReceipt</type>
+        <type>Sales_PettyCashBalance</type>
+
+        <status group="Sales_CostSheetStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Aborted</key>
+        </status>
+
+        <status group="Sales_QuotationStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Aborted</key>
+        </status>
+
+        <status group="Sales_InvoiceStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_PartialInvoiceStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_ReceiptStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_DeliveryNoteStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_RecievingTicketStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_CashDeskBalanceStatus">
+            <key>Closed</key>
+        </status>
+
+        <status group="Sales_CreditNoteStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_ReminderStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_IncomingInvoiceStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_ReturnSlipStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_OrderInboundStatus">
+            <key>Open</key>
+            <key>Received</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_OrderOutboundStatus">
+            <key>Open</key>
+            <key>Received</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_ReservationStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_GoodsIssueSlipStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_PettyCashReceiptStatus">
+            <key>Closed</key>
+        </status>
+
+        <status group="Sales_PettyCashBalanceStatus">
+            <key>Closed</key>
+        </status>
+
+        <role>Sales_Admin</role>
+    </definition>
+
+</access-set>
+
+

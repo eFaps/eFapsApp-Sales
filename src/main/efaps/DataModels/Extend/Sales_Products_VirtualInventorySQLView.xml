@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+  <uuid>04cac33c-3e28-408e-8898-30eed81efd3b</uuid>
+  <file-application>eFaps-ERP-Sales</file-application>
+  <file-revision>$Rev$</file-revision>
+
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <name>Sales_Products_VirtualInventorySQLView</name>
+    <typeid-column>TYPEID</typeid-column>
+    <database>
+      <view-name>V_PRODVIRTINVENTORY</view-name>
+      <sql>
+        create or replace view V_PRODVIRTINVENTORY as
+        select T_SALESPOS.ID,
+               (select T_CMABSTRACT.ID from T_CMABSTRACT where T_CMABSTRACT.UUID = 'a973cde4-bd64-4d79-8729-e504cecd0485') as typeid,
+               T_SALESPOS.DOCID,
+               T_SALESPOS.PROD,
+               T_PRODPRODUCT.NAME as prodname,
+               T_PRODPRODUCT.DESCR as proddescr,
+               T_SALESPOS.QUANTITY,
+               '0' as reserved,
+               T_SALESPOS.UOMID,
+               '0' as storageid
+          from T_ERPDOC join T_SALESPOS on T_ERPDOC.ID = T_SALESPOS.DOCID
+                join T_DMSTATUS on T_ERPDOC.STATUS = T_DMSTATUS.ID
+                join T_CMABSTRACT on T_DMSTATUS.TYPEID = T_CMABSTRACT.ID
+                join T_PRODPRODUCT on T_PRODPRODUCT.ID = T_SALESPOS.PROD
+         where T_CMABSTRACT.UUID = '84f2f612-01c1-4d8d-8cfd-875107d1a80c' and T_DMSTATUS.KEY = 'Open'
+         union
+        select T_PRODINVENTORY.ID,
+               (select T_CMABSTRACT.ID from T_CMABSTRACT where T_CMABSTRACT.UUID = '58ab564e-1f81-47f6-af76-b864a969c5ed') as typeid,
+               '0',
+               T_PRODINVENTORY.PRODUCTID,
+               T_PRODPRODUCT.NAME,
+               T_PRODPRODUCT.DESCR,
+               T_PRODINVENTORY.QUANTITY,
+               T_PRODINVENTORY.RESERVED,
+               T_PRODINVENTORY.UOMID,
+               T_PRODINVENTORY.STORAGEID
+          from T_PRODINVENTORY
+          join T_PRODPRODUCT on T_PRODPRODUCT.ID = T_PRODINVENTORY.PRODUCTID
+      </sql>
+
+     </database>
+  </definition>
+
+</datamodel-sqltable>
