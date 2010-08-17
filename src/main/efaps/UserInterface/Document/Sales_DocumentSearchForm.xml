@@ -37,6 +37,7 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_DocumentSearchForm.Label</property>
         </field>
     </definition>
 </ui-form>
