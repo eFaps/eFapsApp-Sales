@@ -58,7 +58,6 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
@@ -70,7 +69,6 @@ import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.Sales;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -156,28 +154,28 @@ public abstract class AbstractDocument_Base
      * Used by the AutoCompleteField used in the select doc form
      * for DeliveryNote.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete
+     * @throws EFapsException on error.
      */
     public Return autoComplete4DeliveryNote(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.DELIVERYNOTE.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.DeliveryNote.uuid, null);
     }
 
     /**
      * Used by the AutoCompleteField used in the select doc form
      * for IncomingInvoices.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4IncomingInvoice(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.INCOMINGINVOICE.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, null);
     }
 
 
@@ -185,14 +183,14 @@ public abstract class AbstractDocument_Base
      * Used by the AutoCompleteField used in the select doc form
      * for Invoices.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4Invoice(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.INVOICE.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.Invoice.uuid, null);
     }
 
 
@@ -200,14 +198,15 @@ public abstract class AbstractDocument_Base
      * Used by the AutoCompleteField used in the select doc form
      * for OrderInbound.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4OrderInbound(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.ORDEROUT.getUuid(), Status.find("Sales_OrderInboundStatus", "Open"));
+        return autoComplete4Doc(_parameter, CISales.OrderInbound.uuid,
+                                            Status.find(CISales.OrderInboundStatus.uuid, "Open"));
     }
 
 
@@ -215,9 +214,9 @@ public abstract class AbstractDocument_Base
      * Used by the AutoCompleteField used in the select doc form
      * for OrderOutbound.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4OrderOutbound(final Parameter _parameter)
         throws EFapsException
@@ -229,49 +228,49 @@ public abstract class AbstractDocument_Base
         } else {
             status = Status.find(CISales.OrderOutboundStatus.uuid, "Open");
         }
-        return autoComplete4Doc(_parameter, Sales.ORDEROUT.getUuid(), status);
+        return autoComplete4Doc(_parameter, CISales.OrderOutbound.uuid, status);
     }
 
     /**
      * Used by the AutoCompleteField used in the select doc form
      * for Quotations.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4Quotation(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.QUOTATION.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.Quotation.uuid, null);
     }
 
     /**
      * Used by the AutoCompleteField used in the select doc form
      * for Receipts.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4Receipt(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.RECEIPT.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.Receipt.uuid, null);
     }
 
     /**
      * Used by the AutoCompleteField used in the select doc form
      * for Receipts.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4RecievingTicket(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.RECIEVINGTICKET.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.RecievingTicket.uuid, null);
     }
 
 
@@ -279,24 +278,24 @@ public abstract class AbstractDocument_Base
      * Used by the AutoCompleteField used in the select doc form
      * for Receipts.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4CreditNote(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, Sales.CREDITNOTE.getUuid(), null);
+        return autoComplete4Doc(_parameter, CISales.CreditNote.uuid, null);
     }
 
     /**
      * Generic method to get a list of documents.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _typeUUID  UUID of the type to be searched
-     * @param _status   status used as additional filter, <code>null</code> to deactivate
-     *  @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _typeUUID  UUID of the type to be searched.
+     * @param _status   status used as additional filter, <code>null</code> to deactivated
+     *  @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     protected Return autoComplete4Doc(final Parameter _parameter,
                                       final UUID _typeUUID,
@@ -549,23 +548,29 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
+    /**
+     * Used by the AutoCompleteField used in the select contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
     public Return autoComplete4Contact(final Parameter _parameter)
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Contacts_Contact");
-        query.addWhereExprMatchValue("Name", input + "*").setIgnoreCase(true);
-        query.addSelect("OID");
-        query.addSelect("Name");
-        query.execute();
-        while (query.next()) {
-            final String name = (String) query.get("Name");
-            final String oid = (String) query.get("OID");
+        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
+        queryBldr.addWhereAttrMatchValue(CIContacts.Contact.Name, input + "*").setIgnoreCase(true);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIContacts.Contact.OID, CIContacts.Contact.Name);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CIContacts.Contact.Name);
+            final String oid = multi.<String>getAttribute(CIContacts.Contact.OID);
             final Map<String, String> map = new HashMap<String, String>();
             map.put("eFapsAutoCompleteKEY", oid);
-            map.put("eFapsAutoCompleteVALUE", (String) query.get("Name"));
+            map.put("eFapsAutoCompleteVALUE", name);
             map.put("eFapsAutoCompleteCHOICE", name);
             list.add(map);
         }
@@ -856,39 +861,37 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Autocomplete for the field with products.
+     * Auto-complete for the field with products.
      *
-     * @param _parameter parameter from eFAps
-     * @return List to be rendered for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter parameter from eFaps.
+     * @return List to be rendered for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4Product(final Parameter _parameter)
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Products_ProductAbstract");
-        query.setExpandChildTypes(true);
-        query.addWhereExprMatchValue("Name", input + "*");
-        query.addSelect("OID");
-        query.addSelect("Name");
-        query.addSelect("Description");
-        query.addSelect("Dimension");
-        query.execute();
-        while (query.next()) {
-            final String name = (String) query.get("Name");
-            final String desc = (String) query.get("Description");
-            final String oid = (String) query.get("OID");
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
+        queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIProducts.ProductAbstract.OID, CIProducts.ProductAbstract.Name,
+                        CIProducts.ProductAbstract.Description, CIProducts.ProductAbstract.Dimension);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute("Name");
+            final String desc = multi.<String>getAttribute("Description");
+            final String oid = multi.<String>getAttribute("OID");
             final Map<String, String> map = new HashMap<String, String>();
             map.put("eFapsAutoCompleteKEY", oid);
-            map.put("eFapsAutoCompleteVALUE", (String) query.get("Name"));
+            map.put("eFapsAutoCompleteVALUE", name);
             map.put("eFapsAutoCompleteCHOICE", name + "- " + desc);
             map.put("productDesc", desc);
-            map.put("uoM", getUoMFieldStr((Long) query.get("Dimension")));
+            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute("Dimension")));
             map.put("discount", "0");
             list.add(map);
         }
+
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -1413,33 +1416,32 @@ public abstract class AbstractDocument_Base
 
 
     /**
-     * Method to render a dropdown field containing all warehouses.
+     * Method to render a drop-down field containing all warehouses.
      *
-     * @param _parameter Parameter as passed from eFaps
-     * @return Return containing a snipplet
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from eFaps.
+     * @return Return containing a SNIPPLET.
+     * @throws EFapsException on error.
      */
-    public Return getStorageFieldValueUI(final Parameter _parameter) throws EFapsException
+    public Return getStorageFieldValueUI(final Parameter _parameter)
+        throws EFapsException
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Products_StorageAbstract");
-        query.setExpandChildTypes(true);
-        query.addSelect("ID");
-        query.addSelect("Name");
-        query.execute();
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StorageAbstract);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIProducts.StorageAbstract.ID, CIProducts.StorageAbstract.Name);
+        multi.execute();
 
         final Map<String, Long> values = new TreeMap<String, Long>();
-        while (query.next()) {
-            values.put((String) query.get("Name"), (Long) query.get("ID"));
+        while (multi.next()) {
+            values.put(multi.<String>getAttribute("Name"), multi.<Long>getAttribute("ID"));
         }
-        //Sales_Configuration
+        // Sales_Configuration
         final Instance warehouse = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                                                                     .getLink("DefaultWarehouse");
 
         final StringBuilder html = new StringBuilder();
         html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
-        for (final Entry<String, Long> entry :  values.entrySet()) {
+        for (final Entry<String, Long> entry : values.entrySet()) {
             html.append("<option value=\"").append(entry.getValue());
             if (entry.getValue().equals(warehouse.getId())) {
                 html.append("\" selected=\"selected");
@@ -1454,10 +1456,11 @@ public abstract class AbstractDocument_Base
 
 
     /**
-     * Get a rate Object from the userinterface.
+     * Get a rate Object from the User Interface.
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Object
-     * @throws EFapsException on errro
+     * @throws EFapsException on error.
      */
     protected Object[] getRateObject(final Parameter _parameter)
         throws EFapsException
@@ -1476,9 +1479,9 @@ public abstract class AbstractDocument_Base
      * Used by the AutoCompleteField used in the select doc form
      * for CostSheets.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for autocomplete
-     * @throws EFapsException on error
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
      */
     public Return autoComplete4CostSheet(final Parameter _parameter)
         throws EFapsException
