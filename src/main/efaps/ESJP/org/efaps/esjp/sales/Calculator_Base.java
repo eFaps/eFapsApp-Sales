@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
-import org.efaps.esjp.products.Products;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.Tax_Base.TaxRate;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -167,12 +167,12 @@ public abstract class Calculator_Base
                     final PriceUtil priceutil = new PriceUtil();
                     final ProductPrice priceTmp = priceutil.getPrice(_parameter,
                                                                      this.oid,
-                                                                     Products.PRICELISTRETAIL.getUuid());
+                                                                     CIProducts.ProductPricelistRetail.uuid);
                     this.productPrice = priceTmp;
                     if (_includeMinRetail) {
                         this.minProductPrice = priceutil.getPrice(_parameter,
                                                                   this.oid,
-                                                                  Products.PRICELISTMINRETAIL.getUuid());
+                                                                  CIProducts.ProductPricelistMinRetail.uuid);
                     }
                 }
             }
@@ -186,7 +186,7 @@ public abstract class Calculator_Base
                     final PriceUtil priceutil = new PriceUtil();
                     final ProductPrice priceTmp = priceutil.getPrice(_parameter,
                                                                      this.oid,
-                                                                     Products.PRICELISTRETAIL.getUuid());
+                                                                     CIProducts.ProductPricelistRetail.uuid);
                     this.productPrice = priceTmp;
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
@@ -196,7 +196,7 @@ public abstract class Calculator_Base
                 if (_includeMinRetail) {
                     this.minProductPrice =  new PriceUtil().getPrice(_parameter,
                                                                      this.oid,
-                                                                     Products.PRICELISTMINRETAIL.getUuid());
+                                                                     CIProducts.ProductPricelistMinRetail.uuid);
                 }
             } else {
                 this.taxcatId = 0;
