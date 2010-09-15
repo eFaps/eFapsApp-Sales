@@ -41,8 +41,8 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -52,12 +52,12 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.DateTimeUtil;
@@ -106,6 +106,15 @@ public abstract class DocReport_Base
     }
 
 
+    /**
+     * Method for obtains a new List with instance of the documents.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _from Datetime from.
+     * @param _to Datetime to.
+     * @return ret with list instance.
+     * @throws EFapsException on error.
+     */
     protected List<Instance> getInstances(final Parameter _parameter,
                                           final DateTime _from,
                                           final DateTime _to)
@@ -114,9 +123,9 @@ public abstract class DocReport_Base
         final List<Instance> ret = new ArrayList<Instance>();
         final Map<String, Map<String, Instance>> values = new TreeMap<String, Map<String, Instance>>();
 
-        values.put("A", getInstances(_parameter, Sales.INVOICE.getUuid(), _from, _to));
-        values.put("B", getInstances(_parameter, Sales.RECEIPT.getUuid(), _from, _to));
-        values.put("C", getInstances(_parameter, Sales.CREDITNOTE.getUuid(), _from, _to));
+        values.put("A", getInstances(_parameter, CISales.Invoice.uuid, _from, _to));
+        values.put("B", getInstances(_parameter, CISales.Receipt.uuid, _from, _to));
+        values.put("C", getInstances(_parameter, CISales.CreditNote.uuid, _from, _to));
 
         for (final Map<String, Instance> value : values.values()) {
             for (final Instance inst : value.values()) {
@@ -126,6 +135,16 @@ public abstract class DocReport_Base
         return ret;
     }
 
+    /**
+     * Method for obtains instances of the documents.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _typeUUID UUID of type.
+     * @param _from Datetime from.
+     * @param _to Datetime to.
+     * @return ret with values.
+     * @throws EFapsException on error.
+     */
     protected Map<String, Instance> getInstances(final Parameter _parameter,
                                                   final UUID _typeUUID,
                                                   final DateTime _from,
@@ -180,7 +199,7 @@ public abstract class DocReport_Base
                 rate = BigDecimal.ONE;
             }
         } catch (final ParseException e) {
-           throw new EFapsException (DocReport_Base.class, "createDocReport", e);
+            throw new EFapsException(DocReport_Base.class, "createDocReport.ParseException", e);
         }
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
         final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
@@ -200,7 +219,8 @@ public abstract class DocReport_Base
     }
 
     /**
-     * Get the name for the report
+     * Get the name for the report.
+     *
      * @param _parameter Parameter as passed form the eFaps API
      * @param _from fromdate
      * @param _to   to date

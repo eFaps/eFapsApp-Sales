@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
@@ -26,17 +25,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -44,11 +42,11 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.SearchQuery;
-import org.efaps.esjp.sales.Sales;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-
 
 /**
  * TODO comment!
@@ -61,47 +59,61 @@ import org.joda.time.DateTime;
 public abstract class GoodsIssueSlip_Base
     extends AbstractDocument
 {
-    public Return create(final Parameter _parameter) throws EFapsException
+    /**
+     * Method for create a new GoodsIssueSlip.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
     {
         final String date = _parameter.getParameterValue("date");
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert(Sales.GOODSISSUESLIP.getUuid());
-        insert.add("Contact", contactid.toString());
-        insert.add("Date", date);
-        insert.add("Salesperson", _parameter.getParameterValue("salesperson"));
-        insert.add("Name", _parameter.getParameterValue("name4create"));
-        insert.add("Status", ((Long) Status.find(Type.get(Sales.GOODSISSUESLIP_STATUS.getUuid()).getName(),
-                        "Closed").getId()).toString());
+        final Insert insert = new Insert(CISales.GoodsIssueSlip);
+        insert.add(CISales.GoodsIssueSlip.Contact, contactid.toString());
+        insert.add(CISales.GoodsIssueSlip.Date, date);
+        insert.add(CISales.GoodsIssueSlip.Salesperson, _parameter.getParameterValue("salesperson"));
+        insert.add(CISales.GoodsIssueSlip.Name, _parameter.getParameterValue("name4create"));
+        insert.add(CISales.GoodsIssueSlip.Status,
+                        ((Long) Status.find(CISales.GoodsIssueSlipStatus.uuid, "Open").getId()).toString());
         insert.execute();
         Integer i = 0;
-        for (final String quantity :  _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert(Sales.GOODSISSUESLIP_POS.getUuid());
+        for (final String quantity : _parameter.getParameterValues("quantity")) {
+            final Insert posIns = new Insert(CISales.GoodsIssueSlipPosition);
             final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add("GoodsIssueSlip", insert.getId());
-            posIns.add("PositionNumber", i.toString());
-            posIns.add("Product", productdId.toString());
-            posIns.add("ProductDesc", _parameter.getParameterValues("productDesc")[i]);
-            posIns.add("Quantity", (new BigDecimal(quantity)).toString());
-            posIns.add("UoM",  _parameter.getParameterValues("uoM")[i]);
-            posIns.add("CrossUnitPrice", "0");
-            posIns.add("NetUnitPrice", "0");
-            posIns.add("CrossPrice", "0");
-            posIns.add("NetPrice", "0");
-            posIns.add("Discount", "0");
-            posIns.add("Tax", "1");
-            posIns.add("DiscountNetUnitPrice", BigDecimal.ZERO);
-            posIns.add("CurrencyId", 1);
-            posIns.add("RateCurrencyId", 1);
-            posIns.add("Rate", BigDecimal.ZERO);
+            posIns.add(CISales.GoodsIssueSlipPosition.GoodsIssueSlip, insert.getId());
+            posIns.add(CISales.GoodsIssueSlipPosition.PositionNumber, i.toString());
+            posIns.add(CISales.GoodsIssueSlipPosition.Product, productdId.toString());
+            posIns.add(CISales.GoodsIssueSlipPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
+            posIns.add(CISales.GoodsIssueSlipPosition.Quantity, (new BigDecimal(quantity)).toString());
+            posIns.add(CISales.GoodsIssueSlipPosition.UoM, _parameter.getParameterValues("uoM")[i]);
+            posIns.add(CISales.GoodsIssueSlipPosition.CrossUnitPrice, "0");
+            posIns.add(CISales.GoodsIssueSlipPosition.NetUnitPrice, "0");
+            posIns.add(CISales.GoodsIssueSlipPosition.CrossPrice, "0");
+            posIns.add(CISales.GoodsIssueSlipPosition.NetPrice, "0");
+            posIns.add(CISales.GoodsIssueSlipPosition.Discount, "0");
+            posIns.add(CISales.GoodsIssueSlipPosition.Tax, "1");
+            posIns.add(CISales.GoodsIssueSlipPosition.DiscountNetUnitPrice, BigDecimal.ZERO);
+            posIns.add(CISales.GoodsIssueSlipPosition.CurrencyId, 1);
+            posIns.add(CISales.GoodsIssueSlipPosition.RateCurrencyId, 1);
+            posIns.add(CISales.GoodsIssueSlipPosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
         }
         return new Return();
     }
 
-
-
-    public Return goodsIssueSlipPositionInsertTrigger(final Parameter _parameter) throws EFapsException
+    /**
+     * Method for trigger in case insert a new position the GoodsIssueSlip.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return goodsIssueSlipPositionInsertTrigger(final Parameter _parameter)
+        throws EFapsException
     {
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
         final String[] productOids = param.get("product");
@@ -116,37 +128,35 @@ public abstract class GoodsIssueSlip_Base
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute("UoM"));
         String storage = null;
         if (storageIds != null) {
-            for (int i = 0; i <  productOids.length; i++) {
+            for (int i = 0; i < productOids.length; i++) {
                 if (productID[0].equals(((Long) Instance.get(productOids[i]).getId()).toString())) {
                     storage = storageIds[i];
                 }
             }
         } else {
-            final SearchQuery query = new SearchQuery();
-            query.setQueryTypes("Products_Inventory");
-            query.addWhereExprEqValue("Product", productID[0].toString());
-            query.addSelect("Storage");
-            query.execute();
-            if (query.next()) {
-                storage = ((Long) query.get("Storage")).toString();
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, Long.parseLong(productID[0].toString()));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.Inventory.Storage);
+            multi.execute();
+            if (multi.next()) {
+                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage).toString();
             }
         }
 
-        final Insert insert = new Insert("Products_TransactionOutbound");
-        insert.add("Quantity", qauntity[0]);
-        insert.add("Storage", storage.toString());
-        insert.add("Product", productID[0]);
-        insert.add("Description",
-                   DBProperties.getProperty("org.efaps.esjp.sales.document.GoodsIssueSlip.description4Trigger"));
-        insert.add("Date", new DateTime());
+        final Insert insert = new Insert(CIProducts.TransactionOutbound);
+        insert.add(CIProducts.TransactionOutbound.Quantity, qauntity[0].toString());
+        insert.add(CIProducts.TransactionOutbound.Storage, storage.toString());
+        insert.add(CIProducts.TransactionOutbound.Product, productID[0].toString());
+        insert.add(CIProducts.TransactionOutbound.Description,
+                        DBProperties.getProperty("org.efaps.esjp.sales.document.GoodsIssueSlip.description4Trigger"));
+        insert.add(CIProducts.TransactionOutbound.Date, new DateTime());
         insert.add("Document", deliveryNodeId[0]);
-        insert.add("UoM", uom[0]);
+        insert.add(CIProducts.TransactionOutbound.UoM, uom[0]);
         insert.execute();
 
         return new Return();
     }
-
-
 
     /**
      * {@inheritDoc}
@@ -160,18 +170,19 @@ public abstract class GoodsIssueSlip_Base
         if (input.length() > 0) {
             final boolean nameSearch = Character.isDigit(input.charAt(0));
 
-            final SearchQuery query = new SearchQuery();
-            query.setQueryTypes("Sales_Products_VirtualInventoryStock");
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
             if (nameSearch) {
-                query.addWhereExprMatchValue("ProductName", input + "*");
+                queryBldr.addWhereAttrMatchValue(CISales.Products_VirtualInventoryStock.ProductName, input + "*");
             } else {
-                query.addWhereExprMatchValue("ProductDescription", input + "*").setIgnoreCase(true);
+                queryBldr.addWhereAttrMatchValue(CISales.Products_VirtualInventoryStock.ProductDescription,
+                                input + "*").setIgnoreCase(true);
             }
-            query.addSelect("OID");
-            query.execute();
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.Products_VirtualInventoryStock.OID);
+            multi.execute();
             final List<Instance> instances = new ArrayList<Instance>();
-            while (query.next()) {
-                instances.add(Instance.get((String) query.get("OID")));
+            while (multi.next()) {
+                instances.add(Instance.get(multi.<String>getAttribute(CISales.Products_VirtualInventoryStock.OID)));
             }
             if (instances.size() > 0) {
                 final MultiPrintQuery print = new MultiPrintQuery(instances);
@@ -186,23 +197,23 @@ public abstract class GoodsIssueSlip_Base
                 final Map<String, Map<String, String>> oid2value = new HashMap<String, Map<String, String>>();
                 final Map<String, Map<String, Long>> oid2Storage = new HashMap<String, Map<String, Long>>();
                 while (print.next()) {
-                    final String name = print.<String> getAttribute("ProductName");
-                    final String desc = print.<String> getAttribute("ProductDescription");
-                    final String oid = print.<String> getSelect("linkto[Product].oid");
-                    final BigDecimal salesUnit = print.<BigDecimal> getSelect("linkto[Product].attribute[SalesUnit]");
+                    final String name = print.<String>getAttribute("ProductName");
+                    final String desc = print.<String>getAttribute("ProductDescription");
+                    final String oid = print.<String>getSelect("linkto[Product].oid");
+                    final BigDecimal salesUnit = print.<BigDecimal>getSelect("linkto[Product].attribute[SalesUnit]");
 
                     if (oid2value.containsKey(oid)) {
                         final Map<String, Long> storagemap = oid2Storage.get(oid);
-                        storagemap.put(print.<String> getSelect("linkto[Storage].attribute[Name]"),
-                                        print.<Long> getSelect("linkto[Storage].id"));
+                        storagemap.put(print.<String>getSelect("linkto[Storage].attribute[Name]"),
+                                        print.<Long>getSelect("linkto[Storage].id"));
                         final Map<String, String> map = oid2value.get(oid);
                         map.put("storage", getStorageFieldStr(storagemap));
                     } else {
                         final Map<String, String> map = new HashMap<String, String>();
                         oid2value.put(oid, map);
                         final Map<String, Long> storagemap = new TreeMap<String, Long>();
-                        storagemap.put(print.<String> getSelect("linkto[Storage].attribute[Name]"),
-                                        print.<Long> getSelect("linkto[Storage].id"));
+                        storagemap.put(print.<String>getSelect("linkto[Storage].attribute[Name]"),
+                                        print.<Long>getSelect("linkto[Storage].id"));
                         oid2Storage.put(oid, storagemap);
                         map.put("eFapsAutoCompleteKEY", oid);
                         map.put("eFapsAutoCompleteVALUE", name);
@@ -210,7 +221,7 @@ public abstract class GoodsIssueSlip_Base
                         map.put("salesUnit", salesUnit.toString());
                         map.put("salesUnitRO", salesUnit.toString());
                         map.put("salesUnitPagackes", "1");
-                        map.put("uoM", getUoMFieldStr(print.<Long> getSelect("linkto[Product].attribute[Dimension]")));
+                        map.put("uoM", getUoMFieldStr(print.<Long>getSelect("linkto[Product].attribute[Dimension]")));
                         map.put("productDesc", desc);
                         map.put("storage", getStorageFieldStr(storagemap));
                         list.add(map);
