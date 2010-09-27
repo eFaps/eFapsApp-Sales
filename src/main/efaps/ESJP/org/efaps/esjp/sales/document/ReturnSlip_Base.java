@@ -23,19 +23,19 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.util.Map;
 
-import org.joda.time.DateTime;
-
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.SearchQuery;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -47,37 +47,56 @@ import org.efaps.util.EFapsException;
 @EFapsRevision("$Rev$")
 public abstract class ReturnSlip_Base extends AbstractDocument
 {
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return create(final Parameter _parameter) throws EFapsException
+    {
+        createDoc(_parameter);
+        return new Return();
+    }
+
+    /**Method to obtain the instance of a return slip.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return Instance of the document.
+     * @throws EFapsException on error.
+     */
+    public Instance createDoc(final Parameter _parameter)
+        throws EFapsException
     {
         final String date = _parameter.getParameterValue("date");
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert("Sales_RecievingTicket");
-        insert.add("Contact", contactid.toString());
-        insert.add("Date", date);
-        insert.add("Salesperson", _parameter.getParameterValue("salesperson"));
-        insert.add("Name", _parameter.getParameterValue("name4create"));
-        insert.add("Status", ((Long) Status.find("Sales_RecievingTicketStatus", "Closed").getId()).toString());
+        final Insert insert = new Insert(CISales.ReturnSlip);
+        insert.add(CISales.ReturnSlip.Contact, contactid.toString());
+        insert.add(CISales.ReturnSlip.Date, date);
+        insert.add(CISales.ReturnSlip.Salesperson, _parameter.getParameterValue("salesperson"));
+        insert.add(CISales.ReturnSlip.Name, _parameter.getParameterValue("name4create"));
+        insert.add(CISales.ReturnSlip.Status, ((Long) Status.find(CISales.ReturnSlipStatus.uuid, "Closed")
+                                                                                                .getId()).toString());
         insert.execute();
         Integer i = 0;
-        for (final String quantity :  _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert("Sales_RecievingTicketPosition");
+        for (final String quantity : _parameter.getParameterValues("quantity")) {
+            final Insert posIns = new Insert(CISales.ReturnSlipPosition);
             final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add("RecievingTicket", insert.getId());
-            posIns.add("PositionNumber", i.toString());
-            posIns.add("Product", productdId.toString());
-            posIns.add("ProductDesc", _parameter.getParameterValues("productdesc")[i]);
-            posIns.add("Quantity", (new BigDecimal(quantity)).toString());
-            posIns.add("UoM",  _parameter.getParameterValues("uom")[i]);
-            posIns.add("CrossUnitPrice", "0");
-            posIns.add("NetUnitPrice", "0");
-            posIns.add("CrossPrice", "0");
-            posIns.add("NetPrice", "0");
-            posIns.add("Discount", "0");
-            posIns.add("Tax", "1");
+            posIns.add(CISales.ReturnSlipPosition.ReturnSlip, insert.getId());
+            posIns.add(CISales.ReturnSlipPosition.PositionNumber, i.toString());
+            posIns.add(CISales.ReturnSlipPosition.Product, productdId.toString());
+            posIns.add(CISales.ReturnSlipPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
+            posIns.add(CISales.ReturnSlipPosition.Quantity, (new BigDecimal(quantity)).toString());
+            posIns.add(CISales.ReturnSlipPosition.UoM, _parameter.getParameterValues("uoM")[i]);
+            posIns.add(CISales.ReturnSlipPosition.CrossUnitPrice, "0");
+            posIns.add(CISales.ReturnSlipPosition.NetUnitPrice, "0");
+            posIns.add(CISales.ReturnSlipPosition.CrossPrice, "0");
+            posIns.add(CISales.ReturnSlipPosition.NetPrice, "0");
+            posIns.add(CISales.ReturnSlipPosition.Discount, "0");
+            posIns.add(CISales.ReturnSlipPosition.Tax, "1");
             posIns.execute();
             i++;
         }
-        return new Return();
+        return insert.getInstance();
     }
 
     public Return returnSlipPositionInsertTrigger(final Parameter _parameter) throws EFapsException

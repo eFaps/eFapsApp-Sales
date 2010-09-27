@@ -60,7 +60,7 @@
             event="UI_FIELD_UPDATE" />
     </field>
 
-    <field name="productdesc">
+    <field name="productDesc">
         <property name="Columns">90</property>
         <property name="ModeCreate">EDITABLE</property>
         <property name="Attribute">ProductDesc</property>
@@ -68,7 +68,7 @@
         <property name="Width">10</property>
     </field>
 
-    <field name="uom">
+    <field name="uoM">
         <property name="ModeCreate">EDITABLE</property>
         <property name="ModeView">NONE</property>
         <property name="ModePrint">NONE</property>
@@ -85,10 +85,14 @@
         <property name="Label">Sales_OrderInboundPosition/UoM.Label</property>
     </field>
 
-    <field name="netunitprice">
+    <field name="netUnitPrice">
         <property name="ModeCreate">EDITABLE</property>
         <property name="Attribute">NetUnitPrice</property>
         <property name="Label">Sales_OrderInboundPosition/NetUnitPrice.Label</property>
+        <trigger program="org.efaps.esjp.sales.document.OrderInbound"
+             method="updateFields4NetUnitPrice"
+             name="Sales_OrderInboundPositionTable.netUnitPrice.UI_FIELD_UPDATE"
+             event="UI_FIELD_UPDATE" />
     </field>
 
     <field name="discount">
@@ -96,11 +100,12 @@
         <property name="Attribute">Discount</property>
         <property name="Label">Sales_OrderInboundPosition/Discount.Label</property>
         <trigger program="org.efaps.esjp.sales.document.OrderInbound"
-            method="updateFields4Discount" name="Sales_OrderInboundPositionTable.discount.UI_FIELD_UPDATE"
+            method="updateFields4Discount"
+            name="Sales_OrderInboundPositionTable.discount.UI_FIELD_UPDATE"
             event="UI_FIELD_UPDATE" />
     </field>
 
-    <field name="netprice">
+    <field name="netPrice">
         <property name="ModeCreate">READONLY</property>
         <property name="Attribute">NetPrice</property>
         <property name="Label">Sales_OrderInboundPosition/NetPrice.Label</property>
