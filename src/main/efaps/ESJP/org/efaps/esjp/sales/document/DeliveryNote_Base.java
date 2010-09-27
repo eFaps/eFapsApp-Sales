@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2010 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,8 +26,8 @@ import java.util.Map;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -50,7 +50,28 @@ import org.joda.time.DateTime;
 public abstract class DeliveryNote_Base
     extends AbstractDocument
 {
+    /**
+     * Create a new DeliveryNote.
+     *
+     * @param _parameter parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error,
+     */
     public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        createDoc(_parameter);
+        return new Return();
+    }
+
+    /**
+     * Method for create a new DeliveryNote and return the instance of the deliveryNote.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return instance of the deliveryNote.
+     * @throws EFapsException on error.
+     */
+    protected Instance createDoc(final Parameter _parameter)
         throws EFapsException
     {
         final String date = _parameter.getParameterValue("date");
@@ -86,7 +107,7 @@ public abstract class DeliveryNote_Base
             posIns.execute();
             i++;
         }
-        return new Return();
+        return insert.getInstance();
     }
 
     public Return getJS4SelectInvoiceForm(final Parameter _parameter)
