@@ -68,6 +68,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModePrint">NONE</property>
+            <property name="Required">true</property>
         </field>
         <field name="salesUnit4Read">
             <property name="Select">attribute[SalesUnit].format[0.####]</property>
