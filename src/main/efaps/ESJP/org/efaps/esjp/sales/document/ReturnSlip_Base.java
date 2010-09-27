@@ -92,7 +92,11 @@ public abstract class ReturnSlip_Base extends AbstractDocument
             posIns.add(CISales.ReturnSlipPosition.CrossPrice, "0");
             posIns.add(CISales.ReturnSlipPosition.NetPrice, "0");
             posIns.add(CISales.ReturnSlipPosition.Discount, "0");
+            posIns.add(CISales.ReturnSlipPosition.DiscountNetUnitPrice, "0");
             posIns.add(CISales.ReturnSlipPosition.Tax, "1");
+            posIns.add(CISales.ReturnSlipPosition.CurrencyId, 1);
+            posIns.add(CISales.ReturnSlipPosition.RateCurrencyId, 1);
+            posIns.add(CISales.ReturnSlipPosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
         }
