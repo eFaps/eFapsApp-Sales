@@ -102,5 +102,11 @@
             <sqltable>Sales_Products_VirtualInventorySQLView</sqltable>
             <sqlcolumn>STORAGEID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>Company</name>
+            <type>CompanyLink</type>
+            <sqltable>Sales_Products_VirtualInventorySQLView</sqltable>
+            <sqlcolumn>COMPANYID</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
