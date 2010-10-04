@@ -117,6 +117,7 @@
         </field>
         <field name="document">
             <property name="SelectAlternateOID">linkto[Document].oid</property>
+            <property name="Label">Sales_TransactionAbstract.document.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Select">linkto[Document].attribute[Name]</property>
         </field>
