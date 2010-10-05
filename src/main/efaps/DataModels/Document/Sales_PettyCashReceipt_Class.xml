@@ -80,6 +80,6 @@
             <sqlcolumn>EMPLOYEENAME</sqlcolumn>
         </attribute>
         <classifies type="Sales_PettyCashReceipt" relType="ERP_Document2Class"
-                    relLinkAttribute="DocumentLink" relTypeAttribute="ClassTypeId" />
+                    relLinkAttribute="DocumentLink" relTypeAttribute="ClassTypeId" multipleSelect="true"/>
     </definition>
 </datamodel-type>
