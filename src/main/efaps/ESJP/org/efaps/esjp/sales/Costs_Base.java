@@ -166,9 +166,15 @@ public abstract class Costs_Base
                         total = total.add(stockCost.multiply(stockQuantity));
                         totalQuantity = totalQuantity.add(stockQuantity);
                     }
-
-                    total = total.add(pos.getNetprice().divide(netTotal, BigDecimal.ROUND_HALF_UP).multiply(extra));
-                    final BigDecimal newCost = total.divide(totalQuantity.add(pos.quantity), BigDecimal.ROUND_HALF_UP);
+                    if (extra.compareTo(BigDecimal.ZERO) > 0) {
+                        total = total.add(pos.getNetprice().divide(netTotal, BigDecimal.ROUND_HALF_UP).multiply(extra));
+                    }
+                    final BigDecimal newCost;
+                    if (total.compareTo(BigDecimal.ZERO) > 0) {
+                        newCost = total.divide(totalQuantity.add(pos.quantity), BigDecimal.ROUND_HALF_UP);
+                    } else {
+                        newCost = pos.getNetprice().divide(pos.quantity, BigDecimal.ROUND_HALF_UP);
+                    }
 
                     final Insert insert = new Insert(CIProducts.ProductCost);
                     insert.add(CIProducts.ProductCost.ProductLink, pos.getProdInst().getId());
