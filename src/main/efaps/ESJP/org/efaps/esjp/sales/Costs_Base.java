@@ -105,7 +105,7 @@ public abstract class Costs_Base
                     final Instance curInst = Instance.get(multi.<String>getSelect(currSel));
                     final Instance prodInst = Instance.get(multi.<String>getSelect(sel));
                     final Map<Instance, Position> map;
-                    if (prodInst.getType().equals(CIProducts.ProductStandart.getType())) {
+                    if (prodInst.getType().isKindOf(CIProducts.StockProductAbstract.getType())) {
                         map = prods;
                         netTotal = netTotal.add(netprice);
                     } else {
