@@ -27,23 +27,24 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -189,6 +190,17 @@ public abstract class Account_Base
     {
         final Instance inst = _parameter.getCallInstance();
         final String amountStr = _parameter.getParameterValue("startAmount");
+        final DecimalFormat formater = getTwoDigitsformater();
+        final BigDecimal amount = getAmountPayments(_parameter);
+        BigDecimal startAmount = BigDecimal.ZERO;
+        try {
+            startAmount = (BigDecimal) formater.parse(amountStr);
+        } catch (final ParseException e) {
+           throw new EFapsException(Account_Base.class, "ParseException", e);
+        }
+        final BigDecimal difference = (amount != BigDecimal.ZERO ? startAmount.subtract(amount)
+                                                           : BigDecimal.ZERO);
+
         final PrintQuery print = new PrintQuery(inst);
         print.addAttribute(CISales.AccountAbstract.CurrencyLink);
         print.execute();
@@ -199,7 +211,7 @@ public abstract class Account_Base
         insert.add(CISales.PettyCashBalance.Name, new DateTime().toLocalTime());
         insert.add(CISales.PettyCashBalance.Date, date);
         insert.add(CISales.PettyCashBalance.Status, Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
-        insert.add(CISales.PettyCashBalance.CrossTotal, amountStr);
+        insert.add(CISales.PettyCashBalance.CrossTotal, difference);
         insert.add(CISales.PettyCashBalance.NetTotal, BigDecimal.ZERO);
         insert.add(CISales.PettyCashBalance.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.PettyCashBalance.RateCrossTotal, BigDecimal.ZERO);
@@ -480,50 +492,48 @@ public abstract class Account_Base
     public BigDecimal getAmountPayments(final Parameter _parameter)
         throws EFapsException
     {
-        final BigDecimal ret;
+        BigDecimal ret = BigDecimal.ZERO;
         final Instance inst = (_parameter.getCallInstance() == null
                                                 ? _parameter.getInstance() : _parameter.getCallInstance());
 
         final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
         subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
         final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-        BigDecimal amount = BigDecimal.ZERO;
+
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
         queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
         queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
 
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
         final SelectBuilder selOut = new SelectBuilder().linkfrom(CISales.TransactionOutbound,
                         CISales.TransactionOutbound.Payment).attribute(CISales.TransactionOutbound.Amount);
         final SelectBuilder selIn = new SelectBuilder().linkfrom(CISales.TransactionInbound,
                         CISales.TransactionInbound.Payment).attribute(CISales.TransactionInbound.Amount);
-        if(query.next()){
-            while (query.next()) {
-                final PrintQuery print = new PrintQuery(query.getCurrentValue());
-                print.addSelect(selOut, selIn);
-                print.execute();
-                if (print.isList4Select(selOut.toString())) {
 
-                } else {
-                    final BigDecimal add = print.<BigDecimal>getSelect(selOut);
-                    amount = amount.add(add == null ? BigDecimal.ZERO : add);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        while (query.next()) {
+            final PrintQuery print = new PrintQuery(query.getCurrentValue());
+            print.addSelect(selOut, selIn);
+            print.execute();
+            if (print.isList4Select(selIn.toString())) {
+                final List<BigDecimal> adds = print.<List<BigDecimal>>getSelect(selIn);
+                for (final BigDecimal add : adds) {
+                    ret = ret.add(add == null ? BigDecimal.ZERO : add);
                 }
-
-                /*if (print.isList4Select(selIn.toString())) {
-
-                } else {
-                    final BigDecimal add = print.<BigDecimal>getSelect(selIn);
-                    amount = amount.add(add == null ? BigDecimal.ZERO : add);
-                }*/
-
+            } else {
+                final BigDecimal add = print.<BigDecimal>getSelect(selIn);
+                ret = ret.add(add == null ? BigDecimal.ZERO : add);
             }
-        }else{
-            amount = BigDecimal.ZERO;
+            if (print.isList4Select(selOut.toString())) {
+                final List<BigDecimal> subs = print.<List<BigDecimal>>getSelect(selOut);
+                for (final BigDecimal sub : subs) {
+                    ret = ret.subtract(sub == null ? BigDecimal.ZERO : sub);
+                }
+            } else {
+                final BigDecimal sub = print.<BigDecimal>getSelect(selOut);
+                ret = ret.subtract(sub == null ? BigDecimal.ZERO : sub);
+            }
         }
-
-        ret = amount;
-
         return ret;
     }
 

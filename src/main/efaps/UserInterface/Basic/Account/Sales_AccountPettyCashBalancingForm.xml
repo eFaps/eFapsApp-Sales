@@ -47,6 +47,7 @@
             <property name="Label">Sales_AccountPettyCashBalancingForm.startAmount.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="startAmountFieldValue4PettyCashUI"
                 name="Sales_AccountPettyCashBalancingForm.startAmount.UI_FIELD_VALUE"
