@@ -42,6 +42,7 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -49,6 +50,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -179,85 +181,6 @@ public abstract class Account_Base
     }
 
     /**
-     * Method for create a new petty Cash Balance.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
-     */
-    public Return pettyCashBalance(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance inst = _parameter.getCallInstance();
-        final String amountStr = _parameter.getParameterValue("startAmount");
-        final DecimalFormat formater = getTwoDigitsformater();
-        final BigDecimal amount = getAmountPayments(_parameter);
-        BigDecimal startAmount = BigDecimal.ZERO;
-        try {
-            startAmount = (BigDecimal) formater.parse(amountStr);
-        } catch (final ParseException e) {
-           throw new EFapsException(Account_Base.class, "ParseException", e);
-        }
-        final BigDecimal difference = (amount != BigDecimal.ZERO ? startAmount.subtract(amount)
-                                                           : BigDecimal.ZERO);
-
-        final PrintQuery print = new PrintQuery(inst);
-        print.addAttribute(CISales.AccountAbstract.CurrencyLink);
-        print.execute();
-        final Long curId = print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
-
-        final DateTime date = new DateTime();
-        final Insert insert = new Insert(CISales.PettyCashBalance);
-        insert.add(CISales.PettyCashBalance.Name, new DateTime().toLocalTime());
-        insert.add(CISales.PettyCashBalance.Date, date);
-        insert.add(CISales.PettyCashBalance.Status, Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
-        insert.add(CISales.PettyCashBalance.CrossTotal, difference);
-        insert.add(CISales.PettyCashBalance.NetTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashBalance.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashBalance.RateCrossTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashBalance.RateNetTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashBalance.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashBalance.Rate, new Object[] { 1, 1 });
-        insert.add(CISales.PettyCashBalance.RateCurrencyId, curId);
-        insert.add(CISales.PettyCashBalance.CurrencyId, curId);
-        insert.execute();
-
-        final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-        subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-        final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-        queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-        queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
-
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
-
-        final Instance balanceInst = insert.getInstance();
-        while (query.next()) {
-            final Update update = new Update(query.getCurrentValue());
-            update.add(CISales.Payment.TargetDocument, balanceInst.getId());
-            update.execute();
-        }
-
-        final Insert payInsert = new Insert(CISales.Payment);
-        payInsert.add(CISales.Payment.Date, new DateTime());
-        payInsert.add(CISales.Payment.CreateDocument, balanceInst.getId());
-        payInsert.execute();
-
-        final Insert transInsert = new Insert(CISales.TransactionInbound);
-        transInsert.add(CISales.TransactionInbound.Amount, amountStr);
-        transInsert.add(CISales.TransactionInbound.CurrencyId, curId);
-        transInsert.add(CISales.TransactionInbound.PaymentType, 1);
-        transInsert.add(CISales.TransactionInbound.Payment,  payInsert.getInstance().getId());
-        transInsert.add(CISales.TransactionInbound.Account, inst.getId());
-        transInsert.add(CISales.TransactionInbound.Description, "CashDeskBalance");
-        transInsert.add(CISales.TransactionInbound.Date, new DateTime());
-        transInsert.execute();
-
-        return new Return();
-    }
-
-    /**
      * method for obtains a Rate of the CurrencyRateClient.
      *
      * @param _date validFrom.
@@ -377,76 +300,6 @@ public abstract class Account_Base
     }
 
     /**
-     * Method for return a field and put start amount to petty cash.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return ret SNIPLETT with values to field.
-     * @throws EFapsException on error.
-     */
-    public Return startAmountFieldValue4PettyCashUI(final Parameter _parameter)
-        throws EFapsException
-    {
-        final BigDecimal amount = getStartAmount(_parameter);
-
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, amount != null ? amount.setScale(2, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
-        return ret;
-    }
-
-    /**
-     * method for update field and obtains a difference amount.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return retVal with Value.
-     * @throws EFapsException on error.
-     */
-    public Return updateFieldValue4PettyCash(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final BigDecimal amount = getAmountPayments(_parameter);
-        final BigDecimal startAmount = new BigDecimal(_parameter
-                        .getParameterValue("startAmount").replaceAll(",", ""));
-        final BigDecimal startAmountOrig = (getStartAmount(_parameter) != null ? getStartAmount(_parameter) : BigDecimal.ZERO);
-
-        BigDecimal difference = BigDecimal.ZERO;
-        if(startAmount.compareTo(startAmountOrig) != 0){
-            difference = amount.add(startAmount.subtract(startAmountOrig));
-        }else{
-            difference = getAmountPayments(_parameter);
-        }
-
-        final Map<String, String> map = new HashMap<String, String>();
-
-        final DecimalFormat formater = getTwoDigitsformater();
-        map.put("messageBalancing", formater.format(difference).toString());
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        list.add(map);
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
-    }
-
-
-    /**
-     * method for set field value for PettyCash with value is the difference amount.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return retVal with value is the difference amount.
-     * @throws EFapsException on error.
-     */
-    public Return setFieldValue4PettyCash(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final BigDecimal amount = getAmountPayments(_parameter);
-
-        final DecimalFormat formater = getTwoDigitsformater();
-
-        retVal.put(ReturnValues.VALUES, formater.format(amount));
-        return retVal;
-    }
-
-    /**
      * Obtain start amount from the instance.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -463,24 +316,6 @@ public abstract class Account_Base
         final BigDecimal ret = print.<BigDecimal>getAttribute(CISales.AccountAbstract.AmountAbstract);
         return ret;
     }
-
-    public Return revenuesFieldValue4PettyCashUI(final Parameter _parameter)
-        throws EFapsException
-    {
-        final DecimalFormat formater = getTwoDigitsformater();
-        final StringBuilder bldr = new StringBuilder();
-
-        final BigDecimal startAmount = (getStartAmount(_parameter) != null ? getStartAmount(_parameter) : BigDecimal.ZERO);;
-        final BigDecimal amount = getAmountPayments(_parameter);
-        final BigDecimal difference = (amount != BigDecimal.ZERO ? startAmount.subtract(amount)
-                                                           : BigDecimal.ZERO);
-
-        bldr.append(formater.format(difference));
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, bldr.toString());
-        return ret;
-    }
-
 
     /**
      * Method for obtains accounts transaction of a payments and returned amount.
@@ -535,67 +370,6 @@ public abstract class Account_Base
             }
         }
         return ret;
-    }
-
-    /**
-     * method for create a new petty cash receipt.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
-     */
-    public Return createPettyCashReceipt(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance accInst = _parameter.getCallInstance();
-
-        final PrintQuery print = new PrintQuery(accInst);
-        print.addAttribute(CISales.AccountAbstract.CurrencyLink);
-        print.execute();
-        final Long curId = print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
-
-        final String crossTotalStr = _parameter.getParameterValue("crossTotal");
-        final String note = _parameter.getParameterValue("note");
-        final String name = _parameter.getParameterValue("name4create");
-        final String contact = _parameter.getParameterValue("contact");
-
-        final DateTime date = new DateTime(_parameter.getParameterValue("date"));
-        final Insert insert = new Insert(CISales.PettyCashReceipt);
-        insert.add(CISales.PettyCashReceipt.Name, name);
-        insert.add(CISales.PettyCashReceipt.Date, date);
-        insert.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.uuid, "Closed").getId());
-        insert.add(CISales.PettyCashReceipt.CrossTotal, crossTotalStr);
-        insert.add(CISales.PettyCashReceipt.NetTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.RateCrossTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.RateNetTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.Rate, new Object[]{ 1, 1 });
-        insert.add(CISales.PettyCashReceipt.RateCurrencyId, curId);
-        insert.add(CISales.PettyCashReceipt.CurrencyId, curId);
-        insert.add(CISales.PettyCashReceipt.Contact, contact.length() > 0 ? Instance.get(contact).getId() : null);
-        insert.execute();
-
-        final Instance balanceInst = insert.getInstance();
-
-        new Create().insertClassification(_parameter, balanceInst);
-
-        final Insert payInsert = new Insert(CISales.Payment);
-        payInsert.add(CISales.Payment.Date, date);
-        payInsert.add(CISales.Payment.CreateDocument, balanceInst.getId());
-        payInsert.execute();
-
-        final Insert transInsert = new Insert(CISales.TransactionOutbound);
-        transInsert.add(CISales.TransactionOutbound.Amount, crossTotalStr);
-        transInsert.add(CISales.TransactionOutbound.CurrencyId, curId);
-        transInsert.add(CISales.TransactionOutbound.PaymentType, 1);
-        transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance().getId());
-        transInsert.add(CISales.TransactionOutbound.Account, accInst.getId());
-        transInsert.add(CISales.TransactionOutbound.Description, note);
-        transInsert.add(CISales.TransactionOutbound.Date, date);
-        transInsert.execute();
-
-        return new Return();
     }
 
     /**
@@ -760,5 +534,317 @@ public abstract class Account_Base
             ret.put(ReturnValues.VALUES, symbol + " " + getTwoDigitsformater().format(amount).toString());
         }
         return ret;
+    }
+    /**
+     * Method for create a new petty Cash Balance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return pettyCashBalance(final Parameter _parameter)
+        throws EFapsException
+    {
+        createPettyCashBalanceDoc(_parameter);
+        return new Return();
+    }
+
+    /**
+     * Internal method to create a PettyCashBalance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return instance of new PettyCashBalance, null if not created
+     * @throws EFapsException on error
+     */
+    protected Instance createPettyCashBalanceDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        Instance ret = null;
+        final Instance inst = _parameter.getCallInstance();
+        final PrintQuery print = new PrintQuery(inst);
+        print.addAttribute(CISales.AccountAbstract.CurrencyLink,
+                            CISales.AccountPettyCash.AmountAbstract);
+        print.execute();
+        final Long curId = print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
+        BigDecimal startAmountOrig = print.<BigDecimal>getAttribute(CISales.AccountPettyCash.AmountAbstract);
+        if (startAmountOrig == null) {
+            startAmountOrig = BigDecimal.ZERO;
+        }
+        final String startAmountStr = _parameter.getParameterValue("startAmount");
+        final BigDecimal amount = getAmountPayments(_parameter);
+
+        final DecimalFormat formater = getTwoDigitsformater();
+        BigDecimal startAmount = BigDecimal.ZERO;
+        try {
+            startAmount = (BigDecimal) formater.parse(startAmountStr);
+        } catch (final ParseException e) {
+           throw new EFapsException(Account_Base.class, "ParseException", e);
+        }
+        final BigDecimal difference;
+        // the transactions sum to Zero
+        if (amount.compareTo(BigDecimal.ZERO) == 0) {
+            // check if it is the first balance
+            if (hasTransaction(_parameter)) {
+                difference = startAmount.subtract(startAmountOrig);
+            } else {
+                difference = startAmount.add(startAmount.subtract(startAmountOrig));
+            }
+        } else {
+            difference = amount.negate().add(startAmount.subtract(startAmountOrig));
+        }
+        if (startAmount.compareTo(startAmountOrig) != 0){
+            final Update update = new Update(inst);
+            update.add(CISales.AccountPettyCash.AmountAbstract, startAmount);
+            update.execute();
+        }
+
+        // pnly if there is a difference it will be executed
+        if (difference.compareTo(BigDecimal.ZERO) != 0) {
+            final DateTime date = new DateTime();
+            final Insert insert = new Insert(CISales.PettyCashBalance);
+            insert.add(CISales.PettyCashBalance.Name, new DateTime().toLocalTime());
+            insert.add(CISales.PettyCashBalance.Date, date);
+            insert.add(CISales.PettyCashBalance.Status,
+                            Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
+            insert.add(CISales.PettyCashBalance.CrossTotal, difference);
+            insert.add(CISales.PettyCashBalance.NetTotal, BigDecimal.ZERO);
+            insert.add(CISales.PettyCashBalance.DiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.PettyCashBalance.RateCrossTotal, BigDecimal.ZERO);
+            insert.add(CISales.PettyCashBalance.RateNetTotal, BigDecimal.ZERO);
+            insert.add(CISales.PettyCashBalance.RateDiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.PettyCashBalance.Rate, new Object[] { 1, 1 });
+            insert.add(CISales.PettyCashBalance.RateCurrencyId, curId);
+            insert.add(CISales.PettyCashBalance.CurrencyId, curId);
+            insert.execute();
+
+            ret = insert.getInstance();
+
+            final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+            subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+            final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
+            queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+
+            final Instance balanceInst = insert.getInstance();
+            while (query.next()) {
+                final Update update = new Update(query.getCurrentValue());
+                update.add(CISales.Payment.TargetDocument, balanceInst.getId());
+                update.execute();
+            }
+
+            final Insert payInsert = new Insert(CISales.Payment);
+            payInsert.add(CISales.Payment.Date, new DateTime());
+            payInsert.add(CISales.Payment.CreateDocument, balanceInst.getId());
+            payInsert.add(CISales.Payment.TargetDocument, balanceInst.getId());
+            payInsert.execute();
+
+            CIType type;
+            if (difference.compareTo(BigDecimal.ZERO) < 0) {
+                type = CISales.TransactionOutbound;
+            } else {
+                type = CISales.TransactionInbound;
+            }
+
+            final Insert transInsert = new Insert(type);
+            transInsert.add(CISales.TransactionAbstract.Amount, difference.abs());
+            transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
+            transInsert.add(CISales.TransactionAbstract.PaymentType, 1);
+            transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
+            transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
+            transInsert.add(CISales.TransactionAbstract.Description,
+                        DBProperties.getProperty("org.efaps.esjp.sales.Accountg_Base.Transaction.CashDeskBalance"));
+            transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
+            transInsert.execute();
+        }
+        return ret;
+    }
+
+    /**
+     * method for create a new petty cash receipt.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createPettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance accInst = _parameter.getCallInstance();
+
+        final PrintQuery print = new PrintQuery(accInst);
+        print.addAttribute(CISales.AccountAbstract.CurrencyLink);
+        print.execute();
+        final Long curId = print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
+
+        final String crossTotalStr = _parameter.getParameterValue("crossTotal");
+        final String note = _parameter.getParameterValue("note");
+        final String name = _parameter.getParameterValue("name4create");
+        final String contact = _parameter.getParameterValue("contact");
+
+        final DateTime date = new DateTime(_parameter.getParameterValue("date"));
+        final Insert insert = new Insert(CISales.PettyCashReceipt);
+        insert.add(CISales.PettyCashReceipt.Name, name);
+        insert.add(CISales.PettyCashReceipt.Date, date);
+        insert.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.uuid, "Closed").getId());
+        insert.add(CISales.PettyCashReceipt.CrossTotal, crossTotalStr);
+        insert.add(CISales.PettyCashReceipt.NetTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.DiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.RateCrossTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.RateNetTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.RateDiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.Rate, new Object[]{ 1, 1 });
+        insert.add(CISales.PettyCashReceipt.RateCurrencyId, curId);
+        insert.add(CISales.PettyCashReceipt.CurrencyId, curId);
+        insert.add(CISales.PettyCashReceipt.Contact, contact.length() > 0 ? Instance.get(contact).getId() : null);
+        insert.execute();
+
+        final Instance balanceInst = insert.getInstance();
+
+        new Create().insertClassification(_parameter, balanceInst);
+
+        final Insert payInsert = new Insert(CISales.Payment);
+        payInsert.add(CISales.Payment.Date, date);
+        payInsert.add(CISales.Payment.CreateDocument, balanceInst.getId());
+        payInsert.execute();
+
+        final Insert transInsert = new Insert(CISales.TransactionOutbound);
+        transInsert.add(CISales.TransactionOutbound.Amount, crossTotalStr);
+        transInsert.add(CISales.TransactionOutbound.CurrencyId, curId);
+        transInsert.add(CISales.TransactionOutbound.PaymentType, 1);
+        transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance().getId());
+        transInsert.add(CISales.TransactionOutbound.Account, accInst.getId());
+        transInsert.add(CISales.TransactionOutbound.Description, note);
+        transInsert.add(CISales.TransactionOutbound.Date, date);
+        transInsert.execute();
+
+        return new Return();
+    }
+    /**
+     * Method for return a field and put start amount to petty cash.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return ret SNIPLETT with values to field.
+     * @throws EFapsException on error.
+     */
+    public Return startAmountFieldValue4PettyCashUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final BigDecimal amount = getStartAmount(_parameter);
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, amount != null ? amount.setScale(2, BigDecimal.ROUND_HALF_UP) : BigDecimal.ZERO);
+        return ret;
+    }
+    /**
+     * method for update field and obtains a difference amount.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return retVal with Value.
+     * @throws EFapsException on error.
+     */
+    public Return updateFieldValue4PettyCash(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final BigDecimal amount = getAmountPayments(_parameter);
+        final String startAmountStr = _parameter.getParameterValue("startAmount");
+        final DecimalFormat formater = getTwoDigitsformater();
+        BigDecimal startAmount = BigDecimal.ZERO;
+        try {
+            startAmount = (BigDecimal) formater.parse(startAmountStr);
+        } catch (final ParseException e) {
+           throw new EFapsException(Account_Base.class, "ParseException", e);
+        }
+        BigDecimal startAmountOrig = getStartAmount(_parameter);
+        if (startAmountOrig == null) {
+            startAmountOrig = BigDecimal.ZERO;
+        }
+
+        BigDecimal difference = amount.negate();
+        if(startAmount.compareTo(startAmountOrig) != 0){
+            difference = difference.add(startAmount.subtract(startAmountOrig));
+        }
+
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put("messageBalancing", formater.format(difference).toString());
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+    /**
+     * method for set field value for PettyCash with value is the difference amount.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return retVal with value is the difference amount.
+     * @throws EFapsException on error.
+     */
+    public Return setFieldValue4PettyCash(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final BigDecimal amount = getAmountPayments(_parameter);
+
+        final DecimalFormat formater = getTwoDigitsformater();
+
+        retVal.put(ReturnValues.VALUES, formater.format(amount.negate()));
+        return retVal;
+    }
+
+
+    public Return revenuesFieldValue4PettyCashUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final DecimalFormat formater = getTwoDigitsformater();
+        final StringBuilder bldr = new StringBuilder();
+
+        BigDecimal startAmount = getStartAmount(_parameter);
+        if (startAmount == null) {
+            startAmount = BigDecimal.ZERO;
+        }
+        final BigDecimal amount = getAmountPayments(_parameter);
+        final BigDecimal difference = (amount != BigDecimal.ZERO ? startAmount.add(amount)
+                                                           : BigDecimal.ZERO);
+
+        bldr.append(formater.format(difference));
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, bldr.toString());
+        return ret;
+    }
+    /**
+     * Executed from the validate event for creation of a PettyCashReceipt.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing true if validation is passed
+     * @throws EFapsException on error
+     */
+    public Return evaluatePettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (hasTransaction(_parameter)) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Has the Account already transactions.
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return true if account has transactions, else false
+     * @throws EFapsException on error
+     */
+    protected boolean hasTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance inst = _parameter.getInstance();
+        final QueryBuilder queryBuilder = new QueryBuilder(CISales.TransactionAbstract);
+        queryBuilder.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+        final InstanceQuery query = queryBuilder.getQuery();
+        return !query.execute().isEmpty();
     }
 }
