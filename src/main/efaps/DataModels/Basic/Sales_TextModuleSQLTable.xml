@@ -36,6 +36,7 @@
     <database>
       <table-name>T_SALESTEXTMODULE</table-name>
       <!-- columns -->
+      <column name="COMPANYID"       type="INTEGER"         not-null="true"/>
       <column name="FORTYPE"         type="INTEGER"         not-null="true"/>
       <column name="LINE"            type="INTEGER"        />
       <column name="REQUIRED"        type="BOOLEAN"         not-null="true"/>
