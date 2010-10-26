@@ -34,5 +34,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCash</name>
         <parent>Sales_AccountAbstract</parent>
+        <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            name="Sales_AccountPettyCash.ACCESSCHECK"
+            event="ACCESSCHECK" />
     </definition>
 </datamodel-type>
