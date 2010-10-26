@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
- 
+
   Copyright 2009 moxter.net S.A.C.
 
   All Rights Reserved.
   This program contains proprietary and trade secret information of
   moxter.net S.A.C. Copyright notice is precautionary only and does not
   evidence any actual or intended publication of such program.
- 
+
   Author:          moxter.net S.A.C.
   Revision:        $Rev$
   Last Changed:    $Date$
   Last Changed By: $Author$
- 
+
 -->
 
 <import xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -41,7 +41,7 @@
       <queryattribute name="Name">eFaps</queryattribute>
     </linkattribute>
   </object>
-  
+
   <object type="Admin_User_JAASKey">
     <attribute name="Key">Sales_Teller</attribute>
 
@@ -53,7 +53,7 @@
       <queryattribute name="Name">eFaps</queryattribute>
     </linkattribute>
   </object>
-  
+
   <object type="Admin_User_JAASKey">
     <attribute name="Key">Sales_Delivery</attribute>
 
@@ -65,7 +65,7 @@
       <queryattribute name="Name">eFaps</queryattribute>
     </linkattribute>
   </object>
-  
+
   <object type="Admin_User_JAASKey">
     <attribute name="Key">Sales_Accounting</attribute>
 
@@ -77,5 +77,17 @@
       <queryattribute name="Name">eFaps</queryattribute>
     </linkattribute>
   </object>
-  
+
+  <object type="Admin_User_JAASKey">
+    <attribute name="Key">Sales_PettyCash</attribute>
+
+    <linkattribute name="UserLink" type="Admin_User_Role">
+      <queryattribute name="Name">Sales_PettyCash</queryattribute>
+    </linkattribute>
+
+    <linkattribute name="JAASSystemLink" type="Admin_User_JAASSystem">
+      <queryattribute name="Name">eFaps</queryattribute>
+    </linkattribute>
+  </object>
+
 </import>

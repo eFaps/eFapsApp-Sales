@@ -34,6 +34,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountPettyCash</name>
+        <access>
+            <role>Sales_PettyCash</role>
+        </access>
         <target>
             <form>Sales_AccountAbstractForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />

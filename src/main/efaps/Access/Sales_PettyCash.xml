@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+  Copyright 2010 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+
+<access-set xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>2184c034-b49e-4d13-b396-cf6739e14e6c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+
+        <name>Sales_PettyCash</name>
+
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
+        <access-type>statusModify</access-type>
+        <access-type>delete</access-type>
+
+        <type>Sales_AccountPettyCash</type>
+
+        <role>Sales_PettyCash</role>
+    </definition>
+
+</access-set>
+
+
