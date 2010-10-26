@@ -34,6 +34,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DeliveryNoteTree</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
         <!-- targets -->
         <target>
             <menu>Sales_DeliveryNoteTree_Menu</menu>

@@ -36,6 +36,7 @@
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing</name>
         <access>
             <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>

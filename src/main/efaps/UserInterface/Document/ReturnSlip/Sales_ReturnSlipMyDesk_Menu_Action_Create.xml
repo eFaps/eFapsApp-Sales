@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipMyDesk_Menu_Action_Create</name>
         <access>
+            <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->

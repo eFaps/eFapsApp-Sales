@@ -32,6 +32,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipTree</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
         <!-- targets -->
         <target>
             <menu>Sales_ReturnSlipTree_Menu</menu>
