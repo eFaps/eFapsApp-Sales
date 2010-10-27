@@ -87,6 +87,10 @@
             URL url3 = new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml");
             DataImport imp3 = DataImport.readFile(url3);
             imp3.updateInDB();
+
+            URL url4 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Attributes.xml");
+            DataImport imp4 = DataImport.readFile(url4);
+            imp4.updateInDB();
         }
         UIUpdate update = new UIUpdate();
         <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->

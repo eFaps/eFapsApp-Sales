@@ -39,6 +39,18 @@
         <access-type>delete</access-type>
 
         <type>Sales_AccountPettyCash</type>
+        <type>Sales_PettyCashReceipt</type>
+        <type>Sales_PettyCashBalance</type>
+        <type>Sales_TransactionOutbound</type>
+        <type>Sales_TransactionInbound</type>
+
+        <status group="Sales_PettyCashReceiptStatus">
+            <key>Closed</key>
+        </status>
+
+        <status group="Sales_PettyCashBalanceStatus">
+            <key>Closed</key>
+        </status>
 
         <role>Sales_PettyCash</role>
     </definition>
