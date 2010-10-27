@@ -52,7 +52,7 @@
             <property name="GroupCount">2</property>
         </field>
         <field name="creator">
-            <property name="AlternateOID">Creator.OID</property>
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
             <property name="Attribute">Creator</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -66,7 +66,7 @@
             <property name="GroupCount">2</property>
         </field>
         <field name="modifier">
-            <property name="AlternateOID">Modifier.OID</property>
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
             <property name="Attribute">Modifier</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -101,10 +101,10 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="contact">
-        	<property name="SelectAlternateOID">linkto[Contact].oid</property>
-        	<property name="Select">linkto[Contact].attribute[Name]</property>
-        	<property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-        	<property name="ModeEdit">READONLY</property>
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeEdit">READONLY</property>
         </field>
 
         <field name="targetPayments" character="Heading">
