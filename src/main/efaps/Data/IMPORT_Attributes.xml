@@ -27,6 +27,17 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <object type="Sales_PaymentTypeAttr">
-        <attribute name="Name">Default_PaymentType</attribute>
+        <attribute name="Value">Default_PaymentType</attribute>
+    </object>
+
+    <object type="Admin_Common_SystemConfigurationLink">
+        <attribute name="Key">Default_PaymentType</attribute>
+        <attribute name="Description">Tipo de pago predeterminado.</attribute>
+        <linkattribute name="Value" type="Sales_PaymentTypeAttr" select="OID">
+            <queryattribute name="Value">Default_PaymentType</queryattribute>
+        </linkattribute>
+        <linkattribute name="AbstractLink" type="Admin_Common_SystemConfiguration">
+            <queryattribute name="UUID">c9a1cbc3-fd35-4463-80d2-412422a3802f</queryattribute>
+        </linkattribute>
     </object>
 </import>
