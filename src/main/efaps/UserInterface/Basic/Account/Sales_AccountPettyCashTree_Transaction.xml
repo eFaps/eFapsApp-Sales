@@ -32,6 +32,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree_Transaction</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+        </access>
         <target>
             <menu>Sales_AccountPettyCashTree_Transaction_Menu</menu>
             <table>Sales_TransactionAbstractTable_MONTH</table>

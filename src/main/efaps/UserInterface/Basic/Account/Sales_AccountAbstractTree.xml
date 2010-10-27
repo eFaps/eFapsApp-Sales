@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2010 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -27,26 +27,30 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>37d10922-3f28-459b-b340-968857c95450</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>37d10922-3f28-459b-b340-968857c95450</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_AccountAbstractTree</name>
-    <!-- targets -->
-    <target>
-      <menu>Sales_AccountAbstractTree_Menu</menu>
-      <form>Sales_AccountAbstractForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>Sales_AccountAbstract</type>
-    <childs>
-        <child>Sales_AccountAbstractTree_Transaction</child>
-    </childs>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountAbstractTree</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+        </access>
+        <!-- targets -->
+        <target>
+            <menu>Sales_AccountAbstractTree_Menu</menu>
+            <form>Sales_AccountAbstractForm</form>
+        </target>
+        <!-- type tree for -->
+        <type>Sales_AccountAbstract</type>
+        <childs>
+            <child>Sales_AccountAbstractTree_Transaction</child>
+        </childs>
 
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>

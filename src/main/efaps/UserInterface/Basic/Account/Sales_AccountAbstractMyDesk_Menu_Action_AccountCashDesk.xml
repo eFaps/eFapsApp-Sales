@@ -34,7 +34,10 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountCashDesk</name>
-    
+    <access>
+        <role>Sales_Admin</role>
+    </access>
+
     <!-- target definitions -->
     <target>
       <form>Sales_AccountAbstractForm</form>
