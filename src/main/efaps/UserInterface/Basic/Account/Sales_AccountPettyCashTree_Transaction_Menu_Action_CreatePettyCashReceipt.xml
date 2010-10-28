@@ -42,7 +42,7 @@
         <target>
             <form>Sales_AccountPettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.Account" method="createPettyCashReceipt" />
-            <validate program="org.efaps.esjp.sales.Account" method="evaluatePettyCashReceipt"/>
+            <validate program="org.efaps.esjp.sales.Account" method="validatePettyCashReceipt"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
