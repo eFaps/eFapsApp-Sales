@@ -265,7 +265,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingInvoiceForm.javaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />

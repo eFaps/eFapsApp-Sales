@@ -29,23 +29,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -68,8 +68,8 @@ import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
-import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
+import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -855,10 +855,26 @@ public abstract class AbstractDocument_Base
             .append("Wicket.Event.add(window, \"domready\", function(event) {")
             .append("addNewRows_positionTable(").append(i - 1).append(", setRows, null);")
             .append("setValue();")
+            .append(getDomReadyScript(_instance))
             .append(" });");
 
         return js.toString();
     }
+
+    /**
+     * Add additional JavaScript to the Script that will be executed after the
+     * DOM of the Html-Document was loaded. Can be used by implementations.
+     *
+     * @param _instance Instance of the derived Document
+     * @return String containing valid Javascript
+     * @throws EFapsException on error
+     */
+    protected String getDomReadyScript(final Instance _instance)
+        throws EFapsException
+    {
+        return "";
+    }
+
 
     /**
      * Auto-complete for the field with products.
