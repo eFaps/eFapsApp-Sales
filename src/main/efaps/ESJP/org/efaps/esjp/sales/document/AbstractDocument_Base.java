@@ -32,6 +32,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -1240,14 +1242,19 @@ public abstract class AbstractDocument_Base
         if (number == null) {
             number = "001-000001";
         } else {
-            final String numTmp = number.substring(number.indexOf("-") + 1);
-            final int length = numTmp.trim().length();
-            final Integer numInt = Integer.parseInt(numTmp.trim()) + 1;
-            final NumberFormat nf = NumberFormat.getInstance();
-            nf.setMinimumIntegerDigits(length);
-            nf.setMaximumIntegerDigits(length);
-            nf.setGroupingUsed(false);
-            number = number.substring(0, number.indexOf("-") + 1) + nf.format(numInt);
+            //get the numbers after the first "-"
+            final Pattern pattern = Pattern.compile("(?<=-)\\d*");
+            final Matcher matcher = pattern.matcher(number);
+            if (matcher.find()) {
+                final String numTmp = matcher.group();
+                final int length = numTmp.length();
+                final Integer numInt = Integer.parseInt(numTmp) + 1;
+                final NumberFormat nf = NumberFormat.getInstance();
+                nf.setMinimumIntegerDigits(length);
+                nf.setMaximumIntegerDigits(length);
+                nf.setGroupingUsed(false);
+                number = number.substring(0, number.indexOf("-") + 1) + nf.format(numInt);
+            }
         }
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, number);
