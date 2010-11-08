@@ -57,6 +57,7 @@
         <type>Sales_GoodsIssueSlip</type>
         <type>Sales_PettyCashReceipt</type>
         <type>Sales_PettyCashBalance</type>
+        <type>Sales_UsageReport</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -165,6 +166,14 @@
         <status group="Sales_PettyCashBalanceStatus">
             <key>Closed</key>
         </status>
+
+        <status group="Sales_UsageReportStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+
 
         <role>Sales_Admin</role>
     </definition>
