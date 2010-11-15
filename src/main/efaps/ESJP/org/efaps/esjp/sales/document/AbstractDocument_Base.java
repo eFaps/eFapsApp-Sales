@@ -801,8 +801,8 @@ public abstract class AbstractDocument_Base
         multi.execute();
 
         final Map<Integer, Object[]> values = new TreeMap<Integer, Object[]>();
-        while (multi.next()) {
 
+        while (multi.next()) {
             final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetUnitPrice);
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Discount);
             final BigDecimal discountNetUnitPrice = multi.
@@ -825,36 +825,30 @@ public abstract class AbstractDocument_Base
         int i = 0;
         if (!values.isEmpty()) {
             for (final Entry<Integer, Object[]> entry : values.entrySet()) {
-                js.append("setValues(").append(i).append(", new Array('")
-                    .append(((BigDecimal) entry.getValue()[0]).stripTrailingZeros().toPlainString()).append("','")
-                    .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[1])).append("','")
-                    .append(entry.getValue()[2]).append("','")
-                    .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[3])).append("','")
-                    .append(entry.getValue()[4]).append("','")
-                    .append(formater.format(entry.getValue()[5])).append("','")
-                    .append(entry.getValue()[6]).append("','")
-                    .append(formater.format(entry.getValue()[7])).append("','")
-                    .append(formater.format(entry.getValue()[8])).append("'));")
-                    .append("var idField = document.getElementsByName('product')[").append(i).append("].id;")
-                    .append("eFapsSetFieldValue(idField,'uoM',")
-                    .append(getUoMFieldStr((Long) entry.getValue()[9])).append(");");
+                js.append("eFapsSetFieldValue(").append(i).append(",'quantity','")
+                    .append(((BigDecimal) entry.getValue()[0]).stripTrailingZeros().toPlainString()).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'productAutoComplete','")
+                    .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[1])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'product','")
+                    .append(entry.getValue()[2]).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'productDesc','")
+                    .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[3])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'netUnitPrice','")
+                    .append(formater.format(entry.getValue()[5])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'discount','")
+                    .append(formater.format(entry.getValue()[5])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'discountNetUnitPrice','")
+                    .append(formater.format(entry.getValue()[7])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'netPrice','")
+                    .append(formater.format(entry.getValue()[8])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'netUnitPrice','")
+                    .append(formater.format(entry.getValue()[5])).append("');")
+                    .append("eFapsSetFieldValue(").append(i).append(",'uoM',")
+                    .append(getUoMFieldStr((Long) entry.getValue()[4], (Long) entry.getValue()[9])).append(");");
                 i++;
             }
         }
-        js.append("}")
-            .append("function setValues(_row, _values) {")
-            .append("document.getElementsByName('quantity')[_row].value = _values[0];")
-            .append("document.getElementsByName('productAutoComplete')[_row].value = _values[1];")
-            .append("document.getElementsByName('product')[_row].value = _values[2];")
-            .append("document.getElementsByName('productDesc')[_row].value = _values[3];")
-            .append("document.getElementsByName('uoM')[_row].value = _values[4];")
-            .append("document.getElementsByName('netUnitPrice')[_row].value = _values[5];")
-            .append("document.getElementsByName('discount')[_row].value = _values[6];")
-            .append("document.getElementsByName('discountNetUnitPrice')[_row]")
-                .append(".appendChild(document.createTextNode(_values[7]));")
-            .append("document.getElementsByName('netPrice')[_row].appendChild(document.createTextNode(_values[8]));")
-            .append("}")
-            .append("Wicket.Event.add(window, \"domready\", function(event) {")
+        js.append("}").append("Wicket.Event.add(window, \"domready\", function(event) {")
             .append("addNewRows_positionTable(").append(i - 1).append(", setRows, null);")
             .append("setValue();")
             .append(getDomReadyScript(_instance))
@@ -966,18 +960,25 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
-    protected String getUoMFieldStr(final long _dimId)
+    protected String getUoMFieldStr(final long _selected,
+                                    final long _dimId)
     {
         final Dimension dim = Dimension.get(_dimId);
         final StringBuilder js = new StringBuilder();
 
-        js.append("new Array('").append(dim.getBaseUoM().getId()).append("'");
+        js.append("new Array('").append(_selected).append("'");
 
         for (final UoM uom : dim.getUoMs()) {
             js.append(",'").append(uom.getId()).append("','").append(uom.getName()).append("'");
         }
         js.append(")");
         return js.toString();
+    }
+
+    protected String getUoMFieldStr(final long _dimId)
+    {
+        final Dimension dim = Dimension.get(_dimId);
+        return getUoMFieldStr(dim.getBaseUoM().getId(), _dimId);
     }
 
 
