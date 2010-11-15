@@ -58,6 +58,7 @@
       <foreign name="T_SALESPOS_DOCID"               key="DOCID"           reference="T_ERPDOC(ID)"/>
       <foreign name="T_SALESPOS_CURRENCYID"          key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
       <foreign name="T_SALESPOS_RATECURRENCYID"      key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
+      <foreign name="T_SALESPOS_PROD"                key="PROD"            reference="T_PRODPRODUCT(ID)"/>
      </database>
   </definition>
 
