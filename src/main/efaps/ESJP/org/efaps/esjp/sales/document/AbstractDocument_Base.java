@@ -761,20 +761,14 @@ public abstract class AbstractDocument_Base
         }
 
         js.append("function setValue() {")
-            .append("document.getElementsByName('contact')[0].value='").append(contactOid).append("';")
-            .append("document.getElementsByName('contactAutoComplete')[0].value='")
-                .append(StringEscapeUtils.escapeJavaScript(contactName)).append("';")
-            .append("document.getElementsByName('contactData')[0].appendChild(document.createTextNode('")
-                .append(StringEscapeUtils.escapeJavaScript(contactData)).append("'));")
-            .append(currency)
-            .append("document.getElementsByName('netTotal')[0].appendChild(document.createTextNode('")
-                .append(netTotal == null ? BigDecimal.ZERO : formater.format(netTotal)).append("'));")
-            .append("document.getElementsByName('crossTotal')[0].appendChild(document.createTextNode('")
-                .append(netTotal == null ? BigDecimal.ZERO : formater.format(crossTotal)).append("'));")
-            .append("x = document.getElementsByName('note')[0];")
-            .append("if (typeof x!='undefined') {")
-            .append("x.value='").append(StringEscapeUtils.escapeJavaScript(note)).append("'")
-            .append("}")
+            .append(getSetFieldValue(0, "contact", contactOid))
+            .append(getSetFieldValue(0, "contactAutoComplete", contactName))
+            .append(getSetFieldValue(0, "contactData", contactData))
+            .append(getSetFieldValue(0, "netTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(netTotal)))
+            .append(getSetFieldValue(0, "crossTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal)))
+            .append(getSetFieldValue(0, "note", note))
             .append("}")
             .append("function setRows() {");
 
@@ -825,26 +819,17 @@ public abstract class AbstractDocument_Base
         int i = 0;
         if (!values.isEmpty()) {
             for (final Entry<Integer, Object[]> entry : values.entrySet()) {
-                js.append("eFapsSetFieldValue(").append(i).append(",'quantity','")
-                    .append(((BigDecimal) entry.getValue()[0]).stripTrailingZeros().toPlainString()).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'productAutoComplete','")
-                    .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[1])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'product','")
-                    .append(entry.getValue()[2]).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'productDesc','")
-                    .append(StringEscapeUtils.escapeJavaScript((String) entry.getValue()[3])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'netUnitPrice','")
-                    .append(formater.format(entry.getValue()[5])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'discount','")
-                    .append(formater.format(entry.getValue()[5])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'discountNetUnitPrice','")
-                    .append(formater.format(entry.getValue()[7])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'netPrice','")
-                    .append(formater.format(entry.getValue()[8])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'netUnitPrice','")
-                    .append(formater.format(entry.getValue()[5])).append("');")
-                    .append("eFapsSetFieldValue(").append(i).append(",'uoM',")
-                    .append(getUoMFieldStr((Long) entry.getValue()[4], (Long) entry.getValue()[9])).append(");");
+                js.append(getSetFieldValue(i, "quantity",
+                                ((BigDecimal) entry.getValue()[0]).stripTrailingZeros().toPlainString()))
+                    .append(getSetFieldValue(i, "productAutoComplete", (String) entry.getValue()[1]))
+                    .append(getSetFieldValue(i, "product", (String) entry.getValue()[2]))
+                    .append(getSetFieldValue(i, "productDesc", (String) entry.getValue()[3]))
+                    .append(getSetFieldValue(i, "netUnitPrice", formater.format(entry.getValue()[5])))
+                    .append(getSetFieldValue(i, "discount", formater.format(entry.getValue()[6])))
+                    .append(getSetFieldValue(i, "discountNetUnitPrice", formater.format(entry.getValue()[7])))
+                    .append(getSetFieldValue(i, "netPrice", formater.format(entry.getValue()[8])))
+                    .append(getSetFieldValue(i, "uoM",
+                                    getUoMFieldStr((Long) entry.getValue()[4], (Long) entry.getValue()[9]), false));
                 i++;
             }
         }
@@ -855,6 +840,44 @@ public abstract class AbstractDocument_Base
             .append(" });");
 
         return js.toString();
+    }
+
+    /**
+     * Get a "eFapsSetFieldValue" Javascript line.
+     * @param _idx          index of the field
+     * @param _fieldName    name of the field
+     * @param _value        value
+     * @return StringBuilder
+     */
+    protected StringBuilder getSetFieldValue(final int _idx,
+                                             final String _fieldName,
+                                             final String _value)
+    {
+        return getSetFieldValue(_idx, _fieldName, _value, true);
+    }
+
+    /**
+     * Get a "eFapsSetFieldValue" Javascript line.
+     * @param _idx          index of the field
+     * @param _fieldName    name of the field
+     * @param _value        value
+     * @param _escape       must the value be escaped
+     * @return StringBuilder
+     */
+    protected StringBuilder getSetFieldValue(final int _idx,
+                                             final String _fieldName,
+                                             final String _value,
+                                             final boolean _escape)
+    {
+        final StringBuilder ret = new StringBuilder();
+        ret.append("eFapsSetFieldValue(").append(_idx).append(",'").append(_fieldName).append("',");
+        if (_escape) {
+            ret.append("'").append(StringEscapeUtils.escapeJavaScript(_value)).append("'");
+        } else {
+            ret.append(_value);
+        }
+        ret.append(");");
+        return ret;
     }
 
     /**
