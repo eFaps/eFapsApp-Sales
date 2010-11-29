@@ -61,6 +61,13 @@
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>GroupLink</name>
+            <type>Link</type>
+            <typelink></typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>GROUPID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>PositionNumber</name>
             <type>Integer</type>
             <sqltable>Sales_PositionAbstractSQLTable</sqltable>

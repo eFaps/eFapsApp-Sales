@@ -26,40 +26,41 @@
 <datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>6398fd11-457b-4b81-8586-e005e7d8c90e</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>6398fd11-457b-4b81-8586-e005e7d8c90e</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_PositionAbstractSQLTable</name>
-    <typeid-column>TYPEID</typeid-column>
-    <database>
-      <table-name>T_SALESPOS</table-name>
-      <!-- columns -->
-      <column name="TYPEID"          type="INTEGER"         not-null="true"/>
-      <column name="DOCID"           type="INTEGER"         not-null="true" />
-      <column name="POS"             type="INTEGER"         not-null="true" />
-      <column name="PROD"            type="INTEGER"         not-null="true"/>
-      <column name="PRODDESC"        type="STRING_SHORT"    not-null="true" length="255"/>
-      <column name="QUANTITY"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
-      <column name="UOMID"           type="INTEGER"         not-null="true" />
-      <column name="GROSSUNITPRICE"  type="DECIMAL"         not-null="true" length="14" scale="4"/>
-      <column name="NETUNITPRICE"    type="DECIMAL"         not-null="true" length="14" scale="4"/>
-      <column name="GROSSPRICE"      type="DECIMAL"         not-null="true" length="14" scale="4"/>
-      <column name="NETPRICE"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
-      <column name="DISCOUNTPRICE"   type="DECIMAL"         not-null="true" length="14" scale="4"/>
-      <column name="TAXID"           type="INTEGER"         not-null="true" />
-      <column name="DISCOUNT"        type="DECIMAL"         not-null="true" length="5" scale="2" />
-      <column name="CURRENCYID"      type="INTEGER"         not-null="true"/>
-      <column name="RATECURRENCYID"  type="INTEGER"         not-null="true"/>
-      <column name="RATE"            type="DECIMAL"         not-null="true" length="14" scale="6"/>
-      <column name="RATEDENOM"       type="DECIMAL"                         length="14" scale="6" />
-      <foreign name="T_SALESPOS_DOCID"               key="DOCID"           reference="T_ERPDOC(ID)"/>
-      <foreign name="T_SALESPOS_CURRENCYID"          key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
-      <foreign name="T_SALESPOS_RATECURRENCYID"      key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
-      <foreign name="T_SALESPOS_PROD"                key="PROD"            reference="T_PRODPRODUCT(ID)"/>
-     </database>
-  </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PositionAbstractSQLTable</name>
+        <typeid-column>TYPEID</typeid-column>
+        <database>
+            <table-name>T_SALESPOS</table-name>
+            <!-- columns -->
+            <column name="TYPEID"          type="INTEGER"         not-null="true"/>
+            <column name="DOCID"           type="INTEGER"         not-null="true" />
+            <column name="GROUPID"         type="INTEGER"/>
+            <column name="POS"             type="INTEGER"         not-null="true" />
+            <column name="PROD"            type="INTEGER"         not-null="true"/>
+            <column name="PRODDESC"        type="STRING_SHORT"    not-null="true" length="255"/>
+            <column name="QUANTITY"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="UOMID"           type="INTEGER"         not-null="true" />
+            <column name="GROSSUNITPRICE"  type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="NETUNITPRICE"    type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="GROSSPRICE"      type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="NETPRICE"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="DISCOUNTPRICE"   type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="TAXID"           type="INTEGER"         not-null="true" />
+            <column name="DISCOUNT"        type="DECIMAL"         not-null="true" length="5" scale="2" />
+            <column name="CURRENCYID"      type="INTEGER"         not-null="true"/>
+            <column name="RATECURRENCYID"  type="INTEGER"         not-null="true"/>
+            <column name="RATE"            type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="RATEDENOM"       type="DECIMAL"                         length="14" scale="6" />
+            <foreign name="T_SALESPOS_DOCID"               key="DOCID"           reference="T_ERPDOC(ID)"/>
+            <foreign name="T_SALESPOS_GROUPID"             key="GROUPID"         reference="T_SALESGROUPPOS(ID)"/>
+            <foreign name="T_SALESPOS_CURRENCYID"          key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
+            <foreign name="T_SALESPOS_RATECURRENCYID"      key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
+            <foreign name="T_SALESPOS_PROD"                key="PROD"            reference="T_PRODPRODUCT(ID)"/>
+        </database>
+    </definition>
 </datamodel-sqltable>
