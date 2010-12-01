@@ -62,7 +62,7 @@
             <name>Name</name>
             <type>String</type>
             <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>ID</sqlcolumn>
+            <sqlcolumn>NAME</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>
