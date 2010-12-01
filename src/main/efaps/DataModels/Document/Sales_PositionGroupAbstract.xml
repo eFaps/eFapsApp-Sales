@@ -32,7 +32,19 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PositionGroup</name>
+        <name>Sales_PositionGroupAbstract</name>
+         <attribute>
+            <name>Type</name>
+            <type>Type</type>
+            <sqltable>Sales_PositionGroupSQLTable</sqltable>
+            <sqlcolumn>TYPEID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Sales_PositionGroupSQLTable</sqltable>
+            <sqlcolumn>TYPEID,ID</sqlcolumn>
+        </attribute>
         <attribute>
             <name>ID</name>
             <type>Long</type>
@@ -40,10 +52,11 @@
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>OID</name>
-            <type>OID</type>
+            <name>DocumentAbstractLink</name>
+            <type>Link</type>
+            <typelink>Sales_DocumentAbstract</typelink>
             <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>ID</sqlcolumn>
+            <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Name</name>

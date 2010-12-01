@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 5313 $
+ Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
+
+-->
+
+<ui-table xmlns="http://www.efaps.org/xsd"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>2f6834fd-742d-46cc-8b70-f16ac5ac3827</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5313 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PositionGroupPositionTable</name>
+        <!-- fields -->
+        <field name="quantity">
+            <property name="Select">linkto[ToAbstractLink].attribute[Quantity]</property>
+            <property name="Label">Sales_PositionAbstract/Quantity.Label</property>
+        </field>
+        <field name="product">
+            <property name="Select">linkto[ToAbstractLink].linkto[Product].attribute[Name]</property>
+            <property name="Label">Sales_PositionAbstract/Product.Label</property>
+        </field>
+        <field name="productDesc">
+            <property name="Select">linkto[ToAbstractLink].attribute[ProductDesc]</property>
+            <property name="Label">Sales_PositionAbstract/ProductDesc.Label</property>
+            <property name="Width">10</property>
+        </field>
+        <field name="uom">
+            <property name="Select">linkto[ToAbstractLink].linkto[UoM].attribute[Name]</property>
+            <property name="Label">Sales_PositionAbstract/UoM.Label</property>
+            <property name="Width">1</property>
+        </field>
+        <field name="netUnitPrice">
+            <property name="Select">linkto[ToAbstractLink].attribute[NetUnitPrice]</property>
+            <property name="Label">Sales_PositionAbstract/NetUnitPrice.Label</property>
+        </field>
+        <field name="discount">
+            <property name="Select">linkto[ToAbstractLink].attribute[Discount]</property>
+            <property name="Label">Sales_PositionAbstract/Discount.Label</property>
+        </field>
+        <field name="discountNetUnitPrice">
+           <property name="Select">linkto[ToAbstractLink].attribute[DiscountNetUnitPrice]</property>
+           <property name="Label">Sales_PositionAbstract/DiscountNetUnitPrice.Label</property>
+        </field>
+        <field name="netPrice">
+            <property name="Select">linkto[ToAbstractLink].attribute[NetPrice]</property>
+            <property name="Label">Sales_PositionAbstract/NetPrice.Label</property>
+        </field>
+    </definition>
+</ui-table>
