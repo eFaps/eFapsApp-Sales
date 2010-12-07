@@ -131,7 +131,7 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @param _parameter            Parameter  parameter as passe dfrom the eFaps API
+     * @param _parameter            Parameter  parameter as passed from the eFaps API
      * @param _calc                 calculator
      * @param _oid                  oid of the product
      * @param _quantity             quantity
@@ -603,7 +603,7 @@ public abstract class Calculator_Base
      */
     public String getQuantityStr()
     {
-        return this.formater.format(this.quantity);
+        return getFormater().format(getQuantity());
     }
 
     /**

@@ -138,6 +138,7 @@ public abstract class AbstractDocument_Base
     {
         final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
         final StringBuilder js = new StringBuilder();
+        final Return retVal = new Return();
         if (mode.equals(TargetMode.VIEW) || mode.equals(TargetMode.PRINT)) {
             final FieldValue value = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
             if (value.getDisplay().equals(Display.READONLY)) {
@@ -146,9 +147,8 @@ public abstract class AbstractDocument_Base
             } else {
                 js.append(value.getValue());
             }
+            retVal.put(ReturnValues.VALUES, js.toString());
         }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, js.toString());
         return retVal;
     }
 
