@@ -36,6 +36,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.Tax_Base.TaxRate;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -141,6 +142,7 @@ public abstract class Calculator_Base
      * @param _includeMinRetail     must the minimum retail price be included
      * @throws EFapsException on error
      */
+    //CHECKSTYLE:OFF
     public Calculator_Base(final Parameter _parameter,
                            final Calculator _calc,
                            final String _oid,
@@ -150,6 +152,7 @@ public abstract class Calculator_Base
                            final boolean _priceFromDB,
                            final boolean _includeMinRetail)
         throws EFapsException
+    //CHECKSTYLE:ON
     {
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
@@ -165,14 +168,9 @@ public abstract class Calculator_Base
             } else {
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
-                    final ProductPrice priceTmp = priceutil.getPrice(_parameter,
-                                                                     this.oid,
-                                                                     CIProducts.ProductPricelistRetail.uuid);
-                    this.productPrice = priceTmp;
+                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
                     if (_includeMinRetail) {
-                        this.minProductPrice = priceutil.getPrice(_parameter,
-                                                                  this.oid,
-                                                                  CIProducts.ProductPricelistMinRetail.uuid);
+                        this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
             }
@@ -184,19 +182,14 @@ public abstract class Calculator_Base
                     setPriceFromUI(_parameter, _unitPrice);
                 } else {
                     final PriceUtil priceutil = new PriceUtil();
-                    final ProductPrice priceTmp = priceutil.getPrice(_parameter,
-                                                                     this.oid,
-                                                                     CIProducts.ProductPricelistRetail.uuid);
-                    this.productPrice = priceTmp;
+                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
-                print.addAttribute("TaxCategory");
+                print.addAttribute(CISales.Products_ProductAbstract.TaxCategory);
                 print.execute();
-                this.taxcatId = print.<Long> getAttribute("TaxCategory");
+                this.taxcatId = print.<Long> getAttribute(CISales.Products_ProductAbstract.TaxCategory);
                 if (_includeMinRetail) {
-                    this.minProductPrice =  new PriceUtil().getPrice(_parameter,
-                                                                     this.oid,
-                                                                     CIProducts.ProductPricelistMinRetail.uuid);
+                    this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
                 this.taxcatId = 0;
@@ -237,6 +230,22 @@ public abstract class Calculator_Base
             this.productPrice.setBasePrice(newprice);
             this.productPrice.setOrigPrice(newprice);
         }
+    }
+
+    /**
+     * @return the UUID of the type used for the pricelist
+     */
+    protected UUID getPriceListUUID()
+    {
+        return CIProducts.ProductPricelistRetail.uuid;
+    }
+
+    /**
+     * @return the UUID of the type used for the minimum pricelist
+     */
+    protected UUID getMinPriceListUUID()
+    {
+        return  CIProducts.ProductPricelistMinRetail.uuid;
     }
 
     /**
@@ -338,6 +347,9 @@ public abstract class Calculator_Base
         }
     }
 
+    /**
+     * @return get the new Price
+     */
     protected ProductPrice getNewPrice()
     {
         // Sales-Configuration
@@ -345,7 +357,8 @@ public abstract class Calculator_Base
                         .getLink("CurrencyBase");
         final ProductPrice ret = new PriceUtil().new ProductPrice();
         ret.setBaseRate(this.productPrice == null ? BigDecimal.ONE : this.productPrice.getBaseRate());
-        ret.setCurrentCurrencyInstance(this.productPrice == null ? baseInst : this.productPrice.getCurrentCurrencyInstance());
+        ret.setCurrentCurrencyInstance(this.productPrice == null
+                        ? baseInst : this.productPrice.getCurrentCurrencyInstance());
         ret.setOrigCurrencyInstance(this.productPrice == null ? baseInst : this.productPrice.getOrigCurrencyInstance());
         return ret;
     }
@@ -518,21 +531,21 @@ public abstract class Calculator_Base
     }
 
     /**
-     * net unit price - (net unit price / 100 * discount)
+     * net unit price - (net unit price / 100 * discount).
      *
-     * @return
+     * @return dicount price for the product
      */
     public ProductPrice getProductDiscountNetUnitPrice()
     {
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
-        ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100)).multiply(getDiscount())).setScale(2,
-                        BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
-        ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100)).multiply(getDiscount()))
-                        .setScale(2,
-                        BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
-        ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100)).multiply(getDiscount())).setScale(2,
-                        BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
+        ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
+                        .multiply(getDiscount())).setScale(2, BigDecimal.ROUND_HALF_UP)
+                        .setScale(2, BigDecimal.ROUND_HALF_UP));
+        ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
+                        .multiply(getDiscount())).setScale(2, BigDecimal.ROUND_HALF_UP));
+        ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
+                        .multiply(getDiscount())).setScale(2, BigDecimal.ROUND_HALF_UP));
         return ret;
     }
 
@@ -615,9 +628,9 @@ public abstract class Calculator_Base
     }
 
     /**
-     * discount net unit price * quantity
+     * discount net unit price * quantity.
      *
-     * @return
+     * @return net price for the product
      */
     public ProductPrice getProductNetPrice()
     {
@@ -664,13 +677,19 @@ public abstract class Calculator_Base
         return ret;
     }
 
+    /**
+     * @return product cross price
+     */
     public ProductPrice getProductCrossPrice()
     {
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductCrossUnitPrice();
-        ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100)).multiply(this.discount)));
-        ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100)).multiply(this.discount)));
-        ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100)).multiply(this.discount)));
+        ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
+                        .multiply(this.discount)));
+        ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
+                        .multiply(this.discount)));
+        ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
+                        .multiply(this.discount)));
         return ret;
 
     }
@@ -718,7 +737,7 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @return
+     * @return unit cross price
      */
     public ProductPrice getProductCrossUnitPrice()
     {
@@ -728,6 +747,9 @@ public abstract class Calculator_Base
         return this.productCrossUnitPrice;
     }
 
+    /**
+     * @return eval new cross unit price
+     */
     protected ProductPrice evalProductCrossUnitPrice()
     {
         final ProductPrice ret = getNewPrice();
@@ -781,6 +803,9 @@ public abstract class Calculator_Base
         return ret;
     }
 
+    /**
+     * @return eval new cross unit price
+     */
     protected ProductPrice evalProductNetUnitPrice()
     {
         final ProductPrice ret = getNewPrice();
@@ -835,7 +860,7 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @return
+     * @return net unit price
      */
     public ProductPrice getProductNetUnitPrice()
     {
@@ -886,6 +911,10 @@ public abstract class Calculator_Base
         return this.formater;
     }
 
+    /**
+     * @param _currencyInstance intsance of the currency
+     * @param _rate rate to aply
+     */
     public void applyRate(final Instance _currencyInstance,
                           final BigDecimal _rate)
     {
