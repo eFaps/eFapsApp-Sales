@@ -55,6 +55,20 @@ public abstract class Quotation_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        createDoc(_parameter);
+        return new Return();
+    }
+
+    /**
+     * Internal Method to create the document and the position.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Instance of CreatedDoc.
+     * @throws EFapsException on error.
+     */
+    protected CreatedDoc createDoc(final Parameter _parameter)
+        throws EFapsException
+    {
         final String date = _parameter.getParameterValue("date");
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
@@ -76,30 +90,52 @@ public abstract class Quotation_Base
         insert.add(CISales.Quotation.Rate, rateObj);
         insert.add(CISales.Quotation.Note, _parameter.getParameterValue("note"));
         insert.execute();
+
+        final CreatedDoc createdDoc = new CreatedDoc(insert.getInstance());
+        createPositions(_parameter, calcList, createdDoc);
+        return createdDoc;
+    }
+
+    /**
+     * Internal Method to create the positions for this Document.
+     * @param _parameter    Parameter as passed from eFaps API.
+     * @param _calcList     List of Calculators
+     * @param _createdDoc   cretaed Document
+     * @throws EFapsException on error
+     */
+    protected void createPositions(final Parameter _parameter,
+                                   final List<Calculator> _calcList,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Object[] rateObj = getRateObject(_parameter);
         Integer i = 0;
-        for (final Calculator calc : calcList) {
-            final Insert posIns = new Insert(CISales.QuotationPosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.QuotationPosition.Quotation, insert.getId());
-            posIns.add(CISales.QuotationPosition.PositionNumber, i.toString());
-            posIns.add(CISales.QuotationPosition.Product, productdId.toString());
-            posIns.add(CISales.QuotationPosition.ProductDesc, _parameter.getParameterValues("productAutoComplete")[i]);
-            posIns.add(CISales.QuotationPosition.Quantity, calc.getQuantityStr());
-            posIns.add(CISales.QuotationPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.QuotationPosition.CrossUnitPrice, calc.getCrossUnitPriceStr());
-            posIns.add(CISales.QuotationPosition.NetUnitPrice, calc.getNetUnitPriceStr());
-            posIns.add(CISales.QuotationPosition.CrossPrice, calc.getCrossPriceStr());
-            posIns.add(CISales.QuotationPosition.NetPrice, calc.getNetPriceStr());
-            posIns.add(CISales.QuotationPosition.Tax, (calc.getTaxId()).toString());
-            posIns.add(CISales.QuotationPosition.Discount, calc.getDiscountStr());
-            posIns.add(CISales.QuotationPosition.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice());
-            posIns.add(CISales.QuotationPosition.CurrencyId, _parameter.getParameterValue("rateCurrencyId"));
-            posIns.add(CISales.QuotationPosition.Rate, rateObj);
-            posIns.add(CISales.QuotationPosition.RateCurrencyId, _parameter.getParameterValue("rateCurrencyId"));
-            posIns.execute();
+        for (final Calculator calc : _calcList) {
+            if (!calc.isEmpty()) {
+                final Insert posIns = new Insert(CISales.QuotationPosition);
+                final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
+                posIns.add(CISales.QuotationPosition.Quotation, _createdDoc.getInstance().getId());
+                posIns.add(CISales.QuotationPosition.PositionNumber, i.toString());
+                posIns.add(CISales.QuotationPosition.Product, productdId.toString());
+                posIns.add(CISales.QuotationPosition.ProductDesc,
+                                _parameter.getParameterValues("productAutoComplete")[i]);
+                posIns.add(CISales.QuotationPosition.Quantity, calc.getQuantityStr());
+                posIns.add(CISales.QuotationPosition.UoM, _parameter.getParameterValues("uoM")[i]);
+                posIns.add(CISales.QuotationPosition.CrossUnitPrice, calc.getCrossUnitPriceStr());
+                posIns.add(CISales.QuotationPosition.NetUnitPrice, calc.getNetUnitPriceStr());
+                posIns.add(CISales.QuotationPosition.CrossPrice, calc.getCrossPriceStr());
+                posIns.add(CISales.QuotationPosition.NetPrice, calc.getNetPriceStr());
+                posIns.add(CISales.QuotationPosition.Tax, (calc.getTaxId()).toString());
+                posIns.add(CISales.QuotationPosition.Discount, calc.getDiscountStr());
+                posIns.add(CISales.QuotationPosition.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice());
+                posIns.add(CISales.QuotationPosition.CurrencyId, _parameter.getParameterValue("rateCurrencyId"));
+                posIns.add(CISales.QuotationPosition.Rate, rateObj);
+                posIns.add(CISales.QuotationPosition.RateCurrencyId, _parameter.getParameterValue("rateCurrencyId"));
+                posIns.execute();
+                _createdDoc.addPosition(posIns.getInstance());
+            }
             i++;
         }
-        return new Return();
     }
 
     /**

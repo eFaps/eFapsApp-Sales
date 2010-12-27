@@ -1549,4 +1549,55 @@ public abstract class AbstractDocument_Base
     {
         return updateFields4Doc(_parameter);
     }
+
+    /**
+     * Class is used as the return value for the internal Create methods.
+     */
+    public class CreatedDoc
+    {
+        /**
+         * Instance of the newly created doc.
+         */
+        private final Instance instance;
+
+        /**
+         * Positions of the created Document.
+         */
+        private final List<Instance> positions = new ArrayList<Instance>();
+
+        /**
+         * @param _instance Instance of the Document
+         */
+        public CreatedDoc(final Instance _instance)
+        {
+            this.instance = _instance;
+        }
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #positions}.
+         *
+         * @return value of instance variable {@link #positions}
+         */
+        public List<Instance> getPositions()
+        {
+            return this.positions;
+        }
+        /**
+         * @param _instance Instance to add
+         */
+        public void addPosition(final Instance _instance)
+        {
+            this.positions.add(_instance);
+        }
+
+    }
 }

@@ -39,6 +39,11 @@ public class Calculator
     extends Calculator_Base
 {
     /**
+     * Needed for serialization.
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
      * @param _parameter            Parameter  parameter as passe dfrom the eFaps API
      * @param _calc                 calculator
      * @param _oid                  oid of the product
@@ -49,6 +54,7 @@ public class Calculator
      * @param _includeMinRetail     must the minimum retail price be included
      * @throws EFapsException on error
      */
+    //CHECKSTYLE:OFF
     public Calculator(final Parameter _parameter,
                       final Calculator _calc,
                       final String _oid,
@@ -58,7 +64,7 @@ public class Calculator
                       final boolean _priceFromDB,
                       final boolean _includeMinRetail)
         throws EFapsException
-    {
+    { //CHECKSTYLE:ON
         super(_parameter, _calc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _includeMinRetail);
     }
 
