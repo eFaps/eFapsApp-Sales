@@ -26,50 +26,20 @@
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>22fb2fa6-0367-4954-a3d6-9835ffe9c84e</uuid>
+    <uuid>c1ea4ec4-1640-4804-a104-1cf5e7bab1ac</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5357 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PositionGroupAbstract</name>
-         <attribute>
-            <name>Type</name>
-            <type>Type</type>
-            <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>TYPEID</sqlcolumn>
-        </attribute>
+        <name>Sales_PositionGroupNode</name>
+        <parent>Sales_PositionGroupAbstract</parent>
         <attribute>
-            <name>OID</name>
-            <type>OID</type>
-            <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>TYPEID,ID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ID</name>
-            <type>Long</type>
-            <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>ID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>DocumentAbstractLink</name>
+            <name>ParentGroupLink</name>
             <type>Link</type>
-            <typelink>Sales_DocumentAbstract</typelink>
+            <typelink>Sales_PositionGroupRoot</typelink>
             <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>DOCID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Name</name>
-            <type>String</type>
-            <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>NAME</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>AbstractPositionAbstractLink</name>
-            <type>Link</type>
-            <typelink>Sales_PositionAbstract</typelink>
-            <sqltable>Sales_PositionGroupSQLTable</sqltable>
-            <sqlcolumn>POSID</sqlcolumn>
+            <sqlcolumn>PARENTID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>
