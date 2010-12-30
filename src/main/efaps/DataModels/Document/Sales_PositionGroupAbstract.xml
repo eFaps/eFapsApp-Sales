@@ -59,6 +59,18 @@
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Level</name>
+            <type>Integer</type>
+            <sqltable>Sales_PositionGroupSQLTable</sqltable>
+            <sqlcolumn>LEVEL</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Order</name>
+            <type>Integer</type>
+            <sqltable>Sales_PositionGroupSQLTable</sqltable>
+            <sqlcolumn>ORDERSEQ</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Name</name>
             <type>String</type>
             <sqltable>Sales_PositionGroupSQLTable</sqltable>
