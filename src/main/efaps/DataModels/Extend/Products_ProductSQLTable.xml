@@ -45,7 +45,6 @@
             <!-- adding two new columns for salesunit and taxcatogory -->
             <column name="SALESUNIT"    type="DECIMAL"                      length="8" scale="4" />
             <column name="TAXCATID"     type="INTEGER" />
-            <unique name="T_PRODPRODUCT_UK_NAME" columns="NAME" />
             <foreign name="T_PRODPRODUCT_FK_DIMID"      key="DIMID"     reference="T_DMDIM(ID)" />
             <foreign name="T_PRODPRODUCT_FK_TAXCATID"   key="TAXCATID"  reference="T_SALESTAXCAT(ID)" />
         </database>
