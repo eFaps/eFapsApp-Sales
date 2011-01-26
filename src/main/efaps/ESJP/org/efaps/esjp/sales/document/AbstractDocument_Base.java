@@ -1566,11 +1566,25 @@ public abstract class AbstractDocument_Base
         private final List<Instance> positions = new ArrayList<Instance>();
 
         /**
+         * Map can be used to pass values from one method to another.
+         */
+        private final Map<String, Object> values = new HashMap<String, Object>();
+
+        /**
          * @param _instance Instance of the Document
          */
         public CreatedDoc(final Instance _instance)
         {
             this.instance = _instance;
+        }
+        /**
+         * Getter method for the instance variable {@link #values}.
+         *
+         * @return value of instance variable {@link #values}
+         */
+        public Map<String, Object> getValues()
+        {
+            return this.values;
         }
         /**
          * Getter method for the instance variable {@link #instance}.

@@ -133,10 +133,10 @@ public abstract class Quotation_Base
                 final Insert posIns = new Insert(CISales.QuotationPosition);
                 final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
                 posIns.add(CISales.QuotationPosition.Quotation, _createdDoc.getInstance().getId());
-                posIns.add(CISales.QuotationPosition.PositionNumber, i.toString());
+                posIns.add(CISales.QuotationPosition.PositionNumber, i);
                 posIns.add(CISales.QuotationPosition.Product, productdId.toString());
                 posIns.add(CISales.QuotationPosition.ProductDesc,
-                                _parameter.getParameterValues("productAutoComplete")[i]);
+                                _parameter.getParameterValues("productDesc")[i]);
                 posIns.add(CISales.QuotationPosition.Quantity, calc.getQuantityStr());
                 posIns.add(CISales.QuotationPosition.UoM, _parameter.getParameterValues("uoM")[i]);
                 posIns.add(CISales.QuotationPosition.CrossUnitPrice, calc.getCrossUnitPrice()
