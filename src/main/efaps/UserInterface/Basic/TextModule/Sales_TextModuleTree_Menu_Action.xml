@@ -27,22 +27,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>9c6f343c-b4dc-418c-9e2a-aae35932354f</uuid>
+    <uuid>8a7b8530-5e59-4a66-a3c6-f78462b43d2d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AdminMyDesk</name>
+        <name>Sales_TextModuleTree_Menu_Action</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_AbstractAttrMyDesk</child>
-            <child>Sales_TaxCategoryMyDesk</child>
-            <child>ERP_CurrencyMyDesk</child>
-            <child>Sales_AccountAbstractMyDesk</child>
-            <child>Sales_PaymentMyDesk</child>
-            <child>Sales_TransactionAbstractMyDesk</child>
-            <child>Sales_BalanceMyDesk</child>
-            <child>Sales_CashDeskBalanceMyDesk</child>
-            <child>Sales_TextModuleMyDesk</child>
+            <child>Sales_TextModuleTree_Menu_Action_Edit</child>
         </childs>
     </definition>
+
 </ui-menu>

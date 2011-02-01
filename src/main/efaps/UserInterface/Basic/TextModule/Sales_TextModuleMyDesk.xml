@@ -23,26 +23,29 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>9c6f343c-b4dc-418c-9e2a-aae35932354f</uuid>
+    <uuid>06a13794-becc-4f24-b2dd-c213a1ea1df8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AdminMyDesk</name>
-        <childs>
-            <child>Sales_AbstractAttrMyDesk</child>
-            <child>Sales_TaxCategoryMyDesk</child>
-            <child>ERP_CurrencyMyDesk</child>
-            <child>Sales_AccountAbstractMyDesk</child>
-            <child>Sales_PaymentMyDesk</child>
-            <child>Sales_TransactionAbstractMyDesk</child>
-            <child>Sales_BalanceMyDesk</child>
-            <child>Sales_CashDeskBalanceMyDesk</child>
-            <child>Sales_TextModuleMyDesk</child>
-        </childs>
+        <name>Sales_TextModuleMyDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+
+        <target>
+            <table>Sales_TextModuleTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_TextModule</property>
+            </evaluate>
+        </target>
+
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>
