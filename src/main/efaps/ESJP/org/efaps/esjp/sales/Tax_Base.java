@@ -21,15 +21,15 @@
 package org.efaps.esjp.sales;
 
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.SearchQuery;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.AutomaticCache;
+import org.efaps.util.cache.AbstractAutomaticCache;
 import org.efaps.util.cache.CacheObjectInterface;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -137,7 +137,7 @@ public abstract class Tax_Base implements CacheObjectInterface
         return Tax_Base.CACHE.get(_name);
     }
 
-    protected static class TaxCache extends AutomaticCache<Tax>
+    protected static class TaxCache extends AbstractAutomaticCache<Tax>
     {
 
         @Override
