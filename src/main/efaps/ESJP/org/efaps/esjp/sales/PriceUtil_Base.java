@@ -74,7 +74,7 @@ public abstract class PriceUtil_Base
         throws EFapsException
     {
         final ProductPrice ret = new ProductPrice();
-        _parameter.getParameterValue("date_eFapsDate");
+
         final DateTime date = getDateFromParameter(_parameter);
 
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);

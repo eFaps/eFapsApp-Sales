@@ -40,6 +40,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.Tax_Base.TaxRate;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.LocalDate;
 
@@ -54,7 +55,6 @@ import org.joda.time.LocalDate;
 public abstract class Calculator_Base
     implements Serializable
 {
-
     /**
      * Needed for serialization.
      */
@@ -118,6 +118,10 @@ public abstract class Calculator_Base
      */
     private final boolean empty;
 
+    /**
+     * Date this Calculator is based on. Used for e.g. date of Taxes.
+     */
+    private LocalDate localDate;
 
     /**
      * Constructor used to instantiate an empty calculator.
@@ -129,6 +133,7 @@ public abstract class Calculator_Base
         this.taxcatId = 0;
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = true;
+        setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
     }
 
     /**
@@ -156,6 +161,12 @@ public abstract class Calculator_Base
     {
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
+        final String dateStr = _parameter.getParameterValue(getDateFieldName(_parameter));
+        if (dateStr != null && dateStr != null) {
+            setLocalDate(DateUtil.getDateFromParameter(dateStr).toLocalDate());
+        } else {
+            setLocalDate(new LocalDate());
+        }
         if (_calc != null && _oid.equals(_calc.getOid())) {
             this.taxcatId = _calc.getTaxcatId();
             this.oid = _calc.getOid();
@@ -200,9 +211,20 @@ public abstract class Calculator_Base
     }
 
     /**
+     *
+     * Get the name of the field that contains the date.
+     * @param _parameter Parmeter as passed by the eFaps API
+     * @return name of the date field
+     */
+    protected String getDateFieldName(final Parameter _parameter)
+    {
+        return "date_eFapsDate";
+    }
+
+    /**
      * Set the price given by the UI.
      *
-     * @param _parameter Parmeter
+     * @param _parameter Parmeter as passed by the eFaps API
      * @param _unitPrice unit price
      * @throws EFapsException on error
      */
@@ -888,7 +910,7 @@ public abstract class Calculator_Base
     public TaxRate getTaxRate()
     {
         final Tax taxcat = Tax_Base.get(this.taxcatId);
-        return taxcat == null ? TaxRate.getZeroTax() : taxcat.getTaxRate(new LocalDate());
+        return taxcat == null ? TaxRate.getZeroTax() : taxcat.getTaxRate(getLocalDate());
     }
 
     /**
@@ -973,5 +995,26 @@ public abstract class Calculator_Base
         final DecimalFormat ret = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
         ret.setParseBigDecimal(true);
         return ret;
+    }
+
+    /**
+     * Setter method for instance variable {@link #localDate}.
+     *
+     * @param _localDate value for instance variable {@link #localDate}
+     */
+
+    public void setLocalDate(final LocalDate _localDate)
+    {
+        this.localDate = _localDate;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #localDate}.
+     *
+     * @return value of instance variable {@link #localDate}
+     */
+    public LocalDate getLocalDate()
+    {
+        return this.localDate;
     }
 }

@@ -25,9 +25,13 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.AbstractAutomaticCache;
 import org.efaps.util.cache.CacheObjectInterface;
@@ -43,38 +47,71 @@ import org.joda.time.LocalDate;
  */
 @EFapsUUID("0c3a91e2-1497-423f-ae60-a0ae94e95451")
 @EFapsRevision("$Rev$")
-public abstract class Tax_Base implements CacheObjectInterface
+public abstract class Tax_Base
+    implements CacheObjectInterface
 {
-
+    /**
+     * CACHE for the Taxes.
+     */
     private static TaxCache CACHE = new TaxCache();
+
+    /**
+     * Id of this Tax.
+     */
     private final long id;
+    /**
+     * Name of htis tax.
+     */
     private final String name;
+    /**
+     * Oid of this Tax.
+     */
     private final String oid;
+
+    /**
+     * map of dates to rate.
+     */
     private final Map<DateTime, TaxRate> rateMap = new TreeMap<DateTime, TaxRate>();
 
     /**
-     * @param oidTmp
-     * @param idTmp
-     * @param nameTmp
-     * @param taxCatId
-     * @param numerator
-     * @param denominator
+     * @param _oid      oid of this tax
+     * @param _id       id of this tax
+     * @param _name     name of this tax
      */
-    protected Tax_Base(final String _oid, final long _id, final String _name)
+    protected Tax_Base(final String _oid,
+                       final long _id,
+                       final String _name)
     {
         this.oid = _oid;
         this.id = _id;
         this.name = _name;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public long getId()
     {
         return this.id;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public String getName()
     {
         return this.name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UUID getUUID()
+    {
+        return null;
     }
 
     public TaxRate getTaxRate(final LocalDate _localDate)
@@ -93,38 +130,30 @@ public abstract class Tax_Base implements CacheObjectInterface
      * @throws EFapsException
      *
      */
-    private void evaluateRates() throws EFapsException
+    private void evaluateRates()
+        throws EFapsException
     {
-        final SearchQuery query = new SearchQuery();
-        query.setExpand(this.oid, "Sales_Tax\\TaxCategory");
-        query.addSelect("OID");
-        query.addSelect("ID");
-        query.addSelect("Name");
-        query.addSelect("Numerator");
-        query.addSelect("Denominator");
-        query.addSelect("ValidFrom");
-        query.execute();
-        while (query.next()) {
-            final Long id = (Long) query.get("ID");
-            final String oid = (String) query.get("OID");
-            final String name = (String) query.get("Name");
-            final Long numerator = (Long) query.get("Numerator");
-            final Long denominator = (Long) query.get("Denominator");
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
+        queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, Instance.get(this.oid).getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom);
 
-            final DateTime validfrom = (DateTime) query.get("ValidFrom");
-            this.rateMap.put(validfrom, new TaxRate(oid, id, name, numerator, denominator));
+        multi.execute();
+        while (multi.next()) {
+            final Long idTmp = multi.getCurrentInstance().getId();
+            final String oidTmp = multi.getCurrentInstance().getOid();
+            final String nameTmp = multi.<String>getAttribute(CISales.Tax.Name);
+            final Long numerator = multi.<Long>getAttribute(CISales.Tax.Numerator);
+            final Long denominator = multi.<Long>getAttribute(CISales.Tax.Denominator);
+            final DateTime validfrom = multi.<DateTime>getAttribute(CISales.Tax.ValidFrom);
+            this.rateMap.put(validfrom, new TaxRate(oidTmp, idTmp, nameTmp, numerator, denominator));
         }
     }
 
     @Override
     public String toString()
     {
-        return "[id: " + this.id + "; Name: " + this.name + "]";
-    }
-
-    public UUID getUUID()
-    {
-        return null;
+        return new ToStringBuilder(this).append("id", this.id).append("Name", this.name).toString();
     }
 
     public static Tax get(final long _id)
@@ -137,30 +166,31 @@ public abstract class Tax_Base implements CacheObjectInterface
         return Tax_Base.CACHE.get(_name);
     }
 
-    protected static class TaxCache extends AbstractAutomaticCache<Tax>
+    protected static class TaxCache
+        extends AbstractAutomaticCache<Tax>
     {
 
         @Override
-        protected void readCache(final Map<Long, Tax> _cache4Id, final Map<String, Tax> _cache4Name,
-                        final Map<UUID, Tax> _cache4UUID) throws CacheReloadException
+        protected void readCache(final Map<Long, Tax> _cache4Id,
+                                 final Map<String, Tax> _cache4Name,
+                                 final Map<UUID, Tax> _cache4UUID)
+            throws CacheReloadException
         {
             try {
-                final SearchQuery query = new SearchQuery();
-                query.setQueryTypes("Sales_TaxCategory");
-                query.addSelect("OID");
-                query.addSelect("ID");
-                query.addSelect("Name");
-                query.execute();
-                while (query.next()) {
-                    final String oidTmp = (String) query.get("OID");
-                    final long idTmp = (Long) query.get("ID");
-                    final String nameTmp = (String) query.get("Name");
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.TaxCategory);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.TaxCategory.Name);
+                multi.execute();
+                while (multi.next()) {
+                    final String oidTmp = multi.getCurrentInstance().getOid();
+                    final long idTmp = multi.getCurrentInstance().getId();
+                    final String nameTmp = multi.getAttribute(CISales.TaxCategory.Name);
 
                     final Tax tax = new Tax(oidTmp, idTmp, nameTmp);
                     _cache4Id.put(idTmp, tax);
                     _cache4Name.put(nameTmp, tax);
                 }
-                query.close();
 
                 for (final Tax_Base tax : _cache4Id.values()) {
                     tax.evaluateRates();
@@ -180,7 +210,11 @@ public abstract class Tax_Base implements CacheObjectInterface
         private final String name;
         private final Long numerator;
         private final Long denominator;
-        public TaxRate(final String _oid, final Long _id, final String _name, final Long _numerator,
+
+        public TaxRate(final String _oid,
+                       final Long _id,
+                       final String _name,
+                       final Long _numerator,
                         final Long _denominator)
         {
             this.oid = _oid;
@@ -242,7 +276,7 @@ public abstract class Tax_Base implements CacheObjectInterface
 
         public static TaxRate getZeroTax()
         {
-            return new TaxRate("", new Long(1) , "ZERO", new Long(1), new Long(1));
+            return new TaxRate("", new Long(1), "ZERO", new Long(1), new Long(1));
         }
     }
 }
