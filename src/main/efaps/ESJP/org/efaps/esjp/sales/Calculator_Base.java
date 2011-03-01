@@ -161,7 +161,7 @@ public abstract class Calculator_Base
     {
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
-        final String dateStr = _parameter.getParameterValue(getDateFieldName(_parameter));
+        final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setLocalDate(DateUtil.getDateFromParameter(dateStr).toLocalDate());
         } else {
