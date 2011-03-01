@@ -54,6 +54,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -907,8 +908,15 @@ public abstract class AbstractDocument_Base
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
         queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
+        if (properties.containsKey("InStock")) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
+            final AttributeQuery attrQuery = attrQueryBldr
+                                                .getAttributeQuery(CISales.Products_VirtualInventoryStock.Product);
+            queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+        }
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIProducts.ProductAbstract.OID, CIProducts.ProductAbstract.Name,
                         CIProducts.ProductAbstract.Description, CIProducts.ProductAbstract.Dimension);
