@@ -143,8 +143,8 @@ public abstract class Tax_Base
             final Long idTmp = multi.getCurrentInstance().getId();
             final String oidTmp = multi.getCurrentInstance().getOid();
             final String nameTmp = multi.<String>getAttribute(CISales.Tax.Name);
-            final Long numerator = multi.<Long>getAttribute(CISales.Tax.Numerator);
-            final Long denominator = multi.<Long>getAttribute(CISales.Tax.Denominator);
+            final Integer numerator = multi.<Integer>getAttribute(CISales.Tax.Numerator);
+            final Integer denominator = multi.<Integer>getAttribute(CISales.Tax.Denominator);
             final DateTime validfrom = multi.<DateTime>getAttribute(CISales.Tax.ValidFrom);
             this.rateMap.put(validfrom, new TaxRate(oidTmp, idTmp, nameTmp, numerator, denominator));
         }
@@ -178,7 +178,7 @@ public abstract class Tax_Base
         {
             try {
 
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.TaxCategory);
+                final QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("25b22ae7-c9d8-4211-832d-06c00b9de709"));
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.TaxCategory.Name);
                 multi.execute();
@@ -208,14 +208,14 @@ public abstract class Tax_Base
         private final String oid;
         private final Long id;
         private final String name;
-        private final Long numerator;
-        private final Long denominator;
+        private final Integer numerator;
+        private final Integer denominator;
 
         public TaxRate(final String _oid,
                        final Long _id,
                        final String _name,
-                       final Long _numerator,
-                        final Long _denominator)
+                       final Integer _numerator,
+                        final Integer _denominator)
         {
             this.oid = _oid;
             this.id = _id;
@@ -259,7 +259,7 @@ public abstract class Tax_Base
          *
          * @return value of instance variable {@link #numerator}
          */
-        public Long getNumerator()
+        public Integer getNumerator()
         {
             return this.numerator;
         }
@@ -269,14 +269,14 @@ public abstract class Tax_Base
          *
          * @return value of instance variable {@link #denominator}
          */
-        public Long getDenominator()
+        public Integer getDenominator()
         {
             return this.denominator;
         }
 
         public static TaxRate getZeroTax()
         {
-            return new TaxRate("", new Long(1), "ZERO", new Long(1), new Long(1));
+            return new TaxRate("", new Long(1), "ZERO", 1, 1);
         }
     }
 }
