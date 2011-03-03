@@ -54,6 +54,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.admin.user.Role;
+import org.efaps.ci.CIAdminUser;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -134,6 +136,11 @@ public abstract class AbstractDocument_Base
         return formater;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the value formated
+     * @throws EFapsException on error
+     */
     public Return formatQuantity(final Parameter _parameter)
         throws EFapsException
     {
@@ -290,6 +297,21 @@ public abstract class AbstractDocument_Base
     {
         return autoComplete4Doc(_parameter, CISales.CreditNote.uuid, null);
     }
+
+    /**
+     * Used by the AutoCompleteField used in the select doc form
+     * for CostSheets.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4CostSheet(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.CostSheet.uuid, null);
+    }
+
 
     /**
      * Generic method to get a list of documents.
@@ -468,6 +490,21 @@ public abstract class AbstractDocument_Base
 
 
     /**
+     * Used by the update event used in the select doc form
+     * for CostSheet.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4CostSheet(final Parameter _parameter)
+        throws EFapsException
+    {
+        return updateFields4Doc(_parameter);
+    }
+
+
+    /**
      * Generic method to get the listmap for update event.
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
@@ -485,7 +522,7 @@ public abstract class AbstractDocument_Base
             print.addSelect("type.label");
             print.execute();
 
-            final Map<? ,?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final Map<? , ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final String field = props.containsKey("field") ?  (String) props.get("field") : "info";
             final StringBuilder bldr = new StringBuilder();
             bldr.append(print.getSelect("type.label")).append(" - ").append(print.getAttribute("Name"))
@@ -522,6 +559,11 @@ public abstract class AbstractDocument_Base
         return js.toString();
     }
 
+    /**
+     * @param _parameter Paraemter as passed by the eFasp API
+     * @return List map for the update event
+     * @throws EFapsException on error
+     */
     public Return updateFields4Uom(final Parameter _parameter)
         throws EFapsException
     {
@@ -1117,11 +1159,11 @@ public abstract class AbstractDocument_Base
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
             map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr( getTwoDigitsformater()));
-            map.put("netPrice", cal.getNetPriceFmtStr( getTwoDigitsformater()));
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getTwoDigitsformater()));
+            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
             map.put("netTotal", getNetTotalFmtStr(calcList));
             map.put("crossTotal", getCrossTotalFmtStr(calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr( getTwoDigitsformater()));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getTwoDigitsformater()));
             list.add(map);
 
             retVal.put(ReturnValues.VALUES, list);
@@ -1530,33 +1572,73 @@ public abstract class AbstractDocument_Base
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
     }
 
-    /**
-     * Used by the AutoCompleteField used in the select doc form
-     * for CostSheets.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4CostSheet(final Parameter _parameter)
+    public Return getSalesPersonFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.CostSheet.uuid, null);
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field() {
+
+            @Override
+            protected DropDownPosition getDropDownPosition(final Parameter _parameter,
+                                                           final Object _value,
+                                                           final Object _option)
+                throws EFapsException
+            {
+                final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+                DropDownPosition pos;
+                if ("true".equalsIgnoreCase((String) props.get("SelectCurrent"))) {
+                    pos = new DropDownPosition(_value, _option) {
+                        @Override
+                        public boolean isSelected()
+                        {
+                            boolean ret = false;
+                            long persId = 0;
+                            try {
+                                persId = Context.getThreadContext().getPerson().getId();
+                            } catch (final EFapsException e) {
+                                // nothing must be done at all
+                                e.printStackTrace();
+                            }
+                            ret = new Long(persId).equals(getValue());
+                            return ret;
+                        }
+                    };
+                } else {
+                    pos = super.getDropDownPosition(_parameter, _value, _option);
+                }
+                return pos;
+            }
+
+            @Override
+            protected void add2QueryBuilder4DropDown(final Parameter _parameter,
+                                                     final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+                final String rolesStr = (String) props.get("Roles");
+                if (rolesStr != null && !rolesStr.isEmpty()) {
+                    final String[] roles = rolesStr.split(";");
+                    final List<Long> roleIds = new ArrayList<Long>();
+                    for (final String role : roles) {
+                        final Role aRole = Role.get(role);
+                        if (aRole != null) {
+                            roleIds.add(aRole.getId());
+                        }
+                    }
+                    if (!roleIds.isEmpty()) {
+                        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person2Role);
+                        queryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink, roleIds.toArray());
+
+                        _queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID,
+                                        queryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink));
+                    }
+                }
+                super.add2QueryBuilder4DropDown(_parameter, _queryBldr);
+            }
+
+        };
+        return  field.dropDownFieldValue(_parameter);
     }
 
-    /**
-     * Used by the update event used in the select doc form
-     * for CostSheet.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @return map list for update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4CostSheet(final Parameter _parameter)
-        throws EFapsException
-    {
-        return updateFields4Doc(_parameter);
-    }
 
     /**
      * Class is used as the return value for the internal Create methods.
