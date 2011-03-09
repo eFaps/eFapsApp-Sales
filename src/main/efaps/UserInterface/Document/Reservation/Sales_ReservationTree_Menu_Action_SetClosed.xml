@@ -48,5 +48,6 @@
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>
