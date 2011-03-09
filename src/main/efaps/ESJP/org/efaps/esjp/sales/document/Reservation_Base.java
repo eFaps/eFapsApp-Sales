@@ -33,6 +33,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
@@ -174,7 +175,7 @@ public abstract class Reservation_Base
         final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute("Reservation"));
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute("UoM"));
 
-        String storage = null;
+        Object storage = null;
         if (storageIds != null) {
             for (int i = 0; i < productOids.length; i++) {
                 if (productID[0].toString().equals(((Long) Instance.get(productOids[i]).getId()).toString())) {
@@ -184,11 +185,11 @@ public abstract class Reservation_Base
             }
         } else {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Warehouse);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIProducts.Warehouse.ID);
-            multi.execute();
-            while (multi.next()) {
-                storage = multi.<Long>getAttribute(CIProducts.Warehouse.ID).toString();
+            add2QueryBldr4Trigger(_parameter);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                storage = query.getCurrentValue().getId();
             }
         }
 
@@ -203,6 +204,18 @@ public abstract class Reservation_Base
         insert.execute();
 
         return new Return();
+    }
+
+    /**
+     * Allows to add additional criteria to the QueryBuilder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @throws EFapsException on error.
+     */
+    protected void add2QueryBldr4Trigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        // to be used by implementation
     }
 
     /**
