@@ -248,7 +248,7 @@ public abstract class Reservation_Base
             final MultiPrintQuery multi2 = queryBldr2.getPrint();
             multi2.addAttribute(CIProducts.Inventory.Storage);
             multi2.execute();
-            while (multi.next()) {
+            while (multi2.next()) {
                 final Long storage = multi2.<Long>getAttribute(CIProducts.Inventory.Storage);
                 final Insert insert = new Insert(CIProducts.TransactionReservationOutbound);
                 insert.add(CIProducts.TransactionReservationOutbound.Quantity,
