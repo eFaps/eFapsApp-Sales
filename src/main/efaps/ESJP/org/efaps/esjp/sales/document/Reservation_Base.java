@@ -185,7 +185,7 @@ public abstract class Reservation_Base
             }
         } else {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Warehouse);
-            add2QueryBldr4Trigger(_parameter);
+            add2QueryBldr4Trigger(_parameter, queryBldr);
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             if (query.next()) {
@@ -210,9 +210,11 @@ public abstract class Reservation_Base
      * Allows to add additional criteria to the QueryBuilder.
      *
      * @param _parameter Parameter as passed from the eFaps API.
+     * @param _queryBldr QueryBuilder to add to
      * @throws EFapsException on error.
      */
-    protected void add2QueryBldr4Trigger(final Parameter _parameter)
+    protected void add2QueryBldr4Trigger(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
         throws EFapsException
     {
         // to be used by implementation
