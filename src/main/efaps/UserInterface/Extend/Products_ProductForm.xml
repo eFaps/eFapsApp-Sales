@@ -38,6 +38,22 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field name="image">
+            <property name="Label">Products_ProductForm.image.Label</property>
+            <property name="RowSpan">5</property>
+            <trigger program="org.efaps.esjp.products.Image"
+                method="getImageFieldValueUI"
+                name="Products_ImageForm.image.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="max-width">200px</property>
+                <property name="max-height">200px</property>
+                <property name="RelationType">Products_Product2ImageThumbnail</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.products.Image"
+                method="access4Image"
+                name="Products_ProductForm.image.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
         <field name="name">
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
