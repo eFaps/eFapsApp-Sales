@@ -45,7 +45,9 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_QuotationPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
