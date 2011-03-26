@@ -1609,7 +1609,7 @@ public abstract class AbstractDocument_Base
             }
 
             @Override
-            protected void add2QueryBuilder4DropDown(final Parameter _parameter,
+            protected void add2QueryBuilder4List(final Parameter _parameter,
                                                      final QueryBuilder _queryBldr)
                 throws EFapsException
             {
@@ -1632,7 +1632,7 @@ public abstract class AbstractDocument_Base
                                         queryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink));
                     }
                 }
-                super.add2QueryBuilder4DropDown(_parameter, _queryBldr);
+                super.add2QueryBuilder4List(_parameter, _queryBldr);
             }
 
         };
