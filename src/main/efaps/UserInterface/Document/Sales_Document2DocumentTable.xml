@@ -41,30 +41,30 @@
         </field>
         <field name="name">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="SelectAlternateOID">linkto[To].oid</property>
-            <property name="Phrase">$&lt;linkto[To].type.label&gt; - $&lt;linkto[To].attribute[Name]&gt;</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
-            <property name="Select">linkto[To].attribute[Date]</property>
+            <property name="Select">linkto[ToAbstractLink].attribute[Date]</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="vendorLink">
-            <property name="Select">linkto[To].linkto[Salesperson].attribute[Name]</property>
+            <property name="Select">linkto[ToAbstractLink].linkto[Salesperson].attribute[Name]</property>
             <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="status">
-            <property name="SelectAlternateOID">linkto[To].oid</property>
-            <property name="Select">linkto[To].attribute[StatusAbstract]</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
+            <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[To].oid</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Target">popup</property>
             <property name="SortAble">false</property>
