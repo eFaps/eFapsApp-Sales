@@ -40,8 +40,12 @@
         <attribute>
             <key>ActivateCalculateCosts</key>
             <value>false</value>
-            <description>boolean (true/fale). Activate the calculation of Costs for a product in stock. Executed by calling en esjp after the insertion of a Incoming Invoice.</description>
+            <description>boolean (true/false). Activate the calculation of Costs for a product in stock. Executed by calling en esjp after the insertion of a Incoming Invoice.</description>
         </attribute>
-
+        <attribute>
+            <key>ActivateLongDecimal</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate the possibility the unit price will have until 4 decimal digits. </description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

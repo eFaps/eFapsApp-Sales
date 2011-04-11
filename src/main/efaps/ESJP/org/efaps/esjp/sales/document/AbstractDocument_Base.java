@@ -136,6 +136,22 @@ public abstract class AbstractDocument_Base
         return formater;
     }
 
+    protected DecimalFormat getDigitsformater4UnitPrice(final Calculator calc)
+        throws EFapsException
+    {
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
+        if (calc.isLongDecimal()) {
+            formater.setMaximumFractionDigits(4);
+            formater.setMinimumFractionDigits(4);
+        } else {
+            formater.setMaximumFractionDigits(2);
+            formater.setMinimumFractionDigits(2);
+        }
+        formater.setRoundingMode(RoundingMode.HALF_UP);
+        formater.setParseBigDecimal(true);
+        return formater;
+    }
+
     /**
      * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing the value formated
@@ -583,7 +599,7 @@ public abstract class AbstractDocument_Base
 
             cal.setUnitPrice(up);
             map.put("quantity", cal.getQuantityStr());
-            map.put("netunitprice", cal.getNetUnitPriceFmtStr(getTwoDigitsformater()));
+            map.put("netunitprice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
             map.put("netprice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
             map.put("nettotal", getNetTotalFmtStr(calcList));
             list.add(map);
@@ -786,6 +802,7 @@ public abstract class AbstractDocument_Base
         final Object[] rates = print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
 
         final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator());
 
         final StringBuilder currency = new StringBuilder();
         BigDecimal rate = null;
@@ -833,7 +850,7 @@ public abstract class AbstractDocument_Base
         final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
             .attribute(CIProducts.ProductAbstract.Name);
         final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
-            .attribute(CIProducts.ProductAbstract.Dimension);;
+            .attribute(CIProducts.ProductAbstract.Dimension);
         multi.addSelect(selProdOID, selProdName, selProdDim);
         multi.execute();
 
@@ -851,12 +868,12 @@ public abstract class AbstractDocument_Base
                             multi.getSelect(selProdOID),
                             multi.getAttribute(CISales.PositionAbstract.ProductDesc),
                             multi.getAttribute(CISales.PositionAbstract.UoM),
-                        (rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice),
-                        (rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount),
-                        (rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) :
-                            discountNetUnitPrice),
-                        (rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice),
-                        multi.getSelect(selProdDim)};
+                (rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice),
+                (rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount),
+                (rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                    : discountNetUnitPrice),
+                (rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice),
+                            multi.getSelect(selProdDim)};
             values.put(multi.<Integer>getAttribute(CISales.PositionAbstract.PositionNumber), value);
         }
         int i = 0;
@@ -867,9 +884,9 @@ public abstract class AbstractDocument_Base
                     .append(getSetFieldValue(i, "productAutoComplete", (String) entry.getValue()[1]))
                     .append(getSetFieldValue(i, "product", (String) entry.getValue()[2]))
                     .append(getSetFieldValue(i, "productDesc", (String) entry.getValue()[3]))
-                    .append(getSetFieldValue(i, "netUnitPrice", formater.format(entry.getValue()[5])))
+                    .append(getSetFieldValue(i, "netUnitPrice", formaterSysConf.format(entry.getValue()[5])))
                     .append(getSetFieldValue(i, "discount", formater.format(entry.getValue()[6])))
-                    .append(getSetFieldValue(i, "discountNetUnitPrice", formater.format(entry.getValue()[7])))
+                    .append(getSetFieldValue(i, "discountNetUnitPrice", formaterSysConf.format(entry.getValue()[7])))
                     .append(getSetFieldValue(i, "netPrice", formater.format(entry.getValue()[8])))
                     .append(getSetFieldValue(i, "uoM",
                                     getUoMFieldStr((Long) entry.getValue()[4], (Long) entry.getValue()[9]), false));
@@ -1013,9 +1030,9 @@ public abstract class AbstractDocument_Base
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
                 map.put("quantity", cal.getQuantityStr());
-                map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getTwoDigitsformater()));
+                map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
                 map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-                map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getTwoDigitsformater()));
+                map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
                 map.put("netTotal", getNetTotalFmtStr(calcList));
                 map.put("crossTotal", getCrossTotalFmtStr(calcList));
                 map.put("productAutoComplete", name);
@@ -1093,11 +1110,11 @@ public abstract class AbstractDocument_Base
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
             map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr( getTwoDigitsformater()));
-            map.put("netPrice", cal.getNetPriceFmtStr( getTwoDigitsformater()));
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
             map.put("netTotal", getNetTotalFmtStr(calcList));
             map.put("crossTotal", getCrossTotalFmtStr(calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr( getTwoDigitsformater()));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -1126,11 +1143,11 @@ public abstract class AbstractDocument_Base
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
             map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr( getTwoDigitsformater()));
-            map.put("netPrice", cal.getNetPriceFmtStr( getTwoDigitsformater()));
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
             map.put("netTotal", getNetTotalFmtStr(calcList));
             map.put("crossTotal",  getCrossTotalFmtStr(calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr( getTwoDigitsformater()));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
             list.add(map);
 
             retVal.put(ReturnValues.VALUES, list);
@@ -1142,9 +1159,9 @@ public abstract class AbstractDocument_Base
      * Method is executed as an update event of the field containing the
      * discount for products to calculate the new totals.
      *
-     * @param _parameter
-     * @return
-     * @throws EFapsException
+     * @param _parameter as passed from eFaps API.
+     * @return Return
+     * @throws EFapsException on error
      */
     public Return updateFields4Discount(final Parameter _parameter)
         throws EFapsException
@@ -1159,11 +1176,11 @@ public abstract class AbstractDocument_Base
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
             map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getTwoDigitsformater()));
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
             map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
             map.put("netTotal", getNetTotalFmtStr(calcList));
             map.put("crossTotal", getCrossTotalFmtStr(calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getTwoDigitsformater()));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
             list.add(map);
 
             retVal.put(ReturnValues.VALUES, list);
@@ -1415,12 +1432,13 @@ public abstract class AbstractDocument_Base
                 if (!calculator.isEmpty()) {
                     calculator.applyRate(newInst, rates[2]);
                     js.append("document.getElementsByName('netUnitPrice')[").append(i).append("].value='")
-                        .append(calculator.getNetUnitPriceFmtStr(getTwoDigitsformater())).append("';")
+                        .append(calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator))).append("';")
                         .append("document.getElementsByName('netPrice')[").append(i).append("].firstChild.data='")
                         .append(calculator.getNetPriceFmtStr(getTwoDigitsformater())).append("';")
                         .append("document.getElementsByName('discountNetUnitPrice')[").append(i)
                         .append("].firstChild.data='")
-                        .append(calculator.getDiscountNetUnitPriceFmtStr(getTwoDigitsformater())).append("';");
+                        .append(calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)))
+                        .append("';");
                 }
                 i++;
             }

@@ -232,7 +232,12 @@ public abstract class Calculator_Base
                                   final String _unitPrice)
         throws EFapsException
     {
-        final BigDecimal unitPrice = parse(_unitPrice);
+        int decDigCant = 2;
+        if (isLongDecimal()) {
+            decDigCant = 4;
+        }
+        final BigDecimal unitPrice = parse(_unitPrice).setScale(decDigCant, BigDecimal.ROUND_HALF_UP);
+
         final Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCY_INSTANCE_KEY);
         // Sales-Configuration
@@ -494,7 +499,6 @@ public abstract class Calculator_Base
         if (this.withoutTax) {
             ret = getNetUnitPrice();
         } else {
-
             if (this.productCrossUnitPrice == null) {
                 ret = getProductCrossUnitPrice().getCurrentPrice();
             } else {
@@ -555,19 +559,22 @@ public abstract class Calculator_Base
     /**
      * net unit price - (net unit price / 100 * discount).
      *
-     * @return dicount price for the product
+     * @return discount price for the product
      */
     public ProductPrice getProductDiscountNetUnitPrice()
     {
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
+        int decDigCant = 2;
+        if (isLongDecimal()) {
+            decDigCant = 4;
+        }
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(2, BigDecimal.ROUND_HALF_UP)
-                        .setScale(2, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(2, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
-                        .multiply(getDiscount())).setScale(2, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         return ret;
     }
 
@@ -692,9 +699,7 @@ public abstract class Calculator_Base
         if (this.withoutTax) {
             ret = getNetPrice();
         } else {
-            final BigDecimal crossprice = getCrossUnitPrice().multiply(this.quantity);
-            final BigDecimal disc = crossprice.divide(new BigDecimal(100)).multiply(this.discount);
-            ret = crossprice.subtract(disc);
+            ret = getProductCrossPrice().getCurrentPrice();
         }
         return ret;
     }
@@ -705,13 +710,34 @@ public abstract class Calculator_Base
     public ProductPrice getProductCrossPrice()
     {
         final ProductPrice ret = getNewPrice();
-        final ProductPrice unit = getProductCrossUnitPrice();
+        final ProductPrice unit = getProductDiscountCrossUnitPrice();
+        ret.setBasePrice(unit.getBasePrice().multiply(this.quantity));
+        ret.setOrigPrice(unit.getOrigPrice().multiply(this.quantity));
+        ret.setCurrentPrice(unit.getCurrentPrice().multiply(this.quantity));
+        return ret;
+    }
+
+    /**
+     * calculate the product price with discount, but calculate the tax after the discount
+     * when the factor is different of 1, because the discount price has to be rounded before.
+     *
+     * @return @return discount price for the product, depending the tax factor.
+     */
+    public ProductPrice getProductDiscountCrossUnitPrice()
+    {
+        int decDigCant = 2;
+        if (isLongDecimal()) {
+            decDigCant = 4;
+        }
+        ProductPrice ret = getNewPrice();
+        final ProductPrice unit = getProductNetUnitPrice();
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
-                        .multiply(this.discount)));
+                        .multiply(this.discount)).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
-                        .multiply(this.discount)));
+                        .multiply(this.discount)).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
-                        .multiply(this.discount)));
+                        .multiply(this.discount)).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+        ret = evalProductCrossUnitPrice(ret);
         return ret;
 
     }
@@ -764,19 +790,20 @@ public abstract class Calculator_Base
     public ProductPrice getProductCrossUnitPrice()
     {
         if (this.productCrossUnitPrice == null) {
-            this.productCrossUnitPrice = evalProductCrossUnitPrice();
+            this.productCrossUnitPrice = evalProductCrossUnitPrice(this.productPrice);
         }
         return this.productCrossUnitPrice;
     }
 
     /**
+     * @param price depending if it is calculating the cross unit price
      * @return eval new cross unit price
      */
-    protected ProductPrice evalProductCrossUnitPrice()
+    protected ProductPrice evalProductCrossUnitPrice(final ProductPrice price)
     {
         final ProductPrice ret = getNewPrice();
 
-        if (this.productPrice == null) {
+        if (price == null) {
             ret.setBasePrice(BigDecimal.ZERO);
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
@@ -790,36 +817,36 @@ public abstract class Calculator_Base
                 final BigDecimal num = new BigDecimal(rate.getNumerator());
                 final BigDecimal factor = num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
                 if (factor.compareTo(BigDecimal.ONE) == 0) {
-                    ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
+                    ret.setCurrentPrice(price.getCurrentPrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getCurrentPrice());
-                    ret.setBasePrice(this.productPrice.getBasePrice() == null
+                                    : price.getCurrentPrice());
+                    ret.setBasePrice(price.getBasePrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getBasePrice());
-                    ret.setOrigPrice(this.productPrice.getOrigPrice() == null
+                                    : price.getBasePrice());
+                    ret.setOrigPrice(price.getOrigPrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getOrigPrice());
+                                    : price.getOrigPrice());
                 } else {
-                    ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
+                    ret.setCurrentPrice(price.getCurrentPrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getCurrentPrice().multiply(BigDecimal.ONE.add(factor)));
-                    ret.setBasePrice(this.productPrice.getBasePrice() == null
+                                    : price.getCurrentPrice().multiply(BigDecimal.ONE.add(factor)));
+                    ret.setBasePrice(price.getBasePrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getBasePrice().multiply(BigDecimal.ONE.add(factor)));
-                    ret.setOrigPrice(this.productPrice.getOrigPrice() == null
+                                    : price.getBasePrice().multiply(BigDecimal.ONE.add(factor)));
+                    ret.setOrigPrice(price.getOrigPrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getOrigPrice().multiply(BigDecimal.ONE.add(factor)));
+                                    : price.getOrigPrice().multiply(BigDecimal.ONE.add(factor)));
                 }
             } else {
-                ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
+                ret.setCurrentPrice(price.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
-                                : this.productPrice.getCurrentPrice());
-                ret.setBasePrice(this.productPrice.getBasePrice() == null
+                                : price.getCurrentPrice());
+                ret.setBasePrice(price.getBasePrice() == null
                                 ? BigDecimal.ZERO
-                                : this.productPrice.getBasePrice());
-                ret.setOrigPrice(this.productPrice.getOrigPrice() == null
+                                : price.getBasePrice());
+                ret.setOrigPrice(price.getOrigPrice() == null
                                 ? BigDecimal.ZERO
-                                : this.productPrice.getOrigPrice());
+                                : price.getOrigPrice());
             }
         }
         return ret;
@@ -1016,5 +1043,11 @@ public abstract class Calculator_Base
     public LocalDate getLocalDate()
     {
         return this.localDate;
+    }
+
+    public boolean isLongDecimal () {
+        final boolean longDec = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                                                                .getAttributeValueAsBoolean("ActivateLongDecimal");
+        return longDec;
     }
 }
