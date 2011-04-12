@@ -51,10 +51,29 @@ public abstract class Invoice_Base
     extends DocumentSum
 {
 
+    /**
+     * Method for create a new Quotation.
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new Return();
+        createDoc(_parameter);
+        return new Return();
+    }
+
+    /**
+     * Internal Method to create the document and the position.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Instance of CreatedDoc.
+     * @throws EFapsException on error.
+     */
+    protected CreatedDoc createDoc(final Parameter _parameter)
+        throws EFapsException
+    {
         final String date = _parameter.getParameterValue("date");
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
@@ -87,20 +106,46 @@ public abstract class Invoice_Base
         insert.add(CISales.Invoice.RateCurrencyId, rateCurrInst.getId());
         insert.add(CISales.Invoice.Rate, rateObj);
         insert.execute();
-        insert.getInstance();
-        Integer i = 1;
-        for (final Calculator calc : calcList) {
+
+        final CreatedDoc createdDoc = new CreatedDoc(insert.getInstance());
+        createPositions(_parameter, calcList, createdDoc);
+        return createdDoc;
+    }
+
+    /**
+     * Internal Method to create the positions for this Document.
+     * @param _parameter    Parameter as passed from eFaps API.
+     * @param _calcList     List of Calculators
+     * @param _createdDoc   cretaed Document
+     * @throws EFapsException on error
+     */
+    protected void createPositions(final Parameter _parameter,
+                                   final List<Calculator> _calcList,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+     // Sales-Configuration
+        final Instance baseCurrInst = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
+                        _parameter.getParameterValue("rateCurrencyId"));
+
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
+        Integer i = 0;
+        for (final Calculator calc : _calcList) {
             final Insert posIns = new Insert(CISales.InvoicePosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i - 1]).getId();
-            posIns.add(CISales.InvoicePosition.Invoice, insert.getId());
+            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
+            posIns.add(CISales.InvoicePosition.Invoice, _createdDoc.getInstance().getId());
             posIns.add(CISales.InvoicePosition.PositionNumber, i);
             posIns.add(CISales.InvoicePosition.Product, productdId);
-            posIns.add(CISales.InvoicePosition.ProductDesc, _parameter.getParameterValues("productDesc")[i - 1]);
+            posIns.add(CISales.InvoicePosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
             posIns.add(CISales.InvoicePosition.Quantity, calc.getQuantity());
-            posIns.add(CISales.InvoicePosition.UoM, _parameter.getParameterValues("uoM")[i - 1]);
+            posIns.add(CISales.InvoicePosition.UoM, _parameter.getParameterValues("uoM")[i]);
             posIns.add(CISales.InvoicePosition.Tax, calc.getTaxId());
             posIns.add(CISales.InvoicePosition.Discount, calc.getDiscount());
-            posIns.add(CISales.InvoicePosition.CurrencyId, rateCurrInst.getId());
+            posIns.add(CISales.InvoicePosition.CurrencyId, baseCurrInst.getId());
             posIns.add(CISales.InvoicePosition.Rate, rateObj);
             posIns.add(CISales.InvoicePosition.RateCurrencyId, rateCurrInst.getId());
             posIns.add(CISales.InvoicePosition.CrossUnitPrice,
@@ -114,7 +159,6 @@ public abstract class Invoice_Base
             posIns.execute();
             i++;
         }
-        return ret;
     }
 
     /**
