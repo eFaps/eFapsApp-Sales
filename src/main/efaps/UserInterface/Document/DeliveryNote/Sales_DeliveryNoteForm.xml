@@ -121,13 +121,13 @@
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_DeliberyNote/Client.Heading</property>
+            <property name="Label">Sales_DeliveryNote/Client.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_DeliberyNote/Contact.Label</property>
+            <property name="Label">Sales_DeliveryNote/Contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
@@ -143,14 +143,14 @@
         <field name="contactData">
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_DeliberyNote/contactData.Label</property>
+            <property name="Label">Sales_DeliveryNote/ContactData.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_DeliberyNote/Position.Heading</property>
+            <property name="Label">Sales_DeliveryNote/Position.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="positionTable" character="Target">
