@@ -160,4 +160,14 @@ public abstract class Receipt_Base
             i++;
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String getJavaScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getJavaScript(_parameter, false);
+    }
 }
