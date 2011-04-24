@@ -33,7 +33,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("21ff1f7b-6dd2-4b2c-8fdc-6f09e5a3b8f8")
 @EFapsRevision("$Rev$")
-public class OrderInbound extends OrderInbound_Base
+public class OrderInbound
+    extends OrderInbound_Base
 {
 
 }

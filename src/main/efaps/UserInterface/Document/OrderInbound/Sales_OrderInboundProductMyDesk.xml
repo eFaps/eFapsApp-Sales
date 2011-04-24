@@ -37,9 +37,11 @@
         </access>
         <target>
             <table>Sales_OrderInboundProductTable</table>
-            <evaluate program="org.efaps.esjp.sales.document.OrderInbound"  method="getProductTable"/>
+            <evaluate program="org.efaps.esjp.sales.document.OrderInbound" method="getProductTable">
+                <property name="Types">Sales_OrderInboundPosition</property>
+            </evaluate>
         </target>
-        
+
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
