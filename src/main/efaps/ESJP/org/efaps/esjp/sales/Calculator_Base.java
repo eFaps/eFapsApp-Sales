@@ -77,7 +77,6 @@ public abstract class Calculator_Base
      */
     private ProductPrice minProductPrice;
 
-
     /**
      * Net unit price.
      */
@@ -207,6 +206,14 @@ public abstract class Calculator_Base
             }
         }
         setDiscount(_discount);
+
+        if (getMinProductPrice() != null) {
+            final BigDecimal discountPrice = getProductPrice().getBasePrice().subtract(getProductPrice().getBasePrice()
+                            .divide(new BigDecimal(100)).multiply(getDiscount()));
+            if (discountPrice.compareTo(getMinProductPrice().getBasePrice()) < 0) {
+                setDiscount(BigDecimal.ZERO);
+            }
+        }
         setQuantity(_quantity);
     }
 
@@ -732,11 +739,11 @@ public abstract class Calculator_Base
         ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
-                        .multiply(this.discount)).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
-                        .multiply(this.discount)).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
-                        .multiply(this.discount)).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
+                        .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret = evalProductCrossUnitPrice(ret);
         return ret;
 
@@ -796,14 +803,14 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @param price depending if it is calculating the cross unit price
+     * @param _price depending if it is calculating the cross unit price
      * @return eval new cross unit price
      */
-    protected ProductPrice evalProductCrossUnitPrice(final ProductPrice price)
+    protected ProductPrice evalProductCrossUnitPrice(final ProductPrice _price)
     {
         final ProductPrice ret = getNewPrice();
 
-        if (price == null) {
+        if (_price == null) {
             ret.setBasePrice(BigDecimal.ZERO);
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
@@ -817,36 +824,36 @@ public abstract class Calculator_Base
                 final BigDecimal num = new BigDecimal(rate.getNumerator());
                 final BigDecimal factor = num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
                 if (factor.compareTo(BigDecimal.ONE) == 0) {
-                    ret.setCurrentPrice(price.getCurrentPrice() == null
+                    ret.setCurrentPrice(_price.getCurrentPrice() == null
                                     ? BigDecimal.ZERO
-                                    : price.getCurrentPrice());
-                    ret.setBasePrice(price.getBasePrice() == null
+                                    : _price.getCurrentPrice());
+                    ret.setBasePrice(_price.getBasePrice() == null
                                     ? BigDecimal.ZERO
-                                    : price.getBasePrice());
-                    ret.setOrigPrice(price.getOrigPrice() == null
+                                    : _price.getBasePrice());
+                    ret.setOrigPrice(_price.getOrigPrice() == null
                                     ? BigDecimal.ZERO
-                                    : price.getOrigPrice());
+                                    : _price.getOrigPrice());
                 } else {
-                    ret.setCurrentPrice(price.getCurrentPrice() == null
+                    ret.setCurrentPrice(_price.getCurrentPrice() == null
                                     ? BigDecimal.ZERO
-                                    : price.getCurrentPrice().multiply(BigDecimal.ONE.add(factor)));
-                    ret.setBasePrice(price.getBasePrice() == null
+                                    : _price.getCurrentPrice().multiply(BigDecimal.ONE.add(factor)));
+                    ret.setBasePrice(_price.getBasePrice() == null
                                     ? BigDecimal.ZERO
-                                    : price.getBasePrice().multiply(BigDecimal.ONE.add(factor)));
-                    ret.setOrigPrice(price.getOrigPrice() == null
+                                    : _price.getBasePrice().multiply(BigDecimal.ONE.add(factor)));
+                    ret.setOrigPrice(_price.getOrigPrice() == null
                                     ? BigDecimal.ZERO
-                                    : price.getOrigPrice().multiply(BigDecimal.ONE.add(factor)));
+                                    : _price.getOrigPrice().multiply(BigDecimal.ONE.add(factor)));
                 }
             } else {
-                ret.setCurrentPrice(price.getCurrentPrice() == null
+                ret.setCurrentPrice(_price.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
-                                : price.getCurrentPrice());
-                ret.setBasePrice(price.getBasePrice() == null
+                                : _price.getCurrentPrice());
+                ret.setBasePrice(_price.getBasePrice() == null
                                 ? BigDecimal.ZERO
-                                : price.getBasePrice());
-                ret.setOrigPrice(price.getOrigPrice() == null
+                                : _price.getBasePrice());
+                ret.setOrigPrice(_price.getOrigPrice() == null
                                 ? BigDecimal.ZERO
-                                : price.getOrigPrice());
+                                : _price.getOrigPrice());
             }
         }
         return ret;
@@ -1045,7 +1052,11 @@ public abstract class Calculator_Base
         return this.localDate;
     }
 
-    public boolean isLongDecimal () {
+    /**
+     * @return true if the long decimal is activated
+     */
+    public boolean isLongDecimal()
+    {
         final boolean longDec = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                                                                 .getAttributeValueAsBoolean("ActivateLongDecimal");
         return longDec;

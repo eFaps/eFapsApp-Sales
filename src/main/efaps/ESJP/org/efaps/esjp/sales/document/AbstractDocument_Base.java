@@ -136,11 +136,16 @@ public abstract class AbstractDocument_Base
         return formater;
     }
 
-    protected DecimalFormat getDigitsformater4UnitPrice(final Calculator calc)
+    /**
+     * @param _calc calculator the format is wanted for
+     * @return  Decimal Format
+     * @throws EFapsException on error
+     */
+    protected DecimalFormat getDigitsformater4UnitPrice(final Calculator _calc)
         throws EFapsException
     {
         final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (calc.isLongDecimal()) {
+        if (_calc.isLongDecimal()) {
             formater.setMaximumFractionDigits(4);
             formater.setMinimumFractionDigits(4);
         } else {
@@ -640,6 +645,11 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter Parameter as passeb by the eFaps API
+     * @return update map
+     * @throws EFapsException on error
+     */
     public Return updateFields4Contact(final Parameter _parameter)
         throws EFapsException
     {
@@ -772,8 +782,8 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the javascript part for setting the values.
-     * @param Instance  instance to be copied
-     * @return  javascritp
+     * @param _instance  instance to be copied
+     * @return  javascript
      * @throws EFapsException on error
      */
     protected String getSetValuesString(final Instance _instance)
@@ -868,11 +878,11 @@ public abstract class AbstractDocument_Base
                             multi.getSelect(selProdOID),
                             multi.getAttribute(CISales.PositionAbstract.ProductDesc),
                             multi.getAttribute(CISales.PositionAbstract.UoM),
-                (rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice),
-                (rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount),
-                (rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                    : discountNetUnitPrice),
-                (rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice),
+                rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice,
+                rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount,
+                rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                    : discountNetUnitPrice,
+                rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice,
                             multi.getSelect(selProdDim)};
             values.put(multi.<Integer>getAttribute(CISales.PositionAbstract.PositionNumber), value);
         }
@@ -1181,6 +1191,9 @@ public abstract class AbstractDocument_Base
             map.put("netTotal", getNetTotalFmtStr(calcList));
             map.put("crossTotal", getCrossTotalFmtStr(calcList));
             map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            if (cal.getDiscount().compareTo(BigDecimal.ZERO) == 0) {
+                map.put("discount", cal.getDiscountStr());
+            }
             list.add(map);
 
             retVal.put(ReturnValues.VALUES, list);
@@ -1203,8 +1216,11 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final List<Calculator> ret = new ArrayList<Calculator>();
-        final String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
         final String[] quantities = _parameter.getParameterValues("quantity");
+        String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
+        if (unitPrices == null && quantities != null) {
+            unitPrices = new String[quantities.length];
+        }
         final String[] discounts = _parameter.getParameterValues("discount");
         final String[] oids = _parameter.getParameterValues("product");
         final boolean withoutTax = "true".equals(_parameter.getParameterValue("withoutVAT"));
@@ -1218,12 +1234,12 @@ public abstract class AbstractDocument_Base
                 if (oldCalcs.size() > 0 && oldCalcs.size() > i) {
                     oldCalc = oldCalcs.get(i);
                 }
-                if (unitPrices[i].length() > 0 || quantities[i].length() > 0 || discounts[i].length() > 0
+                if (quantities[i].length() > 0 || unitPrices[i].length() > 0 || discounts[i].length() > 0
                                 || oids[i].length() > 0) {
                     final boolean priceFromDB = _row4priceFromDB != null
                                                     && (_row4priceFromDB.equals(i) || _row4priceFromDB.equals(-1));
                     final Calculator calc = new Calculator(_parameter, oldCalc, oids[i], quantities[i], unitPrices[i],
-                                    discounts[i], priceFromDB, false);
+                                    discounts[i], priceFromDB, applyMinRetailPrice(_parameter));
                     calc.setWithoutTax(withoutTax);
                     ret.add(calc);
                 } else {
@@ -1231,9 +1247,39 @@ public abstract class AbstractDocument_Base
                 }
             }
         }
-
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CALCULATOR_KEY, ret);
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return return granting access or not
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4NetUnitPrice(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        if ((field.isEditableDisplay(TargetMode.CREATE) && !applyMinRetailPrice(_parameter))
+                        || (field.isReadonlyDisplay(TargetMode.CREATE) && applyMinRetailPrice(_parameter))) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return true it minimum retail price must be applied else false
+     * @throws EFapsException on error
+     *
+     */
+    public boolean applyMinRetailPrice(final Parameter _parameter)
+        throws EFapsException
+    {
+        //Sales-Configuration
+        final SystemConfiguration config = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        return config.getAttributeValueAsBoolean("ActivateMinRetailPrice");
     }
 
     protected String getCrossTotalFmtStr(final List<Calculator> _calcList)
