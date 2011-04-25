@@ -78,10 +78,23 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_CostSheetPosition/NetUnitPrice.Label</property>
-             <trigger program="org.efaps.esjp.sales.document.CostSheet"
+            <trigger program="org.efaps.esjp.sales.document.CostSheet"
                 method="updateFields4NetUnitPrice"
                 name="Sales_CostSheetPositionTable.netUnitPrice.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.CostSheet"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_CostSheetPositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="netUnitPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Attribute">NetUnitPrice</property>
+            <property name="Label">Sales_CostSheetPosition/NetUnitPrice.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.CostSheet"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_CostSheetPositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="discount">
             <property name="ModeCreate">EDITABLE</property>
