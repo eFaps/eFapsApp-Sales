@@ -1220,6 +1220,7 @@ public abstract class AbstractDocument_Base
         String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
         if (unitPrices == null && quantities != null) {
             unitPrices = new String[quantities.length];
+            unitPrices[0] = "0";
         }
         final String[] discounts = _parameter.getParameterValues("discount");
         final String[] oids = _parameter.getParameterValues("product");
