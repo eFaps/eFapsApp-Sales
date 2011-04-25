@@ -1220,7 +1220,6 @@ public abstract class AbstractDocument_Base
         String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
         if (unitPrices == null && quantities != null) {
             unitPrices = new String[quantities.length];
-            unitPrices[0] = "0";
         }
         final String[] discounts = _parameter.getParameterValues("discount");
         final String[] oids = _parameter.getParameterValues("product");
@@ -1235,7 +1234,7 @@ public abstract class AbstractDocument_Base
                 if (oldCalcs.size() > 0 && oldCalcs.size() > i) {
                     oldCalc = oldCalcs.get(i);
                 }
-                if (quantities[i].length() > 0 || unitPrices[i].length() > 0 || discounts[i].length() > 0
+                if (quantities[i].length() > 0 || discounts[i].length() > 0 || unitPrices[i].length() > 0
                                 || oids[i].length() > 0) {
                     final boolean priceFromDB = _row4priceFromDB != null
                                                     && (_row4priceFromDB.equals(i) || _row4priceFromDB.equals(-1));
