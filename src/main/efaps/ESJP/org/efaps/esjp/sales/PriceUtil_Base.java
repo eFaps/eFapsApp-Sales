@@ -142,11 +142,11 @@ public abstract class PriceUtil_Base
     }
 
     /**
-     * Returns an Array of rates:
+     * Returns an Array of rates.:
      * <ol>
      *  <li>new Rate used for Calculation</li>
      *  <li>current Rate used for Calculation</li>
-     *  <li>rate used to convert the current rate into the new rate</rate>
+     *  <li>rate used to convert the current rate into the new rate</li>
      *  <li>new Rate as the value for the UserInterface</li>
      * </ol>
      * @param _date date the rates will be retrieved for
@@ -188,9 +188,15 @@ public abstract class PriceUtil_Base
                 currentRate = BigDecimal.ONE;
             }
         }
-        return new BigDecimal[]{ newRate, currentRate, newRate.divide(currentRate, 12, RoundingMode.HALF_UP), newRateUI};
+        return new BigDecimal[]{ newRate, currentRate,
+                        newRate.divide(currentRate, 12, RoundingMode.HALF_UP), newRateUI};
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return exchange rate
+     * @throws EFapsException on error
+     */
     public BigDecimal getExchangeRate(final Parameter _parameter)
         throws EFapsException
     {
@@ -213,6 +219,12 @@ public abstract class PriceUtil_Base
         return getExchangeRate(_date, curInstance)[0];
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _curInstance instrance of the currency
+     * @return exchange rate
+     * @throws EFapsException on error
+     */
     public BigDecimal getExchangeRate(final Parameter _parameter,
                                       final Instance _curInstance)
         throws EFapsException
@@ -255,6 +267,11 @@ public abstract class PriceUtil_Base
         return new BigDecimal[] { rate, rateUI };
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return new DateTime
+     * @throws EFapsException on error
+     */
     public DateTime getDateFromParameter(final Parameter _parameter)
         throws EFapsException
     {
@@ -310,6 +327,9 @@ public abstract class PriceUtil_Base
          */
         private BigDecimal baseRate = BigDecimal.ONE;
 
+        /**
+         *
+         */
         public ProductPrice()
         {
             final Instance baseInst = SystemConfiguration.get(UUID
@@ -318,6 +338,11 @@ public abstract class PriceUtil_Base
             this.currentCurrencyInstance = baseInst;
         }
 
+        /**
+         * @param _origCurrencyInst instance of the currency
+         * @param _origPrice        original price
+         * @param _basePrice        base price
+         */
         public ProductPrice(final Instance _origCurrencyInst,
                             final BigDecimal _origPrice,
                             final BigDecimal _basePrice)
