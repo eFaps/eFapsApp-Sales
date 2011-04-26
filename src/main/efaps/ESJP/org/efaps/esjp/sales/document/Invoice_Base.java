@@ -77,7 +77,6 @@ public abstract class Invoice_Base
         final String date = _parameter.getParameterValue("date");
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final String name = _parameter.getParameterValue("name4create");
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
@@ -98,7 +97,7 @@ public abstract class Invoice_Base
         insert.add(CISales.Invoice.Contact, contactid);
         insert.add(CISales.Invoice.Date, date == null ? DateTimeUtil.normalize(new DateMidnight().toDateTime()) : date);
         insert.add(CISales.Invoice.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.Invoice.Name, name);
+        insert.add(CISales.Invoice.Name, getDocName4Create(_parameter));
         insert.add(CISales.Invoice.Status, ((Long) Status.find("Sales_InvoiceStatus", "Open").getId()).toString());
         insert.add(CISales.Invoice.Note, _parameter.getParameterValue("note"));
         insert.add(CISales.Invoice.DueDate, _parameter.getParameterValue("dueDate"));

@@ -1703,6 +1703,17 @@ public abstract class AbstractDocument_Base
         return  field.dropDownFieldValue(_parameter);
     }
 
+    /**
+     * Get the name for the document on creation.
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return new Name
+     * @throws EFapsException on error
+     */
+    protected String getDocName4Create(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getParameterValue(_parameter.getParameterValue("name4create"));
+    }
 
     /**
      * Class is used as the return value for the internal Create methods.
