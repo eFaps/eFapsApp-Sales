@@ -1,0 +1,153 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     2cb6017a-d0f2-4fad-a0cb-62854b528a53
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Documentos
+<wiki:toc max_depth="3"/>
+
+----
+En el modulo ventas podemos encontrar una serie de documentos los cuales están trabajando en conjunto para que pueda
+completarse el ciclo de todos los procesos.
+Los documentos que se encuentran en este modulo son:
+
+  * 1.1 Presupuestos
+  * 1.2 Facturas
+  * 1.3 Boleta
+  * 1.4 Contrato de venta
+
+==1.1. Presupuestos==
+El modulo presupuestos contiene lo siguiente:
+
+  * Crear presupuesto
+  * Crear de documento
+  * Borrar seleccionado
+  * Exportar
+
+===Crear presupuesto===
+Se dirige a la opción acción e ingresa a crear, donde le aparecerá una ventana llamada crear nuevo presupuesto, a
+continuación se le mostrara cuales son los campos obligatorios y secundarios,
+
+Obligatorio: Pspto-No, fecha y Nombre / Razón social.
+Secundario: Cantidad, producto, descripción del producto, unidad, precio unitario, descuento (%) y nota.
+
+Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
+
+===Crear de documento===
+Ingrese en Pspto-No. el código del presupuesto(colocar el código o poner asterisco para la búsqueda), para poder crear a
+través de este documento otro presupuesto.
+
+===Borrar seleccionado===
+Seleccionar uno o varios presupuesto, dirigirse a la opción acción y elija borrar seleccionado.
+
+===Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+==1.2. facturas==
+El modulo facturas contiene lo siguiente:
+
+  * Crear
+  * Crear de documento
+  * Borrar seleccionado
+  * Exportar
+
+===Crear===
+Para crear una factura usted debe ingresar a crear que se encuentra en la opción acción.
+La ventana crear nueva factura, le muestra los campos que debemos ingresar información, a continuación se le mostrara
+cuales son los campos obligatorios y los campos secundarios,
+
+Obligatorio: fecha, No, encargado y Nombre /Razón social.
+Secundario: Todos los campos de la clasificación posiciones.
+
+Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
+
+===Crear de documento===
+Le brinda la facilidad de crear una factura a través de un documento ya creado anteriormente, el documento que puede
+ingresar es contrato de venta o factura, se ingresa colocando su código o {{{*}}}.
+Ingresamos a la ventana crear nueva factura de documento en donde visualizamos los datos del documento escogido y los
+unicos datos que no se puede modificar son precio unitario, P.U. con descuento y precio neto.
+
+===Borrar seleccionado===
+Seleccionar una o varias facturas, dirigirse a la opción acción y elija borrar.
+
+===Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+==1.3. Boleta==
+El modulo boleta contiene lo siguiente:
+
+  * Crear.
+  * Crear de documento.
+  * Borrar seleccionado.
+  * Exportar.
+
+===Crear===
+Para crear una boleta usted debe ingresar a crear que se encuentra en la opción acción. La ventana crear nueva boleta,
+le muestra los campos que debemos ingresar información, a continuación se le mostrara cuales son los campos obligatorios
+y los campos secundarios,
+
+Obligatorio: fecha, No, encargado y Nombre /Razón social.
+Secundario: Todos los campos de la clasificación posiciones.
+
+Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
+
+===Crear de documento===
+Le brinda la facilidad de crear una boleta a través de un documento ya creado anteriormente, el documento que puede
+ingresar es presupuesto o boleta.
+
+===Borrar seleccionado===
+Seleccionar una o varias boletas, dirigirse a la opción acción y elija borrar.
+
+===Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+==1.4. Contrato de venta==
+A continuación veremos los siguientes puntos:
+
+  * 1.4.1 Crear nuevo contrato de venta
+  * 1.4.2 Crear de documento
+
+===1.4.1 Crear nuevo contrato de venta===
+Este contrato de venta nos sirve para poder realizar un pedido o una reserva. A continuación se le mostrara que datos que
+son obligatorios y secundarios,
+
+Obligatorio: Fecha, N°,cliente y encargado.
+Secundario:
+N° serie del local: es el código que le corresponde a cada tienda.
+Información: es la información que aparece según el cliente que es elegido.
+Nota : la información que desea agregar.
+Posición: contamos con las siguientes columnas,
+  * Cantidad: colocar la cantidad de productos.
+  * Producto: llamar al producto por su nombre o solo colocar *.
+  * Descripción: es la información que aparece del producto.
+  * Unidad: es la unidad que a sido ingresada al momento de crear este producto.
+  * Precio unitario: es el precio del producto, para colocar precio al producto usted debe de dirigirse al modulo productos e ingresar al producto que desea colocar el precio y se dirige a lista de precios de venta.
+  * Descuento: es el descuento que usted desea realizar para esta operación.
+  * Precio neto: es el monto total que se obtiene como resultado.
+
+|| *Cantidad* || *Producto* || *Descripción * || *Unidad* || *Precio unitario* || *Descuento* ||*Precio neto* ||
+|| 1 || botella || retornable || unid || 600.50 || 10 || 540,45 ||
+
+La  información ingresada se va mostrar de esta manera:
+
+|| *Tipo* || *Nombre* || *Fecha* || *Encargado* || _*Estado* ||
+|| Contrato de Venta || 009-00004 || 2/05/2011 || Administrator || pendiente ||
+
+El estado pendiente es por defecto, pero el contrato de venta cuenta además con otros estados que son cancelado y reservado.
+
+===1.4.2 Crear de documento===
+Nos ayuda a crear a partir de un  documento, el documento puede ser contrato de venta o presupuesto, colocamos el código
+o solo * para llamar a los documentos.
+
+Nos muestra la ventana crear nuevo contrato de venta de documento en donde figura la información del documento elegido,
+en esta ventana podemos modificar la mayoría de datos menos precio unitario y precio neto.
+
+|| *Cantidad* || *Producto* || *Descripción * || *Unidad* || _*Precio unitario* || *Descuento* ||_*Precio neto* ||
+|| 1 || botella || retornable || unid || 600.50 || 10 || 540,45 ||

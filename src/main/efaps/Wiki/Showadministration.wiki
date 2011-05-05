@@ -1,0 +1,244 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     1db98b7b-d0f2-4fad-a0cb-62854b528373
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Ingresando a Administración
+<wiki:toc max_depth="3"/>
+
+----
+A partir de este modulo podemos dar un control a todos los datos que interactúan o que son utilizados por los demás
+módulos.
+A continuacion veremos lo que contiene este modulo,
+
+  * 2.1 Atributos
+  * 2.2 Categoría de impuestos
+  * 2.3 Cuentas
+  * 2.4 Pagos
+  * 2.5 Transacciones
+  * 2.6 Saldo
+  * 2.7 Ajustes de caja
+  * 2.8 Modulo de texto
+
+==2.1 Atributos==
+Cuando entramos a cualquiera de los datos registrados en el sistema, nos muestra su información y además tenemos dos
+opciones la de editar y exportar. Editar nos brinda la facilidad de corregir la información ingresada en los campos valor
+y descripción. Exportar le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo,
+en dos tipos de formatos PDF o XLS.
+
+==2.2 Categoría de impuestos==
+Nos sirve para modificar los datos ingresados con anterioridad del IGV para ello debemos de entrar a IGV contamos con los
+siguientes puntos:
+
+  * 2.2.1 Editar
+  * 2.2.2 Exportar
+  * 2.2.3 Impuestos
+  * 2.2.4 Ingresar a un IGV creado
+
+===2.2.1 Editar===
+Podemos modificar el nombre, en caso que desee realizar una corrección.
+
+===2.2.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+===2.2.3 Impuestos===
+Contamos con los siguientes puntos:
+
+  * a. Crear
+  * b. Borrar seleccionado
+  * c. Exportar
+
+====a. Crear====
+Para crear un impuesto usted debe ingresar a crear, que se encuentra en la opción acción.
+La ventana crear nuevo impuesto, le muestra los campos obligatorios:
+
+Nombre: Colocar el nombre I.G.V. porque es el impuesto con el cual estamos trabajando actualmente.
+Numerador: es el numero que se encuentra en la parte superior de una fracción ejemplo: si el I.G.V. actual es 0,14 la
+fracción sera 14/100 y entonces el numero superior sera 14.
+Denominador:es el numero que se encuentra en la parte inferior de una fracción ejemplo: si el I.G.V. actual es 0,14 la
+fracción sera 14/100 y entonces el numero inferior sera 100.
+Valido desde: es la fecha desde cuando se va usar la nueva cantidad de I.G.V.
+
+====b. Borrar seleccionado====
+Seleccionar uno o varios impuesto y dirigirse a la opción acción y elija borrar seleccionado.
+
+====c. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+===2.3.4 Ingresar a un IGV creado===
+Contamos con la siguiente tabla en el modulo de impuestos:
+
+|| *Nombre* || *Numerador* || *Denominador* || *Válido desde* ||
+|| *IGV* || 19 || 100 || 1/01/2009 ||
+
+Seleccionamos la palabra que se encuentra resaltada en la fila y es IGV, una vez adentro vemos la información del IGV
+
+El IGV seleccionado cuenta con los siguientes puntos:
+
+  * a. Editar
+  * b. Exportar
+  * c. Cuenta
+
+====a. Editar====
+Podemos modificar la información de los siguientes campos:
+
+   * Nombre
+   * Numerador
+   * valido desde
+   * Denominador
+   * Nombre
+
+====b. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+====c. Cuenta====
+Veremos los siguientes puntos:
+
+  * Agregar
+  * Desconectar
+  * Exportar
+
+=====Agregar=====
+Nos ayuda a relacionar una cuenta existente con la cuenta del IGV. Para relacionar debe de dirigirse a acción y luego a
+agregar, la ventana buscar cuentas le mostrara dos campos que son numero y descripción en donde debe ingresar información
+en cualquiera de ellas o puede simplemente colocar solo *, después de esto se mostrara una lista completa de cuentas.
+
+=====Desconectar=====
+Seleccionamos una o mas cuentas nos dirigimos a acción y seleccionamos desconectar.
+
+=====Exportar=====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+==2.3 Cuentas==
+En este modulo vamos a explicar:
+
+  * 2.3.1 Caja
+  * 2.3.2 Caja chica
+
+===2.3.1 Caja===
+Veremos los siguientes puntos:
+
+  * a. Editar
+  * b. Exportar
+  * c. Transacciones
+
+====a. Editar====
+Usted va poder cambiar la información ingresada con anterioridad.
+
+====b. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+====c. Transacciones====
+
+  * Balance
+  * Recibo de caja chica
+  * Exportar
+
+=====Balance=====
+Colocaremos el monto en el campo llamado saldo inicial.
+
+=====Recibo de caja chica=====
+Este recibo nos detalla los montos que han sido utilizados de la caja chica.  Para crear se dirige a la opción acción y
+entra a recibo de caja chica, donde le muestra la ventana registrar boleta para caja y en ella se visualiza los campos en
+donde debe ingresar datos, a continuación se le mostrara que campo es obligatorio y secundario:
+
+Obligatorio: fecha, nombre, encargado, total bruto, empleado y nota.
+Secundario: tipo de acción, tipo de comprobante y numero.
+
+=====Exportar=====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+===2.3.1 Caja chica===
+Veremos los siguientes puntos:
+
+  * a. Editar
+  * b. Exportar
+  * c. Transacciones
+
+====a. Editar====
+Usted va poder cambiar la información ingresada con anterioridad.
+
+====b. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+====c. Transacciones====
+
+  * Balance
+  * Recibo de caja chica
+  * Exportar
+
+=====Balance=====
+Colocaremos el monto en el campo llamado saldo inicial.
+
+=====Recibo de caja chica=====
+Este recibo nos detalla los montos que han sido utilizados de la caja chica.  Para crear se dirige a la opción acción y
+entra a recibo de caja chica, donde le muestra la ventana registrar boleta para caja y en ella se visualiza los campos en
+donde debe ingresar datos, a continuación se le mostrara que campo es obligatorio y secundario:
+
+Obligatorio: fecha, nombre, encargado, total bruto, empleado y nota.
+Secundario: tipo de acción, tipo de comprobante y numero.
+
+=====Exportar=====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+==2.4 Pagos==
+Contamos con dos datos la fecha/hora y el documento, vamos a detallar que vemos en cada uno,
+Fecha y hora: vemos su información correspondiente y además las transacciones que se han realizado.
+Documento: vemos su información correspondiente y los pagos cerrados.
+
+==2.5 Transacciones==
+Si entramos a una transacción entrante o saliente podemos ver su información, editarla y exportar.
+
+==2.6 Saldos==
+Nos muestra una lista completa del monto total que existe en cada caja, si ingresamos a una cuenta cuenta usted va poder
+ver todas las transacciones que se encuentran dentro de la caja.
+
+==2.7 Modulo de texto==
+Para ver la información que contiene cada modulo de texto ingresamos por la columna linea, a continuación se detallaran
+los siguientes puntos:
+
+  * 2.7.1 Editar
+  * 2.7.2 Exportar
+  * 2.7.3 Elementos
+
+===2.7.1 Editar===
+Usted va poder cambiar la información ingresada con anterioridad.
+
+===2.7.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+===2.7.3 Elementos===
+Hablaremos de los siguientes puntos:
+
+  * Crear
+  * Borrar
+  * Exportar
+
+====a. Crear====
+Nos dirigimos a la opción acción y elegimos crear, nos aparece la ventana crear nuevo elemento en donde nos muestra los
+campos,
+
+Texto corto: es el texto fundamental que va identificar al elemento.
+Texto largo: es la explicación mas detallada del texto corto.
+
+====b. Borrar====
+Elegimos uno o varios elementos, luego nos dirigimos a acción y elegimos borrar.
+
+====c. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+formatos PDF o XLS.
+
+

@@ -103,6 +103,9 @@
         update.add2Menu("0d47fc3e-f6a4-4678-9e57-92331986c23f", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
 
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
+
+        <!-- Sales_sales, Admin_Help_MainMenu -->
+            update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
     </script>
     </version>
-</install>
+    </install>

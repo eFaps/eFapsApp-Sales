@@ -1,0 +1,23 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     1db61c7b-d0f2-4fad-a0cb-62854b5ba473
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Venta
+<wiki:toc max_depth="3"/>
+
+----
+
+En este Manual de Usuario usted encontrará toda la información necesaria referente a la inicialización y uso del modulo
+venta, de manera que usted esté informado de todas las funcionalidades de este modulo para que pueda trabajar en toda su
+potencialidad.
+
+Este documento explica:
+
+  # Documentos
+  # Administración
+
