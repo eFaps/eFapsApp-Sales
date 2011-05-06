@@ -11,9 +11,9 @@
 <wiki:toc max_depth="3"/>
 
 ----
-A partir de este modulo podemos dar un control a todos los datos que interactúan o que son utilizados por los demás
-módulos.
-A continuacion veremos lo que contiene este modulo,
+A partir de este menú podemos dar un control a todos los datos que interactúan o que son utilizados por los demás
+menús.
+A continuacion veremos lo que contiene este menú,
 
   * 2.1 Atributos
   * 2.2 Categoría de impuestos
@@ -27,7 +27,7 @@ A continuacion veremos lo que contiene este modulo,
 ==2.1 Atributos==
 Cuando entramos a cualquiera de los datos registrados en el sistema, nos muestra su información y además tenemos dos
 opciones la de editar y exportar. Editar nos brinda la facilidad de corregir la información ingresada en los campos valor
-y descripción. Exportar le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo,
+y descripción. Exportar le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú,
 en dos tipos de formatos PDF o XLS.
 
 ==2.2 Categoría de impuestos==
@@ -43,7 +43,7 @@ siguientes puntos:
 Podemos modificar el nombre, en caso que desee realizar una corrección.
 
 ===2.2.2 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===2.2.3 Impuestos===
@@ -58,17 +58,20 @@ Para crear un impuesto usted debe ingresar a crear, que se encuentra en la opci�
 La ventana crear nuevo impuesto, le muestra los campos obligatorios:
 
 Nombre: Colocar el nombre I.G.V. porque es el impuesto con el cual estamos trabajando actualmente.
+
 Numerador: es el numero que se encuentra en la parte superior de una fracción ejemplo: si el I.G.V. actual es 0,14 la
 fracción sera 14/100 y entonces el numero superior sera 14.
+
 Denominador:es el numero que se encuentra en la parte inferior de una fracción ejemplo: si el I.G.V. actual es 0,14 la
 fracción sera 14/100 y entonces el numero inferior sera 100.
+
 Valido desde: es la fecha desde cuando se va usar la nueva cantidad de I.G.V.
 
 ====b. Borrar seleccionado====
 Seleccionar uno o varios impuesto y dirigirse a la opción acción y elija borrar seleccionado.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===2.3.4 Ingresar a un IGV creado===
@@ -95,7 +98,7 @@ Podemos modificar la información de los siguientes campos:
    * Nombre
 
 ====b. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ====c. Cuenta====
@@ -108,17 +111,17 @@ Veremos los siguientes puntos:
 =====Agregar=====
 Nos ayuda a relacionar una cuenta existente con la cuenta del IGV. Para relacionar debe de dirigirse a acción y luego a
 agregar, la ventana buscar cuentas le mostrara dos campos que son numero y descripción en donde debe ingresar información
-en cualquiera de ellas o puede simplemente colocar solo *, después de esto se mostrara una lista completa de cuentas.
+en cualquiera de ellas o puede simplemente colocar solo {{{*}}}, después de esto se mostrara una lista completa de cuentas.
 
 =====Desconectar=====
 Seleccionamos una o mas cuentas nos dirigimos a acción y seleccionamos desconectar.
 
 =====Exportar=====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ==2.3 Cuentas==
-En este modulo vamos a explicar:
+En este menú vamos a explicar:
 
   * 2.3.1 Caja
   * 2.3.2 Caja chica
@@ -134,7 +137,7 @@ Veremos los siguientes puntos:
 Usted va poder cambiar la información ingresada con anterioridad.
 
 ====b. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ====c. Transacciones====
@@ -152,10 +155,11 @@ entra a recibo de caja chica, donde le muestra la ventana registrar boleta para 
 donde debe ingresar datos, a continuación se le mostrara que campo es obligatorio y secundario:
 
 Obligatorio: fecha, nombre, encargado, total bruto, empleado y nota.
+
 Secundario: tipo de acción, tipo de comprobante y numero.
 
 =====Exportar=====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===2.3.1 Caja chica===
@@ -169,7 +173,7 @@ Veremos los siguientes puntos:
 Usted va poder cambiar la información ingresada con anterioridad.
 
 ====b. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ====c. Transacciones====
@@ -187,22 +191,25 @@ entra a recibo de caja chica, donde le muestra la ventana registrar boleta para 
 donde debe ingresar datos, a continuación se le mostrara que campo es obligatorio y secundario:
 
 Obligatorio: fecha, nombre, encargado, total bruto, empleado y nota.
+
 Secundario: tipo de acción, tipo de comprobante y numero.
 
 =====Exportar=====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ==2.4 Pagos==
 Contamos con dos datos la fecha/hora y el documento, vamos a detallar que vemos en cada uno,
+
 Fecha y hora: vemos su información correspondiente y además las transacciones que se han realizado.
+
 Documento: vemos su información correspondiente y los pagos cerrados.
 
 ==2.5 Transacciones==
 Si entramos a una transacción entrante o saliente podemos ver su información, editarla y exportar.
 
 ==2.6 Saldos==
-Nos muestra una lista completa del monto total que existe en cada caja, si ingresamos a una cuenta cuenta usted va poder
+Nos muestra una lista completa del monto total que existe en cada caja, si ingresamos a una cuenta usted va poder
 ver todas las transacciones que se encuentran dentro de la caja.
 
 ==2.7 Modulo de texto==
@@ -217,7 +224,7 @@ los siguientes puntos:
 Usted va poder cambiar la información ingresada con anterioridad.
 
 ===2.7.2 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===2.7.3 Elementos===
@@ -232,13 +239,14 @@ Nos dirigimos a la opción acción y elegimos crear, nos aparece la ventana crea
 campos,
 
 Texto corto: es el texto fundamental que va identificar al elemento.
+
 Texto largo: es la explicación mas detallada del texto corto.
 
 ====b. Borrar====
 Elegimos uno o varios elementos, luego nos dirigimos a acción y elegimos borrar.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 

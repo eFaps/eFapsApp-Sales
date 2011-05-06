@@ -12,7 +12,7 @@
 
 ----
 
-En este Manual de Usuario usted encontrará toda la información necesaria referente a como trabaja cada modulo que se
+En este menú de Usuario usted encontrará toda la información necesaria referente a como trabaja cada menú que se
 encuentra en ventas.
 
 Este documento explica:
@@ -23,7 +23,7 @@ Este documento explica:
   * 1.4 Contrato de venta
 
 ==1.1 Presupuestos==
-En el modulo presupuestos encontramos una lista completa de todos los presupuestos creados hasta este momento, ahora
+En el menú presupuestos encontramos una lista completa de todos los presupuestos creados hasta este momento, ahora
 escogemos el presupuesto e ingresamos a su contenido(se ingresa por la palabra mas resaltada).
 
 Contamos con los siguientes puntos:
@@ -39,7 +39,9 @@ Podemos cambiar los datos ingresados anteriormente y además podemos variar el e
 A continuación los tipos de estado.
 
 Cerrado:que a sido culminado el presupuesto.
+
 Anulado:innecesario el documento.
+
 Abierto:es el estado con que inicia un presupuesto al momento de ser creado.
 
 ===1.1.2 Descargar===
@@ -47,15 +49,17 @@ Nos sirve para imprimir el documento en dos tipos de formato PDF o XLS.
 
 ===1.1.3 Re-Calcular===
 Nos permite calcular las nuevas cantidades a partir de un tipo de cambio. Los tipo de cambio corresponden a un periodo,
-esto se encuentra en el modulo Monedas.
+esto se encuentra en el menú Monedas.
 Para realizar este procedimiento debemos de dirigirnos a la opción acción y seleccionar Re-Calcular, le aparecerá una
-nueva ventana con dos campos por llenar y son los siguientes,
+nueva ventana con dos campos y son los siguientes,
 
 Fecha: se coloca la fecha que esta ligada con el tipo de cambio que desea.
+
 Tipo de cambio: le aparecerá el tipo de cambio según la fecha que usted a introducido.
 
+
 ===1.1.4 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.1.5 Documentos===
@@ -67,8 +71,8 @@ Se mostrara los siguientes puntos:
 
 ====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
-visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar * al final de las palabras),
-pero también puede colocar solo * para buscar en todos los documentos.
+visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar {{{*}}} al final de las
+ palabras), pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
 
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
@@ -77,7 +81,7 @@ o varios documentos e interconecta.
 Seleccionar uno o varios documentos se dirige a la opción acción y desconecta.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ==1.2 Facturas==
@@ -97,7 +101,9 @@ Podemos cambiar los datos ingresados anteriormente y además podemos variar el e
 A continuación los tipos de estado.
 
 Cerrado:que a sido culminado el presupuesto.
+
 Anulado:innecesario el documento.
+
 Abierto:es el estado con que inicia un presupuesto al momento de ser creado.
 
 ===1.2.2 Descargar===
@@ -105,15 +111,16 @@ Nos sirve para imprimir el documento en dos tipos de formato PDF o XLS.
 
 ===1.2.3 Re-Calcular===
 Nos permite calcular las nuevas cantidades a partir de un tipo de cambio. Los tipo de cambio corresponden a un periodo,
-esto se encuentra en el modulo Monedas.
+esto se encuentra en el menú Monedas.
 Para realizar este procedimiento debemos de dirigirnos a la opción acción y seleccionar Re-Calcular, le aparecerá una
-nueva ventana con dos campos por llenar y son los siguientes,
+nueva ventana con dos campos y son los siguientes,
 
 Fecha: se coloca la fecha que esta ligada con el tipo de cambio que desea.
+
 Tipo de cambio: le aparecerá el tipo de cambio según la fecha que usted a introducido.
 
 ===1.2.4 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.2.5 Pagos===
@@ -127,18 +134,21 @@ Contamos con los siguientes puntos:
 Para realizar los pagos debemos de colocar los datos siguientes:
 
 Fecha y hora:la fecha y la hora que se realiza el pago.
+
 Moneda: se elige el tipo de moneda, para agregar otro tipo de moneda que no se encuentre en la lista debe de ingresar a
 administración y luego escoger moneda.
+
 Tipo de pago: elige el tipo de pago que quiere realizar, para colocar otro tipo de pago que no se encuentre en la lista
-debe de dirigirse a administración y luego a atributos.
+debe de dirigirse a administración y luego a [http://localhost:8080/intimotors/servlet/help/org.efaps.wiki.sales.Showadministration.wiki#2.1_Atributos atributos].
+
 Cuenta: escoger la caja para el pago, si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego
-a cuentas,una vez en cuentas usted debe de crear una CAJA.
+a [http://localhost:8080/intimotors/servlet/help/org.efaps.wiki.sales.Showadministration.wiki#2.3_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
 ====b. Borrar seleccionado====
 Seleccionar un pago y dirigirse a la opción acción y elija borrar seleccionado.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.2.6 Posiciones===
@@ -153,8 +163,8 @@ Se mostrara los siguientes puntos:
 
 ====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
-visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar * al final de las palabras),
-pero también puede colocar solo * para buscar en todos los documentos.
+visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar {{{*}}} al final de las palabras),
+pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
 
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
@@ -163,12 +173,12 @@ o varios documentos e interconecta.
 Seleccionar uno o varios documentos se dirige a la opción acción y desconecta.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.2.8 Asientos===
-Se genera en el modulo de contabilidad, cuando nosotros le asignamos un asiento.
-Nos dirigimos al modulo de contabilidad entramos al periodo que se esta trabajando actualmente y seleccionamos
+Se genera en el menú de contabilidad, cuando nosotros le asignamos un asiento.
+Nos dirigimos al menú de contabilidad entramos al periodo que se esta trabajando actualmente y seleccionamos
 documentos por registrar( Documentos p.r.) agregamos la factura y de esta manera vamos a obtener un registro en asientos.
 
 ==1.3 Boleta==
@@ -188,7 +198,9 @@ Podemos cambiar los datos ingresados anteriormente y además podemos variar el e
 A continuación los tipos de estado,
 
 Pagado: cuando se paga el monto que figura en la boleta.
+
 Anulado: si el documento es innecesario.
+
 Pendiente: el estado que tiene el documento al momento de ser creado.
 
 ===1.3.2 Descargar===
@@ -196,15 +208,16 @@ Nos sirve para imprimir el documento en dos tipos de formato PDF o XLS.
 
 ===1.3.3 Re-Calcular===
 Nos permite calcular las nuevas cantidades a partir de un tipo de cambio. Los tipo de cambio corresponden a un periodo,
-esto se encuentra en el modulo Monedas.
+esto se encuentra en el menú Monedas.
 Para realizar este procedimiento debemos de dirigirnos a la opción acción y seleccionar Re-Calcular, le aparecerá una
 nueva ventana con dos campos por llenar y son los siguientes,
 
 Fecha: se coloca la fecha que esta ligada con el tipo de cambio que desea.
+
 Tipo de cambio: le aparecerá el tipo de cambio según la fecha que usted a introducido.
 
 ===1.3.4 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.3.5 Pagos===
@@ -216,19 +229,23 @@ Contamos con los siguientes puntos:
 
 ====a. Crear pago====
 Para realizar los pagos debemos de colocar los datos siguientes:
+
 Fecha y hora:la fecha y la hora que se realiza el pago.
+
 Moneda: se elige el tipo de moneda y si se desea agregar otro tipo de moneda que no se encuentre en la lista debe de
  ingresar a administración y escoger el modulo moneda.
+
 Tipo de pago: elige el tipo de pago que quiere realizar y desea  colocar otro tipo de pago que no se encuentre en la lista
-debe de dirigirse a administración y luego a atributos.
+debe de dirigirse a administración y luego a [http://localhost:8080/intimotors/servlet/help/org.efaps.wiki.sales.Showadministration.wiki#2.1_Atributos atributos].
+
 Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego
-a cuentas,una vez en cuentas usted debe de crear una CAJA.
+a [http://localhost:8080/intimotors/servlet/help/org.efaps.wiki.sales.Showadministration.wiki#2.3_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
 ====b. Borrar seleccionado====
 Seleccionar un pago y dirigirse a la opción acción y elija borrar seleccionado.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.3.6 Posiciones===
@@ -253,19 +270,67 @@ o varios documentos e interconecta.
 Seleccionar uno o varios documentos se dirige a la opción acción y desconecta.
 
 ====c. Exportar====
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
 ===1.3.8 Asientos===
-Se genera en el modulo de contabilidad, cuando nosotros le asignamos un asiento.
-Nos dirigimos al modulo de contabilidad entramos al periodo que se esta trabajando actualmente y seleccionamos documentos
+Se genera en el menú de contabilidad, cuando nosotros le asignamos un asiento.
+Nos dirigimos al menú de contabilidad entramos al periodo que se esta trabajando actualmente y seleccionamos documentos
 por registrar( Documentos p.r.) agregamos la boleta y de esta manera vamos a obtener un registro en asientos.
 
 ==1.4. Contrato de venta==
 Ingresamos a contrato de venta por el tipo,
 
-|| *Tipo* || *Nombre* || *Fecha* || *Encargado* || _*Estado* ||
-|| _*Contrato de Venta* || 009-00004 || 2/05/2011 || Administrator || pendiente ||
+|| *Tipo* || *Nombre* || *Fecha* || *Encargado* || *Estado* ||
+|| *Contrato de Venta* || 009-00004 || 2/05/2011 || Administrator || pendiente ||
 
+Veremos los siguientes puntos:
+
+  * 1.4.1 Editar
+  * 1.4.2 Re-Calcular
+  * 1.4.3 Acceso
+  * 1.4.4 Exportar
+  * 1.4.5 Documentos
+
+===1.4.1 Editar===
+Los datos que se pueden modificar es el estado, la fecha y el encargado. Tenemos tres tipos de estado,
+
+Pendiente: se genera al momento de crear el contrato de venta.
+
+Cancelado: cuando se vuelve innecesario este documento.
+
+Reservado: es cuando se reserva la moto anteriormente.
+
+===1.4.2 Re-Calcular===
+Nos permite calcular las nuevas cantidades a partir de un tipo de cambio. Los tipo de cambio corresponden a un periodo, esto se encuentra en el menú Monedas.
+Para realizar este procedimiento debemos de dirigirnos a la opción acción y seleccionar Re-Calcular, le aparecerá una nueva ventana con dos campos y son los siguientes,
+
+Fecha: se coloca la fecha que esta ligada con el tipo de cambio que desea.
+
+Tipo de cambio: le aparecerá el tipo de cambio según la fecha que usted a introducido.
+
+===1.4.3 Acceso===
+Sirve para dar acceso a las tiendas que pueden ver el documento contrato de venta.
+
+===1.4.4 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de formatos PDF o XLS.
+
+===1.4.5 Documentos===
+En este menú se ven los siguientes puntos:
+
+  * a. Añadir documentos
+  * b. Desconectar
+  * c. Exportar
+
+
+====a. Añadir documentos====
+Se busca los documentos que deseamos agregar, colocando parte de la descripción del documento en el campo nombre con {{{*}}} al final o solo {{{*}}},
+ingresamos con el botón buscar a una lista completa de documentos de los cuales eligirá los que desea agregar haciendo un check en la casilla y dándole interconectar.
+
+====b. Desconectar====
+Vamos a seleccionar los documentos que queremos desconectar haciendo un check en su respectiva casilla, luego nos dirigimos a la opción acción y elegimos desconectar.
+
+====c. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de formatos PDF o XLS.
 
 
