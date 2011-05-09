@@ -839,6 +839,7 @@ public abstract class AbstractDocument_Base
             .append(getSetFieldValue(0, "crossTotal", netTotal == null
                             ? BigDecimal.ZERO.toString() : formater.format(crossTotal)))
             .append(getSetFieldValue(0, "note", note))
+            .append(addAdditionalFields(_instance))
             .append("}")
             .append("function setRows() {");
 
@@ -883,7 +884,8 @@ public abstract class AbstractDocument_Base
                 rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
                     : discountNetUnitPrice,
                 rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice,
-                            multi.getSelect(selProdDim)};
+                            multi.getSelect(selProdDim),
+                            multi.getCurrentInstance()};
             values.put(multi.<Integer>getAttribute(CISales.PositionAbstract.PositionNumber), value);
         }
         int i = 0;
@@ -898,6 +900,7 @@ public abstract class AbstractDocument_Base
                     .append(getSetFieldValue(i, "discount", formater.format(entry.getValue()[6])))
                     .append(getSetFieldValue(i, "discountNetUnitPrice", formaterSysConf.format(entry.getValue()[7])))
                     .append(getSetFieldValue(i, "netPrice", formater.format(entry.getValue()[8])))
+                    .append(addAdditionalPositions((Instance) entry.getValue()[10], i, (String) entry.getValue()[2]))
                     .append(getSetFieldValue(i, "uoM",
                                     getUoMFieldStr((Long) entry.getValue()[4], (Long) entry.getValue()[9]), false));
                 i++;
@@ -910,6 +913,34 @@ public abstract class AbstractDocument_Base
             .append(" });");
 
         return js.toString();
+    }
+
+    /**
+     * Method to set additional fields for the document.
+     *
+     * @param _instance Instance of the document.
+     * @return new StringBuilder with the additional fields.
+     */
+    protected StringBuilder addAdditionalFields(final Instance _instance)
+    {
+        return new StringBuilder();
+    }
+
+    /**
+     * Method to set additional positions for the document.
+     *
+     * @param _instPos Instance of the document.
+     * @param _oidProd OID of the product in the position.
+     * @param _position Integer with the position in the positions.
+     * @return new StringBuilder with the additional positions.
+     * @throws EFapsException on error.
+     */
+    protected StringBuilder addAdditionalPositions(final Instance _instPos,
+                                                   final Integer _position,
+                                                   final String _oidProd)
+        throws EFapsException
+    {
+        return new StringBuilder();
     }
 
     /**
