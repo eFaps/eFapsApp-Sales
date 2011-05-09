@@ -31,21 +31,24 @@
   <file-application>eFapsApp-Sales</file-application>
   <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_AbstractAttrMyDesk_Menu_Action_Create_PettyCashReceiptType</name>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AbstractAttrMyDesk_Menu_Action_Create_PettyCashReceiptType</name>
 
-    <!-- target definitions -->
-    <target>
-      <form>Sales_AbstractAttrForm</form>
-      <execute program="org.efaps.esjp.common.uiform.Create"/>
-    </target>
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_PettyCashReceiptTypeAttr</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">460</property>
-    <property name="WindowWidth">515</property>
-  </definition>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_AbstractAttrForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_PettyCashReceiptTypeAttr</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
+    </definition>
 
 </ui-command>
