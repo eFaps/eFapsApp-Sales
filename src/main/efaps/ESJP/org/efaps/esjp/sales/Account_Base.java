@@ -444,7 +444,7 @@ public abstract class Account_Base
             }
             con.commit();
         } catch (final SQLException e) {
-            throw new EFapsException(Transaction_Base.class, "getMaxNumber.SQLException", e);
+            throw new EFapsException(Account_Base.class, "getMaxNumber.SQLException", e);
         } finally {
             if ((con != null) && con.isOpened()) {
                 con.abort();
