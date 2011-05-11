@@ -54,8 +54,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
-import org.efaps.admin.user.Role;
-import org.efaps.ci.CIAdminUser;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -68,6 +66,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Calculator_Base;
@@ -90,6 +89,7 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsUUID("b3b70ce7-16d0-4425-8ddd-b667cfd3329a")
 @EFapsRevision("$Rev$")
 public abstract class AbstractDocument_Base
+    extends CommonDocument
 {
 
     /**
@@ -1665,73 +1665,6 @@ public abstract class AbstractDocument_Base
         }
         final boolean rInv = "true".equalsIgnoreCase(_parameter.getParameterValue("rate" + RateUI.INVERTEDSUFFIX));
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
-    }
-
-    public Return getSalesPersonFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field() {
-
-            @Override
-            protected DropDownPosition getDropDownPosition(final Parameter _parameter,
-                                                           final Object _value,
-                                                           final Object _option)
-                throws EFapsException
-            {
-                final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-                DropDownPosition pos;
-                if ("true".equalsIgnoreCase((String) props.get("SelectCurrent"))) {
-                    pos = new DropDownPosition(_value, _option) {
-                        @Override
-                        public boolean isSelected()
-                        {
-                            boolean ret = false;
-                            long persId = 0;
-                            try {
-                                persId = Context.getThreadContext().getPerson().getId();
-                            } catch (final EFapsException e) {
-                                // nothing must be done at all
-                                e.printStackTrace();
-                            }
-                            ret = new Long(persId).equals(getValue());
-                            return ret;
-                        }
-                    };
-                } else {
-                    pos = super.getDropDownPosition(_parameter, _value, _option);
-                }
-                return pos;
-            }
-
-            @Override
-            protected void add2QueryBuilder4List(final Parameter _parameter,
-                                                     final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-                final String rolesStr = (String) props.get("Roles");
-                if (rolesStr != null && !rolesStr.isEmpty()) {
-                    final String[] roles = rolesStr.split(";");
-                    final List<Long> roleIds = new ArrayList<Long>();
-                    for (final String role : roles) {
-                        final Role aRole = Role.get(role);
-                        if (aRole != null) {
-                            roleIds.add(aRole.getId());
-                        }
-                    }
-                    if (!roleIds.isEmpty()) {
-                        final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Person2Role);
-                        queryBldr.addWhereAttrEqValue(CIAdminUser.Person2Role.UserToLink, roleIds.toArray());
-
-                        _queryBldr.addWhereAttrInQuery(CIAdminUser.Abstract.ID,
-                                        queryBldr.getAttributeQuery(CIAdminUser.Person2Role.UserFromLink));
-                    }
-                }
-                super.add2QueryBuilder4List(_parameter, _queryBldr);
-            }
-
-        };
-        return  field.dropDownFieldValue(_parameter);
     }
 
     /**
