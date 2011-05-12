@@ -34,7 +34,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AdminMyDesk</name>
         <childs>
-            <child>Sales_AbstractAttrMyDesk</child>
             <child>Sales_TaxCategoryMyDesk</child>
             <child>ERP_CurrencyMyDesk</child>
             <child>Sales_AccountAbstractMyDesk</child>
