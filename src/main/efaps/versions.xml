@@ -102,6 +102,13 @@
         <!-- Sales_Products_VirtualInventoryMyDesk -->
         update.add2Menu("0d47fc3e-f6a4-4678-9e57-92331986c23f", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
 
+
+        <!-- connect the Sales_AbstractAttrMyDesk_Menu_Action_Create_PaymentType  to ERP_AttributeDefinitionMyDesk_Menu_Action -->
+        update.add2Menu("84398555-7b4a-4f79-b625-bcf98d2481d8", "cc4a3bc2-26a7-4b51-b8e5-fabfef5ce2fa", -1);
+
+         <!-- connect the Sales_AbstractAttrMyDesk_Menu_Action_Create_PettyCashReceiptType  to  ERP_AttributeDefinitionMyDesk_Menu_Action-->
+        update.add2Menu("2d69080a-7e46-411c-8eca-52a0b812eea4", "cc4a3bc2-26a7-4b51-b8e5-fabfef5ce2fa", -1);
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
