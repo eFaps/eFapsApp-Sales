@@ -331,9 +331,10 @@ public abstract class PriceUtil_Base
          *
          */
         public ProductPrice()
+            throws EFapsException
         {
             final Instance baseInst = SystemConfiguration.get(UUID
-                            .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+                        .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
             this.origCurrencyInstance = baseInst;
             this.currentCurrencyInstance = baseInst;
         }

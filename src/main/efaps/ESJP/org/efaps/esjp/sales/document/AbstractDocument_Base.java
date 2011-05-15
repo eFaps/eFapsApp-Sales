@@ -1320,11 +1320,13 @@ public abstract class AbstractDocument_Base
     }
 
     protected String getCrossTotalStr(final List<Calculator> _calcList)
+        throws EFapsException
     {
         return getCrossTotal(_calcList).toString();
     }
 
     protected BigDecimal getCrossTotal(final List<Calculator> _calcList)
+        throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         for (final Calculator calc : _calcList) {
@@ -1340,6 +1342,7 @@ public abstract class AbstractDocument_Base
     }
 
     protected String getNetTotalStr(final List<Calculator> _calcList)
+        throws EFapsException
     {
         return getNetTotal(_calcList).toString();
     }
@@ -1348,8 +1351,10 @@ public abstract class AbstractDocument_Base
      * Method to get the
      * @param _calcList
      * @return
+     * @throws EFapsException
      */
     protected BigDecimal getNetTotal(final List<Calculator> _calcList)
+        throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         for (final Calculator calc : _calcList) {
@@ -1359,6 +1364,7 @@ public abstract class AbstractDocument_Base
     }
 
     protected BigDecimal getBaseCrossTotal(final List<Calculator> _calcList)
+        throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         for (final Calculator calculator : _calcList) {

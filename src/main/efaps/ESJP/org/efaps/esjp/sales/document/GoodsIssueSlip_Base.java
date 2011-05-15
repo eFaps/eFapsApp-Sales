@@ -241,6 +241,7 @@ public abstract class GoodsIssueSlip_Base
      * @return String
      */
     protected String getStorageFieldStr(final Map<String, Long> _storagemap)
+        throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
         // Sales-Configuration
