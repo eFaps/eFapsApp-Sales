@@ -49,8 +49,10 @@
                 event="UI_FIELD_FORMAT" />
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_QuotationPosition/Product.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.OrderInbound"
                 method="autoComplete4Product"
