@@ -1412,7 +1412,9 @@ public abstract class AbstractDocument_Base
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String type = (String) properties.get("Type");
-        String number = getMaxNumber(Type.get(type), true);
+        final String includeChildTypes = (String) properties.get("IncludeChildTypes");
+
+        String number = getMaxNumber(Type.get(type), !"false".equalsIgnoreCase(includeChildTypes));
         if (number == null) {
             number = "001-000001";
         } else {
