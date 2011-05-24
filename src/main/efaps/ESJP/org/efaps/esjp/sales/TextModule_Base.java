@@ -124,23 +124,25 @@ public abstract class TextModule_Base
         throws EFapsException
     {
         final Instance instance = _parameter.getCallInstance();
+        final Map<Integer, String> line2Text = new TreeMap<Integer, String>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2TextElement);
         queryBldr.addWhereAttrEqValue(CISales.Document2TextElement.Document, instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selLongText = new SelectBuilder()
-                        .linkto(CISales.Document2TextElement.TextElement).attribute(CISales.TextElement.LongText);
-        final SelectBuilder selLine = new SelectBuilder()
-                        .linkto(CISales.Document2TextElement.TextElement)
-                        .linkto(CISales.TextElement.TextModule).attribute(CISales.TextModule.Line);
-        multi.addSelect(selLine, selLongText);
-        multi.execute();
-        final Map<Integer, String> line2Text = new TreeMap<Integer, String>();
-        while (multi.next()) {
-            Integer line = multi.<Integer> getSelect(selLine);
-            if (line == null) {
-                line = new Integer(multi.getInstanceList().size() + 100);
+        if (!multi.getInstanceList().isEmpty()) {
+            final SelectBuilder selLongText = new SelectBuilder()
+                            .linkto(CISales.Document2TextElement.TextElement).attribute(CISales.TextElement.LongText);
+            final SelectBuilder selLine = new SelectBuilder()
+                            .linkto(CISales.Document2TextElement.TextElement)
+                            .linkto(CISales.TextElement.TextModule).attribute(CISales.TextModule.Line);
+            multi.addSelect(selLine, selLongText);
+            multi.execute();
+            while (multi.next()) {
+                Integer line = multi.<Integer> getSelect(selLine);
+                if (line == null) {
+                    line = new Integer(multi.getInstanceList().size() + 100);
+                }
+                line2Text.put(line, multi.<String> getSelect(selLongText));
             }
-            line2Text.put(line, multi.<String> getSelect(selLongText));
         }
         final StringBuilder bldr = new StringBuilder();
         for (final String text : line2Text.values()) {

@@ -1684,7 +1684,7 @@ public abstract class AbstractDocument_Base
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
-        return _parameter.getParameterValue(_parameter.getParameterValue("name4create"));
+        return _parameter.getParameterValue("name4create");
     }
 
     /**
