@@ -23,10 +23,17 @@ package org.efaps.esjp.sales;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
+import org.apache.wicket.datetime.StyleDateConverter;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -41,6 +48,8 @@ import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * TODO comment!
@@ -108,8 +117,12 @@ public abstract class PriceUtil_Base
                 if (priceInst.equals(currentInst)) {
                     ret.setCurrentPrice(price);
                 } else {
-                    final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
-                    ret.setCurrentPrice(price.multiply(rates[2]));
+                    if (currentInst != null) {
+                        final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
+                        ret.setCurrentPrice(price.multiply(rates[2]));
+                    } else {
+                        ret.setCurrentPrice(price);
+                    }
                 }
                 if (priceInst.equals(baseInst)) {
                     ret.setBasePrice(price);
@@ -283,6 +296,82 @@ public abstract class PriceUtil_Base
             date = new DateTime();
         }
         return date;
+    }
+
+    /**
+     * @param _parameter
+     * @return
+     * @throws EFapsException
+     */
+    public Return getPriceListHistory(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<String, Map<Integer, BigDecimal>> mapProd = new HashMap<String, Map<Integer, BigDecimal>>();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        if (props.containsKey("Interval") && props.containsKey("Range")) {
+            final String[] range = ((String) props.get("Range")).split(":");
+            final String interval = (String) props.get("Interval");
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
+            //queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Name, "201.0040");
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
+            multi.execute();
+            while (multi.next()) {
+                final Map<Integer, BigDecimal> mapPrice =
+                                            getPrices4Product(_parameter, range, interval, multi.getCurrentInstance());
+                mapProd.put(multi.<String>getAttribute(CIProducts.ProductAbstract.Name)
+                                + multi.<String>getAttribute(CIProducts.ProductAbstract.Description), mapPrice);
+            }
+        }
+        return new Return();
+    }
+
+    protected Map<Integer, BigDecimal> getPrices4Product(final Parameter _parameter,
+                                                         final String[] _range,
+                                                         final String _interval,
+                                                         final Instance _instanceProduct)
+        throws EFapsException
+    {
+        @SuppressWarnings("unchecked")
+        final Map<String, String[]> parameters = (Map<String, String[]>) _parameter.get(ParameterValues.PARAMETERS);
+        final Map<Integer, BigDecimal> mapPrice = new HashMap<Integer, BigDecimal>();
+
+        if (_range[0].equals(PriceUtil_Base.RangeInterval.MONTH.getKey())) {
+            final Integer months = Integer.parseInt(_range[1]);
+            if (_interval.equals(PriceUtil_Base.RangeInterval.WEEK.getKey())) {
+                final DateTime dateMinusRange = new DateTime().minusMonths(months);
+                final DateTime dateFrom = dateMinusRange.minusDays(dateMinusRange.getDayOfMonth() - 1);
+                final DateTime dateTo = new DateTime();
+                DateTime dateCont = dateFrom;
+                while (dateCont.getWeekOfWeekyear() < dateTo.getWeekOfWeekyear()) {
+                    int contDays = dateCont.getDayOfWeek();
+                    final ProductPriceList priceInter = new ProductPriceList();
+                    int daysLimit = 7;
+                    if (dateCont.getWeekOfWeekyear() == dateTo.getWeekOfWeekyear()) {
+                        daysLimit = dateTo.getDayOfWeek();
+                    }
+                    while (contDays <= daysLimit) {
+                        final StyleDateConverter styledate = new StyleDateConverter(false);
+                        final DateTimeFormatter fmt = DateTimeFormat.forPattern(styledate
+                                        .getDatePattern());
+                        fmt.withLocale(Context.getThreadContext().getLocale());
+                        parameters.put("date_eFapsDate", new String[] { dateCont.toString(fmt) });
+                        final ProductPrice price = getPrice(_parameter, _instanceProduct.getOid(),
+                                            CIProducts.ProductPricelistRetail.uuid);
+                        priceInter.setLstInterval(price.getOrigPrice());
+                        dateCont = dateCont.plusDays(1);
+                        contDays++;
+                    }
+                    final BigDecimal average = priceInter.getPricesAverage();
+                    mapPrice.put(dateCont.getWeekOfWeekyear() - 1, average);
+                }
+            }
+        } else if (_range[0].equals(PriceUtil_Base.RangeInterval.YEAR.getKey())) {
+
+        }
+
+        return mapPrice;
     }
 
     /**
@@ -479,5 +568,112 @@ public abstract class PriceUtil_Base
         {
             this.currentPrice = _currentPrice;
         }
+    }
+
+    /**
+     * @author jorge
+     *
+     */
+    public enum RangeInterval
+    {
+        /** */
+        WEEK("week"),
+        /** */
+        MONTH("month"),
+        /** */
+        YEAR("year");
+
+        /**
+         * key.
+         */
+        private final String key;
+
+        /**
+         * @param _key key
+         */
+        private RangeInterval(final String _key)
+        {
+            this.key = _key;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #key}.
+         *
+         * @return value of instance variable {@link #key}
+         */
+        public String getKey()
+        {
+            return this.key;
+        }
+    }
+
+    /**
+     * Represent the interval of days for a range.
+     */
+    public class ProductPriceList
+        implements Serializable
+    {
+        /**
+         * Needed for serialization.
+         */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * List with the prices for each day of the interval.
+         */
+        private final List<BigDecimal> lstInterval = new ArrayList<BigDecimal>();
+
+        /**
+         * Current price.
+         */
+        private BigDecimal currentPrice = BigDecimal.ZERO;
+
+        /**
+         * @return List with the prices of the interval.
+         */
+        public List<BigDecimal> getLstInterval()
+        {
+            return this.lstInterval;
+        }
+
+        /**
+         * @param _newPrice BigDecimal with the new price to add.
+         */
+        public void setLstInterval(final BigDecimal _newPrice)
+        {
+            if (_newPrice != null) {
+                this.lstInterval.add(_newPrice);
+                setCurrentPrice(_newPrice);
+            } else {
+                this.lstInterval.add(this.currentPrice);
+            }
+        }
+
+        /**
+         * @return BigDecimal with the current price.
+         */
+        private BigDecimal getCurrentPrice()
+        {
+            return this.currentPrice;
+        }
+
+        /**
+         * @param _newPrice BigDecimal with the new price to add.
+         */
+        private void setCurrentPrice(final BigDecimal _newPrice)
+        {
+            if (_newPrice.compareTo(this.currentPrice) != 0) {
+                this.currentPrice = _newPrice;
+            }
+        }
+
+        public BigDecimal getPricesAverage () {
+            BigDecimal totalPrice = BigDecimal.ZERO;
+            for (final BigDecimal price : this.lstInterval) {
+                totalPrice = totalPrice.add(price);
+            }
+            return totalPrice.divide(new BigDecimal(this.lstInterval.size()));
+        }
+
     }
 }
