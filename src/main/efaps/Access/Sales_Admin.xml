@@ -59,6 +59,7 @@
         <type>Sales_PettyCashReceipt</type>
         <type>Sales_PettyCashBalance</type>
         <type>Sales_UsageReport</type>
+        <type>Sales_CashReceipt</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -174,7 +175,12 @@
             <key>Canceled</key>
         </status>
 
-
+        <status group="Sales_CashReceiptStatus">
+              <key>Open</key>
+              <key>Received</key>
+              <key>Canceled</key>
+              <key>Closed</key>
+        </status>
 
         <role>Sales_Admin</role>
     </definition>

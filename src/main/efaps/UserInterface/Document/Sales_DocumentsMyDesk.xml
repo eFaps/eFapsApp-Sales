@@ -37,6 +37,7 @@
             <child>Sales_QuotationMyDesk</child>
             <child>Sales_InvoiceMyDesk</child>
             <child>Sales_ReceiptMyDesk</child>
+            <child>Sales_CashReceiptMyDesk</child>
             <child>Sales_ReminderMyDesk</child>
             <child>Sales_CreditNoteMyDesk</child>
             <child>Sales_DeliveryNoteMyDesk</child>
