@@ -31,16 +31,17 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_ProductPriceHistoryForm</name>
         <!-- fields -->
+        <field name="product" character="Picker">
+            <property name="Width">2</property>
+            <property name="Label">GyG_EntryBOM/Product.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <picker name="Products_ProductPicker4Product"/>
+        </field>
         <field name="priceHistory">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
-            <trigger program="org.efaps.esjp.sales.PriceUtil"
-                     method="getPriceListHistory"
-                     name="Sales_Products_ProductPriceHistoryForm.priceHistory.UI_FIELD_VALUE"
-                     event="UI_FIELD_VALUE">
-                 <property name="Interval">week</property>
-                 <property name="Range">month:3</property>
-            </trigger>
+            <property name="HideLabel">true</property>
         </field>
     </definition>
 </ui-form>

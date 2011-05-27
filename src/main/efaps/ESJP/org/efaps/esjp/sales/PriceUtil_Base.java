@@ -23,29 +23,38 @@ package org.efaps.esjp.sales;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.apache.wicket.datetime.StyleDateConverter;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -299,6 +308,33 @@ public abstract class PriceUtil_Base
     }
 
     /**
+     * @param _calc calculator the format is wanted for
+     * @return  Decimal Format
+     * @throws EFapsException on error
+     */
+    protected DecimalFormat getDigitsformater()
+        throws EFapsException
+    {
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
+        formater.setMaximumFractionDigits(2);
+        formater.setMinimumFractionDigits(2);
+        formater.setRoundingMode(RoundingMode.HALF_UP);
+        formater.setParseBigDecimal(true);
+        return formater;
+    }
+
+    protected DateTimeFormatter getDateFormat (final String _style) throws EFapsException {
+        final StyleDateConverter styledate = new StyleDateConverter(false);
+        DateTimeFormatter fmt = DateTimeFormat.forPattern(styledate.getDatePattern());
+        if (_style != null) {
+            fmt = DateTimeFormat.forPattern(_style);
+        }
+        fmt.withLocale(Context.getThreadContext().getLocale());
+
+        return fmt;
+    }
+
+    /**
      * @param _parameter
      * @return
      * @throws EFapsException
@@ -306,28 +342,37 @@ public abstract class PriceUtil_Base
     public Return getPriceListHistory(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<String, Map<Integer, BigDecimal>> mapProd = new HashMap<String, Map<Integer, BigDecimal>>();
+        final Return ret = new Return();
+        final Map<String, List<String>> mapProd = new HashMap<String, List<String>>();
+        final Map<String, String> map = new HashMap<String, String>();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
+        final String[] childOids = (String[]) others.get("selectedRow");
         if (props.containsKey("Interval") && props.containsKey("Range")) {
             final String[] range = ((String) props.get("Range")).split(":");
             final String interval = (String) props.get("Interval");
 
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
-            //queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Name, "201.0040");
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
-            multi.execute();
-            while (multi.next()) {
-                final Map<Integer, BigDecimal> mapPrice =
-                                            getPrices4Product(_parameter, range, interval, multi.getCurrentInstance());
-                mapProd.put(multi.<String>getAttribute(CIProducts.ProductAbstract.Name)
-                                + multi.<String>getAttribute(CIProducts.ProductAbstract.Description), mapPrice);
+            final List<String> heads = getPrices4Product(_parameter, range, interval, null);
+            for (final String oid : childOids) {
+                final PrintQuery print = new PrintQuery(oid);
+                print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
+                if (print.execute()) {
+                    final List<String> lstPrice =
+                                        getPrices4Product(_parameter, range, interval, print.getCurrentInstance());
+                    mapProd.put(print.<String>getAttribute(CIProducts.ProductAbstract.Name) + " - "
+                            + print.<String>getAttribute(CIProducts.ProductAbstract.Description), lstPrice);
+                }
             }
+
+            final String html = getTable4PriceListHistory(mapProd, heads);
+            map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), "document.getElementsByName('priceHistory')[0].innerHTML='" + html + "';");
+            ret.put(ReturnValues.VALUES, map);
         }
-        return new Return();
+
+        return ret;
     }
 
-    protected Map<Integer, BigDecimal> getPrices4Product(final Parameter _parameter,
+    protected List<String> getPrices4Product(final Parameter _parameter,
                                                          final String[] _range,
                                                          final String _interval,
                                                          final Instance _instanceProduct)
@@ -335,7 +380,9 @@ public abstract class PriceUtil_Base
     {
         @SuppressWarnings("unchecked")
         final Map<String, String[]> parameters = (Map<String, String[]>) _parameter.get(ParameterValues.PARAMETERS);
-        final Map<Integer, BigDecimal> mapPrice = new HashMap<Integer, BigDecimal>();
+        final List<String> lstPrice = new ArrayList<String>();
+        final DateTimeFormatter fmt = getDateFormat(null);
+        final DateTimeFormatter fmt2 = getDateFormat("MM/dd");
 
         if (_range[0].equals(PriceUtil_Base.RangeInterval.MONTH.getKey())) {
             final Integer months = Integer.parseInt(_range[1]);
@@ -344,7 +391,8 @@ public abstract class PriceUtil_Base
                 final DateTime dateFrom = dateMinusRange.minusDays(dateMinusRange.getDayOfMonth() - 1);
                 final DateTime dateTo = new DateTime();
                 DateTime dateCont = dateFrom;
-                while (dateCont.getWeekOfWeekyear() < dateTo.getWeekOfWeekyear()) {
+                while (dateCont.getWeekOfWeekyear() <= dateTo.getWeekOfWeekyear()) {
+                    final DateTime dateIni = dateCont;
                     int contDays = dateCont.getDayOfWeek();
                     final ProductPriceList priceInter = new ProductPriceList();
                     int daysLimit = 7;
@@ -352,26 +400,73 @@ public abstract class PriceUtil_Base
                         daysLimit = dateTo.getDayOfWeek();
                     }
                     while (contDays <= daysLimit) {
-                        final StyleDateConverter styledate = new StyleDateConverter(false);
-                        final DateTimeFormatter fmt = DateTimeFormat.forPattern(styledate
-                                        .getDatePattern());
-                        fmt.withLocale(Context.getThreadContext().getLocale());
                         parameters.put("date_eFapsDate", new String[] { dateCont.toString(fmt) });
-                        final ProductPrice price = getPrice(_parameter, _instanceProduct.getOid(),
-                                            CIProducts.ProductPricelistRetail.uuid);
-                        priceInter.setLstInterval(price.getOrigPrice());
+                        if (_instanceProduct != null) {
+                            final ProductPrice price = getPrice(_parameter, _instanceProduct.getOid(),
+                                                CIProducts.ProductPricelistRetail.uuid);
+                            priceInter.setLstInterval(price.getBasePrice());
+                        }
                         dateCont = dateCont.plusDays(1);
                         contDays++;
                     }
-                    final BigDecimal average = priceInter.getPricesAverage();
-                    mapPrice.put(dateCont.getWeekOfWeekyear() - 1, average);
+                    if (_instanceProduct != null) {
+                        final String average = priceInter.getPricesAverage();
+                        lstPrice.add(average);
+                    } else {
+                        lstPrice.add(dateIni.toString(fmt2) + "-<br>" + dateCont.minusDays(1).toString(fmt2));
+                    }
+                    if (dateIni.getWeekOfWeekyear() == dateTo.getWeekOfWeekyear()) {
+                        dateCont = dateCont.plusWeeks(1);
+                    }
                 }
             }
         } else if (_range[0].equals(PriceUtil_Base.RangeInterval.YEAR.getKey())) {
 
         }
 
-        return mapPrice;
+        return lstPrice;
+    }
+
+    protected String getTable4PriceListHistory(final Map<String, List<String>> _products,
+                                               final List<String> _heads)
+    {
+        final HtmlTable htmlT = new HtmlTable();
+        htmlT.table();
+        htmlT.tr();
+        htmlT.th("Producto");
+        for (final String head : _heads) {
+            htmlT.th(head);
+        }
+        htmlT.trC();
+        for (final Entry<String, List<String>> entry : _products.entrySet()) {
+            htmlT.tr();
+            htmlT.td(entry.getKey());
+            for (final String entry2 : entry.getValue()) {
+                htmlT.td(entry2);
+            }
+            htmlT.trC();
+        }
+        htmlT.tableC();
+
+        return htmlT.toString();
+    }
+
+    public Return getProductsList (final Parameter _parameter) throws EFapsException {
+        final List<Instance> map = new ArrayList<Instance>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typesStr = (String) properties.get("Types");
+        final String[] types = typesStr.split(";");
+        for (final String type : types) {
+            final QueryBuilder queryBldr = new QueryBuilder(Type.get(type));
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                map.add(query.getCurrentValue());
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, map);
+        return ret;
     }
 
     /**
@@ -667,12 +762,16 @@ public abstract class PriceUtil_Base
             }
         }
 
-        public BigDecimal getPricesAverage () {
+        public String getPricesAverage()
+            throws EFapsException
+        {
             BigDecimal totalPrice = BigDecimal.ZERO;
             for (final BigDecimal price : this.lstInterval) {
                 totalPrice = totalPrice.add(price);
             }
-            return totalPrice.divide(new BigDecimal(this.lstInterval.size()));
+            final Format formater = getDigitsformater();
+            final BigDecimal averagePrice = totalPrice.divide(new BigDecimal(this.lstInterval.size()), BigDecimal.ROUND_HALF_UP);
+            return formater.format(averagePrice);
         }
 
     }
