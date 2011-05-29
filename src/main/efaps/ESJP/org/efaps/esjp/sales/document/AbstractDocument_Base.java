@@ -1114,6 +1114,15 @@ public abstract class AbstractDocument_Base
 
 
     /**
+     * @param _uoMId id of the UoM
+     * @return Field String
+     */
+    protected String getUoMFieldStrByUoM(final long _uoMId)
+    {
+        return getUoMFieldStr(_uoMId, Dimension.getUoM(_uoMId).getDimId());
+    }
+
+    /**
      * Method to evaluate the selected row.
      *
      * @param _parameter paaremter
