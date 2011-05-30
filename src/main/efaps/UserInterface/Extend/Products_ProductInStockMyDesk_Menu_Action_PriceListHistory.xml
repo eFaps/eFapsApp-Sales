@@ -43,6 +43,8 @@
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
+        <property name="WindowHeight">800</property>
+        <property name="WindowWidth">1200</property>
     </definition>
 
 </ui-command>

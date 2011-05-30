@@ -37,11 +37,23 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <picker name="Products_ProductPicker4Product"/>
+            <trigger program="org.efaps.esjp.sales.PriceUtil"
+                     method="updateField4Product"
+                     name="Sales_Products_ProductPriceHistoryForm.product.UI_FIELD_UPDATE"
+                     event="UI_FIELD_UPDATE"/>
         </field>
         <field name="priceHistory">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="HideLabel">true</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.PriceUtil"
+                     method="removeField4Product"
+                     name="Sales_Products_ProductPriceHistoryForm.javaScript.UI_FIELD_VALUE"
+                     event="UI_FIELD_VALUE"/>
         </field>
     </definition>
 </ui-form>

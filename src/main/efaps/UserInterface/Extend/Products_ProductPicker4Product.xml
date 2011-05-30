@@ -36,7 +36,7 @@
         <target>
             <table>Products_ProductPicker4HistoryTable</table>
             <evaluate program="org.efaps.esjp.sales.PriceUtil" method="getProductsList">
-                <property name="Types">Products_ProductService</property>
+                <property name="Types">Products_ProductMaterial;Products_ProductStandart;Products_ProductService;Products_ProductGeneric</property>
             </evaluate>
             <trigger program="org.efaps.esjp.sales.PriceUtil"
                 method="getPriceListHistory"
