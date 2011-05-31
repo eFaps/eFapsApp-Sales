@@ -15,34 +15,35 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 206 $
- Last Changed:    $Date: 2011-05-19 08:49:47 -0500 (jue, 19 may 2011) $
- Last Changed By: $Author: Luis Estrada $
+ Revision:        $Rev: 5313 $
+ Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (lun, 16 ago 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>7891b13e-7d77-44dd-906e-286641267499</uuid>
+  <uuid>9009cfb1-4cd6-4f7f-8ec1-14603432395c</uuid>
   <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 206 $</file-revision>
+  <file-revision>$Rev: 5313 $</file-revision>
 
   <definition>
     <version-expression>(version==latest)</version-expression>
-    <name>Sales_CashReceipt</name>
-    <parent>Sales_DocumentSumAbstract</parent>
+    <name>Sales_CashReceiptTree_Payment_Menu_Action_Create</name>
 
-    <attribute>
-        <name>Status</name>
-        <type>Status</type>
-        <typelink>Sales_CashReceiptStatus</typelink>
-        <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-        <sqlcolumn>STATUS</sqlcolumn>
-        <trigger event="RANGE_VALUE" name="Sales_CashReceiptStatus.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
-      </trigger>
-    </attribute>
-
-    <trigger event="ACCESSCHECK" name="Sales_CashReceipt.ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4Object"/>
+    <!-- target definitions -->
+    <target>
+      <form>Sales_PaymentForm</form>
+      <execute method="create" program="org.efaps.esjp.sales.Payment"/>
+    </target>
+    <!-- properties -->
+    <property name="Target">modal</property>
+    <property name="TargetCreateType">Sales_Payment</property>
+    <property name="TargetConnectAttribute">Sales_Payment/CreateDocument</property>
+    <property name="TargetMode">create</property>
+    <property name="WindowHeight">460</property>
+    <property name="WindowWidth">720</property>
   </definition>
-</datamodel-type>
+
+</ui-command>

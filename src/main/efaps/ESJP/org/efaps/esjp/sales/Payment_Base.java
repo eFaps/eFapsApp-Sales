@@ -31,17 +31,17 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.Map.Entry;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -136,7 +136,11 @@ public abstract class Payment_Base
                 // Sales_PartialInvoice
             } else if (docInst.getType().getUUID().equals(UUID.fromString("17e30627-33c7-4dcb-a209-056932d0c9c0"))) {
                 status = Status.find(CISales.PartialInvoiceStatus.uuid, "Paid");
+                // Sales_CashReceipt
+            } else if (docInst.getType().getUUID().equals(UUID.fromString("7891b13e-7d77-44dd-906e-286641267499"))) {
+                status = Status.find(CISales.CashReceiptStatus.uuid, "Paid");
             }
+
             update.add("Status", ((Long) status.getId()).toString());
             update.execute();
         }

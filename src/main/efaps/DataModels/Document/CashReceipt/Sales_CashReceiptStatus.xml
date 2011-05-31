@@ -34,6 +34,10 @@
       <description>CashReceipt was placed.</description>
     </status>
 
+    <status key="Paid">
+      <description>Invoice was payed.</description>
+    </status>
+
     <status key="Received">
       <description>CashReceipt was received.</description>
     </status>

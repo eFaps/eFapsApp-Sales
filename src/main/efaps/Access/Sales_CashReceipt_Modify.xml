@@ -43,6 +43,7 @@
 
     <status group="Sales_CashReceiptStatus">
       <key>Open</key>
+      <key>Paid</key>
       <key>Received</key>
       <key>Canceled</key>
       <key>Closed</key>

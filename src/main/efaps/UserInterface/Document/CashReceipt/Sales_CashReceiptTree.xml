@@ -41,6 +41,9 @@
         </target>
         <!-- type tree for -->
         <type>Sales_CashReceipt</type>
+        <childs>
+            <child>Sales_CashReceiptTree_Payment</child>
+        </childs>
 
         <!-- properties -->
         <property name="Target">content</property>
