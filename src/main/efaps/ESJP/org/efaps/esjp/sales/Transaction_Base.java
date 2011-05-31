@@ -24,19 +24,21 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SearchQuery;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -57,36 +59,28 @@ public abstract class Transaction_Base
      * @return Return
      * @throws EFapsException on error
      */
-    public Return value4Account(final Parameter _parameter) throws EFapsException
+    public Return value4Account(final Parameter _parameter)
+        throws EFapsException
     {
-        final Return retVal = new Return();
-        final Instance instance = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
-        final TreeMap<String, Long> map = new TreeMap<String, Long>();
-        long actual = 0;
-        if (instance != null && instance.getType().isKindOf(Type.get("Sales_TransactionAbstract"))) {
-            final SearchQuery query = new SearchQuery();
-            query.setObject(instance);
-            query.addSelect("Account");
-            query.execute();
-            if (query.next()) {
-                actual = (Long) query.get("Account");
-            }
-        }
-        final SearchQuery query2 = new SearchQuery();
-        query2.setQueryTypes("Sales_AccountAbstract");
-        query2.setExpandChildTypes(true);
-        query2.addSelect("ID");
-        query2.addSelect("Name");
-        query2.execute();
-        while (query2.next()) {
-            map.put((String) query2.get("Name"), (Long) query2.get("ID"));
-        }
-        query2.close();
 
-        final StringBuilder ret = new StringBuilder();
+        final Return retVal = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final TreeMap<String, Long> cashDeskMap = new TreeMap<String, Long>();
+        final long actual = 0;
+        final StringBuilder ret = new StringBuilder();
+
+        final QueryBuilder cashDeskQuery = new QueryBuilder(CISales.AccountCashDesk);
+        final MultiPrintQuery cashDeskMulti = cashDeskQuery.getPrint();
+        cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID, CISales.AccountCashDesk.Name);
+        cashDeskMulti.execute();
+
+        while (cashDeskMulti.next()) {
+            cashDeskMap.put(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Name),
+                            cashDeskMulti.<Long>getAttribute(CISales.AccountCashDesk.ID));
+        }
+
         ret.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
-        for (final Map.Entry<String, Long> entry : map.entrySet()) {
+        for (final Map.Entry<String, Long> entry : cashDeskMap.entrySet()) {
             ret.append("<option");
 
             if (entry.getValue().equals(actual)) {
@@ -99,6 +93,7 @@ public abstract class Transaction_Base
         retVal.put(ReturnValues.SNIPLETT, ret.toString());
 
         return retVal;
+
     }
 
     /**
@@ -109,7 +104,8 @@ public abstract class Transaction_Base
      * @return Return
      * @throws EFapsException on error
      */
-    public Return inboundTrigger(final Parameter _parameter) throws EFapsException
+    public Return inboundTrigger(final Parameter _parameter)
+        throws EFapsException
     {
         addRemoveFromAccount(_parameter, true);
         return new Return();
@@ -123,7 +119,8 @@ public abstract class Transaction_Base
      * @return Return
      * @throws EFapsException on error
      */
-    public Return outboundTrigger(final Parameter _parameter) throws EFapsException
+    public Return outboundTrigger(final Parameter _parameter)
+        throws EFapsException
     {
         addRemoveFromAccount(_parameter, false);
         return new Return();
@@ -136,7 +133,9 @@ public abstract class Transaction_Base
      * @param _add if true the quantity will be added else subtracted
      * @throws EFapsException on error
      */
-    protected void addRemoveFromAccount(final Parameter _parameter, final boolean _add) throws EFapsException
+    protected void addRemoveFromAccount(final Parameter _parameter,
+                                        final boolean _add)
+        throws EFapsException
     {
         final Instance instance = _parameter.getInstance();
         // get the transaction
