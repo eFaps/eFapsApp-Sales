@@ -766,7 +766,8 @@ public abstract class AbstractDocument_Base
             .append("document.getElementById('eFapsContentDiv').appendChild(ele);");
 
         final boolean copy = _parameter.getParameterValue("selectedRow") != null;
-        if (copy || _parameter.getParameterValue("selectedDoc") != null) {
+        if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
+            Instance instCall = _parameter.getCallInstance();
             final String oid = copy ? _parameter.getParameterValue("selectedRow")
                                     : _parameter.getParameterValue("selectedDoc");
             final Instance instance = Instance.get(oid);
@@ -774,6 +775,8 @@ public abstract class AbstractDocument_Base
                 js.append("ele.value='").append(oid).append("';")
                     .append("ele.name='").append(copy ? "copy" : "derived").append("';")
                     .append(getSetValuesString(instance));
+            } else if (instCall != null && instCall.isValid()) {
+                js.append(getSetValuesString(instCall));
             }
         }
         js.append("</script>");
@@ -920,8 +923,10 @@ public abstract class AbstractDocument_Base
      *
      * @param _instance Instance of the document.
      * @return new StringBuilder with the additional fields.
+     * @throws EFapsException
      */
     protected StringBuilder addAdditionalFields(final Instance _instance)
+        throws EFapsException
     {
         return new StringBuilder();
     }
