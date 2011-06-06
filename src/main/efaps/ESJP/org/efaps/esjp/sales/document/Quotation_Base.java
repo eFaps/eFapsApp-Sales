@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2011 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -107,58 +108,10 @@ public abstract class Quotation_Base
         return createdDoc;
     }
 
-    /**
-     * Internal Method to create the positions for this Document.
-     * @param _parameter    Parameter as passed from eFaps API.
-     * @param _calcList     List of Calculators
-     * @param _createdDoc   cretaed Document
-     * @throws EFapsException on error
-     */
-    protected void createPositions(final Parameter _parameter,
-                                   final List<Calculator> _calcList,
-                                   final CreatedDoc _createdDoc)
-        throws EFapsException
+    @Override
+    protected Type getPositionType(final Parameter _parameter)
     {
-     // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
-        final Object[] rateObj = getRateObject(_parameter);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
-        Integer i = 0;
-        for (final Calculator calc : _calcList) {
-            if (!calc.isEmpty()) {
-                final Insert posIns = new Insert(CISales.QuotationPosition);
-                final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-                posIns.add(CISales.QuotationPosition.Quotation, _createdDoc.getInstance().getId());
-                posIns.add(CISales.QuotationPosition.PositionNumber, i);
-                posIns.add(CISales.QuotationPosition.Product, productdId.toString());
-                posIns.add(CISales.QuotationPosition.ProductDesc,
-                                _parameter.getParameterValues("productDesc")[i]);
-                posIns.add(CISales.QuotationPosition.Quantity, calc.getQuantityStr());
-                posIns.add(CISales.QuotationPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-                posIns.add(CISales.QuotationPosition.CrossUnitPrice, calc.getCrossUnitPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.QuotationPosition.NetUnitPrice, calc.getNetUnitPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.QuotationPosition.CrossPrice, calc.getCrossPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.QuotationPosition.NetPrice, calc.getNetPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.QuotationPosition.Tax, (calc.getTaxId()).toString());
-                posIns.add(CISales.QuotationPosition.Discount, calc.getDiscountStr());
-                posIns.add(CISales.QuotationPosition.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.QuotationPosition.CurrencyId, baseCurrInst.getId());
-                posIns.add(CISales.QuotationPosition.Rate, rateObj);
-                posIns.add(CISales.QuotationPosition.RateCurrencyId, rateCurrInst.getId());
-                posIns.execute();
-                _createdDoc.addPosition(posIns.getInstance());
-            }
-            i++;
-        }
+        return CISales.QuotationPosition.getType();
     }
 
     /**
@@ -170,5 +123,4 @@ public abstract class Quotation_Base
     {
         return getJavaScript(_parameter, false);
     }
-
 }

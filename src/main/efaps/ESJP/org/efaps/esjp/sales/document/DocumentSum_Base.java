@@ -29,13 +29,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -44,6 +48,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -206,4 +211,83 @@ public abstract class DocumentSum_Base
         return retVal;
     }
 
+    /**
+     * Internal Method to create the positions for this Document.
+     * @param _parameter    Parameter as passed from eFaps API.
+     * @param _calcList     List of Calculators
+     * @param _createdDoc   cretaed Document
+     * @throws EFapsException on error
+     */
+    protected void createPositions(final Parameter _parameter,
+                                   final List<Calculator> _calcList,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        // Sales-Configuration
+        final Instance baseCurrInst = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
+                        _parameter.getParameterValue("rateCurrencyId"));
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
+        Integer i = 0;
+        for (final Calculator calc : _calcList) {
+            if (!calc.isEmpty()) {
+                final Insert posIns = new Insert(getPositionType(_parameter));
+                final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
+                posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance().getId());
+                posIns.add(CISales.PositionAbstract.PositionNumber, i);
+                posIns.add(CISales.PositionAbstract.Product, productdId.toString());
+                posIns.add(CISales.PositionAbstract.ProductDesc,
+                                _parameter.getParameterValues("productDesc")[i]);
+                posIns.add(CISales.PositionAbstract.Quantity, calc.getQuantityStr());
+                posIns.add(CISales.PositionAbstract.UoM, _parameter.getParameterValues("uoM")[i]);
+                posIns.add(CISales.PositionAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
+                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionAbstract.NetUnitPrice, calc.getNetUnitPrice()
+                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionAbstract.CrossPrice, calc.getCrossPrice()
+                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionAbstract.NetPrice, calc.getNetPrice()
+                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionAbstract.Tax, (calc.getTaxId()).toString());
+                posIns.add(CISales.PositionAbstract.Discount, calc.getDiscountStr());
+                posIns.add(CISales.PositionAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionAbstract.CurrencyId, baseCurrInst.getId());
+                posIns.add(CISales.PositionAbstract.Rate, rateObj);
+                posIns.add(CISales.PositionAbstract.RateCurrencyId, rateCurrInst.getId());
+                add2PositionInsert(_parameter, calc, posIns);
+                posIns.execute();
+                _createdDoc.addPosition(posIns.getInstance());
+            }
+            i++;
+        }
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _calc         Calculator
+     * @param _posIns       insert
+     * @throws EFapsException on error
+     */
+    protected void add2PositionInsert(final Parameter _parameter,
+                                      final Calculator _calc,
+                                      final Insert _posIns)
+        throws EFapsException
+    {
+        //to be implemented by subclasses
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return Type for the Position
+     * @throws EFapsException on error
+     */
+    protected Type getPositionType(final Parameter _parameter)
+        throws EFapsException
+    {
+        return null;
+    }
 }
