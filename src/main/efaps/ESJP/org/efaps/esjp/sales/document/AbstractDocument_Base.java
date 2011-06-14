@@ -767,7 +767,7 @@ public abstract class AbstractDocument_Base
 
         final boolean copy = _parameter.getParameterValue("selectedRow") != null;
         if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
-            Instance instCall = _parameter.getCallInstance();
+            final Instance instCall = _parameter.getCallInstance();
             final String oid = copy ? _parameter.getParameterValue("selectedRow")
                                     : _parameter.getParameterValue("selectedDoc");
             final Instance instance = Instance.get(oid);
@@ -828,12 +828,12 @@ public abstract class AbstractDocument_Base
                 final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
                 Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCY_INSTANCE_KEY, newInst);
                 ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
-                currency.append("document.getElementsByName('rateCurrencyData')[0].innerHTML='")
-                                .append(ratesCur[1].toString()).append("';");
+                currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()));
             }
         }
 
         js.append("function setValue() {")
+            .append(currency)
             .append(getSetFieldValue(0, "contact", contactOid))
             .append(getSetFieldValue(0, "contactAutoComplete", contactName))
             .append(getSetFieldValue(0, "contactData", contactData))
@@ -1545,8 +1545,8 @@ public abstract class AbstractDocument_Base
                 js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'crossTotal','")
                         .append(getCrossTotalFmtStr(calculators)).append("');")
                     .append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'netTotal','")
-                        .append(getNetTotalFmtStr(calculators)).append("');");
-
+                        .append(getNetTotalFmtStr(calculators)).append("');")
+                    .append(addFields4RateCurrency(_parameter, calculators));
                 if (_parameter.getParameterValue("openAmount") != null) {
                     js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'openAmount','")
                         .append(getBaseCrossTotal(calculators)).append("');");
@@ -1564,6 +1564,20 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    /**
+     * Method to add extra fields to update when the currency change.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @param _calculators with the values.
+     * @return StringBuilder.
+     */
+    protected StringBuilder addFields4RateCurrency(final Parameter _parameter,
+                                                   final List<Calculator> _calculators)
+        throws EFapsException
+    {
+        return new StringBuilder();
     }
 
     /**
