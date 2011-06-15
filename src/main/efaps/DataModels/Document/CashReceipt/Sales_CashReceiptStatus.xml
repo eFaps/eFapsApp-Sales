@@ -34,20 +34,8 @@
       <description>CashReceipt was placed.</description>
     </status>
 
-    <status key="Paid">
-      <description>Invoice was payed.</description>
-    </status>
-
-    <status key="Received">
-      <description>CashReceipt was received.</description>
-    </status>
-
     <status key="Canceled">
      <description>CashReceipt was canceled.</description>
-    </status>
-
-    <status key="Closed">
-     <description>CashReceipt was closed.</description>
     </status>
 
   </definition>
