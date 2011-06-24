@@ -1283,7 +1283,7 @@ public abstract class AbstractDocument_Base
                                 || oids[i].length() > 0) {
                     final boolean priceFromDB = _row4priceFromDB != null
                                                     && (_row4priceFromDB.equals(i) || _row4priceFromDB.equals(-1));
-                    final Calculator calc = new Calculator(_parameter, oldCalc, oids[i], quantities[i], unitPrices[i],
+                    final Calculator calc = getCalculator(_parameter, oldCalc, oids[i], quantities[i], unitPrices[i],
                                     discounts[i], priceFromDB, applyMinRetailPrice(_parameter));
                     calc.setWithoutTax(withoutTax);
                     ret.add(calc);
@@ -1295,6 +1295,34 @@ public abstract class AbstractDocument_Base
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CALCULATOR_KEY, ret);
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter parameter as passe dfrom the eFaps API
+     * @param _oldCalc calculator
+     * @param _oid oid of the product
+     * @param _quantity quantity
+     * @param _unitPrice unit price
+     * @param _discount discount
+     * @param _priceFromDB must the price set from DB
+     * @param _includeMinRetail must the minimum retail price be included
+     * @throws EFapsException on error
+     * @return new Calculator
+     */
+    public  Calculator getCalculator( final Parameter _parameter,
+                                         final Calculator _oldCalc,
+                                         final String _oid,
+                                         final String _quantity,
+                                         final String _unitPrice,
+                                         final String _discount,
+                                         final boolean _priceFromDB,
+                                         final boolean _includeMinRetail
+                                         )
+    throws EFapsException
+    {
+
+        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _includeMinRetail);
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
