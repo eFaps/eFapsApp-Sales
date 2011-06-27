@@ -63,7 +63,7 @@ La ventana crear nuevo impuesto, le muestra los campos obligatorios:
   * Valido desde: es la fecha desde cuando se va usar la nueva cantidad de I.G.V.
 
 =====b. Borrar seleccionado=====
-Seleccionar uno o varios impuesto y dirigirse a la opción acción y elija borrar seleccionado.
+Seleccionar uno o varios impuesto, dirigirse a la opción acción y elija borrar seleccionado.
 
 =====c. Exportar=====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
