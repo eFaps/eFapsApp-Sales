@@ -94,8 +94,10 @@ public abstract class Quotation_Base
         insert.add(CISales.Quotation.RateCrossTotal, getCrossTotal(calcList));
         insert.add(CISales.Quotation.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.Quotation.Date, date);
+        insert.add(CISales.Quotation.DueDate, _parameter.getParameterValue("dueDate") != null
+                                                    ? _parameter.getParameterValue("dueDate"): date);
         insert.add(CISales.Quotation.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.Quotation.Name, _parameter.getParameterValue("name4create"));
+        insert.add(CISales.Quotation.Name, getDocName4Create(_parameter));
         insert.add(CISales.Quotation.Status, Status.find(CISales.QuotationStatus.uuid, "Open").getId());
         insert.add(CISales.Quotation.CurrencyId, baseCurrInst.getId());
         insert.add(CISales.Quotation.RateCurrencyId, rateCurrInst.getId());
