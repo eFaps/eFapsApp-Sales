@@ -178,6 +178,7 @@
         <status group="Sales_CashReceiptStatus">
               <key>Open</key>
               <key>Canceled</key>
+              <key>Paid</key>
         </status>
 
         <role>Sales_Admin</role>
