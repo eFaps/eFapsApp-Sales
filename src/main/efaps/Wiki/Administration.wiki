@@ -40,7 +40,7 @@ En este menú atributos vemos los siguientes puntos:
 
 ====2.1.1 Pertenece a factura====
 
-=====a. Crear tipo de pago=====
+====a. Crear tipo de pago====
 El tipo de pago nos ayuda a crear los nombres de los distintos documentos que nos sirve para realizar un pago respectivo.
 Para crear un pago usted debe ingresar a crear tipo de pago, que se encuentra en la opción acción y en la
 ventana crear tipo de pago le muestra los campos obligatorios y secundarios que debe ingresar información,
@@ -62,7 +62,7 @@ Seleccionar un tipo de impuesto, dirigirse a la opción acción y elija borrar s
 
 ====2.1.4 Pertenece a contacto====
 
-=====a. Crear atributo de distrito=====
+====a. Crear atributo de distrito====
 Para crear distrito usted debe ingresar a crear atributo de distrito, que se encuentra en la opción acción y en la
 ventana crear atributo de distrito le muestra los campos obligatorios y secundarios que debe ingresar información,
 

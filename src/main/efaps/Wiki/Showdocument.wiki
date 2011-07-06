@@ -61,12 +61,12 @@ Veremos los siguientes puntos en este menú:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Para poder añadir un documento tiene que colocar el nombre del documento(colocar {{{*}}} al final de las
  palabras) o solo {{{*}}} y se dirige al botón buscar, inmediatamente ingresa a la lista de documentos en donde
  seleccionará uno o mas documentos haciendo un check en su casilla respectiva.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Para esto usted debe de seleccionar los documentos que quiere desconectar haciendo un check en las casillas luego dirigirse a acción y seleccionar desconectar.
 
 ====1.2 Presupuestos====
@@ -115,7 +115,7 @@ Se mostrara los siguientes puntos:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá la ventana documentos en ella se
 visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar {{{*}}} al final de las
  palabras), pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
@@ -123,10 +123,10 @@ visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del docu
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos haciendo un check en su casilla respectiva e interconectar.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Seleccionar uno o varios documentos se dirige a la opción acción y desconecta.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -173,7 +173,7 @@ Contamos con los siguientes puntos:
   * b. Borrar seleccionado
   * c. Exportar
 
-=====a. Crear pago=====
+====a. Crear pago====
 Para realizar los pagos debemos de colocar los datos siguientes:
 
   * Fecha y hora: la fecha y la hora que se realiza el pago.
@@ -181,10 +181,10 @@ Para realizar los pagos debemos de colocar los datos siguientes:
   * Tipo de pago: elige el tipo de pago que quiere realizar, para colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [http://localhost:8080/mn/servlet/help/org.efaps.wiki.sales.Administration.wiki#2.1_Atributos atributos].
   * Cuenta: escoger la caja para el pago, si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [http://localhost:8080/mn/servlet/help/org.efaps.wiki.sales.Administration.wiki#2.4_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
-=====b. Borrar seleccionado=====
+====b. Borrar seleccionado====
 Seleccionar un pago, dirigirse a la opción acción y elija borrar seleccionado.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -198,7 +198,7 @@ Se mostrara los siguientes puntos:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
 visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar {{{*}}} al final de las palabras),
 pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
@@ -206,10 +206,10 @@ pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Seleccionar uno o varios documentos se dirige a la opción acción y desconecta.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -261,7 +261,7 @@ Contamos con los siguientes puntos:
   * b. Borrar seleccionado
   * c. Exportar
 
-=====a. Crear pago=====
+====a. Crear pago====
 Para realizar los pagos debemos de colocar los datos siguientes:
 
   * Fecha y hora: la fecha y la hora que se realiza el pago.
@@ -269,10 +269,10 @@ Para realizar los pagos debemos de colocar los datos siguientes:
   * Tipo de pago: elige el tipo de pago que quiere realizar y desea  colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [http://localhost:8080/intimotors/servlet/help/org.efaps.wiki.sales.Showadministration.wiki#2.1_Atributos atributos].
   * Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [http://localhost:8080/intimotors/servlet/help/org.efaps.wiki.sales.Showadministration.wiki#2.3_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
-=====b. Borrar seleccionado=====
+====b. Borrar seleccionado====
 Seleccionar un pago, dirigirse a la opción acción y elija borrar seleccionado.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -286,7 +286,7 @@ Se mostrara los siguientes puntos:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
 visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar * al final de las palabras),
 pero también puede colocar solo * para buscar en todos los documentos.
@@ -294,10 +294,10 @@ pero también puede colocar solo * para buscar en todos los documentos.
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Seleccionar uno o varios documentos se dirige a la opción acción y desconecta.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -348,7 +348,7 @@ Contamos con los siguientes puntos:
   * b. Borrar seleccionado
   * c. Exportar
 
-=====a. Crear pago=====
+====a. Crear pago====
 Para realizar los pagos debemos de colocar los datos siguientes:
 
   * Fecha y hora: la fecha y la hora que se realiza el pago.
@@ -356,10 +356,10 @@ Para realizar los pagos debemos de colocar los datos siguientes:
   * Tipo de pago: elige el tipo de pago que quiere realizar y si desea  colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [http://localhost:8080/mn/servlet/help/org.efaps.wiki.sales.Administration.wiki#2.1_Atributos atributos].
   * Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [http://localhost:8080/mn/servlet/help/org.efaps.wiki.sales.Administration.wiki#2.4_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
-=====b. Borrar seleccionado=====
+====b. Borrar seleccionado====
 Seleccionar un pago, dirigirse a la opción acción y elija borrar seleccionado.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -462,26 +462,26 @@ formatos PDF o XLS.
 En el menú Guía de remisión(Devolución) encontramos una lista completa de todas las Guías de remisión(Devolución) creadas hasta este momento, ahora
 escogemos una guía e ingresamos a su contenido(se ingresa por la palabra mas resaltada).
 
-  * 1.7.1 Editar
-  * 1.7.2 Exportar
-  * 1.7.3 Posiciones
-  * 1.7.4 Asientos
+  * 1.9.1 Editar
+  * 1.9.2 Exportar
+  * 1.9.3 Posiciones
+  * 1.9.4 Asientos
 
-====1.7.1 Editar====
+====1.9.1 Editar====
 Podemos cambiar los siguientes datos  ingresados anteriormente:
 
   * Fecha:puede modificar la fecha ingresando manualmente con el mismo formato mostrado o eligiendo la fecha del calendario.
   * Encargado:es la persona responsable del cambio de información.
   * Nº:es el número correlativo del documento el cual podrá ser modificado por usted.
 
-====1.7.2 Exportar====
+====1.9.2 Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
-====1.7.3 Posiciones====
+====1.9.3 Posiciones====
 Son los productos que participan en la guía de remisión(Devolución).
 
-====1.7.4 Asientos====
+====1.9.4 Asientos====
 Se genera en el menú de contabilidad, cuando nosotros le asignamos un asiento.
 Nos dirigimos al menú de contabilidad entramos al periodo que se esta trabajando actualmente y seleccionamos documentos
 por registrar( Documentos p.r.), una vez ingresado a este menú podrá seleccionar el documento haciendo un check en su casilla respectiva ahora podrá obtener un registro en asientos.
@@ -573,7 +573,7 @@ Se mostrara los siguientes puntos:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
 visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar * al final de las palabras),
 pero también puede colocar solo * para buscar en todos los documentos.
@@ -581,10 +581,10 @@ pero también puede colocar solo * para buscar en todos los documentos.
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Seleccionar uno o varios documentos haciendo un check en su casillero respectivo, se dirige a la opción acción y desconecta.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -621,7 +621,7 @@ Se mostrara los siguientes puntos:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
 visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar * al final de las palabras),
 pero también puede colocar solo * para buscar en todos los documentos.
@@ -629,10 +629,10 @@ pero también puede colocar solo * para buscar en todos los documentos.
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Seleccionar uno o varios documentos haciendo un check en su casillero respectivo, se dirige a la opción acción y desconecta.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -666,7 +666,7 @@ Se mostrara los siguientes puntos:
   * b. Desconectar
   * c. Exportar
 
-=====a. Añadir documentos=====
+====a. Añadir documentos====
 Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá una ventana llamada buscar documentos en ella se
 visualiza solo un campo llamado nombre, donde colocara el tipo o nombre del documento(colocar * al final de las palabras),
 pero también puede colocar solo * para buscar en todos los documentos.
@@ -674,10 +674,10 @@ pero también puede colocar solo * para buscar en todos los documentos.
 Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
 o varios documentos e interconecta.
 
-=====b. Desconectar=====
+====b. Desconectar====
 Seleccionar uno o varios documentos haciendo un check en su casillero respectivo, se dirige a la opción acción y desconecta.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 

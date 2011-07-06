@@ -53,7 +53,7 @@ Contamos con los siguientes puntos:
   * b. Borrar seleccionado
   * c. Exportar
 
-=====a. Crear=====
+====a. Crear====
 Para crear un impuesto usted debe ingresar a crear, que se encuentra en la opción acción.
 La ventana crear nuevo impuesto, le muestra los campos obligatorios:
 
@@ -62,10 +62,10 @@ La ventana crear nuevo impuesto, le muestra los campos obligatorios:
   * Denominador:es el numero que se encuentra en la parte inferior de una fracción ejemplo: si el I.G.V. actual es 0,14 la fracción sera 14/100 y entonces el numero inferior sera 100.
   * Valido desde: es la fecha desde cuando se va usar la nueva cantidad de I.G.V.
 
-=====b. Borrar seleccionado=====
+====b. Borrar seleccionado====
 Seleccionar uno o varios impuesto, dirigirse a la opción acción y elija borrar seleccionado.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -83,7 +83,7 @@ El IGV seleccionado cuenta con los siguientes puntos:
   * b. Exportar
   * c. Cuenta
 
-=====a. Editar=====
+====a. Editar====
 Podemos modificar la información de los siguientes campos:
 
    * Nombre
@@ -92,26 +92,26 @@ Podemos modificar la información de los siguientes campos:
    * Denominador
    * Nombre
 
-=====b. Exportar=====
+====b. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
-=====c. Cuenta=====
+====c. Cuenta====
 Veremos los siguientes puntos:
 
   * Agregar
   * Desconectar
   * Exportar
 
-======Agregar======
+====Agregar====
 Nos ayuda a relacionar una cuenta existente con la cuenta del IGV. Para relacionar debe de dirigirse a acción y luego a
 agregar, la ventana buscar cuentas le mostrara dos campos que son numero y descripción en donde debe ingresar información
 en cualquiera de ellas o puede simplemente colocar solo {{{*}}}, después de esto se mostrara una lista completa de cuentas.
 
-======Desconectar======
+====Desconectar====
 Seleccionamos una o mas cuentas nos dirigimos a acción y seleccionamos desconectar.
 
-======Exportar======
+====Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -128,17 +128,17 @@ Veremos los siguientes puntos en este menú
   * b. Borrar seleccionado
   * c. Crear(contabilidad)
 
-=====a. Crear=====
+====a. Crear====
 Para poder crear un tipo de cambio usted debe dirigirse a acción y seleccionar crear, inmediatamente le mostrará la ventana crear nuevo tipo de cambio en donde ingresará la información correspondiente por cada campo:
   * Tipo de cambio: colocar la cantidad correspondiente.
   * Tipo de cambio(compra): colocar la cantidad correspondiente.
   * Vigente desde: puede modificar la fecha igual al formato mostrado o puede elegir la fecha desde el calendario.
   * Vigente hasta:puede modificar la fecha igual al formato mostrado o puede elegir la fecha desde el calendario.
 
-=====b. Borrar seleccionado=====
+====b. Borrar seleccionado====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formatos PDF o XLS.
 
-=====c. Crear(contabilidad)=====
+====c. Crear(contabilidad)====
 Para poder crear un tipo de cambio usted debe dirigirse a acción y seleccionar crear(contabilidad), inmediatamente le mostrará la ventana crear nuevo tipo de cambio en donde ingresará la información correspondiente por cada campo:
   * Tipo de cambio: colocar la cantidad correspondiente.
   * Tipo de cambio(compra): colocar la cantidad correspondiente.
@@ -158,23 +158,23 @@ Veremos los siguientes puntos:
   * b. Exportar
   * c. Transacciones
 
-=====a. Editar=====
+====a. Editar====
 Usted va poder cambiar la información ingresada con anterioridad.
 
-=====b. Exportar=====
+====b. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
-=====c. Transacciones=====
+====c. Transacciones====
 
   * Balance
   * Recibo de caja chica
   * Exportar
 
-======Balance======
+====Balance====
 Colocaremos el monto en el campo llamado saldo inicial.
 
-======Recibo de caja chica======
+====Recibo de caja chica====
 Este recibo nos detalla los montos que han sido utilizados de la caja chica.  Para crear se dirige a la opción acción y
 entra a recibo de caja chica, donde le muestra la ventana registrar boleta para caja y en ella se visualiza los campos en
 donde debe ingresar datos, a continuación se le mostrara que campo es obligatorio y secundario:
@@ -182,7 +182,7 @@ donde debe ingresar datos, a continuación se le mostrara que campo es obligator
   * Obligatorio: fecha, nombre, encargado, total bruto, empleado y nota.
   * Secundario: tipo de acción, tipo de comprobante y numero.
 
-======Exportar======
+====Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -193,23 +193,23 @@ Veremos los siguientes puntos:
   * b. Exportar
   * c. Transacciones
 
-=====a. Editar=====
+====a. Editar====
 Usted va poder cambiar la información ingresada con anterioridad.
 
-=====b. Exportar=====
+====b. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
-=====c. Transacciones=====
+====c. Transacciones====
 
   * Balance
   * Recibo de caja chica
   * Exportar
 
-======Balance======
+====Balance====
 Colocaremos el monto en el campo llamado saldo inicial.
 
-======Recibo de caja chica======
+====Recibo de caja chica====
 Este recibo nos detalla los montos que han sido utilizados de la caja chica.  Para crear se dirige a la opción acción y
 entra a recibo de caja chica, donde le muestra la ventana registrar boleta para caja y en ella se visualiza los campos en
 donde debe ingresar datos, a continuación se le mostrara que campo es obligatorio y secundario:
@@ -217,7 +217,7 @@ donde debe ingresar datos, a continuación se le mostrara que campo es obligator
   * Obligatorio: fecha, nombre, encargado, total bruto, empleado y nota.
   * Secundario: tipo de acción, tipo de comprobante y numero.
 
-======Exportar======
+====Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
@@ -256,17 +256,17 @@ Hablaremos de los siguientes puntos:
   * b. Borrar
   * c. Exportar
 
-=====a. Crear=====
+====a. Crear====
 Nos dirigimos a la opción acción y elegimos crear, nos aparece la ventana crear nuevo elemento en donde nos muestra los
 campos,
 
   * Texto corto: es el texto fundamental que va identificar al elemento.
   * Texto largo: es la explicación mas detallada del texto corto.
 
-=====b. Borrar=====
+====b. Borrar====
 Elegimos uno o varios elementos, luego nos dirigimos a acción y elegimos borrar.
 
-=====c. Exportar=====
+====c. Exportar====
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formatos PDF o XLS.
 
