@@ -112,7 +112,7 @@
         </repository>
     </distributionManagement>
 
-   <!-- ************************************************************************
+  <!-- ************************************************************************
     * Profiles
     ************************************************************************* -->
     <profiles>
@@ -133,14 +133,16 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <version>2.9</version>
                         <configuration>
                             <skip>true</skip>
                         </configuration>
                     </plugin>
-                   <!-- Attach Sources -->
+                    <!-- Attach Sources -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
+                        <version>2.1.2</version>
                         <executions>
                             <execution>
                                 <id>attach-sources</id>
@@ -155,6 +157,7 @@
                         <inherited>true</inherited>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.8</version>
                         <executions>
                             <execution>
                                 <id>attach-javadocs</id>
@@ -169,14 +172,16 @@
                         <inherited>true</inherited>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-deploy-plugin</artifactId>
+                        <version>2.6</version>
                         <configuration>
                             <updateReleaseInfo>true</updateReleaseInfo>
                         </configuration>
                     </plugin>
-                     <!-- signing the artefact with gpg -->
+                    <!-- signing the artefact with gpg -->
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.3</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -200,6 +205,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>2.4</version>
                 <reportSets>
                     <reportSet>
                         <reports>
@@ -220,22 +226,25 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javacc-maven-plugin</artifactId>
+                <version>2.6</version>
             </plugin>
             <!-- java doc -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.8</version>
                 <configuration>
                     <minmemory>128m</minmemory>
                     <maxmemory>1g</maxmemory>
                     <level>private</level>
-                    <detectLinks/>
+                    <detectLinks />
                 </configuration>
             </plugin>
             <!-- source code -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.2</version>
                 <configuration>
                     <linkJavadoc>false</linkJavadoc>
                     <javadocDir>apidocs</javadocDir>
@@ -245,7 +254,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.3</version>
+                <version>2.6</version>
                 <configuration>
                     <configLocation>${basedir}/src/checkstyle/efaps_checks.xml</configLocation>
                 </configuration>
@@ -254,6 +263,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-pmd-plugin</artifactId>
+                <version>2.5</version>
                 <configuration>
                     <linkXref>true</linkXref>
                     <sourceEncoding>utf-8</sourceEncoding>
@@ -264,26 +274,26 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>findbugs-maven-plugin</artifactId>
-                <configuration/>
+                <version>2.3.2</version>
+                <configuration />
             </plugin>
         </plugins>
     </reporting>
 
-
-
     <!-- ************************************************************************
-    * Project itself
-    ************************************************************************* -->
+  * Project itself
+  ************************************************************************* -->
     <build>
         <plugins>
             <!--
                 Compiler Settings:
-                - Java 1.5 is needed!
+                - Java 1.6 is needed!
                 - UTF8 encoding
             -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
                 <configuration>
                     <source>1.6</source>
                     <target>1.6</target>
@@ -297,7 +307,7 @@
             <plugin>
                 <groupId>org.efaps</groupId>
                 <artifactId>maven-efaps-plugin</artifactId>
-                 <version>2.0.3-7.1.6.v20100715</version>
+                <version>2.16.0-7.1.6.v20100715</version>
                 <executions>
                     <execution>
                         <goals>
@@ -309,7 +319,6 @@
                 <configuration>
                     <userName>Administrator</userName>
                     <passWord>Administrator</passWord>
-                    <transactionTimeout>900</transactionTimeout>
                     <!-- used from the generateUUID goal -->
                     <count>${count}</count>
                     <ciName>Sales</ciName>
@@ -325,6 +334,7 @@
             </plugin>
         </plugins>
     </build>
+
 
     <!-- ************************************************************************
     * Dependencies
