@@ -26,29 +26,31 @@
 <ui-table xmlns="http://www.efaps.org/xsd"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>96d6a67e-7ca1-4c31-bbb2-b3de955bfe69</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_AccountAbstractTable</name>
-    <!-- fields -->
-    <field name="type">
-      <property name="Attribute">Type</property>
-      <property name="Label">Sales_AccountAbstract/Type.Label</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="name">
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Attribute">Name</property>
-      <property name="Label">Sales_AccountAbstract/Name.Label</property>
-    </field>
-    <field name="description">
-      <property name="Attribute">Description</property>
-      <property name="Label">Sales_AccountAbstract/Description.Label</property>
-    </field>
-    
-  </definition>
+    <uuid>96d6a67e-7ca1-4c31-bbb2-b3de955bfe69</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountAbstractTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Sales_AccountAbstract/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="name">
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_AccountAbstract/Name.Label</property>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="Label">Sales_AccountAbstract/Description.Label</property>
+        </field>
+        <field name="active">
+            <property name="Attribute">Active</property>
+            <property name="Label">Sales_AccountAbstract/Active.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+    </definition>
 </ui-table>

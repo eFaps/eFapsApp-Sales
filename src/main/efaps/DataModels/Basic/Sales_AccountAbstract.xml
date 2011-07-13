@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -29,54 +29,45 @@
     <uuid>792b88a3-ca1f-43b0-9e58-7b7afacfec2b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountAbstract</name>
-
         <attribute>
             <name>Type</name>
             <type>Type</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>TYPEID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>OID</name>
             <type>OID</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>TYPEID, ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>ID</name>
             <type>Long</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Company</name>
             <type>CompanyLink</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>COMPANYID</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Name</name>
             <type>String</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>Description</name>
             <type>String</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>DESCR</sqlcolumn>
         </attribute>
-
         <attribute>
             <name>CurrencyLink</name>
             <type>LinkWithRanges</type>
@@ -89,13 +80,18 @@
                 <property name="Type">ERP_Currency</property>
             </trigger>
         </attribute>
-
         <attribute>
             <name>AmountAbstract</name>
             <type>Decimal</type>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>AMOUNT</sqlcolumn>
         </attribute>
-
+        <attribute>
+            <name>Active</name>
+            <type>Boolean</type>
+            <sqltable>Products_StorageAbstractSQLTable</sqltable>
+            <sqlcolumn>ACTIVE</sqlcolumn>
+            <defaultvalue>true</defaultvalue>
+        </attribute>
     </definition>
 </datamodel-type>

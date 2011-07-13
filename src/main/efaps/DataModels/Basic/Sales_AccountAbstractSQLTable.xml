@@ -43,6 +43,7 @@
       <column name="DESCR"        type="STRING_SHORT"                 length="255"/>
       <column name="CURRENCYID"   type="INTEGER"/>
       <column name="AMOUNT"   	  type="DECIMAL" 	  				  length="15" scale="4"/>
+      <column name="ACTIVE" type="BOOLEAN" />
       <foreign name="T_SALESACC_FK_COMPANYID" key="COMPANYID" reference="T_USERABSTRACT(ID)"/>
      </database>
   </definition>
