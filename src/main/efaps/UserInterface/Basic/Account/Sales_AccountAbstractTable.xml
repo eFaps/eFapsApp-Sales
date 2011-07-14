@@ -48,6 +48,7 @@
             <property name="Label">Sales_AccountAbstract/Description.Label</property>
         </field>
         <field name="active">
+            <property name="FilterType">PICKER</property>
             <property name="Attribute">Active</property>
             <property name="Label">Sales_AccountAbstract/Active.Label</property>
             <property name="ShowTypeIcon">true</property>

@@ -321,6 +321,7 @@
                     <passWord>Administrator</passWord>
                     <!-- used from the generateUUID goal -->
                     <count>${count}</count>
+                    <file>${file}</file>
                     <ciName>Sales</ciName>
                 </configuration>
                 <dependencies>
