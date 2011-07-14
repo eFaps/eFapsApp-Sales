@@ -89,7 +89,7 @@
         <attribute>
             <name>Active</name>
             <type>Boolean</type>
-            <sqltable>Products_StorageAbstractSQLTable</sqltable>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>ACTIVE</sqlcolumn>
             <defaultvalue>true</defaultvalue>
         </attribute>
