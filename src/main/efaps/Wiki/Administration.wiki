@@ -12,9 +12,9 @@
 
 ----
 
-A partir de este menú podemos dar un control a todos los datos que interactúan o que son utilizados por los demás
+A partir de este menú puede dar un control a todos los datos que interactúan o que son utilizados por los demás
 menús.
-A continuacion veremos lo que contiene este menú,
+A continuación verá lo que contiene este menú,
 
   * 2.1 Atributos
   * 2.2 Categoría de impuestos
@@ -26,7 +26,7 @@ A continuacion veremos lo que contiene este menú,
   * 2.8 Ajustes de caja
   * 2.9 Modulo de texto
 
-===2.1 Atributos===
+==2.1 Atributos==
 En este menú atributos vemos los siguientes puntos:
 
   * 2.1.1 Pertenece a factura y boleta.
@@ -38,118 +38,150 @@ En este menú atributos vemos los siguientes puntos:
     * a. Crear atributo de distrito.
   * 2.1.6 Exportar
 
-====2.1.1 Pertenece a factura====
+===2.1.1 Pertenece a factura===
 
 ====a. Crear tipo de pago====
-El tipo de pago nos ayuda a crear los nombres de los distintos documentos que nos sirve para realizar un pago respectivo.
-Para crear un pago usted debe ingresar a crear tipo de pago, que se encuentra en la opción acción y en la
-ventana crear tipo de pago le muestra los campos obligatorios y secundarios que debe ingresar información,
+El tipo de pago le ayudara a crear los nombres de los distintos documentos que le serviran para realizar un pago respectivo.
+Para crear un pago usted debe de ingresar a crear tipo de pago, que se encuentra en la opción acción, inmediatamente le mostrará
+la ventana *crear tipo de pago* en donde ingresara la respectiva información en los campos obligatorios y secundarios:
 
   * Obligatorio: valor, es el nombre a ingresarse para la identificación del atributo.
   * Secundario: descripción, es la descripción del atributo.
 
-====2.1.2 Crear tipo de comprobante para caja chica====
-El comprobante para caja chica nos ayuda a crear los nombres de los distintos documentos para que aparescan en un combo y
-de esta manera sea seleccionado. Para crear caja chica usted debe ingresar a crear tipo de comprobante para caja chica, que
-se encuentra en la opción acción y en la ventana crear tipo de comprobante para caja chica le muestra los campos
-obligatorios y secundarios que debe ingresar información,
+===2.1.2 Crear tipo de comprobante para caja chica===
+El comprobante para caja chica le ayudara a crear los nombres de los distintos documentos para que aparezcan en un combo y
+de esta manera sea seleccionado. Para crear caja chica usted debe de ingresar a crear tipo de comprobante para caja chica, que
+se encuentra en la opción acción y en la ventana *crear tipo de comprobante para caja chica* se le mostrarán los campos
+obligatorios y secundarios:
 
   * Obligatorio: valor, es el nombre a ingresarse para la identificación del atributo.
   * Secundario: descripción, es la descripción del atributo.
 
-====2.2.3 Borrar seleccionado====
-Seleccionar un tipo de impuesto, dirigirse a la opción acción y elija borrar seleccionado.
+===2.2.3 Borrar seleccionado===
+Seleccionar uno o varios tipos de atributo, dirigirse a la opción acción y elegir borrar seleccionado.
 
-====2.1.4 Pertenece a contacto====
+===2.1.4 Pertenece a contacto===
 
 ====a. Crear atributo de distrito====
-Para crear distrito usted debe ingresar a crear atributo de distrito, que se encuentra en la opción acción y en la
-ventana crear atributo de distrito le muestra los campos obligatorios y secundarios que debe ingresar información,
+Para crear distrito usted debe ingresar a crear atributo de distrito, que se encuentra en la opción acción, inmediatamente le
+mostrará la ventana *crear atributo de distrito* en donde ingresara la información correspondiente en los campos obligatorios y secundarios:
 
   * Obligatorio: valor, es el nombre a ingresarse para la identificación del atributo.
   * Secundario: descripción, es la descripción del atributo.
 
-====2.1.5 Crear tipo de comprobante====
-El tipo de comprobante nos sirve para documentos externos. Para crear un comprobante usted debe ingresar a crear tipo de
-comprobante que se encuentra en la opción acción y en la ventana crear tipo de comprobante le muestra los campos
-obligatorios y secundarios que debe ingresar información,
+===2.1.5 Crear tipo de comprobante===
+El tipo de comprobante le sirve para documentos externos. Para crear un comprobante usted debe ingresar a crear tipo de
+comprobante que se encuentra en la opción acción, inmediatamente le mostrara la ventana *crear tipo de comprobante* en donde ingresará
+la información correspondiente en los campos obligatorios y secundarios:
 
   * Obligatorio: valor, es el nombre a ingresarse para la identificación del atributo.
   * Secundario: descripción, es la descripción del atributo.
 
 ===2.1.6 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
-formatos PDF o XLS.
+formato PDF o XLS.
 
-===2.2 Categoría de impuestos===
+==2.2 Categoría de impuestos==
 En este menú categoría de impuestos vemos los siguientes puntos:
 
   * 1.2.1 Crear
   * 1.2.2 Borrar seleccionado
   * 1.2.3 Exportar
 
-====2.2.3 Crear====
-Para crear una categoría de impuesto usted debe ingresar a crear, que se encuentra en la opción acción.
-La ventana crear nueva categoría de impuesto le muestra el campo nombre(obligatorio), en donde debe ingresar la
+===2.2.3 Crear===
+Para crear una categoría de impuesto usted deberá ingresar a crear, que se encuentra en la opción acción.
+La ventana *crear nueva categoría de impuesto* le muestra el campo nombre(es obligatorio), en donde deberá ingresar la
 información correspondiente.
 
-====2.2.2 Borrar seleccionado====
-Seleccionar un tipo de impuesto, dirigirse a la opción acción y elija borrar seleccionado.
+===2.2.2 Borrar seleccionado===
+Seleccionar uno o varios tipos de impuesto, dirigirse a la opción acción y elegir borrar seleccionado.
 
-====2.2.3 Exportar====
+===2.2.3 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
-formatos PDF o XLS.
+formato PDF o XLS.
 
-===2.3 Monedas===
-En este menú veremos los siguientes puntos:
+==2.3 Monedas==
+En este menú mostraremos los siguientes puntos:
 
   * 2.3.1 Crear
   * 2.3.2 Borrar seleccionado
   * 2.3.3 Exportar
+  * 2.3.4 Tipo de cambio
 
-====2.3.1 Crear====
+===2.3.1 Crear===
 Para crear una nueva moneda usted debe de ingresar los siguientes datos:
 
   * Nombre: debe colocar el nombre de la moneda como: Dolar.
   * Codigo ISO: ingresar el identificador, por ejemplo de dolar es:USD.
-  * Simbolo: colocamos el simbolo respectivo que esta ligado a la moneda, por ejemplo dolar es:	$.
-  * UUID: este codigo es necesario para utilizarce en todos los procesos del sistema.
-  * Inverso: para que aparesca esta moneda en la lista es TRUE y para que no aparesca en la lista es FALSE.
+  * Simbolo: colocar el símbolo respectivo que esta ligado a la moneda, por ejemplo dolar es:	$.
+  * UUID: este código es necesario para utilizarce en todos los procesos del sistema.
+  * Inverso: para que aparezca esta moneda en la lista es TRUE y para que no aparezca en la lista es FALSE.
 
-====2.3.2 Borrar seleccionado====
-Seleccionar cualquier moneda, diríjase a la opción acción y elija borrar seleccionado.
+===2.3.2 Borrar seleccionado===
+Seleccionar una o mas monedas, dirigirse a la opción acción y elegir borrar seleccionado.
 
-====2.3.3 Exportar====
+===2.3.3 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
-formatos PDF o XLS.
+formato PDF o XLS.
 
-===2.4 Cuentas===
-En este menú veremos los siguientes puntos:
+===2.3.4 Tipo de cambio===
+Para poder registrar un tipo de cambio, deberá primero ingresar a la información de la moneda, haciendo clic en el nombre.
+
+La opción llamada tipo de cambio le muestra los siguientes puntos:
+
+  * a. Crear
+  * b. Borrar seleccionado
+  * c. Crear(contabilidad)
+
+====a. Crear====
+Se dirige a la opción acción y selecciona crear, inmediatamente le mostrará la ventana *crear tipo de cambio*, en donde ingresará la información correspondiente en los siguientes campos:
+
+  * Tipo de cambio: ingresar la cantidad correspondiente.
+  * Tipo de cambio(compra): ingresar la cantidad correspondiente.
+  * Vigente desde: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
+  * Vigente hasta: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
+
+====b. Borrar seleccionado====
+Seleccionar uno o varios tipos de cambio, dirigirse a la opción acción y elegir borrar seleccionado.
+
+====c. Crear(contabilidad)====
+Esta opción va dirigida al área de contabilidad.
+
+Se dirige a la opción acción y selecciona Crear(contabilidad), inmediatamente le mostrará la ventana *crear tipo de cambio*, en donde ingresará la información correspondiente en los siguientes campos:
+
+  * Tipo de cambio: ingresar la cantidad correspondiente.
+  * Tipo de cambio(compra): ingresar la cantidad correspondiente.
+  * Vigente desde: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
+  * Vigente hasta: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
+
+==2.4 Cuentas==
+En este menú mostraremos los siguientes puntos:
 
   * 2.4.1 Crear Caja
   * 2.4.2 Crear Caja chica
 
-====2.4.1 Crear caja====
-Esta opción nos ayuda a crear una caja en donde se realiza el ingreso de dinero.
-Para crear una caja debe ingresar a crear caja que se encuentra en la opción acción y en laventana crear nueva caja le
-muestra los campos obligatorios y secundarios que debe ingresar información,
+===2.4.1 Crear caja===
+Esta opción le ayudara a crear *caja*, en donde se realiza el ingreso del dinero(pagos).
+
+Para crear una caja debe ingresar a crear caja que se encuentra en la opción acción, inmediatamente le mostrará la
+ventana *crear nueva caja* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
   * Obligatorio: Nombre, descripción y moneda(elegir la moneda).
   * Secundario: Monto.
 
-====2.4.2 Crear caja chica====
-Esta opción nos ayuda a crear una caja chica donde se realiza el gasto del dinero.
-Para crear una caja chica debe ingresar a crear caja chica que se encuentra en la opción acción y en la ventana crear
-cuenta para caja chica le muestra los campos obligatorios y secundarios que
-debe ingresar información,
+===2.4.2 Crear caja chica===
+Esta opción le ayudará a crear *caja chica*, en donde se realiza el gasto e ingreso del dinero.
+
+Para crear una caja chica debe ingresar a crear caja chica que se encuentra en la opción acción, inmediatamente le mostrará
+la ventana *crear cuenta para caja chica* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
   * Obligatorio: Nombre, descripción y moneda(elegir la moneda).
   * Secundario: Monto.
 
-===2.5 Pagos===
-Es la lista de todos los balances realizados en las distintas cajas chicas por local.
+==2.5 Pagos==
+Es la lista de todos los balances realizados en las distintas cajas chicas existentes en cada local.
 
-===2.6 Transacciones===
+==2.6 Transacciones==
 Las transacciones utilizan la caja chica para hacer las distintas operaciones a continuación le mostraremos los siguientes
 puntos:
 
@@ -158,68 +190,64 @@ puntos:
   * 2.6.3 Borrar seleccionado
   * 2.6.4 Exportar
 
-====2.6.1 Crear entrante====
-Para crear transacción entrante usted debe ingresar a crear, que se encuentra en la opción acción.
-La ventana crear transacción entrante, le muestra los campos que debe ingresar  información, a continuación se le
-explicara que datos debe ingresar:
+===2.6.1 Crear entrante===
+Para crear transacción entrante usted deberá ingresar a crear, que se encuentra en la opción acción, inmediatamente le mostrará
+la ventana *crear transacción entrante* en donde ingresará la información correspondiente en los siguientes campos:
 
   * Fecha: Ingresar la respectiva fecha en que se realizo la transacción.
   * Cantidad: Es el respectivo monto de un producto con lo cual se realiza la transacción.
   * Moneda: Es el tipo de moneda con que se va tramitar transacción.
-  * Cuenta: se seleccionara con que caja chica vamos a trabajar.
-  * Tipo de pago: se seleccionara el tipo de pago que se va efectuar.
+  * Cuenta: se seleccionará con que caja chica va a trabajar.
+  * Tipo de pago: se seleccionará el tipo de pago que se va efectuar.
   * Descripción: escribir detalladamente la razón del traslado.
 
-====2.6.2 Crear saliente====
-Para crear transacción saliente usted debe ingresar a crear, que se encuentra en la opción acción.
-La ventana crear transacción saliente, le muestra los campos que debe ingresar  información, a continuación se le
-explicara que datos debe ingresar:
+===2.6.2 Crear saliente===
+Para crear transacción saliente usted deberá ingresar a crear, que se encuentra en la opción acción, inmediatamente le mostrará
+la ventana *crear transacción saliente* en donde ingresará la información correspondiente en los siguientes campos:
 
-  * Fecha: Ingresar la respectiva fecha en que se realizo la transacción.
+  * Fecha: Ingresar la respectiva fecha en que se realizó la transacción.
   * Cantidad: Es el respectivo monto de un producto con lo cual se realiza la transacción.
   * Moneda: Es el tipo de moneda con que se va tramitar transacción.
-  * Cuenta: se seleccionara con que caja chica vamos a trabajar.
-  * Tipo de pago: se seleccionara el tipo de pago que se va efectuar.
+  * Cuenta: se seleccionará con que caja chica va a trabajar.
+  * Tipo de pago: se seleccionará el tipo de pago que se va efectuar.
   * Descripción: escribir detalladamente la razón del traslado.
 
-====2.6.3 Borrar seleccionado====
-Seleccionar una transacción, dirigirse a la opción acción y elija borrar seleccionado.
+===2.6.3 Borrar seleccionado===
+Seleccionar una o varias transacciones, dirigirse a la opción acción y elegir borrar seleccionado.
 
-====2.6.4 Exportar====
+===2.6.4 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
-formatos PDF o XLS.
+formato PDF o XLS.
 
-===2.7 Saldo===
+==2.7 Saldo==
 Monto que hay en el balance de la caja chica de un proyecto.
 
-===2.8 Ajustes de caja===
-Surge al momento que se produce el cierre de caja, para cerrar una caja usted debe ingresar al menú saldo y seleccionar
-la cuenta que desea entrar, una vez que ingreso a listado de transacciones para caja chica tendrá la opción de cerrar la
+==2.8 Ajustes de caja==
+Surge al momento que se produce el cierre de caja, para cerrar una caja usted deberá ingresar al menú saldo y seleccionar
+la cuenta que desea entrar, una vez que ingresó al listado de transacciones para caja chica tendrá la opción de cerrar la
 cuenta.
 
-===2.9 Modulo de texto===
+==2.9 Módulo de texto==
 Este menú es utilizado para la creación de notas importantes que van ligadas a los distintos documentos.
-Se mostrara a continuación los siguientes puntos:
+Se mostrará a continuación los siguientes puntos:
 
   * 2.9.1 Crear
   * 2.9.2 Borrar
   * 2.9.3 Exportar
 
-====2.9.1 Crear====
-Para crear un menú de texto usted debe ingresar a crear, que se encuentra en la opción acción y la ventana crear nuevo
-modulo le mostrara los campos que debe ingresar información, los cuales son,
+===2.9.1 Crear===
+Para crear un menú de texto usted debe ingresar a crear, que se encuentra en la opción acción, inmediatamente le mostrará
+la ventana *crear nuevo módulo* en donde ingresará la información correspondiente en los siguientes campos:
 
-  * Tipo de documento: solo se llama al documento que deseamos complementarlo con el texto.
-  * Linea: se coloca un numero único para identificar los textos, el cual nos ayudara a llenar las notas.
+  * Tipo de documento: solo se llama al documento que desea complementarlo con el texto.
+  * Linea: se coloca un número único para identificar los textos, el cual le ayudará a llenar las notas.
+  * Obligatorio: es para la activación del menú de texto, true es para que aparezca en la lista y false es para que no aparezca en la lista.
 
-Obligatorio: es para la activación del menú de texto, true es para que aparezca en la lista y false es para que no
-aparezca en la lista.
+===2.9.2 Borrar===
+Seleccionar uno o varios módulos de texto, dirigirse a la opción acción y elegir borrar seleccionado.
 
-====2.9.2 Borrar====
-Seleccionar un modulo de texto, dirigirse a la opción acción y elija borrar seleccionado.
-
-====2.9.3 Exportar====
+===2.9.3 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
-formatos PDF o XLS.
+formato PDF o XLS.
 
 
