@@ -41,7 +41,7 @@
 
         <!-- target definitions -->
         <target>
-            <form>Sales_InvoiceForm</form>
+            <form>Sales_ReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.Receipt"
                 method="create" />
         </target>
