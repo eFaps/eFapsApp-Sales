@@ -24,21 +24,20 @@
 		   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 		   xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 	<uuid>f89e4bf5-c42d-4a2b-ae93-9f59b7b02319</uuid>
-	<file-application>eFaps-Sales</file-application>
-	<file-revision>$Rev: 6408 $</file-revision>
-	<definition>
-		<version-expression>(version==latest)</version-expression>
-		<name>Sales_Sales</name>
-		<!-- targets -->
-		<target>
-			<wiki>org.efaps.wiki.sales.Sales.wiki</wiki>
-		</target>
-		<childs>
-			<child>Document_Sales</child>
-			<child>Showdocument_Sales</child>
-			<child>Administration_Sales</child>
-			<child>Showadministration_Sales</child>
-		</childs>
-
-	</definition>
+    <file-application>eFaps-Sales</file-application>
+    <file-revision>$Rev: 6408 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Sales</name>
+        <!-- targets -->
+        <target>
+            <wiki>org.efaps.wiki.sales.Sales.wiki</wiki>
+        </target>
+        <childs>
+            <child>Document_Sales</child>
+            <child>Showdocument_Sales</child>
+            <child>Administration_Sales</child>
+            <child>Showadministration_Sales</child>
+        </childs>
+    </definition>
 </help-menu>

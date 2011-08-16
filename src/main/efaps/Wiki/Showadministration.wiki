@@ -16,38 +16,31 @@ El menú administración puede brindar un control a todos los datos que interact
 menús.
 A continuación mostraremos lo que contiene este menú,
 
-  * 2.1 Atributos
-  * 2.2 Categoría de impuestos
-  * 2.3 Moneda
-  * 2.4 Cuentas
-  * 2.5 Pagos
-  * 2.6 Transacciones
-  * 2.7 Saldo
-  * 2.8 Modulo de texto
+  * 2.1 Categoría de impuestos
+  * 2.2 Moneda
+  * 2.3 Cuentas
+  * 2.4 Pagos
+  * 2.5 Transacciones
+  * 2.6 Saldo
+  * 2.7 Modulo de texto
 
-==2.1 Atributos==
-Cuando ingrese a cualquiera de los datos registrados en el sistema, se le mostrará la información y las opciones, que son:
-
-  * Editar: le brinda la facilidad de corregir la información ingresada en los campos valor y descripción.
-  * Exportar: le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de formato PDF o XLS.
-
-==2.2 Categoría de impuestos==
+==2.1 Categoría de impuestos==
 Le sirve para modificar los datos ingresados en el IGV para ello deberá ingresar a IGV. A continuación se explicarán los siguientes
 puntos:
 
-  * 2.2.1 Editar
-  * 2.2.2 Exportar
-  * 2.2.3 Impuestos
-  * 2.2.4 Ingresar a un IGV creado
+  * 2.1.1 Editar
+  * 2.1.2 Exportar
+  * 2.1.3 Impuestos
+  * 2.1.4 Ingresar a un IGV creado
 
-===2.2.1 Editar===
+===2.1.1 Editar===
 Puede modificar el nombre, en caso que desee realizar una corrección.
 
-===2.2.2 Exportar===
+===2.1.2 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
 
-===2.2.3 Impuestos===
+===2.1.3 Impuestos===
 Contamos con los siguientes puntos:
 
   * a. Crear
@@ -70,7 +63,7 @@ Seleccionar uno o varios impuestos, dirigirse a la opción acción y elegir borr
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
 
-===2.2.4 Ingresar a un IGV creado===
+===2.1.4 Ingresar a un IGV creado===
 Contamos con la siguiente tabla en el menú de impuestos:
 
 || *Nombre* || *Numerador* || *Denominador* || *Válido desde* ||
@@ -116,12 +109,12 @@ Seleccionar una o mas cuentas, dirigirse a la opción acción y escoger desconec
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
 
-==2.3 Moneda==
+==2.2 Moneda==
 Mostraremos los siguientes puntos en este menú:
 
-  * 2.3.1  Tipo de cambio
+  * 2.2.1  Tipo de cambio
 
-===2.3.1 Tipo de cambio===
+===2.2.1 Tipo de cambio===
 A continuación hablaremos de los siguientes puntos:
 
   * a. Crear
@@ -145,13 +138,13 @@ Para poder crear un tipo de cambio usted debe dirigirse a acción y seleccionar 
   * Vigente desde: puede modificar la fecha igual al formato mostrado o puede elegir la fecha del calendario.
   * Vigente hasta: puede modificar la fecha igual al formato mostrado o puede elegir la fecha del calendario.
 
-==2.4 Cuentas==
+==2.3 Cuentas==
 En este menú explicaremos:
 
-  * 2.4.1 Caja
-  * 2.4.2 Caja chica
+  * 2.3.1 Caja
+  * 2.3.2 Caja chica
 
-===2.4.1 Caja===
+===2.3.1 Caja===
 Verá los siguientes puntos:
 
   * a. Editar
@@ -177,7 +170,7 @@ Colocará el monto en el campo llamado saldo inicial.
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
 
-===2.4.2 Caja chica===
+===2.3.2 Caja chica===
 Mostraremos los siguientes puntos:
 
   * a. Editar
@@ -212,20 +205,20 @@ correspondiente en los campos obligatorios y secundarios:
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
 
-==2.5 Pagos==
+==2.4 Pagos==
 Cuenta con dos datos, que son:
 
   * Fecha y hora: verá la información correspondiente y además las transacciones que se han realizado.
   * Documento: verá la información correspondiente y los pagos cerrados.
 
-==2.6 Transacciones==
+==2.5 Transacciones==
 Si usted ingresa a una transacción entrante o saliente podra ver su información, editarla y exportarla.
 
-==2.7 Saldos==
+==2.6 Saldos==
 Le muestra la lista completa de los montos totales que existen en cada caja, si usted ingresa a una cuenta va poder
 ver todas las transacciones que se encuentran dentro de la caja.
 
-==2.8 Modulo de texto==
+==2.7 Modulo de texto==
 Para que usted vea la información que contiene cada módulo de texto tendrá que hacer clic en la palabra mas resaltada(se encuentra en la
 columna linea), a continuación se detallarán los puntos encontrados:
 
@@ -233,14 +226,14 @@ columna linea), a continuación se detallarán los puntos encontrados:
   * 2.7.2 Exportar
   * 2.7.3 Elementos
 
-===2.8.1 Editar===
+===2.7.1 Editar===
 Usted va poder cambiar la información que se ingreso con anterioridad.
 
-===2.8.2 Exportar===
+===2.7.2 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
 
-===2.8.3 Elementos===
+===2.7.3 Elementos===
 Hablaremos de los siguientes puntos:
 
   * a. Crear

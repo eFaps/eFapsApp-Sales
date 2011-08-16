@@ -45,15 +45,15 @@ en donde ingresará la información correspondiente en los campos obligatorios y
 
 Obligatorios:
   * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * Numero: se genera un número en forma predeterminada y secuencial al momento de crear una hoja de costos.
-  * Encargado: es la persona que genera este documento.
-  * Nombre / Razón social: se llama al cliente ingresando su nombre o colocando solo {{{*}}}.
+  * Numero: es la numeración correlativa del documento.
+  * Encargado: es la persona responsable de crear el documento.
+  * Nombre / Razón social: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundarios:
   * Información: es la información que le mostrará el sistema según el cliente que elija.
   * Moneda: debe elegir el tipo de moneda.
-  * Tipo de cambio: aparecerá el tipo de cambios según la fecha y el tipo de moneda.
-  * Nota: ingresa algunos detalles agregados de información.
+  * Tipo de cambio: aparecerá el tipo de cambios según la fecha y el tipo de moneda(Véase [./org.efaps.wiki.sales.Showadministration.wiki#2.2_Moneda Moneda]).
+  * Nota: es la información agregada del documento.
   * Total neto: es el monto correspondiente a la operación.
   * Total bruto: es el monto correspondiente a la operación.
   * Posiciones: es donde se ingresará el producto, ejemplo:
@@ -74,7 +74,7 @@ Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un 
 ===1.1.2 Crear de documento===
 Para crear de documento usted debe de haber creado un hoja de costos con anterioridad. Se dirige a la opción acción y elige crear de
 documento, inmediatamente le aparece la ventana *crear nueva hoja de costos de documento* en donde le mostrará el campo número, ingresará el código de la hoja de costos o puede colocar solo {{{*}}}, ingresa a la otra ventana con el botón siguiente.
-La nueva ventana le mostrará los campos con información, es debido a que se a jalado toda la información de la hoja de costos ingresada con anterioridad, pero también se puede editar la información.
+La nueva ventana le mostrará los campos con información, es debido a que se a jalado toda la información de la hoja de costos ingresada anteriormente, la cual se va poder editar.
 
 ==1.2 Presupuestos==
 El menú presupuestos contiene lo siguiente:
@@ -85,14 +85,14 @@ El menú presupuestos contiene lo siguiente:
   * 1.2.4 Exportar
 
 ===1.2.1 Crear===
-Se dirige a la opción acción e ingresa a crear, donde le aparecerá la ventana *crear nuevo presupuesto*, a
-continuación se le mostrará cuales son los campos obligatorios y secundarios:
+Se dirige a la opción acción e ingresa a crear, inmediatamente le aparecerá la ventana *crear nuevo presupuesto*,
+ en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
 Obligatorio:
-  * Pspto-No: se genera un número en forma predeterminada y secuencial al momento de crear un presupuesto.
+  * Pspto-No: es la numeración correlativa del documento.
   * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * Encargado: es la persona que genera este documento.
-  * Nombre / Razón social: se llama al cliente ingresando su nombre o colocando solo {{{*}}}.
+  * Encargado: es la persona responsable de crear el documento.
+  * Nombre / Razón social: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Cantidad: es la cantidad del producto.
@@ -127,13 +127,13 @@ El menú facturas contiene lo siguiente:
 
 ===1.3.1 Crear===
 Para crear una factura usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá la ventana
-nueva factura, en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+*Crear nueva factura*, en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
 
 Obligatorio:
   * fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * No: es el número de serie correlativo de una factura.
-  * Encargado: es la persona que crea el documento.
-  * Nombre /Razón social: se llama al cliente ingresando su nombre o solo {{{*}}}.
+  * No: es la numeración correlativa del documento.
+  * Encargado: es la persona responsable de crear el documento.
+  * Nombre /Razón social: se llama al cliente colocando su nombre o solo {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Cantidad: es la cantidad del producto.
@@ -177,9 +177,9 @@ en donde ingresará la información correspondiente en cada campo obligatorio y 
 
 Obligatorio:
   * fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * No: es el número de serie correlativo de una factura.
-  * Encargado: es la persona que crea el documento.
-  * Nombre /Razón social: se llama al cliente ingresando su nombre o solo {{{*}}}.
+  * No: es la numeración correlativa del documento.
+  * Encargado: es la persona responsable de crear el documento.
+  * Nombre /Razón social: se llama al cliente colocando su nombre o solo {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Cantidad: es la cantidad del producto.
@@ -197,7 +197,7 @@ Le brinda la facilidad de crear una boleta a través de un documento ya creado a
 ingresar es presupuesto o boleta.
 
 ===1.4.3 Copiar===
-Para poder copiar una boleta deberá seleccionar una boleta haciendo un check en su casilla, luego se dirige a
+Para poder copiar una boleta deberá seleccionar la boleta haciendo un check en su casilla correspondiente, luego se dirige a
 la opción acción y escoge copiar, inmediatamente le aparecerá la ventana *copiar boleta* con todos los datos de la boleta seleccionada
 por usted.
 
@@ -268,9 +268,9 @@ Para crear la guía de remisión usted deberá de ingresar la información corre
 
 Obligatorio:
   * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * N°: es el número correlativo que le pertenece al documento.
+  * N°: es la numeración correlativa del documento.
   * Encargado: es la persona que crea este documento.
-  * Cliente: se llama al cliente ingresando su nombre o con {{{*}}}.
+  * Cliente: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Datos del cliente: es la información del cliente seleccionado.
@@ -284,7 +284,7 @@ Secundario:
 || 1 ||  5002 || retornable || und ||
 
 ===1.7.2 Crear de documento===
-Para crear una guía de remisión a través de otro documento se debe ingresar el código de este documento o solo {{{*}}}, el documento usado es una guía de remisión creada anteriormente. Una vez ingresado el código le damos siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar(la información es perteneciente a la guía de remisión seleccionada).
+Para crear una guía de remisión a través de otro documento se debe ingresar el código de este documento o solo {{{*}}}, el documento usado es una guía de remisión que a sido creada anteriormente. Una vez ingresado el código le damos siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar(la información es perteneciente a la guía de remisión seleccionada).
 
 ===1.7.3 Borrar seleccionado===
 Seleccionar uno o mas guías de remisión haciendo un check en sus casillas, dirigirse a la opción acción y elegir borrar seleccionado.
@@ -327,9 +327,9 @@ Para crear la guía de remisión(devolución) usted deberá de ingresar la infor
 
 Obligatorio:
   * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * N°: es el número correlativo que le pertenece al documento.
+  * N°: es la numeración correlativa del documento.
   * Encargado: es la persona que crea este documento.
-  * Cliente: se llama al cliente ingresando su nombre o con {{{*}}}.
+  * Cliente: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Datos del cliente: es la información del cliente seleccionado.
@@ -361,13 +361,13 @@ El menú reserva contiene lo siguiente:
   * 1.10.3 Exportar
 
 ===1.10.1 Crear===
-Vamos a ingresar la información necesaria en los campos obligatorios y secundarios:
+Ingresará la información necesaria en los campos obligatorios y secundarios:
 
 Obligatorio:
   * Fecha: es la fecha de creación del documento.
   * Nombre: es el nombre específico del documento.
   * Encargado: es la persona que crea el documento.
-  * Cliente: se llama al cliente colocando su nombre o solo {{{*}}}.
+  * Cliente: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Fecha de vencimiento: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
@@ -426,13 +426,14 @@ formato PDF o XLS.
 Es el documento que uno recibe de su proveedor a partir de la compra de un producto y a continuación verá lo que
 contiene este menú:
 
-  * 1.12.1 Crear de documento
-  * 1.12.2 Borrar
-  * 1.12.3 Exportar
+  * 1.12.1 Crear
+  * 1.12.2 Crear de documento
+  * 1.12.3 Borrar
+  * 1.12.4 Exportar
 
 ===1.12.1 Crear===
-Para crear una reserva de moto usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá
-la ventana *crear nueva reserva* en donde ingresará la información correspondiente en cada campo obligatorio y secundario:
+Para crear una factura entrante usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá
+la ventana *Crear nueva factura entrante* en donde ingresará la información correspondiente en cada campo obligatorio y secundario:
 
   * Obligatorio: fecha, No, encargado y Nombre / Razón social.
   * Secundario: Todos los campos de la clasificación posiciones.
@@ -440,9 +441,7 @@ la ventana *crear nueva reserva* en donde ingresará la información correspondi
 ===1.12.2 Crear de documento===
 Para crear una factura entrante a través de otro documento se debe ingresar el código de este documento o
 solo {{{*}}}, el documento usado es presupuesto. Una vez ingresado el código hace clic en
-siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar( la
-información es perteneciente al documento seleccionado).
-
+siguiente, inmediatamente le aparecerá la ventana *Crear nueva factura entrante de documento* en donde podrá visualizar información ya existente en la ventana(perteneciente al documento seleccionado), la cual usted va poder editar.
 ===1.12.3 Borrar===
 Seleccionar una o varias facturas entrantes, dirigirse a la opción acción y elegir borrar.
 
@@ -471,8 +470,9 @@ Para crear una orden de compra usted deberá ingresar a crear que se encuentra e
 ===1.13.2 Crear de documento===
 Para crear una orden de compra a través de otro documento se debe ingresar el código de este documento o
 solo {{{*}}}, el documento usado es presupuesto. Una vez ingresado el código hace clic en
-siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar( la
-información es perteneciente al documento seleccionado).
+siguiente, inmediatamente le aparecerá la ventana *Crear nueva orden de compra de documento* en donde podrá
+ visualizar información ya existente en la ventana(perteneciente al documento seleccionado), la cual usted va poder
+  editar.
 
 ===1.13.3 Borrar===
 Seleccionar una o varias ordenes de compra, dirigirse a la opción acción y elegir borrar.
@@ -494,9 +494,9 @@ Para poder crear un pedido entrante debe de ingresar la información correspondi
 
 Obligatorio:
   * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
-  * Nº: es el número correlativo que le pertenece al documento.
+  * Nº: es la numeración correlativa del documento.
   * Encargado: es la persona que crea este documento.
-  * Cliente: se llama al cliente ingresando su nombre o con {{{*}}}.
+  * Cliente: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
 
 Secundario:
   * Información: es la información detallada del cliente seleccionado.

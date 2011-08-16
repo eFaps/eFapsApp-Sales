@@ -30,7 +30,7 @@
         <name>Administration_Sales</name>
         <!-- targets -->
         <target>
-            <wiki>org.efaps.wiki.sales.Administration.wiki</wiki>
+            <wiki>org.efaps.wiki.administration.Administration.wiki</wiki>
         </target>
-    </definition>
+            </definition>
 </help-menu>
