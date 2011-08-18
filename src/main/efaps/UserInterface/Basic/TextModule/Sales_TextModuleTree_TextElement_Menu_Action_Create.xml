@@ -42,6 +42,7 @@
         <property name="TargetCmdRevise">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_TextElement</property>
+        <property name="TargetConnectAttribute">Sales_TextElement/TextModule</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>
