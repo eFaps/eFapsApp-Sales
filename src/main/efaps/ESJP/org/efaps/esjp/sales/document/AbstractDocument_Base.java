@@ -775,7 +775,8 @@ public abstract class AbstractDocument_Base
                 js.append("ele.value='").append(oid).append("';")
                     .append("ele.name='").append(copy ? "copy" : "derived").append("';")
                     .append(getSetValuesString(instance));
-            } else if (instCall != null && instCall.isValid()) {
+            } else if (instCall != null && instCall.isValid()
+                                    && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
                 js.append(getSetValuesString(instCall));
             }
         }
