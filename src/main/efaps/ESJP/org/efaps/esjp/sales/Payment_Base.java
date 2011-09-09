@@ -57,6 +57,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -92,57 +93,65 @@ public abstract class Payment_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance docInst = _parameter.getInstance();
-        final String dateStr = _parameter.getParameterValue("date");
-
-        final Insert insert = new Insert(CISales.Payment);
-        insert.add(CISales.Payment.Date, dateStr);
-        insert.add(CISales.Payment.CreateDocument, ((Long) docInst.getId()).toString());
-        insert.execute();
-        final Instance paymentInst = insert.getInstance();
-
-        final String[] amounts = _parameter.getParameterValues("amount");
-        final String[] currencies = _parameter.getParameterValues("currency");
-        final String[] paymentTypes = _parameter.getParameterValues("paymentType");
-        final String[] descriptions = _parameter.getParameterValues("description");
-        final String[] accounts = _parameter.getParameterValues("account");
-        for (int i = 0; i < amounts.length; i++) {
-            final Insert transIns = new Insert(CISales.TransactionInbound);
-            transIns.add(CISales.TransactionInbound.Amount, amounts[i]);
-            transIns.add(CISales.TransactionInbound.CurrencyId, currencies[i]);
-            transIns.add(CISales.TransactionInbound.Payment, ((Long) paymentInst.getId()).toString());
-            transIns.add(CISales.TransactionInbound.PaymentType, paymentTypes[i]);
-            transIns.add(CISales.TransactionInbound.Description, descriptions[i].length() < 1
-                            ? DBProperties.getProperty("Sales_Payment.Label")
-                            : descriptions[i]);
-            transIns.add(CISales.TransactionInbound.Date, dateStr);
-            transIns.add(CISales.TransactionInbound.Account, accounts[i]);
-            transIns.execute();
+        Instance docInst = null;
+        if (_parameter.getInstance() != null) {
+            docInst = _parameter.getInstance();
+        } else if (_parameter.getParameterValue("createdocument") != null){
+            docInst = Instance.get(_parameter.getParameterValue("createdocument"));
         }
-        // if the open amount is zero or less than 1 Cent.
-        final BigDecimal amount = getOpenAmount(_parameter, docInst).getCrossTotal();
-        if (amount.compareTo(BigDecimal.ZERO) == 0 || amount.abs().compareTo(new BigDecimal("0.01")) < 0) {
-            final Update update = new Update(docInst);
-            Status status = null;
-            // Sales_Invoice
-            if (docInst.getType().getUUID().equals(UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))) {
-                status = Status.find(CISales.InvoiceStatus.uuid, "Paid");
-                // Sales_Receipt
-            } else if (docInst.getType().getUUID().equals(UUID.fromString("40ebe7bf-ab1e-4ac5-bfbf-81f7c13e8530"))) {
-                status = Status.find(CISales.ReceiptStatus.uuid, "Paid");
-                // Sales_Reminder
-            } else if (docInst.getType().getUUID().equals(UUID.fromString("77b5c009-0b45-40d4-8417-a79c30568904"))) {
-                status = Status.find(CISales.ReminderStatus.uuid, "Paid");
-                // Sales_PartialInvoice
-            } else if (docInst.getType().getUUID().equals(UUID.fromString("17e30627-33c7-4dcb-a209-056932d0c9c0"))) {
-                status = Status.find(CISales.PartialInvoiceStatus.uuid, "Paid");
-                // Sales_CashReceipt
-            } else if (docInst.getType().getUUID().equals(UUID.fromString("7891b13e-7d77-44dd-906e-286641267499"))) {
-                status = Status.find(CISales.CashReceiptStatus.uuid, "Paid");
-            }
 
-            update.add("Status", ((Long) status.getId()).toString());
-            update.execute();
+        if (docInst != null && docInst.isValid()) {
+            final String dateStr = _parameter.getParameterValue("date");
+
+            final Insert insert = new Insert(CISales.Payment);
+            insert.add(CISales.Payment.Date, dateStr);
+            insert.add(CISales.Payment.CreateDocument, ((Long) docInst.getId()).toString());
+            insert.execute();
+            final Instance paymentInst = insert.getInstance();
+
+            final String[] amounts = _parameter.getParameterValues("amount");
+            final String[] currencies = _parameter.getParameterValues("currency");
+            final String[] paymentTypes = _parameter.getParameterValues("paymentType");
+            final String[] descriptions = _parameter.getParameterValues("description");
+            final String[] accounts = _parameter.getParameterValues("account");
+            for (int i = 0; i < amounts.length; i++) {
+                final Insert transIns = new Insert(CISales.TransactionInbound);
+                transIns.add(CISales.TransactionInbound.Amount, amounts[i]);
+                transIns.add(CISales.TransactionInbound.CurrencyId, currencies[i]);
+                transIns.add(CISales.TransactionInbound.Payment, ((Long) paymentInst.getId()).toString());
+                transIns.add(CISales.TransactionInbound.PaymentType, paymentTypes[i]);
+                transIns.add(CISales.TransactionInbound.Description, descriptions[i].length() < 1
+                                ? DBProperties.getProperty("Sales_Payment.Label")
+                                : descriptions[i]);
+                transIns.add(CISales.TransactionInbound.Date, dateStr);
+                transIns.add(CISales.TransactionInbound.Account, accounts[i]);
+                transIns.execute();
+            }
+            // if the open amount is zero or less than 1 Cent.
+            final BigDecimal amount = getOpenAmount(_parameter, docInst).getCrossTotal();
+            if (amount.compareTo(BigDecimal.ZERO) == 0 || amount.abs().compareTo(new BigDecimal("0.01")) < 0) {
+                final Update update = new Update(docInst);
+                Status status = null;
+                // Sales_Invoice
+                if (docInst.getType().getUUID().equals(UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))) {
+                    status = Status.find(CISales.InvoiceStatus.uuid, "Paid");
+                    // Sales_Receipt
+                } else if (docInst.getType().getUUID().equals(UUID.fromString("40ebe7bf-ab1e-4ac5-bfbf-81f7c13e8530"))) {
+                    status = Status.find(CISales.ReceiptStatus.uuid, "Paid");
+                    // Sales_Reminder
+                } else if (docInst.getType().getUUID().equals(UUID.fromString("77b5c009-0b45-40d4-8417-a79c30568904"))) {
+                    status = Status.find(CISales.ReminderStatus.uuid, "Paid");
+                    // Sales_PartialInvoice
+                } else if (docInst.getType().getUUID().equals(UUID.fromString("17e30627-33c7-4dcb-a209-056932d0c9c0"))) {
+                    status = Status.find(CISales.PartialInvoiceStatus.uuid, "Paid");
+                    // Sales_CashReceipt
+                } else if (docInst.getType().getUUID().equals(UUID.fromString("7891b13e-7d77-44dd-906e-286641267499"))) {
+                    status = Status.find(CISales.CashReceiptStatus.uuid, "Paid");
+                }
+
+                update.add("Status", ((Long) status.getId()).toString());
+                update.execute();
+            }
         }
         return new Return();
     }
@@ -158,21 +167,29 @@ public abstract class Payment_Base
     public Return getOpenAmountUI(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance instance = _parameter.getCallInstance();
+        final Return ret = new Return();
+        Instance instance = null;
+        if (_parameter.getCallInstance() != null) {
+            instance = _parameter.getInstance();
+        } else if (_parameter.getParameterValue("createdocument") != null){
+            instance = Instance.get(_parameter.getParameterValue("createdocument"));
+        }
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
 
-        final OpenAmount openAmount = getOpenAmount(_parameter, instance);
+        if (instance != null && instance.isValid()) {
+            final OpenAmount openAmount = getOpenAmount(_parameter, instance);
 
-        Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
-        final StringBuilder html = new StringBuilder();
-        html.append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
-                        .append(openAmount.getSymbol()).append("<hr/>")
-                        .append("<span name=\"").append(fieldValue.getField().getName()).append("_table\">")
-                        .append(getOpenAmountInnerHtml(_parameter, openAmount))
-                        .append("</span>");
+            Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
+            final StringBuilder html = new StringBuilder();
+            html.append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
+                            .append(openAmount.getSymbol()).append("<hr/>")
+                            .append("<span name=\"").append(fieldValue.getField().getName()).append("_table\">")
+                            .append(getOpenAmountInnerHtml(_parameter, openAmount))
+                            .append("</span>");
 
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, html.toString());
+
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
         return ret;
     }
 
@@ -423,6 +440,53 @@ public abstract class Payment_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, getListMap(_parameter, true));
         return retVal;
+    }
+
+    public Return picker4Document(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final Map<String, String> map = new HashMap<String, String>();
+        retVal.put(ReturnValues.VALUES, map);
+
+        final Instance viewOid = Instance.get(_parameter.getParameterValue("selectedRow"));
+        if (viewOid.isValid()) {
+            final PrintQuery print = new PrintQuery(viewOid);
+            print.addAttribute(CISales.DocumentAbstract.Name);
+            if (print.execute()) {
+                final String name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
+                map.put(EFapsKey.PICKER_VALUE.getKey(), name);
+                map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), getOpenAmount4Picker(_parameter));
+                map.put("createdocument", viewOid.getOid());
+            }
+        }
+        return retVal;
+    }
+
+    protected String getOpenAmount4Picker(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = Instance.get(_parameter.getParameterValue("selectedRow"));
+        final StringBuilder html = new StringBuilder();
+
+        if (instance != null && instance.isValid()) {
+            final OpenAmount openAmount = getOpenAmount(_parameter, instance);
+
+            Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
+
+            html.append("document.getElementsByName('openAmount')[0].innerHTML='")
+                .append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
+                .append(openAmount.getSymbol()).append("<hr/>")
+                .append("<span name=\"").append("openAmount").append("_table\">")
+                .append(getOpenAmountInnerHtml(_parameter, openAmount))
+                .append("</span>").append("';");
+        }
+        return html.toString();
+    }
+
+    public Return autoComplete4Document(final Parameter _parameter) {
+        final Return ret = new Return();
+        return ret;
     }
 
     /**
