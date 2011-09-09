@@ -35,11 +35,16 @@
     <version-expression>(version==latest)</version-expression>
     <name>Sales_PaymentTable</name>
     <!-- fields -->
-    
+
     <field name="date">
       <property name="Attribute">Date</property>
       <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
       <property name="Label">Sales_Payment/Date.Label</property>
+    </field>
+    <field name="typeDocument">
+      <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+      <property name="Select">linkto[CreateDocument].attribute[Type]</property>
+      <property name="Label">Sales_Payment.typeDocument.Label</property>
     </field>
     <field name="createDocument">
       <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
