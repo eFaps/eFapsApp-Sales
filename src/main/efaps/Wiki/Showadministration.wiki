@@ -7,7 +7,7 @@
 
 
 
-#summary Ingresando a Administraci&oacute;n
+#summary Acceso a Administraci&oacute;n
 <wiki:toc max_depth="3"/>
 
 ----

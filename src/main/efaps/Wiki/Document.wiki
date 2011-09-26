@@ -73,8 +73,10 @@ Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un 
 
 ===1.1.2 Crear de documento===
 Para crear de documento usted debe de haber creado un hoja de costos con anterioridad. Se dirige a la opción acción y elige crear de
-documento, inmediatamente le aparece la ventana *crear nueva hoja de costos de documento* en donde le mostrará el campo número, ingresará el código de la hoja de costos o puede colocar solo {{{*}}}, ingresa a la otra ventana con el botón siguiente.
-La nueva ventana le mostrará los campos con información, es debido a que se a jalado toda la información de la hoja de costos ingresada anteriormente, la cual se va poder editar.
+documento, inmediatamente le aparece la ventana *crear nueva hoja de costos de documento* en donde le mostrará el campo número, ingresará
+el código de la hoja de costos o puede colocar solo {{{*}}}, ingresa a la otra ventana con el botón siguiente.
+La nueva ventana nueva le mostrará los campos con información, es debido a que se a jalado toda la información de la
+hoja de costos ingresada anteriormente, la cual se va poder editar.
 
 ==1.2 Presupuestos==
 El menú presupuestos contiene lo siguiente:
@@ -284,7 +286,7 @@ Secundario:
 || 1 ||  5002 || retornable || und ||
 
 ===1.7.2 Crear de documento===
-Para crear una guía de remisión a través de otro documento se debe ingresar el código de este documento o solo {{{*}}}, el documento usado es una guía de remisión que a sido creada anteriormente. Una vez ingresado el código le damos siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar(la información es perteneciente a la guía de remisión seleccionada).
+Para crear una guía de remisión a través de otro documento se debe ingresar el código de este documento o solo {{{*}}}, el documento usado es una guía de remisión que a sido creada anteriormente. Una vez ingresado el código le damos siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar, esta información es perteneciente a la guía de remisión seleccionada.
 
 ===1.7.3 Borrar seleccionado===
 Seleccionar uno o mas guías de remisión haciendo un check en sus casillas, dirigirse a la opción acción y elegir borrar seleccionado.
@@ -344,7 +346,10 @@ Secundario:
 || 1 ||  5002 || retornable || und || AlmacenNU ||
 
 ===1.9.2 Crear de documento===
-Para crear una guía de remisión(devolución) a través de otro documento se debe ingresar el código de este documento o solo {{{*}}}, el documento usado es una guía de remisión creada anteriormente. Una vez ingresado el código hace clic en siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar(la información es perteneciente a la guía de remisión seleccionada).
+Para crear una guía de remisión(devolución) a través de otro documento se debe ingresar el código de este documento
+ o solo {{{*}}}, el documento usado es una guía de remisión creada anteriormente. Una vez ingresado el código hace
+ clic en el botón siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar
+ (esta información es perteneciente a la guía de remisión seleccionada).
 
 ===1.9.3 Borrar seleccionado===
 Debe de escoger una o mas guías de remisión(devolución) haciendo un check en las casillas, dirigirse a acción y seleccionar borrar seleccionado.
@@ -440,13 +445,14 @@ la ventana *Crear nueva factura entrante* en donde ingresará la información co
 
 ===1.12.2 Crear de documento===
 Para crear una factura entrante a través de otro documento se debe ingresar el código de este documento o
-solo {{{*}}}, el documento usado es presupuesto. Una vez ingresado el código hace clic en
-siguiente, inmediatamente le aparecerá la ventana *Crear nueva factura entrante de documento* en donde podrá visualizar información ya existente en la ventana(perteneciente al documento seleccionado), la cual usted va poder editar.
+solo {{{*}}}, el documento usado es presupuesto. Una vez ingresado el código hace click en el botón
+siguiente, inmediatamente le aparecerá la ventana *Crear nueva factura entrante de documento*  la cual estará contenida de información perteneciente al documento seleccionado anteriormente, a partir de aquí usted podrá editar la información de la ventana y dar como finalizado el proceso de creación haciendo click en el botón crear.
+
 ===1.12.3 Borrar===
 Seleccionar una o varias facturas entrantes, dirigirse a la opción acción y elegir borrar.
 
 ===1.12.4 Exportar===
-Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el modulo, en dos tipos de
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el módulo, en dos tipos de
 formato PDF o XLS.
 
 ==1.13 Orden de compra==
@@ -470,9 +476,7 @@ Para crear una orden de compra usted deberá ingresar a crear que se encuentra e
 ===1.13.2 Crear de documento===
 Para crear una orden de compra a través de otro documento se debe ingresar el código de este documento o
 solo {{{*}}}, el documento usado es presupuesto. Una vez ingresado el código hace clic en
-siguiente, inmediatamente le aparecerá la ventana *Crear nueva orden de compra de documento* en donde podrá
- visualizar información ya existente en la ventana(perteneciente al documento seleccionado), la cual usted va poder
-  editar.
+siguiente, inmediatamente le aparecerá la ventana *Crear nueva orden de compra de documento* la cual estará contenida de información perteneciente al documento seleccionado anteriormente, a partir de aquí usted podrá editar la información de la ventana y dar como finalizado el proceso de creación haciendo click en el botón crear.
 
 ===1.13.3 Borrar===
 Seleccionar una o varias ordenes de compra, dirigirse a la opción acción y elegir borrar.
@@ -511,8 +515,8 @@ Secundario:
 ===1.14.2 Crear de documento===
 Para crear un pedido entrante a través de otro documento se deberá ingresar el código de este documento o
 solo {{{*}}}, el documento usado es pedido entrante, una vez ingresado el código hace clic en
-siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar( la
-información es perteneciente al documento seleccionado).
+siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar, esta
+información es perteneciente al pedido entrante seleccionado.
 
 ===1.14.3 Borrar===
 Seleccionar una o varias ordenes de compra, dirigirse a la opción acción y elegir borrar.

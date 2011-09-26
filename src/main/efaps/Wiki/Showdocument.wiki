@@ -7,7 +7,7 @@
 
 
 
-#summary Ingresando a Documentos
+#summary Acceso a Documentos
 <wiki:toc max_depth="3"/>
 
 ----
@@ -413,7 +413,7 @@ Se genera en el menú de contabilidad, cuando se le asigna un asiento.
 Se dirige al menú de contabilidad en donde ingresara al periodo que se esta trabajando actualmente y escogerá documentos
 por registrar( véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.12_Documentos_p._r. Documentos p.r.]), una vez ingresado a este menú podrá seleccionar el documento haciendo un check en su casilla respectiva(ahora podrá obtener un registro en asientos).
 
-===1.7 Guía de remisión===
+==1.7 Guía de remisión==
 En el menú Guía de remisión encontrara una lista completa de todas las Guías de remisión creadas hasta este momento, ahora
 podrá escoger una guía e ingresar a su contenido(se ingresa por la palabra mas resaltada).
 
