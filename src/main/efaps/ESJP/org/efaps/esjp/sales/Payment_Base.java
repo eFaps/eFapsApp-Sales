@@ -37,6 +37,7 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -56,6 +57,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -487,6 +489,31 @@ public abstract class Payment_Base
     public Return autoComplete4Document(final Parameter _parameter) {
         final Return ret = new Return();
         return ret;
+    }
+
+    public Return multiPrint4PaymentPicker(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint() {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _bldr)
+                throws EFapsException
+            {
+                final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+                final String statusStr = (String) properties.get("Status");
+                final String typesStr = (String) properties.get("Types");
+                final List <Long> idStatus = new ArrayList<Long>();
+                final String[] status = statusStr.split(";");
+                final String[] types = typesStr.split(";");
+                for (final String st : status) {
+                    for (final String type : types) {
+                        idStatus.add(Status.find(Type.get(type).getStatusAttribute().getLink().getUUID(), st).getId());
+                    }
+                }
+                _bldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, idStatus.toArray());
+            }
+        }.execute(_parameter);
     }
 
     /**
