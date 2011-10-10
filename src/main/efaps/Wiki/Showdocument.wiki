@@ -178,7 +178,7 @@ Para realizar los pagos debemos de colocar los datos siguientes:
 
   * Fecha y hora: la fecha y la hora que se realiza el pago.
   * Moneda: se elige el tipo de moneda, para agregar otro tipo de moneda que no se encuentre en la lista debe de ingresar a administración y luego escoger moneda.
-  * Tipo de pago: elige el tipo de pago que quiere realizar, para colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Administration.wiki#2.1_Atributos atributos].
+  * Tipo de pago: elige el tipo de pago que quiere realizar y si desea colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a definiciones,[./org.efaps.wiki.definitions.Definitions.wiki#1.1_Pertenece_a_factura atributos, pertenece a factura].
   * Cuenta: escoger la caja para el pago, si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Administration.wiki#2.4_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
 ====b. Borrar seleccionado====
@@ -353,7 +353,7 @@ Para realizar los pagos debemos de colocar los datos siguientes:
 
   * Fecha y hora: la fecha y la hora que se realiza el pago.
   * Moneda: se elige el tipo de moneda. Si se desea agregar otro tipo de moneda que no se encuentre en la lista debe de ingresar a administración y escoger el menú moneda(véase [./org.efaps.wiki.sales.Administration.wiki#2.3_Monedas Monedas].
-  * Tipo de pago: elige el tipo de pago que quiere realizar y si desea  colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Administration.wiki#2.1_Atributos atributos].
+  * Tipo de pago: elige el tipo de pago que quiere realizar y si desea colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a definiciones,[./org.efaps.wiki.definitions.Definitions.wiki#1.1_Pertenece_a_factura atributos, pertenece a factura].
   * Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Administration.wiki#2.4_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
 
 ====b. Borrar seleccionado====
