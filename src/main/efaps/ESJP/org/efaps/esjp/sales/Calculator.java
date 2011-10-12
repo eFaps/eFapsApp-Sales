@@ -62,10 +62,10 @@ public class Calculator
                       final String _unitPrice,
                       final String _discount,
                       final boolean _priceFromDB,
-                      final boolean _includeMinRetail)
+                      final ICalculatorConfig _calculatorUse)
         throws EFapsException
     { //CHECKSTYLE:ON
-        super(_parameter, _calc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _includeMinRetail);
+        super(_parameter, _calc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _calculatorUse);
     }
 
     /**

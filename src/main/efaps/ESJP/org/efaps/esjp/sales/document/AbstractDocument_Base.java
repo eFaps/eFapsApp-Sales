@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -70,6 +71,7 @@ import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Calculator_Base;
+import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
@@ -90,6 +92,7 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsRevision("$Rev$")
 public abstract class AbstractDocument_Base
     extends CommonDocument
+    implements ICalculatorConfig
 {
 
     /**
@@ -1285,7 +1288,7 @@ public abstract class AbstractDocument_Base
                     final boolean priceFromDB = _row4priceFromDB != null
                                                     && (_row4priceFromDB.equals(i) || _row4priceFromDB.equals(-1));
                     final Calculator calc = getCalculator(_parameter, oldCalc, oids[i], quantities[i], unitPrices[i],
-                                    discounts[i], priceFromDB, applyMinRetailPrice(_parameter));
+                                    discounts[i], priceFromDB);
                     calc.setWithoutTax(withoutTax);
                     ret.add(calc);
                 } else {
@@ -1315,13 +1318,11 @@ public abstract class AbstractDocument_Base
                                          final String _quantity,
                                          final String _unitPrice,
                                          final String _discount,
-                                         final boolean _priceFromDB,
-                                         final boolean _includeMinRetail
-                                         )
+                                         final boolean _priceFromDB)
     throws EFapsException
     {
 
-        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _includeMinRetail);
+        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this);
     }
 
 
@@ -1335,8 +1336,8 @@ public abstract class AbstractDocument_Base
     {
         final Return ret = new Return();
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-        if ((field.isEditableDisplay(TargetMode.CREATE) && !applyMinRetailPrice(_parameter))
-                        || (field.isReadonlyDisplay(TargetMode.CREATE) && applyMinRetailPrice(_parameter))) {
+        if ((field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter))
+                        || (field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter))) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -1347,13 +1348,35 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      *
      */
-    public boolean applyMinRetailPrice(final Parameter _parameter)
+    @Override
+    public boolean isIncludeMinRetail(final Parameter _parameter)
         throws EFapsException
     {
         //Sales-Configuration
         final SystemConfiguration config = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
         return config.getAttributeValueAsBoolean("ActivateMinRetailPrice");
+    }
+
+    @Override
+    public boolean isLongDecimal(final Parameter _parameter)
+        throws EFapsException
+    {
+        boolean ret = false;
+        //Sales-Configuration
+        final SystemConfiguration config = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        final Properties props = config.getAttributeValueAsProperties("ActivateLongDecimal");
+        final String type = getTypeName4SystemConfiguration();
+
+        if (props.containsKey(type) && Boolean.parseBoolean(props.getProperty(type))) {
+            ret = true;
+        }
+        return ret;
+    }
+
+    protected String getTypeName4SystemConfiguration() {
+        return CISales.DocumentAbstract.getType().getName();
     }
 
     protected String getCrossTotalFmtStr(final List<Calculator> _calcList)

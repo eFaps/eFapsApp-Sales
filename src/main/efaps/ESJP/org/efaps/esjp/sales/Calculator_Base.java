@@ -122,10 +122,13 @@ public abstract class Calculator_Base
      */
     private LocalDate localDate;
 
+    private boolean longDecimal;
+
     /**
      * Constructor used to instantiate an empty calculator.
      * @throws EFapsException on error
      */
+
     public Calculator_Base()
         throws EFapsException
     {
@@ -154,12 +157,13 @@ public abstract class Calculator_Base
                            final String _unitPrice,
                            final String _discount,
                            final boolean _priceFromDB,
-                           final boolean _includeMinRetail)
+                           final ICalculatorConfig _calculatorUse)
         throws EFapsException
     //CHECKSTYLE:ON
     {
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
+        this.longDecimal = _calculatorUse.isLongDecimal(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setLocalDate(DateUtil.getDateFromParameter(dateStr).toLocalDate());
@@ -179,7 +183,7 @@ public abstract class Calculator_Base
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    if (_includeMinRetail) {
+                    if (_calculatorUse.isIncludeMinRetail(_parameter)) {
                         this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
@@ -198,7 +202,7 @@ public abstract class Calculator_Base
                 print.addAttribute(CISales.Products_ProductAbstract.TaxCategory);
                 print.execute();
                 this.taxcatId = print.<Long> getAttribute(CISales.Products_ProductAbstract.TaxCategory);
-                if (_includeMinRetail) {
+                if (_calculatorUse.isIncludeMinRetail(_parameter)) {
                     this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
@@ -1107,10 +1111,7 @@ public abstract class Calculator_Base
      * @return true if the long decimal is activated
      */
     public boolean isLongDecimal()
-        throws EFapsException
     {
-        final boolean longDec = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                                                                .getAttributeValueAsBoolean("ActivateLongDecimal");
-        return longDec;
+        return this.longDecimal;
     }
 }
