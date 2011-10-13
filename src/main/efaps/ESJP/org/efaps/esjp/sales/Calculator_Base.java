@@ -163,7 +163,12 @@ public abstract class Calculator_Base
     {
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
-        this.longDecimal = _calculatorUse.isLongDecimal(_parameter);
+        if (_calculatorUse != null) {
+            this.longDecimal = _calculatorUse.isLongDecimal(_parameter);
+        } else {
+            this.longDecimal = false;
+        }
+
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setLocalDate(DateUtil.getDateFromParameter(dateStr).toLocalDate());
@@ -183,7 +188,7 @@ public abstract class Calculator_Base
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    if (_calculatorUse.isIncludeMinRetail(_parameter)) {
+                    if (_calculatorUse != null && _calculatorUse.isIncludeMinRetail(_parameter)) {
                         this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
@@ -202,7 +207,7 @@ public abstract class Calculator_Base
                 print.addAttribute(CISales.Products_ProductAbstract.TaxCategory);
                 print.execute();
                 this.taxcatId = print.<Long> getAttribute(CISales.Products_ProductAbstract.TaxCategory);
-                if (_calculatorUse.isIncludeMinRetail(_parameter)) {
+                if (_calculatorUse != null && _calculatorUse.isIncludeMinRetail(_parameter)) {
                     this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
