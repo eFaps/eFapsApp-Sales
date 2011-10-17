@@ -841,22 +841,28 @@ public abstract class Account_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        final String addVal = additionalValidate4PettyCashReceipt(_parameter);
         if (hasTransaction(_parameter)) {
-            final BigDecimal amount = getAmountPayments(_parameter);
-            final BigDecimal startAmount = getStartAmount(_parameter);
-            final String crossTotalStr = _parameter.getParameterValue("crossTotal");
-            final DecimalFormat formater = getTwoDigitsformater();
-            BigDecimal crossTotal = BigDecimal.ZERO;
-            try {
-                crossTotal = (BigDecimal) formater.parse(crossTotalStr);
-            } catch (final ParseException e) {
-               throw new EFapsException(Account_Base.class, "ParseException", e);
+            if (addVal != null && addVal.isEmpty()) {
+                final BigDecimal amount = getAmountPayments(_parameter);
+                final BigDecimal startAmount = getStartAmount(_parameter);
+                final String crossTotalStr = _parameter.getParameterValue("crossTotal");
+                final DecimalFormat formater = getTwoDigitsformater();
+                BigDecimal crossTotal = BigDecimal.ZERO;
+                try {
+                    crossTotal = (BigDecimal) formater.parse(crossTotalStr);
+                } catch (final ParseException e) {
+                    throw new EFapsException(Account_Base.class, "ParseException", e);
+                }
+                final BigDecimal difference = startAmount.subtract(amount).subtract(crossTotal);
+                if (difference.signum() == -1) {
+                    ret.put(ReturnValues.VALUES,
+                                        "org.efaps.esjp.sales.Account.validatePettyCashReceipt.NegativeAmount");
+                }
+                ret.put(ReturnValues.TRUE, true);
+            } else {
+                ret.put(ReturnValues.VALUES, addVal);
             }
-            final BigDecimal difference = startAmount.subtract(amount).subtract(crossTotal);
-            if (difference.signum() == -1) {
-                ret.put(ReturnValues.VALUES, "org.efaps.esjp.sales.Account.validatePettyCashReceipt.NegativeAmount");
-            }
-            ret.put(ReturnValues.TRUE, true);
         } else {
             ret.put(ReturnValues.VALUES, "org.efaps.esjp.sales.Account.validatePettyCashReceipt.NoTransaction");
         }
@@ -878,5 +884,11 @@ public abstract class Account_Base
         queryBuilder.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
         final InstanceQuery query = queryBuilder.getQuery();
         return !query.execute().isEmpty();
+    }
+
+    protected String additionalValidate4PettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        return null;
     }
 }
