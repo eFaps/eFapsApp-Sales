@@ -596,7 +596,7 @@ public abstract class Account_Base
         if (difference.compareTo(BigDecimal.ZERO) != 0) {
             final DateTime date = new DateTime();
             final Insert insert = new Insert(CISales.PettyCashBalance);
-            insert.add(CISales.PettyCashBalance.Name, new DateTime().toLocalTime());
+            insert.add(CISales.PettyCashBalance.Name, getName4PettyCashBalance(_parameter));
             insert.add(CISales.PettyCashBalance.Date, date);
             insert.add(CISales.PettyCashBalance.Status,
                             Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
@@ -655,6 +655,12 @@ public abstract class Account_Base
             transInsert.execute();
         }
         return ret;
+    }
+
+    protected String getName4PettyCashBalance(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new DateTime().toLocalTime().toString();
     }
 
     /**
