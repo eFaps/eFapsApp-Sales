@@ -33,7 +33,7 @@
 
   <definition>
     <version-expression>(version==latest)</version-expression>
-    <name>Sales_AccountAbstractTree</name>
+    <name>Sales_AccountCashDeskTree</name>
     <!-- targets -->
     <target>
       <menu>Sales_AccountAbstractTree_Menu</menu>
