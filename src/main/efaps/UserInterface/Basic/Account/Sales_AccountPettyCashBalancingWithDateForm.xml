@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+  Copyright 2003 - 2011 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 5630 $
+  Last Changed:    $Date: 2010-10-07 08:48:45 -0500 (jue, 07 oct 2010) $
+  Last Changed By: $Author: jan.moxter $
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>a8998ba4-c546-415a-b9dc-dfa2f78d2d55</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5630 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountPettyCashBalancingWithDateForm</name>
+        <!-- fields -->
+        <field name="paymentsOid">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getStoreOIDsFieldValue"
+                name="Archives_ArchiveFileForm.archiveOID.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="date">
+            <property name="Label">Sales_AccountPettyCashBalancingForm.date.Label</property>
+            <property name="Attribute">Date</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+        </field>
+        <field name="revenues">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_AccountPettyCashBalancingForm.revenues.Label</property>
+            <trigger program="org.efaps.esjp.sales.Account"
+                method="revenuesFieldValue4PettyCashUI"
+                name="Sales_AccountPettyCashBalancingForm.revenues.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
+        </field>
+        <field name="startAmount">
+            <property name="Label">Sales_AccountPettyCashBalancingForm.startAmount.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.Account"
+                method="startAmountFieldValue4PettyCashUI"
+                name="Sales_AccountPettyCashBalancingForm.startAmount.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.Account"
+                method="updateFieldValue4PettyCash"
+                name="Sales_AccountPettyCashBalancingForm.startAmount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="messageBalancing">
+            <property name="Label">Sales_AccountPettyCashBalancingForm.messageBalancing.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeCreate">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.Account"
+                method="setFieldValue4PettyCash"
+                name="Sales_AccountPettyCashBalancingForm.messageBalancing.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+    </definition>
+</ui-form>

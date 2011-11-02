@@ -322,26 +322,44 @@ public abstract class Account_Base
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
+        final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
         final Instance inst = (_parameter.getCallInstance() == null
                                                 ? _parameter.getInstance() : _parameter.getCallInstance());
 
-        final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-        subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-        final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+        final List<Instance> lstInst = new ArrayList<Instance>();
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-        queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-        queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+        if (withDateConf) {
+            String[] oids = _parameter.getParameterValues("selectedRow");
+            if (oids == null) {
+                oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
+            }
+            if (oids != null) {
+                for (int i = 0; i < oids.length; i++) {
+                    final Instance instPay = Instance.get(oids[i]);
+                    lstInst.add(instPay);
+                }
+            }
+        } else {
+            final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+            subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+            final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
+            queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+        }
 
         final SelectBuilder selOut = new SelectBuilder().linkfrom(CISales.TransactionOutbound,
                         CISales.TransactionOutbound.Payment).attribute(CISales.TransactionOutbound.Amount);
         final SelectBuilder selIn = new SelectBuilder().linkfrom(CISales.TransactionInbound,
                         CISales.TransactionInbound.Payment).attribute(CISales.TransactionInbound.Amount);
 
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
-        while (query.next()) {
-            final PrintQuery print = new PrintQuery(query.getCurrentValue());
+
+        for (final Instance instance : lstInst) {
+            final PrintQuery print = new PrintQuery(instance);
             print.addSelect(selOut, selIn);
             print.execute();
             if (print.isList4Select(selIn.toString())) {
@@ -522,9 +540,9 @@ public abstract class Account_Base
             amount = multi.<BigDecimal>getAttribute(CISales.Balance.Amount);
         }
         final Return ret = new Return();
-        if(amount == null){
+        if (amount == null){
             ret.put(ReturnValues.VALUES, "");
-        }else{
+        } else{
             ret.put(ReturnValues.VALUES, symbol + " " + getTwoDigitsformater().format(amount).toString());
         }
         return ret;
@@ -555,6 +573,9 @@ public abstract class Account_Base
     {
         Instance ret = null;
         final Instance inst = _parameter.getCallInstance();
+        final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
+
         final PrintQuery print = new PrintQuery(inst);
         print.addAttribute(CISales.AccountAbstract.CurrencyLink,
                             CISales.AccountPettyCash.AmountAbstract);
@@ -572,7 +593,7 @@ public abstract class Account_Base
         try {
             startAmount = (BigDecimal) formater.parse(startAmountStr);
         } catch (final ParseException e) {
-           throw new EFapsException(Account_Base.class, "ParseException", e);
+            throw new EFapsException(Account_Base.class, "ParseException", e);
         }
         final BigDecimal difference;
         // the transactions sum to Zero
@@ -586,7 +607,7 @@ public abstract class Account_Base
         } else {
             difference = amount.negate().add(startAmount.subtract(startAmountOrig));
         }
-        if (startAmount.compareTo(startAmountOrig) != 0){
+        if (startAmount.compareTo(startAmountOrig) != 0) {
             final Update update = new Update(inst);
             update.add(CISales.AccountPettyCash.AmountAbstract, startAmount);
             update.execute();
@@ -594,10 +615,14 @@ public abstract class Account_Base
 
         // only if there is a difference it will be executed
         if (difference.compareTo(BigDecimal.ZERO) != 0) {
-            final DateTime date = new DateTime();
             final Insert insert = new Insert(CISales.PettyCashBalance);
             insert.add(CISales.PettyCashBalance.Name, getName4PettyCashBalance(_parameter));
-            insert.add(CISales.PettyCashBalance.Date, date);
+            insert.add(CISales.PettyCashBalance.Salesperson, Context.getThreadContext().getPersonId());
+            if (withDateConf) {
+                insert.add(CISales.PettyCashBalance.Date, _parameter.getParameterValue("date"));
+            } else {
+                insert.add(CISales.PettyCashBalance.Date, new DateTime());
+            }
             insert.add(CISales.PettyCashBalance.Status,
                             Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
             insert.add(CISales.PettyCashBalance.CrossTotal, difference);
@@ -613,19 +638,31 @@ public abstract class Account_Base
 
             ret = insert.getInstance();
 
-            final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-            subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-            final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-            queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-            queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+            final List<Instance> lstInst = new ArrayList<Instance>();
+            if (withDateConf) {
+                final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
+                if (oids != null) {
+                    for (int i = 0; i < oids.length; i++) {
+                        final Instance instPay = Instance.get(oids[i]);
+                        lstInst.add(instPay);
+                    }
+                }
+            } else {
+                final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+                subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+                final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
+                queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
 
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                lstInst.addAll(query.getValues());
+            }
 
             final Instance balanceInst = insert.getInstance();
-            while (query.next()) {
-                final Update update = new Update(query.getCurrentValue());
+            for (final Instance instance : lstInst) {
+                final Update update = new Update(instance);
                 update.add(CISales.Payment.TargetDocument, balanceInst.getId());
                 update.execute();
             }
@@ -654,6 +691,55 @@ public abstract class Account_Base
             transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
             transInsert.execute();
         }
+        return ret;
+    }
+
+    /**
+     * Method to get the payments with out a target document.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @return Return with the instances.
+     * @throws EFapsException on error.
+     */
+    public Return getPayments4PettyCashBalance(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance inst = _parameter.getInstance();
+        final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+        subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+        final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
+        queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, query.getValues());
+        return ret;
+    }
+
+    /**Method to activate the command to create a balance with date and choosing the receipts or not.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @return Return with true if the command to appear is with date.
+     * @throws EFapsException on error.
+     */
+    public Return check4SystemConfiguration(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean withDateComm = Boolean.parseBoolean((String) props.get("WithDate"));
+        final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
+        if (withDateConf && withDateComm) {
+            ret.put(ReturnValues.TRUE, true);
+        } else if (!withDateConf && !withDateComm) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+
         return ret;
     }
 

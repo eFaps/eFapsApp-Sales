@@ -52,5 +52,10 @@
             <value>false</value>
             <description>boolean (true/false). Activate the possibility to define a minimum retail price. </description>
         </attribute>
+        <attribute>
+            <key>PettyCashBalance_CommandWithDate</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate the command to create a balance setting the date and choosing the petty cash receipts.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

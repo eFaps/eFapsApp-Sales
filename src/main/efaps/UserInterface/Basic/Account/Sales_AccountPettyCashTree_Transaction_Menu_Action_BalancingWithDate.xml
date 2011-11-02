@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2011 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,37 +16,35 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5742 $
+ Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (mar, 26 oct 2010) $
+ Last Changed By: $Author: jorge.m.cueva $
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>c28e604b-30e0-4f22-a0f6-6b82ea583429</uuid>
+    <uuid>97dc7ddc-8ec1-4d12-9b77-2ae21ae450aa</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 5742 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing</name>
+        <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate</name>
         <access>
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountPettyCashBalancingForm</form>
-            <execute program="org.efaps.esjp.sales.Account"
-                method="pettyCashBalance" />
+            <form>Sales_AccountPettyCashBalancingWithDateForm</form>
+            <execute method="pettyCashBalance" program="org.efaps.esjp.sales.Account"/>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="check4SystemConfiguration"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <property name="WithDate">false</property>
+                <property name="WithDate">true</property>
             </trigger>
         </target>
         <!-- properties -->
