@@ -350,6 +350,7 @@ public abstract class Account_Base
             queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
+            lstInst.addAll(query.getValues());
         }
 
         final SelectBuilder selOut = new SelectBuilder().linkfrom(CISales.TransactionOutbound,
