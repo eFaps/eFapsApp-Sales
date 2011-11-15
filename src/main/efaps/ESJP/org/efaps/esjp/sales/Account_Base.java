@@ -684,7 +684,8 @@ public abstract class Account_Base
             final Insert transInsert = new Insert(type);
             transInsert.add(CISales.TransactionAbstract.Amount, difference.abs());
             transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
-            transInsert.add(CISales.TransactionAbstract.PaymentType, 1);
+            transInsert.add(CISales.TransactionAbstract.PaymentType, SystemConfiguration.get(
+                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("Default_PaymentType").getId());
             transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
             transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
             transInsert.add(CISales.TransactionAbstract.Description,
