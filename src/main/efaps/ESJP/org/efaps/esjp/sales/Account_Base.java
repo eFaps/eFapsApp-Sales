@@ -49,6 +49,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
@@ -324,12 +325,15 @@ public abstract class Account_Base
         BigDecimal ret = BigDecimal.ZERO;
         final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                         .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
+        final AbstractCommand command = _parameter.get(ParameterValues.UIOBJECT) instanceof AbstractCommand
+                                    ? (AbstractCommand)_parameter.get(ParameterValues.UIOBJECT) : null;
         final Instance inst = (_parameter.getCallInstance() == null
                                                 ? _parameter.getInstance() : _parameter.getCallInstance());
 
         final List<Instance> lstInst = new ArrayList<Instance>();
 
-        if (withDateConf) {
+        if (withDateConf && command != null
+                        && command.getTargetCreateType().isKindOf(CISales.PettyCashBalance.getType())) {
             String[] oids = _parameter.getParameterValues("selectedRow");
             if (oids == null) {
                 oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
