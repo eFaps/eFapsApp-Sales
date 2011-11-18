@@ -119,6 +119,21 @@ public abstract class OrderOutbound_Base
         return new Return();
     }
 
+    /**
+     * Method to get the javascript.
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @return javascript
+     * @throws EFapsException on error
+     */
+    @Override
+    protected String getJavaScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getJavaScript(_parameter, false);
+    }
+
+
+
     protected BigDecimal getPrice(final String _oid) throws EFapsException
     {
         final DateTime now = new DateTime();
