@@ -332,9 +332,10 @@ public abstract class Account_Base
 
         final List<Instance> lstInst = new ArrayList<Instance>();
 
-        if (withDateConf && command != null
-                        && command.getTargetCreateType().isKindOf(CISales.PettyCashBalance.getType())) {
-            String[] oids = _parameter.getParameterValues("selectedRow");
+        String[] oids = _parameter.getParameterValues("selectedRow");
+        if (withDateConf && (command != null
+                        && command.getTargetCreateType().isKindOf(CISales.PettyCashBalance.getType()))
+                        || oids != null) {
             if (oids == null) {
                 oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
             }
@@ -343,6 +344,18 @@ public abstract class Account_Base
                     final Instance instPay = Instance.get(oids[i]);
                     lstInst.add(instPay);
                 }
+            }
+            if (oids == null) {
+                final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+                subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+                final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
+                queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+                final InstanceQuery query = queryBldr.getQuery();
+                query.execute();
+                lstInst.addAll(query.getValues());
             }
         } else {
             final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
@@ -651,6 +664,17 @@ public abstract class Account_Base
                         final Instance instPay = Instance.get(oids[i]);
                         lstInst.add(instPay);
                     }
+                } else {
+                    final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
+                    subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
+                    final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                    queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
+                    queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
+
+                    final InstanceQuery query = queryBldr.getQuery();
+                    query.execute();
+                    lstInst.addAll(query.getValues());
                 }
             } else {
                 final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
@@ -952,7 +976,7 @@ public abstract class Account_Base
                 } catch (final ParseException e) {
                     throw new EFapsException(Account_Base.class, "ParseException", e);
                 }
-                final BigDecimal difference = startAmount.subtract(amount).subtract(crossTotal);
+                final BigDecimal difference = startAmount.add(amount).subtract(crossTotal);
                 if (difference.signum() == -1) {
                     ret.put(ReturnValues.VALUES,
                                         "org.efaps.esjp.sales.Account.validatePettyCashReceipt.NegativeAmount");
