@@ -346,28 +346,10 @@ public abstract class Account_Base
                 }
             }
             if (oids == null) {
-                final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-                subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-                final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-                queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
-                final InstanceQuery query = queryBldr.getQuery();
-                query.execute();
-                lstInst.addAll(query.getValues());
+                lstInst.addAll(getPayments(_parameter));
             }
         } else {
-            final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-            subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-            final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-            queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-            queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            lstInst.addAll(query.getValues());
+            lstInst.addAll(getPayments(_parameter));
         }
 
         final SelectBuilder selOut = new SelectBuilder().linkfrom(CISales.TransactionOutbound,
@@ -665,28 +647,11 @@ public abstract class Account_Base
                         lstInst.add(instPay);
                     }
                 } else {
-                    final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-                    subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-                    final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                    queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-                    queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
-
-                    final InstanceQuery query = queryBldr.getQuery();
-                    query.execute();
-                    lstInst.addAll(query.getValues());
+                    getPayments4PettyCashBalance(_parameter);
+                    lstInst.addAll(getPayments(_parameter));
                 }
             } else {
-                final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
-                subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
-                final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrIsNull(CISales.Payment.TargetDocument);
-                queryBldr.addWhereAttrInQuery(CISales.Payment.ID, attrQuery);
-
-                final InstanceQuery query = queryBldr.getQuery();
-                query.execute();
-                lstInst.addAll(query.getValues());
+                lstInst.addAll(getPayments(_parameter));
             }
 
             final Instance balanceInst = insert.getInstance();
@@ -725,7 +690,7 @@ public abstract class Account_Base
     }
 
     /**
-     * Method to get the payments with out a target document.
+     * Method to print the payments without a target document.
      *
      * @param _parameter as passed from eFaps API.
      * @return Return with the instances.
@@ -734,7 +699,25 @@ public abstract class Account_Base
     public Return getPayments4PettyCashBalance(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance inst = _parameter.getInstance();
+        final List<Instance> lst = getPayments(_parameter);
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, lst);
+        return ret;
+    }
+
+    /**
+     * Method to get payments without a target document.
+     *
+     * @param _parameter as passed from eFaps API.
+     * @return List with the Instances.
+     * @throws EFapsException on error.
+     */
+    protected List<Instance> getPayments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance inst = (_parameter.getCallInstance() == null
+                                        ? _parameter.getInstance() : _parameter.getCallInstance());
         final QueryBuilder subQueryBldr = new QueryBuilder(CISales.TransactionAbstract);
         subQueryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, inst.getId());
         final AttributeQuery attrQuery = subQueryBldr.getAttributeQuery(CISales.TransactionAbstract.Payment);
@@ -745,9 +728,7 @@ public abstract class Account_Base
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
 
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, query.getValues());
-        return ret;
+        return query.getValues();
     }
 
     /**Method to activate the command to create a balance with date and choosing the receipts or not.
