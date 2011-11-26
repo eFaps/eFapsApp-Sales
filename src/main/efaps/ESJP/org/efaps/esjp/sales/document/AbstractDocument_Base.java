@@ -1020,6 +1020,7 @@ public abstract class AbstractDocument_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
         queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
+        queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Active, true);
         if (properties.containsKey("InStock")) {
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
             final AttributeQuery attrQuery = attrQueryBldr
