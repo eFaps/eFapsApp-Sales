@@ -67,15 +67,15 @@ Secundarios:
     * Precio neto: es el monto que se muestra como resultado.
 
 || *Cantidad* || *Producto* || *Descripción* || *Unidad* || *Precio unitario* || *Descuento(%)* || *P.U. con Descuento* || *Precio neto* ||
-|| 1 ||  botella || retornable || und || 14  || 0.10 || 3.99 || 3.99 ||
+|| 1 || 00123 || retornable || und || 14  || 0.10 || 3.99 || 3.99 ||
 
 Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
 
 ===1.1.2 Crear de documento===
 Para crear de documento usted debe de haber creado un hoja de costos con anterioridad. Se dirige a la opción acción y elige crear de
 documento, inmediatamente le aparece la ventana *crear nueva hoja de costos de documento* en donde le mostrará el campo número, ingresará
-el código de la hoja de costos o puede colocar solo {{{*}}}, ingresa a la otra ventana con el botón siguiente.
-La nueva ventana nueva le mostrará los campos con información, es debido a que se a jalado toda la información de la
+el código de la hoja de costos o puede colocar solo {{{*}}}, luego ingresa a la otra ventana con el botón siguiente.
+La nueva ventana le mostrará los campos con información, es debido a que se a jalado toda la información de la
 hoja de costos ingresada anteriormente, la cual se va poder editar.
 
 ==1.2 Presupuestos==
@@ -103,7 +103,7 @@ Secundario:
   * Unidad: proviene de una dimensión, que a sido seleccionada al momento de crear el producto.
   * Precio unitario: es el monto que se le ingresa a un producto, en [./org.efaps.wiki.products.Showproducts.wiki#1._Lista_de_precios_de_venta lista de precio de venta].
   * Descuento (%): es la información relacionada con el producto.
-  * Nota: se ingresa una información detallada del producto.
+  * Nota: es la información agregada del documento.
 
 Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
 
@@ -144,7 +144,7 @@ Secundario:
   * Unidad: proviene de una dimensión,que a sido seleccionada al momento de crear el producto.
   * Precio unitario: es el monto que se le ingresa a un producto, en [./org.efaps.wiki.products.Showproducts.wiki#1._Lista_de_precios_de_venta lista de precio de venta].
   * Descuento (%): es la información relacionada con el producto.
-  * Nota: se ingresa una información detallada del producto.
+  * Nota: es la información agregada del documento.
 
 Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
 
@@ -190,7 +190,7 @@ Secundario:
   * Unidad: proviene de una dimensión, que a sido seleccionada al momento de crear el producto(véase [./org.efaps.wiki.products.Products.wiki#1._Crear producto]).
   * Precio unitario: es el monto que se le ingresa a un producto, en [./org.efaps.wiki.products.Showproducts.wiki#1._Lista_de_precios_de_venta lista de precio de venta].
   * Descuento (%): es la informacion relacionada con el producto.
-  * Nota: se ingresa una información detallada del producto.
+  * Nota: es la información agregada del documento.
 
 Importancia: colocar los datos obligatorios porque de lo contrario ocurrirá un error.
 
