@@ -43,6 +43,6 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
       </trigger>
     </attribute>
 
-    <trigger event="ACCESSCHECK" name="Sales_CashReceipt.ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4Object"/>
+    <trigger event="ACCESSCHECK" name="Sales_CashReceipt.ACCESSCHECK" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"/>
   </definition>
 </datamodel-type>
