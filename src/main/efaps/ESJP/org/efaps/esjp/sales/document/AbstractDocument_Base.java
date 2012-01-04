@@ -1018,31 +1018,68 @@ public abstract class AbstractDocument_Base
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
-        queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
-        queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Active, true);
-        if (properties.containsKey("InStock")) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
-            final AttributeQuery attrQuery = attrQueryBldr
-                                                .getAttributeQuery(CISales.Products_VirtualInventoryStock.Product);
-            queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
-        }
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIProducts.ProductAbstract.OID, CIProducts.ProductAbstract.Name,
-                        CIProducts.ProductAbstract.Description, CIProducts.ProductAbstract.Dimension);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String>getAttribute("Name");
-            final String desc = multi.<String>getAttribute("Description");
-            final String oid = multi.<String>getAttribute("OID");
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", oid);
-            map.put("eFapsAutoCompleteVALUE", name);
-            map.put("eFapsAutoCompleteCHOICE", name + "- " + desc);
-            map.put("productDesc", desc);
-            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute("Dimension")));
-            map.put("discount", "0");
-            list.add(map);
+        if (!input.isEmpty()) {
+            final boolean nameSearch = Character.isDigit(input.charAt(0));
+            final String typeStr = (String) properties.get("Type");
+            Type type;
+            if (typeStr != null) {
+                type = Type.get(typeStr);
+            } else {
+                type = CIProducts.ProductAbstract.getType();
+            }
+
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            if (nameSearch) {
+                queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
+            } else {
+                queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Description, input + "*")
+                    .setIgnoreCase(true);
+            }
+            queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Active, true);
+
+            if (properties.containsKey("InStock")) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                                    .getAttributeQuery(CISales.Products_VirtualInventoryStock.Product);
+                queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+            }
+
+            final String exclude = (String) properties.get("ExcludeTypes");
+            if (exclude != null) {
+                final String[] typesArray = exclude.split(";");
+                for (int x = 0; x < typesArray.length; x++) {
+                    final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(typesArray[x]));
+                    final AttributeQuery attrQuery = queryBldr2.getAttributeQuery(CIProducts.ProductAbstract.ID);
+                    queryBldr.addWhereAttrNotInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+                }
+            }
+
+            final Map<String, Map<String,String>> sortMap = new TreeMap<String, Map<String, String>>();
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.ProductAbstract.Name,
+                            CIProducts.ProductAbstract.Description,
+                            CIProducts.ProductAbstract.Dimension);
+            multi.execute();
+            while (multi.next()) {
+                final String name = multi.<String>getAttribute(CIProducts.ProductAbstract.Name);
+                final String desc = multi.<String>getAttribute(CIProducts.ProductAbstract.Description);
+                final String oid = multi.getCurrentInstance().getOid();
+                final String choice;
+                if (nameSearch) {
+                    choice = name + " - " + desc;
+                } else {
+                    choice = desc + " - " + name;
+                }
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put("eFapsAutoCompleteKEY", oid);
+                map.put("eFapsAutoCompleteVALUE", name);
+                map.put("eFapsAutoCompleteCHOICE", choice);
+                map.put("productDesc", desc);
+                map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CIProducts.ProductAbstract.Dimension)));
+                map.put("discount", "0");
+                sortMap.put(choice, map);
+            }
+            list.addAll(sortMap.values());
         }
 
         final Return retVal = new Return();
