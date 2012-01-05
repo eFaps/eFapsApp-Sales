@@ -665,9 +665,18 @@ public abstract class Calculator_Base
      * Getter method for the instance variable {@link #productPrice}.
      *
      * @return value of instance variable {@link #productPrice}
+     * @throws EFapsException
      */
     public ProductPrice getProductPrice()
+        throws EFapsException
     {
+        if (this.productPrice == null) {
+            this.productPrice = new PriceUtil().new ProductPrice();
+            this.productPrice.setBasePrice(BigDecimal.ZERO);
+            this.productPrice.setCurrentPrice(BigDecimal.ZERO);
+            this.productPrice.setOrigPrice(BigDecimal.ZERO);
+            this.productPrice.setBaseRate(BigDecimal.ONE);
+        }
         return this.productPrice;
     }
 
