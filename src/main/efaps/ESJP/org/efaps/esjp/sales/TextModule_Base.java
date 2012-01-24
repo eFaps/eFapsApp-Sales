@@ -165,6 +165,7 @@ public abstract class TextModule_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        long forTypeId = 0;
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
 
         final Type transAbstract = CISales.DocumentAbstract.getType();
@@ -175,12 +176,26 @@ public abstract class TextModule_Base
             }
         }
 
+        final Instance inst = _parameter.getInstance() != null ? _parameter.getCallInstance() : _parameter.getInstance();
+        if (inst != null && CISales.TextModule.getType().equals(inst.getType())) {
+            final PrintQuery print = new PrintQuery(inst);
+            print.addAttribute(CISales.TextModule.ForTypeId);
+            print.execute();
+
+            forTypeId = print.<Long>getAttribute(CISales.TextModule.ForTypeId);
+        }
+
         final StringBuilder html = new StringBuilder();
 
         html.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
         for (final Map.Entry<String, Long> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue()).append("\">").append(entry.getKey())
-                .append("</option>");
+            html.append("<option value=\"").append(entry.getValue());
+            if (entry.getValue().equals(forTypeId)) {
+                html.append("\" selected>");
+            } else {
+                html.append("\">");
+            }
+            html.append(entry.getKey()).append("</option>");
         }
         html.append("</select>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
