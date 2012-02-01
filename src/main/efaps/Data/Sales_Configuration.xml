@@ -44,7 +44,7 @@
         </attribute>
         <attribute>
             <key>ActivateLongDecimal</key>
-            <value><![CDATA[Sales_DocumentAbstract=false]]></value>
+            <value><![CDATA[Sales_DocumentAbstract=2]]></value>
             <description>Activate the possibility the unit price of the specified type will have until 4 decimal digits with boolean (true/false). </description>
         </attribute>
         <attribute>

@@ -122,7 +122,7 @@ public abstract class Calculator_Base
      */
     private LocalDate localDate;
 
-    private boolean longDecimal;
+    private int longDecimal;
 
     /**
      * Constructor used to instantiate an empty calculator.
@@ -166,7 +166,7 @@ public abstract class Calculator_Base
         if (_calculatorUse != null) {
             this.longDecimal = _calculatorUse.isLongDecimal(_parameter);
         } else {
-            this.longDecimal = false;
+            this.longDecimal = 2;
         }
 
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
@@ -249,8 +249,8 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         int decDigCant = 2;
-        if (isLongDecimal()) {
-            decDigCant = 4;
+        if (isLongDecimal() != decDigCant) {
+            decDigCant = isLongDecimal();
         }
         final BigDecimal unitPrice = parse(_unitPrice).setScale(decDigCant, BigDecimal.ROUND_HALF_UP);
 
@@ -604,8 +604,8 @@ public abstract class Calculator_Base
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
         int decDigCant = 2;
-        if (isLongDecimal()) {
-            decDigCant = 4;
+        if (isLongDecimal() != decDigCant) {
+            decDigCant = isLongDecimal();
         }
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
@@ -790,8 +790,8 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         int decDigCant = 2;
-        if (isLongDecimal()) {
-            decDigCant = 4;
+        if (isLongDecimal() != decDigCant) {
+            decDigCant = isLongDecimal();
         }
         ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
@@ -1133,7 +1133,7 @@ public abstract class Calculator_Base
     /**
      * @return true if the long decimal is activated
      */
-    public boolean isLongDecimal()
+    public int isLongDecimal()
     {
         return this.longDecimal;
     }

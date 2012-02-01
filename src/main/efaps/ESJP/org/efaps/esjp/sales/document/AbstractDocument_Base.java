@@ -148,9 +148,9 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (_calc.isLongDecimal()) {
-            formater.setMaximumFractionDigits(4);
-            formater.setMinimumFractionDigits(4);
+        if (_calc.isLongDecimal() != 2) {
+            formater.setMaximumFractionDigits(_calc.isLongDecimal());
+            formater.setMinimumFractionDigits(_calc.isLongDecimal());
         } else {
             formater.setMaximumFractionDigits(2);
             formater.setMinimumFractionDigits(2);
@@ -1397,18 +1397,18 @@ public abstract class AbstractDocument_Base
     }
 
     @Override
-    public boolean isLongDecimal(final Parameter _parameter)
+    public int isLongDecimal(final Parameter _parameter)
         throws EFapsException
     {
-        boolean ret = false;
+        int ret = 2;
         //Sales-Configuration
         final SystemConfiguration config = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
         final Properties props = config.getAttributeValueAsProperties("ActivateLongDecimal");
         final String type = getTypeName4SystemConfiguration();
 
-        if (props.containsKey(type) && Boolean.parseBoolean(props.getProperty(type))) {
-            ret = true;
+        if (props.containsKey(type) && Integer.valueOf(props.getProperty(type)) != ret) {
+            ret = Integer.valueOf(props.getProperty(type));
         }
         return ret;
     }
