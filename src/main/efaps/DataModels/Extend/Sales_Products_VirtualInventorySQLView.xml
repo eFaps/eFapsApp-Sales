@@ -46,9 +46,9 @@
                T_PRODPRODUCT.DESCR as proddescr,
                T_PRODPRODUCT.COMPANYID,
                T_SALESPOS.QUANTITY,
-               '0' as reserved,
+               0 as reserved,
                T_SALESPOS.UOMID,
-               '0' as storageid
+               0 as storageid
           from T_ERPDOC join T_SALESPOS on T_ERPDOC.ID = T_SALESPOS.DOCID
                 join T_DMSTATUS on T_ERPDOC.STATUS = T_DMSTATUS.ID
                 join T_CMABSTRACT on T_DMSTATUS.TYPEID = T_CMABSTRACT.ID
@@ -57,7 +57,7 @@
          union
         select T_PRODINVENTORY.ID,
                (select T_CMABSTRACT.ID from T_CMABSTRACT where T_CMABSTRACT.UUID = '58ab564e-1f81-47f6-af76-b864a969c5ed') as typeid,
-               '0',
+               0,
                T_PRODINVENTORY.PRODUCTID,
                T_PRODPRODUCT.NAME,
                T_PRODPRODUCT.DESCR,
