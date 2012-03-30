@@ -953,44 +953,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Get a "eFapsSetFieldValue" Javascript line.
-     * @param _idx          index of the field
-     * @param _fieldName    name of the field
-     * @param _value        value
-     * @return StringBuilder
-     */
-    protected StringBuilder getSetFieldValue(final int _idx,
-                                             final String _fieldName,
-                                             final String _value)
-    {
-        return getSetFieldValue(_idx, _fieldName, _value, true);
-    }
-
-    /**
-     * Get a "eFapsSetFieldValue" Javascript line.
-     * @param _idx          index of the field
-     * @param _fieldName    name of the field
-     * @param _value        value
-     * @param _escape       must the value be escaped
-     * @return StringBuilder
-     */
-    protected StringBuilder getSetFieldValue(final int _idx,
-                                             final String _fieldName,
-                                             final String _value,
-                                             final boolean _escape)
-    {
-        final StringBuilder ret = new StringBuilder();
-        ret.append("eFapsSetFieldValue(").append(_idx).append(",'").append(_fieldName).append("',");
-        if (_escape) {
-            ret.append("'").append(StringEscapeUtils.escapeJavaScript(_value)).append("'");
-        } else {
-            ret.append(_value);
-        }
-        ret.append(");");
-        return ret;
-    }
-
-    /**
      * Add additional JavaScript to the Script that will be executed after the
      * DOM of the Html-Document was loaded. Can be used by implementations.
      *
