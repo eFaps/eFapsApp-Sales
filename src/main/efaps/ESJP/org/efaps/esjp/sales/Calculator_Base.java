@@ -698,6 +698,11 @@ public abstract class Calculator_Base
         return getFormater().format(getQuantity());
     }
 
+    public String getQuantityFmtStr(final Format _formater)
+    {
+        return _formater.format(getQuantity());
+    }
+
     /**
      * @return the net price
      * @throws EFapsException
