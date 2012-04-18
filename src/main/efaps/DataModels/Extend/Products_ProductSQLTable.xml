@@ -36,15 +36,15 @@
         <database>
             <table-name>T_PRODPRODUCT</table-name>
             <!-- columns -->
-            <column name="TYPEID"       type="INTEGER"      not-null="true" />
-            <column name="COMPANYID"    type="INTEGER"      not-null="true" />
-            <column name="NAME"         type="STRING_SHORT" not-null="true" length="255" />
-            <column name="DESCR"        type="STRING_SHORT"                 length="255" />
-            <column name="DIMID"        type="INTEGER"      not-null="true" />
-            <column name="ACTIVE"       type="BOOLEAN" />
-            <!-- adding two new columns for salesunit and taxcatogory -->
-            <column name="SALESUNIT"    type="DECIMAL"                      length="8" scale="4" />
-            <column name="TAXCATID"     type="INTEGER" />
+            <column name="TYPEID"    type="INTEGER"        not-null="true"/>
+            <column name="COMPANYID" type="INTEGER"        not-null="true"/>
+            <column name="NAME"      type="STRING_SHORT"   not-null="true"  length="255"/>
+            <column name="DESCR"     type="STRING_SHORT"                    length="255"/>
+            <column name="DIMID"     type="INTEGER"         not-null="true" />
+            <column name="ACTIVE"    type="BOOLEAN"/>
+            <column name="SALESUNIT" type="DECIMAL"                          length="8" scale="4" />
+            <column name="TAXCATID"  type="INTEGER" />
+            <foreign name="T_PRODPRODUCT_FK_COMPANYID"  key="COMPANYID" reference="T_USERABSTRACT(ID)"/>
             <foreign name="T_PRODPRODUCT_FK_DIMID"      key="DIMID"     reference="T_DMDIM(ID)" />
             <foreign name="T_PRODPRODUCT_FK_TAXCATID"   key="TAXCATID"  reference="T_SALESTAXCAT(ID)" />
         </database>
