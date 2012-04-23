@@ -120,6 +120,8 @@ A continuación hablaremos de los siguientes puntos:
   * a. Crear
   * b. Borrar seleccionado
   * c. Crear(contabilidad)
+  * d. Ingresando a Tipo de cambio
+  * e. Ingresando a Tipo de cambio(compra)
 
 ====a. Crear====
 Para poder crear un tipo de cambio usted deberá dirigirse a la opción acción y seleccionar crear, inmediatamente le aparecerá la ventana *crear nuevo tipo de cambio* en donde ingresará la información correspondiente en los siguientes campos:
@@ -137,6 +139,22 @@ Para poder crear un tipo de cambio usted debe dirigirse a acción y seleccionar 
   * Tipo de cambio(compra): colocar la cantidad correspondiente.
   * Vigente desde: puede modificar la fecha igual al formato mostrado o puede elegir la fecha del calendario.
   * Vigente hasta: puede modificar la fecha igual al formato mostrado o puede elegir la fecha del calendario.
+
+====d. Ingresando a Tipo de cambio====
+Cuando ingresa a tipo de cambio, verá los siguientes puntos:
+  * Tipo: dirá Tipo de cambio.
+  * Tipo de cambio: mostrará la cantidad correspondiente.
+  * Tipo de cambio(compra): mostrará la cantidad correspondiente.
+  * Vigente desde: es la fecha que se eligio al momento de crear el Tipo de cambio.
+  * Vigente hasta: es la fecha que se eligio al momento de crear el Tipo de cambio.
+
+====e. Ingresando a Tipo de cambio(compra)====
+Cuando ingresa a tipo de cambio(compra), verá los siguientes puntos:
+  * Tipo: dirá Tipo de cambio.
+  * Tipo de cambio: mostrará la cantidad correspondiente.
+  * Tipo de cambio(compra): mostrará la cantidad correspondiente.
+  * Vigente desde: es la fecha que se eligio al momento de crear el Tipo de cambio.
+  * Vigente hasta: es la fecha que se eligio al momento de crear el Tipo de cambio.
 
 ==2.3 Cuentas==
 En este menú explicaremos:

@@ -69,34 +69,7 @@ Le sirve para poder imprimir una o varias hojas con todos los datos que se encue
 formato PDF o XLS.
 
 ===2.2.4 Tipo de cambio===
-Para poder registrar un tipo de cambio, deberá primero ingresar a la información de la moneda, haciendo clic en el nombre.
-
-La opción llamada tipo de cambio le muestra los siguientes puntos:
-
-  * a. Crear
-  * b. Borrar seleccionado
-  * c. Crear(contabilidad)
-
-====a. Crear====
-Se dirige a la opción acción y selecciona crear, inmediatamente le mostrará la ventana *crear tipo de cambio*, en donde ingresará la información correspondiente en los siguientes campos:
-
-  * Tipo de cambio: ingresar la cantidad correspondiente.
-  * Tipo de cambio(compra): ingresar la cantidad correspondiente.
-  * Vigente desde: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
-  * Vigente hasta: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
-
-====b. Borrar seleccionado====
-Seleccionar uno o varios tipos de cambio, dirigirse a la opción acción y elegir borrar seleccionado.
-
-====c. Crear(contabilidad)====
-Esta opción va dirigida al área de contabilidad.
-
-Se dirige a la opción acción y selecciona Crear(contabilidad), inmediatamente le mostrará la ventana *crear tipo de cambio*, en donde ingresará la información correspondiente en los siguientes campos:
-
-  * Tipo de cambio: ingresar la cantidad correspondiente.
-  * Tipo de cambio(compra): ingresar la cantidad correspondiente.
-  * Vigente desde: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
-  * Vigente hasta: editar la fecha con el mismo formato mostrado o seleccionarlo del calendario.
+[./org.efaps.wiki.sales.Showadministration.wiki#2.2.1_Tipo_de_cambio Tipo de cambio].
 
 ==2.3 Cuentas==
 En este menú mostraremos los siguientes puntos:
