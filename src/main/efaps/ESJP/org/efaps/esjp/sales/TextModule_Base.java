@@ -71,7 +71,7 @@ public abstract class TextModule_Base
         multi.addAttribute(CISales.TextModule.Line);
         multi.execute();
 
-        final Map<Long, Map<String, Long>> values = new TreeMap<Long, Map<String, Long>>();
+        final Map<Integer, Map<String, Long>> values = new TreeMap<Integer, Map<String, Long>>();
         while (multi.next()) {
             final Instance instance = multi.getCurrentInstance();
             final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TextElement);
@@ -84,12 +84,12 @@ public abstract class TextModule_Base
                 textele.put((String) multi2.getAttribute(CISales.TextElement.ShortText),
                                                                     multi2.getCurrentInstance().getId());
             }
-            values.put(multi.<Long>getAttribute(CISales.TextModule.Line), textele);
+            values.put(multi.<Integer>getAttribute(CISales.TextModule.Line), textele);
         }
 
         final StringBuilder html = new StringBuilder();
         html.append("<table>");
-        for (final Entry<Long, Map<String, Long>> entry : values.entrySet()) {
+        for (final Entry<Integer, Map<String, Long>> entry : values.entrySet()) {
             html.append("<tr><td>");
             if (entry.getValue().size() > 1) {
                 html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");

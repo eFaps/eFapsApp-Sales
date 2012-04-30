@@ -40,12 +40,6 @@
         <target>
             <form>Sales_AccountPettyCashBalancingWithDateForm</form>
             <execute method="pettyCashBalance" program="org.efaps.esjp.sales.Account"/>
-            <trigger program="org.efaps.esjp.sales.Account"
-                method="check4SystemConfiguration"
-                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <property name="WithDate">true</property>
-            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

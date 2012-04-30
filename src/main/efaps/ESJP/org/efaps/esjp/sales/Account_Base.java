@@ -946,7 +946,7 @@ public abstract class Account_Base
         final Return ret = new Return();
         final String addVal = additionalValidate4PettyCashReceipt(_parameter);
         if (hasTransaction(_parameter)) {
-            if (addVal != null && addVal.isEmpty()) {
+            if (addVal == null || addVal != null && addVal.isEmpty()) {
                 final BigDecimal amount = getAmountPayments(_parameter);
                 final BigDecimal startAmount = getStartAmount(_parameter);
                 final String crossTotalStr = _parameter.getParameterValue("crossTotal");

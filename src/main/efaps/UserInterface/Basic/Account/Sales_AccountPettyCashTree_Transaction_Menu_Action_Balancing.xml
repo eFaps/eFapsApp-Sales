@@ -45,7 +45,7 @@
                 method="pettyCashBalance" />
             <trigger program="org.efaps.esjp.sales.Account"
                 method="check4SystemConfiguration"
-                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate.UI_ACCESSCHECK"
+                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="WithDate">false</property>
             </trigger>
