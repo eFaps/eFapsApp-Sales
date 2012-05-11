@@ -204,9 +204,9 @@ public abstract class Calculator_Base
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
-                print.addAttribute(CISales.Products_ProductAbstract.TaxCategory);
+                print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
-                this.taxcatId = print.<Long> getAttribute(CISales.Products_ProductAbstract.TaxCategory);
+                this.taxcatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_calculatorUse != null && _calculatorUse.isIncludeMinRetail(_parameter)) {
                     this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
