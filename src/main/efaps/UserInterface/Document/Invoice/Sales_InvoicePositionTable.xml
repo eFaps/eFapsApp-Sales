@@ -89,7 +89,7 @@
                 name="Sales_InvoicePositionTable.netUnitPrice.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK"/>
         </field>
-        <field name="netUnitPrice">
+        <field name="netUnitPrice4Read">
             <property name="ModeCreate">READONLY</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
