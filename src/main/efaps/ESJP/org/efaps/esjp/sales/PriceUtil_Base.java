@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
-import org.apache.wicket.datetime.StyleDateConverter;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -337,13 +336,13 @@ public abstract class PriceUtil_Base
     protected DateTimeFormatter getDateFormat(final String _style)
         throws EFapsException
     {
-        final StyleDateConverter styledate = new StyleDateConverter(false);
-        DateTimeFormatter fmt = DateTimeFormat.forPattern(styledate.getDatePattern());
-        if (_style != null) {
+        final DateTimeFormatter fmt;
+        if (_style == null) {
+            fmt = DateTimeFormat.forStyle("S-");
+        } else {
             fmt = DateTimeFormat.forPattern(_style);
         }
         fmt.withLocale(Context.getThreadContext().getLocale());
-
         return fmt;
     }
 
@@ -501,7 +500,7 @@ public abstract class PriceUtil_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final String input = (String) Context.getThreadContext().getSessionAttribute(PriceUtil.PRODFILTER_KEY);
+                final String input = (String) Context.getThreadContext().getSessionAttribute(PriceUtil_Base.PRODFILTER_KEY);
                 if (input != null) {
                     final boolean nameSearch = Character.isDigit(input.charAt(0));
 
@@ -528,7 +527,7 @@ public abstract class PriceUtil_Base
     {
         final String product = _parameter.getParameterValue("product");
 
-        Context.getThreadContext().setSessionAttribute(PriceUtil.PRODFILTER_KEY, product);
+        Context.getThreadContext().setSessionAttribute(PriceUtil_Base.PRODFILTER_KEY, product);
         return new Return();
     }
 
@@ -543,8 +542,8 @@ public abstract class PriceUtil_Base
         throws EFapsException
     {
         // clean the project of the context
-        if (Context.getThreadContext().getSessionAttribute(PriceUtil.PRODFILTER_KEY) != null) {
-            Context.getThreadContext().setSessionAttribute(PriceUtil.PRODFILTER_KEY, null);
+        if (Context.getThreadContext().getSessionAttribute(PriceUtil_Base.PRODFILTER_KEY) != null) {
+            Context.getThreadContext().setSessionAttribute(PriceUtil_Base.PRODFILTER_KEY, null);
         }
 
         return new Return();
