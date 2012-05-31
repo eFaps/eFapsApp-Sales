@@ -134,6 +134,7 @@ public abstract class Calculator_Base
     {
         this.taxcatId = 0;
         this.formater = Calculator_Base.getFormatInstance();
+        this.longDecimal = 2;
         this.empty = true;
         setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
     }

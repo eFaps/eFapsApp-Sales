@@ -35,7 +35,9 @@ import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateMidnight;
 
 /**
  * TODO comment!
@@ -48,65 +50,97 @@ import org.efaps.util.EFapsException;
 public abstract class Reminder_Base
     extends DocumentSum
 {
-
     public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        createDoc(_parameter);
+        return new Return();
+    }
+
+    protected CreatedDoc createDoc(final Parameter _parameter)
         throws EFapsException
     {
         final String date = _parameter.getParameterValue("date");
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
+        final Instance baseCurrInst = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(), _parameter
+                        .getParameterValue("rateCurrencyId"));
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
+        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
+        final Insert insert = new Insert(CISales.Reminder);
+        insert.add(CISales.Reminder.Contact, contactid);
+        insert.add(CISales.Reminder.CrossTotal, getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Reminder.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Reminder.RateNetTotal, getNetTotal(calcList));
+        insert.add(CISales.Reminder.RateCrossTotal, getCrossTotal(calcList));
+        insert.add(CISales.Reminder.DiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.Reminder.RateDiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.Reminder.CurrencyId, baseCurrInst.getId());
+        insert.add(CISales.Reminder.RateCurrencyId, rateCurrInst.getId());
+        insert.add(CISales.Reminder.Rate, rateObj);
+        insert.add(CISales.Reminder.Date, date == null ? DateTimeUtil.normalize(new DateMidnight().toDateTime()) : date);
+        insert.add(CISales.Reminder.Note, _parameter.getParameterValue("note"));
+        insert.add(CISales.Reminder.DueDate, _parameter.getParameterValue("dueDate"));
+        insert.add(CISales.Reminder.Salesperson, _parameter.getParameterValue("salesperson"));
+        insert.add(CISales.Reminder.Status,
+                        ((Long) Status.find(CISales.ReminderStatus.uuid, "Open").getId()).toString());
+        insert.add(CISales.Reminder.Name, getDocName4Create(_parameter));
+        insert.execute();
+
+        final CreatedDoc createdDoc = new CreatedDoc(insert.getInstance());
+        createPositions(_parameter, calcList, createdDoc);
+        return createdDoc;
+    }
+
+    @Override
+    protected void createPositions(final Parameter _parameter,
+                                   final List<Calculator> _calcList,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("rateCurrencyId"));
 
-        final Insert insert = new Insert(CISales.Reminder);
-        insert.add(CISales.Reminder.Contact, contactid.toString());
-        insert.add(CISales.Reminder.CrossTotal, getCrossTotalStr(calcList));
-        insert.add(CISales.Reminder.NetTotal, getNetTotalStr(calcList));
-        insert.add(CISales.Reminder.Date, date);
-        insert.add(CISales.Reminder.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.Reminder.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Reminder.CurrencyId, baseCurrInst.getId());
-        insert.add(CISales.Reminder.RateCurrencyId, rateCurrInst.getId());
-        insert.add(CISales.Reminder.RateCrossTotal, getCrossTotal(calcList));
-        insert.add(CISales.Reminder.RateNetTotal, getNetTotal(calcList));
-        insert.add(CISales.Reminder.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Reminder.Rate, rateObj);
-        insert.add(CISales.Reminder.Status,
-                                ((Long) Status.find(CISales.ReminderStatus.uuid, "Open").getId()).toString());
-        insert.add(CISales.Reminder.Note, _parameter.getParameterValue("note"));
-        insert.add(CISales.Reminder.DueDate, _parameter.getParameterValue("dueDate"));
-        insert.add(CISales.Reminder.Name, _parameter.getParameterValue("name4create"));
-        insert.execute();
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
         Integer i = 0;
-        for (final Calculator calc : calcList) {
-            final Insert posIns = new Insert(CISales.ReminderPosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.ReminderPosition.Reminder, insert.getId());
-            posIns.add(CISales.ReminderPosition.PositionNumber, i.toString());
-            posIns.add(CISales.ReminderPosition.Product, productdId.toString());
-            posIns.add(CISales.ReminderPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
-            posIns.add(CISales.ReminderPosition.Quantity, calc.getQuantityStr());
-            posIns.add(CISales.ReminderPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.ReminderPosition.CrossUnitPrice, calc.getCrossUnitPriceStr());
-            posIns.add(CISales.ReminderPosition.NetUnitPrice, calc.getNetUnitPriceStr());
-            posIns.add(CISales.ReminderPosition.CrossPrice, calc.getCrossPriceStr());
-            posIns.add(CISales.ReminderPosition.NetPrice, calc.getNetPriceStr());
-            posIns.add(CISales.ReminderPosition.Tax, (calc.getTaxId()).toString());
-            posIns.add(CISales.ReminderPosition.Discount, calc.getDiscountStr());
-            posIns.add(CISales.ReminderPosition.CurrencyId, baseCurrInst.getId());
-            posIns.add(CISales.ReminderPosition.RateCurrencyId, rateCurrInst.getId());
-            posIns.add(CISales.ReminderPosition.Rate, rateObj);
-            posIns.add(CISales.ReminderPosition.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice().divide(rate,
-                            BigDecimal.ROUND_HALF_UP));
-
-            posIns.execute();
+        for (final Calculator calc : _calcList) {
+            if (!calc.isEmpty()) {
+                final Insert posIns = new Insert(CISales.ReminderPosition);
+                final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
+                posIns.add(CISales.ReminderPosition.Reminder, _createdDoc.getInstance().getId());
+                posIns.add(CISales.ReminderPosition.PositionNumber, i);
+                posIns.add(CISales.ReminderPosition.Product, productdId);
+                posIns.add(CISales.ReminderPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
+                posIns.add(CISales.ReminderPosition.Quantity, calc.getQuantity());
+                posIns.add(CISales.ReminderPosition.UoM, _parameter.getParameterValues("uoM")[i]);
+                posIns.add(CISales.ReminderPosition.Tax, calc.getTaxId());
+                posIns.add(CISales.ReminderPosition.Discount, calc.getDiscount());
+                posIns.add(CISales.ReminderPosition.CurrencyId, baseCurrInst.getId());
+                posIns.add(CISales.ReminderPosition.Rate, rateObj);
+                posIns.add(CISales.ReminderPosition.RateCurrencyId, rateCurrInst.getId());
+                posIns.add(CISales.ReminderPosition.CrossUnitPrice,
+                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.NetUnitPrice,
+                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.CrossPrice,
+                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.NetPrice,
+                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.DiscountNetUnitPrice,
+                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                add2PositionInsert(_parameter, calc, posIns);
+                posIns.execute();
+                _createdDoc.addPosition(posIns.getInstance());
+            }
             i++;
         }
-        return new Return();
     }
 }
