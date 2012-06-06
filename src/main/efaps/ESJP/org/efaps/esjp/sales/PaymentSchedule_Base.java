@@ -1,15 +1,23 @@
 package org.efaps.esjp.sales;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.UUID;
 
+import org.apache.ecs.html.Big;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -83,6 +91,33 @@ public class PaymentSchedule_Base extends EventSchedule
             insertPayShePos.execute();
             i++;
         }
+    }
+
+    public Return deleteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instPos = _parameter.getInstance();
+        SelectBuilder selectPaySche = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.PaymentSchedule).oid();
+
+        PrintQuery printPos = new PrintQuery(instPos);
+        printPos.addAttribute(CISales.PaymentSchedulePosition.NetPrice);
+        printPos.addSelect(selectPaySche);
+
+        BigDecimal posNetPrice = BigDecimal.ZERO;
+        BigDecimal total = BigDecimal.ZERO;
+        if (printPos.execute()) {
+            posNetPrice = printPos.<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice);
+            Instance instPaySche = Instance.get(printPos.<String>getSelect(selectPaySche));
+            PrintQuery printPaySche = new PrintQuery(instPaySche);
+            printPaySche.addAttribute(CISales.PaymentSchedule.Total);
+            if (printPaySche.execute()) {
+                total = printPaySche.<BigDecimal>getAttribute(CISales.PaymentSchedule.Total);
+                Update updatePaySche = new Update(printPaySche.getCurrentInstance());
+                updatePaySche.add(CISales.PaymentSchedule.Total, total.subtract(posNetPrice).setScale(2, RoundingMode.HALF_UP));
+                updatePaySche.execute();
+            }
+        }
+        return new Return();
     }
 
 }
