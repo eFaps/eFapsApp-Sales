@@ -52,7 +52,6 @@ public class EventSchedule_Base extends AbstractDocument_Base
         final int selected = getSelectedRow(_parameter);
         final String oid = _parameter.getParameterValues("document")[selected];
         String name;
-        String documentDesc = "";
         BigDecimal netPrice  = BigDecimal.ZERO;
         if (oid != null && oid.length() > 0) {
 
@@ -62,7 +61,6 @@ public class EventSchedule_Base extends AbstractDocument_Base
 
             print.execute();
             name = print.getAttribute(CISales.DocumentAbstract.Name);
-            documentDesc = print.getAttribute(CISales.DocumentAbstract.Note);
             netPrice = print.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
 
         }else {
@@ -70,7 +68,6 @@ public class EventSchedule_Base extends AbstractDocument_Base
         }
 
         if (name.length() > 0) {
-            map.put("documentDesc", documentDesc);
             map.put("netPrice", getNetPriceFmtStr(netPrice));
             map.put("total", getTotalFmtStr(getTotal(_parameter)));
             map.put("documentAutoComplete", name);

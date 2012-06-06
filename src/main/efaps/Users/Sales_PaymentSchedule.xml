@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
   Copyright 2003 - 2012 The eFaps Team
 
@@ -15,37 +16,23 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 5313 $
-  Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (lun, 16 ago 2010) $
-  Last Changed By: $Author: miguel.a.aranya $
+  Revision:        $Rev: 5754 $
+  Last Changed:    $Date: 2010-10-27 13:51:18 -0500 (mié, 27 oct 2010) $
+  Last Changed By: $Author: jorge.m.cueva $
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<user-role xmlns="http://www.efaps.org/xsd"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>60732b90-3b07-4ca4-af15-6fb0712c8670</uuid>
+    <uuid>a365951c-1462-4d2d-ba9d-4c7459c230e2</uuid>
+
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
+    <file-revision>$Rev: 5754 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentScheduleTree</name>
-        <!-- targets -->
-        <target>
-            <menu>Sales_PaymentScheduleTree_Menu</menu>
-            <form>Sales_PaymentScheduleForm</form>
-        </target>
-        <!-- type tree for -->
-        <type>Sales_PaymentSchedule</type>
-        <!--child -->
-        <childs>
-          <child>Sales_PaymentScheduleTree_Position</child>
-        </childs>
-
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_PaymentSchedule</name>
+        <status>true</status>
     </definition>
-</ui-menu>
+</user-role>

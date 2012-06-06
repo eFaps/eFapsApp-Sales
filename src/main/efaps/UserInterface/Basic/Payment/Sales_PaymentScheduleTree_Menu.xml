@@ -34,7 +34,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
     <name>Sales_PaymentScheduleTree_Menu</name>
     <!-- childs -->
     <childs>
-      <child>Sales_InvoiceTree_Menu_Action</child>
+      <child>Sales_PaymentScheduleTree_Menu_Action</child>
     </childs>
   </definition>
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
+
+  Copyright 2012 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 5760 $
+  Last Changed:    $Date: 2010-10-27 16:33:01 -0500 (mié, 27 oct 2010) $
+  Last Changed By: $Author: jorge.m.cueva $
+
+-->
+<access-set xmlns="http://www.efaps.org/xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>b2899914-b634-4c37-8300-419e62b401ac</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5760 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+
+        <name>Sales_PaymentSchedule</name>
+
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
+        <access-type>statusModify</access-type>
+        <access-type>delete</access-type>
+
+        <type>Sales_PaymentSchedule</type>
+        <type>Sales_IncomingInvoice</type>
+
+        <status group="Sales_IncomingInvoiceStatus">
+          <key>Open</key>
+          <key>Paid</key>
+          <key>Booked</key>
+          <key>Replaced</key>
+        </status>
+
+        <role>Sales_PaymentSchedule</role>
+    </definition>
+
+</access-set>

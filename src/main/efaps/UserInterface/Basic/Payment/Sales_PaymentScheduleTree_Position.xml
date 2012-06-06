@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,20 +21,31 @@
  Last Changed By: $Author: miguel.a.aranya $
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>68ba7aae-0acf-4419-bce5-a004c973baed</uuid>
+    <uuid>7acf512f-150e-45e0-b481-9c990c41bc2a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5313 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentScheduleTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-          <child>Sales_PaymentScheduleTree_Menu_Action_Edit</child>
-        </childs>
+        <name>Sales_PaymentScheduleTree_Position</name>
+    <access>
+      <role>Sales_Admin</role>
+      <role>Sales_PaymentSchedule</role>
+    </access>
+        <target>
+            <menu>Sales_PaymentScheduleTree_Position_Menu</menu>
+            <table>Sales_PaymentSchedulePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_PaymentSchedulePosition</property>
+                <property name="LinkFroms">PaymentSchedule</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
     </definition>
-</ui-menu>
+</ui-command>

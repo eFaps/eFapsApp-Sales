@@ -33,6 +33,11 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentScheduleMyDesk_Menu_Action_Create</name>
+
+    <access>
+      <role>Sales_Admin</role>
+      <role>Sales_PaymentSchedule</role>
+    </access>
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentScheduleForm</form>
