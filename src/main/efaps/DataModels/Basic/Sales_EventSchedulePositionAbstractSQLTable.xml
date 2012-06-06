@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<!--
+
+ Copyright 2003 - 2012 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 5912 $
+ Last Changed:    $Date: 2010-12-03 09:22:16 -0500 (vie, 03 dic 2010) $
+ Last Changed By: $Author: jorge.m.cueva $
+
+-->
+
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>4e2e6219-8c41-4ba9-b285-9a96772922b8</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5912 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_EventSchedulePositionAbstractSQLTable</name>
+        <typeid-column>TYPEID</typeid-column>
+        <database>
+            <table-name>T_EVENTSCHEPOS</table-name>
+            <!-- columns -->
+            <column name="TYPEID"      not-null="true" type="INTEGER"/>
+            <column name="EVENTSCHEID" not-null="true" type="INTEGER"/>
+            <column name="POS"         not-null="true" type="INTEGER"/>
+            <column name="DOC"         not-null="true" type="INTEGER"/>
+            <column name="DOCDESC"     not-null="true" type="STRING_SHORT"       length="255"/>
+            <column name="NETPRICE"    not-null="true" type="DECIMAL" scale="4"  length="14"/>
+
+            <foreign key="EVENTSCHEID" name="T_EVENTSCHEPOS_EVENTSCHEID" reference="T_ERPEVENTSCHEDULE(ID)"/>
+            <foreign key="DOC"         name="T_EVENTSCHEPOS_DOC"         reference="T_ERPDOC(ID)"/>
+        </database>
+    </definition>
+</datamodel-sqltable>
