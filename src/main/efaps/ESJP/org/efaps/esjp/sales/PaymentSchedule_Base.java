@@ -71,13 +71,14 @@ public class PaymentSchedule_Base extends EventSchedule
             Instance instDoc = Instance.get(oid);
             PrintQuery printDoc = new PrintQuery(instDoc);
             printDoc.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            printDoc.addAttribute(CISales.DocumentAbstract.Note);
             printDoc.execute();
 
             Insert insertPayShePos = new Insert(CISales.PaymentSchedulePosition);
             insertPayShePos.add(CISales.PaymentSchedulePosition.PaymentSchedule, createSchedule.getInstance().getId());
             insertPayShePos.add(CISales.PaymentSchedulePosition.Document, instDoc.getId());
             insertPayShePos.add(CISales.PaymentSchedulePosition.PositionNumber, i);
-            insertPayShePos.add(CISales.PaymentSchedulePosition.DocumentDesc, instDoc.getId());
+            insertPayShePos.add(CISales.PaymentSchedulePosition.DocumentDesc, _parameter.getParameterValues("documentDesc")[i]);
             insertPayShePos.add(CISales.PaymentSchedulePosition.NetPrice, printDoc.getAttribute(CISales.DocumentSumAbstract.CrossTotal));
             insertPayShePos.execute();
             i++;

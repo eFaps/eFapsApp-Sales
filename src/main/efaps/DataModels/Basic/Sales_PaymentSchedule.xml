@@ -52,5 +52,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
                 <property name="Type">ERP_Currency</property>
             </trigger>
         </attribute>
+        <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            name="Sales_PaymentSchedule.ACCESSCHECK" event="ACCESSCHECK" />
     </definition>
 </datamodel-type>

@@ -60,6 +60,7 @@
         <type>Sales_PettyCashBalance</type>
         <type>Sales_UsageReport</type>
         <type>Sales_CashReceipt</type>
+        <type>Sales_PaymentSchedule</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
