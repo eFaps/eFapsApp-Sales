@@ -26,21 +26,6 @@
 <import xmlns="http://www.efaps.org/xsd"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <object type="ERP_Currency">
-        <attribute name="Name">Dollar</attribute>
-        <attribute name="Symbol">$</attribute>
-        <attribute name="ISOCode">USD</attribute>
-        <attribute name="UUID">691758fc-a060-4bd5-b1fa-b33296638126</attribute>
-        <attribute name="Invert">TRUE</attribute>
-    </object>
-    <object type="ERP_Currency">
-        <attribute name="Name">Nuevo Soles</attribute>
-        <attribute name="Symbol">S/.</attribute>
-        <attribute name="ISOCode">PEN</attribute>
-        <attribute name="UUID">41823aa0-a961-46cb-b04e-adc48d8eec2c</attribute>
-        <attribute name="Invert">FALSE</attribute>
-    </object>
-
     <!-- connect the Soles currency to the SystemConfiguration -->
     <object type="Admin_Common_SystemConfigurationLink">
         <attribute name="Key">Currency4Invoice</attribute>
