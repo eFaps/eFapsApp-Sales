@@ -47,6 +47,12 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
           <key>Replaced</key>
         </status>
 
+        <status group="Sales_PaymentScheduleStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
         <role>Sales_PaymentSchedule</role>
     </definition>
 

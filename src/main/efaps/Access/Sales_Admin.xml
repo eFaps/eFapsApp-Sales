@@ -182,6 +182,13 @@
               <key>Paid</key>
         </status>
 
+        <status group="Sales_PaymentScheduleStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+
         <role>Sales_Admin</role>
     </definition>
 

@@ -4,18 +4,15 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.UUID;
 
-import org.apache.ecs.html.Big;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
@@ -56,6 +53,8 @@ public class PaymentSchedule_Base extends EventSchedule
         final Insert insertPaySche = new Insert(CISales.PaymentSchedule);
         insertPaySche.add(CISales.PaymentSchedule.Date, _parameter.getParameterValue("date"));
         insertPaySche.add(CISales.PaymentSchedule.Name, _parameter.getParameterValue("name4create"));
+        insertPaySche.add(CISales.PaymentSchedule.Status,
+                        Status.find(CISales.PaymentScheduleStatus.uuid, "Open").getId());
         insertPaySche.add(CISales.PaymentSchedule.Total, getTotalFmtStr(getTotal(_parameter)));
         insertPaySche.add(CISales.PaymentSchedule.CurrencyId, baseCurrInst.getId());
 

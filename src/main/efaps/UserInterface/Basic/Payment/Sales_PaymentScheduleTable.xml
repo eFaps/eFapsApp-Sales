@@ -52,9 +52,19 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <property name="Label">Sales_PaymentScheduleTable/Total.Label</property>
       </field>
         <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_PaymentScheduleTable/Date.Label</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_PaymentScheduleTable/Status.Label</property>
+            <property name="ModeSearch">READONLY</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

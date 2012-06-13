@@ -5,23 +5,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.UUID;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAdminCommon;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
@@ -34,14 +44,70 @@ import org.efaps.util.EFapsException;
 public class EventSchedule_Base extends AbstractDocument_Base
 {
 
+
+    public Return autoComplete4ScheduleDoc(final Parameter _parameter)
+    throws EFapsException
+    {
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        autoCompleteDocs(_parameter, CISales.IncomingInvoice.uuid,
+                        Status.find( CISales.IncomingInvoiceStatus.uuid, "Open").getId(), list);
+
+        //Accounting_ExternalVoucher
+        //Accounting_ExternalVoucherStatus
+        autoCompleteDocs(_parameter, UUID.fromString("612efbd7-8843-447f-bb44-7983a3e87a43"),
+                        Status.find(UUID.fromString("1e95c195-f701-43e7-af90-7012779e18c9"), "Open").getId(), list);
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+
+    protected void autoCompleteDocs(Parameter _parameter,
+                                 UUID _typeUUID,
+                                 long _status,
+                                 List<Map<String, String>> _list)
+    throws EFapsException
+    {
+
+        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+        SelectBuilder selectContactName = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact)
+                        .attribute(CIContacts.Contact.Name);
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+
+        final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
+        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
+        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status);
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.DocumentAbstract.OID, CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
+        multi.addSelect(selectContactName);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+            final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+            final String contactName = multi.<String>getSelect(selectContactName);
+            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + " - " + contactName + "-"
+                     + date.toString(DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+            map.put("selectedDoc", oid);
+            tmpMap.put(name, map);
+        }
+        _list.addAll(tmpMap.values());
+    }
+
     /**
      * Generic method to get the listmap for update event.
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
      */
-    @Override
-    protected Return updateFields4Doc(final Parameter _parameter)
+    public Return updateFields4ScheduleDoc(final Parameter _parameter)
         throws EFapsException
     {
         final Return retVal = new Return();

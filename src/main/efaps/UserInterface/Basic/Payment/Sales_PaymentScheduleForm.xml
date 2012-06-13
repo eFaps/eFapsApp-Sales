@@ -95,6 +95,13 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="status">
+          <property name="Attribute">Status</property>
+          <property name="Label">Sales_PaymentScheduleForm/Status.Label</property>
+          <property name="ModeEdit">EDITABLE</property>
+          <property name="ModePrint">READONLY</property>
+          <property name="ModeView">READONLY</property>
+        </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
             <property name="Label">Sales_PaymentScheduleForm.headingPositon.Heading</property>
