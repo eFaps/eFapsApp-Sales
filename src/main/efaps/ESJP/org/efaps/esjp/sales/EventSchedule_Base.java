@@ -53,10 +53,12 @@ public class EventSchedule_Base extends AbstractDocument_Base
         autoCompleteDocs(_parameter, CISales.IncomingInvoice.uuid,
                         Status.find( CISales.IncomingInvoiceStatus.uuid, "Open").getId(), list);
 
-        //Accounting_ExternalVoucher
-        //Accounting_ExternalVoucherStatus
-        autoCompleteDocs(_parameter, UUID.fromString("612efbd7-8843-447f-bb44-7983a3e87a43"),
-                        Status.find(UUID.fromString("1e95c195-f701-43e7-af90-7012779e18c9"), "Open").getId(), list);
+        if (Type.get("Accounting_ExternalVoucher") != null) {
+            //Accounting_ExternalVoucher
+            //Accounting_ExternalVoucherStatus
+            autoCompleteDocs(_parameter, UUID.fromString("612efbd7-8843-447f-bb44-7983a3e87a43"),
+                            Status.find(UUID.fromString("1e95c195-f701-43e7-af90-7012779e18c9"), "Open").getId(), list);
+        }
 
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
