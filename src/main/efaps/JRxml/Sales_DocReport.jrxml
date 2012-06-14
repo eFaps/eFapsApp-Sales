@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
-	<property name="ireport.zoom" value="3.0"/>
-	<property name="ireport.x" value="1313"/>
+	<property name="ireport.zoom" value="1.3995221406291998"/>
+	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
@@ -93,8 +93,7 @@
 ? BigDecimal.ZERO
 : ($V{negative}.booleanValue()
 ? $F{crossTotal}.multiply( $P{Rate} ).negate()
-: $F{crossTotal}.multiply( $P{Rate} ))
-]]></variableExpression>
+: $F{crossTotal}.multiply( $P{Rate} ))]]></variableExpression>
 	</variable>
 	<variable name="type" class="java.lang.String">
 		<variableExpression><![CDATA[$F{typeUUID}.equals( UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))
@@ -103,8 +102,10 @@
     ? "03"
     : ($F{typeUUID}.equals( UUID.fromString("6409ee95-3cd2-4063-8080-d010466fd5c7"))
         ? "07"
-        : ""
-))]]></variableExpression>
+        : ($F{typeUUID}.equals( UUID.fromString("77b5c009-0b45-40d4-8417-a79c30568904"))
+            ? "08"
+            : ""
+)))]]></variableExpression>
 	</variable>
 	<variable name="background" class="java.lang.Integer" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{id}]]></variableExpression>

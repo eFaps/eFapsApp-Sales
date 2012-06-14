@@ -127,6 +127,7 @@ public abstract class DocReport_Base
         values.put("A", getInstances(_parameter, CISales.Invoice.uuid, _from, _to));
         values.put("B", getInstances(_parameter, CISales.Receipt.uuid, _from, _to));
         values.put("C", getInstances(_parameter, CISales.CreditNote.uuid, _from, _to));
+        values.put("D", getInstances(_parameter, CISales.Reminder.uuid, _from, _to));
 
         for (final Map<String, Instance> value : values.values()) {
             for (final Instance inst : value.values()) {
