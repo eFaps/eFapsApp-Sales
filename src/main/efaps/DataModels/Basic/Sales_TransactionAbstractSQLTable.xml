@@ -52,7 +52,7 @@
       <column name="MODIFIED"     type="DATETIME"     not-null="true"/>
       <foreign name="T_SALESTRANSACTION_FK_COMPANYID"  key="COMPANYID"     reference="T_USERABSTRACT(ID)"/>
       <foreign name="T_SALESTRANSACTION_FK_CURRENCYID" key="CURRENCYID"    reference="T_ERPCUR(ID)"/>
-      <foreign name="T_SALESTRANSACTION_FK_PAYMENTID"  key="PAYMENTID"     reference="T_SALESPAYMENT(ID)"/>
+      <foreign name="T_SALESTRANSACTION_FK_PAYMENTID"  key="PAYMENTID"     reference="T_ERPDOC(ID)"/>
       <foreign name="T_SALESTRANSACTION_FK_ACCOUNTID"  key="ACCOUNTID"     reference="T_SALESACC(ID)"/>
       <foreign name="T_SALESTRANSACTION_FK_CRTR"       key="CREATOR"       reference="T_USERPERSON(ID)"/>
       <foreign name="T_SALESTRANSACTION_FK_MDFR"       key="MODIFIER"      reference="T_USERPERSON(ID)"/>
