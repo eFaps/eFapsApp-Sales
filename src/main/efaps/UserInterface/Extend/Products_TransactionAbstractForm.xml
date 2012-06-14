@@ -39,10 +39,12 @@
             <property name="Required">true</property>
             <property name="Label">Products_TransactionAbstractForm.type.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.products.Transaction"
-                method="getTypeFieldValueUI"
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getTypeDropDownFieldValue"
                 name="Products_TransactionAbstractForm.type.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <property name="Types">Products_TransactionAbstract</property>
+            </trigger>
         </field>
         <field name="date">
             <property name="Columns">40</property>
@@ -95,10 +97,14 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.products.Transaction"
-                method="getStorageFieldValueUI"
-                name="Products_TransactionAbstractForm.storage.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="dropDownFieldValue"
+                name="Products_TransactionAbstractForm.storage.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Products_StorageAbstract</property>
+                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt;</property>
+            </trigger>
         </field>
         <field name="storage4View">
             <property name="ModeEdit">NONE</property>
