@@ -35,6 +35,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
     <!-- childs -->
     <childs>
       <child>Sales_PaymentScheduleMyDesk_Menu_Action_Create</child>
+      <child>Sales_PaymentScheduleMyDesk_Menu_Action_Delete</child>
     </childs>
   </definition>
 

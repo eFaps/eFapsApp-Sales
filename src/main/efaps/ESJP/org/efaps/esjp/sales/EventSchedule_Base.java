@@ -95,7 +95,8 @@ public class EventSchedule_Base extends AbstractDocument_Base
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + " - " + contactName + "-"
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + "-" + Instance.get(oid).getType().getLabel() +
+                            " - " + contactName + "-"
                      + date.toString(DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
             map.put("selectedDoc", oid);
             tmpMap.put(name, map);
