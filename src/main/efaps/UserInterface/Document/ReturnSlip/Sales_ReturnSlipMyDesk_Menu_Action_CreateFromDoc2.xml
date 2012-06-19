@@ -39,10 +39,7 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ReturnSlipForm</form>
-            <execute program="org.efaps.esjp.sales.document.ReturnSlip" method="create" >
-                <property name="JasperReport">Sales_ReturnSlip</property>
-                <property name="Mime">odt</property>
-            </execute>
+            <execute program="org.efaps.esjp.sales.document.ReturnSlip" method="create" />
         </target>
 
         <!-- properties -->
