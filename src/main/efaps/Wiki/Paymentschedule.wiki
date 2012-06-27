@@ -1,0 +1,78 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     e4d6cb47-9202-472c-8094-e828e0d6a05a
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Programaci&oacute;n de Pagos
+<wiki:toc max_depth="3"/>
+
+----
+
+A continuación detallaremos los siguientes puntos:
+
+  # Programación de Pagos
+  # Acceso a Programación de Pagos
+
+==1. Programación de Pagos==
+Verá los siguientes puntos:
+
+  * 1.1 Crear
+  * 1.2 Eliminar
+
+===1.1 Crear===
+Se dirige a la opción acción y selecciona crear, inmediatamente le aparecerá una ventana nueva en donde ingresará la información correspondiente en cada campo obligatorio y secundario:
+
+Obligatorio
+  * Fecha: colocar de forma manual la fecha o seleccionarla del calendario.
+  * Nombre: colocar un nombre identificativo.
+
+Secundario
+  * Posiciones
+    * Documento: llamar al documento colocando el nombre o solo {{{*}}}.
+    * Descripción: ingresar una breve descripción para el documento seleccionado.
+    * Precio Neto: es el monto del documento seleccionado.
+
+Nota: puede aumentar posiciones con el signo + y quitar posiciones con el signo -.
+
+===1.2 Eliminar===
+Seleccionar una o mas programaciones de pago haciendo un check en sus casillas, dirigirse a la opción acción y elegir eliminar.
+
+
+==2. Acceso a Programación de Pagos==
+Verá los siguientes puntos:
+
+  * 2.1 Editar
+  * 2.2 Posiciones
+
+===2.1 Editar===
+Se dirige a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana Editar en donde ingresará la información correspondiente en cada campo obligatorio y secundario.
+
+Obligatorio
+  * Fecha: colocar de forma manual la fecha o seleccionarla del calendario.
+  * Nombre: colocar un nombre identificativo.
+
+Secundario
+  * Creador: es el usuario responsable de la creación de la programación.
+  * Modificador: es el usuario responsable de la edición de la programación.
+  * Estado: tenemos abierto, cancelado y cerrado, los cuales usted puede elegir para colocarlo en la programación.
+  * Nombre: es el nombre identificativo.
+  * Creado: es la fecha de creación.
+  * Modificado: es la fecha de modificación.
+  * Posiciones
+    * Documento: llamar al documento colocando el nombre o solo {{{*}}}.
+    * Descripción: ingresar una breve descripción para el documento seleccionado.
+    * Precio Neto: es el monto del documento seleccionado.
+
+Nota: puede aumentar posiciones con el signo + y quitar posiciones con el signo -.
+
+===2.2 Posiciones===
+Verá el siguiente punto:
+
+  * 2.2.1 Eliminar
+
+===2.2.1 Eliminar===
+Seleccionar una o mas posiciones haciendo un check en sus casillas, dirigirse a la opción acción y elegir eliminar.
