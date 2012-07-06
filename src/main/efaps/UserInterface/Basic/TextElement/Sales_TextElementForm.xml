@@ -49,10 +49,13 @@
             <property name="Required">true</property>
         </field>
         <field name="longText">
+            <property name="Columns">50</property>
+            <property name="Rows">5</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">LongText</property>
             <property name="Required">true</property>
+            <property name="Width">10</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
