@@ -34,7 +34,11 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Sales_AccountAbstractTree_Menu_Action_Edit</name>
-    
+
+    <access>
+      <role>Sales_Admin</role>
+    </access>
+
     <!-- target definitions -->
     <target>
       <form>Sales_AccountAbstractForm</form>
