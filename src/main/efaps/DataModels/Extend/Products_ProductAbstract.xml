@@ -90,13 +90,6 @@
         </attribute>
 
         <!-- CHANGE BEGIN -->
-        <!-- adding two attribute for Sales-->
-        <attribute>
-            <name>SalesUnit</name>
-            <type>Decimal</type>
-            <sqltable>Products_ProductSQLTable</sqltable>
-            <sqlcolumn>SALESUNIT</sqlcolumn>
-        </attribute>
         <attribute>
             <name>TaxCategory</name>
             <type>LinkWithRanges</type>
