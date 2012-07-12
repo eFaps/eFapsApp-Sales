@@ -38,6 +38,7 @@
       <!-- columns -->
       <column name="TAXCATID"      type="INTEGER"      not-null="true"/>
       <column name="NAME"          type="STRING_SHORT" not-null="true" length="155"/>
+      <column name="UUID"          type="STRING_SHORT"                 length="64"/>
       <column name="NUMERATOR"     type="INTEGER"      not-null="true"/>
       <column name="DENOMINATOR"   type="INTEGER"      not-null="true"/>
       <column name="VALIDFROM"     type="DATETIME"     not-null="true"/>

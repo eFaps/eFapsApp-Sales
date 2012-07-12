@@ -26,55 +26,61 @@
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>25b22ae7-c9d8-4211-832d-06c00b9de709</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_TaxCategory</name>
-    <attribute>
-      <name>OID</name>
-      <type>OID</type>
-      <sqltable>Sales_TaxCategorySQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>ID</name>
-      <type>Long</type>
-      <sqltable>Sales_TaxCategorySQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>Name</name>
-      <type>String</type>
-      <sqltable>Sales_TaxCategorySQLTable</sqltable>
-      <sqlcolumn>NAME</sqlcolumn>
-    </attribute>
-    <attributeset>
-      <name>DescML</name>
-      <type>MultiLineArray</type>
-      <parent>Sales_TaxCategoryDescML</parent>
-      <sqltable>Sales_MLSQLTable</sqltable>
-      <sqlcolumn>LINKID</sqlcolumn>
-      <uuid>1adfee72-7887-45cf-bfea-6c3dc9b7ceb2</uuid>
-      <attribute>
-        <name>Value</name>
-        <type>String</type>
-        <sqltable>Sales_MLSQLTable</sqltable>
-        <sqlcolumn>VALUE</sqlcolumn>
-      </attribute>
-      <attribute>
-        <name>LanguageID</name>
-        <type>LinkWithRanges</type>
-        <typelink>Admin_Language</typelink>
-        <sqltable>Sales_MLSQLTable</sqltable>
-        <sqlcolumn>LANGID</sqlcolumn>
-        <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                 name="Sales_TaxCategory.LanguageRange" event="RANGE_VALUE">
-          <property name="Value">Language</property>
-          <property name="Type">Admin_Language</property>
-        </trigger>
-      </attribute>
-    </attributeset>
-  </definition>
+    <uuid>25b22ae7-c9d8-4211-832d-06c00b9de709</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_TaxCategory</name>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Sales_TaxCategorySQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Sales_TaxCategorySQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Name</name>
+            <type>String</type>
+            <sqltable>Sales_TaxCategorySQLTable</sqltable>
+            <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>UUID</name>
+            <type>String</type>
+            <sqltable>Sales_TaxCategorySQLTable</sqltable>
+            <sqlcolumn>UUID</sqlcolumn>
+        </attribute>
+        <attributeset>
+            <name>DescML</name>
+            <type>MultiLineArray</type>
+            <parent>Sales_TaxCategoryDescML</parent>
+            <sqltable>Sales_MLSQLTable</sqltable>
+            <sqlcolumn>LINKID</sqlcolumn>
+            <uuid>1adfee72-7887-45cf-bfea-6c3dc9b7ceb2</uuid>
+            <attribute>
+                <name>Value</name>
+                <type>String</type>
+                <sqltable>Sales_MLSQLTable</sqltable>
+                <sqlcolumn>VALUE</sqlcolumn>
+            </attribute>
+            <attribute>
+                <name>LanguageID</name>
+                <type>LinkWithRanges</type>
+                <typelink>Admin_Language</typelink>
+                <sqltable>Sales_MLSQLTable</sqltable>
+                <sqlcolumn>LANGID</sqlcolumn>
+                <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                    name="Sales_TaxCategory.LanguageRange" event="RANGE_VALUE">
+                    <property name="Value">Language</property>
+                    <property name="Type">Admin_Language</property>
+                </trigger>
+            </attribute>
+        </attributeset>
+    </definition>
 </datamodel-type>

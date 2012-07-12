@@ -23,96 +23,88 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>fc7e4b0e-0090-469b-9ee3-95d1845150c2</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  
-  <definition>
-  
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_Tax</name>
-    
-    <attribute>
-      <name>OID</name>
-      <type>OID</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
+    <uuid>fc7e4b0e-0090-469b-9ee3-95d1845150c2</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-    <attribute>
-      <name>ID</name>
-      <type>Long</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>ID</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>TaxCategory</name>
-      <type>Link</type>
-      <typelink>Sales_TaxCategory</typelink>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>TAXCATID</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Name</name>
-      <type>String</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>NAME</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Numerator</name>
-      <type>Integer</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>NUMERATOR</sqlcolumn>
-    </attribute>
-  
-    <attribute>
-      <name>Denominator</name>
-      <type>Integer</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>DENOMINATOR</sqlcolumn>
-    </attribute>
-
-    <attribute>
-      <name>ValidFrom</name>
-      <type>Date</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>VALIDFROM</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Creator</name>
-      <type>CreatorLink</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>CREATOR</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Created</name>
-      <type>Created</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>CREATED</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Modifier</name>
-      <type>ModifierLink</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>MODIFIER</sqlcolumn>
-    </attribute>
-    
-    <attribute>
-      <name>Modified</name>
-      <type>Modified</type>
-      <sqltable>Sales_TaxSQLTable</sqltable>
-      <sqlcolumn>MODIFIED</sqlcolumn>
-    </attribute>
-    
-
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Tax</name>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>TaxCategory</name>
+            <type>Link</type>
+            <typelink>Sales_TaxCategory</typelink>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>TAXCATID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Name</name>
+            <type>String</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>NAME</sqlcolumn>
+        </attribute>
+         <attribute>
+            <name>UUID</name>
+            <type>String</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>UUID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Numerator</name>
+            <type>Integer</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>NUMERATOR</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Denominator</name>
+            <type>Integer</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>DENOMINATOR</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ValidFrom</name>
+            <type>Date</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>VALIDFROM</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Creator</name>
+            <type>CreatorLink</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>CREATOR</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Created</name>
+            <type>Created</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>CREATED</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Modifier</name>
+            <type>ModifierLink</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>MODIFIER</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Modified</name>
+            <type>Modified</type>
+            <sqltable>Sales_TaxSQLTable</sqltable>
+            <sqlcolumn>MODIFIED</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

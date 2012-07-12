@@ -27,28 +27,53 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>6ff22e2e-9604-468f-ac66-b3854cb48a05</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>6ff22e2e-9604-468f-ac66-b3854cb48a05</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_TaxCategoryForm</name>
-    <!-- fields -->
-    <field name="name">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="Attribute">Name</property>
-      <property name="Required">true</property>
-    </field>
-     <field name="descML" character="Set">
-      <property name="Label">Sales_TaxCategory/DescML.Label</property>
-      <property name="Columns">40</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="Attribute">DescML</property>
-      <property name="Order">Value|LanguageID</property>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_TaxCategoryForm</name>
+        <!-- fields -->
+        <field name="name">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Name</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="uuidGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="uUID">
+            <property name="Attribute">UUID</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="createUUID" character="Command">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_TaxCategoryForm.createUUID.Label</property>
+            <property name="CmdIcon">ACCEPT</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                name="Sales_TaxCategoryForm.createUUID.UI_FIELD_CMD"
+                event="UI_FIELD_CMD"
+                method="createUUID">
+                <property name="TargetField">uUID</property>
+             </trigger>
+        </field>
+        <field name="descML" character="Set">
+            <property name="Label">Sales_TaxCategory/DescML.Label</property>
+            <property name="Columns">40</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">DescML</property>
+            <property name="Order">Value|LanguageID</property>
+        </field>
+    </definition>
 </ui-form>
