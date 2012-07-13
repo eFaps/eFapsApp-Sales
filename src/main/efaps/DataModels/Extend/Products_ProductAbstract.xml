@@ -207,7 +207,7 @@
             <sqlcolumn>UUID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>BARCODE</name>
+            <name>Barcode</name>
             <type>String</type>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>CODE</sqlcolumn>
