@@ -34,7 +34,7 @@
 
     <version-expression>(version==latest)</version-expression>
     <name>Sales_TransactionAbstract</name>
-
+    <purpose abstract="true"/>
     <attribute>
       <name>Type</name>
       <type>Type</type>
