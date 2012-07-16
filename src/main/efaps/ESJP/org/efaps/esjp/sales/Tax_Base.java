@@ -136,7 +136,8 @@ public abstract class Tax_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
         queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, Instance.get(this.oid).getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom);
+        multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
+                        CISales.Tax.UUID);
 
         multi.execute();
         while (multi.next()) {
