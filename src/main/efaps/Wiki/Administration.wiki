@@ -25,6 +25,7 @@ A continuación verá lo que contiene este menú,
   * 2.7 Ajustes de caja
   * 2.8 Modulo de texto
 
+
 ==2.1 Categoría de impuestos==
 En este menú categoría de impuestos vemos los siguientes puntos:
 
@@ -166,5 +167,7 @@ Seleccionar uno o varios módulos de texto, dirigirse a la opción acción y ele
 ===2.8.3 Exportar===
 Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
 formato PDF o XLS.
+
+
 
 
