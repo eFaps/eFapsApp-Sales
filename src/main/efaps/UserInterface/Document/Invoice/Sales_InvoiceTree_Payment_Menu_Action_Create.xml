@@ -40,6 +40,9 @@
       <form>Sales_PaymentForm</form>
       <execute program="org.efaps.esjp.sales.Payment" method="create"/>
     </target>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
     <!-- properties -->
     <property name="Target">modal</property>
     <property name="TargetCreateType">Sales_Payment</property>
