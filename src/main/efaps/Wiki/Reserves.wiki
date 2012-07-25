@@ -1,0 +1,48 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     919e89aa-e818-4a58-bf14-05538f6378d4
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Reservas
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.10 Reservas==
+El menú reserva contiene lo siguiente:
+
+  * 1.10.1 Crear
+  * 1.10.2 Borrar
+  * 1.10.3 Exportar
+
+===1.10.1 Crear===
+Ingresará la información necesaria en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Fecha: es la fecha de creación del documento.
+  * Nombre: es el nombre específico del documento.
+  * Encargado: es la persona que crea el documento.
+  * Cliente: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
+
+Secundario:
+  * Fecha de vencimiento: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
+  * Información: es la información detallada del cliente seleccionado.
+  * Nota: es la información complementaria del documento.
+  * Posiciones: es donde se ingresará el producto, para esto el producto tiene que figurar disponible en el inventario.
+    * Cantidad: es la cantidad del producto.
+    * Código: se le llama al producto colocando su código o solo {{{*}}}.
+    * Descripción: es la información detallada del producto.
+    * Unidad: son las unidades pertenecientes al producto y estas son generadas al momento de asignarle al producto una dimensión(véase [./org.efaps.wiki.products.Products.wiki#1._Crear producto]).
+
+===1.10.2 Borrar===
+Seleccionar una o mas reservas haciendo un check en sus casillas, dirigirse a la opción acción y elegir borrar.
+
+===1.10.3 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+

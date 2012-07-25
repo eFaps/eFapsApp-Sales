@@ -1,0 +1,25 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     7a6014c3-d923-44db-b5f1-58abd12534ec
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Registro de ventas
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.16 Registro de ventas==
+La ventana de registro de ventas muestra lo siguiente:
+
+  * Mime: tiene dos tipos de formato por la cual usted va a imprimir PDF o XLS.
+  * Desde: muestra la fecha de inicio.
+  * Hasta: muestra la fecha final
+  * Contacto: Colocar el nombre del contacto correspondiente, llamarlo colocando su nombre o solo {{{*}}}.
+  * Fecha de cambio: Es la fecha que dura el periodo del cambio.
+  * Moneda: Es el tipo de moneda que se va usar.
+  * Cambio: es el valor del cambio.

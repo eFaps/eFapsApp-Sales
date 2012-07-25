@@ -1,0 +1,51 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     a8580c98-3b75-431e-bc00-60555163f36c
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a Hoja de costos
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.1 Hoja de Costos==
+En el menú Hoja de costos encontrará la lista completa de todos los presupuestos creados hasta este momento, ahora
+escogerá la Hoja de costos e ingresará a su contenido(se ingresa por la palabra mas resaltada).
+
+  * 1.1.1 Editar
+  * 1.1.2 Exportar
+  * 1.1.3 Documents
+
+===1.1.1 Editar===
+Deberá dirigirse a la opción acción y elegir editar, lo que usted va poder editar son los siguientes puntos:
+  * Fecha: editar la fecha con el mismo formato mostrado o seleccionar la fecha del calendario.
+  * Encargado: es la persona responsable del cambio de información.
+  * Estado: contamos con tres tipos,
+    * Abierto: es el estado predeterminado que se genera al momento de crearse el documento.
+    * Anulado: es cuando se anula el documento, por algún motivo.
+    * Cerrado: cuando culmina la función de este documento se muestra como cerrado su estado.
+  * Número: es el número correlativo del documento el cual podrá ser modificado por usted.
+
+===1.1.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+===1.1.3 Documents===
+Mostraremos los siguientes puntos en este menú:
+
+  * a. Añadir documentos
+  * b. Desconectar
+
+====a. Añadir documentos====
+Para poder añadir un documento tiene que colocar el nombre del documento(colocar {{{*}}} al final de la
+información) o solo {{{*}}}, luego de esta acción hace clic en el botón buscar, inmediatamente ingresa a la lista de documentos en donde
+ seleccionará uno o mas documentos haciendo un check en su casilla respectiva.
+
+====b. Desconectar====
+Para esto usted debe de seleccionar los documentos que quiere desconectar haciendo un check en sus casillas luego dirigirse a la opción acción y seleccionar desconectar.
+

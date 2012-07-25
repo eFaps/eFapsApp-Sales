@@ -1,0 +1,103 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     7b38b80e-e411-46ab-b04c-199902180c54
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a Boleta
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.4 Acceso a Boleta==
+Contamos con los siguientes puntos:
+
+  * 1.4.1 Editar
+  * 1.4.2 Descargar
+  * 1.4.3 Re-Calcular
+  * 1.4.4 Exportar
+  * 1.4.5 Pagos
+  * 1.4.6 Posiciones
+  * 1.4.7 Documentos
+  * 1.4.8 Asientos
+
+===1.4.1 Editar===
+Puede cambiar los datos ingresados anteriormente y además variar el estado de la boleta.
+A continuación los tipos de estado:
+
+  * Pagado: cuando se paga el monto que figura en la boleta.
+  * Anulado: es cuando se anula el documento, por algún motivo.
+  * Pendiente: es el estado predeterminado que se genera al momento de crearse el documento.
+
+===1.4.2 Descargar===
+Le sirve para imprimir el documento en dos tipos de formato PDF o XLS.
+
+===1.4.3 Re-Calcular===
+Le permite calcular las nuevas cantidades a partir de un tipo de cambio y los tipos de cambio corresponden a un período,
+estos se encuentran en el menú Monedas(véase [./org.efaps.wiki.sales.Administration.wiki#2.3_Monedas Monedas]).
+Para realizar este procedimiento deberá dirigirse a la opción acción y seleccionar Re-Calcular, le aparecerá una
+nueva ventana con dos campos por llenar y son los siguientes:
+
+  * Fecha: se coloca la fecha que esta ligada con el tipo de cambio que desea.
+  * Tipo de cambio: le aparecerá el tipo de cambio según la fecha que usted a introducido.
+
+===1.4.4 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+===1.4.5 Pagos===
+Contamos con los siguientes puntos:
+
+  * a. Crear pago
+  * b. Borrar seleccionado
+  * c. Exportar
+
+====a. Crear pago====
+Para realizar los pagos, deberá colocar los siguientes datos:
+
+  * Fecha y hora: la fecha y la hora que se realiza el pago.
+  * Moneda: se elige el tipo de moneda y si se desea agregar otro tipo de moneda que no se encuentre en la lista debe de ingresar a administración y escoger el módulo moneda.
+  * Tipo de pago: elige el tipo de pago que quiere realizar y si desea colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Showadministration.wiki#2.1_Atributos atributos].
+  * Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Showadministration.wiki#2.3_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
+
+====b. Borrar seleccionado====
+Seleccionar uno o varios pagos, dirigirse a la opción acción y elegir borrar seleccionado.
+
+====c. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+====1.4.6 Posiciones====
+Son los productos que participan en la factura.
+
+===1.4.7 Documentos===
+Se mostrarán los siguientes puntos:
+
+  * a. Añadir documentos
+  * b. Desconectar
+  * c. Exportar
+
+====a. Añadir documentos====
+Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá la ventana buscar documentos en ella se
+visualiza solo un campo llamado nombre, donde colocará el tipo o nombre del documento(colocar {{{*}}} al final de la información),
+pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
+
+Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
+o varios documentos e interconectarlos.
+
+====b. Desconectar====
+Selecciona uno o varios documentos, se dirige a la opción acción y desconecta.
+
+====c. Exportar====
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+===1.4.8 Asientos===
+Se genera en el menú de contabilidad, cuando se le asigna un asiento.
+Se dirige al menú de contabilidad en donde ingresará al período que se esta trabajando actualmente y escogerá documentos
+por registrar( véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.12_Documentos_p._r. Documentos p.r.]), una vez ingresado a este menú podrá seleccionar el documento haciendo un check en su casilla respectiva(ahora podrá obtener un registro en asientos).
+

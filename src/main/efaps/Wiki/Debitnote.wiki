@@ -1,0 +1,38 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     e7c03eb0-fe88-4eb4-843e-55165a1f43c5
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Nota de d&eacute;bito
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.5 Nota de débito==
+El menú nota de débito contiene lo siguiente:
+
+  * 1.5.1 Crear
+  * 1.5.2 Borrar seleccionado
+  * 1.5.3 Exportar
+
+===1.5.1 Crear===
+Para crear una nota de débito usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá
+la ventana *crear nueva nota de débito* en donde ingresará la información correspondiente en los campos
+obligatorios y secundarios:
+
+  * Obligatorio: fecha, No, encargado y cliente.
+  * Secundario: Todos los campos de la clasificación posiciones.
+
+Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
+
+===1.5.2 Borrar seleccionado===
+Seleccionar una o varias notas de débito, dirigirse a la opción acción y elegir borrar.
+
+===1.5.3 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el módulo, en dos tipos de
+formato PDF o XLS.

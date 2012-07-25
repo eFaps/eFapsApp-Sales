@@ -1,0 +1,37 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     f84df839-d2e1-49fb-9ed2-349ea9c5b439
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Nota de Cr&eacute;dito
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.6 Nota de crédito==
+El menú nota de crédito contiene lo siguiente:
+
+  * 1.6.1 Crear
+  * 1.6.2 Borrar seleccionado
+  * 1.6.3 Exportar
+
+===1.6.1 Crear===
+Para crear una nota de crédito usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá
+la ventana *crear nueva nota de crédito* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+  * Obligatorio: fecha, No, encargado y cliente.
+  * Secundario: Todos los campos de la clasificación posiciones.
+
+Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
+
+===1.6.2 Borrar seleccionado===
+Seleccionar una o varias notas de crédito, dirigirse a la opción acción y elegir borrar.
+
+===1.6.3 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.

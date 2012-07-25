@@ -1,0 +1,60 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     1e49cac8-0976-476a-825e-1d0418fbb4bf
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Factura
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.3 facturas==
+El menú facturas contiene lo siguiente:
+
+  * 1.3.1 Crear
+  * 1.3.2 Crear de documento
+  * 1.3.3 Crear factura en partes
+  * 1.3.4 Borrar seleccionado
+  * 1.3.5 Exportar
+
+===1.3.1 Crear===
+Para crear una factura usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá la ventana
+*Crear nueva factura*, en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+Obligatorio:
+  * fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
+  * No: es la numeración correlativa del documento.
+  * Encargado: es la persona responsable de crear el documento.
+  * Nombre /Razón social: se llama al cliente colocando su nombre o solo {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
+
+Secundario:
+  * Cantidad: es la cantidad del producto.
+  * Producto: se llama al producto con su información(código o descripción) o con solo colocar {{{*}}}.
+  * Descripción del producto: es la información que se mostrará según el producto seleccionado.
+  * Unidad: proviene de una dimensión,que a sido seleccionada al momento de crear el producto.
+  * Precio unitario: es el monto que se le ingresa a un producto, en [./org.efaps.wiki.products.Showproducts.wiki#1._Lista_de_precios_de_venta lista de precio de venta].
+  * Descuento (%): es la información relacionada con el producto.
+  * Nota: es la información agregada del documento.
+
+Importancia: Colocar los datos obligatorios porque de lo contrario ocurrirá un error.
+
+===1.3.2 Crear de documento===
+Le brinda la facilidad de crear una factura a través de un documento ya creado anteriormente, el documento que puede
+ingresar es presupuesto o factura, se ingresa colocando su código o {{{*}}}.
+
+===1.3.3 Crear factura en partes===
+Le sirve para poder pagar una factura en partes a través de un presupuesto, para ello debe de ingresar el código del
+presupuesto o solo {{{*}}},  inmediatamente le aparecerá en la ventana crear factura en partes la información del presupuesto
+que usted a elegido para que pueda crear su propia factura.
+
+===1.3.4 Borrar seleccionado===
+Seleccionar una o varias facturas, dirigirse a la opción acción y elegir borrar.
+
+===1.3.5 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.

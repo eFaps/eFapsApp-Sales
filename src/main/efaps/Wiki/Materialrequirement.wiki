@@ -1,0 +1,16 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     62cd82f5-bf01-4d66-9303-05e9c88ddcb4
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Requerimiento de materiales
+<wiki:toc max_depth="3"/>
+
+----
+
+==1.15 Requerimiento de materiales==
+Es la lista de todos los pedidos entrantes que se han realizado.

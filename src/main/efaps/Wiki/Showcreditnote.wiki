@@ -1,0 +1,56 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     f5ef22fb-fcad-47cd-b209-a3aaced87507
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Nota de Cr&eacute;dito
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.6 Nota de crédito==
+Veremos los siguientes puntos en este menú:
+
+  * 1.6.1 Editar
+  * 1.6.2 Re-Calcular
+  * 1.6.3 Exportar
+  * 1.6.4 Posiciones
+  * 1.6.5 Asientos
+
+===1.6.1 Editar===
+Podemos cambiar los siguientes datos  ingresados anteriormente:
+
+  * Fecha: editar la fecha con el mismo formato mostrado o elegir la fecha del calendario.
+  * Encargado: es la persona responsable del cambio de información.
+  * Estado: contamos con cuatro tipos,
+    * Anulado: se vuelve un documento innecesario y por lo tanto se anula.
+    * Cancelado: es cuando se cancela el documento, por algún motivo.
+    * Contabilizado: se genera al momento de realizar una operación contable(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.13_Documentos_p._c. Documentos p.c.]).
+    * Pendiente: es el estado predeterminado que se genera al momento de crearse el documento.
+  * Nº: es el número correlativo del documento el cual podrá ser modificado por usted.
+
+===1.6.2 Re-Calcular===
+Le permite calcular las nuevas cantidades a partir de un tipo de cambio y los tipos de cambio corresponden a un período,
+estos se encuentran en el menú Monedas(véase [./org.efaps.wiki.sales.Administration.wiki#2.3_Monedas Monedas]).
+Para realizar este procedimiento deberá dirigirse a la opción acción y seleccionar Re-Calcular, le aparecerá una
+nueva ventana con dos campos y son los siguientes:
+
+  * Fecha: se coloca la fecha que esta ligada con el tipo de cambio que desea.
+  * Tipo de cambio: le aparecerá el tipo de cambio según la fecha que usted a introducido.
+
+===1.6.3 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+===1.6.4 Posiciones===
+Son los productos que participan en nota de crédito.
+
+===1.6.5 Asientos===
+Se genera en el menú de contabilidad, cuando se le asigna un asiento.
+Se dirige al menú de contabilidad en donde ingresara al periodo que se esta trabajando actualmente y escogerá documentos
+por registrar( véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.12_Documentos_p._r. Documentos p.r.]), una vez ingresado a este menú podrá seleccionar el documento haciendo un check en su casilla respectiva(ahora podrá obtener un registro en asientos).

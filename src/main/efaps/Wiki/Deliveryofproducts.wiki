@@ -1,0 +1,36 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     27e5c1a1-5fc0-4b68-8eef-e2c1e15baaf1
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Entrega de productos
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.8 Entrega de productos==
+Este menú es utilizado para la fase final de entrega de un producto a un cliente y contiene los siguientes puntos:
+
+  * 1.8.1 Crear entrega de productos
+  * 1.8.2 Borrar seleccionado
+  * 1.8.3 Exportar
+
+===1.8.1 Crear entrega de productos===
+Para crear una entrega de productos usted debe ingresar a crear entrega de productos que se encuentra en la opción acción, inmediatamente le aparecerá la ventana
+*crear entrega de productos* en donde ingresará la información correspondiente en cada campo obligatorio y secundario:
+
+  * Obligatorio: fecha, No, encargado y cliente.
+  * Secundario: Todos los campos de la clasificación posiciones.
+
+===1.8.2 Borrar seleccionado===
+Seleccionar una o varias entregas de producto, dirigirse a la opción acción y elegir borrar seleccionado.
+
+===1.8.3 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+

@@ -1,0 +1,36 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     a81f2a35-cb6e-4f40-b691-5c58f459a6c2
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a Entrada de Mercanc&iacute;as
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.11 Acceso a Entrada de mercancías==
+Verá los siguientes puntos en este menú:
+
+  * 1.11.1 Editar
+  * 1.11.2 Exportar
+  * 1.11.3 Posiciones
+
+===1.11.1 Editar===
+Puede cambiar los siguientes datos ingresados anteriormente:
+
+  * Fecha: editar la fecha con el mismo formato mostrado o elegir la fecha del calendario.
+  * Guía de Remisión del proveedor: puede modificar el número registrado anteriormente.
+
+===1.11.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+===1.11.3 Posiciones===
+Son los productos que participan en una entrada de mercancías.
+
+

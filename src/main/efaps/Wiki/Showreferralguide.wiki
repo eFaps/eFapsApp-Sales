@@ -1,0 +1,42 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     e18b4bc7-aa3e-4278-92a9-5433428bfb45
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a Gu&iacute;a de Remisi&oacute;n
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.7 Acceso a Guía de remisión==
+En el menú Guía de remisión encontrara una lista completa de todas las Guías de remisión creadas hasta este momento, ahora
+podrá escoger una guía e ingresar a su contenido(se ingresa por la palabra mas resaltada).
+
+  * 1.7.1 Editar
+  * 1.7.2 Exportar
+  * 1.7.3 Posiciones
+  * 1.7.4 Asientos
+
+===1.7.1 Editar===
+Puede cambiar los siguientes datos ingresados anteriormente:
+
+  * Fecha: editar la fecha con el mismo formato mostrado o elegir la fecha del calendario.
+  * Encargado: es la persona responsable del cambio de información.
+  * Nº: es el número correlativo del documento el cual podrá ser modificado por usted.
+
+===1.7.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+===1.7.3 Posiciones===
+Son los productos que participan en la guía de remisión.
+
+===1.7.4 Asientos===
+Se genera en el menú de contabilidad, cuando se le asigna un asiento.
+Se dirige al menú de contabilidad en donde ingresará al período que se esta trabajando actualmente y escogerá documentos
+por registrar( véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.12_Documentos_p._r. Documentos p.r.]), una vez ingresado a este menú podrá seleccionar el documento haciendo un check en su casilla respectiva(ahora podrá obtener un registro en asientos).

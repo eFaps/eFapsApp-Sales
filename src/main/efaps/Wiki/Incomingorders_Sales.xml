@@ -20,34 +20,17 @@
   Last Changed By: $Author: melissa.rojas@moxter.net $
 
 --><help-menu xmlns="http://www.efaps.org/xsd"
-              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
               xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d233ff25-a28c-4bbb-ae3e-236405a523c2</uuid>
+    <uuid>10cce662-4f59-4d5a-ae69-bc95498e9df7</uuid>
     <file-application>eFaps-Sales</file-application>
     <file-revision>$Rev: 6408 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Showdocument_Sales</name>
+        <name>Incomingorders_Sales</name>
         <!-- targets -->
         <target>
-            <wiki>org.efaps.wiki.sales.Showdocument.wiki</wiki>
+            <wiki>org.efaps.wiki.sales.Incomingorders.wiki</wiki>
         </target>
-        <childs>
-        <child>Showbudget_Sales</child>
-        <child>Showcostsheet_Sales</child>
-        <child>Showinvoice_Sales</child>
-        <child>Showticket_Sales</child>
-        <child>Showdebitnote_Sales</child>
-        <child>Showcreditnote_Sales</child>
-        <child>Showreferralguide_Sales</child>
-        <child>Showrefundreferralguide_Sales</child>
-        <child>Showdeliveryofproducts_Sales</child>
-        <child>Showentryofgoods_Sales</child>
-        <child>Showreserves_Sales</child>
-        <child>Showpurchaseorder_Sales</child>
-        <child>Showincomingorders_Sales</child>
-        <child>Showincominginvoice_Sales</child>
-        <child>Showmaterialrequirement_Sales</child>
-        </childs>
     </definition>
 </help-menu>

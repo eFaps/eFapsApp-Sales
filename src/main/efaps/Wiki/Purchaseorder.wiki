@@ -1,0 +1,45 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     7ca9e0f1-132b-4d82-8d9b-1ac9c6596d40
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Orden de compra
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.13 Orden de compra==
+La orden de compra es un documento que emite el comprador para pedir mercaderías al vendedor, indicando cantidad, detalle,
+precio, unidad y muchas cosas más.
+
+A continuación verá lo que contiene este menú:
+
+  * 1.13.1 Crear
+  * 1.13.2 Crear de documento
+  * 1.13.3 Borrar
+  * 1.13.4 Exportar
+
+===1.13.1 Crear===
+Para crear una orden de compra usted deberá ingresar a crear que se encuentra en la opción acción, inmediatamente le aparecerá la ventana
+*crear nueva orden de compra* en donde ingresará la información correspondiente en los campos obligatorios y secundarios:
+
+  * Obligatorio: fecha, No, encargado y cliente.
+  * Secundario: Todos los campos de la clasificación posiciones.
+
+===1.13.2 Crear de documento===
+Para crear una orden de compra a través de otro documento se debe ingresar el código de este documento o
+solo {{{*}}}, el documento usado es presupuesto. Una vez ingresado el código hace clic en
+siguiente, inmediatamente le aparecerá la ventana *Crear nueva orden de compra de documento* la cual estará contenida de información perteneciente al documento seleccionado anteriormente, a partir de aquí usted podrá editar la información de la ventana y dar como finalizado el proceso de creación haciendo click en el botón crear.
+
+===1.13.3 Borrar===
+Seleccionar una o varias ordenes de compra, dirigirse a la opción acción y elegir borrar.
+
+===1.13.4 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+

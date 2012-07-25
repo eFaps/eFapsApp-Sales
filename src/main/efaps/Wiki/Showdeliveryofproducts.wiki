@@ -1,0 +1,31 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     c3147a75-cfeb-4714-ad3b-59bb19c1f04c
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a Entrega de productos
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.8 Acceso a Entrega de productos==
+Verá los siguientes puntos en este menú:
+
+  * 1.8.1 Editar
+  * 1.8.2 Exportar
+
+===1.8.1 Editar===
+Puede cambiar los siguientes datos ingresados anteriormente:
+
+  * Fecha: editar la fecha con el mismo formato mostrado o elegir la fecha del calendario.
+  * Encargado: es la persona responsable del cambio de información.
+  * Nº: es el número correlativo del documento el cual podrá ser modificado por usted.
+
+===1.8.2 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.

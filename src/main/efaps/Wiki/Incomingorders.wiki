@@ -1,0 +1,56 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     919e89aa-e818-4a58-bf14-05538f6378d4
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Pedidos entrantes
+<wiki:toc max_depth="3"/>
+
+----
+
+
+==1.14 Pedidos entrantes==
+El menú Pedidos entrantes contiene lo siguiente:
+
+  * 1.14.1 Crear
+  * 1.14.2 Crear de documento
+  * 1.14.3 Borrar
+  * 1.14.4 Exportar
+
+===1.14.1 Crear===
+Para poder crear un pedido entrante debe de ingresar la información correspondiente a los campos obligatorios y secundarios:
+
+Obligatorio:
+  * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario.
+  * Nº: es la numeración correlativa del documento.
+  * Encargado: es la persona que crea este documento.
+  * Cliente: se llama al cliente colocando su nombre o {{{*}}} (véase [./org.efaps.wiki.contacts.Contacts.wiki Contacto]).
+
+Secundario:
+  * Información: es la información detallada del cliente seleccionado.
+  * Posiciones: es donde colocamos los productos.
+    * Cantidad: es la cantidad del producto.
+    * Producto: se llama al producto colocando su código o solo {{{*}}}.
+    * Descripción: es la información detallada del producto.
+    * Unidad: son las unidades pertenecientes al producto y estas son generadas al momento de asignarle al producto una dimensión.
+    * Precio unitario: se coloca el precio manualmente o se puede ingresar el precio en el mismo producto(véase [./org.efaps.wiki.products.Showproducts.wiki#1._Lista_de_precios_de_venta lista de precio de venta]).
+    * Descuento: es la información relacionada con el producto.
+
+===1.14.2 Crear de documento===
+Para crear un pedido entrante a través de otro documento se deberá ingresar el código de este documento o
+solo {{{*}}}, el documento usado es pedido entrante, una vez ingresado el código hace clic en
+siguiente, inmediatamente le aparecerá una ventana contenida de información la que usted va poder editar, esta
+información es perteneciente al pedido entrante seleccionado.
+
+===1.14.3 Borrar===
+Seleccionar una o varias ordenes de compra, dirigirse a la opción acción y elegir borrar.
+
+===1.14.4 Exportar===
+Le sirve para poder imprimir una o varias hojas con todos los datos que se encuentran en el menú, en dos tipos de
+formato PDF o XLS.
+
+

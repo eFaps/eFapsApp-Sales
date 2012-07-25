@@ -1,0 +1,70 @@
+<wiki:comment>
+@eFapsPackage  org.efaps.wiki.sales
+@eFapsUUID     4379b37e-de75-48e4-9bd0-59d83e8ccab5
+@eFapsRevision $Rev: 6420 $
+</wiki:comment>
+
+
+
+
+#summary Acceso a Requerimiento de materiales
+<wiki:toc max_depth="3"/>
+
+----
+
+==1.15 Acceso a requerimiento de materiales==
+Verá los siguientes puntos en este menú:
+
+  * 1.15.1 Editar
+  * 1.15.2 Autorizar
+  * 1.15.3 Rechazar
+  * 1.15.4 Anular
+  * 1.15.5 Posiciones
+  * 1.15.6 Documentos
+
+===1.15.1 Editar===
+Se dirige a la opción acción y selecciona editar, inmediatamente le aparecerá la ventana *Editar requerimiento de materiales* en donde podrá editar los siguientes campos:
+
+  * Fecha: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario
+  * Cantidad: puede cambiar la cantidad ingresada anteriormente.
+  * Código: llamar al producto colocando su nombre o descripción, también puede colocar solo {{{*}}}.
+  * Descripción: es la información del producto seleccionado.
+  * Unidad: seleccionar una unidad de la lista.
+  * Fecha de entrega: se puede modificar la fecha con el mismo formato mostrado o se puede seleccionar la fecha del calendario
+  * Nota: puede cambiar la información agregada.
+
+===1.15.2 Autorizar===
+Dirigirse a la opción acción y seleccionar autorizar, inmediatamente le aparecerá una ventana de confirmación para confirmar este proceso.
+
+Nota: los residentes solo podrán ver los *requerimiento de materiales* cuando se encuentren con el estado autorizado.
+
+===1.15.3 Rechazar===
+Se dirige a la opción acción y selecciona rechazar, inmediatamente le aparecerá la ventana *Rechazar requerimiento de materiales* en donde podrá colocar una nota detallando del porque del rechazo.
+
+===1.15.4 Anular===
+Se dirige a la opción acción y selecciona anular, inmediatamente le aparecerá la ventana *Rechazar requerimiento de materiales* en donde podrá colocar una nota detallando del porque del rechazo.
+
+===1.15.5 Posiciones===
+Son todos los productos que se encuentran en el documento. A continuación mostraremos lo que contiene:
+
+  * a. Borrar posiciones seleccionadas
+
+====a. Borrar posiciones seleccionadas====
+Seleccionar uno o mas requerimiento de materiales, dirigirse a la opción acción y elegir borrar posiciones seleccionadas.
+
+===1.15.6 Documentos===
+Verá los siguientes puntos:
+
+  * a Añadir documentos
+  * b Desconectar
+
+====a. Añadir documentos====
+Se dirige a la opción acción e ingresa a añadir documentos, le aparecerá la ventana *documentos* en ella se
+visualiza solo un campo llamado nombre, donde colocará el tipo o nombre del documento(colocar {{{*}}} al final de las
+ palabras), pero también puede colocar solo {{{*}}} para buscar en todos los documentos.
+
+Ingresa a la otra ventana por medio del botón buscar, la lista respectiva es mostrada para que usted pueda seleccionar uno
+o varios documentos haciendo un check en su casilla respectiva y como ultimo paso interconectar.
+
+====b. Desconectar====
+Seleccionar uno o mas documentos haciendo un check en sus casilleros, dirigirse a la función acción y seleccionar desconectar.

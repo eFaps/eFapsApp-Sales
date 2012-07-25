@@ -32,5 +32,23 @@
         <target>
             <wiki>org.efaps.wiki.sales.Document.wiki</wiki>
         </target>
+        <childs>
+           <child>Budget_Sales</child>
+           <child>Costsheet_Sales</child>
+           <child>Ticket_Sales</child>
+           <child>Debitnote_Sales</child>
+           <child>Creditnote_Sales</child>
+           <child>Referralguide_Sales</child>
+           <child>Refundreferralguide_Sales</child>
+           <child>Deliveryofproducts_Sales</child>
+           <child>Invoice_Sales</child>
+           <child>Incominginvoice_Sales</child>
+           <child>Incomingorders_Sales</child>
+           <child>Purchaseorder_Sales</child>
+           <child>Entryofgoods_Sales</child>
+           <child>Materialrequirement_Sales</child>
+           <child>Reserves_Sales</child>
+           <child>Recordingsales_Sales</child>
+        </childs>
     </definition>
 </help-menu>
