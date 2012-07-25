@@ -915,6 +915,7 @@ public abstract class AbstractDocument_Base
         }
         js.append("}").append("Wicket.Event.add(window, \"domready\", function(event) {")
             .append("setValue();")
+            .append("setRows();")
             .append(getDomReadyScript(_instance))
             .append(" });");
 
