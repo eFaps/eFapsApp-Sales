@@ -30,7 +30,7 @@ Podemos cambiar los siguientes datos  ingresados anteriormente:
   * Estado: contamos con cuatro tipos,
     * Anulado: se vuelve un documento innecesario y por lo tanto se anula.
     * Cancelado: es cuando se cancela el documento, por algún motivo.
-    * Contabilizado: se genera al momento de realizar una operación contable(véase [./org.efaps.wiki.accounting.Showaccounting.wiki#1.13_Documentos_p._c. Documentos p.c.]).
+    * Contabilizado: se genera al momento de realizar una operación contable(véase [./org.efaps.wiki.accounting.Periodshowaccounting.wiki#1.12_Documentos_p._r. Documentos p.c.]).
     * Pendiente: es el estado predeterminado que se genera al momento de crearse el documento.
   * Nº: es el número correlativo del documento el cual podrá ser modificado por usted.
 
