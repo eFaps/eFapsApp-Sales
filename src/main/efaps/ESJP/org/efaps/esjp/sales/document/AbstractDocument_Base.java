@@ -52,6 +52,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
@@ -104,6 +105,8 @@ public abstract class AbstractDocument_Base
      * Key used to store the list of calculators in the session.
      */
     public static final String CALCULATOR_KEY = "efaps_positions_calculator_key";
+
+    public static final String TARGETMODE_DOC_KEY = "efaps_doc_targetmode_key";
 
     /**
      * Method must be called on opening the form containing positions to initialise
@@ -768,6 +771,10 @@ public abstract class AbstractDocument_Base
             .append("ele.setAttributeNode(attr);")
             .append("document.getElementById('eFapsContentDiv').appendChild(ele);");
 
+        FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        TargetMode mode = command.getTargetMode();
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
+
         final boolean copy = _parameter.getParameterValue("selectedRow") != null;
         if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
             final Instance instCall = _parameter.getCallInstance();
@@ -914,9 +921,15 @@ public abstract class AbstractDocument_Base
             }
         }
         js.append("}").append("Wicket.Event.add(window, \"domready\", function(event) {")
-            .append("setValue();")
-            .append("setRows();")
-            .append(getDomReadyScript(_instance))
+            .append("setValue();");
+
+            if (TargetMode.EDIT.equals((TargetMode)Context.getThreadContext()
+                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+                js.append("setRows();");
+            }else {
+                js.append("addNewRows_positionTable(").append(i - 1).append(", setRows, null);");
+            }
+            js.append(getDomReadyScript(_instance))
             .append(" });");
 
         return js.toString();
