@@ -52,7 +52,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
@@ -358,6 +357,7 @@ public abstract class AbstractDocument_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
+        add2QueryBldr(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
         if (_status != null) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status.getId());
@@ -382,6 +382,14 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected void add2QueryBldr(Parameter _parameter,
+                                 QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
+
     }
 
     /**
