@@ -22,6 +22,8 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -36,6 +38,7 @@ import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.Costs;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
@@ -92,8 +95,19 @@ public abstract class IncomingInvoice_Base
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
 
-        BigDecimal bigNetTotal = new BigDecimal(_parameter.getParameterValue("netTotal"));
-        BigDecimal bigCrossTotal = new BigDecimal(_parameter.getParameterValue("crossTotal"));
+        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        String strNetTotal = _parameter.getParameterValue("netTotal");
+        String strCrossTotal = _parameter.getParameterValue("crossTotal");
+        BigDecimal bigCrossTotal = BigDecimal.ZERO;
+        BigDecimal bigNetTotal = BigDecimal.ZERO;
+
+        try {
+            bigCrossTotal = (BigDecimal) formater.parse(strCrossTotal);
+            bigNetTotal = (BigDecimal) formater.parse(strNetTotal);
+        } catch (ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         BigDecimal calCrossTotal = getCrossTotal(calcList).setScale(2, RoundingMode.HALF_UP);
         BigDecimal calNetTotal = getNetTotal(calcList).setScale(2, RoundingMode.HALF_UP);
