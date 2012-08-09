@@ -21,6 +21,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.UUID;
 
@@ -79,6 +80,8 @@ public abstract class IncomingInvoice_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
         final String name = _parameter.getParameterValue("name");
+
+
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
@@ -89,12 +92,24 @@ public abstract class IncomingInvoice_Base
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
 
+        BigDecimal bigNetTotal = new BigDecimal(_parameter.getParameterValue("netTotal"));
+        BigDecimal bigCrossTotal = new BigDecimal(_parameter.getParameterValue("crossTotal"));
+
+        BigDecimal calCrossTotal = getCrossTotal(calcList).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal calNetTotal = getNetTotal(calcList).setScale(2, RoundingMode.HALF_UP);
+
+        BigDecimal crossTotal = bigCrossTotal
+                        .compareTo(calCrossTotal) == 0 ? getCrossTotal(calcList) : bigCrossTotal;
+
+        BigDecimal netTotal = bigNetTotal
+                        .compareTo(calNetTotal) == 0 ? getNetTotal(calcList) : bigNetTotal;
+
         final Insert insert = new Insert(CISales.IncomingInvoice);
-        insert.add(CISales.IncomingInvoice.RateCrossTotal, getCrossTotal(calcList));
-        insert.add(CISales.IncomingInvoice.RateNetTotal, getNetTotal(calcList));
+        insert.add(CISales.IncomingInvoice.RateCrossTotal, crossTotal);
+        insert.add(CISales.IncomingInvoice.RateNetTotal, netTotal);
         insert.add(CISales.IncomingInvoice.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.IncomingInvoice.CrossTotal, getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.IncomingInvoice.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingInvoice.CrossTotal, crossTotal.divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingInvoice.NetTotal, netTotal.divide(rate, BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.IncomingInvoice.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingInvoice.Contact, contactid);
         insert.add(CISales.IncomingInvoice.Date, date == null

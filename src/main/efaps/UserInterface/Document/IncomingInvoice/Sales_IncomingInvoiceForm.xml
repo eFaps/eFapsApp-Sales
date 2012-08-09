@@ -213,12 +213,12 @@
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">NetTotal</property>
         </field>
         <field name="crossTotal">
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
