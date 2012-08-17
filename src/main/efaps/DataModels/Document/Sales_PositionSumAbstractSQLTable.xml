@@ -29,7 +29,7 @@
         <name>Sales_PositionSumAbstractSQLTable</name>
         <parent>Sales_PositionAbstractSQLTable</parent>
         <database>
-            <table-name>T_SALESSUMPOS</table-name>
+            <table-name>T_SALESPOSSUM</table-name>
             <parent-table>T_SALESPOS</parent-table>
             <!-- columns -->
             <column name="GROSSUNITPRICE"  type="DECIMAL"         not-null="true" length="14" scale="4"/>
@@ -48,8 +48,8 @@
             <column name="RGROSSPRICE"     type="DECIMAL"         not-null="true" length="14" scale="4"/>
             <column name="RNETPRICE"       type="DECIMAL"         not-null="true" length="14" scale="4"/>
             <column name="RDISCOUNTPRICE"  type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <foreign name="T_SALESSUMPOS_CURRENCYID"          key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
-            <foreign name="T_SALESSUMPOS_RATECURRENCYID"      key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
+            <foreign name="T_SALESPOSSUM_CURRENCYID"          key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
+            <foreign name="T_SALESPOSSUM_RATECURRENCYID"      key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
         </database>
     </definition>
 </datamodel-sqltable>
