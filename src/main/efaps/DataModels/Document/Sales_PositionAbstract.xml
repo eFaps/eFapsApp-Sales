@@ -29,9 +29,7 @@
     <uuid>7531661c-2203-4f9a-82f7-4e0d214700dd</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PositionAbstract</name>
         <purpose abstract="true"/>
@@ -91,85 +89,6 @@
             <typelink>Admin_DataModel_UoM</typelink>
             <sqltable>Sales_PositionAbstractSQLTable</sqltable>
             <sqlcolumn>UOMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>NetUnitPrice</name>
-            <type>Decimal</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>NETUNITPRICE</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>CrossUnitPrice</name>
-            <type>Decimal</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>GROSSUNITPRICE</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Discount</name>
-            <type>Decimal</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>DISCOUNT</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>DiscountNetUnitPrice</name>
-            <type>Decimal</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>DISCOUNTPRICE</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>NetPrice</name>
-            <type>Decimal</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>NETPRICE</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>CrossPrice</name>
-            <type>Decimal</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>GROSSPRICE</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>Tax</name>
-            <type>Link</type>
-            <typelink>Sales_Tax</typelink>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>TAXID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>CurrencyId</name>
-            <type>LinkWithRanges</type>
-            <typelink>ERP_Currency</typelink>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>CURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
-                <property name="Value">Name</property>
-                <property name="Type">ERP_Currency</property>
-            </trigger>
-        </attribute>
-        <attribute>
-            <name>RateCurrencyId</name>
-            <type>LinkWithRanges</type>
-            <typelink>ERP_Currency</typelink>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>RATECURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
-                <property name="Value">Name</property>
-                <property name="Type">ERP_Currency</property>
-            </trigger>
-        </attribute>
-        <attribute>
-            <name>Rate</name>
-            <type>Rate</type>
-            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-            <sqlcolumn>RATE,RATEDENOM</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.Currency"
-                method="getRateValue"
-                name="Sales_PositionAbstract.Rate.RATE_VALUE"
-                event="RATE_VALUE"/>
-            <property name="CurrencyAttribute4Rate">RateCurrencyId</property>
-            <property name="TargetCurrencyAttribute4Rate">CurrencyId</property>
         </attribute>
     </definition>
 </datamodel-type>
