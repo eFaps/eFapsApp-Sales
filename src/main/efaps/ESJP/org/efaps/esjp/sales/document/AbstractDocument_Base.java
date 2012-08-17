@@ -865,24 +865,24 @@ public abstract class AbstractDocument_Base
             .append("}")
             .append("function setRows() {");
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance.getId());
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
-                           CISales.PositionAbstract.ProductDesc,
-                           CISales.PositionAbstract.Quantity,
-                           CISales.PositionAbstract.UoM,
-                           CISales.PositionAbstract.CrossUnitPrice,
-                           CISales.PositionAbstract.NetUnitPrice,
-                           CISales.PositionAbstract.DiscountNetUnitPrice,
-                           CISales.PositionAbstract.CrossPrice,
-                           CISales.PositionAbstract.NetPrice,
-                           CISales.PositionAbstract.Tax,
-                           CISales.PositionAbstract.Discount);
-        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionAbstract.Product).oid();
-        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
+        multi.addAttribute(CISales.PositionSumAbstract.PositionNumber,
+                           CISales.PositionSumAbstract.ProductDesc,
+                           CISales.PositionSumAbstract.Quantity,
+                           CISales.PositionSumAbstract.UoM,
+                           CISales.PositionSumAbstract.CrossUnitPrice,
+                           CISales.PositionSumAbstract.NetUnitPrice,
+                           CISales.PositionSumAbstract.DiscountNetUnitPrice,
+                           CISales.PositionSumAbstract.CrossPrice,
+                           CISales.PositionSumAbstract.NetPrice,
+                           CISales.PositionSumAbstract.Tax,
+                           CISales.PositionSumAbstract.Discount);
+        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
+        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
             .attribute(CIProducts.ProductAbstract.Name);
-        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
+        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
             .attribute(CIProducts.ProductAbstract.Dimension);
         multi.addSelect(selProdOID, selProdName, selProdDim);
         multi.execute();
@@ -890,17 +890,17 @@ public abstract class AbstractDocument_Base
         final Map<Integer, Object[]> values = new TreeMap<Integer, Object[]>();
 
         while (multi.next()) {
-            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetUnitPrice);
-            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Discount);
+            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
             final BigDecimal discountNetUnitPrice = multi.
-                    <BigDecimal>getAttribute(CISales.PositionAbstract.DiscountNetUnitPrice);
-            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetPrice);
+                    <BigDecimal>getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
+            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
 
-            final Object[] value = new Object[] { multi.getAttribute(CISales.PositionAbstract.Quantity),
+            final Object[] value = new Object[] { multi.getAttribute(CISales.PositionSumAbstract.Quantity),
                             multi.getSelect(selProdName),
                             multi.getSelect(selProdOID),
-                            multi.getAttribute(CISales.PositionAbstract.ProductDesc),
-                            multi.getAttribute(CISales.PositionAbstract.UoM),
+                            multi.getAttribute(CISales.PositionSumAbstract.ProductDesc),
+                            multi.getAttribute(CISales.PositionSumAbstract.UoM),
                 rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice,
                 rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount,
                 rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
@@ -908,7 +908,7 @@ public abstract class AbstractDocument_Base
                 rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice,
                             multi.getSelect(selProdDim),
                             multi.getCurrentInstance()};
-            values.put(multi.<Integer>getAttribute(CISales.PositionAbstract.PositionNumber), value);
+            values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), value);
         }
         int i = 0;
         if (!values.isEmpty()) {

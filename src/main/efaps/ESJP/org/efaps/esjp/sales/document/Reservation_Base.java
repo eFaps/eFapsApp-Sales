@@ -137,16 +137,6 @@ public abstract class Reservation_Base
             posIns.add(CISales.ReservationPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i - 1]);
             posIns.add(CISales.ReservationPosition.Quantity, (new BigDecimal(quantity)).toString());
             posIns.add(CISales.ReservationPosition.UoM, _parameter.getParameterValues("uoM")[i - 1]);
-            posIns.add(CISales.ReservationPosition.CrossUnitPrice, "0");
-            posIns.add(CISales.ReservationPosition.NetUnitPrice, "0");
-            posIns.add(CISales.ReservationPosition.CrossPrice, "0");
-            posIns.add(CISales.ReservationPosition.NetPrice, "0");
-            posIns.add(CISales.ReservationPosition.Discount, "0");
-            posIns.add(CISales.ReservationPosition.Tax, "1");
-            posIns.add(CISales.ReservationPosition.DiscountNetUnitPrice, BigDecimal.ZERO);
-            posIns.add(CISales.ReservationPosition.CurrencyId, 1);
-            posIns.add(CISales.ReservationPosition.RateCurrencyId, 1);
-            posIns.add(CISales.ReservationPosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
             _createdDoc.addPosition(posIns.getInstance());

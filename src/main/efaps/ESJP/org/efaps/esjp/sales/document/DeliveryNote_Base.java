@@ -99,16 +99,6 @@ public abstract class DeliveryNote_Base
             posIns.add(CISales.DeliveryNotePosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
             posIns.add(CISales.DeliveryNotePosition.Quantity, (new BigDecimal(quantity)).toString());
             posIns.add(CISales.DeliveryNotePosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.DeliveryNotePosition.CrossUnitPrice, "0");
-            posIns.add(CISales.DeliveryNotePosition.NetUnitPrice, "0");
-            posIns.add(CISales.DeliveryNotePosition.CrossPrice, "0");
-            posIns.add(CISales.DeliveryNotePosition.NetPrice, "0");
-            posIns.add(CISales.DeliveryNotePosition.Discount, "0");
-            posIns.add(CISales.DeliveryNotePosition.Tax, "1");
-            posIns.add(CISales.DeliveryNotePosition.DiscountNetUnitPrice, BigDecimal.ZERO);
-            posIns.add(CISales.DeliveryNotePosition.CurrencyId, 1);
-            posIns.add(CISales.DeliveryNotePosition.RateCurrencyId, 1);
-            posIns.add(CISales.DeliveryNotePosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
         }

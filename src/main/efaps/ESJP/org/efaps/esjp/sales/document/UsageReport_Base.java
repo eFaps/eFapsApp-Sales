@@ -83,16 +83,6 @@ public class UsageReport_Base
             posIns.add(CISales.UsageReportPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
             posIns.add(CISales.UsageReportPosition.Quantity, (new BigDecimal(quantity)).toString());
             posIns.add(CISales.UsageReportPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.UsageReportPosition.CrossUnitPrice, 0);
-            posIns.add(CISales.UsageReportPosition.NetUnitPrice, 0);
-            posIns.add(CISales.UsageReportPosition.CrossPrice, 0);
-            posIns.add(CISales.UsageReportPosition.NetPrice, 0);
-            posIns.add(CISales.UsageReportPosition.Discount, 0);
-            posIns.add(CISales.UsageReportPosition.DiscountNetUnitPrice, 0);
-            posIns.add(CISales.UsageReportPosition.Tax, 1);
-            posIns.add(CISales.UsageReportPosition.CurrencyId, 1);
-            posIns.add(CISales.UsageReportPosition.RateCurrencyId, 1);
-            posIns.add(CISales.UsageReportPosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
         }

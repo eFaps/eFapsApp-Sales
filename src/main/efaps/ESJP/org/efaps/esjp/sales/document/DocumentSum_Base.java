@@ -123,30 +123,30 @@ public abstract class DocumentSum_Base
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
             queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, docInst.getId());
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.PositionAbstract.CrossPrice, CISales.PositionAbstract.CrossUnitPrice,
-                            CISales.PositionAbstract.DiscountNetUnitPrice,  CISales.PositionAbstract.NetPrice,
-                            CISales.PositionAbstract.NetUnitPrice);
+            multi.addAttribute(CISales.PositionSumAbstract.CrossPrice, CISales.PositionSumAbstract.CrossUnitPrice,
+                            CISales.PositionSumAbstract.DiscountNetUnitPrice,  CISales.PositionSumAbstract.NetPrice,
+                            CISales.PositionSumAbstract.NetUnitPrice);
             multi.execute();
             while (multi.next()) {
-                final BigDecimal crossPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.CrossPrice);
+                final BigDecimal crossPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
                 final BigDecimal dscNetUnitPrice = multi.<BigDecimal>getAttribute(
-                                CISales.PositionAbstract.DiscountNetUnitPrice);
+                                CISales.PositionSumAbstract.DiscountNetUnitPrice);
                 final BigDecimal crossUnitPrice = multi.<BigDecimal>getAttribute(
-                                CISales.PositionAbstract.CrossUnitPrice);
+                                CISales.PositionSumAbstract.CrossUnitPrice);
                 final BigDecimal netPrice = multi.<BigDecimal>getAttribute(
-                                CISales.PositionAbstract.NetPrice);
-                final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.NetUnitPrice);
+                                CISales.PositionSumAbstract.NetPrice);
+                final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
 
                 final Update updatePos =  new Update(multi.getCurrentInstance());
-                updatePos.add(CISales.PositionAbstract.CrossPrice, getNewValue(crossPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionAbstract.DiscountNetUnitPrice,
+                updatePos.add(CISales.PositionSumAbstract.CrossPrice, getNewValue(crossPrice, rates4Calc[2], rates[2]));
+                updatePos.add(CISales.PositionSumAbstract.DiscountNetUnitPrice,
                                 getNewValue(dscNetUnitPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionAbstract.CrossUnitPrice,
+                updatePos.add(CISales.PositionSumAbstract.CrossUnitPrice,
                                 getNewValue(crossUnitPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionAbstract.NetPrice, getNewValue(netPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionAbstract.NetUnitPrice,
+                updatePos.add(CISales.PositionSumAbstract.NetPrice, getNewValue(netPrice, rates4Calc[2], rates[2]));
+                updatePos.add(CISales.PositionSumAbstract.NetUnitPrice,
                                 getNewValue(netUnitPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionAbstract.Rate, rateObj);
+                updatePos.add(CISales.PositionSumAbstract.Rate, rateObj);
                 updatePos.execute();
             }
         }
@@ -236,28 +236,28 @@ public abstract class DocumentSum_Base
             if (!calc.isEmpty()) {
                 final Insert posIns = new Insert(getPositionType(_parameter));
                 final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-                posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance().getId());
-                posIns.add(CISales.PositionAbstract.PositionNumber, i);
-                posIns.add(CISales.PositionAbstract.Product, productdId.toString());
-                posIns.add(CISales.PositionAbstract.ProductDesc,
+                posIns.add(CISales.PositionSumAbstract.DocumentAbstractLink, _createdDoc.getInstance().getId());
+                posIns.add(CISales.PositionSumAbstract.PositionNumber, i);
+                posIns.add(CISales.PositionSumAbstract.Product, productdId.toString());
+                posIns.add(CISales.PositionSumAbstract.ProductDesc,
                                 _parameter.getParameterValues("productDesc")[i]);
-                posIns.add(CISales.PositionAbstract.Quantity, calc.getQuantityStr());
-                posIns.add(CISales.PositionAbstract.UoM, _parameter.getParameterValues("uoM")[i]);
-                posIns.add(CISales.PositionAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
+                posIns.add(CISales.PositionSumAbstract.Quantity, calc.getQuantityStr());
+                posIns.add(CISales.PositionSumAbstract.UoM, _parameter.getParameterValues("uoM")[i]);
+                posIns.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
                                                                             .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionAbstract.NetUnitPrice, calc.getNetUnitPrice()
+                posIns.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
                                                                             .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionAbstract.CrossPrice, calc.getCrossPrice()
+                posIns.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
                                                                             .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionAbstract.NetPrice, calc.getNetPrice()
+                posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
                                                                             .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionAbstract.Tax, (calc.getTaxId()).toString());
-                posIns.add(CISales.PositionAbstract.Discount, calc.getDiscountStr());
-                posIns.add(CISales.PositionAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                posIns.add(CISales.PositionSumAbstract.Tax, (calc.getTaxId()).toString());
+                posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
+                posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                                                             .divide(rate, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionAbstract.CurrencyId, baseCurrInst.getId());
-                posIns.add(CISales.PositionAbstract.Rate, rateObj);
-                posIns.add(CISales.PositionAbstract.RateCurrencyId, rateCurrInst.getId());
+                posIns.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
+                posIns.add(CISales.PositionSumAbstract.Rate, rateObj);
+                posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
                 add2PositionInsert(_parameter, calc, posIns);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());

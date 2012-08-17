@@ -89,16 +89,6 @@ public abstract class GoodsIssueSlip_Base
             posIns.add(CISales.GoodsIssueSlipPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
             posIns.add(CISales.GoodsIssueSlipPosition.Quantity, (new BigDecimal(quantity)).toString());
             posIns.add(CISales.GoodsIssueSlipPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.GoodsIssueSlipPosition.CrossUnitPrice, "0");
-            posIns.add(CISales.GoodsIssueSlipPosition.NetUnitPrice, "0");
-            posIns.add(CISales.GoodsIssueSlipPosition.CrossPrice, "0");
-            posIns.add(CISales.GoodsIssueSlipPosition.NetPrice, "0");
-            posIns.add(CISales.GoodsIssueSlipPosition.Discount, "0");
-            posIns.add(CISales.GoodsIssueSlipPosition.Tax, "1");
-            posIns.add(CISales.GoodsIssueSlipPosition.DiscountNetUnitPrice, BigDecimal.ZERO);
-            posIns.add(CISales.GoodsIssueSlipPosition.CurrencyId, 1);
-            posIns.add(CISales.GoodsIssueSlipPosition.RateCurrencyId, 1);
-            posIns.add(CISales.GoodsIssueSlipPosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
         }

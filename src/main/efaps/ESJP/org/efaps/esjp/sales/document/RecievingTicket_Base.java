@@ -72,16 +72,6 @@ public abstract class RecievingTicket_Base
             posIns.add(CISales.RecievingTicketPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
             posIns.add(CISales.RecievingTicketPosition.Quantity, (new BigDecimal(quantity)).toString());
             posIns.add(CISales.RecievingTicketPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.RecievingTicketPosition.CrossUnitPrice, "0");
-            posIns.add(CISales.RecievingTicketPosition.NetUnitPrice, "0");
-            posIns.add(CISales.RecievingTicketPosition.CrossPrice, "0");
-            posIns.add(CISales.RecievingTicketPosition.NetPrice, "0");
-            posIns.add(CISales.RecievingTicketPosition.Discount, "0");
-            posIns.add(CISales.RecievingTicketPosition.Tax, "1");
-            posIns.add(CISales.RecievingTicketPosition.DiscountNetUnitPrice, BigDecimal.ZERO);
-            posIns.add(CISales.RecievingTicketPosition.CurrencyId, 1);
-            posIns.add(CISales.RecievingTicketPosition.RateCurrencyId, 1);
-            posIns.add(CISales.RecievingTicketPosition.Rate, new Object[] { BigDecimal.ONE, BigDecimal.ONE });
             posIns.execute();
             i++;
         }
