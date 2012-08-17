@@ -33,7 +33,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoicePositionAbstract</name>
-        <parent>Sales_PositionAbstract</parent>
+        <parent>Sales_PositionSumAbstract</parent>
         <purpose abstract="true" />
         <attribute>
             <name>InvoiceAbstract</name>

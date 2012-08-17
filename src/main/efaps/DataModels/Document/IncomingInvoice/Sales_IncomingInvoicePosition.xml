@@ -23,25 +23,25 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>c7fa6f33-383d-42b3-b645-6a05986902dc</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingInvoicePosition</name>
-    <parent>Sales_PositionAbstract</parent>
-    
-    <attribute>
-      <name>IncomingInvoice</name>
-      <type>Link</type>
-      <typelink>Sales_IncomingInvoice</typelink>
-      <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-      <sqlcolumn>DOCID</sqlcolumn>
-    </attribute>
-    
+    <uuid>c7fa6f33-383d-42b3-b645-6a05986902dc</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingInvoicePosition</name>
+        <parent>Sales_PositionSumAbstract</parent>
+
+        <attribute>
+            <name>IncomingInvoice</name>
+            <type>Link</type>
+            <typelink>Sales_IncomingInvoice</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
+
   </definition>
 </datamodel-type>

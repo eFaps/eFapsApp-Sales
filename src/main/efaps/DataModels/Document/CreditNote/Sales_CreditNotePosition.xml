@@ -23,24 +23,24 @@
 
 -->
 
-<datamodel-type  xmlns="http://www.efaps.org/xsd" 
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"   
+<datamodel-type  xmlns="http://www.efaps.org/xsd"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>09500148-85d0-4610-9125-f26ec45e6d6d</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_CreditNotePosition</name>
-    <parent>Sales_PositionAbstract</parent>
-    
-    <attribute>
-      <name>CreditNote</name>
-      <type>Link</type>
-      <typelink>Sales_CreditNote</typelink>
-      <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-      <sqlcolumn>DOCID</sqlcolumn>
-    </attribute>
-  </definition>
+    <uuid>09500148-85d0-4610-9125-f26ec45e6d6d</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_CreditNotePosition</name>
+        <parent>Sales_PositionSumAbstract</parent>
+
+        <attribute>
+            <name>CreditNote</name>
+            <type>Link</type>
+            <typelink>Sales_CreditNote</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

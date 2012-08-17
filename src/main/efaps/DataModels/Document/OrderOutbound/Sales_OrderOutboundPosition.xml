@@ -33,7 +33,7 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Sales_OrderOutboundPosition</name>
-    <parent>Sales_PositionAbstract</parent>
+    <parent>Sales_PositionSumAbstract</parent>
 
     <attribute>
       <name>Order</name>

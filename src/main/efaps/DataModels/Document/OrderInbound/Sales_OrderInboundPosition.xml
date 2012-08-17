@@ -26,22 +26,22 @@
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>6968948d-8c0b-45b6-b91d-1dd0428b5f06</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>6968948d-8c0b-45b6-b91d-1dd0428b5f06</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderInboundPosition</name>
-    <parent>Sales_PositionAbstract</parent>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderInboundPosition</name>
+        <parent>Sales_PositionSumAbstract</parent>
 
-    <attribute>
-      <name>Order</name>
-      <type>Link</type>
-      <typelink>Sales_OrderInbound</typelink>
-      <sqltable>Sales_PositionAbstractSQLTable</sqltable>
-      <sqlcolumn>DOCID</sqlcolumn>
-    </attribute>
+        <attribute>
+            <name>Order</name>
+            <type>Link</type>
+            <typelink>Sales_OrderInbound</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
 
-  </definition>
+    </definition>
 </datamodel-type>

@@ -32,7 +32,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CostSheetPosition</name>
-        <parent>Sales_PositionAbstract</parent>
+        <parent>Sales_PositionSumAbstract</parent>
         <attribute>
             <name>CostSheet</name>
             <type>Link</type>
