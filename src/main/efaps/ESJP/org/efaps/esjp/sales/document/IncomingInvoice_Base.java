@@ -150,7 +150,7 @@ public abstract class IncomingInvoice_Base
             posIns.add(CISales.IncomingInvoicePosition.UoM, _parameter.getParameterValues("uoM")[i - 1]);
             posIns.add(CISales.IncomingInvoicePosition.Tax, calc.getTaxId());
             posIns.add(CISales.IncomingInvoicePosition.Discount, calc.getDiscount());
-            posIns.add(CISales.IncomingInvoicePosition.CurrencyId, rateCurrInst.getId());
+            posIns.add(CISales.IncomingInvoicePosition.CurrencyId, baseCurrInst.getId());
             posIns.add(CISales.IncomingInvoicePosition.Rate, rateObj);
             posIns.add(CISales.IncomingInvoicePosition.RateCurrencyId, rateCurrInst.getId());
             posIns.add(CISales.IncomingInvoicePosition.CrossUnitPrice,
