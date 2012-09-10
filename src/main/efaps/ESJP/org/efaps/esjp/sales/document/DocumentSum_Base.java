@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
@@ -55,9 +54,10 @@ import org.joda.time.DateTime;
 
 /**
  * Class is the generic instance for all documents of type DocumentSum.
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DocumentSum_Base.java 7915 2012-08-17 15:30:12Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("e177ab08-67f0-4ce2-8eff-d3f167352bee")
 @EFapsRevision("$Rev$")
@@ -66,9 +66,8 @@ public abstract class DocumentSum_Base
 {
 
     /**
-     * Used by the update event used in the select doc form
-     * for CostSheet.
-     *
+     * Used by the update event used in the select doc form for CostSheet.
+     * 
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -87,15 +86,15 @@ public abstract class DocumentSum_Base
                             CISales.DocumentSumAbstract.Date);
             print.execute();
 
-            final BigDecimal rateCross = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            final BigDecimal rateDiscount = print.<BigDecimal>getAttribute(
+            final BigDecimal rateCross = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final BigDecimal rateDiscount = print.<BigDecimal> getAttribute(
                             CISales.DocumentSumAbstract.RateDiscountTotal);
-            final BigDecimal rateNet = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+            final BigDecimal rateNet = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
             final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+                            print.<Long> getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
             final Instance currentInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-            final DateTime date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
+                            print.<Long> getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            final DateTime date = print.<DateTime> getAttribute(CISales.DocumentSumAbstract.Date);
 
             final PriceUtil priceUtil = new PriceUtil();
             final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
@@ -124,20 +123,20 @@ public abstract class DocumentSum_Base
             queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, docInst.getId());
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CISales.PositionSumAbstract.CrossPrice, CISales.PositionSumAbstract.CrossUnitPrice,
-                            CISales.PositionSumAbstract.DiscountNetUnitPrice,  CISales.PositionSumAbstract.NetPrice,
+                            CISales.PositionSumAbstract.DiscountNetUnitPrice, CISales.PositionSumAbstract.NetPrice,
                             CISales.PositionSumAbstract.NetUnitPrice);
             multi.execute();
             while (multi.next()) {
-                final BigDecimal crossPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossPrice);
-                final BigDecimal dscNetUnitPrice = multi.<BigDecimal>getAttribute(
+                final BigDecimal crossPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.CrossPrice);
+                final BigDecimal dscNetUnitPrice = multi.<BigDecimal> getAttribute(
                                 CISales.PositionSumAbstract.DiscountNetUnitPrice);
-                final BigDecimal crossUnitPrice = multi.<BigDecimal>getAttribute(
+                final BigDecimal crossUnitPrice = multi.<BigDecimal> getAttribute(
                                 CISales.PositionSumAbstract.CrossUnitPrice);
-                final BigDecimal netPrice = multi.<BigDecimal>getAttribute(
+                final BigDecimal netPrice = multi.<BigDecimal> getAttribute(
                                 CISales.PositionSumAbstract.NetPrice);
-                final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                final BigDecimal netUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
 
-                final Update updatePos =  new Update(multi.getCurrentInstance());
+                final Update updatePos = new Update(multi.getCurrentInstance());
                 updatePos.add(CISales.PositionSumAbstract.CrossPrice, getNewValue(crossPrice, rates4Calc[2], rates[2]));
                 updatePos.add(CISales.PositionSumAbstract.DiscountNetUnitPrice,
                                 getNewValue(dscNetUnitPrice, rates4Calc[2], rates[2]));
@@ -166,15 +165,15 @@ public abstract class DocumentSum_Base
         BigDecimal ret = BigDecimal.ZERO;
         if (_oldValue.compareTo(BigDecimal.ZERO) != 0) {
             ret = _oldValue.multiply(_oldRate).divide(_newRate, BigDecimal.ROUND_HALF_UP)
-                .setScale(2, BigDecimal.ROUND_HALF_UP);
+                            .setScale(2, BigDecimal.ROUND_HALF_UP);
         }
         return ret;
     }
 
     /**
-     * Used by an FieldUpdate event used in the form
-     * for Recalculating DocumentSum with a rate.
-     *
+     * Used by an FieldUpdate event used in the form for Recalculating
+     * DocumentSum with a rate.
+     * 
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -213,9 +212,10 @@ public abstract class DocumentSum_Base
 
     /**
      * Internal Method to create the positions for this Document.
-     * @param _parameter    Parameter as passed from eFaps API.
-     * @param _calcList     List of Calculators
-     * @param _createdDoc   cretaed Document
+     * 
+     * @param _parameter Parameter as passed from eFaps API.
+     * @param _calcList List of Calculators
+     * @param _createdDoc cretaed Document
      * @throws EFapsException on error
      */
     protected void createPositions(final Parameter _parameter,
@@ -244,20 +244,30 @@ public abstract class DocumentSum_Base
                 posIns.add(CISales.PositionSumAbstract.Quantity, calc.getQuantityStr());
                 posIns.add(CISales.PositionSumAbstract.UoM, _parameter.getParameterValues("uoM")[i]);
                 posIns.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.Tax, (calc.getTaxId()).toString());
                 posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
                 posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
-                                                                            .divide(rate, BigDecimal.ROUND_HALF_UP));
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
                 posIns.add(CISales.PositionSumAbstract.Rate, rateObj);
                 posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
+                posIns.add(CISales.PositionSumAbstract.RateNetUnitPrice,
+                                calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice,
+                                calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
+                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateNetPrice,
+                                calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateCrossPrice,
+                                calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 add2PositionInsert(_parameter, calc, posIns);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());
@@ -267,9 +277,9 @@ public abstract class DocumentSum_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _calc         Calculator
-     * @param _posIns       insert
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calc Calculator
+     * @param _posIns insert
      * @throws EFapsException on error
      */
     protected void add2PositionInsert(final Parameter _parameter,
@@ -277,11 +287,11 @@ public abstract class DocumentSum_Base
                                       final Insert _posIns)
         throws EFapsException
     {
-        //to be implemented by subclasses
+        // to be implemented by subclasses
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _parameter Parameter as passed by the eFaps API
      * @return Type for the Position
      * @throws EFapsException on error
      */

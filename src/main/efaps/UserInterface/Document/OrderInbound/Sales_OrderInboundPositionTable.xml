@@ -74,6 +74,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_OrderInboundPosition/UoM.Label</property>
             <trigger program="org.efaps.esjp.sales.document.OrderInbound"

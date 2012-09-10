@@ -257,7 +257,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">HIDDEN</property>
+            <property name="ModeView">NONE</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
             name="Sales_CashReceiptPositionTable.javaScript.UI_Field_Value"
              program="org.efaps.esjp.sales.document.CashReceipt"/>

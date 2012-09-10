@@ -21,7 +21,6 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.List;
@@ -46,9 +45,10 @@ import org.joda.time.DateMidnight;
 
 /**
  * Base class for Type Incoming Invoice.
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: IncomingInvoice_Base.java 7921 2012-08-20 14:51:53Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("f7d75f38-5ac8-4bf4-9609-6226ac82fea3")
 @EFapsRevision("$Rev$")
@@ -57,7 +57,8 @@ public abstract class IncomingInvoice_Base
 {
     /**
      * Executed from a Command execute vent to create a new Incoming Invoice.
-     * @param _parameter    Parameter as passed from the eFaps API
+     * 
+     * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
      */
@@ -71,8 +72,8 @@ public abstract class IncomingInvoice_Base
 
     /**
      * Create a new Incoming Invoice.
-     *
-     * @param _parameter    Parameter as passed from the eFaps API
+     * 
+     * @param _parameter Parameter as passed from the eFaps API
      * @return Instance of the created Document
      * @throws EFapsException on error
      */
@@ -83,7 +84,6 @@ public abstract class IncomingInvoice_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
         final String name = _parameter.getParameterValue("name");
-
 
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
@@ -109,8 +109,8 @@ public abstract class IncomingInvoice_Base
             e.printStackTrace();
         }
 
-        BigDecimal calCrossTotal = getCrossTotal(calcList).setScale(2, RoundingMode.HALF_UP);
-        BigDecimal calNetTotal = getNetTotal(calcList).setScale(2, RoundingMode.HALF_UP);
+        BigDecimal calCrossTotal = getCrossTotal(calcList);
+        BigDecimal calNetTotal = getNetTotal(calcList);
 
         BigDecimal crossTotal = bigCrossTotal
                         .compareTo(calCrossTotal) == 0 ? getCrossTotal(calcList) : bigCrossTotal;
@@ -119,11 +119,13 @@ public abstract class IncomingInvoice_Base
                         .compareTo(calNetTotal) == 0 ? getNetTotal(calcList) : bigNetTotal;
 
         final Insert insert = new Insert(CISales.IncomingInvoice);
-        insert.add(CISales.IncomingInvoice.RateCrossTotal, crossTotal);
-        insert.add(CISales.IncomingInvoice.RateNetTotal, netTotal);
+        insert.add(CISales.IncomingInvoice.RateCrossTotal, crossTotal.setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingInvoice.RateNetTotal, netTotal.setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.IncomingInvoice.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.IncomingInvoice.CrossTotal, crossTotal.divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.IncomingInvoice.NetTotal, netTotal.divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingInvoice.CrossTotal,
+                        crossTotal.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingInvoice.NetTotal,
+                        netTotal.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.IncomingInvoice.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingInvoice.Contact, contactid);
         insert.add(CISales.IncomingInvoice.Date, date == null
@@ -145,7 +147,7 @@ public abstract class IncomingInvoice_Base
             posIns.add(CISales.IncomingInvoicePosition.PositionNumber, i);
             posIns.add(CISales.IncomingInvoicePosition.Product, productdId);
             posIns.add(CISales.IncomingInvoicePosition.ProductDesc,
-                                _parameter.getParameterValues("productDesc")[i - 1]);
+                            _parameter.getParameterValues("productDesc")[i - 1]);
             posIns.add(CISales.IncomingInvoicePosition.Quantity, calc.getQuantity());
             posIns.add(CISales.IncomingInvoicePosition.UoM, _parameter.getParameterValues("uoM")[i - 1]);
             posIns.add(CISales.IncomingInvoicePosition.Tax, calc.getTaxId());
@@ -154,15 +156,31 @@ public abstract class IncomingInvoice_Base
             posIns.add(CISales.IncomingInvoicePosition.Rate, rateObj);
             posIns.add(CISales.IncomingInvoicePosition.RateCurrencyId, rateCurrInst.getId());
             posIns.add(CISales.IncomingInvoicePosition.CrossUnitPrice,
-                                            calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
             posIns.add(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                            calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
             posIns.add(CISales.IncomingInvoicePosition.CrossPrice,
-                                            calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
             posIns.add(CISales.IncomingInvoicePosition.NetPrice,
-                                            calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
             posIns.add(CISales.IncomingInvoicePosition.DiscountNetUnitPrice,
-                                            calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.IncomingInvoicePosition.RateNetUnitPrice,
+                            calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.IncomingInvoicePosition.RateCrossUnitPrice,
+                            calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.IncomingInvoicePosition.RateDiscountNetUnitPrice,
+                            calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.IncomingInvoicePosition.RateNetPrice,
+                            calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.IncomingInvoicePosition.RateCrossPrice,
+                            calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+
             posIns.execute();
             i++;
         }

@@ -43,7 +43,8 @@ import org.joda.time.DateMidnight;
  * TODO comment!
  * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: CreditNote_Base.java 7555 2012-05-29 00:22:18Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("a66a61fd-487a-4764-9e72-f65050c1d39e")
 @EFapsRevision("$Rev$")
@@ -80,10 +81,14 @@ public abstract class CreditNote_Base
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
         final Insert insert = new Insert(CISales.CreditNote);
         insert.add(CISales.CreditNote.Contact, contactid);
-        insert.add(CISales.CreditNote.CrossTotal, getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.CreditNote.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.CreditNote.RateNetTotal, getNetTotal(calcList));
-        insert.add(CISales.CreditNote.RateCrossTotal, getCrossTotal(calcList));
+        insert.add(CISales.CreditNote.CrossTotal,
+                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CreditNote.NetTotal,
+                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CreditNote.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CreditNote.RateCrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.CreditNote.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.CreditNote.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.CreditNote.CurrencyId, baseCurrInst.getId());
@@ -135,15 +140,31 @@ public abstract class CreditNote_Base
                 posIns.add(CISales.CreditNotePosition.Rate, rateObj);
                 posIns.add(CISales.CreditNotePosition.RateCurrencyId, rateCurrInst.getId());
                 posIns.add(CISales.CreditNotePosition.CrossUnitPrice,
-                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.CreditNotePosition.NetUnitPrice,
-                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.CreditNotePosition.CrossPrice,
-                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.CreditNotePosition.NetPrice,
-                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.CreditNotePosition.DiscountNetUnitPrice,
-                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.CreditNotePosition.RateNetUnitPrice,
+                                calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.CreditNotePosition.RateCrossUnitPrice,
+                                calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.CreditNotePosition.RateDiscountNetUnitPrice,
+                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.CreditNotePosition.RateNetPrice,
+                                calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.CreditNotePosition.RateCrossPrice,
+                                calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+
                 add2PositionInsert(_parameter, calc, posIns);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());

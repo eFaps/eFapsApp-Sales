@@ -40,7 +40,7 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id$
  */
@@ -52,6 +52,7 @@ public abstract class Quotation_Base
 
     /**
      * Method for create a new Quotation.
+     * 
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -65,7 +66,7 @@ public abstract class Quotation_Base
 
     /**
      * Internal Method to create the document and the position.
-     *
+     * 
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Instance of CreatedDoc.
      * @throws EFapsException on error.
@@ -87,15 +88,19 @@ public abstract class Quotation_Base
 
         final Insert insert = new Insert(CISales.Quotation);
         insert.add(CISales.Quotation.Contact, contactid);
-        insert.add(CISales.Quotation.CrossTotal, getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Quotation.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Quotation.CrossTotal,
+                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Quotation.NetTotal,
+                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.Quotation.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Quotation.RateNetTotal, getNetTotal(calcList));
-        insert.add(CISales.Quotation.RateCrossTotal, getCrossTotal(calcList));
+        insert.add(CISales.Quotation.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Quotation.RateCrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.Quotation.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.Quotation.Date, date);
         insert.add(CISales.Quotation.DueDate, _parameter.getParameterValue("dueDate") != null
-                                                    ? _parameter.getParameterValue("dueDate"): date);
+                        ? _parameter.getParameterValue("dueDate") : date);
         insert.add(CISales.Quotation.Salesperson, _parameter.getParameterValue("salesperson"));
         insert.add(CISales.Quotation.Name, getDocName4Create(_parameter));
         insert.add(CISales.Quotation.Status, Status.find(CISales.QuotationStatus.uuid, "Open").getId());

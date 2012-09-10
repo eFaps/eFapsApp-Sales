@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2012 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -32,13 +31,11 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
@@ -46,9 +43,10 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DeliveryNote_Base.java 7915 2012-08-17 15:30:12Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("363ad7a5-1e7b-4194-89e3-a31d07d783df")
 @EFapsRevision("$Rev$")
@@ -57,7 +55,7 @@ public abstract class DeliveryNote_Base
 {
     /**
      * Create a new DeliveryNote.
-     *
+     * 
      * @param _parameter parameter as passed from the eFaps API.
      * @return new Return.
      * @throws EFapsException on error,
@@ -70,8 +68,9 @@ public abstract class DeliveryNote_Base
     }
 
     /**
-     * Method for create a new DeliveryNote and return the instance of the deliveryNote.
-     *
+     * Method for create a new DeliveryNote and return the instance of the
+     * deliveryNote.
+     * 
      * @param _parameter Parameter as passed from the eFaps API.
      * @return instance of the deliveryNote.
      * @throws EFapsException on error.
@@ -144,25 +143,24 @@ public abstract class DeliveryNote_Base
             }
         } else {
 
-//            final SearchQuery query = new SearchQuery();
-//            query.setQueryTypes("Products_Inventory");
-//            query.addWhereExprEqValue("Product", productID[0].toString());
-//            query.addSelect("Storage");
-//            query.execute();
-//            if (query.next()) {
-//                storage = ((Long) query.get("Storage")).toString();
-//            }
+            // final SearchQuery query = new SearchQuery();
+            // query.setQueryTypes("Products_Inventory");
+            // query.addWhereExprEqValue("Product", productID[0].toString());
+            // query.addSelect("Storage");
+            // query.execute();
+            // if (query.next()) {
+            // storage = ((Long) query.get("Storage")).toString();
+            // }
 
-
-        	// Change SearchQuery to QueryBuilder.
+            // Change SearchQuery to QueryBuilder.
 
             final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
             query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
             MultiPrintQuery multi = query.getPrint();
             multi.addAttribute(CIProducts.Inventory.Storage);
             multi.execute();
-            while(multi.next()){
-            	storage = multi.<String>getAttribute(CIProducts.Inventory.Storage);
+            while (multi.next()) {
+                storage = multi.<String> getAttribute(CIProducts.Inventory.Storage);
             }
         }
 

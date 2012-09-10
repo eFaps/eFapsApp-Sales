@@ -26,8 +26,8 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -43,9 +43,10 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: OrderOutbound_Base.java 7283 2011-11-18 20:17:15Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("bd08a90e-91ce-4f03-b1bc-921a53b71948")
 @EFapsRevision("$Rev$")
@@ -53,7 +54,8 @@ public abstract class OrderOutbound_Base
     extends DocumentSum
 {
 
-    public Return create(final Parameter _parameter) throws EFapsException
+    public Return create(final Parameter _parameter)
+        throws EFapsException
     {
         final String date = _parameter.getParameterValue("date");
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -69,11 +71,16 @@ public abstract class OrderOutbound_Base
 
         final Insert insert = new Insert(CISales.OrderOutbound);
         insert.add(CISales.OrderOutbound.Contact, contactid.toString());
-        insert.add(CISales.OrderOutbound.CrossTotal, getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.OrderOutbound.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.OrderOutbound.CrossTotal,
+                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.OrderOutbound.NetTotal,
+                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.OrderOutbound.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.OrderOutbound.RateCrossTotal, getCrossTotal(calcList));
-        insert.add(CISales.OrderOutbound.RateNetTotal, getNetTotal(calcList));
+        insert.add(CISales.OrderOutbound.RateCrossTotal,
+                        getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.OrderOutbound.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.OrderOutbound.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.OrderOutbound.Date, date);
         insert.add(CISales.OrderOutbound.Salesperson, _parameter.getParameterValue("salesperson"));
@@ -94,24 +101,40 @@ public abstract class OrderOutbound_Base
                 posIns.add(CISales.OrderOutboundPosition.PositionNumber, i.toString());
                 posIns.add(CISales.OrderOutboundPosition.Product, prodInst.getId());
                 posIns.add(CISales.OrderOutboundPosition.ProductDesc,
-                                                _parameter.getParameterValues("productDesc")[i - 1]);
+                                _parameter.getParameterValues("productDesc")[i - 1]);
                 posIns.add(CISales.OrderOutboundPosition.Quantity, quantity);
                 posIns.add(CISales.OrderOutboundPosition.UoM, uom.getId());
                 posIns.add(CISales.OrderOutboundPosition.CrossUnitPrice,
-                                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.NetUnitPrice,
-                                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.CrossPrice,
-                                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.DiscountNetUnitPrice,
-                                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.NetPrice,
-                                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.Tax, (calc.getTaxId()).toString());
                 posIns.add(CISales.OrderOutboundPosition.Discount, calc.getDiscountStr());
                 posIns.add(CISales.OrderOutboundPosition.CurrencyId, baseCurrInst.getId());
                 posIns.add(CISales.OrderOutboundPosition.RateCurrencyId, rateCurrInst.getId());
                 posIns.add(CISales.OrderOutboundPosition.Rate, rateObj);
+                posIns.add(CISales.OrderOutboundPosition.RateNetUnitPrice,
+                                calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.OrderOutboundPosition.RateCrossUnitPrice,
+                                calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.OrderOutboundPosition.RateDiscountNetUnitPrice,
+                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.OrderOutboundPosition.RateNetPrice,
+                                calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.OrderOutboundPosition.RateCrossPrice,
+                                calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+
                 posIns.execute();
             }
             i++;
@@ -121,7 +144,8 @@ public abstract class OrderOutbound_Base
 
     /**
      * Method to get the javascript.
-     * @param _parameter    Parameter as passed from the eFaps API
+     * 
+     * @param _parameter Parameter as passed from the eFaps API
      * @return javascript
      * @throws EFapsException on error
      */
@@ -132,9 +156,8 @@ public abstract class OrderOutbound_Base
         return getJavaScript(_parameter, false);
     }
 
-
-
-    protected BigDecimal getPrice(final String _oid) throws EFapsException
+    protected BigDecimal getPrice(final String _oid)
+        throws EFapsException
     {
         final DateTime now = new DateTime();
         final SearchQuery query = new SearchQuery();

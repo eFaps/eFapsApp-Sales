@@ -41,9 +41,10 @@ import org.joda.time.DateMidnight;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: Reminder_Base.java 7568 2012-05-31 23:57:47Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("f0c3b423-b48a-4eef-9c75-891330544b40")
 @EFapsRevision("$Rev$")
@@ -72,10 +73,14 @@ public abstract class Reminder_Base
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
         final Insert insert = new Insert(CISales.Reminder);
         insert.add(CISales.Reminder.Contact, contactid);
-        insert.add(CISales.Reminder.CrossTotal, getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Reminder.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Reminder.RateNetTotal, getNetTotal(calcList));
-        insert.add(CISales.Reminder.RateCrossTotal, getCrossTotal(calcList));
+        insert.add(CISales.Reminder.CrossTotal,
+                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Reminder.NetTotal,
+                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Reminder.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Reminder.RateCrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.Reminder.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.Reminder.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.Reminder.CurrencyId, baseCurrInst.getId());
@@ -127,15 +132,31 @@ public abstract class Reminder_Base
                 posIns.add(CISales.ReminderPosition.Rate, rateObj);
                 posIns.add(CISales.ReminderPosition.RateCurrencyId, rateCurrInst.getId());
                 posIns.add(CISales.ReminderPosition.CrossUnitPrice,
-                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.ReminderPosition.NetUnitPrice,
-                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.ReminderPosition.CrossPrice,
-                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.ReminderPosition.NetPrice,
-                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.ReminderPosition.DiscountNetUnitPrice,
-                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                                calc.getDiscountNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.RateNetUnitPrice,
+                                calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.RateCrossUnitPrice,
+                                calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.RateDiscountNetUnitPrice,
+                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.RateNetPrice,
+                                calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.ReminderPosition.RateCrossPrice,
+                                calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+
                 add2PositionInsert(_parameter, calc, posIns);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());

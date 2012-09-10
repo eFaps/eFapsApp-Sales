@@ -41,9 +41,10 @@ import org.joda.time.DateMidnight;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id: CashReceipt_Base.java 6430 2011-04-19 18:44:28Z jorge.cueva@moxter.net $
+ * @version $Id: CashReceipt_Base.java 6430 2011-04-19 18:44:28Z
+ *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("f084c0b4-dcb0-4ae4-b84e-1841f0ea13ca")
 @EFapsRevision("$Rev: 1$")
@@ -52,6 +53,7 @@ public abstract class CashReceipt_Base
 {
     /**
      * Method for create a new CashReceipt.
+     * 
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -65,7 +67,7 @@ public abstract class CashReceipt_Base
 
     /**
      * Internal Method to create the document and the position.
-     *
+     * 
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Instance of CreatedDoc.
      * @throws EFapsException on error.
@@ -88,12 +90,16 @@ public abstract class CashReceipt_Base
                         BigDecimal.ROUND_HALF_UP);
 
         final Insert insert = new Insert(CISales.CashReceipt);
-        insert.add(CISales.CashReceipt.RateCrossTotal, getCrossTotal(calcList));
-        insert.add(CISales.CashReceipt.RateNetTotal, getNetTotal(calcList));
+        insert.add(CISales.CashReceipt.RateCrossTotal, getCrossTotal(calcList)
+                        .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CashReceipt.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.CashReceipt.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.CashReceipt.CrossTotal,
-                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.CashReceipt.NetTotal, getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP));
+                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CashReceipt.NetTotal,
+                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.CashReceipt.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.CashReceipt.Contact, contactid);
         insert.add(CISales.CashReceipt.Date, date == null
@@ -115,7 +121,7 @@ public abstract class CashReceipt_Base
 
     /**
      * Internal Method to create the positions for this Document.
-     *
+     * 
      * @param _parameter Parameter as passed from eFaps API.
      * @param _calcList List of Calculators
      * @param _createdDoc cretaed Document
@@ -151,13 +157,30 @@ public abstract class CashReceipt_Base
             posIns.add(CISales.CashReceiptPosition.Rate, rateObj);
             posIns.add(CISales.CashReceiptPosition.RateCurrencyId, rateCurrInst.getId());
             posIns.add(CISales.CashReceiptPosition.CrossUnitPrice,
-                                                calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
             posIns.add(CISales.CashReceiptPosition.NetUnitPrice,
-                                                calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.CashReceiptPosition.CrossPrice, calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.CashReceiptPosition.NetPrice, calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP));
+                            calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.CrossPrice,
+                            calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.NetPrice,
+                            calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
             posIns.add(CISales.CashReceiptPosition.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice().divide(rate,
-                                                                                    BigDecimal.ROUND_HALF_UP));
+                            BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.RateNetUnitPrice,
+                            calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.RateCrossUnitPrice,
+                            calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.RateDiscountNetUnitPrice,
+                            calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.RateNetPrice,
+                            calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+            posIns.add(CISales.CashReceiptPosition.RateCrossPrice,
+                            calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+
             posIns.execute();
             i++;
         }

@@ -36,7 +36,7 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id$
  */
@@ -48,7 +48,7 @@ public abstract class CostSheet_Base
 
     /**
      * Executed from a Command execute vent to create a new CostSheet.
-     *
+     * 
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -62,8 +62,8 @@ public abstract class CostSheet_Base
 
     /**
      * Create a new CostSheet.
-     *
-     * @param _parameter    Parameter as passed from the eFaps API.
+     * 
+     * @param _parameter Parameter as passed from the eFaps API.
      * @return Instance of the created Document.
      * @throws EFapsException on error.
      */
@@ -76,10 +76,10 @@ public abstract class CostSheet_Base
         final Object[] rateObj = getRateObject(_parameter);
         final Insert insert = new Insert(CISales.CostSheet);
         insert.add(CISales.CostSheet.Contact, contactid);
-        insert.add(CISales.CostSheet.CrossTotal, getCrossTotal(calcList));
-        insert.add(CISales.CostSheet.NetTotal, getNetTotal(calcList));
-        insert.add(CISales.CostSheet.RateNetTotal, getNetTotal(calcList));
-        insert.add(CISales.CostSheet.RateCrossTotal, getCrossTotal(calcList));
+        insert.add(CISales.CostSheet.CrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CostSheet.NetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CostSheet.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.CostSheet.RateCrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.CostSheet.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.CostSheet.Date, date);
         insert.add(CISales.CostSheet.Salesperson, _parameter.getParameterValue("salesperson"));
@@ -111,6 +111,12 @@ public abstract class CostSheet_Base
             posIns.add(CISales.CostSheetPosition.CurrencyId, _parameter.getParameterValue("rateCurrencyId"));
             posIns.add(CISales.CostSheetPosition.Rate, rateObj);
             posIns.add(CISales.CostSheetPosition.RateCurrencyId, _parameter.getParameterValue("rateCurrencyId"));
+            posIns.add(CISales.CostSheetPosition.RateNetUnitPrice, calc.getNetUnitPriceStr());
+            posIns.add(CISales.CostSheetPosition.RateCrossUnitPrice, calc.getCrossUnitPriceStr());
+            posIns.add(CISales.CostSheetPosition.RateDiscountNetUnitPrice, calc.getDiscountNetUnitPrice());
+            posIns.add(CISales.CostSheetPosition.RateNetPrice, calc.getNetUnitPriceStr());
+            posIns.add(CISales.CostSheetPosition.RateCrossPrice, calc.getCrossUnitPriceStr());
+
             posIns.execute();
             i++;
         }
