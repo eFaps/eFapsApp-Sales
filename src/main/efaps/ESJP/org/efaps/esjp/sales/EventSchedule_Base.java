@@ -11,12 +11,11 @@ import java.util.UUID;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.ci.CIAdminCommon;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -66,15 +65,15 @@ public class EventSchedule_Base extends AbstractDocument_Base
     }
 
 
-    protected void autoCompleteDocs(Parameter _parameter,
-                                 UUID _typeUUID,
-                                 long _status,
-                                 List<Map<String, String>> _list)
+    protected void autoCompleteDocs(final Parameter _parameter,
+                                 final UUID _typeUUID,
+                                 final long _status,
+                                 final List<Map<String, String>> _list)
     throws EFapsException
     {
 
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-        SelectBuilder selectContactName = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact)
+        final SelectBuilder selectContactName = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact)
                         .attribute(CIContacts.Contact.Name);
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
@@ -154,13 +153,13 @@ public class EventSchedule_Base extends AbstractDocument_Base
         return retVal;
     }
 
-    public BigDecimal getTotal(Parameter _parameter)
+    public BigDecimal getTotal(final Parameter _parameter)
     throws EFapsException
     {
         BigDecimal total = BigDecimal.ZERO;
-        String[] oids = _parameter.getParameterValues("document");
+        final String[] oids = _parameter.getParameterValues("document");
         for(int i = 0; i <  oids.length; i++){
-            PrintQuery print = new PrintQuery(oids[i]);
+            final PrintQuery print = new PrintQuery(oids[i]);
             print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
             print.execute();
             total = total.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
@@ -174,12 +173,12 @@ public class EventSchedule_Base extends AbstractDocument_Base
         throws EFapsException
     {
         String ret = null;
-        QueryBuilder queryBuilEventSche = new QueryBuilder(_type);
+        final QueryBuilder queryBuilEventSche = new QueryBuilder(_type);
         queryBuilEventSche.addOrderByAttributeDesc(CIERP.EventScheduleAbstract.Name);
-        InstanceQuery queryEventSche = queryBuilEventSche.getQuery();
+        final InstanceQuery queryEventSche = queryBuilEventSche.getQuery();
         queryEventSche.setIncludeChildTypes(_expandChild);
         queryEventSche.setLimit(1);
-        MultiPrintQuery multiEventShe = new MultiPrintQuery(queryEventSche.execute());
+        final MultiPrintQuery multiEventShe = new MultiPrintQuery(queryEventSche.execute());
         multiEventShe.addAttribute(CIERP.EventScheduleAbstract.Name);
         multiEventShe.execute();
         if (multiEventShe.next()) {
