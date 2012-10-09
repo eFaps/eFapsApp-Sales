@@ -43,7 +43,7 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: DeliveryNote_Base.java 7915 2012-08-17 15:30:12Z
  *          m.aranya@moxter.net $
@@ -55,7 +55,7 @@ public abstract class DeliveryNote_Base
 {
     /**
      * Create a new DeliveryNote.
-     * 
+     *
      * @param _parameter parameter as passed from the eFaps API.
      * @return new Return.
      * @throws EFapsException on error,
@@ -70,7 +70,7 @@ public abstract class DeliveryNote_Base
     /**
      * Method for create a new DeliveryNote and return the instance of the
      * deliveryNote.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return instance of the deliveryNote.
      * @throws EFapsException on error.
@@ -120,43 +120,38 @@ public abstract class DeliveryNote_Base
         return retVal;
     }
 
+    /**
+     * PositionNumber must start with 1.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return deliveryNotePositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] productOids = param.get("product");
         final String[] storageIds = param.get("storage");
 
         final Instance instance = _parameter.getInstance();
         final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
 
-        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute("Product"));
-        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute("Quantity"));
-        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute("DeliveryNote"));
-        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute("UoM"));
+        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.Product.name));
+        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.Quantity.name));
+        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.DeliveryNote.name));
+        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.DeliveryNotePosition.UoM.name));
+        final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.PositionNumber.name));
         String storage = null;
         if (storageIds != null) {
-            for (int i = 0; i < productOids.length; i++) {
-                if (productID[0].equals(((Long) Instance.get(productOids[i]).getId()).toString())) {
-                    storage = storageIds[i];
-                }
-            }
+            final Integer posInt = ((Integer) pos[0]);
+            storage = storageIds[posInt - 1];
         } else {
-
-            // final SearchQuery query = new SearchQuery();
-            // query.setQueryTypes("Products_Inventory");
-            // query.addWhereExprEqValue("Product", productID[0].toString());
-            // query.addSelect("Storage");
-            // query.execute();
-            // if (query.next()) {
-            // storage = ((Long) query.get("Storage")).toString();
-            // }
-
-            // Change SearchQuery to QueryBuilder.
-
             final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
             query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
-            MultiPrintQuery multi = query.getPrint();
+            final MultiPrintQuery multi = query.getPrint();
             multi.addAttribute(CIProducts.Inventory.Storage);
             multi.execute();
             while (multi.next()) {
@@ -164,15 +159,15 @@ public abstract class DeliveryNote_Base
             }
         }
 
-        final Insert insert = new Insert("Products_TransactionOutbound");
-        insert.add("Quantity", qauntity[0]);
-        insert.add("Storage", storage.toString());
-        insert.add("Product", productID[0]);
-        insert.add("Description",
+        final Insert insert = new Insert(CIProducts.TransactionOutbound);
+        insert.add(CIProducts.TransactionOutbound.Quantity, qauntity[0]);
+        insert.add(CIProducts.TransactionOutbound.Storage, storage);
+        insert.add(CIProducts.TransactionOutbound.Product, productID[0]);
+        insert.add(CIProducts.TransactionOutbound.Description,
                         DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
-        insert.add("Date", new DateTime());
-        insert.add("Document", deliveryNodeId[0]);
-        insert.add("UoM", uom[0]);
+        insert.add(CIProducts.TransactionOutbound.Date, new DateTime());
+        insert.add(CIProducts.TransactionOutbound.Document, deliveryNodeId[0]);
+        insert.add(CIProducts.TransactionOutbound.UoM, uom[0]);
         insert.execute();
 
         return new Return();

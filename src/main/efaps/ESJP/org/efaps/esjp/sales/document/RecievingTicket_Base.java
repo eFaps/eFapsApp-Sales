@@ -24,15 +24,18 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -82,43 +85,41 @@ public abstract class RecievingTicket_Base
         throws EFapsException
     {
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] productOids = param.get("product");
         final String[] storageIds = param.get("storage");
 
         final Instance instance = _parameter.getInstance();
         final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
 
-        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute("Product"));
-        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute("Quantity"));
-        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute("RecievingTicket"));
-        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute("UoM"));
-
+        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.Product.name));
+        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.Quantity.name));
+        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.DeliveryNote.name));
+        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.DeliveryNotePosition.UoM.name));
+        final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.PositionNumber.name));
         String storage = null;
         if (storageIds != null) {
-            for (int i = 0; i < productOids.length; i++) {
-                if (productID[0].toString().equals(((Long) Instance.get(productOids[i]).getId()).toString())) {
-                    storage = storageIds[i];
-                    break;
-                }
-            }
+            final Integer posInt = ((Integer) pos[0]);
+            storage = storageIds[posInt - 1];
         } else {
-            final SearchQuery query = new SearchQuery();
-            query.setQueryTypes("Products_Warehouse");
-            query.addSelect("ID");
-            query.execute();
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Warehouse);
+            final InstanceQuery query = queryBldr.getQuery();
             if (query.next()) {
-                storage = ((Long) query.get("ID")).toString();
+                storage = Long.toString(query.getCurrentValue().getId());
             }
         }
 
-        final Insert insert = new Insert("Products_TransactionInbound");
-        insert.add("Quantity", qauntity[0]);
-        insert.add("Storage", storage);
-        insert.add("Product", productID);
-        insert.add("Description", "automatic by Trigger");
-        insert.add("Date", new DateTime());
-        insert.add("Document", deliveryNodeId[0]);
-        insert.add("UoM", uom[0]);
+        final Insert insert = new Insert(CIProducts.TransactionInbound);
+        insert.add(CIProducts.TransactionInbound.Quantity, qauntity[0]);
+        insert.add(CIProducts.TransactionInbound.Storage, storage);
+        insert.add(CIProducts.TransactionInbound.Product, productID[0]);
+        insert.add(CIProducts.TransactionInbound.Description,
+                        DBProperties.getProperty("org.efaps.esjp.sales.document.RecievingTicket.description4Trigger"));
+        insert.add(CIProducts.TransactionInbound.Date, new DateTime());
+        insert.add(CIProducts.TransactionInbound.Document, deliveryNodeId[0]);
+        insert.add(CIProducts.TransactionInbound.UoM, uom[0]);
         insert.execute();
 
         return new Return();
