@@ -61,8 +61,8 @@ Para realizar los pagos, deberá colocar los siguientes datos:
 
   * Fecha y hora: la fecha y la hora que se realiza el pago.
   * Moneda: se elige el tipo de moneda y si se desea agregar otro tipo de moneda que no se encuentre en la lista debe de ingresar a administración y escoger el módulo moneda.
-  * Tipo de pago: elige el tipo de pago que quiere realizar y si desea colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Showadministration.wiki#2.1_Atributos atributos].
-  * Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Showadministration.wiki#2.3_Cuentas cuentas],una vez en cuentas usted debe de crear una CAJA.
+  * Tipo de pago: elige el tipo de pago que quiere realizar y si desea colocar otro tipo de pago que no se encuentre en la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.definitions.Definitions.wiki atributos].
+  * Cuenta: escoger la caja para el pago y si desea agregar mas cajas a a la lista debe de dirigirse a administración y luego a [./org.efaps.wiki.sales.Pettycash.wiki#2.3.1_Caja cuentas],una vez en cuentas usted debe de crear una CAJA.
 
 ====b. Borrar seleccionado====
 Seleccionar uno o varios pagos, dirigirse a la opción acción y elegir borrar seleccionado.
