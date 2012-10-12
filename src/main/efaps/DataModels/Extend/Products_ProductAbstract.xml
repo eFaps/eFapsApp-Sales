@@ -33,6 +33,7 @@
         <version-expression>(version==latest)</version-expression>
         <profiles>
             <profile name="eFaps"/>
+            <profile name="products"/>
         </profiles>
         <name>Products_ProductAbstract</name>
         <purpose abstract="true" />
@@ -114,7 +115,6 @@
         </attribute>
         <!-- CHANGE END -->
     </definition>
-
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -185,7 +185,7 @@
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>SALESUNIT</sqlcolumn>
         </attribute>
-        <!-- CHANGE BEGIN -->
+
         <attribute>
             <name>TaxCategory</name>
             <type>LinkWithRanges</type>
@@ -199,7 +199,7 @@
                 <property name="Type">Sales_TaxCategory</property>
             </trigger>
         </attribute>
-        <!-- CHANGE END -->
+
          <attribute>
             <name>UUID</name>
             <type>String</type>
@@ -213,4 +213,5 @@
             <sqlcolumn>CODE</sqlcolumn>
         </attribute>
     </definition>
+
 </datamodel-type>
