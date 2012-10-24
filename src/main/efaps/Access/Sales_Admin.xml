@@ -61,6 +61,7 @@
         <type>Sales_UsageReport</type>
         <type>Sales_CashReceipt</type>
         <type>Sales_PaymentSchedule</type>
+        <type>Sales_ProductRequest</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -188,6 +189,11 @@
             <key>Canceled</key>
         </status>
 
+        <status group="Sales_ProductRequestStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
 
         <role>Sales_Admin</role>
     </definition>
