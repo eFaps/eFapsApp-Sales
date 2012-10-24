@@ -51,6 +51,7 @@
             <child>Sales_OrderInboundProductMyDesk</child>
             <child>Sales_Document_Report</child>
             <child>Sales_UsageReportMyDesk</child>
+            <child>Sales_ProductRequestMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
