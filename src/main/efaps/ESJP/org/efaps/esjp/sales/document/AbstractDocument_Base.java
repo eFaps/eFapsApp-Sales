@@ -37,6 +37,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -52,11 +53,13 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
@@ -83,7 +86,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: AbstractDocument_Base.java 3674 2010-01-28 18:52:35Z jan.moxter
  *          $
@@ -110,7 +113,7 @@ public abstract class AbstractDocument_Base
     /**
      * Method must be called on opening the form containing positions to
      * initialise a new positions calculator cache!
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return new Return
      * @throws EFapsException on error
@@ -125,7 +128,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get a formater.
-     * 
+     *
      * @return a formater
      * @throws EFapsException on error
      */
@@ -188,7 +191,7 @@ public abstract class AbstractDocument_Base
     /**
      * Used by the AutoCompleteField used in the select doc form for
      * DeliveryNote.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete
      * @throws EFapsException on error.
@@ -202,7 +205,7 @@ public abstract class AbstractDocument_Base
     /**
      * Used by the AutoCompleteField used in the select doc form for
      * IncomingInvoices.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -215,7 +218,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for Invoices.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -229,7 +232,7 @@ public abstract class AbstractDocument_Base
     /**
      * Used by the AutoCompleteField used in the select doc form for
      * OrderInbound.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -244,7 +247,7 @@ public abstract class AbstractDocument_Base
     /**
      * Used by the AutoCompleteField used in the select doc form for
      * OrderOutbound.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -264,7 +267,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for Quotations.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -277,7 +280,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for Receipts.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -290,7 +293,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for Receipts.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -303,7 +306,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for Receipts.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -316,7 +319,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for CostSheets.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
      * @throws EFapsException on error.
@@ -329,7 +332,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Generic method to get a list of documents.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @param _typeUUID UUID of the type to be searched.
      * @param _status status used as additional filter, <code>null</code> to
@@ -373,8 +376,39 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
-    protected void add2QueryBldr(Parameter _parameter,
-                                 QueryBuilder _queryBldr)
+    /**
+     * Used by the AutoCompleteField used in the select contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
+        queryBldr.addWhereAttrMatchValue(CIContacts.Contact.Name, input + "*").setIgnoreCase(true);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIContacts.Contact.OID, CIContacts.Contact.Name);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String> getAttribute(CIContacts.Contact.Name);
+            final String oid = multi.<String> getAttribute(CIContacts.Contact.OID);
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put("eFapsAutoCompleteKEY", oid);
+            map.put("eFapsAutoCompleteVALUE", name);
+            map.put("eFapsAutoCompleteCHOICE", name);
+            list.add(map);
+        }
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    protected void add2QueryBldr(final Parameter _parameter,
+                                 final QueryBuilder _queryBldr)
         throws EFapsException
     {
         // TODO Auto-generated method stub
@@ -383,7 +417,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for DeliveryNote.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -396,7 +430,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for IncomingInvoice.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -409,7 +443,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for IncomingInvoice.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -422,7 +456,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for Invoice.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -435,7 +469,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for OrderInbound.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -448,7 +482,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for OrderOutbound.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -461,7 +495,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for Quotation.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -474,7 +508,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for Receipt.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -487,7 +521,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for CreditNote.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -500,7 +534,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the update event used in the select doc form for CostSheet.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -513,7 +547,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Generic method to get the listmap for update event.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -549,7 +583,7 @@ public abstract class AbstractDocument_Base
     /**
      * Method to get a small script that cleans out all the field minus the
      * current one.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return script
      */
@@ -603,37 +637,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the AutoCompleteField used in the select contact.
-     * 
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4Contact(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
-        queryBldr.addWhereAttrMatchValue(CIContacts.Contact.Name, input + "*").setIgnoreCase(true);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIContacts.Contact.OID, CIContacts.Contact.Name);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String> getAttribute(CIContacts.Contact.Name);
-            final String oid = multi.<String> getAttribute(CIContacts.Contact.OID);
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", oid);
-            map.put("eFapsAutoCompleteVALUE", name);
-            map.put("eFapsAutoCompleteCHOICE", name);
-            list.add(map);
-        }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
-    }
-
-    /**
      * @param _parameter Parameter as passeb by the eFaps API
      * @return update map
      * @throws EFapsException on error
@@ -657,7 +660,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the value for the field directly under the Contact.
-     * 
+     *
      * @param _instance Instacne of the contact
      * @return String for the field
      * @throws EFapsException on error
@@ -689,7 +692,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method is called from a hidden field to include javascript in the form.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Return containing the javascript
      * @throws EFapsException on error
@@ -704,7 +707,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the javascript.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return javascript
      * @throws EFapsException on error
@@ -717,7 +720,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get a javascript used to fill fields in a form.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _setStyle must the style be set
      * @return javascript
@@ -755,8 +758,8 @@ public abstract class AbstractDocument_Base
                         .append("ele.setAttributeNode(attr);")
                         .append("document.getElementById('eFapsContentDiv').appendChild(ele);");
 
-        FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        TargetMode mode = command.getTargetMode();
+        final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final TargetMode mode = command.getTargetMode();
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
 
         final boolean copy = _parameter.getParameterValue("selectedRow") != null;
@@ -780,7 +783,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the javascript part for setting the values.
-     * 
+     *
      * @param _instance instance to be copied
      * @return javascript
      * @throws EFapsException on error
@@ -943,7 +946,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to set additional fields for the document.
-     * 
+     *
      * @param _instance Instance of the document.
      * @return new StringBuilder with the additional fields.
      * @throws EFapsException
@@ -956,7 +959,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to set additional positions for the document.
-     * 
+     *
      * @param _instPos Instance of the document.
      * @param _oidProd OID of the product in the position.
      * @param _position Integer with the position in the positions.
@@ -974,7 +977,7 @@ public abstract class AbstractDocument_Base
     /**
      * Add additional JavaScript to the Script that will be executed after the
      * DOM of the Html-Document was loaded. Can be used by implementations.
-     * 
+     *
      * @param _instance Instance of the derived Document
      * @return String containing valid Javascript
      * @throws EFapsException on error
@@ -987,7 +990,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Auto-complete for the field with products.
-     * 
+     *
      * @param _parameter parameter from eFaps.
      * @return List to be rendered for auto-complete.
      * @throws EFapsException on error.
@@ -1069,7 +1072,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to update the fields on leaving the product field.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list with values
      * @throws EFapsException on errro
@@ -1151,7 +1154,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to evaluate the selected row.
-     * 
+     *
      * @param _parameter paaremter
      * @return number of selected row.
      */
@@ -1168,7 +1171,7 @@ public abstract class AbstractDocument_Base
     /**
      * Method is executed as an update event of the field containing the
      * quantity of products to calculate the new totals.
-     * 
+     *
      * @param _parameter
      * @return
      * @throws EFapsException
@@ -1201,7 +1204,7 @@ public abstract class AbstractDocument_Base
     /**
      * Method is executed as an update event of the field containing the net
      * unit price for products to calculate the new totals.
-     * 
+     *
      * @param _parameter
      * @return
      * @throws EFapsException
@@ -1235,7 +1238,7 @@ public abstract class AbstractDocument_Base
     /**
      * Method is executed as an update event of the field containing the
      * discount for products to calculate the new totals.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @return Return
      * @throws EFapsException on error
@@ -1270,7 +1273,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Analyse the table to calculate.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @param _row4priceFromDB the price for the given row will be retrieved
      *            from the DB, null means none, -1 means all
@@ -1364,7 +1367,7 @@ public abstract class AbstractDocument_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @return true it minimum retail price must be applied else false
      * @throws EFapsException on error
-     * 
+     *
      */
     @Override
     public boolean isIncludeMinRetail(final Parameter _parameter)
@@ -1434,7 +1437,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the
-     * 
+     *
      * @param _calcList
      * @return
      * @throws EFapsException
@@ -1461,7 +1464,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the maximum for a value from the database.
-     * 
+     *
      * @param _type type to search for
      * @param _expandChild expand childs
      * @return maximum
@@ -1488,7 +1491,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the value for the name.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return Return containing the value
      * @throws EFapsException on error
@@ -1527,7 +1530,7 @@ public abstract class AbstractDocument_Base
      * Called from the field with the rate currency for a document. Returning a
      * dropdown with all currencies. The default is set inside the
      * SystemConfiguration for sales.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return a dropdown with all currency
      * @throws EFapsException on error
@@ -1566,7 +1569,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Update the form after change of rate currency.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return javascript for update
      * @throws EFapsException on error
@@ -1638,7 +1641,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to add extra fields to update when the currency change.
-     * 
+     *
      * @param _parameter as passed from eFaps API.
      * @param _calculators with the values.
      * @return StringBuilder.
@@ -1653,7 +1656,7 @@ public abstract class AbstractDocument_Base
     /**
      * Render a checkbox to disable the application of taxes used by Forms
      * during billing.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return Html sniplett
      */
@@ -1668,7 +1671,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Render a script to set the focus to another field.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return javascript sniplett
      */
@@ -1696,7 +1699,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to set the openAmount into the session cache.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _calcList List of <code>Calculator</code>
      * @throws EFapsException on error
@@ -1714,7 +1717,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to render a drop-down field containing all warehouses.
-     * 
+     *
      * @param _parameter Parameter as passed from eFaps.
      * @return Return containing a SNIPPLET.
      * @throws EFapsException on error.
@@ -1753,7 +1756,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Get a rate Object from the User Interface.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Object
      * @throws EFapsException on error.
@@ -1773,7 +1776,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Get the name for the document on creation.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new Name
      * @throws EFapsException on error
@@ -1790,11 +1793,106 @@ public abstract class AbstractDocument_Base
         BigDecimal number = BigDecimal.ZERO;
         try {
             number = (BigDecimal) Calculator_Base.getFormatInstance().parse(_number);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         return number;
+    }
+
+
+    // new methods for abstraction
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _attributeName attributerName the FieldName is wanted for
+     * @return fieldname
+     * @throws EFapsException on error
+     */
+    protected String getFieldName4Attribute(final Parameter _parameter,
+                                            final String _attributeName)
+        throws EFapsException
+    {
+        return StringUtils.uncapitalize(_attributeName);
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _insert       insert to add to
+     * @param _createdDoc   document created
+     * @throws EFapsException on error
+     */
+    protected void addStatus2DocCreate(final Parameter _parameter,
+                                       final Insert _insert,
+                                       final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        Status status = null;
+        if (props.containsKey("StatusGroup")) {
+            status = Status.find((String) props.get("StatusGroup"), (String) props.get("Status"));
+        }
+
+        if (status != null) {
+            _insert.add(getType4DocCreate(_parameter).getStatusAttribute(), status.getId());
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Type use for the insert
+     * @throws EFapsException on error
+     */
+    protected Type getType4DocCreate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
+        return command.getTargetCreateType();
+    }
+
+    /**
+     * Method is called in the process of creation of a Document.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _insert   insert to add to
+     * @param _createdDoc   document created
+     * @throws EFapsException on error
+     */
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        // used by implementation
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return type used for creation of positions
+     * @throws EFapsException on error
+     */
+    protected Type getType4PositionCreate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        Type ret = null;
+        if (props.containsKey("PositionType")) {
+            ret = Type.get(String.valueOf(props.get("PositionType")));
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return number of positions
+     * @throws EFapsException on error
+     */
+    protected int getPositionsCount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] countAr = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.PositionAbstract.Quantity.name));
+        return countAr == null ? 0 : countAr.length;
     }
 }
