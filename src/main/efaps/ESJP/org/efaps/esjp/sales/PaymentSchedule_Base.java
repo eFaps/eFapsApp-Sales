@@ -43,7 +43,7 @@ public class PaymentSchedule_Base extends EventSchedule
         return new Return();
     }
 
-    protected CreateSchedule createSchedule(Parameter _parameter)
+    protected CreateSchedule createSchedule(final Parameter _parameter)
         throws EFapsException
     {
         // Sales-Configuration
@@ -60,28 +60,28 @@ public class PaymentSchedule_Base extends EventSchedule
 
         insertPaySche.execute();
 
-        CreateSchedule createSchedule = new CreateSchedule(insertPaySche.getInstance());
+        final CreateSchedule createSchedule = new CreateSchedule(insertPaySche.getInstance());
         createPositions(_parameter, createSchedule);
 
         return createSchedule;
 
     }
 
-    protected void createPositions(Parameter _parameter,
-                                 CreateSchedule createSchedule)
+    protected void createPositions(final Parameter _parameter,
+                                 final CreateSchedule createSchedule)
         throws EFapsException
     {
-        String oids[] = _parameter.getParameterValues("document");
+        final String oids[] = _parameter.getParameterValues("document");
         Integer i = 0;
-        for(String oid : oids)
+        for(final String oid : oids)
         {
-            Instance instDoc = Instance.get(oid);
-            PrintQuery printDoc = new PrintQuery(instDoc);
+            final Instance instDoc = Instance.get(oid);
+            final PrintQuery printDoc = new PrintQuery(instDoc);
             printDoc.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
             printDoc.addAttribute(CISales.DocumentAbstract.Note);
             printDoc.execute();
 
-            Insert insertPayShePos = new Insert(CISales.PaymentSchedulePosition);
+            final Insert insertPayShePos = new Insert(CISales.PaymentSchedulePosition);
             insertPayShePos.add(CISales.PaymentSchedulePosition.PaymentSchedule, createSchedule.getInstance().getId());
             insertPayShePos.add(CISales.PaymentSchedulePosition.Document, instDoc.getId());
             insertPayShePos.add(CISales.PaymentSchedulePosition.PositionNumber, i);
@@ -96,9 +96,9 @@ public class PaymentSchedule_Base extends EventSchedule
         throws EFapsException
     {
         final Instance instPos = _parameter.getInstance();
-        SelectBuilder selectPaySche = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.PaymentSchedule).oid();
+        final SelectBuilder selectPaySche = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.PaymentSchedule).oid();
 
-        PrintQuery printPos = new PrintQuery(instPos);
+        final PrintQuery printPos = new PrintQuery(instPos);
         printPos.addAttribute(CISales.PaymentSchedulePosition.NetPrice);
         printPos.addSelect(selectPaySche);
 
@@ -106,12 +106,12 @@ public class PaymentSchedule_Base extends EventSchedule
         BigDecimal total = BigDecimal.ZERO;
         if (printPos.execute()) {
             posNetPrice = printPos.<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice);
-            Instance instPaySche = Instance.get(printPos.<String>getSelect(selectPaySche));
-            PrintQuery printPaySche = new PrintQuery(instPaySche);
+            final Instance instPaySche = Instance.get(printPos.<String>getSelect(selectPaySche));
+            final PrintQuery printPaySche = new PrintQuery(instPaySche);
             printPaySche.addAttribute(CISales.PaymentSchedule.Total);
             if (printPaySche.execute()) {
                 total = printPaySche.<BigDecimal>getAttribute(CISales.PaymentSchedule.Total);
-                Update updatePaySche = new Update(printPaySche.getCurrentInstance());
+                final Update updatePaySche = new Update(printPaySche.getCurrentInstance());
                 updatePaySche.add(CISales.PaymentSchedule.Total, total.subtract(posNetPrice).setScale(2, RoundingMode.HALF_UP));
                 updatePaySche.execute();
             }

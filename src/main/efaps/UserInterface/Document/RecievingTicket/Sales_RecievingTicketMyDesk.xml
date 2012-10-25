@@ -34,7 +34,6 @@
     <version-expression>(version==latest)</version-expression>
     <name>Sales_RecievingTicketMyDesk</name>
     <access>
-      <role>Sales_Delivery</role>
       <role>Sales_Admin</role>
     </access>
     <target>

@@ -43,7 +43,7 @@
         <attribute>
             <name>TargetDocument</name>
             <type>Link</type>
-            <typelink>Sales_DocumentSumAbstract</typelink>
+            <typelink>ERP_PaymentDocumentAbstract</typelink>
             <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

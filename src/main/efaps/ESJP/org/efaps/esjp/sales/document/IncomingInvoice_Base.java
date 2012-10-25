@@ -45,7 +45,7 @@ import org.joda.time.DateMidnight;
 
 /**
  * Base class for Type Incoming Invoice.
- * 
+ *
  * @author The eFaps Team
  * @version $Id: IncomingInvoice_Base.java 7921 2012-08-20 14:51:53Z
  *          m.aranya@moxter.net $
@@ -57,7 +57,7 @@ public abstract class IncomingInvoice_Base
 {
     /**
      * Executed from a Command execute vent to create a new Incoming Invoice.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
@@ -72,7 +72,7 @@ public abstract class IncomingInvoice_Base
 
     /**
      * Create a new Incoming Invoice.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return Instance of the created Document
      * @throws EFapsException on error
@@ -96,26 +96,26 @@ public abstract class IncomingInvoice_Base
                         BigDecimal.ROUND_HALF_UP);
 
         final DecimalFormat formater = Calculator_Base.getFormatInstance();
-        String strNetTotal = _parameter.getParameterValue("netTotal");
-        String strCrossTotal = _parameter.getParameterValue("crossTotal");
+        final String strNetTotal = _parameter.getParameterValue("netTotal");
+        final String strCrossTotal = _parameter.getParameterValue("crossTotal");
         BigDecimal bigCrossTotal = BigDecimal.ZERO;
         BigDecimal bigNetTotal = BigDecimal.ZERO;
 
         try {
             bigCrossTotal = (BigDecimal) formater.parse(strCrossTotal);
             bigNetTotal = (BigDecimal) formater.parse(strNetTotal);
-        } catch (ParseException e) {
+        } catch (final ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        BigDecimal calCrossTotal = getCrossTotal(calcList);
-        BigDecimal calNetTotal = getNetTotal(calcList);
+        final BigDecimal calCrossTotal = getCrossTotal(calcList);
+        final BigDecimal calNetTotal = getNetTotal(calcList);
 
-        BigDecimal crossTotal = bigCrossTotal
+        final BigDecimal crossTotal = bigCrossTotal
                         .compareTo(calCrossTotal) == 0 ? getCrossTotal(calcList) : bigCrossTotal;
 
-        BigDecimal netTotal = bigNetTotal
+        final BigDecimal netTotal = bigNetTotal
                         .compareTo(calNetTotal) == 0 ? getNetTotal(calcList) : bigNetTotal;
 
         final Insert insert = new Insert(CISales.IncomingInvoice);
