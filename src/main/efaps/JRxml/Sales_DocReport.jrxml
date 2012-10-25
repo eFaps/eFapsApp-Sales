@@ -58,7 +58,8 @@
 	</field>
 	<variable name="canceled" class="java.lang.Boolean">
 		<variableExpression><![CDATA[new Boolean($F{status}.equals(new Long(Status.find("Sales_InvoiceStatus", "Replaced").getId()))
-|| $F{status}.equals(new Long(Status.find("Sales_ReceiptStatus", "Replaced").getId())))]]></variableExpression>
+|| $F{status}.equals(new Long(Status.find("Sales_ReceiptStatus", "Replaced").getId()))
+|| $F{status}.equals(new Long(Status.find("Sales_CreditNoteStatus", "Replaced").getId())))]]></variableExpression>
 	</variable>
 	<variable name="negative" class="java.lang.Boolean">
 		<variableExpression><![CDATA[new Boolean($F{typeUUID}.equals(UUID.fromString("6409ee95-3cd2-4063-8080-d010466fd5c7")))]]></variableExpression>
