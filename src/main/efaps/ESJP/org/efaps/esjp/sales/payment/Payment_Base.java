@@ -54,13 +54,14 @@ public abstract class Payment_Base
     protected CreatedDoc createDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
+        final AbstractCommand command = (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT);
         final Insert insert = new Insert(command.getTargetCreateType());
         insert.add(CISales.PaymentDocumentAbstract.Name, _parameter.getParameterValue("name"));
+        insert.add(CISales.PaymentDocumentAbstract.Note, _parameter.getParameterValue("description"));
         insert.add(CISales.PaymentDocumentAbstract.Amount, _parameter.getParameterValue("amount"));
         insert.add(CISales.PaymentDocumentAbstract.Date, _parameter.getParameterValue("date"));
         insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, _parameter.getParameterValue("currencyLink"));
-        insert.add(CISales.PaymentDocumentAbstract.StatusAbstract, Status.find(CISales.PaymentDocumentStatus.uuid, "Open"));
+        insert.add(CISales.PaymentDocumentAbstract.StatusAbstract, Status.find(CISales.PaymentDocumentStatus.uuid, "Open").getId());
         insert.execute();
         final CreatedDoc createdDoc = new CreatedDoc(insert.getInstance());
         return createdDoc;

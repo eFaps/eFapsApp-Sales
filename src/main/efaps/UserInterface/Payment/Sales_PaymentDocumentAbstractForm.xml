@@ -39,7 +39,7 @@
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Description</property>
+            <property name="Attribute">Note</property>
         </field>
         <field name="date">
             <property name="Attribute">Date</property>
