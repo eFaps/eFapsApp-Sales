@@ -165,7 +165,6 @@ public abstract class Account_Base
             final Insert transInsert = new Insert(CISales.TransactionOutbound);
             transInsert.add(CISales.TransactionOutbound.Amount, amount);
             transInsert.add(CISales.TransactionOutbound.CurrencyId, currId);
-            transInsert.add(CISales.TransactionOutbound.PaymentType, payIds[i]);
             transInsert.add(CISales.TransactionOutbound.Payment, payInst.getId());
             transInsert.add(CISales.TransactionOutbound.Account, cashDeskInstance.getId());
             transInsert.add(CISales.TransactionOutbound.Description, "CashDeskBalance");
@@ -327,9 +326,6 @@ public abstract class Account_Base
                         .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
         final AbstractCommand command = _parameter.get(ParameterValues.UIOBJECT) instanceof AbstractCommand
                                     ? (AbstractCommand)_parameter.get(ParameterValues.UIOBJECT) : null;
-        final Instance inst = (_parameter.getCallInstance() == null
-                                                ? _parameter.getInstance() : _parameter.getCallInstance());
-
         final List<Instance> lstInst = new ArrayList<Instance>();
 
         String[] oids = _parameter.getParameterValues("selectedRow");
@@ -677,8 +673,6 @@ public abstract class Account_Base
             final Insert transInsert = new Insert(type);
             transInsert.add(CISales.TransactionAbstract.Amount, difference.abs());
             transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
-            transInsert.add(CISales.TransactionAbstract.PaymentType, SystemConfiguration.get(
-                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("Default_PaymentType").getId());
             transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
             transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
             transInsert.add(CISales.TransactionAbstract.Description,
@@ -825,8 +819,6 @@ public abstract class Account_Base
         final Insert transInsert = new Insert(CISales.TransactionOutbound);
         transInsert.add(CISales.TransactionOutbound.Amount, crossTotalStr);
         transInsert.add(CISales.TransactionOutbound.CurrencyId, curId);
-        transInsert.add(CISales.TransactionOutbound.PaymentType, SystemConfiguration.get(
-                    UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("Default_PaymentType").getId());
         transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance().getId());
         transInsert.add(CISales.TransactionOutbound.Account, accInst.getId());
         transInsert.add(CISales.TransactionOutbound.Description, note);

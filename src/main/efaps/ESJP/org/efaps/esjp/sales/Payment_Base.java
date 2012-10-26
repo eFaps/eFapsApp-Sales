@@ -113,7 +113,7 @@ public abstract class Payment_Base
 
             final String[] amounts = _parameter.getParameterValues("amount");
             final String[] currencies = _parameter.getParameterValues("currency");
-            final String[] paymentTypes = _parameter.getParameterValues("paymentType");
+            _parameter.getParameterValues("paymentType");
             final String[] descriptions = _parameter.getParameterValues("description");
             final String[] accounts = _parameter.getParameterValues("account");
             for (int i = 0; i < amounts.length; i++) {
@@ -121,7 +121,6 @@ public abstract class Payment_Base
                 transIns.add(CISales.TransactionInbound.Amount, amounts[i]);
                 transIns.add(CISales.TransactionInbound.CurrencyId, currencies[i]);
                 transIns.add(CISales.TransactionInbound.Payment, ((Long) paymentInst.getId()).toString());
-                transIns.add(CISales.TransactionInbound.PaymentType, paymentTypes[i]);
                 transIns.add(CISales.TransactionInbound.Description, descriptions[i].length() < 1
                                 ? DBProperties.getProperty("Sales_Payment.Label")
                                 : descriptions[i]);
