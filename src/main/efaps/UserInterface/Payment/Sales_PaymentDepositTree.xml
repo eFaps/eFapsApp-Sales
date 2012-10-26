@@ -19,23 +19,20 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1ef1687d-8cb0-46dd-9192-eecc84b4a4f6</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e766d398-6cf3-484b-b1a7-0d2ac720ee59</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstractTree</name>
+        <name>Sales_PaymentDepositTree</name>
         <!-- targets -->
         <target>
-            <menu>Sales_PaymentDocumentAbstractTree_Menu</menu>
-            <form>Sales_PaymentDocumentAbstractForm</form>
+            <menu>Sales_PaymentDepositTree_Menu</menu>
+            <form>Sales_PaymentDepositPaymentForm</form>
         </target>
         <!-- type tree for -->
-        <type>Sales_PaymentDocumentAbstract</type>
+        <type>Sales_PaymentDeposit</type>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

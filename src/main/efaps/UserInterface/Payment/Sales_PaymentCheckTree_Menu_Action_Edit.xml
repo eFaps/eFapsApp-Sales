@@ -28,13 +28,13 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstractTree_Menu_Action_Edit</name>
+        <name>Sales_PaymentCheckTree_Menu_Action_Edit</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_PaymentDocumentAbstractForm</form>
+            <form>Sales_PaymentCheckPaymentForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit"/>
         </target>
         <!-- properties -->

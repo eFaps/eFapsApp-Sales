@@ -34,8 +34,8 @@
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_PaymentDocumentAbstractForm</form>
-            <execute method="createPaymentPlanned" program="org.efaps.esjp.sales.payment.Payment" />
+            <form>Sales_PaymentDepositPaymentForm</form>
+            <execute method="createPaymentPlanned" program="org.efaps.esjp.sales.payment.PaymentDeposit" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

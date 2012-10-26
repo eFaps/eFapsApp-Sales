@@ -24,17 +24,27 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c09d84c3-56d4-4781-8337-b45e0ab568ab</uuid>
-    <file-application>eFapsApp-Accounting</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstractForm</name>
+        <name>Sales_PaymentCheckPaymentForm</name>
         <!-- fields -->
         <field name="name">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_PaymentCheckPaymentForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
+                name="Sales_PaymentDocumentAbstractForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
         </field>
         <field name="description">
             <property name="ModeCreate">EDITABLE</property>
@@ -63,8 +73,10 @@
             <property name="Attribute">Status</property>
         </field>
         <field name="account">
-            <property name="Label">Sales_PaymentDocumentAbstractForm.account.Label</property>
+            <property name="Label">Sales_PaymentCheckPaymentForm.account.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
             <trigger  program="org.efaps.esjp.sales.Transaction" method="value4Account"
                 name="Sales_PaymentDocumentAbstractForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -99,12 +111,12 @@
 
          <field name="headingPayment" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_PaymentDocumentAbstractForm.headingPayment.Heading</property>
+            <property name="Label">Sales_PaymentCheckPaymentForm.headingPayment.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="paymentTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
-            <table>Sales_PaymentDocumentPaymentTable</table>
+            <table>Sales_PaymentCheckPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">TargetDocument</property>

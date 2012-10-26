@@ -28,10 +28,10 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstractTree_Menu</name>
+        <name>Sales_PaymentCheckTree_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Sales_PaymentDocumentAbstractTree_Menu_Action</child>
+            <child>Sales_PaymentCheckTree_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>
