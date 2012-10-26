@@ -96,5 +96,19 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+
+         <field name="headingPayment" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_PaymentDocumentAbstractForm.headingPayment.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="paymentTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Sales_PaymentDocumentPaymentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_Payment</property>
+                <property name="LinkFroms">TargetDocument</property>
+            </evaluate>
+        </field>
     </definition>
 </ui-form>
