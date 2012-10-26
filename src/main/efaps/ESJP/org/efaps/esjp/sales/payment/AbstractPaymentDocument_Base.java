@@ -53,7 +53,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -200,7 +200,7 @@ public abstract class AbstractPaymentDocument_Base
 
     /**
      * Method is calles in the preocess of creation
-     *
+     * 
      * @param _parameter Parameter as passed by the eFaps API
      * @param _posInsert insert to add to
      * @param _createdDoc document created
@@ -282,7 +282,7 @@ public abstract class AbstractPaymentDocument_Base
         final int selected = getSelectedRow(_parameter);
         final String doc = _parameter.getParameterValues("createDocument")[selected];
         if (doc != null) {
-            final BigDecimal total4Doc = getNetTotal4Document(doc);
+            final BigDecimal total4Doc = getCrossTotal4Document(doc);
             final BigDecimal payments4Doc = getPayments4Document(doc);
             final StringBuilder bldr = new StringBuilder();
             bldr.append(getTwoDigitsformater().format(total4Doc))
@@ -313,7 +313,7 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
-    private BigDecimal getNetTotal4Document(final String _doc)
+    private BigDecimal getCrossTotal4Document(final String _doc)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
@@ -322,7 +322,7 @@ public abstract class AbstractPaymentDocument_Base
             final PrintQuery print = new PrintQuery(_doc);
             print.addAttribute(CISales.DocumentSumAbstract.NetTotal);
             print.execute();
-            ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
+            ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         }
         return ret;
     }
