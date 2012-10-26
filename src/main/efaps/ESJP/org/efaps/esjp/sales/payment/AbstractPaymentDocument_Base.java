@@ -48,7 +48,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -138,6 +138,9 @@ public abstract class AbstractPaymentDocument_Base
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
 
             final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
+
+            final Insert transIns = new Insert(CISales.TransactionInbound);
+
             if (createDocument.length > i && createDocument[i] != null) {
                 final Instance inst = Instance.get(createDocument[i]);
                 if (inst.isValid()) {
@@ -146,6 +149,7 @@ public abstract class AbstractPaymentDocument_Base
             }
             if (paymentAmount.length > i && paymentAmount[i] != null) {
                 payInsert.add(CISales.Payment.Amount, paymentAmount[i]);
+                transIns.add(CISales.TransactionInbound.Amount, paymentAmount[i]);
             }
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
             payInsert.add(CISales.Payment.CurrencyLink,
@@ -156,6 +160,17 @@ public abstract class AbstractPaymentDocument_Base
                                             CISales.PaymentDocumentAbstract.Date.name)));
             add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
             payInsert.execute();
+
+            transIns.add(CISales.TransactionInbound.CurrencyId,
+                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
+            transIns.add(CISales.TransactionInbound.Payment, payInsert.getId());
+            transIns.add(CISales.TransactionInbound.Date,
+                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                                            CISales.PaymentDocumentAbstract.Date.name)));
+            transIns.add(CISales.TransactionInbound.Account, _parameter.getParameterValue("account"));
+            transIns.execute();
+
         }
     }
 
@@ -180,7 +195,7 @@ public abstract class AbstractPaymentDocument_Base
 
     /**
      * Method is calles in the preocess of creation
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _posInsert insert to add to
      * @param _createdDoc document created
