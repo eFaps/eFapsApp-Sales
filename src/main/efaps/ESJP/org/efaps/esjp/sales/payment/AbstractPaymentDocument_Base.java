@@ -144,28 +144,26 @@ public abstract class AbstractPaymentDocument_Base
                     payInsert.add(CISales.Payment.CreateDocument, inst.getId());
                 }
             }
-            if (paymentAmount.length > i &&  paymentAmount[i] != null) {
+            if (paymentAmount.length > i && paymentAmount[i] != null) {
                 payInsert.add(CISales.Payment.Amount, paymentAmount[i]);
             }
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
             payInsert.add(CISales.Payment.CurrencyLink,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
+                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
             payInsert.add(CISales.Payment.Date,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                                            CISales.PaymentDocumentAbstract.Date.name)));
+                                            CISales.PaymentDocumentAbstract.Date.name)));
             add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
             payInsert.execute();
         }
     }
-
 
     protected Type getPaymentType(final Parameter _parameter,
                                   final CreatedDoc _createdDoc)
     {
         return CISales.Payment.getType();
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -180,23 +178,20 @@ public abstract class AbstractPaymentDocument_Base
         return countAr == null ? 0 : countAr.length;
     }
 
-
     /**
      * Method is calles in the preocess of creation
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _posInsert    insert to add to
-     * @param _createdDoc   document created
+     * 
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _posInsert insert to add to
+     * @param _createdDoc document created
      */
     protected void add2PaymentCreate(final Parameter _parameter,
-                                      final Insert _payInsert,
-                                      final CreatedDoc _createdDoc,
-                                      final int _idx)
+                                     final Insert _payInsert,
+                                     final CreatedDoc _createdDoc,
+                                     final int _idx)
     {
         // used by implementation
     }
-
-
-
 
     public Return autoComplete4CreateDocument(final Parameter _parameter)
         throws EFapsException
@@ -256,6 +251,14 @@ public abstract class AbstractPaymentDocument_Base
 
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    public Return updateFields4CreateDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+
         return retVal;
     }
 
