@@ -51,7 +51,15 @@
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
                 method="autoComplete4CreateDocument"
                 name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type0">Sales_Invoice</property>
+                <property name="StatusGroup0">Sales_InvoiceStatus</property>
+                <property name="Stati0">Open</property>
+                <property name="Type1">Sales_Receipt</property>
+                <property name="StatusGroup1">Sales_ReceiptStatus</property>
+                <property name="Stati1">Open</property>
+            </trigger>
+
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
                 method="updateFields4CreateDocument"
                 name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_UPDATE"

@@ -20,13 +20,31 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
@@ -96,7 +114,6 @@ public abstract class AbstractPaymentDocument_Base
         return createdDoc;
     }
 
-
     /**
      * @param _parameter
      * @param _createdDoc
@@ -106,6 +123,77 @@ public abstract class AbstractPaymentDocument_Base
     {
         // TODO Auto-generated method stub
 
+    }
+
+    public Return autoComplete4CreateDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        for (int i = 0; i < 100; i++) {
+            if (props.containsKey("Type" + i)) {
+                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
+                final QueryBuilder queryBldr = new QueryBuilder(type);
+                queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
+
+                add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
+
+                if (props.containsKey("StatusGroup" + i)) {
+                    final String statiStr = String.valueOf(props.get("Stati" + i));
+                    final String[] statiAr = statiStr.split(";");
+                    final List<Object> statusList = new ArrayList<Object>();
+                    for (final String stati : statiAr) {
+                        final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
+                        if (status != null) {
+                            statusList.add(status.getId());
+                        }
+                    }
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
+                }
+
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.DocumentAbstract.OID,
+                                CISales.DocumentAbstract.Name,
+                                CISales.DocumentAbstract.Date);
+                multi.execute();
+                while (multi.next()) {
+                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                    final StringBuilder choice = new StringBuilder()
+                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                        Context.getThreadContext().getLocale())));
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                    tmpMap.put(name, map);
+                }
+                list.addAll(tmpMap.values());
+            } else {
+                break;
+            }
+        }
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _queryBldr queryBuilder to add to
+     */
+    protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
+                                                             final QueryBuilder _queryBldr)
+    {
+        // used bt implementation
     }
 
 }
