@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2012 The eFaps Team
 
@@ -21,20 +20,25 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>70b1b5b6-11e5-4b05-ab5d-da6a25612234</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>6ba5c3d8-d4d1-4f6f-a4a3-17afb38e8ab9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_MyDesk</name>
-        <childs>
-            <child>Sales_DocumentsMyDesk</child>
-            <child>Sales_AdminMyDesk</child>
-            <child>Sales_PaymentAbstractMyDesk</child>
-        </childs>
+        <name>Sales_PaymentDeposit</name>
+        <parent>Sales_PaymentDocumentAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_PaymentDocumentStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_PaymentDeposit.Status.RANGE_VALUE" event="RANGE_VALUE" />
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>
