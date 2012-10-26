@@ -27,7 +27,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentPaymentTable</name>
+        <name>Sales_PaymentCheckPaymentTable</name>
         <!-- fields -->
         <field name="date">
             <property name="Attribute">Date</property>
@@ -37,16 +37,30 @@
         <field name="createDocumentType">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].attribute[Type]</property>
-            <property name="Label">Sales_PaymentDocumentPaymentTable.createDocumentType.Label</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentType.Label</property>
         </field>
-        <field name="createDocument">
+        <field name="createDocument4Read">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].attribute[Name]</property>
-            <property name="Label">Sales_PaymentDocumentPaymentTable.createDocument.Label</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocument.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-
-
+        <field name="createDocument">
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="autoComplete4CreateDocument"
+                name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="updateFields4CreateDocument"
+                name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="createDocumentDesc">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentDesc.Label</property>
+        </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
