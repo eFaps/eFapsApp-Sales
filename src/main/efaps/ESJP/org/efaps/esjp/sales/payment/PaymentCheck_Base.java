@@ -20,12 +20,15 @@
 
 package org.efaps.esjp.sales.payment;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -33,7 +36,19 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsUUID("39feb877-6310-4170-816d-173f89347e3d")
 @EFapsRevision("$Rev$")
 public abstract class PaymentCheck_Base
-    extends Payment
+    extends AbstractPaymentDocument
 {
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        createDoc(_parameter);
+        return new Return();
+    }
 
 }

@@ -33,8 +33,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("d1921ce1-a706-48f0-969c-07a5ac3564ef")
 @EFapsRevision("$Rev$")
-public class Payment
-    extends Payment_Base
+public class AbstractPaymentDocument
+    extends AbstractPaymentDocument_Base
 {
 
 }
