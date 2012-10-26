@@ -96,4 +96,16 @@ public abstract class AbstractPaymentDocument_Base
         return createdDoc;
     }
 
+
+    /**
+     * @param _parameter
+     * @param _createdDoc
+     */
+    protected void createPayment(final Parameter _parameter,
+                                 final CreatedDoc _createdDoc)
+    {
+        // TODO Auto-generated method stub
+
+    }
+
 }

@@ -47,8 +47,11 @@ public abstract class PaymentCheck_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPayment(_parameter, createdDoc);
         return new Return();
     }
+
+
 
 }
