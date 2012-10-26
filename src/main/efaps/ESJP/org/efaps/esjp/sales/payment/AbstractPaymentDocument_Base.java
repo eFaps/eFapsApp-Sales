@@ -48,7 +48,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -103,6 +103,15 @@ public abstract class AbstractPaymentDocument_Base
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
                             currencyLink);
+        }
+
+        final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Contact.name));
+        if (contact != null && Instance.get(contact).isValid()) {
+            insert.add(CISales.PaymentDocumentAbstract.Contact, Instance.get(contact).getId());
+            createdDoc.getValues().put(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Contact.name),
+                            Instance.get(contact).getId());
         }
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
@@ -166,9 +175,9 @@ public abstract class AbstractPaymentDocument_Base
                     final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
 
                     final StringBuilder choice = new StringBuilder()
-                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                        Context.getThreadContext().getLocale())));
+                                    .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                                    .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                    Context.getThreadContext().getLocale())));
                     final Map<String, String> map = new HashMap<String, String>();
                     map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                     map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
