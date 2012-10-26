@@ -101,20 +101,6 @@
     </attribute>
 
     <attribute>
-      <name>PaymentType</name>
-      <type>LinkWithRanges</type>
-      <typelink>Sales_PaymentTypeAttr</typelink>
-      <sqltable>Sales_TransactionAbstractSQLTable</sqltable>
-      <sqlcolumn>PAYTYPATTRID</sqlcolumn>
-      <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-               name="Sales_Payment.PaymentType.RANGE_VALUE"
-               event="RANGE_VALUE">
-        <property name="Value">Value</property>
-        <property name="Type">Sales_PaymentTypeAttr</property>
-      </trigger>
-    </attribute>
-
-    <attribute>
       <name>Description</name>
       <type>String</type>
       <sqltable>Sales_TransactionAbstractSQLTable</sqltable>
