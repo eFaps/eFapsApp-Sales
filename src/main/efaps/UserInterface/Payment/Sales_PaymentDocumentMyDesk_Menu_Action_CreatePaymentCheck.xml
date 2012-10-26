@@ -35,7 +35,7 @@
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentCheckPaymentForm</form>
-            <execute method="createPaymentPlanned" program="org.efaps.esjp.sales.payment.PaymentCheck" />
+            <execute program="org.efaps.esjp.sales.payment.PaymentCheck" method="create" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
