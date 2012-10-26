@@ -15,9 +15,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 8095 $
+ Last Changed:    $Date: 2012-10-26 09:23:13 -0500 (Fri, 26 Oct 2012) $
+ Last Changed By: $Author: m.aranya@moxter.net $
 
 -->
 <datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
@@ -25,7 +25,7 @@
                        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ee44e84b-1921-42da-a3ce-919c6c2d5da6</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 8095 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
