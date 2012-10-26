@@ -34,7 +34,7 @@
         <attribute>
             <name>Status</name>
             <type>Status</type>
-            <typelink>Sales_PaymentDocumentStatus</typelink>
+            <typelink>Sales_PaymentCheckStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
