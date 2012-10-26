@@ -45,7 +45,7 @@
             <property name="Required">true</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDepositPaymentForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.erp.Contacts"/>
         </field>
-        <field name="description">
+        <field name="note">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
