@@ -29,7 +29,7 @@
         <!-- targets -->
         <target>
             <menu>Sales_PaymentDepositTree_Menu</menu>
-            <form>Sales_PaymentDepositPaymentForm</form>
+            <form>Sales_PaymentDepositForm</form>
         </target>
         <!-- type tree for -->
         <type>Sales_PaymentDeposit</type>

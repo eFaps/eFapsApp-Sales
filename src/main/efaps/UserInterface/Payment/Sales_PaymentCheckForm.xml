@@ -28,13 +28,24 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckPaymentForm</name>
+        <name>Sales_PaymentCheckForm</name>
         <!-- fields -->
+        <field name="nameGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
         <field name="name">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
@@ -44,23 +55,17 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
-                name="Sales_PaymentDocumentAbstractForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+                name="SSales_PaymentCheckForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
         </field>
-        <field name="note">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Note</property>
-        </field>
-        <field name="date">
-            <property name="Attribute">Date</property>
-            <property name="Required">true</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+        <field name="amountGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="Required">true</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
@@ -73,12 +78,12 @@
             <property name="Attribute">Status</property>
         </field>
         <field name="account">
-            <property name="Label">Sales_PaymentCheckPaymentForm.account.Label</property>
+            <property name="Label">Sales_PaymentCheckForm.account.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <trigger  program="org.efaps.esjp.sales.Transaction" method="value4Account"
-                name="Sales_PaymentDocumentAbstractForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+                name="Sales_PaymentCheckForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
@@ -108,10 +113,16 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-
+        <field name="note">
+            <property name="Columns">80</property>
+            <property name="Rows">5</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Note</property>
+        </field>
          <field name="headingPayment" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_PaymentCheckPaymentForm.headingPayment.Heading</property>
+            <property name="Label">Sales_PaymentCheckForm.headingPayment.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="paymentTable" character="Target">

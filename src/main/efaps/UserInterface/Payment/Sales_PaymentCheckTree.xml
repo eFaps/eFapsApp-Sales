@@ -32,7 +32,7 @@
         <!-- targets -->
         <target>
             <menu>Sales_PaymentCheckTree_Menu</menu>
-            <form>Sales_PaymentCheckPaymentForm</form>
+            <form>Sales_PaymentCheckForm</form>
         </target>
         <!-- type tree for -->
         <type>Sales_PaymentCheck</type>

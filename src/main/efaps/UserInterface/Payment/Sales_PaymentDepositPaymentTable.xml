@@ -48,6 +48,7 @@
         <field name="createDocument">
             <property name="Label">Sales_PaymentDepositPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheck" method="autoComplete4CreateDocument"
                 name="Sales_PaymentDepositPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                     <property name="Type0">Sales_Invoice</property>
@@ -62,8 +63,20 @@
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.createDocumentDesc.Label</property>
         </field>
+        <!-- different name to prevent collision with parent formular -->
+        <field name="paymentAmount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Payment/Amount.Label</property>
+            <property name="Attribute">Amount</property>
+        </field>
+        <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Label">Sales_Payment/CurrencyLink.Label</property>
+        </field>
+
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>

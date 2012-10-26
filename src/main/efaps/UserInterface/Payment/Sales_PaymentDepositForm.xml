@@ -28,38 +28,46 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDepositPaymentForm</name>
+        <name>Sales_PaymentDepositForm</name>
         <!-- fields -->
+        <field name="nameGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
         <field name="name">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
         </field>
-        <field name="contact">
-            <property name="SelectAlternateOID">linkto[Contact].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentDepositPaymentForm.contact.Label</property>
-            <property name="Select">linkto[Contact].attribute[Name]</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDepositPaymentForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.erp.Contacts"/>
-        </field>
-        <field name="note">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">Note</property>
-        </field>
         <field name="date">
+            <property name="Columns">12</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_PaymentDepositForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                method="autoComplete4Contact"
+                name="Sales_PaymentDepositForm.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.erp.Contacts"/>
+        </field>
+        <field name="amountGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="Required">true</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
@@ -72,11 +80,13 @@
             <property name="Attribute">Status</property>
         </field>
         <field name="account">
-            <property name="Label">Sales_PaymentDepositPaymentForm.account.Label</property>
+            <property name="Label">Sales_PaymentDepositForm.account.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="value4Account" name="Sales_PaymentDepositPaymentForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Transaction"/>
+            <trigger event="UI_FIELD_VALUE" method="value4Account"
+                name="Sales_PaymentDepositForm.account.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.Transaction" />
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
@@ -106,10 +116,16 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-
+        <field name="note">
+            <property name="Columns">80</property>
+            <property name="Rows">5</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Note</property>
+        </field>
          <field character="Heading" name="headingPayment">
             <property name="Level">2</property>
-            <property name="Label">Sales_PaymentDepositPaymentForm.headingPayment.Heading</property>
+            <property name="Label">Sales_PaymentDepositForm.headingPayment.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field character="Target" name="paymentTable">
