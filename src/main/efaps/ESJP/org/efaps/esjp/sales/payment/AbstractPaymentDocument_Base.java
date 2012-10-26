@@ -129,10 +129,74 @@ public abstract class AbstractPaymentDocument_Base
      */
     protected void createPayment(final Parameter _parameter,
                                  final CreatedDoc _createdDoc)
+        throws EFapsException
     {
-        // TODO Auto-generated method stub
+        final String[] createDocument = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.Payment.CreateDocument.name));
+        final String[] paymentAmount = _parameter.getParameterValues("paymentAmount");
 
+        for (int i = 0; i < getPaymentCount(_parameter); i++) {
+
+            final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
+            if (createDocument.length > i && createDocument[i] != null) {
+                final Instance inst = Instance.get(createDocument[i]);
+                if (inst.isValid()) {
+                    payInsert.add(CISales.Payment.CreateDocument, inst.getId());
+                }
+            }
+            if (paymentAmount.length > i &&  paymentAmount[i] != null) {
+                payInsert.add(CISales.Payment.Amount, paymentAmount[i]);
+            }
+            payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
+            payInsert.add(CISales.Payment.CurrencyLink,
+                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
+            payInsert.add(CISales.Payment.Date,
+                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                                                            CISales.PaymentDocumentAbstract.Date.name)));
+            add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
+            payInsert.execute();
+        }
     }
+
+
+    protected Type getPaymentType(final Parameter _parameter,
+                                  final CreatedDoc _createdDoc)
+    {
+        return CISales.Payment.getType();
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return number of positions
+     * @throws EFapsException on error
+     */
+    protected int getPaymentCount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] countAr = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.Payment.CreateDocument.name));
+        return countAr == null ? 0 : countAr.length;
+    }
+
+
+    /**
+     * Method is calles in the preocess of creation
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _posInsert    insert to add to
+     * @param _createdDoc   document created
+     */
+    protected void add2PaymentCreate(final Parameter _parameter,
+                                      final Insert _payInsert,
+                                      final CreatedDoc _createdDoc,
+                                      final int _idx)
+    {
+        // used by implementation
+    }
+
+
+
 
     public Return autoComplete4CreateDocument(final Parameter _parameter)
         throws EFapsException
