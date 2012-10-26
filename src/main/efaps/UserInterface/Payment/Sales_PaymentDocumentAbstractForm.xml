@@ -36,14 +36,20 @@
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
         </field>
+        <field name="description">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Description</property>
+        </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
-            <property name="ModeCreate">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
         </field>
         <field name="currencyLink">
