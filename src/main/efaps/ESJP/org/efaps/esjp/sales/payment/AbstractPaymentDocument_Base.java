@@ -20,6 +20,10 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,6 +42,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument;
@@ -272,9 +277,75 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+        final String doc = _parameter.getParameterValues("createDocument")[selected];
+        if (doc != null) {
+            final BigDecimal total4Doc = getNetTotal4Document(doc);
+            final BigDecimal payments4Doc = getPayments4Document(doc);
+            final StringBuilder bldr = new StringBuilder();
+            bldr.append(getTwoDigitsformater().format(total4Doc))
+                            .append(" / ").append(getTwoDigitsformater().format(payments4Doc));
+            map.put("createDocumentDesc", bldr.toString());
+            list.add(map);
+        }
         final Return retVal = new Return();
-
+        retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    private BigDecimal getPayments4Document(final String _doc)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        final Instance docInst = Instance.get(_doc);
+        if (docInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInst.getId());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.Payment.Amount);
+            multi.execute();
+            while (multi.next()) {
+                ret = ret.add(multi.<BigDecimal>getAttribute(CISales.Payment.Amount));
+            }
+        }
+        return ret;
+    }
+
+    private BigDecimal getNetTotal4Document(final String _doc)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        final Instance docInst = Instance.get(_doc);
+        if (docInst.isValid()) {
+            final PrintQuery print = new PrintQuery(_doc);
+            print.addAttribute(CISales.DocumentSumAbstract.NetTotal);
+            print.execute();
+            ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
+        }
+        return ret;
+    }
+
+    protected int getSelectedRow(final Parameter _parameter)
+    {
+        int ret = 0;
+        final String value = _parameter.getParameterValue("eFapsRowSelectedRow");
+        if (value != null && value.length() > 0) {
+            ret = Integer.parseInt(value);
+        }
+        return ret;
+    }
+
+    protected DecimalFormat getTwoDigitsformater()
+        throws EFapsException
+    {
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
+        formater.setMaximumFractionDigits(2);
+        formater.setMinimumFractionDigits(2);
+        formater.setRoundingMode(RoundingMode.HALF_UP);
+        formater.setParseBigDecimal(true);
+        return formater;
     }
 
     /**
