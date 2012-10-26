@@ -69,6 +69,11 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentDesc.Label</property>
         </field>
+        <field name="amount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Payment/Amount.Label</property>
+        </field>
+
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
