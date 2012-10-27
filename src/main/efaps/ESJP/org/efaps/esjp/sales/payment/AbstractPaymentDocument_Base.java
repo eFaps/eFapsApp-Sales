@@ -320,7 +320,7 @@ public abstract class AbstractPaymentDocument_Base
         final Instance docInst = Instance.get(_doc);
         if (docInst.isValid()) {
             final PrintQuery print = new PrintQuery(_doc);
-            print.addAttribute(CISales.DocumentSumAbstract.NetTotal);
+            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
             print.execute();
             ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         }

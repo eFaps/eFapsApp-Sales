@@ -28,7 +28,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstractTree</name>
+        <name>Sales_PaymentCheckTree</name>
         <!-- targets -->
         <target>
             <menu>Sales_PaymentCheckTree_Menu</menu>

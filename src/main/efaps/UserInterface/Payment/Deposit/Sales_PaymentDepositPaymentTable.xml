@@ -36,7 +36,7 @@
         </field>
         <field name="createDocumentType">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
-            <property name="Select">linkto[CreateDocument].attribute[Type]</property>
+            <property name="Select">linkto[CreateDocument].type.label</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.createDocumentType.Label</property>
         </field>
         <field name="createDocument4Read">
@@ -63,6 +63,7 @@
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.createDocumentDesc.Label</property>
         </field>

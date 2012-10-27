@@ -36,7 +36,7 @@
         </field>
         <field name="createDocumentType">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
-            <property name="Select">linkto[CreateDocument].attribute[Type]</property>
+            <property name="Select">linkto[CreateDocument].type.label</property>
             <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentType.Label</property>
         </field>
         <field name="createDocument4Read">
@@ -49,6 +49,7 @@
             <property name="Label">Sales_PaymentCheckPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
                 method="autoComplete4CreateDocument"
                 name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
@@ -68,6 +69,7 @@
         </field>
         <field name="createDocumentDesc">
             <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentDesc.Label</property>
         </field>

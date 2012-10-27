@@ -47,11 +47,13 @@
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentCashPaymentForm.contact.Label</property>
+            <property name="Label">Sales_PaymentCashForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="SSales_PaymentCashForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.erp.Contacts"/>
+            <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
+                name="Sales_PaymentCashForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
         </field>
         <field character="Group" name="amountGroup">
             <property name="GroupCount">2</property>
@@ -78,7 +80,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="value4Account" name="Sales_PaymentCashForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Transaction"/>
+            <trigger program="org.efaps.esjp.sales.Transaction" method="value4Account"
+            name="Sales_PaymentCashForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
