@@ -64,6 +64,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4AbsoluteAmount"
+                name="Sales_PaymentCashForm.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>

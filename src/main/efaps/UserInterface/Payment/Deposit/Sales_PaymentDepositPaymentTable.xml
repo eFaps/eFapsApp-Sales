@@ -67,17 +67,30 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.createDocumentDesc.Label</property>
         </field>
+        <field name="payment4Pay">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="Label">Sales_PaymentDepositPaymentTable.payment4Pay.Label</property>
+        </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="updateFields4PaymentAmount"
+                name="Sales_PaymentDepositPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="paymentAmountDesc">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentDepositPaymentTable.paymentAmountDesc.Label</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Sales_Payment/CurrencyLink.Label</property>
         </field>
-
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>

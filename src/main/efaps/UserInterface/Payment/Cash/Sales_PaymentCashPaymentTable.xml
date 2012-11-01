@@ -66,11 +66,25 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocumentDesc.Label</property>
         </field>
+        <field name="payment4Pay">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="Label">Sales_PaymentCashPaymentTable.payment4Pay.Label</property>
+        </field>
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4PaymentAmount"
+                name="Sales_PaymentCashPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="paymentAmountDesc">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCashPaymentTable.paymentAmountDesc.Label</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>

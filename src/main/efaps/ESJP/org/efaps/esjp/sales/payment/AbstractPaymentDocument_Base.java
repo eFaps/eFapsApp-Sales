@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +45,11 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -274,6 +278,29 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
+    public Return updateFields4AbsoluteAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        BigDecimal amount = BigDecimal.ZERO;
+        final String amountStr = _parameter.getParameterValue("amount");
+        try {
+            if (amountStr != null && !amountStr.isEmpty()) {
+                amount = (BigDecimal) formater.parse(amountStr);
+            }
+        } catch (final ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        final Return retVal = new Return();
+        map.put("amount", getTwoDigitsformater().format(amount.abs()));
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
     public Return updateFields4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -284,10 +311,13 @@ public abstract class AbstractPaymentDocument_Base
         if (doc != null) {
             final BigDecimal total4Doc = getCrossTotal4Document(doc);
             final BigDecimal payments4Doc = getPayments4Document(doc);
+            final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
+            final String symbol = getSymbol4Document(doc);
             final StringBuilder bldr = new StringBuilder();
             bldr.append(getTwoDigitsformater().format(total4Doc))
-                            .append(" / ").append(getTwoDigitsformater().format(payments4Doc));
+                            .append(" / ").append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
             map.put("createDocumentDesc", bldr.toString());
+            map.put("payment4Pay", getTwoDigitsformater().format(amount2Pay));
             list.add(map);
         }
         final Return retVal = new Return();
@@ -295,7 +325,53 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
-    private BigDecimal getPayments4Document(final String _doc)
+    public Return updateFields4PaymentAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+        final String payStr = _parameter.getParameterValues("paymentAmount")[selected];
+        final String amount4PayStr = _parameter.getParameterValues("payment4Pay")[selected];
+        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        BigDecimal pay = BigDecimal.ZERO;
+        BigDecimal amount4Pay = BigDecimal.ZERO;
+        try {
+            if (payStr != null && !payStr.isEmpty()) {
+                pay = (BigDecimal) formater.parse(payStr);
+            }
+            if (amount4PayStr != null && !amount4PayStr.isEmpty()) {
+                amount4Pay = (BigDecimal) formater.parse(amount4PayStr);
+            }
+        } catch (final ParseException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        final Return retVal = new Return();
+        map.put("paymentAmount", getTwoDigitsformater().format(pay));
+        map.put("paymentAmountDesc", getTwoDigitsformater().format(amount4Pay.subtract(pay)));
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    protected String getSymbol4Document(final String _doc)
+        throws EFapsException
+    {
+        String ret = "";
+        final Instance docInst = Instance.get(_doc);
+        if (docInst.isValid()) {
+            final SelectBuilder selSymbol = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
+            final PrintQuery print = new PrintQuery(_doc);
+            print.addSelect(selSymbol);
+            print.execute();
+            ret = print.<String>getSelect(selSymbol);
+        }
+        return ret;
+    }
+
+    protected BigDecimal getPayments4Document(final String _doc)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
@@ -313,16 +389,16 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
-    private BigDecimal getCrossTotal4Document(final String _doc)
+    protected BigDecimal getCrossTotal4Document(final String _doc)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         final Instance docInst = Instance.get(_doc);
         if (docInst.isValid()) {
             final PrintQuery print = new PrintQuery(_doc);
-            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             print.execute();
-            ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         }
         return ret;
     }
