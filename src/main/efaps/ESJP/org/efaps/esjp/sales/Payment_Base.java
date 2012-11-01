@@ -105,18 +105,44 @@ public abstract class Payment_Base
         if (docInst != null && docInst.isValid()) {
             final String dateStr = _parameter.getParameterValue("date");
 
-            final Insert insert = new Insert(CISales.Payment);
-            insert.add(CISales.Payment.Date, dateStr);
-            insert.add(CISales.Payment.CreateDocument, ((Long) docInst.getId()).toString());
-            insert.execute();
-            final Instance paymentInst = insert.getInstance();
-
             final String[] amounts = _parameter.getParameterValues("amount");
             final String[] currencies = _parameter.getParameterValues("currency");
-            _parameter.getParameterValues("paymentType");
+            final String[] paymentType = _parameter.getParameterValues("paymentType");
             final String[] descriptions = _parameter.getParameterValues("description");
             final String[] accounts = _parameter.getParameterValues("account");
+
             for (int i = 0; i < amounts.length; i++) {
+                final String targetTypeId = paymentType[i];
+                Instance targetDocInst = null;
+                if (targetTypeId != null && !targetTypeId.isEmpty()) {
+                    final Type targetType = Type.get(Long.valueOf(targetTypeId));
+                    final Status status = Status.find(targetType.getStatusAttribute().getLink().getUUID(), "Open");
+                    final Insert targetDocIns = new Insert(targetType);
+                    final PrintQuery docPrint = new PrintQuery(docInst);
+                    docPrint.addAttribute(CIERP.DocumentAbstract.Contact, CIERP.DocumentAbstract.Name);
+                    docPrint.execute();
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.StatusAbstract, status.getId());
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.Contact,
+                                    docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.Name,
+                                    docPrint.getAttribute(CIERP.DocumentAbstract.Name));
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.Date, dateStr);
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.CurrencyLink, currencies[i]);
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.Amount, amounts[i]);
+                    targetDocIns.execute();
+                    targetDocInst = targetDocIns.getInstance();
+                }
+
+                final Insert insert = new Insert(CISales.Payment);
+                insert.add(CISales.Payment.Date, dateStr);
+                insert.add(CISales.Payment.CreateDocument, docInst.getId());
+                if (targetDocInst != null) {
+                    insert.add(CISales.Payment.TargetDocument, targetDocInst.getId());
+                }
+                insert.execute();
+                final Instance paymentInst = insert.getInstance();
+
+
                 final Insert transIns = new Insert(CISales.TransactionInbound);
                 transIns.add(CISales.TransactionInbound.Amount, amounts[i]);
                 transIns.add(CISales.TransactionInbound.CurrencyId, currencies[i]);

@@ -58,10 +58,15 @@
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="paymentType">
-            <property name="Attribute">PaymentType</property>
             <property name="Label">Sales_TransactionAbstract/PaymentType.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Width">1</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getTypeDropDownFieldValue"
+                name="Sales_PaymentCreateTransactionTable.paymentType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Types">Sales_PaymentDocumentAbstract</property>
+            </trigger>
         </field>
         <field name="account">
             <property name="Attribute">Account</property>
