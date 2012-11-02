@@ -45,6 +45,10 @@
         </target>
         <!-- type tree for -->
         <type>Sales_Reservation</type>
+
+        <childs>
+            <child>Sales_ReservationTree_Position</child>
+        </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
