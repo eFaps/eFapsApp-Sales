@@ -114,6 +114,14 @@ public abstract class AbstractPaymentDocument_Base
                             currencyLink);
         }
 
+        final String currencyLink4Account = getCurrencyLink4Account(_parameter);
+        if (currencyLink4Account != null) {
+            insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, currencyLink4Account);
+            createdDoc.getValues().put(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
+                            currencyLink4Account);
+        }
+
         final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Contact.name));
         if (contact != null && Instance.get(contact).isValid()) {
@@ -130,6 +138,20 @@ public abstract class AbstractPaymentDocument_Base
         createdDoc.setInstance(insert.getInstance());
 
         return createdDoc;
+    }
+
+    protected String getCurrencyLink4Account(final Parameter _parameter)
+        throws EFapsException
+    {
+        long currencyId = 0;
+        final String account = _parameter.getParameterValue("account");
+        if (account != null) {
+            final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(), account);
+            print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
+            print.execute();
+            currencyId = print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink);
+        }
+        return currencyId == 0 ? null : String.valueOf(currencyId);
     }
 
     /**
@@ -362,7 +384,7 @@ public abstract class AbstractPaymentDocument_Base
         final Instance docInst = Instance.get(_doc);
         if (docInst.isValid()) {
             final SelectBuilder selSymbol = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
             final PrintQuery print = new PrintQuery(_doc);
             print.addSelect(selSymbol);
             print.execute();
