@@ -68,6 +68,8 @@ public abstract class AbstractPaymentDocument_Base
     extends CommonDocument
 {
 
+    public static final String INVOICE_SESSIONKEY = "eFaps_Selected_Sales_Invoice";
+
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return CreatedDoc instance
@@ -242,6 +244,8 @@ public abstract class AbstractPaymentDocument_Base
     public Return autoComplete4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
+        final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
@@ -253,7 +257,9 @@ public abstract class AbstractPaymentDocument_Base
                 final Type type = Type.get(String.valueOf(props.get("Type" + i)));
                 final QueryBuilder queryBldr = new QueryBuilder(type);
                 queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
-
+                if (contactInst != null && contactInst.isValid()) {
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+                }
                 add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
                 if (props.containsKey("StatusGroup" + i)) {
@@ -431,6 +437,26 @@ public abstract class AbstractPaymentDocument_Base
         final String value = _parameter.getParameterValue("eFapsRowSelectedRow");
         if (value != null && value.length() > 0) {
             ret = Integer.parseInt(value);
+        }
+        return ret;
+    }
+
+    public Return update4checkbox4Invoive(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String contactOid = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Contact.name));
+        final String check = _parameter.getParameterValue("checkbox4Invoice");
+        if (check != null && !check.isEmpty() && "true".equalsIgnoreCase(check)) {
+            final Instance contact = Instance.get(contactOid);
+            if (contact.isValid()) {
+                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contact);
+            } else {
+                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+            }
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
         }
         return ret;
     }

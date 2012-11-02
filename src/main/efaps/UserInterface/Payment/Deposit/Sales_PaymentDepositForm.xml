@@ -55,10 +55,20 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-                method="autoComplete4Contact"
-                name="Sales_PaymentDepositForm.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.erp.Contacts"/>
+            <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
+                name="Sales_PaymentDepositForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+        </field>
+        <field name="checkbox4Invoice" >
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentDepositForm.checkbox4Invoice.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
+                name="Sales_PaymentDepositForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="checked">false</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck" method="update4checkbox4Invoive"
+                name="Sales_PaymentDepositForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="amountGroup" character="Group">
             <property name="GroupCount">2</property>

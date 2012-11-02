@@ -44,6 +44,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field character="Group" name="contactGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -54,6 +60,18 @@
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
                 name="Sales_PaymentCashForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+        </field>
+        <field name="checkbox4Invoice" >
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCashForm.checkbox4Invoice.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
+                name="Sales_PaymentCashForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="checked">false</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="update4checkbox4Invoive"
+                name="Sales_PaymentCashForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field character="Group" name="amountGroup">
             <property name="GroupCount">2</property>
