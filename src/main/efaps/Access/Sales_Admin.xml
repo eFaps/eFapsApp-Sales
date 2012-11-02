@@ -155,6 +155,7 @@
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
+            <key>Replaced</key>
         </status>
 
         <status group="Sales_GoodsIssueSlipStatus">

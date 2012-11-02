@@ -187,9 +187,10 @@ public abstract class Reservation_Base
         insert.add(CIProducts.TransactionReservationInbound.Quantity, qauntity[0]);
         insert.add(CIProducts.TransactionReservationInbound.Storage, storage);
         insert.add(CIProducts.TransactionReservationInbound.Product, productID);
-        insert.add(CIProducts.TransactionReservationInbound.Description, "automatic by Trigger");
+        insert.add(CIProducts.TransactionReservationInbound.Description,
+                DBProperties.getProperty("org.efaps.esjp.sales.document.Reservation.create"));
         insert.add(CIProducts.TransactionReservationInbound.Date, new DateTime());
-        insert.add("Document", deliveryNodeId[0]);
+        insert.add(CIProducts.TransactionReservationInbound.Document, deliveryNodeId[0]);
         insert.add(CIProducts.TransactionReservationInbound.UoM, uom[0]);
         insert.execute();
 

@@ -42,5 +42,8 @@
         <status key="Canceled">
             <description>The Reservation was canceled.</description>
         </status>
+        <status key="Replaced">
+            <description>The Reservation was replaced by another (Revisioned).</description>
+        </status>
     </definition>
 </datamodel-statusgroup>

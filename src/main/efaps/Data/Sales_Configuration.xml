@@ -57,5 +57,10 @@
             <value>false</value>
             <description>boolean (true/false). Activate the command to create a balance setting the date and choosing the petty cash receipts.</description>
         </attribute>
+        <attribute>
+            <key>DeliveryNote_TransactionTrigger4Reservation</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate the mechanism to evaluate if the transaction must include Reservation.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>
