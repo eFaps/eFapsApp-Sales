@@ -57,21 +57,20 @@ public abstract class AbstractProductDocument_Base
         final CreatedDoc createdDoc = new CreatedDoc();
 
         final Insert insert = new Insert(getType4DocCreate(_parameter));
-        insert.add(CISales.DocumentStockAbstract.Name, getDocName4Create(_parameter));
-
+        final String name = getDocName4Create(_parameter);
+        insert.add(CISales.DocumentStockAbstract.Name, name);
+        createdDoc.getValues().put(CISales.DocumentStockAbstract.Name.name, name);
         final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.Date.name));
         if (date != null) {
             insert.add(CISales.DocumentStockAbstract.Date, date);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.DocumentStockAbstract.Date.name),
-                            date);
+            createdDoc.getValues().put( CISales.DocumentStockAbstract.Date.name, date);
         }
         final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.DueDate.name));
         if (duedate != null) {
             insert.add(CISales.DocumentStockAbstract.DueDate, date);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.DocumentStockAbstract.DueDate.name),
-                            duedate);
+            createdDoc.getValues().put(CISales.DocumentStockAbstract.DueDate.name, duedate);
         }
         final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.Contact.name));
@@ -79,31 +78,26 @@ public abstract class AbstractProductDocument_Base
             final Instance inst = Instance.get(contact);
             if (inst.isValid()) {
                 insert.add(CISales.DocumentStockAbstract.Contact, inst.getId());
-                createdDoc.getValues().put(
-                                getFieldName4Attribute(_parameter, CISales.DocumentStockAbstract.Contact.name), inst);
+                createdDoc.getValues().put(CISales.DocumentStockAbstract.Contact.name, inst);
             }
         }
         final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.Note.name));
         if (note != null) {
             insert.add(CISales.DocumentStockAbstract.Note, note);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.DocumentStockAbstract.Note.name),
-                            note);
+            createdDoc.getValues().put(CISales.DocumentStockAbstract.Note.name, note);
         }
         final String revision = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.Revision.name));
         if (revision != null) {
             insert.add(CISales.DocumentStockAbstract.Revision, revision);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.DocumentStockAbstract.Revision.name),
-                            revision);
+            createdDoc.getValues().put(CISales.DocumentStockAbstract.Revision.name, revision);
         }
         final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.Salesperson.name));
         if (salesperson != null) {
             insert.add(CISales.DocumentStockAbstract.Salesperson, salesperson);
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.DocumentStockAbstract.Salesperson.name),
-                            salesperson);
+            createdDoc.getValues().put(CISales.DocumentStockAbstract.Salesperson.name, salesperson);
         }
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
@@ -125,34 +119,34 @@ public abstract class AbstractProductDocument_Base
             posIns.add(CISales.PositionAbstract.PositionNumber, i + 1);
             posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance().getId());
 
-            final String product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
-                            CISales.PositionAbstract.Product.name))[i];
-            if (product != null) {
-                final Instance inst = Instance.get(product);
+            final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                            CISales.PositionAbstract.Product.name));
+            if (product != null && product.length > i) {
+                final Instance inst = Instance.get(product[i]);
                 if (inst.isValid()) {
                     posIns.add(CISales.PositionAbstract.Product, inst.getId());
                 }
             }
 
-            final String productDesc = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
-                            CISales.PositionAbstract.ProductDesc.name))[i];
-            if (productDesc != null) {
-                posIns.add(CISales.PositionAbstract.ProductDesc, productDesc);
+            final String[] productDesc = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                            CISales.PositionAbstract.ProductDesc.name));
+            if (productDesc != null && productDesc.length > i) {
+                posIns.add(CISales.PositionAbstract.ProductDesc, productDesc[i]);
             }
 
-            final String UoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
-                            CISales.PositionAbstract.UoM.name))[i];
-            if (UoM != null) {
-                posIns.add(CISales.PositionAbstract.UoM, UoM);
+            final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                            CISales.PositionAbstract.UoM.name));
+            if (uoM != null && uoM.length > i) {
+                posIns.add(CISales.PositionAbstract.UoM, uoM[i]);
             }
 
-            final String quantity = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
-                            CISales.PositionAbstract.Quantity.name))[i];
-            if (quantity != null) {
-                posIns.add(CISales.PositionAbstract.Quantity, quantity);
+            final String[] quantity = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                            CISales.PositionAbstract.Quantity.name));
+            if (quantity != null && quantity.length > i) {
+                posIns.add(CISales.PositionAbstract.Quantity, quantity[i]);
             }
 
-            add2PositionCreate(_parameter, posIns, _createdDoc);
+            add2PositionCreate(_parameter, posIns, _createdDoc, i);
 
             posIns.execute();
         }
@@ -163,10 +157,14 @@ public abstract class AbstractProductDocument_Base
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _posInsert    insert to add to
      * @param _createdDoc   document created
+     * @param _idx          index
+     * @throws EFapsException on Error
      */
     protected void add2PositionCreate(final Parameter _parameter,
                                       final Insert _posInsert,
-                                      final CreatedDoc _createdDoc)
+                                      final CreatedDoc _createdDoc,
+                                      final int _idx)
+        throws EFapsException
     {
         // used by implementation
     }
