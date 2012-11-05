@@ -19,23 +19,25 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>521d6efc-6484-4785-afbc-1cbaa3babc34</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>18d8d594-f806-4372-b765-cb332e14d6ae</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentMyDesk_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCheck</child>
-            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDeposit</child>
-            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCash</child>
-            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentExchange</child>
-            <child>Sales_PaymentDocumentMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Sales_PaymentExchangetTree_Menu_Action_Edit</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_PaymentExchangeForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
-</ui-menu>
+</ui-command>
