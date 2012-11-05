@@ -311,22 +311,30 @@ public abstract class AbstractPaymentDocument_Base
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
+        final Return retVal = new Return();
+        final BigDecimal amount2Pay = getAmount4Pay(_parameter).abs();
+        map.put("amount", getTwoDigitsformater().format(amount2Pay));
+        map.put("total4DiscountPay", getTwoDigitsformater().format(amount2Pay.subtract(getSumsPositions(_parameter))));
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    protected BigDecimal getAmount4Pay(final Parameter _parameter)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
         final DecimalFormat formater = Calculator_Base.getFormatInstance();
-        BigDecimal amount = BigDecimal.ZERO;
         final String amountStr = _parameter.getParameterValue("amount");
         try {
             if (amountStr != null && !amountStr.isEmpty()) {
-                amount = (BigDecimal) formater.parse(amountStr);
+                ret = (BigDecimal) formater.parse(amountStr);
             }
         } catch (final ParseException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        final Return retVal = new Return();
-        map.put("amount", getTwoDigitsformater().format(amount.abs()));
-        list.add(map);
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
+        return ret;
     }
 
     public Return updateFields4CreateDocument(final Parameter _parameter)
@@ -378,6 +386,8 @@ public abstract class AbstractPaymentDocument_Base
         final Return retVal = new Return();
         map.put("paymentAmount", getTwoDigitsformater().format(pay));
         map.put("paymentAmountDesc", getTwoDigitsformater().format(amount4Pay.subtract(pay)));
+        map.put("total4DiscountPay", getTwoDigitsformater()
+                        .format(getAmount4Pay(_parameter).abs().subtract(getSumsPositions(_parameter))));
         list.add(map);
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -427,6 +437,29 @@ public abstract class AbstractPaymentDocument_Base
             print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             print.execute();
             ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        }
+        return ret;
+    }
+
+    protected BigDecimal getSumsPositions(final Parameter _parameter)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        final String[] paymentPosAmount = _parameter.getParameterValues("paymentAmount");
+        for (int i = 0; i < getPaymentCount(_parameter); i++) {
+            BigDecimal paymentPos = BigDecimal.ZERO;
+            if (paymentPosAmount.length > i && paymentPosAmount[i] != null) {
+                try {
+                    if (paymentPosAmount[i] != null && !paymentPosAmount[i].isEmpty()) {
+                        paymentPos = (BigDecimal) formater.parse(paymentPosAmount[i]);
+                    }
+                } catch (final ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                ret = ret.add(paymentPos);
+            }
         }
         return ret;
     }

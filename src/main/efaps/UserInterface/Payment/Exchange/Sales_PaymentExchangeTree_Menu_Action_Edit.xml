@@ -25,7 +25,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentExchangetTree_Menu_Action_Edit</name>
+        <name>Sales_PaymentExchangeTree_Menu_Action_Edit</name>
         <access>
             <role>Sales_Admin</role>
         </access>

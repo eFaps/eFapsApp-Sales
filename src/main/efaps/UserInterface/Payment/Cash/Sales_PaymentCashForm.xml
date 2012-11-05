@@ -155,5 +155,11 @@
                 <property name="LinkFroms">TargetDocument</property>
             </evaluate>
         </field>
+        <field name="total4DiscountPay">
+            <property name="Label">Sales_PaymentCashForm.total4DiscountPay.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
     </definition>
 </ui-form>

@@ -47,6 +47,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field character="Group" name="contactGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -151,6 +157,12 @@
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">TargetDocument</property>
             </evaluate>
+        </field>
+        <field name="total4DiscountPay">
+            <property name="Label">Sales_PaymentDepositForm.total4DiscountPay.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
     </definition>
 </ui-form>
