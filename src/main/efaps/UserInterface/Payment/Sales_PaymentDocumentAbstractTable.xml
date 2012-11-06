@@ -35,6 +35,15 @@
             <property name="Label">Sales_PaymentDocumentAbstract/Type.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="code">
+            <property name="Attribute">Code</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Code.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+                name="Sales_PaymentDocumentAbstractTable.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Sales-Configuration</property>
+                <property name="Attribute">ActivateCode4PaymentDocument</property>
+            </trigger>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Name.Label</property>
@@ -58,8 +67,8 @@
             <property name="Label">Sales_PaymentDocumentAbstract/Amount.Label</property>
         </field>
         <field name="currencyLink">
-            <property name="SelectAlternateOID">linkto[CurrencyLink].oid</property>
-            <property name="Select">linkto[CurrencyLink].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
+            <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstract.Currency.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">

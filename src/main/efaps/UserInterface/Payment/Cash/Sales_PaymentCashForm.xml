@@ -27,6 +27,24 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCashForm</name>
         <!-- fields -->
+        <field name="deactivateFiltered4Invoice">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="deactivateFiltered4Invoice"
+                name="Sales_PaymentCash.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+        </field>
+        <field name="code">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Attribute">Code</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+                name="Sales_PaymentCashForm.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Sales-Configuration</property>
+                <property name="Attribute">ActivateCode4PaymentDocument</property>
+            </trigger>
+        </field>
         <field character="Group" name="nameGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -60,6 +78,8 @@
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
                 name="Sales_PaymentCashForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4Contact"
+                name="Sales_PaymentCashForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="checkbox4Invoice" >
             <property name="ModeCreate">READONLY</property>
@@ -73,27 +93,14 @@
             <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="update4checkbox4Invoive"
                 name="Sales_PaymentCashForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
-        <field character="Group" name="amountGroup">
+        <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-        <field name="amount">
-            <property name="Attribute">Amount</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">READONLY</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4AbsoluteAmount"
-                name="Sales_PaymentCashForm.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
-        </field>
         <field name="currencyLink">
-            <property name="Attribute">CurrencyLink</property>
+            <property name="Attribute">RateCurrencyLink</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
-        </field>
-        <field name="status">
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">READONLY</property>
-            <property name="Attribute">Status</property>
         </field>
         <field name="account">
             <property name="Label">Sales_PaymentCashForm.account.Label</property>
@@ -106,6 +113,29 @@
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash"
+                method="updateFields4RateCurrency"
+                name="Sales_PaymentCashForm.account.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4AbsoluteAmount"
+                name="Sales_PaymentCashForm.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="status">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">Status</property>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>

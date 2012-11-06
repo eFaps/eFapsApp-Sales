@@ -30,9 +30,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.RateUI;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -50,6 +55,8 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.sales.Calculator_Base;
+import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -69,6 +76,8 @@ public abstract class AbstractPaymentDocument_Base
 {
 
     public static final String INVOICE_SESSIONKEY = "eFaps_Selected_Sales_Invoice";
+
+    public static final String CONTACT_SESSIONKEY = "eFaps_Selected_Contact";
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -110,18 +119,32 @@ public abstract class AbstractPaymentDocument_Base
         final String currencyLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.CurrencyLink.name));
         if (currencyLink != null) {
-            insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, currencyLink);
+            insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink);
+            createdDoc.getValues().put(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
+                            currencyLink);
+            // Sales-Configuration
+            final Instance baseCurrInst = SystemConfiguration.get(
+                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+            insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
-                            currencyLink);
+                            baseCurrInst.getId());
         }
 
-        final String currencyLink4Account = getCurrencyLink4Account(_parameter);
+        final String currencyLink4Account = getRateCurrencyLink4Account(_parameter);
         if (currencyLink4Account != null) {
-            insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, currencyLink4Account);
+            insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink4Account);
+            createdDoc.getValues().put(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
+                            currencyLink4Account);
+            // Sales-Configuration
+            final Instance baseCurrInst = SystemConfiguration.get(
+                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+            insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
-                            currencyLink4Account);
+                            baseCurrInst.getId());
         }
 
         final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
@@ -133,6 +156,20 @@ public abstract class AbstractPaymentDocument_Base
                             Instance.get(contact).getId());
         }
 
+        final Object rateObj = _parameter.getParameterValue("rate");
+        if (rateObj != null) {
+            insert.add(CISales.PaymentDocumentAbstract.Rate, getRateObject(_parameter));
+            createdDoc.getValues().put(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Rate.name), getRateObject(_parameter));
+        }
+
+        final String code = getCode4GeneratedDocWithSysConfig(_parameter);
+        if (code != null) {
+            insert.add(CISales.PaymentDocumentAbstract.Code, code);
+            createdDoc.getValues().put(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name), code);
+        }
+
         addStatus2DocCreate(_parameter, insert, createdDoc);
         add2DocCreate(_parameter, insert, createdDoc);
         insert.execute();
@@ -142,7 +179,7 @@ public abstract class AbstractPaymentDocument_Base
         return createdDoc;
     }
 
-    protected String getCurrencyLink4Account(final Parameter _parameter)
+    protected String getRateCurrencyLink4Account(final Parameter _parameter)
         throws EFapsException
     {
         long currencyId = 0;
@@ -187,7 +224,7 @@ public abstract class AbstractPaymentDocument_Base
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
             payInsert.add(CISales.Payment.CurrencyLink,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
+                                            CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
             payInsert.add(CISales.Payment.Date,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.PaymentDocumentAbstract.Date.name)));
@@ -196,14 +233,13 @@ public abstract class AbstractPaymentDocument_Base
 
             transIns.add(CISales.TransactionInbound.CurrencyId,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
+                                            CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
             transIns.add(CISales.TransactionInbound.Payment, payInsert.getId());
             transIns.add(CISales.TransactionInbound.Date,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.PaymentDocumentAbstract.Date.name)));
             transIns.add(CISales.TransactionInbound.Account, _parameter.getParameterValue("account"));
             transIns.execute();
-
         }
     }
 
@@ -246,58 +282,63 @@ public abstract class AbstractPaymentDocument_Base
     {
         final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
+
+        final Instance contactSessionInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
+
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-
-        for (int i = 0; i < 100; i++) {
-            if (props.containsKey("Type" + i)) {
-                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
-                final QueryBuilder queryBldr = new QueryBuilder(type);
-                queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
-                if (contactInst != null && contactInst.isValid()) {
-                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
-                }
-                add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
-
-                if (props.containsKey("StatusGroup" + i)) {
-                    final String statiStr = String.valueOf(props.get("Stati" + i));
-                    final String[] statiAr = statiStr.split(";");
-                    final List<Object> statusList = new ArrayList<Object>();
-                    for (final String stati : statiAr) {
-                        final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
-                        if (status != null) {
-                            statusList.add(status.getId());
-                        }
+        if (contactSessionInst != null && contactSessionInst.isValid()) {
+            for (int i = 0; i < 100; i++) {
+                if (props.containsKey("Type" + i)) {
+                    final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                    final Type type = Type.get(String.valueOf(props.get("Type" + i)));
+                    final QueryBuilder queryBldr = new QueryBuilder(type);
+                    queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
+                    if (contactInst != null && contactInst.isValid()) {
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
                     }
-                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
-                }
+                    add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.DocumentAbstract.OID,
-                                CISales.DocumentAbstract.Name,
-                                CISales.DocumentAbstract.Date);
-                multi.execute();
-                while (multi.next()) {
-                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+                    if (props.containsKey("StatusGroup" + i)) {
+                        final String statiStr = String.valueOf(props.get("Stati" + i));
+                        final String[] statiAr = statiStr.split(";");
+                        final List<Object> statusList = new ArrayList<Object>();
+                        for (final String stati : statiAr) {
+                            final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
+                            if (status != null) {
+                                statusList.add(status.getId());
+                            }
+                        }
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
+                    }
 
-                    final StringBuilder choice = new StringBuilder()
-                                    .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                                    .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                    Context.getThreadContext().getLocale())));
-                    final Map<String, String> map = new HashMap<String, String>();
-                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                    tmpMap.put(name, map);
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CISales.DocumentAbstract.OID,
+                                    CISales.DocumentAbstract.Name,
+                                    CISales.DocumentAbstract.Date);
+                    multi.execute();
+                    while (multi.next()) {
+                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                        final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                        final StringBuilder choice = new StringBuilder()
+                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                        Context.getThreadContext().getLocale())));
+                        final Map<String, String> map = new HashMap<String, String>();
+                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                        tmpMap.put(name, map);
+                    }
+                    list.addAll(tmpMap.values());
+                } else {
+                    break;
                 }
-                list.addAll(tmpMap.values());
-            } else {
-                break;
             }
         }
 
@@ -354,6 +395,8 @@ public abstract class AbstractPaymentDocument_Base
                             .append(" / ").append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
             map.put("createDocumentDesc", bldr.toString());
             map.put("payment4Pay", getTwoDigitsformater().format(amount2Pay));
+            map.put("paymentAmount", getTwoDigitsformater().format(BigDecimal.ZERO));
+            map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
             list.add(map);
         }
         final Return retVal = new Return();
@@ -481,8 +524,8 @@ public abstract class AbstractPaymentDocument_Base
         final String contactOid = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Contact.name));
         final String check = _parameter.getParameterValue("checkbox4Invoice");
-        if (check != null && !check.isEmpty() && "true".equalsIgnoreCase(check)) {
-            final Instance contact = Instance.get(contactOid);
+        final Instance contact = Instance.get(contactOid);
+        if (check == null && !"true".equalsIgnoreCase(check)) {
             if (contact.isValid()) {
                 Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contact);
             } else {
@@ -491,7 +534,60 @@ public abstract class AbstractPaymentDocument_Base
         } else {
             Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
         }
+        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contact);
         return ret;
+    }
+
+    public Return updateFields4RateCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(), _parameter.getParameterValue("account"));
+        print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
+        print.execute();
+
+        final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                        print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
+
+        // Sales-Configuration
+        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getLink("CurrencyBase");
+
+        final Map<String, String> map = new HashMap<String, String>();
+        final StringBuilder js = new StringBuilder();
+        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+        js.append("document.getElementsByName('rate')[0].value='").append(rates[3].setScale(2, BigDecimal.ROUND_HALF_UP)).append("';")
+                        .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                        .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
+        map.put("eFapsFieldUpdateJS", js.toString());
+        list.add(map);
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    public Return updateFields4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance contact = Instance.get(_parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Contact.name)));
+        final String check = _parameter.getParameterValue("checkbox4Invoice");
+        if (contact.isValid() && check == null && !"true".equalsIgnoreCase(check)) {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contact);
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+        }
+        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contact);
+        return new Return();
+    }
+
+    public Return deactivateFiltered4Invoice(final Parameter _parameter)
+        throws EFapsException
+    {
+        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, null);
+        return new Return();
     }
 
     protected DecimalFormat getTwoDigitsformater()
@@ -503,6 +599,72 @@ public abstract class AbstractPaymentDocument_Base
         formater.setRoundingMode(RoundingMode.HALF_UP);
         formater.setParseBigDecimal(true);
         return formater;
+    }
+
+    protected Object[] getRateObject(final Parameter _parameter)
+        throws EFapsException
+    {
+        BigDecimal rate = BigDecimal.ONE;
+        try {
+            rate = (BigDecimal) Calculator_Base.getFormatInstance().parse(_parameter.getParameterValue("rate"));
+        } catch (final ParseException e) {
+            throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
+        }
+        final boolean rInv = "true".equalsIgnoreCase(_parameter.getParameterValue("rate" + RateUI.INVERTEDSUFFIX));
+        return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
+    }
+
+    protected String getCode4GeneratedDocWithSysConfig(final Parameter _parameter)
+        throws EFapsException
+    {
+        String ret = "";
+        // Sales-Configuration
+        final SystemConfiguration config = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        if (config != null) {
+            final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocument");
+            if (active) {
+                // Sales_PaymentDocumentAbstractSequence
+                ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
+            }
+        }
+        return !ret.isEmpty() ? ret : null;
+    }
+
+    protected boolean getActive4GenerateReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        boolean ret = false;
+        final SystemConfiguration config = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        if (config != null) {
+            final boolean active = config.getAttributeValueAsBoolean("ActivatePrintReport4PaymentDocument");
+            if (active) {
+                ret = true;
+            }
+        }
+        return ret;
+    }
+
+    public Return validatePaymentDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final BigDecimal amount4Doc = getAmount4Pay(_parameter);
+        final BigDecimal pos4Doc = getSumsPositions(_parameter);
+        if (amount4Doc.compareTo(pos4Doc) == 0) {
+            html.append(DBProperties.getProperty("org.efaos.esjp.sales.payment.PaymentCorrect"));
+        } else {
+            if (amount4Doc.compareTo(pos4Doc) == 1) {
+                html.append(DBProperties.getProperty("org.efaos.esjp.sales.payment.PaymentPositive"));
+            } else {
+                html.append(DBProperties.getProperty("org.efaos.esjp.sales.payment.PaymentNegative"));
+            }
+        }
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
     }
 
     /**
