@@ -43,6 +43,10 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_AccountAbstract/Name.Label</property>
         </field>
+        <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Label">Sales_AccountAbstract/CurrencyLink.Label</property>
+        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Label">Sales_AccountAbstract/Description.Label</property>
