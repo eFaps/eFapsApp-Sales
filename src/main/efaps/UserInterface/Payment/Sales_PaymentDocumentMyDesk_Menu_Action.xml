@@ -35,6 +35,11 @@
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDeposit</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCash</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentExchange</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardAmercianExpress</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardDiners</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardMasterCard</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardVisa</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDebitCardVisa</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
