@@ -115,6 +115,15 @@ public abstract class Payment_Base
                 final String targetTypeId = paymentType[i];
                 Instance targetDocInst = null;
                 if (targetTypeId != null && !targetTypeId.isEmpty()) {
+                    // Sales-Configuration
+                    final Instance baseInst = SystemConfiguration.get(
+                                    UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+                    final Instance newInst = Instance.get(CIERP.Currency.getType(), currencies[i]);
+                    final CurrencyInst currency = new CurrencyInst(newInst);
+                    final PriceUtil util = new PriceUtil();
+                    final BigDecimal[] rate = util.getExchangeRate(util.getDateFromParameter(_parameter), newInst);
+                    final Object[] rateObj = new Object[] { currency.isInvert() ? BigDecimal.ONE : rate[1],
+                                    currency.isInvert() ? rate[1] : BigDecimal.ONE };
                     final Type targetType = Type.get(Long.valueOf(targetTypeId));
                     final Status status = Status.find(targetType.getStatusAttribute().getLink().getUUID(), "Open");
                     final Insert targetDocIns = new Insert(targetType);
@@ -127,8 +136,11 @@ public abstract class Payment_Base
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Name,
                                     docPrint.getAttribute(CIERP.DocumentAbstract.Name));
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Date, dateStr);
-                    targetDocIns.add(CISales.PaymentDocumentAbstract.CurrencyLink, currencies[i]);
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseInst.getId());
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Amount, amounts[i]);
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencies[i]);
+                    targetDocIns.add(CISales.PaymentDocumentAbstract.Rate, rateObj);
+
                     targetDocIns.execute();
                     targetDocInst = targetDocIns.getInstance();
                 }
@@ -276,10 +288,6 @@ public abstract class Payment_Base
                                     final Instance _instance)
         throws EFapsException
     {
-
-        SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-
         final PrintQuery print = new PrintQuery(_instance);
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
                            CISales.DocumentSumAbstract.RateCurrencyId,

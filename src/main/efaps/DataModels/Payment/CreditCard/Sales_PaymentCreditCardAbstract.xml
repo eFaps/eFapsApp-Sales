@@ -28,5 +28,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCreditCardAbstract</name>
         <parent>Sales_PaymentDocumentAbstract</parent>
+        <purpose abstract="true"/>
     </definition>
 </datamodel-type>
