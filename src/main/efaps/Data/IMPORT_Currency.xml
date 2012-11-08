@@ -41,7 +41,7 @@
         <attribute name="Key">Currency4ProductPrice</attribute>
         <attribute name="Description">This link defines the Currency whish is the base for Product prices.</attribute>
         <linkattribute name="Value" type="ERP_Currency" select="OID">
-            <queryattribute name="UUID">691758fc-a060-4bd5-b1fa-b33296638126</queryattribute>
+            <queryattribute name="UUID">41823aa0-a961-46cb-b04e-adc48d8eec2c</queryattribute>
         </linkattribute>
         <linkattribute name="AbstractLink" type="Admin_Common_SystemConfiguration">
             <queryattribute name="UUID">c9a1cbc3-fd35-4463-80d2-412422a3802f</queryattribute>
