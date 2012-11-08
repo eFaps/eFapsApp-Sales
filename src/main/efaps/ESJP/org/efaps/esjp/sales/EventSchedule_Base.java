@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.UUID;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -23,7 +22,6 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -34,29 +32,68 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id: EventSchedule_Base.java $
  */
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsRevision("$Rev: 1$")
-public class EventSchedule_Base extends AbstractDocument_Base
+public class EventSchedule_Base
+    extends AbstractDocument_Base
 {
 
-
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
-    throws EFapsException
+        throws EFapsException
     {
-
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        autoCompleteDocs(_parameter, CISales.IncomingInvoice.uuid,
-                        Status.find( CISales.IncomingInvoiceStatus.uuid, "Open").getId(), list);
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        for (int i = 0; i < 100; i++) {
+            if (props.containsKey("Type" + i)) {
+                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
+                if (type != null) {
+                    final QueryBuilder queryBldr = new QueryBuilder(type);
+                    queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
 
-        if (Type.get("Accounting_ExternalVoucher") != null) {
-            //Accounting_ExternalVoucher
-            //Accounting_ExternalVoucherStatus
-            autoCompleteDocs(_parameter, UUID.fromString("612efbd7-8843-447f-bb44-7983a3e87a43"),
-                            Status.find(UUID.fromString("1e95c195-f701-43e7-af90-7012779e18c9"), "Open").getId(), list);
+                    if (props.containsKey("StatusGroup" + i)) {
+                        final String statiStr = String.valueOf(props.get("Stati" + i));
+                        final String[] statiAr = statiStr.split(";");
+                        final List<Object> statusList = new ArrayList<Object>();
+                        for (final String stati : statiAr) {
+                            final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
+                            if (status != null) {
+                                statusList.add(status.getId());
+                            }
+                        }
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
+                    }
+
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CISales.DocumentAbstract.OID,
+                                    CISales.DocumentAbstract.Name,
+                                    CISales.DocumentAbstract.Date);
+                    multi.execute();
+                    while (multi.next()) {
+                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                        final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                        final StringBuilder choice = new StringBuilder()
+                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                        Context.getThreadContext().getLocale())));
+                        final Map<String, String> map = new HashMap<String, String>();
+                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                        tmpMap.put(name, map);
+                    }
+                }
+                list.addAll(tmpMap.values());
+            } else {
+                break;
+            }
         }
 
         final Return retVal = new Return();
@@ -64,47 +101,9 @@ public class EventSchedule_Base extends AbstractDocument_Base
         return retVal;
     }
 
-
-    protected void autoCompleteDocs(final Parameter _parameter,
-                                 final UUID _typeUUID,
-                                 final long _status,
-                                 final List<Map<String, String>> _list)
-    throws EFapsException
-    {
-
-        final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-        final SelectBuilder selectContactName = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact)
-                        .attribute(CIContacts.Contact.Name);
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-
-        final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
-        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
-        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status);
-
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.DocumentAbstract.OID, CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
-        multi.addSelect(selectContactName);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-            final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-            final String contactName = multi.<String>getSelect(selectContactName);
-            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + "-" + Instance.get(oid).getType().getLabel() +
-                            " - " + contactName + "-"
-                     + date.toString(DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
-            map.put("selectedDoc", oid);
-            tmpMap.put(name, map);
-        }
-        _list.addAll(tmpMap.values());
-    }
-
     /**
      * Generic method to get the listmap for update event.
+     * 
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -116,33 +115,43 @@ public class EventSchedule_Base extends AbstractDocument_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
 
-
         final int selected = getSelectedRow(_parameter);
         final String oid = _parameter.getParameterValues("document")[selected];
         String name;
-        BigDecimal netPrice  = BigDecimal.ZERO;
+        BigDecimal netPrice = BigDecimal.ZERO;
+        String symbol;
+        String rateSymbol;
         if (oid != null && oid.length() > 0) {
-
+            final SelectBuilder selSymbol = new SelectBuilder().linkto(CISales.DocumentSumAbstract.CurrencyId)
+                            .attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selRateSymbol = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                            .attribute(CIERP.Currency.Symbol);
             final PrintQuery print = new PrintQuery(oid);
             print.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Note);
-            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
-
+            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.RateCrossTotal);
+            print.addSelect(selSymbol, selRateSymbol);
             print.execute();
             name = print.getAttribute(CISales.DocumentAbstract.Name);
             netPrice = print.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-
-        }else {
+            print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            symbol = print.getSelect(selSymbol);
+            rateSymbol = print.getSelect(selRateSymbol);
+        } else {
             name = "";
+            symbol = "";
+            rateSymbol = "";
         }
 
         if (name.length() > 0) {
-            map.put("netPrice", getNetPriceFmtStr(netPrice));
+            map.put("netPrice", symbol + getNetPriceFmtStr(netPrice));
+            map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(netPrice));
             map.put("total", getTotalFmtStr(getTotal(_parameter)));
             map.put("documentAutoComplete", name);
 
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
-        }else {
+        } else {
             map.put("documentAutocomplete", name);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
@@ -154,22 +163,24 @@ public class EventSchedule_Base extends AbstractDocument_Base
     }
 
     public BigDecimal getTotal(final Parameter _parameter)
-    throws EFapsException
+        throws EFapsException
     {
         BigDecimal total = BigDecimal.ZERO;
         final String[] oids = _parameter.getParameterValues("document");
-        for(int i = 0; i <  oids.length; i++){
-            final PrintQuery print = new PrintQuery(oids[i]);
-            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
-            print.execute();
-            total = total.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+        for (int i = 0; i < oids.length; i++) {
+            if (oids[i] != null && oids[i].length() > 0) {
+                final PrintQuery print = new PrintQuery(oids[i]);
+                print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                print.execute();
+                total = total.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+            }
         }
         return total;
     }
 
     @Override
     protected String getMaxNumber(final Type _type,
-                                final boolean _expandChild)
+                                  final boolean _expandChild)
         throws EFapsException
     {
         String ret = null;
@@ -224,18 +235,20 @@ public class EventSchedule_Base extends AbstractDocument_Base
         {
             this.instance = _instance;
         }
+
         /**
          * Getter method for the instance variable {@link #values}.
-         *
+         * 
          * @return value of instance variable {@link #values}
          */
         public Map<String, Object> getValues()
         {
             return this.values;
         }
+
         /**
          * Getter method for the instance variable {@link #instance}.
-         *
+         * 
          * @return value of instance variable {@link #instance}
          */
         public Instance getInstance()
@@ -245,13 +258,14 @@ public class EventSchedule_Base extends AbstractDocument_Base
 
         /**
          * Getter method for the instance variable {@link #positions}.
-         *
+         * 
          * @return value of instance variable {@link #positions}
          */
         public List<Instance> getPositions()
         {
             return this.positions;
         }
+
         /**
          * @param _instance Instance to add
          */
@@ -261,6 +275,4 @@ public class EventSchedule_Base extends AbstractDocument_Base
         }
     }
 
-
 }
-
