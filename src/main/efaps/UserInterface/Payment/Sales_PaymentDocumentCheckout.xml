@@ -19,17 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>c7cda75b-480b-4eeb-8361-a38187d172bc</uuid>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1c745d6c-eecf-4f7a-b806-089f36ae1ae9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentExchangeTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_PaymentExchangeTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentDocumentCheckout</child>
-        </childs>
+        <name>Sales_PaymentDocumentCheckout</name>
+        <target>
+            <execute program="org.efaps.esjp.common.file.FileCheckout"/>
+        </target>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
-</ui-menu>
+</ui-command>
