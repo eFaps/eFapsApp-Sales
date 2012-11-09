@@ -119,6 +119,7 @@ public class EventSchedule_Base
         final String oid = _parameter.getParameterValues("document")[selected];
         String name;
         BigDecimal netPrice = BigDecimal.ZERO;
+        BigDecimal rateNetPrice = BigDecimal.ZERO;
         String symbol;
         String rateSymbol;
         if (oid != null && oid.length() > 0) {
@@ -134,6 +135,7 @@ public class EventSchedule_Base
             print.execute();
             name = print.getAttribute(CISales.DocumentAbstract.Name);
             netPrice = print.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            rateNetPrice = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             symbol = print.getSelect(selSymbol);
             rateSymbol = print.getSelect(selRateSymbol);
@@ -145,7 +147,7 @@ public class EventSchedule_Base
 
         if (name.length() > 0) {
             map.put("netPrice", symbol + getNetPriceFmtStr(netPrice));
-            map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(netPrice));
+            map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
             map.put("total", getTotalFmtStr(getTotal(_parameter)));
             map.put("documentAutoComplete", name);
 
