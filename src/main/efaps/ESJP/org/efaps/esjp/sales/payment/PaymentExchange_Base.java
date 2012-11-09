@@ -28,9 +28,10 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: PaymentExchange_Base.java 8156 2012-11-05 15:32:12Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("ea0b0c6e-2be8-4c78-b9a4-91e3691bf2b9")
 @EFapsRevision("$Rev$")
@@ -48,6 +49,7 @@ public abstract class PaymentExchange_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        return new Return();
+        final Return ret = createReportDoc(_parameter, createdDoc);
+        return ret;
     }
 }

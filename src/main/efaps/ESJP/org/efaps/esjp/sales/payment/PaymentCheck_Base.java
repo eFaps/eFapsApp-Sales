@@ -28,7 +28,7 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -49,9 +49,8 @@ public abstract class PaymentCheck_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        return new Return();
+        final Return ret = createReportDoc(_parameter, createdDoc);
+        return ret;
     }
-
-
 
 }

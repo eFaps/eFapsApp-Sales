@@ -20,6 +20,10 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -44,6 +48,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIAttribute;
+import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -53,10 +59,12 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -90,7 +98,12 @@ public abstract class AbstractPaymentDocument_Base
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         final CreatedDoc createdDoc = new CreatedDoc();
 
-        insert.add(CISales.PaymentDocumentAbstract.Name, getDocName4Create(_parameter));
+        final String name = getDocName4Create(_parameter);
+        if (name != null) {
+            insert.add(CISales.PaymentDocumentAbstract.Name, name);
+            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Name.name),
+                            name);
+        }
 
         final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Note.name));
@@ -104,7 +117,7 @@ public abstract class AbstractPaymentDocument_Base
                         CISales.PaymentDocumentAbstract.Amount.name));
         if (amount != null) {
             insert.add(CISales.PaymentDocumentAbstract.Amount, amount);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Note.name),
+            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Amount.name),
                             amount);
         }
 
@@ -665,6 +678,70 @@ public abstract class AbstractPaymentDocument_Base
         ret.put(ReturnValues.SNIPLETT, html.toString());
         ret.put(ReturnValues.TRUE, true);
         return ret;
+    }
+
+    protected Return createReportDoc(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        Return ret = new Return();
+
+        if (getActive4GenerateReport(_parameter)) {
+            final StandartReport report = new StandartReport();
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            _parameter.put(ParameterValues.INSTANCE, _createdDoc.getInstance());
+            Object name = _createdDoc.getValues().get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name));
+            if (name == null) {
+                name = _createdDoc.getValues()
+                                .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Name.name));
+            }
+
+            final String fileName = DBProperties.getProperty(_createdDoc.getInstance().getType().getName() + ".Label")
+                            + "_" + name;
+            report.setFileName(fileName);
+            final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
+                            .attribute(CIERP.Currency.Name);
+            report.getJrParameters().put("accountName",
+                            getSelectString4AttributeAccount(_parameter.getParameterValue("account"), null, CISales.AccountCashDesk.Name));
+            report.getJrParameters().put("accountCurrencyName",
+                            getSelectString4AttributeAccount(_parameter.getParameterValue("account"), selCurName, null));
+            ret = report.execute(_parameter);
+            ret.put(ReturnValues.TRUE, true);
+
+            try {
+                final File file = (File) ret.get(ReturnValues.VALUES);
+                final InputStream input = new FileInputStream(file);
+                final Checkin checkin = new Checkin(_createdDoc.getInstance());
+                checkin.execute(fileName + "." + properties.get("Mime"), input, ((Long) file.length()).intValue());
+            } catch (final FileNotFoundException e) {
+                throw new EFapsException(Invoice.class, "create.FileNotFoundException", e);
+            }
+        }
+
+        return ret;
+    }
+
+    protected String getSelectString4AttributeAccount(final String _accountId,
+                                                      final SelectBuilder _select,
+                                                      final CIAttribute _attribute)
+        throws EFapsException
+    {
+        String ret = "";
+        if (_accountId != null) {
+            final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(), _accountId);
+            if (_select != null) {
+                print.addSelect(_select);
+            } else if (_attribute != null) {
+                print.addAttribute(_attribute);
+            }
+            print.execute();
+            if (_select != null) {
+                ret = print.getSelect(_select);
+            } else if (_attribute != null) {
+                ret = print.getAttribute(_attribute);
+            }
+        }
+        return ret.isEmpty() ? null : ret;
     }
 
     /**
