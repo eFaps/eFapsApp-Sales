@@ -1393,23 +1393,48 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
+    /**
+     * @return the type name used in SystemConfiguration
+     */
     protected String getTypeName4SystemConfiguration()
     {
         return CISales.DocumentAbstract.getType().getName();
     }
 
+    /**
+     * Method to get formated String representation of the cross total for a
+     * list of Calculators.
+     *
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return formated String representation of the cross total
+     * @throws EFapsException on error
+     */
     protected String getCrossTotalFmtStr(final List<Calculator> _calcList)
         throws EFapsException
     {
         return getTwoDigitsformater().format(getCrossTotal(_calcList));
     }
 
+    /**
+     * Method to get String representation of the cross total for a list of Calculators.
+     *
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return String representation of the cross total
+     * @throws EFapsException on error
+     */
     protected String getCrossTotalStr(final List<Calculator> _calcList)
         throws EFapsException
     {
         return getCrossTotal(_calcList).toString();
     }
 
+    /**
+     * Method to get the cross total for a list of Calculators.
+     *
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the cross total
+     * @throws EFapsException on error
+     */
     protected BigDecimal getCrossTotal(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1420,12 +1445,27 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
+    /**
+     * Method to get formated String representation of the net total for a
+     * list of Calculators.
+     *
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return formated String representation of the net total
+     * @throws EFapsException on error
+     */
     protected String getNetTotalFmtStr(final List<Calculator> _calcList)
         throws EFapsException
     {
         return getTwoDigitsformater().format(getNetTotal(_calcList));
     }
 
+    /**
+     * Method to get String representation of the net total for a list of Calculators.
+     *
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return String representation of the net total
+     * @throws EFapsException on error
+     */
     protected String getNetTotalStr(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1433,11 +1473,11 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Method to get the
+     * Method to get the net total for a list of Calculators.
      *
-     * @param _calcList
-     * @return
-     * @throws EFapsException
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the net total
+     * @throws EFapsException on error
      */
     protected BigDecimal getNetTotal(final List<Calculator> _calcList)
         throws EFapsException
@@ -1449,6 +1489,13 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
+    /**
+     * Method to get the base cross total for a list of Calculators.
+     *
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the base cross total
+     * @throws EFapsException on error
+     */
     protected BigDecimal getBaseCrossTotal(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1601,13 +1648,13 @@ public abstract class AbstractDocument_Base
                 if (!calculator.isEmpty()) {
                     calculator.applyRate(newInst, rates[2]);
                     js.append("document.getElementsByName('netUnitPrice')[").append(i).append("].value='")
-                                    .append(calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator))).append("';")
-                                    .append("document.getElementsByName('netPrice')[").append(i).append("].firstChild.data='")
-                                    .append(calculator.getNetPriceFmtStr(getTwoDigitsformater())).append("';")
-                                    .append("document.getElementsByName('discountNetUnitPrice')[").append(i)
-                                    .append("].firstChild.data='")
-                                    .append(calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)))
-                                    .append("';");
+                        .append(calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator))).append("';")
+                        .append("document.getElementsByName('netPrice')[").append(i).append("].firstChild.data='")
+                        .append(calculator.getNetPriceFmtStr(getTwoDigitsformater())).append("';")
+                        .append("document.getElementsByName('discountNetUnitPrice')[").append(i)
+                        .append("].firstChild.data='")
+                        .append(calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)))
+                        .append("';");
                 }
                 i++;
             }
@@ -1795,7 +1842,6 @@ public abstract class AbstractDocument_Base
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
         return number;
     }
 
