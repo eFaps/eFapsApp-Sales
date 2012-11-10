@@ -19,17 +19,14 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8cf4dcdc-0fc2-447b-b1e8-6ec1f115f102</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>85fc96f1-bdd0-464b-87dc-da966c4479a2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstract</name>
+        <name>Sales_PaymentDocumentOutAbstract</name>
         <parent>Sales_PaymentDocumentIOAbstract</parent>
         <purpose abstract="true"/>
     </definition>

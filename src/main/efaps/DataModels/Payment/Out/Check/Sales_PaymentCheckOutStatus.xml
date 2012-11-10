@@ -19,18 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8cf4dcdc-0fc2-447b-b1e8-6ec1f115f102</uuid>
+--><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>099362cf-b2e0-47d1-93c1-c7577a9dc82b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstract</name>
-        <parent>Sales_PaymentDocumentIOAbstract</parent>
-        <purpose abstract="true"/>
+        <name>Sales_PaymentCheckOutStatus</name>
+        <parent>Sales_PaymentDocumentStatus</parent>
+        <status key="Open">
+            <description>Check is unused.</description>
+        </status>
+        <status key="Closed">
+            <description>Check was emited.</description>
+        </status>
+        <status key="Canceled">
+            <description>Check was canceled.</description>
+        </status>
     </definition>
-</datamodel-type>
+</datamodel-statusgroup>

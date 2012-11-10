@@ -19,18 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8cf4dcdc-0fc2-447b-b1e8-6ec1f115f102</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>70e1e369-711e-4959-ad68-6342a7150d03</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstract</name>
-        <parent>Sales_PaymentDocumentIOAbstract</parent>
-        <purpose abstract="true"/>
+        <name>Sales_PaymentCheckOut</name>
+        <parent>Sales_PaymentDocumentOutAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_PaymentCheckOutStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE" name="Sales_PaymentCheckOut.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue"/>
+        </attribute>
     </definition>
 </datamodel-type>

@@ -19,18 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8cf4dcdc-0fc2-447b-b1e8-6ec1f115f102</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>96d01336-ca61-489f-87d8-c4aa7001e951</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstract</name>
-        <parent>Sales_PaymentDocumentIOAbstract</parent>
-        <purpose abstract="true"/>
+        <name>Sales_PaymentDocumentOutMyDesk_Menu_Action</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCheckOut</child>
+            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDepositOut</child>
+            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_Delete</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>
