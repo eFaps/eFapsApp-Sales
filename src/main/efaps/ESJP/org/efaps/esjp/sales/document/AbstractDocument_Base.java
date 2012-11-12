@@ -1326,7 +1326,6 @@ public abstract class AbstractDocument_Base
      * @param _unitPrice unit price
      * @param _discount discount
      * @param _priceFromDB must the price set from DB
-     * @param _includeMinRetail must the minimum retail price be included
      * @throws EFapsException on error
      * @return new Calculator
      */
