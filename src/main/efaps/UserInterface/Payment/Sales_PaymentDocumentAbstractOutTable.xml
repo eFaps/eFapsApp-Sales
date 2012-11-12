@@ -21,14 +21,14 @@
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fd5b8044-5827-408e-a1e2-e819fd7dcc3c</uuid>
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>552fbbfd-2ba6-47fa-8173-f95d73e4df50</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentAbstractTable</name>
+        <name>Sales_PaymentDocumentAbstractOutTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
@@ -39,9 +39,9 @@
             <property name="Attribute">Code</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Code.Label</property>
             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentDocumentAbstractTable.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            name="Sales_PaymentDocumentAbstractOutTable.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">ActivateCode4PaymentDocument</property>
+                <property name="Attribute">ActivateCode4PaymentDocumentOut</property>
             </trigger>
         </field>
         <field name="name">

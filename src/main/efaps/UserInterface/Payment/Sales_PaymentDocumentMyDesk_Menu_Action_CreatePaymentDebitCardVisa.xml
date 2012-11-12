@@ -32,7 +32,7 @@
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentCreditCardForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCash">
+            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDebitCard">
                 <property name="StatusGroup">Sales_PaymentDebitCardAbstractStatus</property>
                 <property name="Status">Open</property>
             </execute>

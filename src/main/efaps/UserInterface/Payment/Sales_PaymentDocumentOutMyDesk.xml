@@ -32,7 +32,7 @@
         </access>
         <target>
             <menu>Sales_PaymentDocumentOutMyDesk_Menu</menu>
-            <table>Sales_PaymentDocumentAbstractTable</table>
+            <table>Sales_PaymentDocumentAbstractOutTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_PaymentDocumentOutAbstract</property>
             </evaluate>

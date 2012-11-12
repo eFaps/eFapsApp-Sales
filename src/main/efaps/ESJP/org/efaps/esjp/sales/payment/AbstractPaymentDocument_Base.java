@@ -72,7 +72,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -277,7 +277,7 @@ public abstract class AbstractPaymentDocument_Base
 
     /**
      * Method is calles in the preocess of creation
-     *
+     * 
      * @param _parameter Parameter as passed by the eFaps API
      * @param _posInsert insert to add to
      * @param _createdDoc document created
@@ -635,10 +635,18 @@ public abstract class AbstractPaymentDocument_Base
         final SystemConfiguration config = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
         if (config != null) {
-            final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocument");
-            if (active) {
-                // Sales_PaymentDocumentAbstractSequence
-                ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
+            if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+                final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocument");
+                if (active) {
+                    // Sales_PaymentDocumentAbstractSequence
+                    ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
+                }
+            } else if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
+                final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocumentOut");
+                if (active) {
+                    // Sales_PaymentDocumentAbstractOutSequence
+                    ret = NumberGenerator.get(UUID.fromString("c930aeab-31ad-47d9-9aa4-fbf803a472b2")).getNextVal();
+                }
             }
         }
         return !ret.isEmpty() ? ret : null;
