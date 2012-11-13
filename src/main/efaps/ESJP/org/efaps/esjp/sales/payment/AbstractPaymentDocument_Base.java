@@ -221,8 +221,12 @@ public abstract class AbstractPaymentDocument_Base
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
 
             final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
-
-            final Insert transIns = new Insert(CISales.TransactionInbound);
+            Insert transIns;
+            if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+                transIns = new Insert(CISales.TransactionInbound);
+            } else {
+                transIns = new Insert(CISales.TransactionOutbound);
+            }
 
             if (createDocument.length > i && createDocument[i] != null) {
                 final Instance inst = Instance.get(createDocument[i]);
@@ -232,7 +236,7 @@ public abstract class AbstractPaymentDocument_Base
             }
             if (paymentAmount.length > i && paymentAmount[i] != null) {
                 payInsert.add(CISales.Payment.Amount, paymentAmount[i]);
-                transIns.add(CISales.TransactionInbound.Amount, paymentAmount[i]);
+                transIns.add(CISales.TransactionAbstract.Amount, paymentAmount[i]);
             }
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
             payInsert.add(CISales.Payment.CurrencyLink,
@@ -244,14 +248,14 @@ public abstract class AbstractPaymentDocument_Base
             add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
             payInsert.execute();
 
-            transIns.add(CISales.TransactionInbound.CurrencyId,
+            transIns.add(CISales.TransactionAbstract.CurrencyId,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
-            transIns.add(CISales.TransactionInbound.Payment, payInsert.getId());
-            transIns.add(CISales.TransactionInbound.Date,
+            transIns.add(CISales.TransactionAbstract.Payment, payInsert.getId());
+            transIns.add(CISales.TransactionAbstract.Date,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.PaymentDocumentAbstract.Date.name)));
-            transIns.add(CISales.TransactionInbound.Account, _parameter.getParameterValue("account"));
+            transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
             transIns.execute();
         }
     }
@@ -675,12 +679,12 @@ public abstract class AbstractPaymentDocument_Base
         final BigDecimal amount4Doc = getAmount4Pay(_parameter);
         final BigDecimal pos4Doc = getSumsPositions(_parameter);
         if (amount4Doc.compareTo(pos4Doc) == 0) {
-            html.append(DBProperties.getProperty("org.efaos.esjp.sales.payment.PaymentCorrect"));
+            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentCorrect"));
         } else {
             if (amount4Doc.compareTo(pos4Doc) == 1) {
-                html.append(DBProperties.getProperty("org.efaos.esjp.sales.payment.PaymentPositive"));
+                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentPositive"));
             } else {
-                html.append(DBProperties.getProperty("org.efaos.esjp.sales.payment.PaymentNegative"));
+                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentNegative"));
             }
         }
         ret.put(ReturnValues.SNIPLETT, html.toString());
