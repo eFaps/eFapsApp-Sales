@@ -50,7 +50,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCheck">
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
                 <property name="Type0">Sales_IncomingInvoice</property>
                 <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
                 <property name="Stati0">Open</property>
@@ -58,7 +58,7 @@
                 <property name="StatusGroup1">Accounting_ExternalVoucherStatus</property>
                 <property name="Stati1">Open</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentCheckOutPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
         </field>
         <field name="createDocumentDesc">
             <property name="ModeView">NONE</property>
@@ -77,7 +77,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount" name="Sales_PaymentCheckOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount" name="Sales_PaymentCheckOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>

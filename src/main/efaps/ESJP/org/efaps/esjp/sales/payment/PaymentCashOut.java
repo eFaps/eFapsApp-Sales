@@ -29,13 +29,12 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  * 
  * @author The eFaps Team
- * @version $Id: PaymentDeposit.java 8100 2012-10-26 15:23:50Z
- *          m.aranya@moxter.net $
+ * @version $Id$
  */
-@EFapsUUID("f8169bb0-eafd-4062-b1cb-654ea013dabd")
+@EFapsUUID("b537c33b-5c36-4606-a500-32cbbfa76599")
 @EFapsRevision("$Rev$")
-public class PaymentDepositOut
-    extends PaymentDepositOut_Base
+public class PaymentCashOut
+    extends PaymentCashOut_Base
 {
 
 }

@@ -51,7 +51,7 @@
             <property name="ModeView">NONE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument"
                 name="Sales_PaymentExchangePaymentTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.payment.PaymentCheck">
+                program="org.efaps.esjp.sales.payment.PaymentExchange">
                     <property name="Type0">Sales_Invoice</property>
                     <property name="StatusGroup0">Sales_InvoiceStatus</property>
                     <property name="Stati0">Open</property>
@@ -61,7 +61,7 @@
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument"
                 name="Sales_PaymentExchangePaymentTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+                program="org.efaps.esjp.sales.payment.PaymentExchange"/>
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>

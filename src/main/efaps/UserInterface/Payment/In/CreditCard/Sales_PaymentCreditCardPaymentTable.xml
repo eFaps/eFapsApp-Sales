@@ -52,7 +52,7 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE"
                 method="autoComplete4CreateDocument"
                 name="Sales_PaymentCreditCardPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.payment.PaymentCheck">
+                program="org.efaps.esjp.sales.payment.PaymentCreditCard">
                     <property name="Type0">Sales_Invoice</property>
                     <property name="StatusGroup0">Sales_InvoiceStatus</property>
                     <property name="Stati0">Open</property>
@@ -63,7 +63,7 @@
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4CreateDocument"
                 name="Sales_PaymentCreditCardPaymentTable.product.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+                program="org.efaps.esjp.sales.payment.PaymentCreditCard"/>
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
@@ -84,7 +84,7 @@
             <property name="Attribute">Amount</property>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4PaymentAmount"
-                name="Sales_PaymentCreditCardPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
+                name="Sales_PaymentCreditCardPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCreditCard"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>

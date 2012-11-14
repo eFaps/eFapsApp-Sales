@@ -20,25 +20,27 @@
   Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2c255daa-2bf7-4856-ba13-fbf3d2f873ea</uuid>
+    <uuid>75a2c377-4d17-4ce9-93a1-0678df70816f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDepositOutForm</name>
+        <name>Sales_PaymentExchangeOutForm</name>
         <!-- fields -->
         <field name="deactivateFiltered4Invoice">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="deactivateFiltered4Invoice" name="Sales_PaymentDepositOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="deactivateFiltered4Invoice"
+                name="Sales_PaymentExchangeOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
         <field name="code">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Attribute">Code</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_PaymentDepositOutForm.code.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField">
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+                name="Sales_PaymentExchangeOutForm.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">ActivateCode4PaymentDocumentOut</property>
             </trigger>
@@ -69,23 +71,27 @@
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentDepositOutForm.contact.Label</property>
+            <property name="Label">Sales_PaymentExchangeOutForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDepositOutForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.erp.Contacts"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_PaymentDepositOutForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger program="org.efaps.esjp.erp.Contacts" method="autoComplete4Contact"
+            name="Sales_PaymentExchangeOutForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4Contact"
+                name="Sales_PaymentExchangeOutForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">READONLY</property>
-            <property name="Label">Sales_PaymentDepositOutForm.checkbox4Invoice.Label</property>
+            <property name="Label">Sales_PaymentExchangeOutForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue" name="Sales_PaymentDepositOutForm.checkbox4Invoice.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
+                name="Sales_PaymentExchangeOutForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="update4checkbox4Invoive" name="Sales_PaymentDepositOutForm.checkbox4Invoice.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="update4checkbox4Invoive"
+                name="Sales_PaymentExchangeOutForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
@@ -97,16 +103,18 @@
             <property name="ModeEdit">READONLY</property>
         </field>
         <field name="account">
-            <property name="Label">Sales_PaymentDepositOutForm.account.Label</property>
+            <property name="Label">Sales_PaymentExchangeOutForm.account.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue" name="Sales_PaymentDepositOutForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+                name="Sales_PaymentExchangeOutForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4RateCurrency"
+                name="Sales_PaymentExchangeOutForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
@@ -119,7 +127,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4AbsoluteAmount" name="Sales_PaymentDepositOutForm.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4AbsoluteAmount"
+                name="Sales_PaymentExchangeOutForm.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>
@@ -163,19 +172,19 @@
         </field>
          <field character="Heading" name="headingPayment">
             <property name="Level">2</property>
-            <property name="Label">Sales_PaymentDepositOutForm.headingPayment.Heading</property>
+            <property name="Label">Sales_PaymentExchangeOutForm.headingPayment.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field character="Target" name="paymentTable">
             <property name="ModeCreate">EDITABLE</property>
-            <table>Sales_PaymentDepositOutPaymentTable</table>
+            <table>Sales_PaymentExchangeOutPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">TargetDocument</property>
             </evaluate>
         </field>
         <field name="total4DiscountPay">
-            <property name="Label">Sales_PaymentDepositOutForm.total4DiscountPay.Label</property>
+            <property name="Label">Sales_PaymentExchangeOutForm.total4DiscountPay.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>

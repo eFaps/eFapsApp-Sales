@@ -19,20 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>96d01336-ca61-489f-87d8-c4aa7001e951</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>3fb98a7a-9f50-4562-9ee7-47edcb12d5b6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentOutMyDesk_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCheckOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDepositOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCashOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentExchangeOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Sales_PaymentCashOut</name>
+        <parent>Sales_PaymentDocumentOutAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_PaymentCashOutStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE" name="Sales_PaymentCashOut.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue"/>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

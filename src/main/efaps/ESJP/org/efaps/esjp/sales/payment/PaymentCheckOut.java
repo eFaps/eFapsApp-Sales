@@ -35,7 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsUUID("a5d92efb-36e4-4d74-9ab2-c3749510ae99")
 @EFapsRevision("$Rev$")
 public class PaymentCheckOut
-    extends PaymentCheck_Base
+    extends PaymentCheckOut_Base
 {
 
 }

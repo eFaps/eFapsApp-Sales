@@ -20,19 +20,15 @@
  Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>96d01336-ca61-489f-87d8-c4aa7001e951</uuid>
+    <uuid>ca8b3dd1-d6f6-4825-958b-9ed73b59c05e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentOutMyDesk_Menu_Action</name>
+        <name>Sales_PaymentCashOutTree_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCheckOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDepositOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCashOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentExchangeOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_Delete</child>
+            <child>Sales_PaymentCashOutTree_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

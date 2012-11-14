@@ -20,22 +20,36 @@
 
 package org.efaps.esjp.sales.payment;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_base</code>"
- * class.
+ * TODO comment!
  * 
  * @author The eFaps Team
- * @version $Id: PaymentDeposit.java 8100 2012-10-26 15:23:50Z
- *          m.aranya@moxter.net $
+ * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
+ *          jorge.cueva@moxter.net $
  */
-@EFapsUUID("f8169bb0-eafd-4062-b1cb-654ea013dabd")
+@EFapsUUID("e9e82cc6-1f0d-44a5-9c06-88f8ff3f4d11")
 @EFapsRevision("$Rev$")
-public class PaymentDepositOut
-    extends PaymentDepositOut_Base
+public abstract class PaymentCashOut_Base
+    extends AbstractPaymentDocument
 {
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPayment(_parameter, createdDoc);
+        final Return ret = createReportDoc(_parameter, createdDoc);
+        return ret;
+    }
 }
