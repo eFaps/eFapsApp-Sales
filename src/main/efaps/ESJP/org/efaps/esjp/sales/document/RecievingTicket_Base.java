@@ -42,9 +42,10 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: RecievingTicket_Base.java 8018 2012-10-09 17:47:24Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("f6f4e147-fc24-487e-ae81-69e4c44ac964")
 @EFapsRevision("$Rev$")
@@ -61,9 +62,9 @@ public abstract class RecievingTicket_Base
         insert.add(CISales.RecievingTicket.Contact, contactid.toString());
         insert.add(CISales.RecievingTicket.Date, date);
         insert.add(CISales.RecievingTicket.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.RecievingTicket.Name, _parameter.getParameterValue("name"));
+        insert.add(CISales.RecievingTicket.Name, getDocName4Create(_parameter));
         insert.add(CISales.RecievingTicket.Status,
-                                ((Long) Status.find(CISales.RecievingTicketStatus.uuid, "Closed").getId()).toString());
+                        ((Long) Status.find(CISales.RecievingTicketStatus.uuid, "Closed").getId()).toString());
         insert.execute();
         Integer i = 0;
         for (final String quantity : _parameter.getParameterValues("quantity")) {
@@ -79,6 +80,13 @@ public abstract class RecievingTicket_Base
             i++;
         }
         return new Return();
+    }
+
+    @Override
+    protected String getDocName4Create(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getParameterValue("name");
     }
 
     public Return recievingTicketPositionInsertTrigger(final Parameter _parameter)
