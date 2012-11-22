@@ -50,6 +50,26 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
         </field>
+        <field name="filterHeading" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_Document_ReportForm.filterHeading.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="filterActive">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Document_ReportForm.filterActive.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Sales_Document_ReportForm.filterActive.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="checked">false</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DocReport"
+                method="updateFilterActiveUIValue"
+                name="Sales_Document_ReportForm.filterActive.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+            </trigger>
+        </field>
         <field name="contact">
             <property name="Label">Sales_Document_ReportForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
@@ -59,15 +79,6 @@
                 name="Sales_Document_ReportForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" />
         </field>
-        <field name="dateCurrency">
-            <property name="Label">Sales_Document_ReportForm.dateCurrency.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="Attribute">Date</property>
-            <trigger program="org.efaps.esjp.sales.document.DocReport"
-                     method="updateRateFieldValueUI"
-                     name="Sales_Document_ReportForm.dateCurrency.UI_FIELD_UPDATE"
-                     event="UI_FIELD_UPDATE" />
-        </field>
         <field name="currency">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Document_ReportForm.currency.Label</property>
@@ -75,18 +86,17 @@
                 method="rateCurrencyFieldValueUI"
                 name="Sales_Document_ReportForm.currency.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.DocReport"
-                     method="updateRateFieldValueUI"
-                     name="Sales_Document_ReportForm.currency.UI_FIELD_UPDATE"
-                     event="UI_FIELD_UPDATE" />
         </field>
-        <field name="rate">
+        <field name="rateCurrencyType">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Sales_Document_ReportForm.rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.DocReport"
-                     method="getRateFieldValueUI"
-                     name="Sales_Document_ReportForm.rate.UI_FIELD_VALUE"
-                     event="UI_FIELD_VALUE" />
+            <property name="Label">Sales_Document_ReportForm.currencyType.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getTypeDropDownFieldValue"
+                name="Sales_TextModuleForm.forTypeId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Types">ERP_CurrencyRateAbstract</property>
+                <property name="IncludeAbstract">false</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

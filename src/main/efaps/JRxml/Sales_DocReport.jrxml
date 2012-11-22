@@ -13,6 +13,7 @@
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
 	<property name="net.sf.jasperreports.export.pdf.exclude.origin.band.5" value="lastPageFooter"/>
+    <import value="java.text.SimpleDateFormat"/>
 	<import value="org.efaps.admin.datamodel.Status"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="UUID" value="e4b4666f-8213-47e6-9a1c-31d18c94f80c"/>
@@ -22,6 +23,7 @@
 	<parameter name="Mime" class="java.lang.String"/>
 	<parameter name="Rate" class="java.math.BigDecimal"/>
 	<parameter name="RateView" class="java.math.BigDecimal"/>
+    <parameter name="Rates" class="java.util.Map"/>
 	<parameter name="Currency" class="java.lang.String"/>
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
@@ -56,9 +58,15 @@
 	<field name="id" class="java.lang.Long">
 		<property name="Select" value="id"/>
 	</field>
+    <variable name="date" class="java.lang.String">
+		<variableExpression><![CDATA[new SimpleDateFormat("yyyyMMdd").format($F{date}.toDate())]]></variableExpression>
+	</variable>
+	<variable name="rate" class="java.math.BigDecimal">
+		<variableExpression><![CDATA[$P{Active} ? $P{Rates}.get($V{date}) : java.math.BigDecimal.ONE]]></variableExpression>
+	</variable>
 	<variable name="canceled" class="java.lang.Boolean">
 		<variableExpression><![CDATA[new Boolean($F{status}.equals(new Long(Status.find("Sales_InvoiceStatus", "Replaced").getId()))
-|| $F{status}.equals(new Long(Status.find("Sales_ReceiptStatus", "Replaced").getId()))
+|| $F{status}.equals(new Long(Status.find("Sales_ReminderStatus", "Replaced").getId()))
 || $F{status}.equals(new Long(Status.find("Sales_CreditNoteStatus", "Replaced").getId())))]]></variableExpression>
 	</variable>
 	<variable name="negative" class="java.lang.Boolean">
@@ -71,30 +79,30 @@
 		<variableExpression><![CDATA[$V{canceled}.booleanValue() || $V{export}.booleanValue()
 ? BigDecimal.ZERO
 : ($V{negative}.booleanValue()
-? $F{netTotal}.multiply( $P{Rate} ).negate()
-: $F{netTotal}.multiply( $P{Rate} ))]]></variableExpression>
+? $F{netTotal}.multiply( $V{rate} ).negate()
+: $F{netTotal}.multiply( $V{rate} ))]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<variable name="sumCrossTotal" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$V{canceled}.booleanValue()
 ? BigDecimal.ZERO
 : ($V{negative}.booleanValue()
-    ? $F{crossTotal}.multiply( $P{Rate} ).negate()
-    : $F{crossTotal}.multiply( $P{Rate} ))]]></variableExpression>
+    ? $F{crossTotal}.multiply( $V{rate} ).negate()
+    : $F{crossTotal}.multiply( $V{rate} ))]]></variableExpression>
 	</variable>
 	<variable name="sumTaxTotal" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$V{canceled}.booleanValue()
 ? BigDecimal.ZERO
 : ($V{negative}.booleanValue()
-    ? $F{crossTotal}.multiply( $P{Rate} ).subtract($F{netTotal}.multiply( $P{Rate} )).negate()
-    : $F{crossTotal}.multiply( $P{Rate} ).subtract($F{netTotal}.multiply( $P{Rate} )))]]></variableExpression>
+    ? $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )).negate()
+    : $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )))]]></variableExpression>
 	</variable>
 	<variable name="sumExport" class="java.math.BigDecimal" calculation="Sum">
 		<variableExpression><![CDATA[$V{canceled}.booleanValue() || !$V{export}.booleanValue()
 ? BigDecimal.ZERO
 : ($V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $P{Rate} ).negate()
-: $F{crossTotal}.multiply( $P{Rate} ))]]></variableExpression>
+? $F{crossTotal}.multiply( $V{rate} ).negate()
+: $F{crossTotal}.multiply( $V{rate} ))]]></variableExpression>
 	</variable>
 	<variable name="type" class="java.lang.String">
 		<variableExpression><![CDATA[$F{typeUUID}.equals( UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))
@@ -139,20 +147,10 @@
 				<textElement/>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
-			<textField isStretchWithOverflow="true" pattern="#,##0.########" isBlankWhenNull="true">
-				<reportElement x="170" y="0" width="75" height="14">
-					<printWhenExpression><![CDATA[new Boolean ($P{Rate}.compareTo(BigDecimal.ONE) != 0)]]></printWhenExpression>
-				</reportElement>
-				<box leftPadding="4"/>
-				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$P{RateView}]]></textFieldExpression>
-			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement x="100" y="0" width="70" height="14"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{Currency} +
-(new Boolean ($P{Rate}.compareTo(BigDecimal.ONE) == 0).booleanValue() ? ""
-: " - Tipo de Cambio: " )]]></textFieldExpression>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{Currency}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="14"/>
@@ -422,8 +420,8 @@ EMISIÓN]]></text>
 				</box>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $P{Rate} ).negate()
-: $F{crossTotal}.multiply( $P{Rate} )]]></textFieldExpression>
+? $F{crossTotal}.multiply( $V{rate} ).negate()
+: $F{crossTotal}.multiply( $V{rate} )]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="544" y="0" width="70" height="14">
@@ -437,8 +435,8 @@ EMISIÓN]]></text>
 				</box>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
-? $F{netTotal}.multiply( $P{Rate} ).negate()
-: $F{netTotal}.multiply( $P{Rate} )]]></textFieldExpression>
+? $F{netTotal}.multiply( $V{rate} ).negate()
+: $F{netTotal}.multiply( $V{rate} )]]></textFieldExpression>
 			</textField>
 			<textField pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="474" y="0" width="70" height="14">
@@ -452,12 +450,15 @@ EMISIÓN]]></text>
 				</box>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $P{Rate} ).negate()
-: $F{crossTotal}.multiply( $P{Rate} )]]></textFieldExpression>
+? $F{crossTotal}.multiply( $V{rate} ).negate()
+: $F{crossTotal}.multiply( $V{rate} )]]></textFieldExpression>
 			</textField>
 			<textField pattern="###0.00##">
 				<reportElement stretchType="RelativeToTallestObject" x="754" y="0" width="48" height="14">
-					<printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue() && $F{rate}.compareTo(BigDecimal.ONE)!=0)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue()
+    && $P{Active} ? (($V{rate}.compareTo(BigDecimal.ONE)!=0 && $F{rate}.compareTo(BigDecimal.ONE)==0)
+                    || ($V{rate}.compareTo(BigDecimal.ONE)==0 && $F{rate}.compareTo(BigDecimal.ONE)!=0))
+                : ($F{rate}.compareTo(BigDecimal.ONE)!=0))]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
@@ -466,7 +467,7 @@ EMISIÓN]]></text>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rateLabel}]]></textFieldExpression>
+				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$P{Active} ? ($V{rate}.compareTo(BigDecimal.ONE)!=0 ? java.math.BigDecimal.ONE.divide($V{rate}, 4, BigDecimal.ROUND_HALF_UP) : $F{rateLabel}) : $F{rateLabel}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement stretchType="RelativeToTallestObject" x="66" y="0" width="34" height="14"/>
@@ -502,8 +503,8 @@ EMISIÓN]]></text>
 				</box>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $P{Rate} ).subtract($F{netTotal}.multiply( $P{Rate} )).negate()
-: $F{crossTotal}.multiply( $P{Rate} ).subtract($F{netTotal}.multiply( $P{Rate} ))]]></textFieldExpression>
+? $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )).negate()
+: $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} ))]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

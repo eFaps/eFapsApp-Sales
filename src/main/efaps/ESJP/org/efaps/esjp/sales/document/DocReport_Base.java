@@ -21,10 +21,8 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.text.ParseException;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,12 +49,14 @@ import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.CurrencyInst_Base;
+import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -188,21 +188,10 @@ public abstract class DocReport_Base
         final String dateTo = _parameter.getParameterValue("dateTo");
         final String mime = _parameter.getParameterValue("mime");
         final String currency = _parameter.getParameterValue("currency");
-        final String rateStr = _parameter.getParameterValue("rate");
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        formater.setParseBigDecimal(true);
-        formater.setMaximumFractionDigits(8);
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        BigDecimal rate;
-        try {
-            if (rateStr != null && !rateStr.isEmpty()) {
-                rate = (BigDecimal) formater.parse(rateStr);
-            } else {
-                rate = BigDecimal.ONE;
-            }
-        } catch (final ParseException e) {
-            throw new EFapsException(DocReport_Base.class, "createDocReport.ParseException", e);
-        }
+        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+        final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
+        //final String rateStr = _parameter.getParameterValue("rate");
+
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
         final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
         props.put("Mime", mime);
@@ -214,10 +203,58 @@ public abstract class DocReport_Base
         report.getJrParameters().put("ToDate", to.toDate());
         report.getJrParameters().put("Mime", mime);
         report.getJrParameters().put("Currency", curInst.getName());
-        report.getJrParameters().put("RateView", rate);
-        report.getJrParameters().put("Rate", curInst.isInvert()
-                            ? BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP) : rate);
+        report.getJrParameters().put("CurrencyId", curInst.getInstance().getId());
+
+        if (active) {
+            final Map<String, BigDecimal> map = getRates4DateRange(curInst.getInstance(), from, to, rateCurType);
+            report.getJrParameters().put("Rates", map);
+            report.getJrParameters().put("Active", active);
+            /*report.getJrParameters().put("Rate", curInst.isInvert()
+                                ? BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP) : rate);*/
+        } else {
+            report.getJrParameters().put("Active", active);
+        }
         return report.execute(_parameter);
+    }
+
+    protected Map<String, BigDecimal> getRates4DateRange(final Instance _curInst,
+                                                            final DateTime _from,
+                                                            final DateTime _to,
+                                                            final Long _rateCurType)
+        throws EFapsException
+    {
+        final Format formatter = new SimpleDateFormat("yyyyMMdd");
+        final Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
+        DateTime fromAux = _from;
+        Rate rate;
+        while (fromAux.isBefore(_to)) {
+            final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
+            queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
+            queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, fromAux.minusMinutes(1));
+            queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, fromAux.plusMinutes(1));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder valSel = new SelectBuilder()
+                        .attribute(CIERP.CurrencyRateAbstract.Rate).value();
+            final SelectBuilder labSel = new SelectBuilder()
+                        .attribute(CIERP.CurrencyRateAbstract.Rate).label();
+            final SelectBuilder curSel = new SelectBuilder()
+                        .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
+            multi.addSelect(valSel, labSel, curSel);
+            multi.execute();
+            if (multi.next()) {
+                rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
+                           multi.<BigDecimal>getSelect(valSel),
+                           multi.<BigDecimal>getSelect(labSel));
+            } else {
+                rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
+                                _curInst.getId())), BigDecimal.ONE);
+            }
+
+            map.put(formatter.format(fromAux.toDate()), rate.getValue());
+            fromAux = fromAux.plusDays(1);
+        }
+
+        return map;
     }
 
     /**
@@ -315,5 +352,9 @@ public abstract class DocReport_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    public Return updateFilterActiveUIValue(final Parameter _parameter) {
+        return new Return();
     }
 }
