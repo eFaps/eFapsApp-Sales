@@ -87,17 +87,13 @@
             URL url3 = new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml");
             DataImport imp3 = DataImport.readFile(url3);
             imp3.updateInDB();
-
-            URL url4 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Attributes.xml");
-            DataImport imp4 = DataImport.readFile(url4);
-            imp4.updateInDB();
         }
         UIUpdate update = new UIUpdate();
         <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
         update.add2Menu("70b1b5b6-11e5-4b05-ab5d-da6a25612234", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
 
         <!-- connect the Sales_ContactTree_Documents command to the tree menu from contacts -->
-        update.add2Menu("cc930e6c-4ed6-467e-a5d6-10f460c13118", "6de1b9bb-6a03-4c3b-82dd-363fde0aea0a", -1);
+        update.add2Menu("cc930e6c-4ed6-467e-a5d6-10f460c13118", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
         <!-- Sales_Products_VirtualInventoryMyDesk -->
         update.add2Menu("0d47fc3e-f6a4-4678-9e57-92331986c23f", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
@@ -108,7 +104,7 @@
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
-            update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
+        update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
     </script>
     </version>
     </install>
