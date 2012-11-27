@@ -19,21 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>deb49b6f-1bcc-4a2c-bfb6-ea86d6f55b06</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>87c1e374-7a5e-402b-919b-419dd655293b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractMyDesk</name>
-        <childs>
-            <child>Sales_PaymentDocumentMyDesk</child>
-            <child>Sales_PaymentExchangeMyDesk</child>
-            <child>Sales_PaymentDocument_Report</child>
-        </childs>
+        <name>Sales_PaymentRetention</name>
+        <parent>Sales_PaymentDocumentAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_PaymentRetentionStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE" name="Sales_PaymentRetention.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue"/>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

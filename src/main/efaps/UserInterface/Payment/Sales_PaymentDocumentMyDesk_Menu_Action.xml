@@ -40,6 +40,8 @@
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardMasterCard</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardVisa</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDebitCardVisa</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentRetention</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

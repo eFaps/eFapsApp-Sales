@@ -23,17 +23,15 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>deb49b6f-1bcc-4a2c-bfb6-ea86d6f55b06</uuid>
+    <uuid>f41d40a9-aa00-4f41-89d5-f61da213e36d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractMyDesk</name>
+        <name>Sales_PaymentDetractionTree_Menu</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_PaymentDocumentMyDesk</child>
-            <child>Sales_PaymentExchangeMyDesk</child>
-            <child>Sales_PaymentDocument_Report</child>
+            <child>Sales_PaymentDetractionTree_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

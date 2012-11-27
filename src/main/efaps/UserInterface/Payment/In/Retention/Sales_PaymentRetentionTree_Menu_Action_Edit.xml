@@ -20,20 +20,27 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>deb49b6f-1bcc-4a2c-bfb6-ea86d6f55b06</uuid>
+<ui-command xmlns="http://www.efaps.org/xsd"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>96bf3077-86ab-4263-9ffa-0341e3a37809</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractMyDesk</name>
-        <childs>
-            <child>Sales_PaymentDocumentMyDesk</child>
-            <child>Sales_PaymentExchangeMyDesk</child>
-            <child>Sales_PaymentDocument_Report</child>
-        </childs>
+        <name>Sales_PaymentRetentionTree_Menu_Action_Edit</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_PaymentRetentionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
-</ui-menu>
+</ui-command>

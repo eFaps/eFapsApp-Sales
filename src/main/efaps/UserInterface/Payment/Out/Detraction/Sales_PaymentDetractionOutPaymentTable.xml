@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2012 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>ff576202-171b-42c8-8093-63c38d7a36d2</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentDetractionOutPaymentTable</name>
+        <!-- fields -->
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_Payment/Date.Label</property>
+        </field>
+        <field name="createDocumentType">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].type.label</property>
+            <property name="Label">Sales_PaymentDetractionOutPaymentTable.createDocumentType.Label</property>
+        </field>
+        <field name="createDocument4Read">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDetractionOutPaymentTable.createDocument.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="createDocument">
+            <property name="Label">Sales_PaymentDepositOutPaymentTable.createDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="autoComplete4CreateDocument"
+                name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type0">Sales_IncomingInvoice</property>
+                <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
+                <property name="Stati0">Open</property>
+                <property name="Type1">Accounting_ExternalVoucher</property>
+                <property name="StatusGroup1">Accounting_ExternalVoucherStatus</property>
+                <property name="Stati1">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4CreateDocument"
+                name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="createDocumentDesc">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_PaymentDetractionOutPaymentTable.createDocumentDesc.Label</property>
+        </field>
+        <field name="payment4Pay">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="Label">Sales_PaymentDetractionOutPaymentTable.payment4Pay.Label</property>
+        </field>
+        <!-- different name to prevent collision with parent formular -->
+        <field name="paymentAmount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Payment/Amount.Label</property>
+            <property name="Attribute">Amount</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4PaymentAmount"
+                name="Sales_PaymentDetractionOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="paymentAmountDesc">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentDetractionOutPaymentTable.paymentAmountDesc.Label</property>
+        </field>
+        <field name="accountLink">
+            <property name="SelectAlternateOID">linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].oid</property>
+            <property name="Select">linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_PaymentDetractionOutPaymentTable.accountLink.Label</property>
+        </field>
+        <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Label">Sales_Payment/CurrencyLink.Label</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
+</ui-table>
