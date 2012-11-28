@@ -32,6 +32,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_PaymentRetentionTree_Menu_Action_Edit</child>
+            <child>Sales_PaymentDocumentCheckout</child>
         </childs>
     </definition>
 </ui-menu>

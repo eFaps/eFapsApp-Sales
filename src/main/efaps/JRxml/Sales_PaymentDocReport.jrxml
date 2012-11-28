@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocReport" language="groovy" pageWidth="1000" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="960" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
 	<property name="ireport.zoom" value="1.3995221406291998"/>
-	<property name="ireport.x" value="0"/>
+	<property name="ireport.x" value="67"/>
 	<property name="ireport.y" value="0"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
@@ -41,9 +41,15 @@
 	<field name="payment" class="java.math.BigDecimal">
 		<property name="Key" value="DiscountPayment"/>
 	</field>
-    <field name="ratePayment" class="java.math.BigDecimal">
-        <property name="Key" value="RateDiscountPayment"/>
-    </field>
+	<field name="ratePayment" class="java.math.BigDecimal">
+		<property name="Key" value="RateDiscountPayment"/>
+	</field>
+	<field name="condition" class="java.lang.String">
+		<property name="Key" value="Condition"/>
+	</field>
+	<field name="descriptionPos" class="java.lang.String">
+		<property name="Key" value="Description"/>
+	</field>
 	<field name="id" class="java.lang.Long">
 		<property name="Key" value="Id"/>
 	</field>
@@ -111,7 +117,7 @@
 				<text><![CDATA[FACTURA Nº]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="222" y="0" width="229" height="40"/>
+				<reportElement x="380" y="0" width="229" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -125,7 +131,7 @@
 				<text><![CDATA[CLIENTE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="731" y="0" width="71" height="40"/>
+				<reportElement x="889" y="0" width="71" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -139,7 +145,7 @@
 				<text><![CDATA[SITUACIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="661" y="0" width="70" height="40"/>
+				<reportElement x="819" y="0" width="70" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -153,7 +159,7 @@
 				<text><![CDATA[SALDO POR COBRAR US$]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="591" y="0" width="70" height="40"/>
+				<reportElement x="749" y="0" width="70" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -167,7 +173,7 @@
 				<text><![CDATA[SALDO POR COBRAR S/.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="521" y="0" width="70" height="40"/>
+				<reportElement x="679" y="0" width="70" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -181,7 +187,7 @@
 				<text><![CDATA[TOTAL FACTURADO S/.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="451" y="0" width="70" height="40"/>
+				<reportElement x="609" y="0" width="70" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -210,12 +216,26 @@
 DE
 EMISIÓN]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="222" y="0" width="158" height="40"/>
+                <box leftPadding="2" rightPadding="2">
+                    <pen lineWidth="1.0"/>
+                    <topPen lineWidth="1.0"/>
+                    <leftPen lineWidth="1.0"/>
+                    <bottomPen lineWidth="1.0"/>
+                    <rightPen lineWidth="1.0"/>
+                </box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="8" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[DESCRIPCIÓN]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="14" splitType="Stretch">
 			<rectangle>
-				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="802" height="14" backcolor="#DBD8D8">
+				<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="960" height="14" backcolor="#DBD8D8">
 					<printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{background}.intValue() % 2)==1)]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
@@ -223,7 +243,7 @@ EMISIÓN]]></text>
 				</graphicElement>
 			</rectangle>
 			<staticText>
-				<reportElement x="451" y="0" width="70" height="14"/>
+				<reportElement x="609" y="0" width="70" height="14"/>
 				<box>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -232,7 +252,7 @@ EMISIÓN]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement stretchType="RelativeToTallestObject" x="731" y="0" width="71" height="14"/>
+				<reportElement stretchType="RelativeToTallestObject" x="889" y="0" width="71" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -241,7 +261,7 @@ EMISIÓN]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="521" y="0" width="70" height="14"/>
+				<reportElement x="679" y="0" width="70" height="14"/>
 				<box>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -250,7 +270,7 @@ EMISIÓN]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="661" y="0" width="70" height="14"/>
+				<reportElement x="819" y="0" width="70" height="14"/>
 				<box>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -259,7 +279,7 @@ EMISIÓN]]></text>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="591" y="0" width="70" height="14"/>
+				<reportElement x="749" y="0" width="70" height="14"/>
 				<box>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -295,7 +315,7 @@ EMISIÓN]]></text>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{name4Doc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="222" y="0" width="229" height="14"/>
+				<reportElement stretchType="RelativeToTallestObject" x="380" y="0" width="229" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -304,7 +324,7 @@ EMISIÓN]]></text>
 				<textFieldExpression class="java.lang.String"><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="451" y="0" width="70" height="14">
+				<reportElement stretchType="RelativeToTallestObject" x="609" y="0" width="70" height="14">
 					<printWhenExpression><![CDATA[$F{crossTotal} == null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
@@ -315,7 +335,7 @@ EMISIÓN]]></text>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rateCrossTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="521" y="0" width="70" height="14">
+				<reportElement stretchType="RelativeToTallestObject" x="679" y="0" width="70" height="14">
 					<printWhenExpression><![CDATA[$F{rateCrossTotal} == null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
@@ -326,7 +346,7 @@ EMISIÓN]]></text>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{crossTotal}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="591" y="0" width="70" height="14">
+				<reportElement stretchType="RelativeToTallestObject" x="749" y="0" width="70" height="14">
 					<printWhenExpression><![CDATA[$F{crossTotal} != null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
@@ -337,7 +357,7 @@ EMISIÓN]]></text>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{payment}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="661" y="0" width="70" height="14">
+				<reportElement stretchType="RelativeToTallestObject" x="819" y="0" width="70" height="14">
 					<printWhenExpression><![CDATA[$F{rateCrossTotal} != null]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
@@ -346,6 +366,20 @@ EMISIÓN]]></text>
 				</box>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{ratePayment}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="889" y="0" width="71" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{condition}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="222" y="0" width="158" height="14"/>
+				<box>
+					<leftPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{descriptionPos}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

@@ -33,6 +33,8 @@
         <target>
             <form>Sales_PaymentCreditCardForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCreditCard">
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentCreditCardAbstractStatus</property>
                 <property name="Status">Open</property>
             </execute>
@@ -44,5 +46,6 @@
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
         <property name="WindowWidth">800</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

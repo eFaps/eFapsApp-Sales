@@ -34,7 +34,7 @@
             <form>Sales_PaymentCashForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCash">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
-                <property name="Mime">odt</property>
+                <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentCashStatus</property>
                 <property name="Status">Open</property>
             </execute>

@@ -32,6 +32,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -39,7 +40,9 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -89,10 +92,14 @@ public abstract class PaymentDocReport_Base
 
         final SelectBuilder selContactName = new SelectBuilder()
                         .linkto(CISales.Invoice.Contact).attribute(CIContacts.Contact.Name);
+        final SelectBuilder statusName = new SelectBuilder()
+                        .linkto(CISales.Invoice.Status).attribute(CISales.InvoiceStatus.Key);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.Invoice.Date, CISales.Invoice.Name, CISales.Invoice.RateCurrencyId,
                         CISales.Invoice.CrossTotal, CISales.Invoice.RateCrossTotal);
-        multi.addSelect(selContactName);
+        multi.addSelect(selContactName, statusName);
+        addAttribute4MultiPrintQuery(_parameter, multi);
+        multi.setEnforceSorted(true);
         multi.execute();
         while (multi.next()) {
             final Long rateCurInv = multi.<Long>getAttribute(CISales.Invoice.RateCurrencyId);
@@ -119,6 +126,27 @@ public abstract class PaymentDocReport_Base
                 list4Pay.add(new Object[] { rate4Pay, amount });
                 map4Pay.put(rateCurPay, list4Pay);
             }
+
+            final QueryBuilder queryBldr3 = new QueryBuilder(CISales.InvoicePosition);
+            queryBldr3.addWhereAttrEqValue(CISales.InvoicePosition.Invoice, multi.getCurrentInstance().getId());
+            queryBldr3.addOrderByAttributeAsc(CISales.InvoicePosition.PositionNumber);
+            final InstanceQuery queryInst = queryBldr3.getQuery();
+            queryInst.setLimit(1);
+            queryInst.execute();
+            String getPositionStr = null;
+            while (queryInst.next()) {
+                final PrintQuery printPos = new PrintQuery(queryInst.getCurrentValue());
+                printPos.addAttribute(CISales.InvoicePosition.ProductDesc);
+                printPos.execute();
+                final String descPos = printPos.<String>getAttribute(CISales.InvoicePosition.ProductDesc);
+                final String[] arrays = descPos.split("\n");
+                if (arrays.length > 1) {
+                    getPositionStr = arrays[0] + " " + arrays[1];
+                } else {
+                    getPositionStr = descPos.substring(0, descPos.length() > 100 ? 100 : descPos.length());
+                }
+            }
+
             BigDecimal acumulatedPay = BigDecimal.ZERO;
             final BigDecimal rateCrossInv = multi.<BigDecimal>getAttribute(CISales.Invoice.RateCrossTotal);
             final BigDecimal crossInv = multi.<BigDecimal>getAttribute(CISales.Invoice.CrossTotal);
@@ -178,9 +206,27 @@ public abstract class PaymentDocReport_Base
             map.put("Date", multi.<DateTime>getAttribute(CISales.Invoice.Date));
             map.put("DueDate", multi.<DateTime>getAttribute(CISales.Invoice.Date));
             map.put("Name4Doc", multi.<String>getAttribute(CISales.Invoice.Name));
+            map.put("Description", getPositionStr);
             map.put("ContactName", multi.<String>getSelect(selContactName));
+            map.put("Condition", Status.find(CISales.InvoiceStatus.uuid, multi.<String>getSelect(statusName)).getLabel());
+            addMapDataSource4Report(_parameter, multi, map);
             getValues().add(map);
         }
+    }
+
+    protected void addMapDataSource4Report(final Parameter _parameter,
+                                           final MultiPrintQuery _multi,
+                                           final Map<String, Object> _map)
+        throws EFapsException
+    {
+        // to be implement
+    }
+
+    protected void addAttribute4MultiPrintQuery(final Parameter _parameter,
+                                                final MultiPrintQuery _multi)
+        throws EFapsException
+    {
+        // to be implement
     }
 
     @SuppressWarnings("unchecked")

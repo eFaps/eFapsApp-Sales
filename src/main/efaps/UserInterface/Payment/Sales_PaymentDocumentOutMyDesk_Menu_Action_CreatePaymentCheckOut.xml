@@ -34,7 +34,7 @@
             <form>Sales_PaymentCheckOutForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
-                <property name="Mime">odt</property>
+                <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentCheckOutStatus</property>
                 <property name="Status">Open</property>
             </execute>
@@ -46,5 +46,6 @@
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
         <property name="WindowWidth">800</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

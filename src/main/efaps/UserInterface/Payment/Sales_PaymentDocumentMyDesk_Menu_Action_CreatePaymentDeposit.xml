@@ -37,7 +37,7 @@
             <form>Sales_PaymentDepositForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDeposit" >
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
-                <property name="Mime">odt</property>
+                <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentDepositStatus</property>
                 <property name="Status">Open</property>
             </execute>

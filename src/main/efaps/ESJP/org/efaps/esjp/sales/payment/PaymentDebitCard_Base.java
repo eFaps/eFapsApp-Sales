@@ -28,9 +28,10 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: PaymentDebitCard_Base.java 8169 2012-11-07 02:50:08Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("16e87ae6-0b51-49ec-a40b-13ee55838a55")
 @EFapsRevision("$Rev$")
@@ -48,6 +49,7 @@ public abstract class PaymentDebitCard_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        return new Return();
+        final Return ret = createReportDoc(_parameter, createdDoc);
+        return ret;
     }
 }

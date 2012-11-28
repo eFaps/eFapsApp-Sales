@@ -49,7 +49,8 @@ public abstract class PaymentCheckOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        return new Return();
+        final Return ret = createReportDoc(_parameter, createdDoc);
+        return ret;
     }
 
 }
