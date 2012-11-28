@@ -70,7 +70,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <attribute>
             <name>Document</name>
             <type>Link</type>
-            <typelink>Sales_DocumentAbstract</typelink>
+            <typelink>Sales_DocumentSumAbstract</typelink>
             <sqltable>Sales_EventSchedulePositionAbstractSQLTable</sqltable>
             <sqlcolumn>DOC</sqlcolumn>
         </attribute>

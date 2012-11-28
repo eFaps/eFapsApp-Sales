@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2012 The eFaps Team
 
@@ -17,24 +15,23 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 6534 $
- Last Changed:    $Date: 2011-05-12 17:16:03 -0500 (jue, 12 may 2011) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>a0a02c3e-2435-4a75-9eed-9276b43f1cec</uuid>
+    <uuid>e4b7b89c-856f-4f68-b96a-2b508aad73ff</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 6534 $</file-revision>
+    <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ScheduleMyDesk</name>
+        <name>Sales_PaymentSchedulePayMyDesk_Menu</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_PaymentScheduleMyDesk</child>
-            <child>Sales_PaymentSchedulePayMyDesk</child>
+            <child>Sales_PaymentSchedulePayMyDesk_Menu_Action</child>
         </childs>
     </definition>
+
 </ui-menu>

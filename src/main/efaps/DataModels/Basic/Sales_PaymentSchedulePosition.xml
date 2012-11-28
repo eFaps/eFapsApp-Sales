@@ -35,7 +35,6 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentSchedulePosition</name>
         <parent>Sales_EventSchedulePositionAbstract</parent>
-        <purpose abstract="true"/>
         <attribute>
             <name>PaymentSchedule</name>
             <type>Link</type>
