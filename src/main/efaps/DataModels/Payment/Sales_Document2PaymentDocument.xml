@@ -40,7 +40,7 @@
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_PaymentDocumentAbstract</typelink>
+            <typelink>ERP_PaymentDocumentAbstract</typelink>
             <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

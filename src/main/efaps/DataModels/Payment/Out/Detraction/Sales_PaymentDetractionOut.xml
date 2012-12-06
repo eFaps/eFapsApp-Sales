@@ -27,7 +27,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDetractionOut</name>
-        <parent>Sales_PaymentDocumentAbstract</parent>
+        <parent>Sales_PaymentDocumentOutAbstract</parent>
         <attribute>
             <name>Status</name>
             <type>Status</type>
