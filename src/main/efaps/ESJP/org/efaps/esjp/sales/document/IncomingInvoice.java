@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2012 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("c1092eec-b85a-47bf-b88b-497fd63bb29b")
 @EFapsRevision("$Rev$")
-public class IncomingInvoice extends IncomingInvoice_Base
+public class IncomingInvoice
+    extends IncomingInvoice_Base
 {
 
 }

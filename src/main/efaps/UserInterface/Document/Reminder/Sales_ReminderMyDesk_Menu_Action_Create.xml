@@ -27,32 +27,33 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>ec64cdd6-0589-48a2-b415-24eadcfbb9e9</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>ec64cdd6-0589-48a2-b415-24eadcfbb9e9</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_ReminderMyDesk_Menu_Action_Create</name>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ReminderMyDesk_Menu_Action_Create</name>
 
-    <access>
-      <role>Sales_Accounting</role>
-      <role>Sales_Admin</role>
-    </access>
-    <!-- target definitions -->
-    <target>
-      <form>Sales_ReminderForm</form>
-      <execute program="org.efaps.esjp.sales.document.Reminder"
-               method="create"/>
-    </target>
+        <access>
+            <role>Sales_Accounting</role>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_ReminderForm</form>
+            <execute program="org.efaps.esjp.sales.document.Reminder" method="create">
+                <property name="PositionType">Sales_ReminderPosition</property>
+            </execute>
+        </target>
 
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_Reminder</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Reminder</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 
 </ui-command>

@@ -45,15 +45,23 @@
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="dategroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
         </field>
         <field name="date">
-            <property name="Columns">40</property>
+            <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
         </field>
         <field name="salesperson">
@@ -116,11 +124,19 @@
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <property name="Label">Sales_IncomingInvoice/Name.Label</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
         <field name="headingSupplier" character="Heading">

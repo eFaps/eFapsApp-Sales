@@ -43,8 +43,9 @@
     <!-- target definitions -->
     <target>
       <form>Sales_IncomingInvoiceForm</form>
-      <execute program="org.efaps.esjp.sales.document.IncomingInvoice"
-               method="create"/>
+      <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
+            <property name="PositionType">Sales_IncomingInvoicePosition</property>
+      </execute>
     </target>
 
     <!-- properties -->

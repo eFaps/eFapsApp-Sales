@@ -118,7 +118,7 @@ public abstract class PriceUtil_Base
                 final Instance priceInst = Instance.get(CIERP.Currency.getType(),
                                              multi.<Long>getAttribute(CIProducts.ProductPricelistPosition.CurrencyId));
                 final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                                AbstractDocument_Base.CURRENCY_INSTANCE_KEY);
+                                AbstractDocument_Base.CURRENCYINST_KEY);
                 // Sales-Configuration
                 final Instance baseInst = SystemConfiguration.get(UUID
                                 .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");

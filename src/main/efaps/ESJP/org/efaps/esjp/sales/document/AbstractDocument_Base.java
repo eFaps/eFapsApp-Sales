@@ -98,14 +98,17 @@ public abstract class AbstractDocument_Base
     /**
      * Key used to store the instance of the current Currency in the session.
      */
-    public static final String CURRENCY_INSTANCE_KEY = "efaps_currency_instance_key";
+    public static final String CURRENCYINST_KEY = "org.efaps.esjp.sales.document.AbstractDocument.CurrencyInstance";
 
     /**
      * Key used to store the list of calculators in the session.
      */
-    public static final String CALCULATOR_KEY = "efaps_positions_calculator_key";
+    public static final String CALCULATOR_KEY = "org.efaps.esjp.sales.document.AbstractDocument.CalculatorKey";
 
-    public static final String TARGETMODE_DOC_KEY = "efaps_doc_targetmode_key";
+    /**
+     * Key used to store the target mode for the Document in the session.
+     */
+    public static final String TARGETMODE_DOC_KEY = "org.efaps.esjp.sales.document.AbstractDocument.TargeModeKey";
 
     /**
      * Method must be called on opening the form containing positions to
@@ -822,7 +825,7 @@ public abstract class AbstractDocument_Base
                                 .append(((Long) rates[2]) - 1).append(";");
                 rate = (BigDecimal) rates[1];
                 final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
-                Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCY_INSTANCE_KEY, newInst);
+                Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
                 ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
                 currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()));
             }
@@ -1593,7 +1596,7 @@ public abstract class AbstractDocument_Base
         // Sales-Configuration
         final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                         .getLink("CurrencyBase");
-        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCY_INSTANCE_KEY, baseInst);
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, baseInst);
         final StringBuilder html = new StringBuilder();
         html.append("<select ").append(UIInterface.EFAPSTMPTAG)
                         .append(" name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
@@ -1626,14 +1629,14 @@ public abstract class AbstractDocument_Base
                         _parameter.getParameterValue("rateCurrencyId"));
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCY_INSTANCE_KEY);
+                        AbstractDocument_Base.CURRENCYINST_KEY);
         // Sales-Configuration
         final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                         .getLink("CurrencyBase");
         if (currentInst == null) {
             currentInst = baseInst;
         }
-        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCY_INSTANCE_KEY, newInst);
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
 
         if (!newInst.equals(currentInst)) {
 
@@ -1752,7 +1755,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Instance curInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCY_INSTANCE_KEY);
+                        AbstractDocument_Base.CURRENCYINST_KEY);
         final OpenAmount openAmount = new Payment().new OpenAmount(new CurrencyInst(curInst), getCrossTotal(_calcList),
                         new PriceUtil().getDateFromParameter(_parameter));
         Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
@@ -1843,7 +1846,6 @@ public abstract class AbstractDocument_Base
         }
         return number;
     }
-
 
     // new methods for abstraction
     /**

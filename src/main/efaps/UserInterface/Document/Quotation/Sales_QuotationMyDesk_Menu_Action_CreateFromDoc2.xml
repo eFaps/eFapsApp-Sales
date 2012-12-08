@@ -43,8 +43,9 @@
         <!-- target definitions -->
         <target>
             <form>Sales_QuotationForm</form>
-            <execute program="org.efaps.esjp.sales.document.Quotation"
-                method="create" />
+            <execute program="org.efaps.esjp.sales.document.Quotation" method="create" >
+                <property name="PositionType">Sales_QuotationPosition</property>
+            </execute>
         </target>
 
         <!-- properties -->
