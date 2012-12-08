@@ -20,10 +20,15 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.UUID;
+
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Costs;
 import org.efaps.util.EFapsException;
 
@@ -52,5 +57,17 @@ public abstract class IncomingInvoice_Base
         createPositions(_parameter, createdDoc);
         new Costs().updateCosts(_parameter, createdDoc.getInstance());
         return new Return();
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
+        if (numgen != null) {
+            _insert.add(CISales.IncomingInvoice.Revision, numgen.getNextVal());
+        }
     }
 }
