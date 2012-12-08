@@ -27,31 +27,34 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>e1917376-9d87-405b-a455-2bcfbfa45fbe</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>e1917376-9d87-405b-a455-2bcfbfa45fbe</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_InvoiceTree_Payment_Menu_Action_Create</name>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_InvoiceTree_Payment_Menu_Action_Create</name>
 
-    <access>
-        <role>Sales_Admin</role>
-    </access>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
 
-    <!-- target definitions -->
-    <target>
-      <form>Sales_PaymentForm</form>
-      <execute program="org.efaps.esjp.sales.Payment" method="create"/>
-    </target>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_PaymentForm</form>
+            <execute program="org.efaps.esjp.sales.Payment" method="create">
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
+        </target>
 
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_Payment</property>
-    <property name="TargetConnectAttribute">Sales_Payment/CreateDocument</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">460</property>
-    <property name="WindowWidth">720</property>
-  </definition>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Payment</property>
+        <property name="TargetConnectAttribute">Sales_Payment/CreateDocument</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">720</property>
+    </definition>
 
 </ui-command>

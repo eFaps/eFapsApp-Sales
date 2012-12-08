@@ -35,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -59,20 +60,21 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id$
  */
 @EFapsUUID("32d6c7f5-a70c-4eea-a940-ab136952dfdc")
 @EFapsRevision("$Rev$")
 public abstract class Payment_Base
-    implements Serializable
+    extends AbstractPaymentDocument
 {
 
     /**
@@ -81,13 +83,8 @@ public abstract class Payment_Base
     public static final String OPENAMOUNT_SESSIONKEY = "eFaps_SalesPayment_OpenAmount_SessionKey";
 
     /**
-     * Needed for serialization.
-     */
-    private static final long serialVersionUID = 1L;
-
-    /**
      * Metho used to create a Payment.
-     *
+     * 
      * @param _parameter Parameter as passed from the eFpas API
      * @return new Return
      * @throws EFapsException on error
@@ -95,10 +92,11 @@ public abstract class Payment_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        Return ret = new Return();
         Instance docInst = null;
         if (_parameter.getInstance() != null) {
             docInst = _parameter.getInstance();
-        } else if (_parameter.getParameterValue("createdocument") != null){
+        } else if (_parameter.getParameterValue("createdocument") != null) {
             docInst = Instance.get(_parameter.getParameterValue("createdocument"));
         }
 
@@ -112,6 +110,7 @@ public abstract class Payment_Base
             final String[] accounts = _parameter.getParameterValues("account");
 
             for (int i = 0; i < amounts.length; i++) {
+                final CreatedDoc createdDoc = new CreatedDoc();
                 final String targetTypeId = paymentType[i];
                 Instance targetDocInst = null;
                 if (targetTypeId != null && !targetTypeId.isEmpty()) {
@@ -135,14 +134,33 @@ public abstract class Payment_Base
                                     docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Name,
                                     docPrint.getAttribute(CIERP.DocumentAbstract.Name));
+                    final String code = getCode4GeneratedDocWithSysConfig(_parameter);
+                    if (code != null) {
+                        targetDocIns.add(CISales.PaymentDocumentOutAbstract.Code, code);
+                    }
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Date, dateStr);
                     targetDocIns.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseInst.getId());
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Amount, amounts[i]);
                     targetDocIns.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencies[i]);
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Rate, rateObj);
 
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Name.name),
+                                    docPrint.getAttribute(CIERP.DocumentAbstract.Name));
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Contact.name),
+                                    docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Code.name), code);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Rate.name), rateObj);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.CurrencyLink.name),
+                                    baseInst.getId());
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Date.name), dateStr);
+                    createdDoc.getValues().put(
+                                    getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.RateCurrencyLink.name),
+                                    currencies[i]);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Amount.name),
+                                    amounts[i]);
                     targetDocIns.execute();
                     targetDocInst = targetDocIns.getInstance();
+                    createdDoc.setInstance(targetDocInst);
                 }
 
                 final Insert insert = new Insert(CISales.Payment);
@@ -151,9 +169,10 @@ public abstract class Payment_Base
                 if (targetDocInst != null) {
                     insert.add(CISales.Payment.TargetDocument, targetDocInst.getId());
                 }
+                insert.add(CISales.Payment.CurrencyLink, currencies[i]);
+                insert.add(CISales.Payment.Amount, amounts[i]);
                 insert.execute();
                 final Instance paymentInst = insert.getInstance();
-
 
                 final Insert transIns = new Insert(CISales.TransactionInbound);
                 transIns.add(CISales.TransactionInbound.Amount, amounts[i]);
@@ -164,7 +183,11 @@ public abstract class Payment_Base
                                 : descriptions[i]);
                 transIns.add(CISales.TransactionInbound.Date, dateStr);
                 transIns.add(CISales.TransactionInbound.Account, accounts[i]);
+                createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.TransactionInbound.Account.name),
+                                accounts[i]);
                 transIns.execute();
+
+                ret = createReportDoc(_parameter, createdDoc);
             }
             // if the open amount is zero or less than 1 Cent.
             final BigDecimal amount = getOpenAmount(_parameter, docInst).getCrossTotal();
@@ -172,19 +195,19 @@ public abstract class Payment_Base
                 final Update update = new Update(docInst);
                 Status status = null;
                 // Sales_Invoice
-                if (docInst.getType().getUUID().equals(UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))) {
+                if (docInst.getType().getUUID().equals(CISales.Invoice.uuid)) {
                     status = Status.find(CISales.InvoiceStatus.uuid, "Paid");
                     // Sales_Receipt
-                } else if (docInst.getType().getUUID().equals(UUID.fromString("40ebe7bf-ab1e-4ac5-bfbf-81f7c13e8530"))) {
+                } else if (docInst.getType().getUUID().equals(CISales.Receipt.uuid)) {
                     status = Status.find(CISales.ReceiptStatus.uuid, "Paid");
                     // Sales_Reminder
-                } else if (docInst.getType().getUUID().equals(UUID.fromString("77b5c009-0b45-40d4-8417-a79c30568904"))) {
+                } else if (docInst.getType().getUUID().equals(CISales.Reminder.uuid)) {
                     status = Status.find(CISales.ReminderStatus.uuid, "Paid");
                     // Sales_PartialInvoice
-                } else if (docInst.getType().getUUID().equals(UUID.fromString("17e30627-33c7-4dcb-a209-056932d0c9c0"))) {
+                } else if (docInst.getType().getUUID().equals(CISales.PartialInvoice.uuid)) {
                     status = Status.find(CISales.PartialInvoiceStatus.uuid, "Paid");
                     // Sales_CashReceipt
-                } else if (docInst.getType().getUUID().equals(UUID.fromString("7891b13e-7d77-44dd-906e-286641267499"))) {
+                } else if (docInst.getType().getUUID().equals(CISales.CashReceipt.uuid)) {
                     status = Status.find(CISales.CashReceiptStatus.uuid, "Paid");
                 }
 
@@ -192,13 +215,13 @@ public abstract class Payment_Base
                 update.execute();
             }
         }
-        return new Return();
+        return ret;
     }
 
     /**
      * \ Method is used to set the Value for the open amount field on opening
      * the form.
-     *
+     * 
      * @param _parameter Parameter as passed from the efaps API
      * @return Snipplets with value for open amount field
      * @throws EFapsException on error
@@ -210,7 +233,7 @@ public abstract class Payment_Base
         Instance instance = null;
         if (_parameter.getCallInstance() != null) {
             instance = _parameter.getInstance();
-        } else if (_parameter.getParameterValue("createdocument") != null){
+        } else if (_parameter.getParameterValue("createdocument") != null) {
             instance = Instance.get(_parameter.getParameterValue("createdocument"));
         }
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
@@ -226,15 +249,14 @@ public abstract class Payment_Base
                             .append(getOpenAmountInnerHtml(_parameter, openAmount))
                             .append("</span>");
 
-
             ret.put(ReturnValues.SNIPLETT, html.toString());
         }
         return ret;
     }
 
     /**
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @param _openAmount   open Amount
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _openAmount open Amount
      * @return StringBuilder for html snipplet
      * @throws EFapsException on error
      */
@@ -278,7 +300,7 @@ public abstract class Payment_Base
 
     /**
      * Method to calculate the open amount for an instance.
-     *
+     * 
      * @param _parameter Parameter as passed from the eFaps API
      * @param _instance instance the open amount is wanted for
      * @return open amount
@@ -290,10 +312,10 @@ public abstract class Payment_Base
     {
         final PrintQuery print = new PrintQuery(_instance);
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
-                           CISales.DocumentSumAbstract.RateCurrencyId,
-                           CISales.DocumentSumAbstract.Date);
+                        CISales.DocumentSumAbstract.RateCurrencyId,
+                        CISales.DocumentSumAbstract.Date);
         final SelectBuilder sel = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-            .attribute(CIERP.Currency.Symbol);
+                        .attribute(CIERP.Currency.Symbol);
         print.addSelect(sel);
         print.execute();
         final BigDecimal ratecrossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
@@ -301,7 +323,7 @@ public abstract class Payment_Base
 
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
-        final DateTime rateDate = print.<DateTime> getAttribute(CISales.DocumentSumAbstract.Date);
+        final DateTime rateDate = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
         queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _instance.getId());
@@ -312,14 +334,14 @@ public abstract class Payment_Base
 
         if (instances.size() > 0) {
             final SelectBuilder amountSel = new SelectBuilder()
-                .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
-                .attribute(CISales.TransactionInbound.Amount);
+                            .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
+                            .attribute(CISales.TransactionInbound.Amount);
             final SelectBuilder currIdSel = new SelectBuilder()
-                .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
-                .attribute(CISales.TransactionInbound.CurrencyId);
+                            .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
+                            .attribute(CISales.TransactionInbound.CurrencyId);
             final SelectBuilder oidSel = new SelectBuilder()
-                .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
-                .oid();
+                            .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
+                            .oid();
 
             final PriceUtil priceUtil = new PriceUtil();
             final MultiPrintQuery multi = new MultiPrintQuery(instances);
@@ -328,9 +350,9 @@ public abstract class Payment_Base
             final Set<String> oids = new HashSet<String>();
             while (multi.next()) {
                 if (multi.isList4Select(amountSel.toString())) {
-                    final List<BigDecimal> list = multi.<List<BigDecimal>> getSelect(amountSel);
-                    final List<Long> currList = multi.<List<Long>> getSelect(currIdSel);
-                    final List<String> oidList = multi.<List<String>> getSelect(oidSel);
+                    final List<BigDecimal> list = multi.<List<BigDecimal>>getSelect(amountSel);
+                    final List<Long> currList = multi.<List<Long>>getSelect(currIdSel);
+                    final List<String> oidList = multi.<List<String>>getSelect(oidSel);
 
                     final Iterator<Long> currIter = currList.iterator();
                     final Iterator<String> oidIter = oidList.iterator();
@@ -352,9 +374,9 @@ public abstract class Payment_Base
                         }
                     }
                 } else {
-                    final BigDecimal temp = multi.<BigDecimal> getSelect(amountSel);
-                    final Long currId = multi.<Long> getSelect(currIdSel);
-                    final String oid = multi.<String> getSelect(oidSel);
+                    final BigDecimal temp = multi.<BigDecimal>getSelect(amountSel);
+                    final Long currId = multi.<Long>getSelect(currIdSel);
+                    final String oid = multi.<String>getSelect(oidSel);
 
                     if (temp != null && !oids.contains(oid)) {
                         oids.add(oid);
@@ -376,7 +398,7 @@ public abstract class Payment_Base
     /**
      * Method is called as an update event on changes on one of the amount
      * fields.
-     *
+     * 
      * @param _parameter Parameter as passed from the efaps API
      * @return List of maps of the fields to be updated
      * @throws EFapsException on error
@@ -391,7 +413,7 @@ public abstract class Payment_Base
 
     /**
      * Get the list of maps for the field to be updated.
-     *
+     * 
      * @param _parameter Parameter as passed from the eFaps API
      * @param _updateRate mus the field with the rate also be updated
      * @return List of maps of the fields to be updated
@@ -446,7 +468,7 @@ public abstract class Payment_Base
                 value.append(" - ");
             }
             value.append(formatter.format(openTotalAmount.divide(entry.getValue(), BigDecimal.ROUND_HALF_UP)))
-                .append(" ").append(curr2Symb.get(entry.getKey()));
+                            .append(" ").append(curr2Symb.get(entry.getKey()));
         }
         map.put("openAmountTotal", value.toString());
         // if the date was changed the rate and the original value must be
@@ -464,7 +486,7 @@ public abstract class Payment_Base
 
     /**
      * Method is called as an update event on changes in the date fields.
-     *
+     * 
      * @param _parameter Parameter as passed from the efaps API
      * @return List of maps of the fields to be updated
      * @throws EFapsException on error
@@ -510,16 +532,35 @@ public abstract class Payment_Base
             Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
 
             html.append("document.getElementsByName('openAmount')[0].innerHTML='")
-                .append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
-                .append(openAmount.getSymbol()).append("<hr/>")
-                .append("<span name=\"").append("openAmount").append("_table\">")
-                .append(getOpenAmountInnerHtml(_parameter, openAmount))
-                .append("</span>").append("';");
+                            .append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
+                            .append(openAmount.getSymbol()).append("<hr/>")
+                            .append("<span name=\"").append("openAmount").append("_table\">")
+                            .append(getOpenAmountInnerHtml(_parameter, openAmount))
+                            .append("</span>").append("';");
         }
         return html.toString();
     }
 
-    public Return autoComplete4Document(final Parameter _parameter) {
+    @Override
+    protected String getCode4GeneratedDocWithSysConfig(final Parameter _parameter)
+        throws EFapsException
+    {
+        String ret = "";
+        // Sales-Configuration
+        final SystemConfiguration config = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        if (config != null) {
+            final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocument");
+            if (active) {
+                // Sales_PaymentDocumentAbstractSequence
+                ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
+            }
+        }
+        return !ret.isEmpty() ? ret : null;
+    }
+
+    public Return autoComplete4Document(final Parameter _parameter)
+    {
         final Return ret = new Return();
         return ret;
     }
@@ -536,7 +577,7 @@ public abstract class Payment_Base
                 final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
                 final String statusStr = (String) properties.get("Status");
                 final String typesStr = (String) properties.get("Types");
-                final List <Long> idStatus = new ArrayList<Long>();
+                final List<Long> idStatus = new ArrayList<Long>();
                 final String[] status = statusStr.split(";");
                 final String[] types = typesStr.split(";");
                 for (final String st : status) {
@@ -577,8 +618,8 @@ public abstract class Payment_Base
 
         /**
          * @param _currencyInstance Currency Instance
-         * @param _crossTotal       Cross Total
-         * @param _rateDate         date of the rate
+         * @param _crossTotal Cross Total
+         * @param _rateDate date of the rate
          */
         public OpenAmount(final CurrencyInst _currencyInstance,
                           final BigDecimal _crossTotal,
@@ -591,7 +632,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #symbol}.
-         *
+         * 
          * @return value of instance variable {@link #symbol}
          * @throws EFapsException on error
          */
@@ -603,7 +644,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #currencyInstance}.
-         *
+         * 
          * @return value of instance variable {@link #currencyInstance}
          */
         public Instance getCurrencyInstance()
@@ -613,7 +654,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #crossTotal}.
-         *
+         * 
          * @return value of instance variable {@link #crossTotal}
          */
         public BigDecimal getCrossTotal()
@@ -623,7 +664,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #date}.
-         *
+         * 
          * @return value of instance variable {@link #date}
          */
         public DateTime getDate()

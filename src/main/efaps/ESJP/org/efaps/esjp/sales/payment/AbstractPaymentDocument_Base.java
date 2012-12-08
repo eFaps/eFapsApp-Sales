@@ -256,6 +256,8 @@ public abstract class AbstractPaymentDocument_Base
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.PaymentDocumentAbstract.Date.name)));
             transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
+            _createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                            CISales.TransactionAbstract.Account.name), _parameter.getParameterValue("account"));
             transIns.execute();
         }
     }
@@ -714,9 +716,11 @@ public abstract class AbstractPaymentDocument_Base
             final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
                             .attribute(CIERP.Currency.Name);
             report.getJrParameters().put("accountName",
-                            getSelectString4AttributeAccount(_parameter.getParameterValue("account"), null, CISales.AccountCashDesk.Name));
+                            getSelectString4AttributeAccount((String) _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                                            CISales.TransactionAbstract.Account.name)), null, CISales.AccountCashDesk.Name));
             report.getJrParameters().put("accountCurrencyName",
-                            getSelectString4AttributeAccount(_parameter.getParameterValue("account"), selCurName, null));
+                            getSelectString4AttributeAccount((String) _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                                            CISales.TransactionAbstract.Account.name)), selCurName, null));
             ret = report.execute(_parameter);
             ret.put(ReturnValues.TRUE, true);
 
