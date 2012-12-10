@@ -133,11 +133,20 @@
             <property name="Required">true</property>
             <property name="Label">Sales_IncomingInvoice/Name.Label</property>
         </field>
+        <field name="nameGroup" character="Group">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="GroupCount">2</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="headingSupplier" character="Heading">
             <property name="Level">2</property>
