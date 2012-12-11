@@ -1725,19 +1725,21 @@ public abstract class AbstractDocument_Base
     {
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">")
-                        .append("Wicket.Event.add(window, \"domready\", function(event) {")
-                        .append("inputs = document.getElementsByTagName('INPUT');")
-                        .append("for (i=0;i<inputs.length;i++) {")
-                        .append("inputs[i].blur();")
-                        .append("}")
-                        .append("var ele = document.createElement('input');")
-                        .append("var attr = document.createAttribute('type');")
-                        .append("attr.nodeValue = 'hidden';")
-                        .append("ele.setAttributeNode(attr);")
-                        .append("document.getElementById('eFapsContentDiv').appendChild(ele);")
-                        .append("ele.name='selectedDoc';")
-                        .append(" });")
-                        .append("</script>");
+            .append("Wicket.Event.add(window, \"domready\", function(event) {")
+            .append("inputs = document.getElementsByTagName('INPUT');")
+            .append("for (i=0;i<inputs.length;i++) {")
+            .append("inputs[i].blur();")
+            .append("}")
+            .append("var ele = document.createElement('input');")
+            .append("var attr = document.createAttribute('type');")
+            .append("attr.nodeValue = 'hidden';")
+            .append("ele.setAttributeNode(attr);")
+            .append("require([\"dojo/query\"],function(query){")
+            .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
+            .append("ele.name='selectedDoc';")
+            .append("});")
+            .append(" });")
+            .append("</script>");
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
