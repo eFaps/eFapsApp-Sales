@@ -25,8 +25,10 @@ import java.util.UUID;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Costs;
@@ -43,6 +45,11 @@ import org.efaps.util.EFapsException;
 public abstract class IncomingInvoice_Base
     extends DocumentSum
 {
+    /**
+     * Used to store the Revision in the Context.
+     */
+    public final static String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingInvoice.RevisionKey";
+
     /**
      * Executed from a Command execute vent to create a new Incoming Invoice.
      *
@@ -67,7 +74,24 @@ public abstract class IncomingInvoice_Base
     {
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
         if (numgen != null) {
-            _insert.add(CISales.IncomingInvoice.Revision, numgen.getNextVal());
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
+            _insert.add(CISales.IncomingInvoice.Revision, revision);
         }
+    }
+
+
+    public Return showRevisionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String revision = (String) Context.getThreadContext().getSessionAttribute(
+                        IncomingInvoice_Base.REVISIONKEY);
+        Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, null);
+        final StringBuilder html = new StringBuilder();
+        html.append("<span style=\"text-align: center; display: block; width: 100%; font-size: 40px; height: 55px;\">")
+                        .append(revision).append("</span>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
     }
 }

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -27,34 +27,36 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>0c049cfd-f656-43d4-af8b-c2f616243ea2</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>0c049cfd-f656-43d4-af8b-c2f616243ea2</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
 
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Accounting</role>
-    </access>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
 
-    <!-- target definitions -->
-    <target>
-      <form>Sales_IncomingInvoiceForm</form>
-      <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
-            <property name="PositionType">Sales_IncomingInvoicePosition</property>
-      </execute>
-    </target>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_IncomingInvoiceForm</form>
+            <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
+                <property name="PositionType">Sales_IncomingInvoicePosition</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Status">Open</property>
+            </execute>
+            <command>Sales_IncomingInvoice_ShowRevision</command>
+        </target>
 
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_IncomingInvoice</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
-
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_IncomingInvoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 </ui-command>
