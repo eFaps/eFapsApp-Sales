@@ -756,7 +756,9 @@ public abstract class AbstractDocument_Base
                         .append("var attr = document.createAttribute('type');")
                         .append("attr.nodeValue = 'hidden';")
                         .append("ele.setAttributeNode(attr);")
-                        .append("document.getElementById('eFapsContentDiv').appendChild(ele);");
+                        .append("require([\"dojo/query\"],function(query){")
+                        .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
+                        .append("});");
 
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = command.getTargetMode();
