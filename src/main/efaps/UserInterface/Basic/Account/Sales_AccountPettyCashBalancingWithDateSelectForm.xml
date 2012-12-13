@@ -35,6 +35,7 @@
         <!-- fields -->
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="TargetShowCheckBoxes">true</property>
             <table>Sales_PaymentTable</table>
             <evaluate method="getPayments4PettyCashBalance" program="org.efaps.esjp.sales.Account"/>
         </field>
