@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
-    <property name="ireport.zoom" value="1.3995221406291998"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocReport" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="cb4fb8b8-a5a7-4f1e-ab19-aa9859338665">
     <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
     <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
     <property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
@@ -12,7 +10,7 @@
     <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
     <property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
     <property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
-    <property name="net.sf.jasperreports.export.pdf.exclude.origin.band.5" value="lastPageFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="lastPageFooter"/>
     <import value="java.text.SimpleDateFormat"/>
     <import value="org.efaps.admin.datamodel.Status"/>
     <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
@@ -124,43 +122,43 @@
     <pageHeader>
         <band height="20" splitType="Stretch">
             <staticText>
-                <reportElement x="614" y="0" width="70" height="14"/>
+                <reportElement uuid="63f8fdef-6e8f-4ecc-858d-5b9f5fc41166" x="614" y="0" width="70" height="14"/>
                 <textElement textAlignment="Right"/>
                 <text><![CDATA[Lima,]]></text>
             </staticText>
             <textField pattern="dd.MM.yyyy">
-                <reportElement x="684" y="0" width="70" height="14"/>
+                <reportElement uuid="5d2cfc21-4bf3-42a1-8ffb-85b135c046ac" x="684" y="0" width="70" height="14"/>
                 <textElement textAlignment="Left"/>
-                <textFieldExpression class="java.util.Date"><![CDATA[new java.util.Date()]]></textFieldExpression>
+                <textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy">
-                <reportElement x="280" y="0" width="70" height="14"/>
+                <reportElement uuid="cca7547d-b7b9-49ed-ab29-c60dc6198c49" x="350" y="0" width="124" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.util.Date"><![CDATA[$P{FromDate}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{FromDate}]]></textFieldExpression>
             </textField>
             <textField pattern="dd/MM/yyyy">
-                <reportElement x="355" y="0" width="70" height="14"/>
+                <reportElement uuid="9a61c9bf-4c7c-4e96-a2b0-ebb3f811431d" x="544" y="0" width="70" height="14"/>
                 <textElement/>
-                <textFieldExpression class="java.util.Date"><![CDATA[$P{ToDate}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{ToDate}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="245" y="0" width="35" height="14"/>
-                <textElement/>
+                <reportElement uuid="aaaad3a3-ab9e-4c91-ab0a-860fa1f150aa" x="245" y="0" width="105" height="14"/>
+                <textElement textAlignment="Right"/>
                 <text><![CDATA[Fecha:]]></text>
             </staticText>
             <textField isStretchWithOverflow="true">
-                <reportElement x="100" y="0" width="70" height="14"/>
+                <reportElement uuid="0e41b07c-f013-41b8-ae48-c7064323429a" x="100" y="0" width="70" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.lang.String"><![CDATA[$P{Currency}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{Currency}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="0" y="0" width="100" height="14"/>
+                <reportElement uuid="dbc1c9b8-6851-434a-83e1-36534d3e6e38" x="0" y="0" width="100" height="14"/>
                 <textElement/>
                 <text><![CDATA[Registro de Ventas]]></text>
             </staticText>
             <staticText>
-                <reportElement x="350" y="0" width="5" height="14"/>
-                <textElement/>
+                <reportElement uuid="a36b62ae-b280-454a-b099-943651935b3c" x="474" y="0" width="70" height="14"/>
+                <textElement textAlignment="Center"/>
                 <text><![CDATA[-]]></text>
             </staticText>
         </band>
@@ -168,7 +166,7 @@
     <columnHeader>
         <band height="40" splitType="Stretch">
             <staticText>
-                <reportElement x="66" y="0" width="34" height="40"/>
+                <reportElement uuid="02225636-17c1-41a8-bebf-a20e69401218" x="66" y="0" width="34" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -184,7 +182,7 @@ DE
 DOC.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="100" y="0" width="70" height="40"/>
+                <reportElement uuid="47d087eb-c933-4de4-a365-d27616547536" x="100" y="0" width="70" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -199,7 +197,7 @@ DOC.]]></text>
 SERIE  NUM.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="170" y="0" width="75" height="40"/>
+                <reportElement uuid="53c7c99f-a986-4f73-8c9d-decef92d27a0" x="170" y="0" width="75" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -214,7 +212,7 @@ SERIE  NUM.]]></text>
 R.U.C.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="245" y="0" width="229" height="40"/>
+                <reportElement uuid="a6744545-c0f2-47c1-9e6a-fd7930b83e5d" x="245" y="0" width="229" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -228,7 +226,7 @@ R.U.C.]]></text>
                 <text><![CDATA[RAZON SOCIAL]]></text>
             </staticText>
             <staticText>
-                <reportElement x="754" y="0" width="48" height="40"/>
+                <reportElement uuid="99fca3b5-cc84-43f0-8ee3-d73310b2e5d2" x="754" y="0" width="48" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -242,7 +240,7 @@ R.U.C.]]></text>
                 <text><![CDATA[T.C.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="684" y="0" width="70" height="40"/>
+                <reportElement uuid="ee6cf04a-1237-4423-bf2e-05400ff2adf6" x="684" y="0" width="70" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -256,7 +254,7 @@ R.U.C.]]></text>
                 <text><![CDATA[TOTAL]]></text>
             </staticText>
             <staticText>
-                <reportElement x="614" y="0" width="70" height="40"/>
+                <reportElement uuid="8943c773-dc31-42a4-a6d0-3f140d6a624b" x="614" y="0" width="70" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -270,7 +268,7 @@ R.U.C.]]></text>
                 <text><![CDATA[I.G.V.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="544" y="0" width="70" height="40"/>
+                <reportElement uuid="2140f15d-19d5-40ab-8eac-60777be0662d" x="544" y="0" width="70" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -285,7 +283,7 @@ R.U.C.]]></text>
 OPER. GRAV.]]></text>
             </staticText>
             <staticText>
-                <reportElement x="474" y="0" width="70" height="40"/>
+                <reportElement uuid="0b1138d7-c1ca-440a-bef1-eb3f0bc4bb15" x="474" y="0" width="70" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -300,7 +298,7 @@ OPER. GRAV.]]></text>
 EXPORTACIÓN]]></text>
             </staticText>
             <staticText>
-                <reportElement x="0" y="0" width="66" height="40"/>
+                <reportElement uuid="8e88da9e-59b1-4696-8e13-bb94895eb708" x="0" y="0" width="66" height="40"/>
                 <box leftPadding="2" rightPadding="2">
                     <pen lineWidth="1.0"/>
                     <topPen lineWidth="1.0"/>
@@ -320,7 +318,7 @@ EMISIÓN]]></text>
     <detail>
         <band height="14" splitType="Stretch">
             <rectangle>
-                <reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="802" height="14" backcolor="#DBD8D8">
+                <reportElement uuid="7ca43168-036d-4602-bb9c-74c5466ec5ca" key="" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="802" height="14" backcolor="#DBD8D8">
                     <printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{background}.intValue() % 2)==1)]]></printWhenExpression>
                 </reportElement>
                 <graphicElement>
@@ -328,7 +326,7 @@ EMISIÓN]]></text>
                 </graphicElement>
             </rectangle>
             <staticText>
-                <reportElement x="474" y="0" width="70" height="14"/>
+                <reportElement uuid="22c7001f-7aa3-4c0d-8e6d-0d53e47bcc3c" stretchType="RelativeToBandHeight" x="474" y="0" width="70" height="14"/>
                 <box>
                     <leftPen lineWidth="1.0"/>
                     <rightPen lineWidth="1.0"/>
@@ -337,7 +335,7 @@ EMISIÓN]]></text>
                 <text><![CDATA[]]></text>
             </staticText>
             <staticText>
-                <reportElement x="754" y="0" width="48" height="14"/>
+                <reportElement uuid="8c51eea8-4b12-4118-8ce8-fca6888ea490" stretchType="RelativeToBandHeight" x="754" y="0" width="48" height="14"/>
                 <box>
                     <leftPen lineWidth="1.0"/>
                     <rightPen lineWidth="1.0"/>
@@ -346,7 +344,7 @@ EMISIÓN]]></text>
                 <text><![CDATA[]]></text>
             </staticText>
             <staticText>
-                <reportElement x="544" y="0" width="70" height="14"/>
+                <reportElement uuid="8a834f8b-9c5a-4a51-9e70-a3a5ccc718a8" stretchType="RelativeToBandHeight" x="544" y="0" width="70" height="14"/>
                 <box>
                     <leftPen lineWidth="1.0"/>
                     <rightPen lineWidth="1.0"/>
@@ -355,7 +353,7 @@ EMISIÓN]]></text>
                 <text><![CDATA[]]></text>
             </staticText>
             <staticText>
-                <reportElement x="684" y="0" width="70" height="14"/>
+                <reportElement uuid="9e578ea5-05b8-4dff-8a66-5c3f8fef1643" stretchType="RelativeToBandHeight" x="684" y="0" width="70" height="14"/>
                 <box>
                     <leftPen lineWidth="1.0"/>
                     <rightPen lineWidth="1.0"/>
@@ -364,7 +362,7 @@ EMISIÓN]]></text>
                 <text><![CDATA[]]></text>
             </staticText>
             <staticText>
-                <reportElement x="614" y="0" width="70" height="14"/>
+                <reportElement uuid="3a11442f-18c2-4c6e-adc7-c38b73dfb315" stretchType="RelativeToBandHeight" x="614" y="0" width="70" height="14"/>
                 <box>
                     <leftPen lineWidth="1.0"/>
                     <rightPen lineWidth="1.0"/>
@@ -373,7 +371,7 @@ EMISIÓN]]></text>
                 <text><![CDATA[]]></text>
             </staticText>
             <textField pattern="dd/MM/yyyy">
-                <reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="66" height="14"/>
+                <reportElement uuid="66126ae3-3cf0-41fb-a3dd-0cb4df8da885" stretchType="RelativeToBandHeight" x="0" y="0" width="66" height="14"/>
                 <box leftPadding="2" rightPadding="2">
                     <topPen lineWidth="0.0"/>
                     <leftPen lineWidth="1.0"/>
@@ -381,10 +379,10 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement/>
-                <textFieldExpression class="java.util.Date"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement stretchType="RelativeToTallestObject" x="170" y="0" width="75" height="14">
+                <reportElement uuid="7a1ab806-177d-45d4-a3a6-bab418e59e25" key="" stretchType="RelativeToBandHeight" x="170" y="0" width="75" height="14">
                     <printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue())]]></printWhenExpression>
                 </reportElement>
                 <box leftPadding="2" rightPadding="2">
@@ -394,10 +392,10 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement/>
-                <textFieldExpression class="java.lang.String"><![CDATA[$F{taxNumber}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
             </textField>
             <textField isStretchWithOverflow="true">
-                <reportElement stretchType="RelativeToTallestObject" x="245" y="0" width="229" height="14"/>
+                <reportElement uuid="97eda04e-c51a-463b-a34e-eeed509005e9" stretchType="RelativeToBandHeight" x="245" y="0" width="229" height="14"/>
                 <box leftPadding="2" rightPadding="2">
                     <topPen lineWidth="0.0"/>
                     <leftPen lineWidth="1.0"/>
@@ -405,12 +403,12 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement/>
-                <textFieldExpression class="java.lang.String"><![CDATA[$V{canceled}.booleanValue()
+                <textFieldExpression><![CDATA[$V{canceled}.booleanValue()
 ? Status.find("Sales_InvoiceStatus", "Replaced").getLabel()
 : $F{contactName}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="684" y="0" width="70" height="14">
+                <reportElement uuid="d94c05dd-7b6d-4b65-bfda-3542defb1b87" stretchType="RelativeToBandHeight" x="684" y="0" width="70" height="14">
                     <printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue())]]></printWhenExpression>
                 </reportElement>
                 <box leftPadding="2" rightPadding="2">
@@ -420,12 +418,12 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="0.0"/>
                 </box>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
+                <textFieldExpression><![CDATA[$V{negative}.booleanValue()
 ? $F{crossTotal}.multiply( $V{rate} ).negate()
 : $F{crossTotal}.multiply( $V{rate} )]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="544" y="0" width="70" height="14">
+                <reportElement uuid="5fe2581b-750c-4165-8b64-ee367df84455" key="" stretchType="RelativeToBandHeight" x="544" y="0" width="70" height="14">
                     <printWhenExpression><![CDATA[new Boolean((BigDecimal.ZERO.compareTo($F{crossTotal}.subtract($F{netTotal})) < 0)&& !$V{canceled}.booleanValue())]]></printWhenExpression>
                 </reportElement>
                 <box leftPadding="2" rightPadding="2">
@@ -435,12 +433,12 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="0.0"/>
                 </box>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
+                <textFieldExpression><![CDATA[$V{negative}.booleanValue()
 ? $F{netTotal}.multiply( $V{rate} ).negate()
 : $F{netTotal}.multiply( $V{rate} )]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="474" y="0" width="70" height="14">
+                <reportElement uuid="459df011-13e0-4955-a46e-c7acd2e622bb" key="" stretchType="RelativeToBandHeight" x="474" y="0" width="70" height="14">
                     <printWhenExpression><![CDATA[new Boolean(!(BigDecimal.ZERO.compareTo($F{crossTotal}.subtract($F{netTotal})) < 0) && !$V{canceled}.booleanValue())]]></printWhenExpression>
                 </reportElement>
                 <box leftPadding="2" rightPadding="2">
@@ -450,12 +448,12 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="0.0"/>
                 </box>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
+                <textFieldExpression><![CDATA[$V{negative}.booleanValue()
 ? $F{crossTotal}.multiply( $V{rate} ).negate()
 : $F{crossTotal}.multiply( $V{rate} )]]></textFieldExpression>
             </textField>
             <textField pattern="###0.00##">
-                <reportElement stretchType="RelativeToTallestObject" x="754" y="0" width="48" height="14">
+                <reportElement uuid="e6576d24-c30e-4a9a-a1ff-ad892bce1ada" key="" stretchType="RelativeToBandHeight" x="754" y="0" width="48" height="14">
                     <printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue()
     && $P{Active} ? (($V{rate}.compareTo(BigDecimal.ONE)!=0 && $F{rate}.compareTo(BigDecimal.ONE)==0)
                     || ($V{rate}.compareTo(BigDecimal.ONE)==0 && $F{rate}.compareTo(BigDecimal.ONE)!=0))
@@ -468,10 +466,10 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="0.0"/>
                 </box>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$P{Active} ? ($V{rate}.compareTo(BigDecimal.ONE)!=0 ? java.math.BigDecimal.ONE.divide($V{rate}, 4, BigDecimal.ROUND_HALF_UP) : $F{rateLabel}) : $F{rateLabel}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$P{Active} ? ($V{rate}.compareTo(BigDecimal.ONE)!=0 ? java.math.BigDecimal.ONE.divide($V{rate}, 4, BigDecimal.ROUND_HALF_UP) : $F{rateLabel}) : $F{rateLabel}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement stretchType="RelativeToTallestObject" x="66" y="0" width="34" height="14"/>
+                <reportElement uuid="17c3fde5-1354-4df1-8843-4bf17aecedc3" stretchType="RelativeToBandHeight" x="66" y="0" width="34" height="14"/>
                 <box leftPadding="2" rightPadding="2">
                     <topPen lineWidth="0.0"/>
                     <leftPen lineWidth="1.0"/>
@@ -479,10 +477,10 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement textAlignment="Center"/>
-                <textFieldExpression class="java.lang.String"><![CDATA[$V{type}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$V{type}]]></textFieldExpression>
             </textField>
             <textField>
-                <reportElement stretchType="RelativeToTallestObject" x="100" y="0" width="70" height="14"/>
+                <reportElement uuid="57cdeb67-ea22-4b58-b95f-d9818db17c48" stretchType="RelativeToBandHeight" x="100" y="0" width="70" height="14"/>
                 <box leftPadding="2" rightPadding="2">
                     <topPen lineWidth="0.0"/>
                     <leftPen lineWidth="1.0"/>
@@ -490,10 +488,10 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="1.0"/>
                 </box>
                 <textElement/>
-                <textFieldExpression class="java.lang.String"><![CDATA[$F{name}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement stretchType="RelativeToTallestObject" x="614" y="0" width="70" height="14">
+                <reportElement uuid="b191b413-c0a6-4493-bf39-2791e86bc64c" key="" stretchType="RelativeToBandHeight" x="614" y="0" width="70" height="14">
                     <printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue())]]></printWhenExpression>
                 </reportElement>
                 <box leftPadding="2" rightPadding="2">
@@ -503,7 +501,7 @@ EMISIÓN]]></text>
                     <rightPen lineWidth="0.0"/>
                 </box>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{negative}.booleanValue()
+                <textFieldExpression><![CDATA[$V{negative}.booleanValue()
 ? $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )).negate()
 : $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} ))]]></textFieldExpression>
             </textField>
@@ -512,27 +510,27 @@ EMISIÓN]]></text>
     <columnFooter>
         <band height="15" splitType="Stretch">
             <textField pattern="#,##0.00">
-                <reportElement x="544" y="0" width="70" height="14"/>
+                <reportElement uuid="b651e5d0-4ffd-4849-8b3b-af8f4bcf0a5b" x="544" y="0" width="70" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumNetTotal}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$V{sumNetTotal}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement x="684" y="0" width="70" height="14"/>
+                <reportElement uuid="aa42add7-05e9-42eb-9e6b-59ad9242d454" x="684" y="0" width="70" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCrossTotal}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$V{sumCrossTotal}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement x="614" y="1" width="70" height="14"/>
+                <reportElement uuid="bbda64ae-98c1-4a10-9f1c-87b02a6f53a8" x="614" y="1" width="70" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTaxTotal}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$V{sumTaxTotal}]]></textFieldExpression>
             </textField>
             <textField pattern="#,##0.00">
-                <reportElement x="474" y="0" width="70" height="14"/>
+                <reportElement uuid="4a9b3ee6-f364-444b-b3b2-61e81b7ed00f" x="474" y="0" width="70" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumExport}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[$V{sumExport}]]></textFieldExpression>
             </textField>
             <staticText>
-                <reportElement x="0" y="0" width="66" height="14"/>
+                <reportElement uuid="2b3230e8-3514-400e-84e5-246b8170be47" x="0" y="0" width="66" height="14"/>
                 <textElement/>
                 <text><![CDATA[Total:]]></text>
             </staticText>
@@ -541,44 +539,29 @@ EMISIÓN]]></text>
     <pageFooter>
         <band height="16" splitType="Stretch">
             <textField>
-                <reportElement x="248" y="0" width="102" height="14"/>
+                <reportElement uuid="cb5d735f-5808-4387-b34e-b829b1987fdc" x="248" y="0" width="102" height="14"/>
                 <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.lang.String"><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+                <textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
             </textField>
             <textField evaluationTime="Report">
-                <reportElement x="350" y="0" width="75" height="14"/>
+                <reportElement uuid="bc9a8d30-f221-4429-8c9a-7d17d24a0995" x="350" y="0" width="75" height="14"/>
                 <textElement/>
-                <textFieldExpression class="java.lang.String"><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
             </textField>
         </band>
     </pageFooter>
     <lastPageFooter>
-        <band height="17">
-            <textField pattern="#,##0.00">
-                <reportElement x="474" y="0" width="70" height="14"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumExport}]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.00">
-                <reportElement x="544" y="0" width="70" height="14"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumNetTotal}]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.00">
-                <reportElement x="614" y="0" width="70" height="14"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumTaxTotal}]]></textFieldExpression>
-            </textField>
-            <textField pattern="#,##0.00">
-                <reportElement x="684" y="0" width="70" height="14"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression class="java.math.BigDecimal"><![CDATA[$V{sumCrossTotal}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="0" width="66" height="14"/>
+        <band height="15">
+            <textField evaluationTime="Report">
+                <reportElement uuid="bc9a8d30-f221-4429-8c9a-7d17d24a0995" x="350" y="0" width="75" height="14"/>
                 <textElement/>
-                <text><![CDATA[Total:]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="cb5d735f-5808-4387-b34e-b829b1987fdc" x="248" y="0" width="102" height="14"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Pagina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+            </textField>
         </band>
     </lastPageFooter>
 </jasperReport>
