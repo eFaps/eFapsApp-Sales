@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
@@ -49,7 +50,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * Class is the generic instance for all documents of type DocumentSum.
@@ -57,6 +57,12 @@ import org.joda.time.DateTime;
  * @author The eFaps Team
  * @version $Id: DocumentSum_Base.java 7915 2012-08-17 15:30:12Z
  *          m.aranya@moxter.net $
+ */
+/**
+ * TODO comment!
+ *
+ * @author The eFaps Team
+ * @version $Id$
  */
 @EFapsUUID("e177ab08-67f0-4ce2-8eff-d3f167352bee")
 @EFapsRevision("$Rev$")
@@ -302,7 +308,6 @@ public abstract class DocumentSum_Base
                             print.<Long> getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
             final Instance currentInst = Instance.get(CIERP.Currency.getType(),
                             print.<Long> getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-            final DateTime date = print.<DateTime> getAttribute(CISales.DocumentSumAbstract.Date);
 
             final PriceUtil priceUtil = new PriceUtil();
             final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
@@ -317,42 +322,44 @@ public abstract class DocumentSum_Base
 
             final Update update = new Update(docInst);
             update.add(CISales.DocumentSumAbstract.CrossTotal, rateCross.compareTo(BigDecimal.ZERO) == 0
-                            ? BigDecimal.ZERO : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP));
+                            ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                            : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.NetTotal, rateNet.compareTo(BigDecimal.ZERO) == 0
-                            ? BigDecimal.ZERO : rateNet.divide(rate, BigDecimal.ROUND_HALF_UP));
+                            ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                            : rateNet.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.DiscountTotal, rateDiscount.compareTo(BigDecimal.ZERO) == 0
-                            ? BigDecimal.ZERO : rateDiscount.divide(rate, BigDecimal.ROUND_HALF_UP));
+                            ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                            : rateDiscount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.Rate, rateObj);
             update.execute();
 
-            final BigDecimal[] rates4Calc = priceUtil.getRates(date, targetCurrInst, currentInst);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-            queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, docInst.getId());
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, docInst.getId());
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.PositionSumAbstract.CrossPrice, CISales.PositionSumAbstract.CrossUnitPrice,
-                            CISales.PositionSumAbstract.DiscountNetUnitPrice, CISales.PositionSumAbstract.NetPrice,
-                            CISales.PositionSumAbstract.NetUnitPrice);
+            multi.addAttribute(CISales.PositionSumAbstract.RateCrossPrice, CISales.PositionSumAbstract.RateCrossUnitPrice,
+                            CISales.PositionSumAbstract.RateDiscountNetUnitPrice, CISales.PositionSumAbstract.RateNetPrice,
+                            CISales.PositionSumAbstract.RateNetUnitPrice);
             multi.execute();
             while (multi.next()) {
-                final BigDecimal crossPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.CrossPrice);
-                final BigDecimal dscNetUnitPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.DiscountNetUnitPrice);
-                final BigDecimal crossUnitPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.CrossUnitPrice);
-                final BigDecimal netPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.NetPrice);
-                final BigDecimal netUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
-
+                final BigDecimal rateCrossPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
+                final BigDecimal rateDscNetUnitPrice = multi.<BigDecimal> getAttribute(
+                                CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
+                final BigDecimal rateCrossUnitPrice = multi.<BigDecimal> getAttribute(
+                                CISales.PositionSumAbstract.RateCrossUnitPrice);
+                final BigDecimal rateNetPrice = multi.<BigDecimal> getAttribute(
+                                CISales.PositionSumAbstract.RateNetPrice);
+                final BigDecimal rateNetUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
+                final BigDecimal newCrossPrice = getNewValue(docInst, rateCrossPrice, rates[2]);
+                final BigDecimal newDiscountNetUnitPrice = getNewValue(docInst, rateDscNetUnitPrice, rates[2]);
+                final BigDecimal newCrossUnitPrice = getNewValue(docInst, rateCrossUnitPrice, rates[2]);
+                final BigDecimal newCrossNetPrice = getNewValue(docInst, rateNetPrice, rates[2]);
+                final BigDecimal newCrossNetUnitPrice = getNewValue(docInst, rateNetUnitPrice, rates[2]);
                 final Update updatePos = new Update(multi.getCurrentInstance());
-                updatePos.add(CISales.PositionSumAbstract.CrossPrice, getNewValue(crossPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionSumAbstract.DiscountNetUnitPrice,
-                                getNewValue(dscNetUnitPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionSumAbstract.CrossUnitPrice,
-                                getNewValue(crossUnitPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionSumAbstract.NetPrice, getNewValue(netPrice, rates4Calc[2], rates[2]));
-                updatePos.add(CISales.PositionSumAbstract.NetUnitPrice,
-                                getNewValue(netUnitPrice, rates4Calc[2], rates[2]));
+                updatePos.add(CISales.PositionSumAbstract.CrossPrice, newCrossPrice);
+                updatePos.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, newDiscountNetUnitPrice);
+                updatePos.add(CISales.PositionSumAbstract.CrossUnitPrice, newCrossUnitPrice);
+                updatePos.add(CISales.PositionSumAbstract.NetPrice, newCrossNetPrice);
+                updatePos.add(CISales.PositionSumAbstract.NetUnitPrice, newCrossNetUnitPrice);
                 updatePos.add(CISales.PositionSumAbstract.Rate, rateObj);
                 updatePos.execute();
             }
@@ -406,15 +413,39 @@ public abstract class DocumentSum_Base
      * @param _oldRate old Rate
      * @param _newRate new Rate
      * @return new Value
+     * @throws EFapsException on error
      */
-    protected BigDecimal getNewValue(final BigDecimal _oldValue,
-                                     final BigDecimal _oldRate,
+    protected BigDecimal getNewValue(final Instance _docInst,
+                                     final BigDecimal _rateValue,
                                      final BigDecimal _newRate)
+        throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-        if (_oldValue.compareTo(BigDecimal.ZERO) != 0) {
-            ret = _oldValue.multiply(_oldRate).divide(_newRate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(2, BigDecimal.ROUND_HALF_UP);
+        if (_rateValue.compareTo(BigDecimal.ZERO) != 0) {
+            ret = _rateValue.divide(_newRate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(isDecimal4Doc(_docInst), BigDecimal.ROUND_HALF_UP);
+        }
+        return ret;
+    }
+
+    /**
+     * Get decimal for document instance of the system configuration.
+     *
+     * @param _docInst instance of doc.
+     * @return integer.
+     * @throws EFapsException on error.
+     */
+    protected int isDecimal4Doc(Instance _docInst)
+        throws EFapsException
+    {
+        int ret = 2;
+        final SystemConfiguration config = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        final Properties props = config.getAttributeValueAsProperties("ActivateLongDecimal");
+        final String type = _docInst.getType().getName();
+
+        if (props.containsKey(type) && Integer.valueOf(props.getProperty(type)) != ret) {
+            ret = Integer.valueOf(props.getProperty(type));
         }
         return ret;
     }
