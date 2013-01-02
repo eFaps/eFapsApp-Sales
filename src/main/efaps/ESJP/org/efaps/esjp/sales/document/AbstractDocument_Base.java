@@ -350,7 +350,7 @@ public abstract class AbstractDocument_Base
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
         add2QueryBldr(_parameter, queryBldr);
-        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
+        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
         if (_status != null) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status.getId());
         }

@@ -42,7 +42,7 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: RecievingTicket_Base.java 8018 2012-10-09 17:47:24Z
  *          jan@moxter.net $
@@ -65,6 +65,7 @@ public abstract class RecievingTicket_Base
         insert.add(CISales.RecievingTicket.Name, getDocName4Create(_parameter));
         insert.add(CISales.RecievingTicket.Status,
                         ((Long) Status.find(CISales.RecievingTicketStatus.uuid, "Closed").getId()).toString());
+        add2DocCreate(_parameter, insert, null);
         insert.execute();
         Integer i = 0;
         for (final String quantity : _parameter.getParameterValues("quantity")) {
