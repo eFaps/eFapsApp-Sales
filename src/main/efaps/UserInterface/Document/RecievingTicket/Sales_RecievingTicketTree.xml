@@ -27,33 +27,34 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>8e2ab75e-ae9b-439c-9604-1397b1b373d0</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>8e2ab75e-ae9b-439c-9604-1397b1b373d0</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_RecievingTicketTree</name>
-    <!-- targets -->
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Accounting</role>
-      <role>Sales_Teller</role>
-      <role>Sales_Delivery</role>
-    </access>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_RecievingTicketTree</name>
+        <!-- targets -->
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_Teller</role>
+            <role>Sales_Delivery</role>
+        </access>
 
-    <target>
-      <menu>Sales_RecievingTicketTree_Menu</menu>
-      <form>Sales_RecievingTicketForm</form>
-    </target>
-    <!-- type tree for -->
-    <type>Sales_RecievingTicket</type>
-    <!-- childs -->
-    <childs>
-        <child>Sales_RecievingTicketTree_Position</child>
-    </childs>
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetMode">view</property>
-  </definition>
+        <target>
+            <menu>Sales_RecievingTicketTree_Menu</menu>
+            <form>Sales_RecievingTicketForm</form>
+        </target>
+        <!-- type tree for -->
+        <type>Sales_RecievingTicket</type>
+        <!-- childs -->
+        <childs>
+            <child>Sales_RecievingTicketTree_Position</child>
+            <child>Sales_DocumentAbstractTree_Doc</child>
+        </childs>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
