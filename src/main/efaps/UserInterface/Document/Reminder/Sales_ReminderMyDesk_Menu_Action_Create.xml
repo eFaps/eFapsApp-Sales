@@ -44,6 +44,8 @@
             <form>Sales_ReminderForm</form>
             <execute program="org.efaps.esjp.sales.document.Reminder" method="create">
                 <property name="PositionType">Sales_ReminderPosition</property>
+                <property name="StatusGroup">Sales_ReminderStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
 
