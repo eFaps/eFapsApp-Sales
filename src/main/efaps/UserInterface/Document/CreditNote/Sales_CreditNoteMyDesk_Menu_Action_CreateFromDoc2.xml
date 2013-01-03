@@ -44,6 +44,8 @@
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
                 <property name="PositionType">Sales_CreditNotePosition</property>
+                <property name="StatusGroup">Sales_CreditNoteStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
 
