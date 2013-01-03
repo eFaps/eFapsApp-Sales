@@ -65,13 +65,13 @@ public abstract class RecievingTicket_Base
         insert.add(CISales.RecievingTicket.Name, getDocName4Create(_parameter));
         insert.add(CISales.RecievingTicket.Status,
                         ((Long) Status.find(CISales.RecievingTicketStatus.uuid, "Closed").getId()).toString());
-        add2DocCreate(_parameter, insert, null);
         insert.execute();
+        final Instance instance = insert.getInstance();
         Integer i = 0;
         for (final String quantity : _parameter.getParameterValues("quantity")) {
             final Insert posIns = new Insert(CISales.RecievingTicketPosition);
             final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.RecievingTicketPosition.RecievingTicket, insert.getId());
+            posIns.add(CISales.RecievingTicketPosition.RecievingTicket, instance.getId());
             posIns.add(CISales.RecievingTicketPosition.PositionNumber, i.toString());
             posIns.add(CISales.RecievingTicketPosition.Product, productdId.toString());
             posIns.add(CISales.RecievingTicketPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
