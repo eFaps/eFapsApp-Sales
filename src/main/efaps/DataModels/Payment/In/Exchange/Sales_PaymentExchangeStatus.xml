@@ -46,5 +46,8 @@
         <status key="Collection">
             <description>Exchange in Collection</description>
         </status>
+        <status key="Booked">
+            <description>Check was booked.</description>
+        </status>
     </definition>
 </datamodel-statusgroup>
