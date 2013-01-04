@@ -37,5 +37,8 @@
         <status key="Canceled">
             <description>Check was canceled.</description>
         </status>
+         <status key="Booked">
+            <description>Check was booked.</description>
+        </status>
     </definition>
 </datamodel-statusgroup>
