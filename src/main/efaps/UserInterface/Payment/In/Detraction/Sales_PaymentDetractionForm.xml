@@ -135,7 +135,7 @@
         </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Status</property>
         </field>
         <field character="Group" name="createGroup">
