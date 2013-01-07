@@ -43,6 +43,7 @@
         <type>Sales_CreditNote</type>
         <childs>
             <child>Sales_CreditNoteTree_Position</child>
+            <child>Sales_DocumentAbstractTree_Doc</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
