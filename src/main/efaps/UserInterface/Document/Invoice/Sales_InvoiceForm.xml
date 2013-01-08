@@ -61,6 +61,16 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+               method="getSalesPersonFieldValue"
+               name="Sales_DeliveryNoteForm.salesperson.UI_FIELD_VALUE"
+               event="UI_FIELD_VALUE">
+               <property name="Type">Admin_User_Person</property>
+               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+               <property name="OrderSelect">attribute[LastName]</property>
+               <property name="WhereAttrEqValue">Status|true</property>
+               <property name="SelectCurrent">true</property>
+           </trigger>
         </field>
         <field name="salespersonLink">
             <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
