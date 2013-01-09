@@ -435,7 +435,7 @@ public abstract class DocumentSum_Base
      * @return integer.
      * @throws EFapsException on error.
      */
-    protected int isDecimal4Doc(Instance _docInst)
+    protected int isDecimal4Doc(final Instance _docInst)
         throws EFapsException
     {
         int ret = 2;
@@ -449,4 +449,122 @@ public abstract class DocumentSum_Base
         }
         return ret;
     }
+
+    /**
+     * Method to get formated String representation of the cross total for a
+     * list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return formated String representation of the cross total
+     * @throws EFapsException on error
+     */
+    protected String getCrossTotalFmtStr(final Parameter _parameter,
+                                         final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getTwoDigitsformater().format(getCrossTotal(_parameter, _calcList));
+    }
+
+    /**
+     * Method to get String representation of the cross total for a list of Calculators.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return String representation of the cross total
+     * @throws EFapsException on error
+     */
+    protected String getCrossTotalStr(final Parameter _parameter,
+                                      final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getCrossTotal(_parameter, _calcList).toString();
+    }
+
+    /**
+     * Method to get the cross total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the cross total
+     * @throws EFapsException on error
+     */
+    protected BigDecimal getCrossTotal(final Parameter _parameter,
+                                       final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calc : _calcList) {
+            ret = ret.add(calc.getCrossPrice());
+        }
+        return ret;
+    }
+
+    /**
+     * Method to get formated String representation of the net total for a
+     * list of Calculators.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return formated String representation of the net total
+     * @throws EFapsException on error
+     */
+    protected String getNetTotalFmtStr(final Parameter _parameter,
+                                       final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getTwoDigitsformater().format(getNetTotal(_parameter, _calcList));
+    }
+
+    /**
+     * Method to get String representation of the net total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return String representation of the net total
+     * @throws EFapsException on error
+     */
+    protected String getNetTotalStr(final Parameter _parameter,
+                                    final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getNetTotal(_parameter, _calcList).toString();
+    }
+
+    /**
+     * Method to get the net total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the net total
+     * @throws EFapsException on error
+     */
+    protected BigDecimal getNetTotal(final Parameter _parameter,
+                                     final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calc : _calcList) {
+            ret = ret.add(calc.getNetPrice());
+        }
+        return ret;
+    }
+
+    /**
+     * Method to get the base cross total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the base cross total
+     * @throws EFapsException on error
+     */
+    protected BigDecimal getBaseCrossTotal(final Parameter _parameter,
+                                           final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calculator : _calcList) {
+            ret = ret.add(calculator.getProductCrossPrice().getBasePrice());
+        }
+        return ret;
+    }
+
 }
