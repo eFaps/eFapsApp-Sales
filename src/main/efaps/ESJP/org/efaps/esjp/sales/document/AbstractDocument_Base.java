@@ -1413,6 +1413,7 @@ public abstract class AbstractDocument_Base
      * @return formated String representation of the cross total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected String getCrossTotalFmtStr(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1426,6 +1427,7 @@ public abstract class AbstractDocument_Base
      * @return String representation of the cross total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected String getCrossTotalStr(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1439,6 +1441,7 @@ public abstract class AbstractDocument_Base
      * @return the cross total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected BigDecimal getCrossTotal(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1457,6 +1460,7 @@ public abstract class AbstractDocument_Base
      * @return formated String representation of the net total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected String getNetTotalFmtStr(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1470,6 +1474,7 @@ public abstract class AbstractDocument_Base
      * @return String representation of the net total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected String getNetTotalStr(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1483,6 +1488,7 @@ public abstract class AbstractDocument_Base
      * @return the net total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected BigDecimal getNetTotal(final List<Calculator> _calcList)
         throws EFapsException
     {
@@ -1500,6 +1506,7 @@ public abstract class AbstractDocument_Base
      * @return the base cross total
      * @throws EFapsException on error
      */
+    @Deprecated
     protected BigDecimal getBaseCrossTotal(final List<Calculator> _calcList)
         throws EFapsException
     {
