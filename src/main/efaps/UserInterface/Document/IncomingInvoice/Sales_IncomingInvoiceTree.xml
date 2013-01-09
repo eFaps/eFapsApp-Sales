@@ -43,6 +43,7 @@
     <type>Sales_IncomingInvoice</type>
     <childs>
       <child>Sales_DocumentAbstractTree_Doc</child>
+      <child>Sales_IncomingInvoiceTree_Position</child>
     </childs>
     <!-- properties -->
     <property name="Target">content</property>
