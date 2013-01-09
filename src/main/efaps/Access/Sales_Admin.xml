@@ -62,6 +62,7 @@
         <type>Sales_CashReceipt</type>
         <type>Sales_PaymentSchedule</type>
         <type>Sales_ProductRequest</type>
+        <type>Sales_IncomingReceipt</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -195,7 +196,14 @@
             <key>Closed</key>
             <key>Canceled</key>
         </status>
-
+        
+        <status group="Sales_IncomingReceiptStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+        
         <role>Sales_Admin</role>
     </definition>
 

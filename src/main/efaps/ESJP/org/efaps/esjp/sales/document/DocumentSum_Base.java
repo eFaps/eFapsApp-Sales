@@ -111,7 +111,7 @@ public abstract class DocumentSum_Base
         final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentSumAbstract.DueDate.name));
         if (duedate != null) {
-            insert.add(CISales.DocumentSumAbstract.DueDate, date);
+            insert.add(CISales.DocumentSumAbstract.DueDate, duedate);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.DueDate.name, duedate);
         }
         final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,

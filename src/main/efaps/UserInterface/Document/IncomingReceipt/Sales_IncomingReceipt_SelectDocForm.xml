@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2013 - 2013 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 5313 $
+  Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
+  Last Changed By: $Author: miguel.a.aranya $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+  <uuid>02922f9d-de72-4bac-adf7-3db0d5c44481</uuid>
+  <file-application>eFapsApp-Sales</file-application>
+  <file-revision>$Rev: 5313 $</file-revision>
+
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <name>Sales_IncomingReceipt_SelectDocForm</name>
+    <!-- fields -->
+    <field name="order">
+      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+      <property name="Label">Sales_Quotation/Name.Label</property>
+      <property name="ModeCreate">EDITABLE</property>
+      <property name="Required">true</property>
+      <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Quotation" name="Sales_IncomingReceipt_SelectDocForm.order.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+      <trigger event="UI_FIELD_UPDATE" method="updateFields4Quotation" name="Sales_IncomingReceipt_SelectDocForm.order.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+    </field>
+    <field name="info">
+      <property name="ModePrint">NONE</property>
+      <property name="Label">Sales_IncomingReceipt_SelectDocForm.info.Label</property>
+      <property name="ModeCreate">READONLY</property>
+      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+    </field>
+    <field name="javaScript">
+      <property name="ModePrint">NONE</property>
+      <property name="ModeCreate">HIDDEN</property>
+      <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm" name="Sales_IncomingReceipt_SelectDocForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+    </field>
+  </definition>
+</ui-form>
