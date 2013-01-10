@@ -10,7 +10,7 @@
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="lastPageFooter"/>
-	<property name="ireport.zoom" value="1.2100000000000006"/>
+	<property name="ireport.zoom" value="1.1000000000000005"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="java.text.SimpleDateFormat"/>
@@ -143,7 +143,7 @@
 		<initialValueExpression><![CDATA[new Integer(0)]]></initialValueExpression>
 	</variable>
 	<pageHeader>
-		<band height="20" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<staticText>
 				<reportElement uuid="63f8fdef-6e8f-4ecc-858d-5b9f5fc41166" x="614" y="0" width="70" height="14"/>
 				<textElement textAlignment="Right"/>
@@ -184,6 +184,15 @@
 				<textElement textAlignment="Center"/>
 				<text><![CDATA[-]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="51f0e567-2df1-4ff5-b181-c196f09b3cde" x="958" y="0" width="50" height="14">
+					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}!=1]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right" markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Vienen"]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
@@ -742,6 +751,13 @@ EMISIÓN]]></text>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="126e3fa2-3e76-4bec-9e2d-b9444df76fd7" x="958" y="0" width="50" height="14"/>
+				<textElement textAlignment="Right" markup="none">
+					<font size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA["Van"]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
