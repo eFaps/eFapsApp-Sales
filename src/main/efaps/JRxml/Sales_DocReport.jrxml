@@ -185,13 +185,13 @@
 				<text><![CDATA[-]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="51f0e567-2df1-4ff5-b181-c196f09b3cde" x="958" y="0" width="50" height="14">
+				<reportElement uuid="51f0e567-2df1-4ff5-b181-c196f09b3cde" x="937" y="0" width="71" height="14">
 					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}!=1]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" markup="none">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Vienen"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Viene " + ($V{PAGE_NUMBER} - 1)]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
@@ -753,11 +753,11 @@ EMISIÓN]]></text>
 				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="126e3fa2-3e76-4bec-9e2d-b9444df76fd7" x="958" y="0" width="50" height="14"/>
+				<reportElement uuid="126e3fa2-3e76-4bec-9e2d-b9444df76fd7" x="937" y="0" width="71" height="14"/>
 				<textElement textAlignment="Right" markup="none">
 					<font size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Van"]]></textFieldExpression>
+				<textFieldExpression><![CDATA["Van " + $V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
