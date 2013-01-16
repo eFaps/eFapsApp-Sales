@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -129,7 +130,7 @@ public abstract class ReturnSlip_Base extends AbstractDocument
         insert.add("Quantity", qauntity[0]);
         insert.add("Storage", storage);
         insert.add("Product", productID);
-        insert.add("Description", "Return Delivery Slip");
+        insert.add("Description", DBProperties.getProperty("org.efaps.esjp.sales.document.ReturnSlip.description4Trigger"));
         insert.add("Date", new DateTime());
         insert.add("Document", deliveryNodeId[0]);
         insert.add("UoM", uom[0]);
