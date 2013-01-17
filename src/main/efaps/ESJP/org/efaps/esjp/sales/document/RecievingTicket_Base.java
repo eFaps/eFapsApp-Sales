@@ -20,10 +20,8 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -50,36 +48,19 @@ import org.joda.time.DateTime;
 @EFapsUUID("f6f4e147-fc24-487e-ae81-69e4c44ac964")
 @EFapsRevision("$Rev$")
 public abstract class RecievingTicket_Base
-    extends AbstractDocument
+    extends AbstractProductDocument
 {
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final String date = _parameter.getParameterValue("date");
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert(CISales.RecievingTicket);
-        insert.add(CISales.RecievingTicket.Contact, contactid.toString());
-        insert.add(CISales.RecievingTicket.Date, date);
-        insert.add(CISales.RecievingTicket.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.RecievingTicket.Name, getDocName4Create(_parameter));
-        insert.add(CISales.RecievingTicket.Status,
-                        ((Long) Status.find(CISales.RecievingTicketStatus.uuid, "Closed").getId()).toString());
-        insert.execute();
-        final Instance instance = insert.getInstance();
-        Integer i = 0;
-        for (final String quantity : _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert(CISales.RecievingTicketPosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.RecievingTicketPosition.RecievingTicket, instance.getId());
-            posIns.add(CISales.RecievingTicketPosition.PositionNumber, i.toString());
-            posIns.add(CISales.RecievingTicketPosition.Product, productdId.toString());
-            posIns.add(CISales.RecievingTicketPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
-            posIns.add(CISales.RecievingTicketPosition.Quantity, (new BigDecimal(quantity)).toString());
-            posIns.add(CISales.RecievingTicketPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.execute();
-            i++;
-        }
+        final CreatedDoc doc = createDoc(_parameter);
+        createPositions(_parameter, doc);
         return new Return();
     }
 
@@ -90,6 +71,11 @@ public abstract class RecievingTicket_Base
         return _parameter.getParameterValue("name");
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new return
+     * @throws EFapsException on error
+     */
     public Return recievingTicketPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -100,17 +86,23 @@ public abstract class RecievingTicket_Base
         final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
 
         final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.DeliveryNotePosition.Product.name));
+                        CISales.RecievingTicketPosition.Product.name));
         final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.DeliveryNotePosition.Quantity.name));
-        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.DeliveryNotePosition.DeliveryNote.name));
+                        CISales.RecievingTicketPosition.Quantity.name));
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.DeliveryNotePosition.UoM.name));
         final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.DeliveryNotePosition.PositionNumber.name));
+                        CISales.RecievingTicketPosition.PositionNumber.name));
+        Object[] reTickId = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.RecievingTicketPosition.RecievingTicket.name));
+        // if it did not work check the abstract attribute
+        if (reTickId == null) {
+            reTickId = (Object[]) map.get(instance.getType().getAttribute(
+                            CISales.RecievingTicketPosition.DocumentAbstractLink.name));
+        }
+
         String storage = null;
         if (storageIds != null) {
-            final Integer posInt = ((Integer) pos[0]);
+            final Integer posInt = (Integer) pos[0];
             storage = storageIds[posInt - 1];
         } else {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Warehouse);
@@ -127,7 +119,7 @@ public abstract class RecievingTicket_Base
         insert.add(CIProducts.TransactionInbound.Description,
                         DBProperties.getProperty("org.efaps.esjp.sales.document.RecievingTicket.description4Trigger"));
         insert.add(CIProducts.TransactionInbound.Date, new DateTime());
-        insert.add(CIProducts.TransactionInbound.Document, deliveryNodeId[0]);
+        insert.add(CIProducts.TransactionInbound.Document, reTickId[0]);
         insert.add(CIProducts.TransactionInbound.UoM, uom[0]);
         insert.execute();
 
