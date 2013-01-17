@@ -62,59 +62,21 @@ import org.joda.time.DateTime;
 @EFapsUUID("363ad7a5-1e7b-4194-89e3-a31d07d783df")
 @EFapsRevision("$Rev$")
 public abstract class DeliveryNote_Base
-    extends AbstractDocument
+    extends AbstractProductDocument
 {
     /**
-     * Create a new DeliveryNote.
-     *
-     * @param _parameter parameter as passed from the eFaps API.
+     * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
-     * @throws EFapsException on error,
+     * @throws EFapsException on error.
      */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final CreatedDoc doc = createDoc(_parameter);
+        createPositions(_parameter, doc);
         return new Return();
     }
 
-    /**
-     * Method for create a new DeliveryNote and return the instance of the
-     * deliveryNote.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return instance of the deliveryNote.
-     * @throws EFapsException on error.
-     */
-    protected CreatedDoc createDoc(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String date = _parameter.getParameterValue("date");
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert(CISales.DeliveryNote);
-        insert.add(CISales.DeliveryNote.Contact, contactid.toString());
-        insert.add(CISales.DeliveryNote.Date, date);
-        insert.add(CISales.DeliveryNote.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.DeliveryNote.Name, _parameter.getParameterValue("name4create"));
-        insert.add(CISales.DeliveryNote.Status,
-                        ((Long) Status.find(CISales.DeliveryNoteStatus.uuid, "Closed").getId()).toString());
-        insert.execute();
-        final CreatedDoc ret = new CreatedDoc(insert.getInstance());
-        Integer i = 1;
-        for (final String quantity : _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert(CISales.DeliveryNotePosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i - 1]).getId();
-            posIns.add(CISales.DeliveryNotePosition.DeliveryNote, insert.getId());
-            posIns.add(CISales.DeliveryNotePosition.PositionNumber, i);
-            posIns.add(CISales.DeliveryNotePosition.Product, productdId.toString());
-            posIns.add(CISales.DeliveryNotePosition.ProductDesc, _parameter.getParameterValues("productDesc")[i - 1]);
-            posIns.add(CISales.DeliveryNotePosition.Quantity, (new BigDecimal(quantity)).toString());
-            posIns.add(CISales.DeliveryNotePosition.UoM, _parameter.getParameterValues("uoM")[i - 1]);
-            posIns.execute();
-            i++;
-        }
-        return ret;
-    }
 
     public Return getJS4SelectInvoiceForm(final Parameter _parameter)
         throws EFapsException
@@ -151,30 +113,35 @@ public abstract class DeliveryNote_Base
                         CISales.DeliveryNotePosition.Product.name));
         final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
                         CISales.DeliveryNotePosition.Quantity.name));
-        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.DeliveryNotePosition.DeliveryNote.name));
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.DeliveryNotePosition.UoM.name));
         final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
                         CISales.DeliveryNotePosition.PositionNumber.name));
 
+        Object[] deliveryNoteId = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.DeliveryNotePosition.DeliveryNote.name));
+        // if it did not work check the abstract attribute
+        if (deliveryNoteId == null) {
+            deliveryNoteId = (Object[]) map.get(instance.getType().getAttribute(
+                            CISales.RecievingTicketPosition.DocumentAbstractLink.name));
+        }
 
-
-        String storage = null;
+        Long storage = null;
         if (storageIds != null) {
-            final Integer posInt = ((Integer) pos[0]);
-            storage = storageIds[posInt - 1];
+            final Integer posInt = (Integer) pos[0];
+            storage = Long.valueOf(storageIds[posInt - 1]);
         } else {
             final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
             query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
             final MultiPrintQuery multi = query.getPrint();
             multi.addAttribute(CIProducts.Inventory.Storage);
             multi.execute();
-            while (multi.next()) {
-                storage = multi.<String> getAttribute(CIProducts.Inventory.Storage);
+            if (multi.next()) {
+                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage);
             }
         }
-        //Sales-Configuration
-        final SystemConfiguration conf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        // Sales-Configuration
+        final SystemConfiguration conf = SystemConfiguration.get(UUID
+                        .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
         if (conf.getAttributeValueAsBoolean("DeliveryNote_TransactionTrigger4Reservation")) {
             final Instance contactInst = Instance.get(param.get("contact")[0]);
             BigDecimal quantity = new BigDecimal(qauntity[0].toString());
@@ -197,8 +164,8 @@ public abstract class DeliveryNote_Base
                 while (multi.next()) {
                     BigDecimal reservedTmp = multi
                                     .<BigDecimal>getAttribute(CISales.ReservationPosition.Quantity) != null
-                                       ? multi.<BigDecimal>getAttribute(CISales.ReservationPosition.Quantity)
-                                       : BigDecimal.ZERO;
+                                    ? multi.<BigDecimal>getAttribute(CISales.ReservationPosition.Quantity)
+                                    : BigDecimal.ZERO;
                     // less delivered than reserved
                     if (quantity.subtract(reservedTmp).signum() == -1) {
                         reservedTmp = quantity;
@@ -209,9 +176,9 @@ public abstract class DeliveryNote_Base
                         insert.add(CIProducts.TransactionAbstract.Storage, storage);
                         insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
                         insert.add(CIProducts.TransactionAbstract.Description,
-                                DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
+                            DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
                         insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
-                        insert.add(CIProducts.TransactionAbstract.Document, deliveryNodeId[0]);
+                        insert.add(CIProducts.TransactionAbstract.Document, deliveryNoteId[0]);
                         insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
                         insert.execute();
 
@@ -228,7 +195,7 @@ public abstract class DeliveryNote_Base
                     }
                 }
             }
-            for (final Entry<Instance,Map<Instance, BigDecimal>> entry : res2pos.entrySet()) {
+            for (final Entry<Instance, Map<Instance, BigDecimal>> entry : res2pos.entrySet()) {
                 updateReservation(_parameter, entry.getKey(), entry.getValue());
             }
         }
@@ -240,7 +207,7 @@ public abstract class DeliveryNote_Base
         insert.add(CIProducts.TransactionOutbound.Description,
                         DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
         insert.add(CIProducts.TransactionOutbound.Date, new DateTime());
-        insert.add(CIProducts.TransactionOutbound.Document, deliveryNodeId[0]);
+        insert.add(CIProducts.TransactionOutbound.Document, deliveryNoteId[0]);
         insert.add(CIProducts.TransactionOutbound.UoM, uom[0]);
         insert.execute();
         return new Return();

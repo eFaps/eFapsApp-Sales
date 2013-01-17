@@ -42,7 +42,11 @@
         <!-- target definitions -->
         <target>
             <form>Sales_DeliveryNoteForm</form>
-            <execute program="org.efaps.esjp.sales.document.DeliveryNote" method="create" />
+            <execute program="org.efaps.esjp.sales.document.DeliveryNote" method="create">
+                <property name="PositionType">Sales_DeliveryNotePosition</property>
+                <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
+                <property name="Status">Open</property>
+             </execute>
         </target>
 
         <!-- properties -->

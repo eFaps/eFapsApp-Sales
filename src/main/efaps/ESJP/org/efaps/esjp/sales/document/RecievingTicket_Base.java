@@ -31,7 +31,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -100,15 +100,18 @@ public abstract class RecievingTicket_Base
                             CISales.RecievingTicketPosition.DocumentAbstractLink.name));
         }
 
-        String storage = null;
+        Long storage = null;
         if (storageIds != null) {
             final Integer posInt = (Integer) pos[0];
-            storage = storageIds[posInt - 1];
+            storage = Long.valueOf(storageIds[posInt - 1]);
         } else {
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Warehouse);
-            final InstanceQuery query = queryBldr.getQuery();
-            if (query.next()) {
-                storage = Long.toString(query.getCurrentValue().getId());
+            final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
+            query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
+            final MultiPrintQuery multi = query.getPrint();
+            multi.addAttribute(CIProducts.Inventory.Storage);
+            multi.execute();
+            if (multi.next()) {
+                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage);
             }
         }
 
