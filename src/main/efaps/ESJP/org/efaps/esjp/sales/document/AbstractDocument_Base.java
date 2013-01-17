@@ -715,7 +715,7 @@ public abstract class AbstractDocument_Base
     protected String getJavaScript(final Parameter _parameter)
         throws EFapsException
     {
-        return getJavaScript(_parameter, true);
+        return getJavaScript(_parameter, false);
     }
 
     /**
@@ -734,31 +734,31 @@ public abstract class AbstractDocument_Base
         js.append("<script type=\"text/javascript\">");
         if (_setStyle) {
             js.append("Wicket.Event.add(window, \"domready\", function(event) {")
-                            .append(" var nt = document.getElementsByName('netTotal')[0];")
-                            .append(" if(typeof nt=='undefined') {")
-                            .append("   nt = document.getElementsByName('netTotal4Read')[0];")
-                            .append(" }")
-                            .append(" if(typeof nt!='undefined') {")
-                            .append(" while (nt.nodeName != 'TABLE') {")
-                            .append(" nt = nt.parentNode;")
-                            .append("}")
-                            .append("nt.style.marginLeft='auto';")
-                            .append("nt.style.width='2%';")
-                            .append(" }});");
+                .append(" var nt = document.getElementsByName('netTotal')[0];")
+                .append(" if(typeof nt=='undefined') {")
+                .append("   nt = document.getElementsByName('netTotal4Read')[0];")
+                .append(" }")
+                .append(" if(typeof nt!='undefined') {")
+                .append(" while (nt.nodeName != 'TABLE') {")
+                .append(" nt = nt.parentNode;")
+                .append("}")
+                .append("nt.style.marginLeft='auto';")
+                .append("nt.style.width='2%';")
+                .append(" }});");
         }
 
         js.append("Wicket.Event.add(window, \"domready\", function(event) {")
-                        .append("var cn = document.getElementsByName('rateCurrencyData');")
-                        .append("if (cn.length > 0) { ")
-                        .append(" cn[0].appendChild(document.createTextNode(1));")
-                        .append("}}); ")
-                        .append("var ele = document.createElement('input');")
-                        .append("var attr = document.createAttribute('type');")
-                        .append("attr.nodeValue = 'hidden';")
-                        .append("ele.setAttributeNode(attr);")
-                        .append("require([\"dojo/query\"],function(query){")
-                        .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
-                        .append("});");
+                .append("var cn = document.getElementsByName('rateCurrencyData');")
+                .append("if (cn.length > 0) { ")
+                .append(" cn[0].appendChild(document.createTextNode(1));")
+                .append("}}); ")
+                .append("var ele = document.createElement('input');")
+                .append("var attr = document.createAttribute('type');")
+                .append("attr.nodeValue = 'hidden';")
+                .append("ele.setAttributeNode(attr);")
+                .append("require([\"dojo/query\"],function(query){")
+                .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
+                .append("});");
 
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = command.getTargetMode();
