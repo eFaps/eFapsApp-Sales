@@ -33,11 +33,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DeliveryNote_SelectInvoiceForm</name>
+        <name>Sales_DeliveryNote_SelectDocForm</name>
         <!-- fields -->
         <field name="invoice">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_Invoice/Name.Label</property>
+            <property name="Label">Sales_Invoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -52,7 +51,7 @@
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
-            <property name="Label">Sales_DeliveryNote_SelectInvoiceForm/date.Label</property>
+            <property name="Label">Sales_DeliveryNote_SelectDocForm.info.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
