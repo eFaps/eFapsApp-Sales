@@ -43,25 +43,25 @@ import org.joda.time.DateTime;
 
 /**
  * Base class for Type Incoming Invoice.
- * 
+ *
  * @author The eFaps Team
  * @version $Id: IncomingInvoice_Base.java 8362 2012-12-12 18:41:35Z
  *          jan@moxter.net $
  */
 @EFapsUUID("e740fd7c-4601-4595-8a7e-0175522cbd74")
 @EFapsRevision("$Rev: 10 $")
-public class IncomingReceipt_Base
+public abstract class IncomingReceipt_Base
     extends DocumentSum
 {
 
     /**
      * Used to store the Revision in the Context.
      */
-    public final static String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingReceipt.RevisionKey";
+    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingReceipt.RevisionKey";
 
     /**
      * Executed from a Command execute vent to create a new Incoming Receipt.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
@@ -78,11 +78,10 @@ public class IncomingReceipt_Base
 
     /**
      * Method to do a transaction of all the products of a Incoming Receipt when
-     * it is created
-     * 
+     * it is created.
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _createdDoc instance of Incoming Receipt document recently created
-     * @return new Return
      * @throws EFapsException on error
      */
     public void incomingReceiptCreateTransaction(final Parameter _parameter,
@@ -110,7 +109,7 @@ public class IncomingReceipt_Base
                 insert.add(CIProducts.TransactionInbound.Storage, storage);
                 insert.add(CIProducts.TransactionInbound.Product, productID);
                 insert.add(CIProducts.TransactionInbound.Description,
-                                DBProperties.getProperty("org.efaps.esjp.sales.document.IncomingReceipt.description4Trigger"));
+                         DBProperties.getProperty("org.efaps.esjp.sales.document.IncomingReceipt.description4Trigger"));
                 insert.add(CIProducts.TransactionInbound.Date, new DateTime());
                 insert.add(CIProducts.TransactionInbound.Document, incomingInvoiceId);
                 insert.add(CIProducts.TransactionInbound.UoM, uom);
@@ -134,6 +133,11 @@ public class IncomingReceipt_Base
         }
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
     public Return showRevisionFieldValue(final Parameter _parameter)
         throws EFapsException
     {

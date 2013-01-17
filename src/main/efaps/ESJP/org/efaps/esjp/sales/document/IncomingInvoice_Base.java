@@ -54,7 +54,7 @@ public abstract class IncomingInvoice_Base
     /**
      * Used to store the Revision in the Context.
      */
-    public final static String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingInvoice.RevisionKey";
+    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingInvoice.RevisionKey";
 
     /**
      * Executed from a Command execute vent to create a new Incoming Invoice.
@@ -75,15 +75,14 @@ public abstract class IncomingInvoice_Base
 
     /**
      * Method to do a transaction of all the products of a Incoming Invoice when
-     * it is created
-     * 
+     * it is created.
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _createdDoc instance of Incoming Invoice document recently created
-     * @return new Return
      * @throws EFapsException on error
      */
     protected void incomingInvoiceCreateTransaction(final Parameter _parameter,
-                                               final CreatedDoc _createdDoc)
+                                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final String storage = _parameter.getParameterValue("storage");
@@ -107,7 +106,7 @@ public abstract class IncomingInvoice_Base
                 insert.add(CIProducts.TransactionInbound.Storage, storage);
                 insert.add(CIProducts.TransactionInbound.Product, productID);
                 insert.add(CIProducts.TransactionInbound.Description,
-                                DBProperties.getProperty("org.efaps.esjp.sales.document.IncomingInvoice.description4Trigger"));
+                         DBProperties.getProperty("org.efaps.esjp.sales.document.IncomingInvoice.description4Trigger"));
                 insert.add(CIProducts.TransactionInbound.Date, new DateTime());
                 insert.add(CIProducts.TransactionInbound.Document, incomingInvoiceId);
                 insert.add(CIProducts.TransactionInbound.UoM, uom);
@@ -130,7 +129,11 @@ public abstract class IncomingInvoice_Base
         }
     }
 
-
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
     public Return showRevisionFieldValue(final Parameter _parameter)
         throws EFapsException
     {
