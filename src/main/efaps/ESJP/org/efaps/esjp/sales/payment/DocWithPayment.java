@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ package org.efaps.esjp.sales.payment;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,10 +32,18 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("d1921ce1-a706-48f0-969c-07a5ac3564ef")
+@EFapsUUID("e59d7d3e-21ed-45f3-addc-02672734ad80")
 @EFapsRevision("$Rev$")
-public abstract class AbstractPaymentDocument
-    extends AbstractPaymentDocument_Base
+public class DocWithPayment
+    extends DocWithPayment_Base
 {
+
+    /**
+     * @param _docInst Instance of the document
+     */
+    public DocWithPayment(final Instance _docInst)
+    {
+       super(_docInst);
+    }
 
 }

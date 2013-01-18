@@ -36,9 +36,11 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SearchQuery;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.util.EFapsException;
 
 /**
@@ -62,7 +64,6 @@ public abstract class Transaction_Base
     public Return value4Account(final Parameter _parameter)
         throws EFapsException
     {
-
         final Return retVal = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TreeMap<String, Long> cashDeskMap = new TreeMap<String, Long>();
@@ -108,6 +109,7 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         addRemoveFromAccount(_parameter, true);
+        updateDocument(_parameter);
         return new Return();
     }
 
@@ -123,6 +125,7 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         addRemoveFromAccount(_parameter, false);
+        updateDocument(_parameter);
         return new Return();
     }
 
@@ -140,40 +143,64 @@ public abstract class Transaction_Base
         final Instance instance = _parameter.getInstance();
         // get the transaction
         final PrintQuery query = new PrintQuery(instance);
-        query.addAttribute("Amount", "Account", "CurrencyId");
+        query.addAttribute(CISales.TransactionAbstract.Account, CISales.TransactionAbstract.Amount,
+                        CISales.TransactionAbstract.CurrencyId);
         BigDecimal amount = null;
         Long account = null;
         Long currency = null;
         if (query.execute()) {
-            amount = (BigDecimal) query.getAttribute("Amount");
-            account = (Long) query.getAttribute("Account");
-            currency = (Long) query.getAttribute("CurrencyId");
+            amount = (BigDecimal) query.getAttribute(CISales.TransactionAbstract.Amount);
+            account = (Long) query.getAttribute(CISales.TransactionAbstract.Account);
+            currency = (Long) query.getAttribute(CISales.TransactionAbstract.CurrencyId);
         }
 
-        // search for the correct inventory
-        final SearchQuery query2 = new SearchQuery();
-        query2.setQueryTypes("Sales_Balance");
-        query2.addWhereExprEqValue("Account", account);
-        query2.addWhereExprEqValue("Currency", currency);
-        query2.addSelect("Amount");
-        query2.addSelect("OID");
-        query2.execute();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, account);
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Currency, account);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.Balance.Amount);
+        multi.execute();
 
         Update update;
-        if (query2.next()) {
-            update = new Update((String) query2.get("OID"));
-            final BigDecimal current = (BigDecimal) query2.get("Amount");
+        if (multi.next()) {
+            update = new Update(multi.getCurrentInstance());
+            final BigDecimal current = multi.<BigDecimal>getAttribute(CISales.Balance.Amount);
             if (_add) {
                 amount = current.add(amount);
             } else {
                 amount = current.subtract(amount);
             }
         } else {
-            update = new Insert("Sales_Balance");
-            update.add("Currency", currency);
-            update.add("Account", account);
+            update = new Insert(CISales.Balance);
+            update.add(CISales.Balance.Currency, currency);
+            update.add(CISales.Balance.Account, account);
         }
-        update.add("Amount", amount);
+        update.add(CISales.Balance.Amount, amount);
         update.execute();
+    }
+
+    protected void updateDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        // get the transaction
+        final PrintQuery print = new PrintQuery(instance);
+        final SelectBuilder sel = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment)
+                        .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).oid();
+        print.addSelect(sel);
+        print.executeWithoutAccessCheck();
+
+        final Instance docInst = Instance.get(print.<String>getSelect(sel));
+        if (docInst.isValid()) {
+            _parameter.put(ParameterValues.INSTANCE, docInst);
+            final DocumentUpdate docUpdate = new DocumentUpdate() {
+                @Override
+                protected boolean executeWithoutTrigger(final Parameter _parameter)
+                {
+                    return true;
+                }
+            };
+            docUpdate.updateDocument(_parameter);
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,10 +31,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("d1921ce1-a706-48f0-969c-07a5ac3564ef")
+@EFapsUUID("00a800f8-66f6-4040-a082-79f2c96f0f3c")
 @EFapsRevision("$Rev$")
-public abstract class AbstractPaymentDocument
-    extends AbstractPaymentDocument_Base
+public class DocumentUpdate
+    extends DocumentUpdate_Base
 {
 
 }
