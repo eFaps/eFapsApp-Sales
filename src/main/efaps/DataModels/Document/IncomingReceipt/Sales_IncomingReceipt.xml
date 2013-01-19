@@ -20,29 +20,26 @@
  Last Changed By: $Author: jan@moxter.net $
 
 --><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>8b19ef73-b093-480a-8596-f1380b4e24f6</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 5898 $</file-revision>
+    <uuid>8b19ef73-b093-480a-8596-f1380b4e24f6</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5898 $</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingReceipt</name>
-    <parent>Sales_DocumentSumAbstract</parent>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingReceipt</name>
+        <parent>Sales_DocumentSumAbstract</parent>
 
-    <attribute>
-        <name>Status</name>
-        <type>Status</type>
-        <typelink>Sales_IncomingReceiptStatus</typelink>
-        <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-        <sqlcolumn>STATUS</sqlcolumn>
-        <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-               name="Sales_Invoice.Status.RANGE_VALUE"
-               event="RANGE_VALUE">
-      </trigger>
-    </attribute>
-    
-    <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
-             name="Sales_Invoice.ACCESSCHECK"
-             event="ACCESSCHECK"/>
-  </definition>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_IncomingReceiptStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_IncomingReceipt.Status.RANGE_VALUE" event="RANGE_VALUE" />
+        </attribute>
+
+        <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            name="Sales_IncomingReceipt.ACCESSCHECK" event="ACCESSCHECK" />
+    </definition>
 </datamodel-type>
