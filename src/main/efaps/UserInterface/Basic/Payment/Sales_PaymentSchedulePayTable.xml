@@ -59,7 +59,7 @@
             <property name="Align">RIGHT</property>
         </field>
         <field name="status">
-            <property name="FilterType">PICKER</property>
+            <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_PaymentSchedulePayTable.status.Label</property>
         </field>
