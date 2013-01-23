@@ -156,7 +156,7 @@ public abstract class Transaction_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
         queryBldr.addWhereAttrEqValue(CISales.Balance.Account, account);
-        queryBldr.addWhereAttrEqValue(CISales.Balance.Currency, account);
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Currency, currency);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.Balance.Amount);
         multi.execute();
