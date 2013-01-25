@@ -34,6 +34,9 @@
         <status key="Open">
             <description>Check is unused.</description>
         </status>
+        <status key="ToVerified">
+            <description>Check to verified.</description>
+        </status>
         <status key="Closed">
             <description>Check was emited.</description>
         </status>
