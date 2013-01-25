@@ -56,6 +56,12 @@
                 <property name="Type1">Accounting_ExternalVoucher</property>
                 <property name="StatusGroup1">Accounting_ExternalVoucherStatus</property>
                 <property name="Stati1">Open</property>
+                <property name="Type2">Sales_OrderOutbound</property>
+                <property name="StatusGroup2">Sales_OrderOutboundStatus</property>
+                <property name="Stati2">Open</property>
+                <property name="Type3">Sales_Quotation</property>
+                <property name="StatusGroup3">Sales_QuotationStatus</property>
+                <property name="Stati3">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentDepositOutPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
         </field>
