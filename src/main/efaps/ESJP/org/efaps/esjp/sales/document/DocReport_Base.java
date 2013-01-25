@@ -205,6 +205,8 @@ public abstract class DocReport_Base
         report.getJrParameters().put("Currency", curInst.getName());
         report.getJrParameters().put("CurrencyId", curInst.getInstance().getId());
 
+        addAdditionalParameters(_parameter, report);
+
         if (active) {
             final Map<String, BigDecimal> map = getRates4DateRange(curInst.getInstance(), from, to, rateCurType);
             report.getJrParameters().put("Rates", map);
@@ -216,6 +218,14 @@ public abstract class DocReport_Base
         }
         return report.execute(_parameter);
     }
+
+    protected void addAdditionalParameters(final Parameter _parameter,
+                                           final StandartReport report)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
+    }
+
 
     protected Map<String, BigDecimal> getRates4DateRange(final Instance _curInst,
                                                             final DateTime _from,
