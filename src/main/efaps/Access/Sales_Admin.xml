@@ -63,6 +63,7 @@
         <type>Sales_PaymentSchedule</type>
         <type>Sales_ProductRequest</type>
         <type>Sales_IncomingReceipt</type>
+        <type>Sales_RetentionCertificate</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -196,17 +197,22 @@
             <key>Closed</key>
             <key>Canceled</key>
         </status>
-        
+
         <status group="Sales_IncomingReceiptStatus">
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
             <key>Replaced</key>
         </status>
-        
+
+        <status group="Sales_RetentionCertificateStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
         <role>Sales_Admin</role>
     </definition>
-
 </access-set>
 
 
