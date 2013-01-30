@@ -53,6 +53,7 @@
             <child>Sales_UsageReportMyDesk</child>
             <child>Sales_ProductRequestMyDesk</child>
             <child>Sales_IncomingReceiptMyDesk</child>
+            <child>Sales_RetentionCertificateMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
