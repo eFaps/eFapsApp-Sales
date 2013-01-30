@@ -90,8 +90,9 @@ public abstract class DocumentSum_Base
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
+        final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
+                        ? baseCurrInst
+                        :Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,

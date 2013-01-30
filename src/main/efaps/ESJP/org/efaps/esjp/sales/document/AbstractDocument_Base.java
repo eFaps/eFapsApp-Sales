@@ -1823,7 +1823,9 @@ public abstract class AbstractDocument_Base
     {
         BigDecimal rate = BigDecimal.ONE;
         try {
-            rate = (BigDecimal) Calculator_Base.getFormatInstance().parse(_parameter.getParameterValue("rate"));
+            if (_parameter.getParameterValue("rate") != null) {
+                rate = (BigDecimal) Calculator_Base.getFormatInstance().parse(_parameter.getParameterValue("rate"));
+            }
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
