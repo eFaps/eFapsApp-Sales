@@ -23,8 +23,6 @@ package org.efaps.esjp.sales.payment;
 import java.text.NumberFormat;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -69,13 +67,11 @@ public abstract class PaymentOrderReceive_Base
     public Instance createDoc(final Parameter _parameter)
         throws EFapsException
     {
-        // final String date = _parameter.getParameterValue("date");if you want
-        // choose the date
-        java.util.Date fechaHoy = new java.util.Date();
+        final String date = _parameter.getParameterValue("date");
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
         final Insert insert = new Insert(CISales.PaymentOrderReceive);
         insert.add(CISales.PaymentOrderReceive.Contact, contactid.toString());
-        insert.add(CISales.PaymentOrderReceive.Date, fechaHoy);
+        insert.add(CISales.PaymentOrderReceive.Date, date);
         insert.add(CISales.PaymentOrderReceive.Salesperson, _parameter.getParameterValue("salesperson"));
         insert.add(CISales.PaymentOrderReceive.Name, getName4Create(_parameter));
         insert.add(CISales.PaymentOrderReceive.Note, _parameter.getParameterValue("note"));
@@ -102,22 +98,20 @@ public abstract class PaymentOrderReceive_Base
         final String includeChildTypes = (String) properties.get("IncludeChildTypes");
 
         String number = getMaxNumber(Type.get(type), !"false".equalsIgnoreCase(includeChildTypes));
+        System.out.print(number);
+
         if (number == null) {
-            number = "001-0001";
+            number = "0001";
         } else {
-            // get the numbers after the first "-"
-            final Pattern pattern = Pattern.compile("(?<=-)\\d*");
-            final Matcher matcher = pattern.matcher(number);
-            if (matcher.find()) {
-                final String numTmp = matcher.group();
-                final int length = numTmp.length();
-                final Integer numInt = Integer.parseInt(numTmp) + 1;
-                final NumberFormat nf = NumberFormat.getInstance();
-                nf.setMinimumIntegerDigits(length);
-                nf.setMaximumIntegerDigits(length);
-                nf.setGroupingUsed(false);
-                number = number.substring(0, number.indexOf("-") + 1) + nf.format(numInt);
-            }
+            Integer num = Integer.parseInt(number) + 1;
+            System.out.print("  " + num);
+            final int lengthn = number.length();
+            final NumberFormat nff = NumberFormat.getInstance();
+            nff.setMinimumIntegerDigits(lengthn);
+            nff.setMaximumIntegerDigits(lengthn);
+            nff.setGroupingUsed(false);
+            number = nff.format(num);
+            System.out.print("  " + number);
         }
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, number);

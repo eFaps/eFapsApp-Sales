@@ -21,6 +21,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>PaymentPayOutSequence</name>
         <format>%04d</format>
-        <startvalue>001</startvalue>
+        <startvalue>1</startvalue>
     </definition>
 </numbergenerator>
