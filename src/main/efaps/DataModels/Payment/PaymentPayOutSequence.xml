@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright  2009 - 2012 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 358 $
+  Last Changed:    $Date: 2012-10-23 17:27:11 -0500 (mar, 23 oct 2012) $
+  Last Changed By: $Author: Jan Moxter $
+
+--><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f15f6031-c5d3-4bf8-89f4-a7a1b244d22e</uuid>
+    <file-application>Emperador</file-application>
+    <file-revision>$Rev: 358 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>PaymentPayOutSequence</name>
+        <format>%04d</format>
+        <startvalue>001</startvalue>
+    </definition>
+</numbergenerator>
