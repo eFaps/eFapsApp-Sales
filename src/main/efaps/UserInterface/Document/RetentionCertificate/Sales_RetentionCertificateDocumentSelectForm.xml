@@ -19,29 +19,24 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>16e61159-c047-4dcf-b84d-d793b833432b</uuid>
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>66b2580d-b076-4791-b47c-09dd2c475f40</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificateTree</name>
-        <access>
-            <role>Sales_RetentionCertificate</role>
-            <role>Sales_Admin</role>
-        </access>
-        <!-- targets -->
-        <target>
-            <menu>Sales_RetentionCertificateTree_Menu</menu>
-            <form>Sales_RetentionCertificateForm</form>
-        </target>
-        <!-- type tree for -->
-        <type>Sales_RetentionCertificate</type>
-        <childs>
-            <child>Sales_RetentionCertificateTree_Retention</child>
-        </childs>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_RetentionCertificateDocumentSelectForm</name>
+        <!-- fields -->
+        <field character="Target" name="documents">
+            <property name="HideLabel">true</property>
+            <property name="TargetShowCheckBoxes">true</property>
+            <property name="ModeEdit">READONLY</property>
+            <table>Sales_RetentionCertificateDocumentSelectTable</table>
+            <evaluate method="documentMultiPrint" program="org.efaps.esjp.sales.document.RetentionCertificate">
+                <property name="Types">Sales_PaymentRetentionOut</property>
+             </evaluate>
+        </field>
     </definition>
-</ui-menu>
+</ui-form>
