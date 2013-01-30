@@ -18,27 +18,32 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
-
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: RetentionCertificate_Base.java 8682 2013-01-30 01:21:44Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("02d5a390-516e-43d4-8d46-ca9c6599146a")
 @EFapsRevision("$Rev$")
 public abstract class RetentionCertificate_Base
     extends DocumentSum
 {
+
     /**
      * Method for create a new Quotation.
      *
@@ -53,4 +58,28 @@ public abstract class RetentionCertificate_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return List of instances
+     * @throws EFapsException
+     */
+    public Return documentMultiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                                CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
+                _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
+    }
 }
