@@ -106,7 +106,7 @@ public abstract class DocumentSum_Base
                         CISales.DocumentSumAbstract.Date.name));
         if (date != null) {
             insert.add(CISales.DocumentSumAbstract.Date, date);
-            createdDoc.getValues().put( CISales.DocumentSumAbstract.Date.name, date);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, date);
         }
         final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentSumAbstract.DueDate.name));
@@ -142,14 +142,19 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
         }
 
-        insert.add(CISales.Invoice.RateCrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Invoice.RateCrossTotal,
+                        getCrossTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Invoice.RateNetTotal,
+                       getNetTotal(_parameter, calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.Invoice.CrossTotal,
-                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                        getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                                        isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.Invoice.NetTotal,
-                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                        getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                                        isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.Invoice.DiscountTotal, BigDecimal.ZERO);
 
@@ -170,7 +175,6 @@ public abstract class DocumentSum_Base
      * Internal Method to create the positions for this Document.
      *
      * @param _parameter Parameter as passed from eFaps API.
-     * @param _calcList List of Calculators
      * @param _createdDoc cretaed Document
      * @throws EFapsException on error
      */
@@ -409,8 +413,8 @@ public abstract class DocumentSum_Base
 
 
     /**
-     * @param _oldValue old Value
-     * @param _oldRate old Rate
+     * @param _docInst Instance of the document
+     * @param _rateValue old Rate
      * @param _newRate new Rate
      * @return new Value
      * @throws EFapsException on error
