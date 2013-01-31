@@ -55,7 +55,6 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
@@ -67,7 +66,7 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id$
  */
@@ -84,7 +83,7 @@ public abstract class Payment_Base
 
     /**
      * Metho used to create a Payment.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFpas API
      * @return new Return
      * @throws EFapsException on error
@@ -144,20 +143,24 @@ public abstract class Payment_Base
                     targetDocIns.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencies[i]);
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Rate, rateObj);
 
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Name.name),
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.Name.name),
                                     docPrint.getAttribute(CIERP.DocumentAbstract.Name));
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Contact.name),
-                                    docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Code.name), code);
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Rate.name), rateObj);
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.CurrencyLink.name),
-                                    baseInst.getId());
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Date.name), dateStr);
-                    createdDoc.getValues().put(
-                                    getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.RateCurrencyLink.name),
-                                    currencies[i]);
-                    createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentOutAbstract.Amount.name),
-                                    amounts[i]);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.Contact.name),
+                                                    docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.Code.name), code);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.Rate.name), rateObj);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.CurrencyLink.name), baseInst.getId());
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.Date.name),dateStr);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.RateCurrencyLink.name),currencies[i]);
+                    createdDoc.getValues().put(getFieldName4Attribute(_parameter,
+                                    CISales.PaymentDocumentOutAbstract.Amount.name), amounts[i]);
                     targetDocIns.execute();
                     targetDocInst = targetDocIns.getInstance();
                     createdDoc.setInstance(targetDocInst);
@@ -189,31 +192,6 @@ public abstract class Payment_Base
 
                 ret = createReportDoc(_parameter, createdDoc);
             }
-            // if the open amount is zero or less than 1 Cent.
-            final BigDecimal amount = getOpenAmount(_parameter, docInst).getCrossTotal();
-            if (amount.compareTo(BigDecimal.ZERO) == 0 || amount.abs().compareTo(new BigDecimal("0.01")) < 0) {
-                final Update update = new Update(docInst);
-                Status status = null;
-                // Sales_Invoice
-                if (docInst.getType().getUUID().equals(CISales.Invoice.uuid)) {
-                    status = Status.find(CISales.InvoiceStatus.uuid, "Paid");
-                    // Sales_Receipt
-                } else if (docInst.getType().getUUID().equals(CISales.Receipt.uuid)) {
-                    status = Status.find(CISales.ReceiptStatus.uuid, "Paid");
-                    // Sales_Reminder
-                } else if (docInst.getType().getUUID().equals(CISales.Reminder.uuid)) {
-                    status = Status.find(CISales.ReminderStatus.uuid, "Paid");
-                    // Sales_PartialInvoice
-                } else if (docInst.getType().getUUID().equals(CISales.PartialInvoice.uuid)) {
-                    status = Status.find(CISales.PartialInvoiceStatus.uuid, "Paid");
-                    // Sales_CashReceipt
-                } else if (docInst.getType().getUUID().equals(CISales.CashReceipt.uuid)) {
-                    status = Status.find(CISales.CashReceiptStatus.uuid, "Paid");
-                }
-
-                update.add("Status", ((Long) status.getId()).toString());
-                update.execute();
-            }
         }
         return ret;
     }
@@ -221,7 +199,7 @@ public abstract class Payment_Base
     /**
      * \ Method is used to set the Value for the open amount field on opening
      * the form.
-     * 
+     *
      * @param _parameter Parameter as passed from the efaps API
      * @return Snipplets with value for open amount field
      * @throws EFapsException on error
@@ -300,7 +278,7 @@ public abstract class Payment_Base
 
     /**
      * Method to calculate the open amount for an instance.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _instance instance the open amount is wanted for
      * @return open amount
@@ -398,7 +376,7 @@ public abstract class Payment_Base
     /**
      * Method is called as an update event on changes on one of the amount
      * fields.
-     * 
+     *
      * @param _parameter Parameter as passed from the efaps API
      * @return List of maps of the fields to be updated
      * @throws EFapsException on error
@@ -413,7 +391,7 @@ public abstract class Payment_Base
 
     /**
      * Get the list of maps for the field to be updated.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _updateRate mus the field with the rate also be updated
      * @return List of maps of the fields to be updated
@@ -486,7 +464,7 @@ public abstract class Payment_Base
 
     /**
      * Method is called as an update event on changes in the date fields.
-     * 
+     *
      * @param _parameter Parameter as passed from the efaps API
      * @return List of maps of the fields to be updated
      * @throws EFapsException on error
@@ -632,7 +610,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #symbol}.
-         * 
+         *
          * @return value of instance variable {@link #symbol}
          * @throws EFapsException on error
          */
@@ -644,7 +622,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #currencyInstance}.
-         * 
+         *
          * @return value of instance variable {@link #currencyInstance}
          */
         public Instance getCurrencyInstance()
@@ -654,7 +632,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #crossTotal}.
-         * 
+         *
          * @return value of instance variable {@link #crossTotal}
          */
         public BigDecimal getCrossTotal()
@@ -664,7 +642,7 @@ public abstract class Payment_Base
 
         /**
          * Getter method for the instance variable {@link #date}.
-         * 
+         *
          * @return value of instance variable {@link #date}
          */
         public DateTime getDate()
