@@ -47,6 +47,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -112,6 +113,7 @@ public abstract class Payment_Base
                 final CreatedDoc createdDoc = new CreatedDoc();
                 final String targetTypeId = paymentType[i];
                 Instance targetDocInst = null;
+                boolean out = false;
                 if (targetTypeId != null && !targetTypeId.isEmpty()) {
                     // Sales-Configuration
                     final Instance baseInst = SystemConfiguration.get(
@@ -123,6 +125,9 @@ public abstract class Payment_Base
                     final Object[] rateObj = new Object[] { currency.isInvert() ? BigDecimal.ONE : rate[1],
                                     currency.isInvert() ? rate[1] : BigDecimal.ONE };
                     final Type targetType = Type.get(Long.valueOf(targetTypeId));
+
+                    out  = targetType.isKindOf(CISales.PaymentDocumentOutAbstract.getType());
+
                     final Status status = Status.find(targetType.getStatusAttribute().getLink().getUUID(), "Open");
                     final Insert targetDocIns = new Insert(targetType);
                     final PrintQuery docPrint = new PrintQuery(docInst);
@@ -156,9 +161,9 @@ public abstract class Payment_Base
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
                                     CISales.PaymentDocumentOutAbstract.CurrencyLink.name), baseInst.getId());
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
-                                    CISales.PaymentDocumentOutAbstract.Date.name),dateStr);
+                                    CISales.PaymentDocumentOutAbstract.Date.name), dateStr);
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
-                                    CISales.PaymentDocumentOutAbstract.RateCurrencyLink.name),currencies[i]);
+                                    CISales.PaymentDocumentOutAbstract.RateCurrencyLink.name), currencies[i]);
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
                                     CISales.PaymentDocumentOutAbstract.Amount.name), amounts[i]);
                     targetDocIns.execute();
@@ -177,16 +182,22 @@ public abstract class Payment_Base
                 insert.execute();
                 final Instance paymentInst = insert.getInstance();
 
-                final Insert transIns = new Insert(CISales.TransactionInbound);
-                transIns.add(CISales.TransactionInbound.Amount, amounts[i]);
-                transIns.add(CISales.TransactionInbound.CurrencyId, currencies[i]);
-                transIns.add(CISales.TransactionInbound.Payment, ((Long) paymentInst.getId()).toString());
-                transIns.add(CISales.TransactionInbound.Description, descriptions[i].length() < 1
+                CIType transType;
+                if (out) {
+                    transType = CISales.TransactionOutbound;
+                } else {
+                    transType = CISales.TransactionInbound;
+                }
+                final Insert transIns = new Insert(transType);
+                transIns.add(CISales.TransactionAbstract.Amount, amounts[i]);
+                transIns.add(CISales.TransactionAbstract.CurrencyId, currencies[i]);
+                transIns.add(CISales.TransactionAbstract.Payment, ((Long) paymentInst.getId()).toString());
+                transIns.add(CISales.TransactionAbstract.Description, descriptions[i].length() < 1
                                 ? DBProperties.getProperty("Sales_Payment.Label")
                                 : descriptions[i]);
-                transIns.add(CISales.TransactionInbound.Date, dateStr);
-                transIns.add(CISales.TransactionInbound.Account, accounts[i]);
-                createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.TransactionInbound.Account.name),
+                transIns.add(CISales.TransactionAbstract.Date, dateStr);
+                transIns.add(CISales.TransactionAbstract.Account, accounts[i]);
+                createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.TransactionAbstract.Account.name),
                                 accounts[i]);
                 transIns.execute();
 
