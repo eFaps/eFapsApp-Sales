@@ -135,9 +135,26 @@ public abstract class AbstractDocument_Base
     protected DecimalFormat getTwoDigitsformater()
         throws EFapsException
     {
+        return getFormater(2, 2);
+    }
+
+    /**
+     * @return a formater used to format bigdecimal for the user interface
+     * @param _maxFrac maximum Faction, null to deactivate
+     * @param _minFrac minimum Faction, null to activate
+     * @throws EFapsException on error
+     */
+    public DecimalFormat getFormater(final Integer _minFrac,
+                                     final Integer _maxFrac)
+        throws EFapsException
+    {
         final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        formater.setMaximumFractionDigits(2);
-        formater.setMinimumFractionDigits(2);
+        if (_maxFrac != null) {
+            formater.setMaximumFractionDigits(_maxFrac);
+        }
+        if (_minFrac != null) {
+            formater.setMinimumFractionDigits(_minFrac);
+        }
         formater.setRoundingMode(RoundingMode.HALF_UP);
         formater.setParseBigDecimal(true);
         return formater;
