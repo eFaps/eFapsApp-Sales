@@ -54,7 +54,7 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- *
+ * 
  * @author The eFaps Team
  * @version $Id: DeliveryNote_Base.java 7915 2012-08-17 15:30:12Z
  *          m.aranya@moxter.net $
@@ -64,6 +64,7 @@ import org.joda.time.DateTime;
 public abstract class DeliveryNote_Base
     extends AbstractProductDocument
 {
+
     /**
      * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
@@ -77,17 +78,16 @@ public abstract class DeliveryNote_Base
         return new Return();
     }
 
-
     public Return getJS4SelectInvoiceForm(final Parameter _parameter)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">")
-                .append("Wicket.Event.add(window, \"domready\", function(event) {")
-                .append("var obj=wicketGet(\"label25\");")
-                .append("obj.setfocus();")
-                .append(" });")
-                .append("</script>");
+                        .append("Wicket.Event.add(window, \"domready\", function(event) {")
+                        .append("var obj=wicketGet(\"label25\");")
+                        .append("obj.setfocus();")
+                        .append(" });")
+                        .append("</script>");
 
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
@@ -96,6 +96,7 @@ public abstract class DeliveryNote_Base
 
     /**
      * PositionNumber must start with 1.
+     * 
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
      * @throws EFapsException on error
@@ -144,7 +145,9 @@ public abstract class DeliveryNote_Base
                         .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
         if (conf.getAttributeValueAsBoolean("DeliveryNote_TransactionTrigger4Reservation")) {
             final Instance contactInst = Instance.get(param.get("contact")[0]);
-            BigDecimal quantity = new BigDecimal(qauntity[0].toString());
+            String quantitystring = qauntity[0].toString();
+            quantitystring = quantitystring.replace(",", "");
+            BigDecimal quantity = new BigDecimal(quantitystring);
             final Map<Instance, Map<Instance, BigDecimal>> res2pos = new HashMap<Instance, Map<Instance, BigDecimal>>();
             if (contactInst.isValid()) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Reservation);
@@ -176,7 +179,7 @@ public abstract class DeliveryNote_Base
                         insert.add(CIProducts.TransactionAbstract.Storage, storage);
                         insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
                         insert.add(CIProducts.TransactionAbstract.Description,
-                            DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
+                                        DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
                         insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
                         insert.add(CIProducts.TransactionAbstract.Document, deliveryNoteId[0]);
                         insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
@@ -213,7 +216,6 @@ public abstract class DeliveryNote_Base
         return new Return();
     }
 
-
     protected void updateReservation(final Parameter _parameter,
                                      final Instance _reservationInstance,
                                      final Map<Instance, BigDecimal> _pos2Reserved)
@@ -224,8 +226,8 @@ public abstract class DeliveryNote_Base
         parameter.put(ParameterValues.PARAMETERS, _parameter.get(ParameterValues.PARAMETERS));
         parameter.put(ParameterValues.PROPERTIES, _parameter.get(ParameterValues.PROPERTIES));
 
-        @SuppressWarnings("unchecked")
-        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        @SuppressWarnings("unchecked") final Map<Object, Object> props = (Map<Object, Object>) _parameter
+                        .get(ParameterValues.PROPERTIES);
         props.put("Status", "Replaced");
 
         final Revision revision = new Revision()
@@ -250,7 +252,8 @@ public abstract class DeliveryNote_Base
                         final PrintQuery print = new PrintQuery(multi.getCurrentInstance());
                         print.addAttribute(CISales.ReservationPosition.Quantity);
                         print.executeWithoutAccessCheck();
-                        final BigDecimal quantity = print.<BigDecimal>getAttribute(CISales.ReservationPosition.Quantity);
+                        final BigDecimal quantity = print
+                                        .<BigDecimal>getAttribute(CISales.ReservationPosition.Quantity);
                         final BigDecimal reserved = _pos2Reserved.get(multi.getCurrentInstance());
 
                         if (quantity.subtract(reserved).signum() == 1) {
