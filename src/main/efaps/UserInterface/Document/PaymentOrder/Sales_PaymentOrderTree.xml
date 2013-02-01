@@ -36,9 +36,6 @@
         </target>
         <!-- type tree for -->
         <type>Sales_PaymentOrder</type>
-        <childs>
-            <child>Sales_PaymentOrderTree_Position</child>
-        </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
