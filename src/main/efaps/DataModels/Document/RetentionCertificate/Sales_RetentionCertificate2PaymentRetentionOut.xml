@@ -26,19 +26,19 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RetentionCertificate2PaymentRetentionOut</name>
-        <parent>ERP_Document2PaymentDocumentAbstract</parent>
+        <parent>ERP_Document2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
             <typelink>Sales_RetentionCertificate</typelink>
-            <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
             <typelink>Sales_PaymentRetentionOut</typelink>
-            <sqltable>ERP_Document2PaymentDocumentAbstractSQLTable</sqltable>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>

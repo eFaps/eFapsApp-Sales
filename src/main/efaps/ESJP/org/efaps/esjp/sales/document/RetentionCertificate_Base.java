@@ -61,7 +61,7 @@ public abstract class RetentionCertificate_Base
     /**
      * @param _parameter Parameter as passed from eFaps API.
      * @return List of instances
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public Return documentMultiPrint(final Parameter _parameter)
         throws EFapsException

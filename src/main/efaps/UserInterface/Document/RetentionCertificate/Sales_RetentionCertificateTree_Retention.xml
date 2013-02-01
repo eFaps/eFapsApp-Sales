@@ -33,7 +33,7 @@
         </access>
         <target>
             <menu>Sales_RetentionCertificateTree_Retention_Menu</menu>
-            <table>Sales_UsageReportPositionTable</table>
+            <table>Sales_RetentionCertificate2PaymentOutTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_RetentionCertificate2PaymentRetentionOut</property>
                 <property name="LinkFroms">FromLink</property>
