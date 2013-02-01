@@ -21,9 +21,11 @@
 package org.efaps.esjp.sales.document;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -121,7 +123,12 @@ public abstract class IncomingInvoice_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("935a2a87-056d-4278-916b-388c53fa98e0"));
+        // Sales_Configuration
+        final SystemConfiguration config = SystemConfiguration
+                        .get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        final Properties props = config.getAttributeValueAsProperties("SysConfigCompany");
+
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
