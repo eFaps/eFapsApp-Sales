@@ -37,8 +37,9 @@
         <target>
             <menu>Sales_PaymentSchedulePayMyDesk_Menu</menu>
             <table>Sales_PaymentSchedulePayTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+            <evaluate program="org.efaps.esjp.sales.PaymentSchedule" method="getIncomingInvoices">
                 <property name="Types">Sales_IncomingInvoice</property>
+                <property name="Status">Open</property>
             </evaluate>
         </target>
         <!-- properties -->

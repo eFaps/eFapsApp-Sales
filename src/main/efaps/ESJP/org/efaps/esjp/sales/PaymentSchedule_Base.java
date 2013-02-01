@@ -18,14 +18,16 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: PaymentSchedule_Base.java $
  */
@@ -37,7 +39,7 @@ public class PaymentSchedule_Base
 
     /**
      * Method for create a new PaymentSchedule.
-     * 
+     *
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -148,4 +150,21 @@ public class PaymentSchedule_Base
         return new Return();
     }
 
+    public Return getIncomingInvoices(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String status = (String) properties.get("Status");
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                _queryBldr.addWhereAttrEqValue(CISales.IncomingInvoice.Status,
+                                Status.find(CISales.IncomingInvoiceStatus.uuid, status).getId());
+            }
+        }.execute(_parameter);
+    }
 }
