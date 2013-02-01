@@ -29,7 +29,7 @@
         <name>Sales_PaymentAbstractOutMyDesk</name>
         <childs>
             <child>Sales_PaymentDocumentOutMyDesk</child>
-            <child>Sales_PaymentPayOut_MyDesk</child>
+            <child>Sales_PaymentOrder_MyDesk</child>
         </childs>
     </definition>
 </ui-menu>
