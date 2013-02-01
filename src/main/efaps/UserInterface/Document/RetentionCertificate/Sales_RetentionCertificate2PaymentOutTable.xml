@@ -30,6 +30,8 @@
         <name>Sales_RetentionCertificate2PaymentOutTable</name>
         <!-- fields -->
         <field name="name">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[Name]</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
