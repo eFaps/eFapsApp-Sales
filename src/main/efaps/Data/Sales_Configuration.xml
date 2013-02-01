@@ -78,7 +78,7 @@
             <description>boolean (true/false). Activate generated report to create a payments documents.</description>
         </attribute>
         <attribute>
-            <key>SysConfigCompany</key>
+            <key>IncomingInvoiceSequence</key>
             <value><![CDATA[UUID=935a2a87-056d-4278-916b-388c53fa98e0]]></value>
             <description>Company should be setted.</description>
         </attribute>

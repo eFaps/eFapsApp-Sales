@@ -126,7 +126,7 @@ public abstract class IncomingInvoice_Base
         // Sales_Configuration
         final SystemConfiguration config = SystemConfiguration
                         .get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-        final Properties props = config.getAttributeValueAsProperties("SysConfigCompany");
+        final Properties props = config.getAttributeValueAsProperties("IncomingInvoiceSequence");
 
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {
