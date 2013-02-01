@@ -26,7 +26,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrder</name>
-        <parent>Sales_DocumentAbstract</parent>
+        <parent>Sales_DocumentSumAbstract</parent>
         <attribute>
             <name>Status</name>
             <type>Status</type>
