@@ -323,13 +323,13 @@ public abstract class Payment_Base
 
         if (instances.size() > 0) {
             final SelectBuilder amountSel = new SelectBuilder()
-                            .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
-                            .attribute(CISales.TransactionInbound.Amount);
+                            .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
+                            .attribute(CISales.TransactionAbstract.Amount);
             final SelectBuilder currIdSel = new SelectBuilder()
-                            .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
-                            .attribute(CISales.TransactionInbound.CurrencyId);
+                            .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
+                            .attribute(CISales.TransactionAbstract.CurrencyId);
             final SelectBuilder oidSel = new SelectBuilder()
-                            .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
+                            .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
                             .oid();
 
             final PriceUtil priceUtil = new PriceUtil();
@@ -356,7 +356,7 @@ public abstract class Payment_Base
                             } else {
                                 final BigDecimal[] rates = priceUtil.getRates(_parameter,
                                                 rateCurrInst,
-                                                Instance.get(CIERP.Currency.getType(), (currId).toString()));
+                                                Instance.get(CIERP.Currency.getType(), currId.toString()));
                                 temp = pos.multiply(rates[2]);
                             }
                             paid = paid.add(temp);
@@ -374,7 +374,7 @@ public abstract class Payment_Base
                         } else {
                             final BigDecimal[] rates = priceUtil.getRates(_parameter,
                                             rateCurrInst,
-                                            Instance.get(CIERP.Currency.getType(), (currId).toString()));
+                                            Instance.get(CIERP.Currency.getType(), currId.toString()));
                             paid = paid.add(temp.multiply(rates[2]));
                         }
                     }
