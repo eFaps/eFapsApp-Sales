@@ -33,6 +33,8 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
 
 /**
@@ -68,9 +70,18 @@ public abstract class PaymentOrder_Base
                         ? baseCurrInst
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
 
-        final Object[] rateObj = getRateObject(_parameter);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
+        final String rateCrossTotal = _parameter.getParameterValue("rateCrossTotal");
+        BigDecimal ratcross = new BigDecimal(rateCrossTotal);
+
+        final PriceUtil util = new PriceUtil();
+        final BigDecimal[] rates = util.getExchangeRate(util.getDateFromParameter(_parameter), rateCurrInst);
+        final BigDecimal pay = ratcross.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : ratcross
+                        .setScale(8, BigDecimal.ROUND_HALF_UP).divide(rates[0], BigDecimal.ROUND_HALF_UP)
+                        .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+        final CurrencyInst cur = new CurrencyInst(rateCurrInst);
+        final Object[] rate = new Object[] { cur.isInvert() ? BigDecimal.ONE : rates[1],
+                        cur.isInvert() ? rates[1] : BigDecimal.ONE };
 
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         insert.add(CISales.DocumentSumAbstract.Name, name);
@@ -114,24 +125,17 @@ public abstract class PaymentOrder_Base
             insert.add(CISales.DocumentSumAbstract.Salesperson, salesperson);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
         }
-        final String rateCrossTotal = _parameter.getParameterValue("rateCrossTotal");
-        BigDecimal ratcross = new BigDecimal(rateCrossTotal);
 
         insert.add(CISales.Invoice.RateCrossTotal, ratcross);
         insert.add(CISales.Invoice.RateNetTotal, rateCrossTotal);
         insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Invoice.CrossTotal, ratcross.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
-                        isLongDecimal(_parameter),
-                        BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.NetTotal,
-                        ratcross.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
-                                        isLongDecimal(_parameter),
-                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Invoice.CrossTotal, pay);
+        insert.add(CISales.Invoice.NetTotal, pay);
         insert.add(CISales.Invoice.DiscountTotal, BigDecimal.ZERO);
 
         insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
         insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
-        insert.add(CISales.DocumentSumAbstract.Rate, rateObj);
+        insert.add(CISales.DocumentSumAbstract.Rate, rate);
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
         insert.execute();
