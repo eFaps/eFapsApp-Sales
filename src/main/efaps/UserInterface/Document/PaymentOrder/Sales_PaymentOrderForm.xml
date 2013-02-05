@@ -32,7 +32,7 @@
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="date">
-            <property name="Columns">40</property>
+            <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -94,25 +94,41 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
-                method="getNameFieldValueUIT"
-                name="Sales_PaymentOrderForm.name4create.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Sales_PaymentOrder</property>
-            </trigger>
-        </field>
+        
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
+        </field>
+        <field name="currencyGroup" character="Group">
+            <property name="GroupCount">1</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rateCurrencyId">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.CollectionOrder"
+                method="rateCurrencyFieldValueUI"
+                name="Sales_CollectionOrderForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="rateCurrencyId4View">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="rateCrossTotal">
+            <property name="Columns">10</property>
+            <property name="Rows">1</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">RateCrossTotal</property>
         </field>
         <field name="note">
             <property name="Columns">80</property>
