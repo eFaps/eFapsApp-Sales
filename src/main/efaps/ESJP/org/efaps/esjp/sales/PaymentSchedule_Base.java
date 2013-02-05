@@ -150,7 +150,7 @@ public class PaymentSchedule_Base
         return new Return();
     }
 
-    public Return getIncomingInvoices(final Parameter _parameter)
+    public Return getPaymentScheduleDocuments(final Parameter _parameter)
         throws EFapsException
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
