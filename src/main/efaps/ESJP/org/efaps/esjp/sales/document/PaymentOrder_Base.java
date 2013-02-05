@@ -20,21 +20,18 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.text.NumberFormat;
-import java.util.Map;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -48,7 +45,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("09c62a59-c334-4e84-8ae5-96dfbc6f7463")
 @EFapsRevision("$Rev: 8180 $")
 public abstract class PaymentOrder_Base
-    extends AbstractDocument
+    extends DocumentSum
 {
 
     public Return create(final Parameter _parameter)
@@ -58,25 +55,89 @@ public abstract class PaymentOrder_Base
         return new Return();
     }
 
-    public Instance createDoc(final Parameter _parameter)
+    @Override
+    protected CreatedDoc createDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final String date = _parameter.getParameterValue("date");
+        final CreatedDoc createdDoc = new CreatedDoc();
+        final String name = NumberGenerator.get("PaymentOrderSequence").getNextVal();
+        // Sales-Configuration
+        final Instance baseCurrInst = SystemConfiguration.get(
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
+                        ? baseCurrInst
+                        : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
 
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert(CISales.PaymentOrder);
-        insert.add(CISales.PaymentOrder.Contact, contactid.toString());
-        insert.add(CISales.PaymentOrder.Date, date);
-        insert.add(CISales.PaymentOrder.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.PaymentOrder.Name, getName4Create(_parameter));
-        // insert.add(CISales.PaymentPayOut.Name,
-        // _parameter.getParameterValue("name4create"));
-        insert.add(CISales.PaymentOrder.Note, _parameter.getParameterValue("note"));
-        insert.add(CISales.PaymentOrder.Status, ((Long) Status.find(CISales.PaymentOrderStatus.uuid, "Open")
-                        .getId()).toString());
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
+
+        final Insert insert = new Insert(getType4DocCreate(_parameter));
+        insert.add(CISales.DocumentSumAbstract.Name, name);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.Name.name, name);
+        final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Date.name));
+        if (date != null) {
+            insert.add(CISales.DocumentSumAbstract.Date, date);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, date);
+        }
+        final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.DueDate.name));
+        if (duedate != null) {
+            insert.add(CISales.DocumentSumAbstract.DueDate, duedate);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.DueDate.name, duedate);
+        }
+        final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Contact.name));
+        if (contact != null) {
+            final Instance inst = Instance.get(contact);
+            if (inst.isValid()) {
+                insert.add(CISales.DocumentSumAbstract.Contact, inst.getId());
+                createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, inst);
+            }
+        }
+        final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Note.name));
+        if (note != null) {
+            insert.add(CISales.DocumentSumAbstract.Note, note);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Note.name, note);
+        }
+        final String revision = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Revision.name));
+        if (revision != null) {
+            insert.add(CISales.DocumentSumAbstract.Revision, revision);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Revision.name, revision);
+        }
+        final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Salesperson.name));
+        if (salesperson != null) {
+            insert.add(CISales.DocumentSumAbstract.Salesperson, salesperson);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
+        }
+        final String rateCrossTotal = _parameter.getParameterValue("rateCrossTotal");
+        BigDecimal ratcross = new BigDecimal(rateCrossTotal);
+
+        insert.add(CISales.Invoice.RateCrossTotal, ratcross);
+        insert.add(CISales.Invoice.RateNetTotal, rateCrossTotal);
+        insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.Invoice.CrossTotal, ratcross.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                        isLongDecimal(_parameter),
+                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Invoice.NetTotal,
+                        ratcross.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                                        isLongDecimal(_parameter),
+                                        BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.Invoice.DiscountTotal, BigDecimal.ZERO);
+
+        insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
+        insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
+        insert.add(CISales.DocumentSumAbstract.Rate, rateObj);
+
+        addStatus2DocCreate(_parameter, insert, createdDoc);
         insert.execute();
 
-        return insert.getInstance();
+        createdDoc.setInstance(insert.getInstance());
+        return createdDoc;
     }
 
     protected String getName4Create(final Parameter _parameter)
@@ -84,34 +145,6 @@ public abstract class PaymentOrder_Base
     {
         // paymentpayout secuencie
         return NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
-    }
-
-    public Return getNameFieldValueUIT(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String type = (String) properties.get("Type");
-        final String includeChildTypes = (String) properties.get("IncludeChildTypes");
-
-        String number = getMaxNumber(Type.get(type), !"false".equalsIgnoreCase(includeChildTypes));
-        System.out.print(number);
-
-        if (number == null) {
-            number = "0001";
-        } else {
-            Integer num = Integer.parseInt(number) + 1;
-            System.out.print("  " + num);
-            final int lengthn = number.length();
-            final NumberFormat nff = NumberFormat.getInstance();
-            nff.setMinimumIntegerDigits(lengthn);
-            nff.setMaximumIntegerDigits(lengthn);
-            nff.setGroupingUsed(false);
-            number = nff.format(num);
-            System.out.print("  " + number);
-        }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, number);
-        return retVal;
     }
 
 }
