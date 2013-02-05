@@ -33,14 +33,16 @@
         <target>
             <form>Sales_CollectionOrderForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.CollectionOrder">
+                <property name="StatusGroup">Sales_CollectionOrderStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_CollectionOrder</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
+        <property name="WindowHeight">400</property>
+        <property name="WindowWidth">950</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
 </ui-command>
