@@ -20,29 +20,52 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Checkin;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: RetentionCertificate_Base.java 8682 2013-01-30 01:21:44Z
- *          jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("02d5a390-516e-43d4-8d46-ca9c6599146a")
 @EFapsRevision("$Rev$")
 public abstract class RetentionCertificate_Base
     extends DocumentSum
 {
+
+    /**
+     * Logging instance used to give logging information of this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(RetentionCertificate_Base.class);
+
+
 
     /**
      * Method for create a new Quotation.
@@ -68,7 +91,6 @@ public abstract class RetentionCertificate_Base
     {
         final MultiPrint multi = new MultiPrint()
         {
-
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
                                          final QueryBuilder _queryBldr)
@@ -81,5 +103,105 @@ public abstract class RetentionCertificate_Base
             }
         };
         return multi.execute(_parameter);
+    }
+
+    /**
+     * Fieldvalue for the Detail of the RetentionCertificate.
+     * @param _parameter Parameter as passed from eFaps API.
+     * @throws EFapsException on error
+     * @return Return containing html snipplet
+     */
+    public Return getDetailFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final AbstractDynamicReport dyRp = getReport(_parameter);
+        ret.put(ReturnValues.SNIPLETT, dyRp.getHtmlSnipplet(_parameter));
+        return ret;
+    }
+
+    public Return createReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final AbstractDynamicReport dyRp = getReport(_parameter);
+        final File file = dyRp.getPDF(_parameter);
+        ret.put(ReturnValues.VALUES, file);
+
+        try {
+            final FileInputStream in = new FileInputStream(file);
+            final Checkin checkin = new Checkin(_parameter.getInstance());
+            checkin.execute(file.getName(), in, Long.valueOf(file.length()).intValue());
+        } catch (final FileNotFoundException e) {
+            throw new EFapsException("FileNotFoundException", e);
+        }
+        return ret;
+    }
+
+    protected AbstractDynamicReport getReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new RetentionCertificateReport();
+    }
+
+    public class RetentionCertificateReport
+        extends AbstractDynamicReport
+    {
+
+        @Override
+        protected JRDataSource createDataSource(final Parameter _parameter)
+            throws EFapsException
+        {
+            final DRDataSource dataSource = new DRDataSource("type", "name", "date", "rateNetTotal", "rateCrossTotal",
+                            "rateCurrency");
+
+            final QueryBuilder attQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+            attQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, _parameter
+                            .getInstance().getId());
+            final AttributeQuery attQuery = attQueryBldr
+                            .getAttributeQuery(CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
+
+            final QueryBuilder payAttrQueryBldr = new QueryBuilder(CISales.Payment);
+            payAttrQueryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attQuery);
+            final AttributeQuery payAttrQuery = payAttrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, payAttrQuery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selTypelabel = new SelectBuilder().type().label();
+            final SelectBuilder selCurrencylabel = new SelectBuilder().linkto(
+                            CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+            multi.addSelect(selTypelabel, selCurrencylabel);
+            multi.addAttribute(CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.Date,
+                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.RateNetTotal);
+            multi.execute();
+
+            while (multi.next()) {
+                dataSource.add(multi.getSelect(selTypelabel),
+                                multi.getAttribute(CISales.DocumentSumAbstract.Name),
+                                multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date).toDate(),
+                                multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal),
+                                multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal),
+                                multi.getSelect(selCurrencylabel));
+            }
+            return dataSource;
+        }
+
+        @Override
+        protected void addColumnDefintion(final Parameter _parameter,
+                                          final JasperReportBuilder _builder)
+            throws EFapsException
+        {
+            _builder.addColumn(
+                            DynamicReports.col.reportRowNumberColumn().setFixedColumns(3),
+                            DynamicReports.col.column("title", "type", DynamicReports.type.stringType()),
+                            DynamicReports.col.column("title2", "name", DynamicReports.type.stringType()),
+                            DynamicReports.col.column("title3", "date", DynamicReports.type.dateType()),
+                            DynamicReports.col.column("title3", "rateNetTotal", DynamicReports.type.bigDecimalType()),
+                            DynamicReports.col.column("title3", "rateCrossTotal", DynamicReports.type.bigDecimalType()),
+                            DynamicReports.col.column("title3", "rateCurrency", DynamicReports.type.stringType())
+                                            .setFixedColumns(3));
+
+        }
     }
 }

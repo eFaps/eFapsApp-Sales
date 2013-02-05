@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_RetentionCertificateTemplate" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2a27ee25-522b-4b07-ae4e-9e3546c8ae6c">
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="2a27ee25-522b-4b07-ae4e-9e3546c8ae6c"/>
+		<property name="Instance" value="true"/>
+	</parameter>
+	<field name="name" class="java.lang.String">
+		<property name="Select" value="attribute[Name]"/>
+	</field>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[Date]"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].attribute[Name]"/>
+	</field>
+	<pageHeader>
+		<band height="97" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="94c08802-2639-4c46-ba8d-4d273af43cf2" x="10" y="10" width="70" height="20"/>
+				<textElement/>
+				<text><![CDATA[Test]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="0f46bb56-8813-4c25-a315-f68f699f35a0" x="20" y="40" width="70" height="30"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="b18d0cad-a870-41eb-bc9b-5960a1ab9030" x="90" y="40" width="70" height="30"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ebbbde0d-1446-47de-bd20-23d4f852fdc0" x="161" y="40" width="183" height="30"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="60" splitType="Stretch">
+			<textField>
+				<reportElement uuid="20e64fbc-c9a6-4502-bb01-2b0c6c6be5f4" x="270" y="30" width="70" height="30"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<textField evaluationTime="Report">
+				<reportElement uuid="ed92761e-6c5c-4ca3-bda7-3975f8c6f4dc" x="344" y="30" width="70" height="30"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
