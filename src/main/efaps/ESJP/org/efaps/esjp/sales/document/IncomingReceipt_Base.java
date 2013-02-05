@@ -71,7 +71,6 @@ public abstract class IncomingReceipt_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        new Costs().updateCosts(_parameter, createdDoc.getInstance());
         incomingReceiptCreateTransaction(_parameter, createdDoc);
         return new Return();
     }
