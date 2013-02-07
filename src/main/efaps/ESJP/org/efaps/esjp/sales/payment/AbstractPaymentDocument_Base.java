@@ -721,6 +721,7 @@ public abstract class AbstractPaymentDocument_Base
             report.getJrParameters().put("accountCurrencyName",
                             getSelectString4AttributeAccount((String) _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.TransactionAbstract.Account.name)), selCurName, null));
+            addParameter4Report(_parameter, report);
             ret = report.execute(_parameter);
             ret.put(ReturnValues.TRUE, true);
 
@@ -766,6 +767,13 @@ public abstract class AbstractPaymentDocument_Base
      */
     protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
                                                              final QueryBuilder _queryBldr)
+    {
+        // used bt implementation
+    }
+
+    protected void addParameter4Report(final Parameter _parameter,
+                                       final StandartReport _report)
+        throws EFapsException
     {
         // used bt implementation
     }

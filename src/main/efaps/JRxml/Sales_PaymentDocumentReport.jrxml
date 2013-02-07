@@ -11,6 +11,8 @@
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
 	<parameter name="accountName" class="java.lang.String"/>
 	<parameter name="accountCurrencyName" class="java.lang.String"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="attribute[Date]"/>
 	</field>
@@ -36,10 +38,46 @@
 		<property name="Select" value="type.label"/>
 	</field>
 	<pageHeader>
-		<band height="89"/>
+		<band height="90">
+			<staticText>
+				<reportElement uuid="c9b1639c-3747-482c-a7a5-826a5d7f17a5" x="0" y="40" width="70" height="20">
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Empresa:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="3a34f343-8843-42d3-8cbf-11d4ac65eda8" x="0" y="60" width="70" height="20">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[R.U.C.:]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="bf287c4d-79a6-45ad-9050-ce8ed99d048e" x="70" y="40" width="210" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement uuid="59db75b9-42ce-4c4a-8255-2099ad884ae2" x="70" y="60" width="210" height="20"/>
+				<textElement verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
+			</textField>
+		</band>
 	</pageHeader>
 	<columnHeader>
 		<band height="160">
+			<textField>
+				<reportElement uuid="24639b69-1ac2-403f-8633-0f15ce393de5" x="0" y="15" width="400" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{type} + " - " + $F{name}]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3" stretchType="RelativeToTallestObject" x="70" y="40" width="100" height="15"/>
 				<textElement/>
@@ -117,13 +155,6 @@
 				</textElement>
 				<text><![CDATA[T / CAMBIO]]></text>
 			</staticText>
-			<textField>
-				<reportElement uuid="24639b69-1ac2-403f-8633-0f15ce393de5" x="0" y="10" width="180" height="20"/>
-				<textElement>
-					<font size="12" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{type} + " - " + $F{name}]]></textFieldExpression>
-			</textField>
 		</band>
 	</columnHeader>
 	<detail>

@@ -846,7 +846,10 @@ public abstract class AbstractDocument_Base
                 final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
                 Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
                 ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
-                currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()));
+                currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                        .append("document.getElementsByName('rate')[0].value='").append(ratesCur[1].toString()).append("';")
+                        .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                        .append("')[0].value='").append(new CurrencyInst(newInst).isInvert()).append("';");
             }
         }
 
