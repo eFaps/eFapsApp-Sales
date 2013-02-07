@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true">
-	<property name="ireport.zoom" value="1.3995221406291998"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="144"/>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="d52d074f-e544-4a9c-a394-1c296b0faa32">
 	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
 	<import value="org.efaps.number2words.Converter"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
@@ -31,57 +29,128 @@
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
 	</field>
+	<field name="amount" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[Amount]"/>
+	</field>
+	<field name="type" class="java.lang.String">
+		<property name="Select" value="type.label"/>
+	</field>
 	<pageHeader>
 		<band height="89"/>
 	</pageHeader>
 	<columnHeader>
-		<band height="143">
+		<band height="160">
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="70" y="10" width="100" height="15"/>
+				<reportElement uuid="343a88d1-21b3-4175-a550-f5833eeb2bf3" stretchType="RelativeToTallestObject" x="70" y="40" width="100" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="###0.0000" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="326" y="10" width="75" height="15"/>
+				<reportElement uuid="bac2d87a-b281-4422-9149-434dda530475" stretchType="RelativeToTallestObject" x="326" y="40" width="75" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.math.BigDecimal"><![CDATA[$F{rate}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="70" y="30" width="331" height="15"/>
+				<reportElement uuid="2c9cca4b-1e7f-4647-8125-e9b9aba23a66" stretchType="RelativeToTallestObject" x="70" y="60" width="331" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{contactName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="70" y="50" width="190" height="15"/>
+				<reportElement uuid="5a914ba1-67fc-49f1-923c-aa0f6d76c81f" stretchType="RelativeToTallestObject" x="70" y="80" width="190" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{accountName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{accountName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="260" y="50" width="141" height="15"/>
+				<reportElement uuid="3020349f-aadd-4baf-9742-0d317dad4011" stretchType="RelativeToTallestObject" x="260" y="80" width="141" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{accountCurrencyName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{accountCurrencyName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="70" y="70" width="331" height="15"/>
+				<reportElement uuid="54612e49-0205-4a12-a5f7-081dd1e3cbe5" stretchType="RelativeToTallestObject" x="70" y="100" width="331" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{currencyName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{currencyName}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="70" y="110" width="331" height="15"/>
+				<reportElement uuid="fd32ac6f-04d6-4ee0-a5ee-2dbcebb2b8e8" stretchType="RelativeToTallestObject" x="70" y="140" width="331" height="15"/>
 				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{note}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d15d3065-bd5f-411f-a046-6f77a256401f" x="0" y="40" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMISIÓN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="72926fcf-2074-4648-9390-ae7183382c58" x="0" y="60" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CLIENTE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="9d20107e-5b59-4af1-8e1b-fc4fe1f10b85" x="0" y="80" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CUENTA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="73bfd9b2-e3b5-4586-b768-511771b5e522" x="0" y="100" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[DIVISA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="621cde14-64cf-4afb-8e96-414143bbcfae" x="0" y="140" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[CONCEPTO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="ef870b45-886c-4c39-a82d-d9f5d1e1dea3" x="260" y="40" width="66" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[T / CAMBIO]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="24639b69-1ac2-403f-8633-0f15ce393de5" x="0" y="10" width="180" height="20"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{type} + " - " + $F{name}]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
 			<subreport isUsingCache="false">
-				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20"/>
+				<reportElement uuid="0f249bf2-0682-4b37-ad3f-00c18b204767" stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_PaymentDocumentPosition")]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Sales_PaymentDocumentPosition"]]></subreportExpression>
+				<subreportExpression><![CDATA["JasperReport.Sales_PaymentDocumentPosition"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
+	<columnFooter>
+		<band height="52">
+			<staticText>
+				<reportElement uuid="1290b50f-d8dd-4730-8ef1-2618e375ddb1" x="380" y="10" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b985791b-8158-4d1e-b26f-f32caf23bdca" x="450" y="10" width="105" height="15"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{amount}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
 	<pageFooter>
 		<band height="213"/>
 	</pageFooter>
