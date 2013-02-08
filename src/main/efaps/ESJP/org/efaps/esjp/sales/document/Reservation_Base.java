@@ -21,6 +21,8 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
@@ -36,6 +38,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -51,9 +54,8 @@ import org.joda.time.DateTime;
 @EFapsUUID("8b35c62b-debd-46f8-9a07-7a9befb6edc4")
 @EFapsRevision("$Rev$")
 public abstract class Reservation_Base
-    extends AbstractDocument
+    extends AbstractProductDocument
 {
-
     /**
      * Method for create a new reservation.
      * @param _parameter Parameter as passed from eFaps API.
@@ -63,84 +65,9 @@ public abstract class Reservation_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final CreatedDoc doc = createDoc(_parameter);
+        createPositions(_parameter, doc);
         return new Return();
-    }
-
-    /**
-     * Internal Method to create the document and the position.
-     *
-     * @param _parameter Parameter as passed from eFaps API.
-     * @return new Instance of CreatedDoc.
-     * @throws EFapsException on error.
-     */
-    protected CreatedDoc createDoc(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String date = _parameter.getParameterValue("date");
-
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert(CISales.Reservation);
-        insert.add(CISales.Reservation.Contact, contactid.toString());
-        insert.add(CISales.Reservation.Date, date);
-        insert.add(CISales.Reservation.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.Reservation.Name, getName4Create(_parameter));
-        insert.add(CISales.Reservation.Note, _parameter.getParameterValue("note"));
-        insert.add(CISales.Reservation.Status, getStatus4Create(_parameter));
-        insert.execute();
-        final CreatedDoc createdDoc = new CreatedDoc(insert.getInstance());
-        createPositions(_parameter, createdDoc);
-        return createdDoc;
-    }
-
-    /**
-     * Get the status id for the document on create.
-     * @param _parameter    Parameter as passed from eFaps API.
-     * @return id of a status
-     * @throws EFapsException on error
-     */
-    protected long getStatus4Create(final Parameter _parameter)
-        throws EFapsException
-    {
-        return Status.find(CISales.ReservationStatus.uuid, "Open").getId();
-    }
-
-    /**
-     * Get the name for the document on create.
-     * @param _parameter    Parameter as passed from eFaps API.
-     * @return id of a status
-     * @throws EFapsException on error
-     */
-    protected String getName4Create(final Parameter _parameter)
-        throws EFapsException
-    {
-        return _parameter.getParameterValue("name");
-    }
-
-    /**
-     * Internal Method to create the positions for this Document.
-     * @param _parameter    Parameter as passed from eFaps API.
-     * @param _createdDoc   cretaed Document
-     * @throws EFapsException on error
-     */
-    protected void createPositions(final Parameter _parameter,
-                                   final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        Integer i = 1;
-        for (final String quantity : _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert(CISales.ReservationPosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i - 1]).getId();
-            posIns.add(CISales.ReservationPosition.Reservation, _createdDoc.getInstance().getId());
-            posIns.add(CISales.ReservationPosition.PositionNumber, i.toString());
-            posIns.add(CISales.ReservationPosition.Product, productdId.toString());
-            posIns.add(CISales.ReservationPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i - 1]);
-            posIns.add(CISales.ReservationPosition.Quantity, (new BigDecimal(quantity)).toString());
-            posIns.add(CISales.ReservationPosition.UoM, _parameter.getParameterValues("uoM")[i - 1]);
-            posIns.execute();
-            i++;
-            _createdDoc.addPosition(posIns.getInstance());
-        }
     }
 
     /**
@@ -223,29 +150,26 @@ public abstract class Reservation_Base
     {
         final Instance instance = _parameter.getInstance();
         final Update update = new Update(instance);
-        update.add("Status", Status.find(CISales.ReservationStatus.uuid, "Closed").getId());
+        update.add(CISales.Reservation.Status, Status.find(CISales.ReservationStatus.uuid, "Closed").getId());
         update.execute();
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.ReservationPosition);
         queryBldr.addWhereAttrEqValue(CISales.ReservationPosition.Reservation, instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.ReservationPosition.Product, CISales.ReservationPosition.Quantity,
+        final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.ReservationPosition.Product).instance();
+        multi.addSelect(selProdInst);
+        multi.addAttribute(CISales.ReservationPosition.Quantity,
                         CISales.ReservationPosition.UoM);
         multi.execute();
         while (multi.next()) {
-            final Long productId = multi.<Long>getAttribute(CISales.ReservationPosition.Product);
-            final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.Inventory);
-            queryBldr2.addWhereAttrEqValue(CIProducts.Inventory.Product, productId);
-            final MultiPrintQuery multi2 = queryBldr2.getPrint();
-            multi2.addAttribute(CIProducts.Inventory.Storage);
-            multi2.execute();
-            while (multi2.next()) {
-                final Long storage = multi2.<Long>getAttribute(CIProducts.Inventory.Storage);
+            final Instance prodInst = multi.<Instance>getSelect(selProdInst);
+            final List<Instance> storInsts = getStorageInstances4StatusClosed(_parameter, prodInst);
+            for (final Instance storInst : storInsts) {
                 final Insert insert = new Insert(CIProducts.TransactionReservationOutbound);
                 insert.add(CIProducts.TransactionReservationOutbound.Quantity,
                                 multi.getAttribute(CISales.ReservationPosition.Quantity));
-                insert.add(CIProducts.TransactionReservationOutbound.Storage, storage);
-                insert.add(CIProducts.TransactionReservationOutbound.Product, productId);
+                insert.add(CIProducts.TransactionReservationOutbound.Storage, storInst.getId());
+                insert.add(CIProducts.TransactionReservationOutbound.Product, prodInst.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.Description,
                                 DBProperties.getProperty("org.efaps.esjp.sales.document.Reservation.close"));
                 insert.add(CIProducts.TransactionReservationOutbound.Date, new DateTime());
@@ -256,5 +180,27 @@ public abstract class Reservation_Base
             }
         }
         return new Return();
+    }
+
+    protected List<Instance> getStorageInstances4StatusClosed(final Parameter _parameter,
+                                                              final Instance _prodInst)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<Instance>();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _prodInst.getId());
+        queryBldr.addWhereAttrGreaterValue(CIProducts.Inventory.Reserved, BigDecimal.ZERO);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selStorInst = new SelectBuilder().linkto(CIProducts.Inventory.Storage).instance();
+        multi.addSelect(selStorInst);
+        multi.execute();
+        while (multi.next()) {
+            final Instance storInst = multi.<Instance>getSelect(selStorInst);
+            if (storInst.isValid()) {
+                ret.add(storInst);
+            }
+        }
+        return ret;
     }
 }

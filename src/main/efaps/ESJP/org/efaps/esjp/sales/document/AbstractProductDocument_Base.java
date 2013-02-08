@@ -64,7 +64,7 @@ public abstract class AbstractProductDocument_Base
                         CISales.DocumentStockAbstract.Date.name));
         if (date != null) {
             insert.add(CISales.DocumentStockAbstract.Date, date);
-            createdDoc.getValues().put( CISales.DocumentStockAbstract.Date.name, date);
+            createdDoc.getValues().put(CISales.DocumentStockAbstract.Date.name, date);
         }
         final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.DueDate.name));
