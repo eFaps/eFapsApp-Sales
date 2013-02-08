@@ -53,12 +53,9 @@
                 method="autoComplete4CreateDocument"
                 name="Sales_PaymentCreditCardPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.payment.PaymentCreditCard">
-                    <property name="Type0">Sales_Invoice</property>
-                    <property name="StatusGroup0">Sales_InvoiceStatus</property>
+                    <property name="Type0">Sales_CollectionOrder</property>
+                    <property name="StatusGroup0">Sales_CollectionOrderStatus</property>
                     <property name="Stati0">Open</property>
-                    <property name="Type1">Sales_Receipt</property>
-                    <property name="StatusGroup1">Sales_ReceiptStatus</property>
-                    <property name="Stati1">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4CreateDocument"
