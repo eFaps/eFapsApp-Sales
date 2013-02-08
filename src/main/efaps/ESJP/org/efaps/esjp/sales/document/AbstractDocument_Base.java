@@ -347,6 +347,29 @@ public abstract class AbstractDocument_Base
         return autoComplete4Doc(_parameter, CISales.CostSheet.uuid, null);
     }
 
+
+    /**
+     * Used by the AutoCompleteField used in the select doc form for
+     * OrderOutbound.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Reservation(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Status status;
+        if (props.containsKey("Status")) {
+            status = Status.find(CISales.ReservationStatus .uuid, (String) props.get("Status"));
+        } else {
+            status = Status.find(CISales.ReservationStatus.uuid, "Open");
+        }
+        return autoComplete4Doc(_parameter, CISales.Reservation.uuid, status);
+    }
+
+
     /**
      * Generic method to get a list of documents.
      *
@@ -382,8 +405,9 @@ public abstract class AbstractDocument_Base
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), name + " - "
-                            + date.toString(DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
+                            name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                            Context.getThreadContext().getLocale())));
             map.put("selectedDoc", oid);
             tmpMap.put(name, map);
         }
@@ -510,6 +534,20 @@ public abstract class AbstractDocument_Base
         return updateFields4Doc(_parameter);
     }
 
+
+    /**
+     * Used by the update event used in the select doc form for OrderOutbound.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Reservation(final Parameter _parameter)
+        throws EFapsException
+    {
+        return updateFields4Doc(_parameter);
+    }
+
     /**
      * Used by the update event used in the select doc form for Quotation.
      *
@@ -586,7 +624,7 @@ public abstract class AbstractDocument_Base
             final StringBuilder bldr = new StringBuilder();
             bldr.append(print.getSelect("type.label")).append(" - ").append(print.getAttribute("Name"))
                             .append(" - ").append(print.<DateTime> getAttribute("Date").toString(
-                                            DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+                               DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
             map.put(field, StringEscapeUtils.escapeJavaScript(bldr.toString()));
 
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getCleanJS(_parameter));
