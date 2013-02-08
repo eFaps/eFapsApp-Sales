@@ -51,9 +51,15 @@
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="autoComplete4CreateDocument"
                 name="Sales_PaymentDepositPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type0">Sales_CollectionOrder</property>
-                <property name="StatusGroup0">Sales_CollectionOrderStatus</property>
+                <property name="Type0">Sales_Invoice</property>
+                <property name="StatusGroup0">Sales_InvoiceStatus</property>
                 <property name="Stati0">Open</property>
+                <property name="Type1">Sales_Receipt</property>
+                <property name="StatusGroup1">Sales_ReceiptStatus</property>
+                <property name="Stati1">Open</property>
+                <property name="Type2">Sales_CollectionOrder</property>
+                <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
+                <property name="Stati2">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="updateFields4CreateDocument"
             name="Sales_PaymentDepositPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

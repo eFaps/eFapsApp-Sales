@@ -50,9 +50,15 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentCashPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCash">
-                <property name="Type0">Sales_CollectionOrder</property>
-                <property name="StatusGroup0">Sales_CollectionOrderStatus</property>
+                <property name="Type0">Sales_Invoice</property>
+                <property name="StatusGroup0">Sales_InvoiceStatus</property>
                 <property name="Stati0">Open</property>
+                <property name="Type1">Sales_Receipt</property>
+                <property name="StatusGroup1">Sales_ReceiptStatus</property>
+                <property name="Stati1">Open</property>
+                <property name="Type2">Sales_CollectionOrder</property>
+                <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
+                <property name="Stati2">Open</property>
             </trigger>
 
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentCashPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCash"/>
