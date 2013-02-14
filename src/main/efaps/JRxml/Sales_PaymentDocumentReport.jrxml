@@ -13,6 +13,7 @@
 	<parameter name="accountCurrencyName" class="java.lang.String"/>
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<parameter name="CompanyTaxNum" class="java.lang.String"/>
+	<parameter name="ClientOrSupplier" class="java.lang.String"/>
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="attribute[Date]"/>
 	</field>
@@ -121,13 +122,6 @@
 				<text><![CDATA[EMISIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="72926fcf-2074-4648-9390-ae7183382c58" x="0" y="60" width="70" height="15"/>
-				<textElement>
-					<font isBold="true"/>
-				</textElement>
-				<text><![CDATA[CLIENTE]]></text>
-			</staticText>
-			<staticText>
 				<reportElement uuid="9d20107e-5b59-4af1-8e1b-fc4fe1f10b85" x="0" y="80" width="70" height="15"/>
 				<textElement>
 					<font isBold="true"/>
@@ -155,6 +149,13 @@
 				</textElement>
 				<text><![CDATA[T / CAMBIO]]></text>
 			</staticText>
+			<textField>
+				<reportElement uuid="6a74f7df-441a-4f50-855b-89e9750d854b" x="0" y="60" width="70" height="15"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ClientOrSupplier} == null ? "CLIENTE" : $P{ClientOrSupplier}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
