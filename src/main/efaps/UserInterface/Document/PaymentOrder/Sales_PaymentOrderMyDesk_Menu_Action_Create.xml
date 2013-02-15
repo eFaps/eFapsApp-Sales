@@ -33,7 +33,7 @@
         <target>
             <form>Sales_PaymentOrderForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.PaymentOrder">
-                <property name="StatusGroup">Sales_CollectionOrderStatus</property>
+                <property name="StatusGroup">Sales_PaymentOrderStatus</property>
                 <property name="Status">Open</property>
             </execute>
         </target>
