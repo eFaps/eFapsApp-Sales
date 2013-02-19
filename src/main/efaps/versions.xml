@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2013 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -29,65 +29,59 @@
         <dependency order="0">
             <groupId>org.efaps</groupId>
             <artifactId>efaps-kernel-install</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="1">
             <groupId>org.efaps</groupId>
             <artifactId>efaps-webapp-install</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="2">
             <groupId>org.efaps.apps</groupId>
             <artifactId>contacts</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="3">
             <groupId>org.efaps.apps</groupId>
             <artifactId>commons</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
         <dependency order="4">
             <groupId>org.efaps.apps</groupId>
             <artifactId>products</artifactId>
-            <version>2.2.0-SNAPSHOT</version>
+            <version>3.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
     <version number="1" reloadCache="false" login="true" compile="true">
     <description>Install ERP-Sales Basic Modul.</description>
     <script type="groovy">
+        import java.io.File;
+        import java.util.UUID;
         import org.efaps.admin.runlevel.RunLevel;
+        import org.efaps.admin.user.JAASSystem;
+        import org.efaps.admin.user.Role;
         import org.efaps.db.Context;
-        import org.efaps.db.SearchQuery;
+        import org.efaps.db.QueryBuilder;
+        import org.efaps.db.InstanceQuery;
         import org.efaps.esjp.admin.ui.UIUpdate;
         import org.efaps.importer.DataImport;
 
-        import java.net.URL
-        import java.io.File;
-
         EFAPS_LOGGER.info("Importing Data for eFapsApp-Sales");
 
-        SearchQuery query = new SearchQuery();
-        query.setQueryTypes("Admin_User_JAASKey");
-        query.addWhereExprEqValue("Key", "Sales_Admin");
-        query.addSelect("OID");
-        query.execute();
+        RunLevel.init("shell");
+        RunLevel.execute();
+
+        // Admin_User_JAASKey
+        QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("0e7650c6-8ec3-4c63-b377-f3eb5fb85f16"));
+        queryBldr.addWhereAttrEqValue("Key", "Sales_Admin");
+        InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
         if (!query.next()) {
-
-            RunLevel.init("shell");
-            RunLevel.execute();
-
-            URL url1 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Currency.xml");
-            DataImport imp1 = DataImport.readFile(url1);
-            imp1.updateInDB();
-
-            URL url2 = new URL(EFAPS_ROOTURL, "Data/IMPORT_Taxes.xml");
-            DataImport imp2 = DataImport.readFile(url2);
-            imp2.updateInDB();
-
-            URL url3 = new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml");
-            DataImport imp3 = DataImport.readFile(url3);
-            imp3.updateInDB();
+            DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Currency.xml")).updateInDB();
+            DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Taxes.xml")).updateInDB();
+            DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml")).updateInDB();
         }
+
         UIUpdate update = new UIUpdate();
         <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
         update.add2Menu("70b1b5b6-11e5-4b05-ab5d-da6a25612234", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
