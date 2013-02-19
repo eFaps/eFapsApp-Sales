@@ -78,6 +78,7 @@ import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -1184,6 +1185,7 @@ public abstract class AbstractDocument_Base
 
     protected String getUoMFieldStr(final long _selected,
                                     final long _dimId)
+        throws CacheReloadException
     {
         final Dimension dim = Dimension.get(_dimId);
         final StringBuilder js = new StringBuilder();
@@ -1198,6 +1200,7 @@ public abstract class AbstractDocument_Base
     }
 
     protected String getUoMFieldStr(final long _dimId)
+        throws CacheReloadException
     {
         final Dimension dim = Dimension.get(_dimId);
         return getUoMFieldStr(dim.getBaseUoM().getId(), _dimId);
@@ -1208,6 +1211,7 @@ public abstract class AbstractDocument_Base
      * @return Field String
      */
     protected String getUoMFieldStrByUoM(final long _uoMId)
+        throws CacheReloadException
     {
         return getUoMFieldStr(_uoMId, Dimension.getUoM(_uoMId).getDimId());
     }
