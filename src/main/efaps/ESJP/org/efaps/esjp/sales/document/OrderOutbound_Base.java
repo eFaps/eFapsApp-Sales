@@ -34,16 +34,14 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.SearchQuery;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: OrderOutbound_Base.java 7283 2011-11-18 20:17:15Z
  *          m.aranya@moxter.net $
@@ -72,15 +70,18 @@ public abstract class OrderOutbound_Base
         final Insert insert = new Insert(CISales.OrderOutbound);
         insert.add(CISales.OrderOutbound.Contact, contactid.toString());
         insert.add(CISales.OrderOutbound.CrossTotal,
-                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                                        isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.OrderOutbound.NetTotal,
-                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
+                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                                        isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.OrderOutbound.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.OrderOutbound.RateCrossTotal,
                         getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.OrderOutbound.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.OrderOutbound.RateNetTotal,
+                        getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.OrderOutbound.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.OrderOutbound.Date, date);
         insert.add(CISales.OrderOutbound.Salesperson, _parameter.getParameterValue("salesperson"));
@@ -129,7 +130,8 @@ public abstract class OrderOutbound_Base
                 posIns.add(CISales.OrderOutboundPosition.RateCrossUnitPrice,
                                 calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.RateDiscountNetUnitPrice,
-                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter),
+                                                BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.RateNetPrice,
                                 calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.OrderOutboundPosition.RateCrossPrice,
@@ -144,7 +146,7 @@ public abstract class OrderOutbound_Base
 
     /**
      * Method to get the javascript.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return javascript
      * @throws EFapsException on error
@@ -154,29 +156,5 @@ public abstract class OrderOutbound_Base
         throws EFapsException
     {
         return getJavaScript(_parameter, false);
-    }
-
-    protected BigDecimal getPrice(final String _oid)
-        throws EFapsException
-    {
-        final DateTime now = new DateTime();
-        final SearchQuery query = new SearchQuery();
-        BigDecimal ret = null;
-        query.setExpand(_oid, "Products_ProductPricelistPurchase\\Product");
-        query.addWhereExprLessValue("ValidFrom", now);
-        query.addWhereExprGreaterValue("ValidUntil", now);
-        query.addSelect("OID");
-        query.execute();
-        if (query.next()) {
-            final String oid = (String) query.get("OID");
-            final SearchQuery query2 = new SearchQuery();
-            query2.setExpand(oid, "Products_ProductPricelistPosition\\ProductPricelist");
-            query2.addSelect("Price");
-            query2.execute();
-            if (query2.next()) {
-                ret = (BigDecimal) query2.get("Price");
-            }
-        }
-        return ret;
     }
 }
