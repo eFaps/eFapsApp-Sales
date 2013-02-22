@@ -39,7 +39,11 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ReservationForm</form>
-            <execute program="org.efaps.esjp.sales.document.Reservation" method="create" />
+            <execute program="org.efaps.esjp.sales.document.Reservation" method="create">
+                <property name="PositionType">Sales_ReservationPosition</property>
+                <property name="StatusGroup">Sales_ReservationStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
 
         <!-- properties -->

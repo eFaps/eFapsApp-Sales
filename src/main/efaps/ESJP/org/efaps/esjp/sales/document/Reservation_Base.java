@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -42,6 +43,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -89,7 +91,13 @@ public abstract class Reservation_Base
 
         final Object[] productID = (Object[]) map.get(instance.getType().getAttribute("Product"));
         final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute("Quantity"));
-        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute("Reservation"));
+        Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.ReservationPosition.Reservation.name));
+        // if it did not work check the abstract attribute
+        if (deliveryNodeId == null) {
+            deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute(
+                            CISales.ReservationPosition.DocumentAbstractLink.name));
+        }
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute("UoM"));
 
         Object storage = null;
