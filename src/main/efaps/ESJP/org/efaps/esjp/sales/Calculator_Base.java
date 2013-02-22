@@ -725,9 +725,9 @@ public abstract class Calculator_Base
     {
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductDiscountNetUnitPrice();
-        ret.setBasePrice(unit.getBasePrice().multiply(this.quantity));
-        ret.setOrigPrice(unit.getOrigPrice().multiply(this.quantity));
-        ret.setCurrentPrice(unit.getCurrentPrice().multiply(this.quantity));
+        ret.setBasePrice(unit.getBasePrice().multiply(getQuantity()));
+        ret.setOrigPrice(unit.getOrigPrice().multiply(getQuantity()));
+        ret.setCurrentPrice(unit.getCurrentPrice().multiply(getQuantity()));
         return ret;
     }
 
@@ -779,9 +779,9 @@ public abstract class Calculator_Base
     {
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductDiscountCrossUnitPrice();
-        ret.setBasePrice(unit.getBasePrice().multiply(this.quantity));
-        ret.setOrigPrice(unit.getOrigPrice().multiply(this.quantity));
-        ret.setCurrentPrice(unit.getCurrentPrice().multiply(this.quantity));
+        ret.setBasePrice(unit.getBasePrice().multiply(getQuantity()));
+        ret.setOrigPrice(unit.getOrigPrice().multiply(getQuantity()));
+        ret.setCurrentPrice(unit.getCurrentPrice().multiply(getQuantity()));
         return ret;
     }
 
