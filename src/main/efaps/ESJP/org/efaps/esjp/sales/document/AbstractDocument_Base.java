@@ -935,7 +935,6 @@ public abstract class AbstractDocument_Base
 
         while (multi.next()) {
             final BigDecimal netUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
-            final BigDecimal discount = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.Discount);
             final BigDecimal discountNetUnitPrice = multi.
                             <BigDecimal> getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
             final BigDecimal netPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.NetPrice);
@@ -951,7 +950,7 @@ public abstract class AbstractDocument_Base
                             multi.getAttribute(CISales.PositionSumAbstract.ProductDesc),
                             multi.getAttribute(CISales.PositionSumAbstract.UoM),
                             rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice,
-                            rate != null ? discount.divide(rate, BigDecimal.ROUND_HALF_UP) : discount,
+                            multi.getAttribute(CISales.PositionSumAbstract.Discount),
                             rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
                                             : discountNetUnitPrice,
                             rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice,
