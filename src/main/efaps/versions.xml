@@ -77,9 +77,17 @@
         InstanceQuery query = queryBldr.getQuery();
         query.executeWithoutAccessCheck();
         if (!query.next()) {
+            DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml")).updateInDB();
+        }
+
+        //Sales_TaxCategory
+        queryBldr = new QueryBuilder(UUID.fromString("25b22ae7-c9d8-4211-832d-06c00b9de709"));
+        queryBldr.addWhereAttrEqValue("UUID", "ed28d3c0-e55d-45e5-8025-e48fc989c9dd");
+        query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        if (!query.next()) {
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Currency.xml")).updateInDB();
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Taxes.xml")).updateInDB();
-            DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_UserJAASKey.xml")).updateInDB();
         }
 
         UIUpdate update = new UIUpdate();
