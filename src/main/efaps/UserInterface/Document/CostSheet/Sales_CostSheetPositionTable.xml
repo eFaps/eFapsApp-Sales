@@ -43,9 +43,11 @@
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_CostSheetPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="HRef">TREE</property>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
                 method="autoComplete4Product"
                 name="Sales_CostSheetPositionTable.product.UI_FIELD_AUTOCOMPLETE"
