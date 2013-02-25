@@ -74,7 +74,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentCheckOutForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.erp.Contacts"/>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentCheckOutForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts"/>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_PaymentCheckOutForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
         </field>
         <field name="checkbox4Invoice">

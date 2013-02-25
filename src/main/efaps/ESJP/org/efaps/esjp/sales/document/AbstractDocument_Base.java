@@ -36,7 +36,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -626,7 +626,7 @@ public abstract class AbstractDocument_Base
             bldr.append(print.getSelect("type.label")).append(" - ").append(print.getAttribute("Name"))
                             .append(" - ").append(print.<DateTime> getAttribute("Date").toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
-            map.put(field, StringEscapeUtils.escapeJavaScript(bldr.toString()));
+            map.put(field, StringEscapeUtils.escapeEcmaScript(bldr.toString()));
 
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getCleanJS(_parameter));
             list.add(map);
