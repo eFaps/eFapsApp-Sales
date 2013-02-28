@@ -314,7 +314,7 @@ public abstract class AbstractPaymentDocument_Base
                 if (props.containsKey("Type" + i)) {
                     final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
                     final Type type = Type.get(String.valueOf(props.get("Type" + i)));
-                    if(type!=null) {
+                    if (type != null) {
                         final QueryBuilder queryBldr = new QueryBuilder(type);
                         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
                         if (contactInst != null && contactInst.isValid()) {
@@ -577,10 +577,10 @@ public abstract class AbstractPaymentDocument_Base
         final Map<String, String> map = new HashMap<String, String>();
         final StringBuilder js = new StringBuilder();
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
-        js.append("document.getElementsByName('rate')[0].value='").append(rates[3].setScale(2, BigDecimal.ROUND_HALF_UP)).append("';")
+        js.append("document.getElementsByName('rate')[0].value='").append(rates[3].stripTrailingZeros()).append("';")
                         .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
                         .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
-        map.put("eFapsFieldUpdateJS", js.toString());
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
 
         final Return retVal = new Return();
