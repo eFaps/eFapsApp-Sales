@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,35 +23,36 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>a3e4d4d3-b046-4e96-8d88-27b07b9d65d3</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>a3e4d4d3-b046-4e96-8d88-27b07b9d65d3</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderInboundMyDesk_Menu_Action_Create</name>
-    <access>
-      <role>Sales_Admin</role>
-    </access>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderInboundMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
 
-    <!-- target definitions -->
-    <target>
-      <form>Sales_OrderInboundForm</form>
-      <execute program="org.efaps.esjp.sales.document.OrderInbound"
-               method="create"/>
-    </target>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_OrderInboundForm</form>
+            <execute program="org.efaps.esjp.sales.document.OrderInbound" method="create">
+                <property name="StatusGroup">Sales_OrderInboundStatus</property>
+                <property name="Status">Open</property>
+                <property name="PositionType">Sales_OrderInboundPosition</property>
+            </execute>
+        </target>
 
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_OrderInbound</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
-
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_OrderInbound</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 </ui-command>

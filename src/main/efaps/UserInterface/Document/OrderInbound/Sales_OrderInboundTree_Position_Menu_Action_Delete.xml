@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -22,36 +20,25 @@
  Last Changed By: $Author$
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>d64990c6-35b1-4386-95fd-18db94d1e905</uuid>
+    <uuid>cd864210-d18d-4c20-bb32-f5cb169f235b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_OrderInboundMyDesk_Menu_Action_CreateFromDoc2</name>
+        <name>Sales_OrderInboundTree_Position_Menu_Action_Delete</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_OrderInboundForm</form>
-            <execute program="org.efaps.esjp.sales.document.OrderInbound" method="create">
-                <property name="StatusGroup">Sales_OrderInboundStatus</property>
-                <property name="Status">Open</property>
-                <property name="PositionType">Sales_OrderInboundPosition</property>
-            </execute>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-
         <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_OrderInbound</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 </ui-command>
