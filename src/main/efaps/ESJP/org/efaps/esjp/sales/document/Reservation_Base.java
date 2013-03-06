@@ -153,12 +153,18 @@ public abstract class Reservation_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return setStatusClosed(final Parameter _parameter)
+    public Return setStatus(final Parameter _parameter)
         throws EFapsException
     {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final Instance instance = _parameter.getInstance();
         final Update update = new Update(instance);
-        update.add(CISales.Reservation.Status, Status.find(CISales.ReservationStatus.uuid, "Closed").getId());
+        if (properties.containsKey("ReservationStatus")) {
+            update.add(CISales.Reservation.Status, Status.find(CISales.ReservationStatus.uuid,
+                            (String) properties.get("ReservationStatus")).getId());
+        } else {
+            update.add(CISales.Reservation.Status, Status.find(CISales.ReservationStatus.uuid, "Canceled").getId());
+        }
         update.execute();
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.ReservationPosition);
@@ -179,7 +185,7 @@ public abstract class Reservation_Base
                 insert.add(CIProducts.TransactionReservationOutbound.Storage, storInst.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.Product, prodInst.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.Description,
-                                DBProperties.getProperty("org.efaps.esjp.sales.document.Reservation.close"));
+                                DBProperties.getProperty("org.efaps.esjp.sales.document.Reservation.cancel"));
                 insert.add(CIProducts.TransactionReservationOutbound.Date, new DateTime());
                 insert.add("Document", instance.getId());
                 insert.add(CIProducts.TransactionReservationOutbound.UoM,
