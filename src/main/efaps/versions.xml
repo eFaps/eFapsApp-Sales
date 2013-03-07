@@ -100,8 +100,11 @@
         <!-- Sales_Products_VirtualInventoryMyDesk -->
         update.add2Menu("0d47fc3e-f6a4-4678-9e57-92331986c23f", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
 
-         <!-- connect the Sales_AbstractAttrMyDesk_Menu_Action_Create_PettyCashReceiptType  to  ERP_AttributeDefinitionMyDesk_Menu_Action-->
+        <!-- connect the Sales_AbstractAttrMyDesk_Menu_Action_Create_PettyCashReceiptType  to  ERP_AttributeDefinitionMyDesk_Menu_Action-->
         update.add2Menu("2d69080a-7e46-411c-8eca-52a0b812eea4", "cc4a3bc2-26a7-4b51-b8e5-fabfef5ce2fa", -1);
+
+        <!-- connect the Sales_Products_ProductTree_SalesReport  to Products_ProductTree -->
+        update.add2Menu("c6cec8fb-4f34-423d-a7cd-8bf0f136bfbf", "6de24737-8943-4258-9ef4-cc768136e266", -1);
 
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 

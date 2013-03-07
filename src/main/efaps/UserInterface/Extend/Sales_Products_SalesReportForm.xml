@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2010 - 2011 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 1408 $
+  Last Changed:    $Date: 2012-06-22 18:23:07 -0500 (vie, 22 jun 2012) $
+  Last Changed By: $Author: Miguel Aranya $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>65479a2a-a8c0-4de8-bc56-e25ec85c6bde</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 1408 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Products_SalesReportForm</name>
+        <!-- fields -->
+        <field name="salesReport">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.sales.SalesProductReport"
+                method="generateReport"
+                name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="ShowDetails">true</property>
+                <property name="ContactFilter">true</property>
+                <property name="DateFilter">month</property>
+                <property name="Types">Sales_Invoice;Sales_Receipt</property>
+                <property name="YearsAgo">1</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>
