@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -205,5 +205,29 @@ public abstract class Transaction_Base
             };
             docUpdate.updateDocument(_parameter);
         }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return return granting access or not
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4Payment(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instance = _parameter.getInstance();
+        // get the transaction
+        final PrintQuery print = new PrintQuery(instance);
+        final SelectBuilder sel = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment)
+                        .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).oid();
+        print.addSelect(sel);
+        print.executeWithoutAccessCheck();
+
+        final Instance docInst = Instance.get(print.<String>getSelect(sel));
+        if (docInst.isValid()) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 }
