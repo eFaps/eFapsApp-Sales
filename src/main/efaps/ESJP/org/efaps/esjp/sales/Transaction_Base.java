@@ -174,6 +174,9 @@ public abstract class Transaction_Base
             update = new Insert(CISales.Balance);
             update.add(CISales.Balance.Currency, currency);
             update.add(CISales.Balance.Account, account);
+            if (!_add) {
+                amount = amount.negate();
+            }
         }
         update.add(CISales.Balance.Amount, amount);
         update.execute();
