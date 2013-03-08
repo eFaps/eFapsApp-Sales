@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,12 +39,12 @@ import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.CustomSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.constant.VerticalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -78,9 +79,29 @@ public abstract class SalesProductReport_Base
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName("PlanillasAFP");
-        final String file = dyRp.getHtml((_parameter));
-        ret.put(ReturnValues.SNIPLETT, file);
+        dyRp.setFileName("PurchaseSaleReport");
+        final String html = dyRp.getHtml((_parameter));
+        ret.put(ReturnValues.SNIPLETT, html);
+
+        return ret;
+    }
+
+    public Return exportReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String mime = (String) props.get("Mime");
+        final AbstractDynamicReport dyRp = getReport(_parameter);
+        dyRp.setFileName("PurchaseSaleReport");
+        File file = null;
+        if ("xls".equalsIgnoreCase(mime)) {
+            file = dyRp.getExcel(_parameter);
+        } else if ("pdf".equalsIgnoreCase(mime)) {
+            file = dyRp.getPDF(_parameter);
+        }
+        ret.put(ReturnValues.VALUES, file);
+        ret.put(ReturnValues.TRUE, true);
 
         return ret;
     }
@@ -123,7 +144,8 @@ public abstract class SalesProductReport_Base
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.PositionSumAbstract.Quantity,
                                 CISales.PositionSumAbstract.NetUnitPrice,
-                                CISales.PositionSumAbstract.NetPrice);
+                                CISales.PositionSumAbstract.NetPrice,
+                                CISales.PositionSumAbstract.UoM);
                 final SelectBuilder selContactInst = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                                         .linkto(CISales.DocumentSumAbstract.Contact).instance();
@@ -141,13 +163,16 @@ public abstract class SalesProductReport_Base
                     final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
                     final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
                     final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+                    final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
                     final Instance contactInst = multi.<Instance>getSelect(selContactInst);
                     final String contactName = multi.<String>getSelect(selContactName);
                     final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
                     map.put("contact", contactName);
                     map.put("date", docDate.toDate());
-                    map.put("quantity", quantity);
-                    map.put("netUnitPrice", netUnitPrice);
+                    map.put("quantity", quantity.multiply(new BigDecimal(uoM.getNumerator()))
+                                        .divide(new BigDecimal(uoM.getDenominator()), 4, BigDecimal.ROUND_HALF_UP));
+                    map.put("netUnitPrice", netUnitPrice.multiply(new BigDecimal(uoM.getDenominator()))
+                                        .divide(new BigDecimal(uoM.getNumerator()), 4, BigDecimal.ROUND_HALF_UP));
                     map.put("netPrice", netPrice);
                     map.put("contactInst", contactInst);
                     lst.add(map);
@@ -222,7 +247,7 @@ public abstract class SalesProductReport_Base
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
 
             final CustomSubtotalBuilder<BigDecimal> unitPriceSbt = DynamicReports.sbt
-                            .customValue(new UnitPriceSubtotal(), netPriceColumn)
+                            .customValue(new UnitPriceSubtotal(), netUnitPriceColumn)
                                       .setDataType(DynamicReports.type.bigDecimalType());
 
             final AggregationSubtotalBuilder<BigDecimal> quantitySum2 = DynamicReports.sbt.sum(quantityColumn);
@@ -241,9 +266,11 @@ public abstract class SalesProductReport_Base
             _builder.addVariable(quantitySum, netPriceSum);
 
             _builder.addColumn(yearColumn,
-                                monthColumn,
-                                contactColumn,
-                                dateColumn,
+                                monthColumn);
+            if (contactFilter) {
+                _builder.addColumn(contactColumn);
+            }
+            _builder.addColumn(dateColumn,
                                 quantityColumn,
                                 netUnitPriceColumn,
                                 netPriceColumn);
@@ -261,10 +288,10 @@ public abstract class SalesProductReport_Base
                 //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
                 _builder.addSubtotalAtGroupFooter(monthGroup, unitPriceSbt);
             }
-            _builder.pageFooter(DynamicReports.cmp.pageXofY()
+            /*_builder.pageFooter(DynamicReports.cmp.pageXofY()
                                             .setStyle(DynamicReports.stl.style().bold()
                                             .setAlignment(HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE)
-                                            .setTopBorder(DynamicReports.stl.pen1Point())));
+                                            .setTopBorder(DynamicReports.stl.pen1Point())));*/
         }
 
         private class UnitPriceSubtotal extends AbstractSimpleExpression<BigDecimal> {
@@ -274,7 +301,7 @@ public abstract class SalesProductReport_Base
                 final BigDecimal quantitySumValue = reportParameters.getValue(quantitySum);
                 final BigDecimal priceSumValue = reportParameters.getValue(netPriceSum);
 
-                final BigDecimal total = priceSumValue.divide(quantitySumValue, 2, BigDecimal.ROUND_HALF_UP);
+                final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
                 return total;
             }
        }

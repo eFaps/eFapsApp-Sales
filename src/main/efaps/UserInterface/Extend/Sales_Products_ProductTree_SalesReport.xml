@@ -33,6 +33,7 @@
         </access>
         <!-- target definitions -->
         <target>
+            <menu>Sales_Products_ProductTree_SalesReport_Menu</menu>
             <form>Sales_Products_SalesReportForm</form>
         </target>
         <!-- properties -->
