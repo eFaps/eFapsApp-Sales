@@ -31,6 +31,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -216,18 +217,22 @@ public abstract class Transaction_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance instance = _parameter.getInstance();
-        // get the transaction
-        final PrintQuery print = new PrintQuery(instance);
-        final SelectBuilder sel = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment)
-                        .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).oid();
-        print.addSelect(sel);
-        print.executeWithoutAccessCheck();
 
-        final Instance docInst = Instance.get(print.<String>getSelect(sel));
-        if (docInst.isValid()) {
-            ret.put(ReturnValues.TRUE, true);
+        if (_parameter.get(ParameterValues.ACCESSMODE) == TargetMode.VIEW) {
+            final Instance instance = _parameter.getInstance();
+            // get the transaction
+            final PrintQuery print = new PrintQuery(instance);
+            final SelectBuilder sel = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment)
+                            .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).oid();
+            print.addSelect(sel);
+            print.executeWithoutAccessCheck();
+
+            final Instance docInst = Instance.get(print.<String>getSelect(sel));
+            if (docInst.isValid()) {
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
+
         return ret;
     }
 }
