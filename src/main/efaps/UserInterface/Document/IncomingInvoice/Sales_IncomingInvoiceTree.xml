@@ -44,6 +44,7 @@
     <childs>
       <child>Sales_DocumentAbstractTree_Doc</child>
       <child>Sales_IncomingInvoiceTree_Position</child>
+      <child>Sales_IncomingInvoiceTree_Payment</child>
     </childs>
     <!-- properties -->
     <property name="Target">content</property>
