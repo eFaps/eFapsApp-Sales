@@ -53,10 +53,13 @@ import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
@@ -778,5 +781,52 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         // used bt implementation
+    }
+
+    public Return update4StatusCanceled (final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance().getId());
+        final InstanceQuery queryInst = queryBldr.getQuery();
+        queryInst.execute();
+        while (queryInst.next()) {
+            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr2.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, queryInst.getCurrentValue().getId());
+            final MultiPrintQuery multi = queryBldr2.getPrint();
+            multi.addAttribute(CISales.TransactionAbstract.Amount,
+                            CISales.TransactionAbstract.CurrencyId,
+                            CISales.TransactionAbstract.Account);
+            multi.execute();
+            boolean updatePayment = false;
+            while (multi.next()) {
+                Insert insert;
+                if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionOutbound.getType())) {
+                    insert = new Insert(CISales.TransactionInbound);
+                } else {
+                    insert = new Insert(CISales.TransactionOutbound);
+                }
+                insert.add(CISales.TransactionAbstract.Amount, multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount));
+                insert.add(CISales.TransactionAbstract.CurrencyId, multi.<Long>getAttribute(CISales.TransactionAbstract.CurrencyId));
+                insert.add(CISales.TransactionAbstract.Account, multi.<Long>getAttribute(CISales.TransactionAbstract.Account));
+                insert.add(CISales.TransactionAbstract.Payment, queryInst.getCurrentValue().getId());
+                insert.add(CISales.TransactionAbstract.Description,
+                                DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractPaymentDocument.correctionPayment"));
+                insert.add(CISales.TransactionAbstract.Date, new DateTime());
+                insert.execute();
+
+                if (insert.getInstance().isValid()) {
+                    updatePayment = true;
+                }
+            }
+
+            if (updatePayment) {
+                final Update update = new Update(queryInst.getCurrentValue());
+                update.add(CISales.Payment.Amount, BigDecimal.ZERO);
+                update.executeWithoutAccessCheck();
+            }
+        }
+
+        return new StatusValue().setStatus(_parameter);
     }
 }

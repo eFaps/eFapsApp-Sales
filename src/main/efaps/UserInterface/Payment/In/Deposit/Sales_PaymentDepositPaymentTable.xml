@@ -91,8 +91,8 @@
             <property name="Label">Sales_PaymentDepositPaymentTable.paymentAmountDesc.Label</property>
         </field>
         <field name="accountLink">
-            <property name="SelectAlternateOID">linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].oid</property>
-            <property name="Select">linkfrom[Sales_TransactionAbstract#Payment].linkto[Account].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].oid</property>
+            <property name="Select">linkfrom[Sales_TransactionInbound#Payment].linkto[Account].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentDepositPaymentTable.accountLink.Label</property>
         </field>

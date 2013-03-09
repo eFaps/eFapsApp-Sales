@@ -29,6 +29,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_PaymentCashTree_Menu_Action_Edit</child>
+            <child>Sales_PaymentCashTree_Menu_Action_SetCanceled</child>
             <child>Sales_PaymentDocumentCheckout</child>
         </childs>
     </definition>
