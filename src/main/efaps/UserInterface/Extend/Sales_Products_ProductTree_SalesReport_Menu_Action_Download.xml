@@ -27,8 +27,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_ProductTree_SalesReport_Menu_Action_Download</name>
         <access>
+            <role>Products_Admin</role>
             <role>Sales_Admin</role>
-            <role>Sales_Modifier</role>
         </access>
         <!-- target definitions -->
         <target>

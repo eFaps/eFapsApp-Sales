@@ -28,7 +28,7 @@
         <name>Sales_Products_ProductTree_SalesReport_Menu_Action_DownloadPdf</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Modifier</role>
+            <role>Products_Admin</role>
         </access>
         <!-- target definitions -->
         <target>

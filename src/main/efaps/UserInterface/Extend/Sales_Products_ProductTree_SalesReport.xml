@@ -29,7 +29,7 @@
         <name>Sales_Products_ProductTree_SalesReport</name>
         <access>
             <role>Products_Admin</role>
-            <role>Products_Modifier</role>
+            <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
