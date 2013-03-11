@@ -24,6 +24,7 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -34,6 +35,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -235,4 +237,48 @@ public abstract class Transaction_Base
 
         return ret;
     }
+
+    /**
+     * Method is called from a transaction to recalculate all values for the
+     * accounts.
+     * 
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return empty Return
+     * @throws EFapsException on error
+     */
+    public Return reCalculateAccounts(final Parameter _parameter)
+        throws EFapsException
+    {
+        BigDecimal sumTotal = BigDecimal.ZERO;
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, _parameter.getInstance().getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Type);
+        multi.execute();
+
+        while (multi.next()) {
+            final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            final Type accType = multi.<Type>getAttribute(CISales.TransactionAbstract.Type);
+
+            if (accType.equals(CISales.TransactionInbound.getType())) {
+                sumTotal = sumTotal.add(amount);
+            } else {
+                sumTotal = sumTotal.subtract(amount);
+            }
+        }
+
+        final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Balance);
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, _parameter.getInstance().getId());
+        final InstanceQuery accQuery = queryBldr2.getQuery();
+        accQuery.execute();
+        while (accQuery.next()) {
+            final Update update = new Update(accQuery.getCurrentValue());
+            update.add(CISales.Balance.Amount, sumTotal);
+            update.executeWithoutTrigger();
+        }
+
+        return new Return();
+
+    }
+
 }
