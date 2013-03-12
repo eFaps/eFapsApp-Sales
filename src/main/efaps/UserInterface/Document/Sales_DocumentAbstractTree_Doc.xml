@@ -36,8 +36,8 @@
             <menu>Sales_DocumentAbstractTree_Doc_Menu</menu>
             <table>Sales_Document2DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Document2DerivativeDocument</property>
-                <property name="LinkFroms">From</property>
+                <property name="Type">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom">From</property>
             </evaluate>
         </target>
         <!-- properties -->
