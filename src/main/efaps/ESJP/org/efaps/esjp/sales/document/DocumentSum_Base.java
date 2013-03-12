@@ -69,7 +69,10 @@ import org.efaps.util.EFapsException;
 public abstract class DocumentSum_Base
     extends AbstractDocument
 {
-    public static String CALCULATORS_VALUE="org.efaps.esjp.sales.document.DocumentSum.CalculatorValue";
+    /**
+     * Key to the Calculator.
+     */
+    public static final String CALCULATORS_VALUE = "org.efaps.esjp.sales.document.DocumentSum.CalculatorValue";
 
     /**
      * Method to create the basic Document. The method checks for the Type to be
@@ -171,6 +174,108 @@ public abstract class DocumentSum_Base
         return createdDoc;
     }
 
+    /**
+     * Method is executed as an update event of the field containing the
+     * quantity of products to calculate the new totals.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the list
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Quantity(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        final Calculator cal = calcList.get(selected);
+        if (calcList.size() > 0) {
+            map.put("quantity", cal.getQuantityStr());
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
+            map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
+            map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    /**
+     * Method is executed as an update event of the field containing the net
+     * unit price for products to calculate the new totals.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the list
+     * @throws EFapsException on error
+     */
+    public Return updateFields4NetUnitPrice(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        final Calculator cal = calcList.get(selected);
+        if (calcList.size() > 0) {
+            map.put("quantity", cal.getQuantityStr());
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
+            map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
+            map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            list.add(map);
+
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    /**
+     * Method is executed as an update event of the field containing the
+     * discount for products to calculate the new totals.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the list
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Discount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        final Calculator cal = calcList.get(selected);
+        if (calcList.size() > 0) {
+            map.put("quantity", cal.getQuantityStr());
+            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
+            map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
+            map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
+            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            if (cal.getDiscount().compareTo(BigDecimal.ZERO) == 0) {
+                map.put("discount", cal.getDiscountStr());
+            }
+            list.add(map);
+
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
 
     /**
      * Internal Method to create the positions for this Document.
@@ -328,32 +433,39 @@ public abstract class DocumentSum_Base
             final Update update = new Update(docInst);
             update.add(CISales.DocumentSumAbstract.CrossTotal, rateCross.compareTo(BigDecimal.ZERO) == 0
                             ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                            : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
+                            : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.NetTotal, rateNet.compareTo(BigDecimal.ZERO) == 0
                             ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                            : rateNet.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
+                            : rateNet.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.DiscountTotal, rateDiscount.compareTo(BigDecimal.ZERO) == 0
                             ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                            : rateDiscount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
+                            : rateDiscount.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.Rate, rateObj);
             update.execute();
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
             queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, docInst.getId());
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.PositionSumAbstract.RateCrossPrice, CISales.PositionSumAbstract.RateCrossUnitPrice,
-                            CISales.PositionSumAbstract.RateDiscountNetUnitPrice, CISales.PositionSumAbstract.RateNetPrice,
+            multi.addAttribute(CISales.PositionSumAbstract.RateCrossPrice,
+                            CISales.PositionSumAbstract.RateCrossUnitPrice,
+                            CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
+                            CISales.PositionSumAbstract.RateNetPrice,
                             CISales.PositionSumAbstract.RateNetUnitPrice);
             multi.execute();
             while (multi.next()) {
-                final BigDecimal rateCrossPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
+                final BigDecimal rateCrossPrice = multi.<BigDecimal> getAttribute(
+                                CISales.PositionSumAbstract.RateCrossPrice);
                 final BigDecimal rateDscNetUnitPrice = multi.<BigDecimal> getAttribute(
                                 CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
                 final BigDecimal rateCrossUnitPrice = multi.<BigDecimal> getAttribute(
                                 CISales.PositionSumAbstract.RateCrossUnitPrice);
                 final BigDecimal rateNetPrice = multi.<BigDecimal> getAttribute(
                                 CISales.PositionSumAbstract.RateNetPrice);
-                final BigDecimal rateNetUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
+                final BigDecimal rateNetUnitPrice = multi.<BigDecimal> getAttribute(
+                                CISales.PositionSumAbstract.RateNetUnitPrice);
                 final BigDecimal newCrossPrice = getNewValue(docInst, rateCrossPrice, rates[2]);
                 final BigDecimal newDiscountNetUnitPrice = getNewValue(docInst, rateDscNetUnitPrice, rates[2]);
                 final BigDecimal newCrossUnitPrice = getNewValue(docInst, rateCrossUnitPrice, rates[2]);
