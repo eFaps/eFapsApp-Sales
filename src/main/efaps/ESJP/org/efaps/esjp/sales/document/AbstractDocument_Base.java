@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1353,6 +1354,7 @@ public abstract class AbstractDocument_Base
         String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
         if (unitPrices == null && quantities != null) {
             unitPrices = new String[quantities.length];
+            Arrays.fill(unitPrices, "");
         }
         final String[] discounts = _parameter.getParameterValues("discount");
         final String[] oids = _parameter.getParameterValues("product");
@@ -1364,7 +1366,7 @@ public abstract class AbstractDocument_Base
         if (quantities != null) {
             for (int i = 0; i < quantities.length; i++) {
                 Calculator oldCalc = null;
-                if (oldCalcs.size() > 0 && oldCalcs.size() > i) {
+                if (oldCalcs != null && oldCalcs.size() > 0 && oldCalcs.size() > i) {
                     oldCalc = oldCalcs.get(i);
                 }
                 if (quantities[i].length() > 0 || discounts[i].length() > 0 || unitPrices[i].length() > 0
