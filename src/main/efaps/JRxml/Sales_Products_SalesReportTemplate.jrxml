@@ -5,12 +5,34 @@
 		<property name="UUID" value="64863359-f112-4741-83a1-5b2f96c1538d"/>
 		<property name="Instance" value="true"/>
 	</parameter>
-	<pageHeader>
-		<band height="97" splitType="Stretch"/>
-	</pageHeader>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
+    <field name="productName" class="java.lang.String">
+        <property name="Select" value="attribute[Name]"/>
+    </field>
+    <field name="productDescription" class="java.lang.String">
+        <property name="Select" value="attribute[Description]"/>
+    </field>
+    <pageHeader>
+        <band height="97" splitType="Stretch">
+            <staticText>
+                <reportElement uuid="94c08802-2639-4c46-ba8d-4d273af43cf2" x="10" y="10" width="70" height="20"/>
+                <textElement/>
+                <text><![CDATA[Producto: ]]></text>
+            </staticText>
+            <textField>
+                <reportElement uuid="0f46bb56-8813-4c25-a315-f68f699f35a0" x="20" y="30" width="70" height="30"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="ebbbde0d-1446-47de-bd20-23d4f852fdc0" x="100" y="30" width="183" height="30"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{productDescription}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <columnFooter>
+        <band height="45" splitType="Stretch"/>
+    </columnFooter>
 	<pageFooter>
 		<band height="60" splitType="Stretch">
 			<textField>
