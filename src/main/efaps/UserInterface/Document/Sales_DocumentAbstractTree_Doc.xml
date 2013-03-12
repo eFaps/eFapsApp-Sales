@@ -37,7 +37,7 @@
             <table>Sales_Document2DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom">From</property>
+                <property name="LinkFrom">FromAbstractLink</property>
             </evaluate>
         </target>
         <!-- properties -->
