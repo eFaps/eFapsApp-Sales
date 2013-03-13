@@ -49,6 +49,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -276,6 +277,59 @@ public abstract class DocumentSum_Base
         }
         return retVal;
     }
+
+    /**
+     * Method to update the fields on leaving the product field.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list with values
+     * @throws EFapsException on errro
+     */
+    public Return updateFields4Product(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+        final String oid = _parameter.getParameterValues("product")[selected];
+        String name;
+        // validate that a product was selected
+        if (oid.length() > 0) {
+            final PrintQuery print = new PrintQuery(oid);
+            print.addAttribute("Name");
+            print.execute();
+            name = print.getAttribute("Name");
+        } else {
+            name = "";
+        }
+
+        if (name.length() > 0) {
+            final List<Calculator> calcList = analyseTable(_parameter, selected);
+            if (calcList.size() > 0) {
+                final Calculator cal = calcList.get(selected);
+                map.put("quantity", cal.getQuantityStr());
+                map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+                map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
+                map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+                map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
+                map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
+                map.put("productAutoComplete", name);
+                list.add(map);
+                retVal.put(ReturnValues.VALUES, list);
+            }
+        } else {
+            map.put("productAutoComplete", name);
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+            final StringBuilder js = new StringBuilder();
+            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        }
+        return retVal;
+    }
+
 
     /**
      * Internal Method to create the positions for this Document.
