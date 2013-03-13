@@ -127,7 +127,7 @@
             <property name="Columns">10</property>
             <property name="Rows">1</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Attribute">RateCrossTotal</property>
             <property name="Required">true</property>
         </field>
