@@ -34,6 +34,7 @@
         <target>
             <execute program="org.efaps.esjp.sales.SalesProductReport" method="exportReport">
                 <property name="Mime">xls</property>
+                <property name="Template">Sales_Products_SalesReportTemplate</property>
                 <property name="ShowDetails">true</property>
                 <property name="ContactFilter">true</property>
                 <property name="DateFilter">month</property>

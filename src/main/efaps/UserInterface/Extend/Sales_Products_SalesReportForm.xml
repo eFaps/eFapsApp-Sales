@@ -30,6 +30,14 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_SalesReportForm</name>
         <!-- fields -->
+        <field name="header">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.sales.SalesProductReport"
+                method="getHeader"
+                name="Sales_Products_SalesReportForm.header.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+            </trigger>
+        </field>
         <field name="salesReport">
             <property name="HideLabel">true</property>
             <trigger program="org.efaps.esjp.sales.SalesProductReport"
