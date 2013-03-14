@@ -30,6 +30,7 @@
         <name>Sales_IncomingInvoiceTree_Payment_Menu_Action</name>
         <!-- childs -->
         <childs>
+            <child>Sales_IncomingInvoiceTree_Payment_Menu_Action_Create</child>
             <child>Sales_IncomingInvoiceTree_Payment_Menu_Action_Delete</child>
         </childs>
     </definition>
