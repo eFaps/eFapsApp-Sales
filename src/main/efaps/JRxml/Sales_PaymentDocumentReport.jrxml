@@ -179,6 +179,10 @@
 		<band height="20" splitType="Stretch">
 			<subreport isUsingCache="false">
 				<reportElement uuid="0f249bf2-0682-4b37-ad3f-00c18b204767" stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20"/>
+				<subreportParameter name="EFAPS_DEFINITION"/>
+				<subreportParameter name="ClientOrSupplier">
+					<subreportParameterExpression><![CDATA[$P{ClientOrSupplier}]]></subreportParameterExpression>
+				</subreportParameter>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_PaymentDocumentPosition")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["JasperReport.Sales_PaymentDocumentPosition"]]></subreportExpression>
 			</subreport>
