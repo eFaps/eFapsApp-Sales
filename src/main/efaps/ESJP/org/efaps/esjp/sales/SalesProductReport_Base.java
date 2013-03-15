@@ -381,15 +381,4 @@ public abstract class SalesProductReport_Base
        }
 
     }
-
-    public Return getHeader(final Parameter _parameter)
-    {
-        final Return ret = new Return();
-        final StringBuilder title = new StringBuilder();
-        title.append("<b><h1>");
-        title.append(DBProperties.getProperty("org.efaps.esjp.sales.SalesProductReport.Title"));
-        title.append("</b></h1>");
-        ret.put(ReturnValues.SNIPLETT, title.toString());
-        return ret;
-    }
 }
