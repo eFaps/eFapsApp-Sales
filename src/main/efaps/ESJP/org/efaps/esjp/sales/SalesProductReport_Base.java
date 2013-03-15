@@ -61,6 +61,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.util.EFapsException;
@@ -124,7 +125,7 @@ public abstract class SalesProductReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final Instance instProd = _parameter.getInstance();
+            final Instance instance = _parameter.getInstance();
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final String typesStr = (String) props.get("Types");
             final String[] types = typesStr.split(";");
@@ -132,17 +133,23 @@ public abstract class SalesProductReport_Base
 
             final DateTime date2Filter = new DateTime().minusYears(yearsAgo);
 
-            final DRDataSource dataSource = new DRDataSource("document", "currency", "contact", "date", "quantity", "netUnitPrice", "netPrice", "contactInst");
+            final DRDataSource dataSource = new DRDataSource("document", "currency", "contact", "date", "quantity",
+                            "netUnitPrice", "netPrice", "contactInst", "productInst", "productName");
 
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
             for (final String type : types) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
                 attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, date2Filter);
+                if (instance.getType().isKindOf(CIContacts.Contact.getType())) {
+                    attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, instance.getId());
+                }
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
                 queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
-                queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, instProd.getId());
+                if (instance.getType().isKindOf(CIProducts.ProductAbstract.getType())) {
+                    queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, instance.getId());
+                }
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.PositionSumAbstract.Quantity,
                                 CISales.PositionSumAbstract.NetUnitPrice,
@@ -154,6 +161,14 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selContactInst = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                                         .linkto(CISales.DocumentSumAbstract.Contact).instance();
+                final SelectBuilder selProductInst = new SelectBuilder()
+                                        .linkto(CISales.PositionSumAbstract.Product).instance();
+                final SelectBuilder selProductName = new SelectBuilder()
+                                        .linkto(CISales.PositionSumAbstract.Product)
+                                        .attribute(CIProducts.ProductAbstract.Name);
+                final SelectBuilder selProductDesc = new SelectBuilder()
+                                        .linkto(CISales.PositionSumAbstract.Product)
+                                        .attribute(CIProducts.ProductAbstract.Description);
                 final SelectBuilder selContactName = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                                         .linkto(CISales.DocumentSumAbstract.Contact)
@@ -166,10 +181,14 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selDocName = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                                         .attribute(CISales.DocumentSumAbstract.Name);
-                multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName, selCurSymbol);
+                multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName,
+                                selCurSymbol, selProductInst, selProductName, selProductDesc);
                 multi.execute();
                 while (multi.next()) {
                     final Map<String, Object> map = new HashMap<String, Object>();
+                    final Instance productInst = multi.<Instance>getSelect(selProductInst);
+                    final String productName = multi.<String>getSelect(selProductName);
+                    final String productDesc = multi.<String>getSelect(selProductDesc);
                     final String curSymbol = multi.<String>getSelect(selCurSymbol);
                     final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
                     final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
@@ -190,6 +209,8 @@ public abstract class SalesProductReport_Base
                                         .divide(new BigDecimal(uoM.getNumerator()), 4, BigDecimal.ROUND_HALF_UP));
                     map.put("netPrice", netPrice);
                     map.put("contactInst", contactInst);
+                    map.put("productInst", productInst);
+                    map.put("productName", productName + ": " + productDesc);
                     lst.add(map);
                 }
             }
@@ -203,9 +224,15 @@ public abstract class SalesProductReport_Base
                     final Date date2 = (Date) _o2.get("date");
                     final int ret;
                     if (date1.equals(date2)) {
-                        final String contact1 = (String) _o1.get("contact");
-                        final String contact2 = (String) _o2.get("contact");
-                        ret = contact1.compareTo(contact2);
+                        if (instance.getType().isKindOf(CIProducts.ProductAbstract.getType())) {
+                            final String contact1 = (String) _o1.get("contact");
+                            final String contact2 = (String) _o2.get("contact");
+                            ret = contact1.compareTo(contact2);
+                        } else {
+                            final String product1 = (String) _o1.get("productName");
+                            final String product2 = (String) _o2.get("productName");
+                            ret = product1.compareTo(product2);
+                        }
                     } else {
                         ret = date1.compareTo(date2);
                     }
@@ -220,7 +247,9 @@ public abstract class SalesProductReport_Base
                                 map.get("quantity"),
                                 map.get("netUnitPrice"),
                                 map.get("netPrice"),
-                                map.get("contactInst"));
+                                map.get("contactInst"),
+                                map.get("productInst"),
+                                map.get("productName"));
             }
 
             return dataSource;
@@ -232,12 +261,15 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final boolean contactFilter = Boolean.parseBoolean((String) props.get("ContactFilter"));
+            final boolean oppositeFilter = Boolean.parseBoolean((String) props.get("OppositeFilter"));
             final String dateFilter = (String) props.get("DateFilter");
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
 
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.SalesProductReport.Contact"), "contact",
+                            DynamicReports.type.stringType());
+            final TextColumnBuilder<String> productColumn  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.SalesProductReport.Produdct"), "productName",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<Date> monthColumn = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.SalesProductReport.FilterDate1"), "date",
@@ -268,6 +300,7 @@ public abstract class SalesProductReport_Base
             final ColumnGroupBuilder yearGroup  = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
+            final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn).groupByDataType();
 
             final CustomSubtotalBuilder<BigDecimal> unitPriceSbt = DynamicReports.sbt
                             .customValue(new UnitPriceSubtotal(), netUnitPriceColumn)
@@ -278,9 +311,14 @@ public abstract class SalesProductReport_Base
             quantitySum = DynamicReports.variable("quantity", BigDecimal.class, Calculation.SUM);
             netPriceSum = DynamicReports.variable("netPrice", BigDecimal.class, Calculation.SUM);
 
-            if (contactFilter) {
-                quantitySum.setResetGroup(contactGroup);
-                netPriceSum.setResetGroup(contactGroup);
+            if (oppositeFilter) {
+                if (_parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract.getType())) {
+                    quantitySum.setResetGroup(contactGroup);
+                    netPriceSum.setResetGroup(contactGroup);
+                } else {
+                    quantitySum.setResetGroup(productGroup);
+                    netPriceSum.setResetGroup(productGroup);
+                }
             } else {
                 quantitySum.setResetGroup(monthGroup);
                 netPriceSum.setResetGroup(monthGroup);
@@ -290,8 +328,12 @@ public abstract class SalesProductReport_Base
 
             _builder.addColumn(yearColumn,
                                 monthColumn);
-            if (contactFilter) {
-                _builder.addColumn(contactColumn);
+            if (oppositeFilter) {
+                if (_parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract.getType())) {
+                    _builder.addColumn(contactColumn);
+                } else {
+                    _builder.addColumn(productColumn);
+                }
             }
             _builder.addColumn(documentColumn.setFixedWidth(200),
                                 dateColumn,
@@ -302,11 +344,18 @@ public abstract class SalesProductReport_Base
             if (!showDetails) {
                 _builder.setShowColumnValues(false);
             }
-            if (contactFilter) {
-                _builder.groupBy(yearGroup, monthGroup, contactGroup);
-                _builder.addSubtotalAtGroupFooter(contactGroup, quantitySum2);
-                //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
-                _builder.addSubtotalAtGroupFooter(contactGroup, unitPriceSbt);
+            if (oppositeFilter) {
+                if (_parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract.getType())) {
+                    _builder.groupBy(yearGroup, monthGroup, contactGroup);
+                    _builder.addSubtotalAtGroupFooter(contactGroup, quantitySum2);
+                    //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
+                    _builder.addSubtotalAtGroupFooter(contactGroup, unitPriceSbt);
+                } else {
+                    _builder.groupBy(yearGroup, monthGroup, productGroup);
+                    _builder.addSubtotalAtGroupFooter(productGroup, quantitySum2);
+                    //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
+                    _builder.addSubtotalAtGroupFooter(productGroup, unitPriceSbt);
+                }
             } else {
                 _builder.groupBy(yearGroup, monthGroup);
                 _builder.addSubtotalAtGroupFooter(monthGroup, quantitySum2);

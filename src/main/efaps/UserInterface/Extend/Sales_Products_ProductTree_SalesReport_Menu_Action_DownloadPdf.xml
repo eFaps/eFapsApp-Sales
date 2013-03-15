@@ -36,7 +36,7 @@
                 <property name="Mime">pdf</property>
                 <property name="Template">Sales_Products_SalesReportTemplate</property>
                 <property name="ShowDetails">true</property>
-                <property name="ContactFilter">true</property>
+                <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
                 <property name="Types">Sales_OrderOutbound</property>
                 <property name="YearsAgo">1</property>

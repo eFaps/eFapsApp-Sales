@@ -20,21 +20,21 @@
  Last Changed By: $Author: jan@moxter.net $
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>510b0f92-c2e4-4403-b3f3-e7202d485ed8</uuid>
+    <uuid>675886bf-2e03-4fad-98ba-590f0abe1988</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 8079 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_ProductTree_SalesReport_Menu_Action_Download</name>
+        <name>Sales_Contacts_ContactTree_SalesReport_Menu_Action_Download</name>
         <access>
             <role>Products_Admin</role>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.SalesProductReport" method="exportReport">
+            <execute method="exportReport" program="org.efaps.esjp.sales.SalesProductReport">
                 <property name="Mime">xls</property>
-                <property name="Template">Sales_Products_SalesReportTemplate</property>
+                <property name="Template">Sales_Contacts_SalesReportTemplate</property>
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
