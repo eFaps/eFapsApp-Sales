@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -312,57 +312,57 @@ public abstract class AbstractPaymentDocument_Base
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        if (contactSessionInst != null && contactSessionInst.isValid()) {
-            for (int i = 0; i < 100; i++) {
-                if (props.containsKey("Type" + i)) {
-                    final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-                    final Type type = Type.get(String.valueOf(props.get("Type" + i)));
-                    if (type != null) {
-                        final QueryBuilder queryBldr = new QueryBuilder(type);
-                        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
-                        if (contactInst != null && contactInst.isValid()) {
-                            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
-                        }
-                        add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
-                        if (props.containsKey("StatusGroup" + i)) {
-                            final String statiStr = String.valueOf(props.get("Stati" + i));
-                            final String[] statiAr = statiStr.split(";");
-                            final List<Object> statusList = new ArrayList<Object>();
-                            for (final String stati : statiAr) {
-                                final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
-                                if (status != null) {
-                                    statusList.add(status.getId());
-                                }
-                            }
-                            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
-                        }
-
-                        final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addAttribute(CISales.DocumentAbstract.OID,
-                                        CISales.DocumentAbstract.Name,
-                                        CISales.DocumentAbstract.Date);
-                        multi.execute();
-                        while (multi.next()) {
-                            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                            final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-                            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-
-                            final StringBuilder choice = new StringBuilder()
-                                            .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                                            .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                            Context.getThreadContext().getLocale())));
-                            final Map<String, String> map = new HashMap<String, String>();
-                            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                            tmpMap.put(name, map);
-                        }
-                        list.addAll(tmpMap.values());
+        for (int i = 0; i < 100; i++) {
+            if (props.containsKey("Type" + i)) {
+                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
+                if (type != null) {
+                    final QueryBuilder queryBldr = new QueryBuilder(type);
+                    queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
+                    if (contactInst != null && contactInst.isValid() && contactSessionInst != null
+                                    && contactSessionInst.isValid()) {
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
                     }
-                } else {
-                    break;
+                    add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
+
+                    if (props.containsKey("StatusGroup" + i)) {
+                        final String statiStr = String.valueOf(props.get("Stati" + i));
+                        final String[] statiAr = statiStr.split(";");
+                        final List<Object> statusList = new ArrayList<Object>();
+                        for (final String stati : statiAr) {
+                            final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
+                            if (status != null) {
+                                statusList.add(status.getId());
+                            }
+                        }
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
+                    }
+
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CISales.DocumentAbstract.OID,
+                                    CISales.DocumentAbstract.Name,
+                                    CISales.DocumentAbstract.Date);
+                    multi.execute();
+                    while (multi.next()) {
+                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                        final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                        final StringBuilder choice = new StringBuilder()
+                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                        Context.getThreadContext().getLocale())));
+                        final Map<String, String> map = new HashMap<String, String>();
+                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                        tmpMap.put(name, map);
+                    }
+                    list.addAll(tmpMap.values());
                 }
+            } else {
+                break;
             }
         }
 
