@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright  2009 - 2012 moxter.net S.A.C.
+  Copyright  2009 - 2013 moxter.net S.A.C.
 
   All Rights Reserved.
   This program contains proprietary and trade secret information of
@@ -14,7 +14,7 @@
 
 --><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f15f6031-c5d3-4bf8-89f4-a7a1b244d22e</uuid>
-    <file-application>Emperador</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 358 $</file-revision>
 
     <definition>
