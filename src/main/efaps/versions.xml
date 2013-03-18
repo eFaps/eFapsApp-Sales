@@ -106,6 +106,9 @@
         <!-- connect the Sales_Products_ProductTree_SalesReport  to Products_ProductTree -->
         update.add2Menu("c6cec8fb-4f34-423d-a7cd-8bf0f136bfbf", "6de24737-8943-4258-9ef4-cc768136e266", -1);
 
+        <!-- connect the Sales_Contacts_ContactTree_SalesReport  to Contacts_ContactTree -->
+        update.add2Menu("0e0034e1-24e1-4219-9457-7bc5372616e9", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
