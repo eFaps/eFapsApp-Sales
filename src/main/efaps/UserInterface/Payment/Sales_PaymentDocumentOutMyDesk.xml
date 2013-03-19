@@ -34,7 +34,8 @@
             <menu>Sales_PaymentDocumentOutMyDesk_Menu</menu>
             <table>Sales_PaymentDocumentAbstractOutTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_PaymentDocumentOutAbstract</property>
+                <property name="Type01">Sales_PaymentDocumentOutAbstract</property>
+                <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
 
