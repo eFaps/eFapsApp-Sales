@@ -39,7 +39,9 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_UsageReportPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
