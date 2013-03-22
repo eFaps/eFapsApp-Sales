@@ -28,7 +28,7 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -36,7 +36,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("39feb877-6310-4170-816d-173f89347e3d")
 @EFapsRevision("$Rev$")
 public abstract class PaymentCheck_Base
-    extends AbstractPaymentDocument
+    extends AbstractPaymentIn
 {
 
     /**

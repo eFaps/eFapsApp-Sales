@@ -28,7 +28,7 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: PaymentExchange_Base.java 8156 2012-11-05 15:32:12Z
  *          jan@moxter.net $
@@ -36,7 +36,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("ba14f903-9522-4a10-b847-db50fdb360a3")
 @EFapsRevision("$Rev$")
 public abstract class PaymentDetractionOut_Base
-    extends AbstractPaymentDocument
+    extends AbstractPaymentOut
 {
 
     /**

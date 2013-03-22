@@ -28,15 +28,14 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
- * @version $Id: PaymentCreditCard_Base.java 8169 2012-11-07 02:50:08Z
- *          jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("15e2e2d4-131a-4407-87d3-276317f559ba")
 @EFapsRevision("$Rev$")
 public abstract class PaymentCreditCard_Base
-    extends AbstractPaymentDocument
+    extends AbstractPaymentIn
 {
 
     /**

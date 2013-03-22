@@ -24,11 +24,12 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -36,7 +37,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("65ec05ad-78d6-4af1-aad3-93ce64c8321e")
 @EFapsRevision("$Rev$")
 public abstract class PaymentDepositOut_Base
-    extends AbstractPaymentDocument
+    extends AbstractPaymentOut
 {
 
     /**

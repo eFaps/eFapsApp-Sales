@@ -290,11 +290,13 @@ public abstract class AbstractPaymentDocument_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @param _posInsert insert to add to
      * @param _createdDoc document created
+     * @throws EFapsException on error
      */
     protected void add2PaymentCreate(final Parameter _parameter,
                                      final Insert _payInsert,
                                      final CreatedDoc _createdDoc,
                                      final int _idx)
+          throws EFapsException
     {
         // used by implementation
     }

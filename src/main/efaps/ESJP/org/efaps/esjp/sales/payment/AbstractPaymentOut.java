@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,25 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.util.EFapsException;
+
 
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("16e87ae6-0b51-49ec-a40b-13ee55838a55")
+@EFapsUUID("f1f76941-3bed-4c7c-a65d-71e7f1aa9b31")
 @EFapsRevision("$Rev$")
-public abstract class PaymentDebitCard_Base
-    extends AbstractPaymentIn
+public abstract class AbstractPaymentOut
+    extends AbstractPaymentOut_Base
 {
 
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return new Return
-     * @throws EFapsException on error
-     */
-    public Return create(final Parameter _parameter)
-        throws EFapsException
-    {
-        final CreatedDoc createdDoc = createDoc(_parameter);
-        createPayment(_parameter, createdDoc);
-        final Return ret = createReportDoc(_parameter, createdDoc);
-        return ret;
-    }
 }
