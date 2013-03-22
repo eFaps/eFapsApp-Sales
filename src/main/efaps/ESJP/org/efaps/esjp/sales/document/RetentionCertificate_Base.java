@@ -29,6 +29,7 @@ import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -100,6 +101,17 @@ public abstract class RetentionCertificate_Base
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                                 CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate);
+                attrQueryBldr2.addWhereAttrEqValue(CISales.RetentionCertificate.ID, _parameter.getInstance().getId());
+                final AttributeQuery attrQuery2 = attrQueryBldr2
+                                .getAttributeQuery(CISales.RetentionCertificate.Contact);
+
+                final QueryBuilder attrQueryBldr3 = new QueryBuilder(CISales.PaymentRetentionOut);
+                attrQueryBldr3.addWhereAttrInQuery(CISales.PaymentRetentionOut.Contact, attrQuery2);
+                final AttributeQuery attrQuery3 = attrQueryBldr3.getAttributeQuery(CISales.PaymentRetentionOut.ID);
+
+                _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery3);
             }
         };
         return multi.execute(_parameter);
@@ -194,12 +206,26 @@ public abstract class RetentionCertificate_Base
         {
             _builder.addColumn(
                             DynamicReports.col.reportRowNumberColumn().setFixedColumns(3),
-                            DynamicReports.col.column("title", "type", DynamicReports.type.stringType()),
-                            DynamicReports.col.column("title2", "name", DynamicReports.type.stringType()),
-                            DynamicReports.col.column("title3", "date", DynamicReports.type.dateType()),
-                            DynamicReports.col.column("title3", "rateNetTotal", DynamicReports.type.bigDecimalType()),
-                            DynamicReports.col.column("title3", "rateCrossTotal", DynamicReports.type.bigDecimalType()),
-                            DynamicReports.col.column("title3", "rateCurrency", DynamicReports.type.stringType())
+                            DynamicReports.col.column(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.Type"),
+                                            "type", DynamicReports.type.stringType()),
+                            DynamicReports.col.column(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.Name"),
+                                            "name", DynamicReports.type.stringType()),
+                            DynamicReports.col.column(DBProperties
+                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.Date"),
+                                            "date", DynamicReports.type.dateType()),
+                            DynamicReports.col.column(
+                                            DBProperties.getProperty("org.efaps.esjp.sales.document.RetentionCertificate.RateNetTotal"),
+                                            "rateNetTotal", DynamicReports.type.bigDecimalType()),
+                            DynamicReports.col.column(
+                                            DBProperties
+                                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.RateCrossTotal"),
+                                            "rateCrossTotal", DynamicReports.type.bigDecimalType()),
+                            DynamicReports.col
+                                            .column(DBProperties
+                                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.RateCurrency"),
+                                                            "rateCurrency", DynamicReports.type.stringType())
                                             .setFixedColumns(3));
 
         }
