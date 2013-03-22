@@ -35,6 +35,10 @@
         </target>
         <!-- type tree for -->
         <type>Sales_BulkPayment</type>
+        <childs>
+            <child>Sales_BulkPaymentTree_PayDoc</child>
+        </childs>
+
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

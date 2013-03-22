@@ -20,29 +20,28 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f41816d7-87ae-46d1-89d6-f7fa243f525b</uuid>
+
+    <uuid>39052099-99c3-4a16-87ef-d2fb421a1fe8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPayment2Account</name>
-        <parent>ERP_Object2ObjectAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_BulkPayment</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_AccountCashDesk</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Sales_BulkPayment2PaymentDocumentTable</name>
+        <!-- fields -->
+        <field name="name">
+            <property name="Select">linkto[ToLink].attribute[Name]</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocumentTable.name.Label</property>
+        </field>
+        <field name="contact">
+            <property name="Select">linkto[ToLink].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocumentTable.contact.Label</property>
+        </field>
+        <field name="amount">
+            <property name="Select">linkto[ToLink].attribute[Amount]</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocumentTable.amount.Label</property>
+        </field>
     </definition>
-</datamodel-type>
+</ui-table>

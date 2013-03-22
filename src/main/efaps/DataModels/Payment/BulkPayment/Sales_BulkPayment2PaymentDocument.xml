@@ -23,13 +23,13 @@
 <datamodel-type xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f41816d7-87ae-46d1-89d6-f7fa243f525b</uuid>
+    <uuid>72343815-4b60-48ca-a6bd-ffa3e42705f6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPayment2Account</name>
-        <parent>ERP_Object2ObjectAbstract</parent>
+        <name>Sales_BulkPayment2PaymentDocument</name>
+        <parent>ERP_Document2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>

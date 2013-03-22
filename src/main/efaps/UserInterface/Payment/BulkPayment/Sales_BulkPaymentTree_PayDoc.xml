@@ -20,29 +20,24 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f41816d7-87ae-46d1-89d6-f7fa243f525b</uuid>
+    <uuid>80ff3c0e-3555-42a6-ac74-998b9a30db14</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPayment2Account</name>
-        <parent>ERP_Object2ObjectAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_BulkPayment</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_AccountCashDesk</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Sales_BulkPaymentTree_PayDoc</name>
+        <target>
+            <menu>Sales_BulkPaymentTree_PayDoc_Menu</menu>
+            <table>Sales_BulkPayment2PaymentDocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_BulkPayment2PaymentDocument</property>
+                <property name="LinkFrom">FromLink</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</datamodel-type>
+</ui-command>

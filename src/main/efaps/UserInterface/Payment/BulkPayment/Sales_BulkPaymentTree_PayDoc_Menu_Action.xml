@@ -20,29 +20,17 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f41816d7-87ae-46d1-89d6-f7fa243f525b</uuid>
+    <uuid>0eac8218-273c-4e6a-ae54-2528a93c9112</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPayment2Account</name>
-        <parent>ERP_Object2ObjectAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_BulkPayment</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_AccountCashDesk</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Sales_BulkPaymentTree_PayDoc_Menu_Action</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_BulkPaymentTree_Menu_Action_Create</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>
