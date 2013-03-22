@@ -110,22 +110,21 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
-    @Override
-    protected void add2PaymentCreate(final Parameter _parameter,
-                                     final Insert _payInsert,
-                                     final CreatedDoc _createdDoc,
-                                     final int _idx)
+
+    protected CreatedDoc createDoc(final Parameter _parameter)
         throws EFapsException
     {
-        super.add2PaymentCreate(_parameter, _payInsert, _createdDoc, _idx);
+        CreatedDoc ret = super.createDoc(_parameter);
+
         // in case of bulkpayment connect the paymentdoc to the bulkpayment
         if (_parameter.getInstance() != null
                         && _parameter.getInstance().getType().isKindOf(CISales.BulkPayment.getType())) {
             final Insert insert = new Insert(CISales.BulkPayment2PaymentDocument);
             insert.add(CISales.BulkPayment2PaymentDocument.FromLink, _parameter.getInstance().getId());
-            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, _createdDoc.getInstance().getId());
+            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, ret.getInstance().getId());
             insert.execute();
         }
+        return ret;
     }
 
 

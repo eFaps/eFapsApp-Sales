@@ -21,19 +21,43 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.util.EFapsException;
 
@@ -81,4 +105,132 @@ public abstract class BulkPayment_Base
         return new Return();
     }
 
+
+    public Return getReport4Detail(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final AbstractDynamicReport dyRp = getReport(_parameter);
+        dyRp.setFileName(CISales.BulkPayment.getType().getLabel());
+        final String html = dyRp.getHtml(_parameter);
+        ret.put(ReturnValues.SNIPLETT, html);
+        return ret;
+    }
+
+
+    public Return exportReport4Detail(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String mime = (String) props.get("Mime");
+        final AbstractDynamicReport dyRp = getReport(_parameter);
+        dyRp.setFileName(CISales.BulkPayment.getType().getLabel());
+        File file = null;
+        if ("xls".equalsIgnoreCase(mime)) {
+            file = dyRp.getExcel(_parameter);
+        } else if ("pdf".equalsIgnoreCase(mime)) {
+            file = dyRp.getPDF(_parameter);
+        }
+        ret.put(ReturnValues.VALUES, file);
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
+
+
+
+    protected AbstractDynamicReport getReport(final Parameter _parameter)
+    {
+        return new Report4Detail();
+    }
+
+    public class Report4Detail
+        extends AbstractDynamicReport
+    {
+
+        @Override
+        protected JRDataSource createDataSource(final Parameter _parameter)
+            throws EFapsException
+        {
+            final DRDataSource ret = new DRDataSource("contact", "taxnumber", "docName", "amount");
+            final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+
+            // TODO add more status
+            final QueryBuilder pdAttrQueryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
+            pdAttrQueryBldr.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
+                            Status.find(CISales.PaymentDetractionOutStatus.uuid, "Canceled").getId());
+            final AttributeQuery pdAttrQuery = pdAttrQueryBldr.getAttributeQuery(CISales.PaymentDocumentOutAbstract.ID);
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPayment2PaymentDocument);
+            attrQueryBldr.addWhereAttrEqValue(CISales.BulkPayment2PaymentDocument.FromLink, _parameter.getInstance()
+                            .getId());
+            attrQueryBldr.addWhereAttrInQuery(CISales.BulkPayment2PaymentDocument.ToLink, pdAttrQuery);
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CISales.BulkPayment2PaymentDocument.ToLink);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocName = new SelectBuilder().linkto(CISales.Payment.CreateDocument).attribute(
+                            CIERP.DocumentAbstract.Name);
+            final SelectBuilder selContact = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+                            .linkto(CISales.PaymentDocumentOutAbstract.Contact).attribute(
+                                            CIContacts.Contact.Name);
+            final SelectBuilder selTaxnumber = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+                            .linkto(CISales.PaymentDocumentOutAbstract.Contact)
+                            .clazz(CIContacts.ClassOrganisation)
+                            .attribute(CIContacts.ClassOrganisation.TaxNumber);
+            multi.addSelect(selDocName, selContact, selTaxnumber);
+            multi.addAttribute(CISales.Payment.Amount);
+            multi.execute();
+            while (multi.next()) {
+                final Map<String, Object> map = new HashMap<String, Object>();
+                values.add(map);
+                map.put("amount", multi.getAttribute(CISales.Payment.Amount));
+                map.put("docName", multi.getSelect(selDocName));
+                map.put("contact", multi.getSelect(selContact));
+                map.put("taxnumber", multi.getSelect(selTaxnumber));
+            }
+            Collections.sort(values, new Comparator<Map<String, Object>>()
+            {
+
+                @Override
+                public int compare(final Map<String, Object> _map,
+                                   final Map<String, Object> _map1)
+                {
+                    return _map.get("contact").toString().compareTo(_map1.get("contact").toString());
+                }
+            });
+
+            for (final Map<String, Object> map : values) {
+                ret.add(map.get("contact"), map.get("taxnumber"), map.get("docName"), map.get("amount"));
+            }
+
+            return ret;
+        }
+
+        @Override
+        protected void addColumnDefintion(final Parameter _parameter,
+                                          final JasperReportBuilder _builder)
+            throws EFapsException
+        {
+            final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.contact"),
+                            "contact", DynamicReports.type.stringType()).setColumns(60);
+            final TextColumnBuilder<String> taxnumberColumn  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.taxnumber"),
+                            "taxnumber", DynamicReports.type.stringType());
+            final TextColumnBuilder<String> docNameColumn  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.docName"),
+                            "docName", DynamicReports.type.stringType());
+            final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.amount"),
+                            "amount", DynamicReports.type.bigDecimalType());
+
+            final AggregationSubtotalBuilder<BigDecimal> subtotal = DynamicReports.sbt.sum(amountColumn);
+
+            _builder.addColumn(contactColumn, taxnumberColumn, docNameColumn, amountColumn);
+            _builder.addSubtotalAtColumnFooter(subtotal);
+        }
+    }
 }

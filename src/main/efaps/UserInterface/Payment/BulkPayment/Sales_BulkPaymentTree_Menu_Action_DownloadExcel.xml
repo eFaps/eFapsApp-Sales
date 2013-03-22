@@ -20,18 +20,28 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>891dfc41-b241-4b5c-9226-aff99695f015</uuid>
+    <uuid>b71c315f-670b-4d07-bb5e-a4ce76fed1c3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_BulkPaymentTree_Menu_Action_Edit</child>
-            <child>Sales_BulkPaymentTree_Menu_Action_DownloadExcel</child>
-        </childs>
+        <name>Sales_BulkPaymentTree_Menu_Action_DownloadExcel</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <execute method="exportReport4Detail" program="org.efaps.esjp.sales.payment.BulkPayment">
+                <property name="Mime">xls</property>
+                <property name="Template">Sales_BulkPaymentTemplate</property>
+            </execute>
+        </target>
+
+        <!-- properties -->
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
-</ui-menu>
+
+</ui-command>

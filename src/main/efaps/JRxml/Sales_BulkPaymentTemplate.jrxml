@@ -1,0 +1,31 @@
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" bottomMargin="20"
+    columnWidth="555" language="groovy" leftMargin="20"
+    name="Sales_BulkPaymentTemplate" pageHeight="842"
+    pageWidth="595" rightMargin="20" topMargin="20"
+    uuid="267d1095-5a00-461d-80a1-f8a2a1fa6d0f" whenNoDataType="AllSectionsNoDetail"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd">
+    <parameter class="java.lang.String" isForPrompting="false"
+        name="EFAPS_DEFINITION">
+        <property name="UUID" value="267d1095-5a00-461d-80a1-f8a2a1fa6d0f" />
+        <property name="Instance" value="true" />
+    </parameter>
+    <pageFooter>
+        <band height="60" splitType="Stretch">
+            <textField>
+                <reportElement height="30"
+                    uuid="20e64fbc-c9a6-4502-bb01-2b0c6c6be5f4" width="70"
+                    x="270" y="30" />
+                <textElement textAlignment="Right" />
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement height="30"
+                    uuid="ed92761e-6c5c-4ca3-bda7-3975f8c6f4dc" width="70"
+                    x="344" y="30" />
+                <textElement textAlignment="Left" />
+                <textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
+</jasperReport>
