@@ -57,6 +57,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="checkAccess4BulkPayment"
+                name="Sales_PaymentDetractionOutForm.name.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -64,6 +66,8 @@
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="checkAccess4BulkPayment"
+                name="Sales_PaymentDetractionOutForm.name.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field character="Group" name="contactGroup">
             <property name="GroupCount">2</property>
@@ -190,6 +194,15 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="getJavaScriptUIValue"
+                name="Sales_PaymentDetractionOutForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

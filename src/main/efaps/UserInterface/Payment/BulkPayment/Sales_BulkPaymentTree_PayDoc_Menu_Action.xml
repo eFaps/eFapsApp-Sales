@@ -30,7 +30,7 @@
         <name>Sales_BulkPaymentTree_PayDoc_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Sales_BulkPaymentTree_Menu_Action_Create</child>
+            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDetractionOut</child>
         </childs>
     </definition>
 </ui-menu>

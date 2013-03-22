@@ -34,14 +34,14 @@
             <name>FromLink</name>
             <type>Link</type>
             <typelink>Sales_BulkPayment</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_AccountCashDesk</typelink>
-            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <typelink>Sales_PaymentDocumentOutAbstract</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
     </definition>

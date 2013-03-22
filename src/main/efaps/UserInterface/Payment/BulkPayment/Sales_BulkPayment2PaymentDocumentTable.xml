@@ -32,8 +32,10 @@
         <name>Sales_BulkPayment2PaymentDocumentTable</name>
         <!-- fields -->
         <field name="name">
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[Name]</property>
             <property name="Label">Sales_BulkPayment2PaymentDocumentTable.name.Label</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="contact">
             <property name="Select">linkto[ToLink].linkto[Contact].attribute[Name]</property>
@@ -42,6 +44,10 @@
         <field name="amount">
             <property name="Select">linkto[ToLink].attribute[Amount]</property>
             <property name="Label">Sales_BulkPayment2PaymentDocumentTable.amount.Label</property>
+        </field>
+         <field name="status">
+            <property name="Select">linkto[ToLink].attribute[Status]</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocumentTable.status.Label</property>
         </field>
     </definition>
 </ui-table>
