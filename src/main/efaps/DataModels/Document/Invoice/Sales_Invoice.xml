@@ -32,7 +32,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Invoice</name>
-        <parent>Sales_InvoiceAbstract</parent>
+        <parent>Sales_DocumentSumAbstract</parent>
         <attribute>
             <name>Status</name>
             <type>Status</type>
