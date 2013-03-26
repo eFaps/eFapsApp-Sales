@@ -20,15 +20,10 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
 
 /**
@@ -56,35 +51,6 @@ public abstract class OrderInbound_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-
         return new Return();
-    }
-
-    /**
-     * Method to get the list of instances for a table.
-     *
-     * @param _parameter parameter as passed from the efaps api
-     * @return list of instances
-     * @throws EFapsException on error
-     */
-    public Return getProductTable(final Parameter _parameter)
-        throws EFapsException
-    {
-        final MultiPrint multi = new MultiPrint() {
-
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                final QueryBuilder atrrQueryBldr = new QueryBuilder(CISales.OrderInbound);
-                atrrQueryBldr.addWhereAttrEqValue(CISales.OrderInbound.Status,
-                                Status.find(CISales.OrderInboundStatus.uuid, "Open").getId());
-                final AttributeQuery attrQuery = atrrQueryBldr.getAttributeQuery(CISales.OrderInbound.ID);
-                _queryBldr.addWhereAttrInQuery(CISales.OrderInboundPosition.Order, attrQuery);
-                super.add2QueryBldr(_parameter, _queryBldr);
-            }
-        };
-        return multi.execute(_parameter);
     }
 }
