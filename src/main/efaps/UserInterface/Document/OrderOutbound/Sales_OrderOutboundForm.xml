@@ -48,7 +48,7 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="date">
-            <property name="Columns">40</property>
+            <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -111,12 +111,17 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="getNameFieldValueUI"
@@ -139,7 +144,7 @@
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_Quotation/Contact.Label</property>
+            <property name="Label">Sales_OrderOutbound/Contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
@@ -159,6 +164,7 @@
             <property name="Label">Sales_OrderOutboundForm.contactData.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
