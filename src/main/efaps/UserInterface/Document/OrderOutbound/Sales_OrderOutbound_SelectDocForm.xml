@@ -37,7 +37,7 @@
     <!-- fields -->
     <field name="quotation">
       <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Sales_Order/Name.Label</property>
+      <property name="Label">Sales_Quotation.Label</property>
       <property name="ModeCreate">EDITABLE</property>
       <property name="Required">true</property>
       <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
