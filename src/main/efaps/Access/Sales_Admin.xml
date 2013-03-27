@@ -70,6 +70,7 @@
         <type>Sales_IncomingReceipt</type>
         <type>Sales_RetentionCertificate</type>
         <type>Sales_BulkPayment</type>
+        <type>Sales_QuoteRequest</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -222,6 +223,12 @@
             <key>Closed</key>
             <key>Canceled</key>
             <key>Booked</key>
+        </status>
+
+        <status group="Sales_QuoteRequestStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
         </status>
 
         <role>Sales_Admin</role>

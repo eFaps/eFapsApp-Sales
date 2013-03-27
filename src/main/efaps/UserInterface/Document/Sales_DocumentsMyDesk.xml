@@ -46,6 +46,7 @@
             <child>Sales_ReservationMyDesk</child>
             <child>Sales_RecievingTicketMyDesk</child>
             <child>Sales_IncomingInvoiceMyDesk</child>
+            <child>Sales_QuoteRequestMyDesk</child>
             <child>Sales_OrderOutboundMyDesk</child>
             <child>Sales_OrderInboundMyDesk</child>
             <child>Sales_Document_Report</child>
