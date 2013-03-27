@@ -45,13 +45,8 @@
 
     <type>Sales_Invoice</type>
     <type>Sales_Receipt</type>
-    <type>Sales_PartialInvoice</type>
 
     <status group="Sales_InvoiceStatus">
-      <key>Open</key>
-    </status>
-
-    <status group="Sales_PartialInvoiceStatus">
       <key>Open</key>
     </status>
 

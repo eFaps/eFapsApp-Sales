@@ -47,7 +47,6 @@
         <type>Sales_CostSheet</type>
         <type>Sales_Quotation</type>
         <type>Sales_Invoice</type>
-        <type>Sales_PartialInvoice</type>
         <type>Sales_Receipt</type>
         <type>Sales_DeliveryNote</type>
         <type>Contacts_Contact</type>
@@ -85,13 +84,6 @@
         </status>
 
         <status group="Sales_InvoiceStatus">
-            <key>Open</key>
-            <key>Paid</key>
-            <key>Booked</key>
-            <key>Replaced</key>
-        </status>
-
-        <status group="Sales_PartialInvoiceStatus">
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
