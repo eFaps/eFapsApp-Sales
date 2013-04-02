@@ -51,12 +51,13 @@ import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: DocReport_Base.java 7679 2012-06-14 22:39:59Z
  *          jorge.cueva@moxter.net $
@@ -84,7 +85,8 @@ public abstract class PaymentDocReport_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice.getType());
         queryBldr.addWhereAttrGreaterValue(CISales.Invoice.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.Invoice.Date, to.plusDays(1));
-
+        queryBldr.addWhereAttrEqValue(CISales.Invoice.Status,
+                Status.find(CISales.InvoiceStatus.uuid, "Open").getId());
         if (contactOid != null && !contactOid.isEmpty() && contactName != null && !contactName.isEmpty()) {
             queryBldr.addWhereAttrEqValue(CISales.Invoice.Contact, Instance.get(contactOid).getId());
         }
@@ -247,6 +249,7 @@ public abstract class PaymentDocReport_Base
         report.getJrParameters().put("Mime", mime);
         return report.execute(_parameter);
     }
+
 
     protected String getReportName(final Parameter _parameter,
                                    final DateTime _from,
