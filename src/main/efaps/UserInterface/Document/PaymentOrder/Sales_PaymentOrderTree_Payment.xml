@@ -31,7 +31,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_IncomingInvoiceTree_Payment_Menu</menu>
+            <menu>Sales_PaymentOrderTree_Payment_Menu</menu>
             <table>Sales_PaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_Payment</property>
