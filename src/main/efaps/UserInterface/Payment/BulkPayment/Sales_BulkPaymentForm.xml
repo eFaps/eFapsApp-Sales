@@ -41,7 +41,9 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
+            <property name="Label">Sales_BulkPayment.account.Label</property>
             <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue"
                 name="Sales_BulkPaymentForm.accountLink.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
@@ -54,6 +56,7 @@
             <property name="SelectAlternateOID">linkfrom[Sales_BulkPayment2Account#FromLink].linkto[ToLink].oid</property>
             <property name="Select">linkfrom[Sales_BulkPayment2Account#FromLink].linkto[ToLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_BulkPayment.account.Label</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
@@ -104,6 +107,7 @@
         </field>
          <field name="report4Detail">
             <property name="HideLabel">true</property>
+            <property name="ModeEdit">NONE</property>
             <trigger event="UI_FIELD_VALUE" method="getReport4Detail"
                 name="Sales_BulkPaymentForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.payment.BulkPayment"/>

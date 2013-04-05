@@ -21,9 +21,17 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -35,7 +43,10 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -144,10 +155,42 @@ public abstract class AbstractPaymentOut_Base
             html.append("document.getElementsByName('account')[0].value=")
                             .append(multi.getAttribute(CISales.BulkPayment2Account.ToLink)).append(";\n")
                             .append("document.getElementsByName('account')[0].disabled = true;\n");
+            html.append(addCurrencyValue(_parameter, multi.<Long>getAttribute(CISales.BulkPayment2Account.ToLink)));
         }
         html.append("/*]]>*/ </script>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    protected String addCurrencyValue(final Parameter _parameter,
+                                      final Long _accountID)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(), _accountID);
+        print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
+        print.execute();
+
+        final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                        print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
+
+        // Sales-Configuration
+        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getLink("CurrencyBase");
+
+        final PrintQuery print2 = new PrintQuery(_parameter.getInstance());
+        print2.addAttribute(CISales.BulkPayment.Date);
+        print2.execute();
+        _parameter.getParameters()
+                        .put("date_eFapsDate",
+                                        new String[] { print2.<DateTime>getAttribute(CISales.BulkPayment.Date)
+                                                        .toString("dd/MM/YYYY") });
+
+        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+        ret.append("document.getElementsByName('rate')[0].value='").append(rates[3].stripTrailingZeros()).append("';\n")
+            .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+            .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';\n");
+        return ret.toString();
     }
 
     public Return checkAccess4BulkPayment(final Parameter _parameter)

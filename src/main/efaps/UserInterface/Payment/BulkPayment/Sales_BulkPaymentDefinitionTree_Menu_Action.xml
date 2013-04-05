@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,18 +20,16 @@
  Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>fa2e6080-91ec-4bd0-8de9-faa7ae446466</uuid>
+    <uuid>60df6b80-6d03-4970-b0ca-10c0c956f8a3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractOutMyDesk</name>
+        <name>Sales_BulkPaymentDefinitionTree_Menu_Action</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_PaymentDocumentOutMyDesk</child>
-            <child>Sales_PaymentOrder_MyDesk</child>
-            <child>Sales_BulkPaymentMyDesk</child>
-            <child>Sales_BulkPaymentDefinitionMyDesk</child>
+            <child>Sales_BulkPaymentDefinitionTree_Menu_Action_Edit</child>
         </childs>
     </definition>
+
 </ui-menu>

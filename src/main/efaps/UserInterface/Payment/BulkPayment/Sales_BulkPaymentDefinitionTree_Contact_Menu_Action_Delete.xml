@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,19 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>fa2e6080-91ec-4bd0-8de9-faa7ae446466</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>09dc6f98-2479-48e3-9f5b-834b36608810</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractOutMyDesk</name>
-        <childs>
-            <child>Sales_PaymentDocumentOutMyDesk</child>
-            <child>Sales_PaymentOrder_MyDesk</child>
-            <child>Sales_BulkPaymentMyDesk</child>
-            <child>Sales_BulkPaymentDefinitionMyDesk</child>
-        </childs>
+        <name>Sales_BulkPaymentDefinitionTree_Contact_Menu_Action_Delete</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete"/>
+        </target>
+        <!-- properties -->
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</ui-menu>
+</ui-command>
