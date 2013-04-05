@@ -101,6 +101,19 @@
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
         </field>
+        <field name="applicant">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="SelectAlternateOID">linkfrom[HumanResource_Employee2WorkOrder#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[HumanResource_Employee2WorkOrder#ToLink].linkto[FromLink]..attribute[LastName]&gt;, $&lt;linkfrom[HumanResource_Employee2WorkOrder#ToLink].linkto[FromLink].attribute[FirstName]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PaymentOrderForm.applicant.Label</property>
+            <trigger program="org.efaps.esjp.humanresource.Employee" method="autoComplete4Employee"
+                name="Sales_PaymentOrderForm.applicant.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Classifications">Payroll_HumanResource_EmployeeClassHonoraries;Payroll_HumanResource_EmployeeClassPayroll</property>
+            </trigger>
+        </field>
         <field name="currencyGroup" character="Group">
             <property name="GroupCount">1</property>
             <property name="ModeCreate">READONLY</property>

@@ -65,9 +65,17 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentExchange" method="updateFields4RateCurrency"
                 name="Sales_PaymentExchangeForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="date4read">
+            <property name="Columns">12</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="dueDate">
             <property name="Columns">12</property>
