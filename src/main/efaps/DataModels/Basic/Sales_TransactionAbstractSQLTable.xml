@@ -43,7 +43,7 @@
       <column name="CURRENCYID"   type="INTEGER"      not-null="true"/>
       <column name="ACCOUNTID"    type="INTEGER"      not-null="true"/>
       <column name="DATE"         type="DATETIME"     not-null="true"/>
-      <column name="DESCR"        type="STRING_SHORT"                   length="255"/>
+      <column name="DESCR"        type="STRING_SHORT"                   length="1000"/>
       <column name="PAYMENTID"    type="INTEGER"/>
       <column name="CREATOR"      type="INTEGER"      not-null="true"/>
       <column name="CREATED"      type="DATETIME"     not-null="true"/>
