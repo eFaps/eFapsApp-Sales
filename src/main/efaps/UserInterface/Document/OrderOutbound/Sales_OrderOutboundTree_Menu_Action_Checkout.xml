@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2013 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 8754 $
+ Last Changed:    $Date: 2013-02-04 20:50:59 -0500 (lun, 04 feb 2013) $
+ Last Changed By: $Author: jan@moxter.net $
+
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>872d2a79-bc18-46f3-9098-dc9cb56a66e8</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 8754 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderOutboundTree_Menu_Action_Checkout</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <execute program="org.efaps.esjp.common.file.FileCheckout"/>
+        </target>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
+    </definition>
+</ui-command>
