@@ -31,8 +31,6 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -55,24 +53,7 @@ public abstract class PaymentOrder_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc docInst = createDoc(_parameter);
-        final String applicant = _parameter.getParameterValue("applicant");
-        // connect to a applicant if it's given
-        if (applicant != null && applicant.length() > 0) {
-            final Instance employeeInst = Instance.get(applicant);
-            // HumanResource_Employee
-            final QueryBuilder queryBldr = new QueryBuilder(UUID.fromString("682bea7b-03f0-4a31-bd96-cb3a3b94882f"));
-            queryBldr.addWhereAttrEqValue("ID", employeeInst.getId());
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.execute();
-            while (multi.next()) {
-                // HumanResource_Employee2WorkOrder
-                final Insert relInsert = new Insert(UUID.fromString("36ac69db-33d7-4647-afa2-4553ec267119"));
-                relInsert.add("FromLink", employeeInst.getId());
-                relInsert.add("ToLink", docInst.getInstance().getId());
-                relInsert.execute();
-            }
-        }
+        createDoc(_parameter);
         return new Return();
     }
 
