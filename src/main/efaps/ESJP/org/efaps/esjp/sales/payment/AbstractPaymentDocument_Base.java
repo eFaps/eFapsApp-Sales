@@ -829,6 +829,10 @@ public abstract class AbstractPaymentDocument_Base
             }
         }
 
+        final Update updatePayment = new Update(_parameter.getInstance());
+        updatePayment.add(CISales.Payment.Amount, BigDecimal.ZERO);
+        updatePayment.executeWithoutAccessCheck();
+
         return new StatusValue().setStatus(_parameter);
     }
 }
