@@ -156,7 +156,7 @@ public abstract class SalesProductReport_Base
                                 CISales.PositionSumAbstract.NetPrice,
                                 CISales.PositionSumAbstract.UoM);
                 final SelectBuilder selCurSymbol = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.RateCurrencyId)
+                                        .linkto(CISales.PositionSumAbstract.CurrencyId)
                                         .attribute(CIERP.Currency.Symbol);
                 final SelectBuilder selContactInst = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
