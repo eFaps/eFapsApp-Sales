@@ -487,16 +487,22 @@ public abstract class DocumentSum_Base
             final Update update = new Update(docInst);
             update.add(CISales.DocumentSumAbstract.CrossTotal, rateCross.compareTo(BigDecimal.ZERO) == 0
                             ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
                             : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
+                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.NetTotal, rateNet.compareTo(BigDecimal.ZERO) == 0
                             ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
                             : rateNet.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
+                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.DiscountTotal, rateDiscount.compareTo(BigDecimal.ZERO) == 0
                             ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
                             : rateDiscount.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP));
+                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
+                                .setScale(2, BigDecimal.ROUND_HALF_UP));
             update.add(CISales.DocumentSumAbstract.Rate, rateObj);
             update.execute();
 
