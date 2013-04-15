@@ -149,8 +149,8 @@ public abstract class SalesProduct4ProviderReport_Base
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
             for (final String type : types) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
-                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
-                attrQueryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo);
+                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
+                attrQueryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1));
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
@@ -226,22 +226,17 @@ public abstract class SalesProduct4ProviderReport_Base
                 public int compare(final Map<String, Object> _o1,
                                    final Map<String, Object> _o2)
                 {
-                    final Date date1 = (Date) _o1.get("date");
-                    final Date date2 = (Date) _o2.get("date");
                     final int ret;
-                    if (date1.equals(date2)) {
-                        final String contact1 = (String) _o1.get("contact");
-                        final String contact2 = (String) _o2.get("contact");
-                        if (contact1.equals(contact2)) {
-                            final String product1 = (String) _o1.get("productName");
-                            final String product2 = (String) _o2.get("productName");
-                            ret = product1.compareTo(product2);
-                        } else {
-                            ret = contact1.compareTo(contact2);
-                        }
+                    final String contact1 = (String) _o1.get("contact");
+                    final String contact2 = (String) _o2.get("contact");
+                    if (contact1.equals(contact2)) {
+                        final String product1 = (String) _o1.get("productName");
+                        final String product2 = (String) _o2.get("productName");
+                        ret = product1.compareTo(product2);
                     } else {
-                        ret = date1.compareTo(date2);
+                        ret = contact1.compareTo(contact2);
                     }
+
                     return ret;
                 }});
 
@@ -355,8 +350,8 @@ public abstract class SalesProduct4ProviderReport_Base
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
             for (final String type : types) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
-                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
-                attrQueryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo);
+                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
+                attrQueryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1));
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
@@ -432,22 +427,17 @@ public abstract class SalesProduct4ProviderReport_Base
                 public int compare(final Map<String, Object> _o1,
                                    final Map<String, Object> _o2)
                 {
-                    final Date date1 = (Date) _o1.get("date");
-                    final Date date2 = (Date) _o2.get("date");
                     final int ret;
-                    if (date1.equals(date2)) {
-                        final String product1 = (String) _o1.get("productName");
-                        final String product2 = (String) _o2.get("productName");
-                        if (product1.equals(product2)) {
-                            final String contact1 = (String) _o1.get("contact");
-                            final String contact2 = (String) _o2.get("contact");
-                            ret = contact1.compareTo(contact2);
-                        } else {
-                            ret = product1.compareTo(product2);
-                        }
+                    final String product1 = (String) _o1.get("productName");
+                    final String product2 = (String) _o2.get("productName");
+                    if (product1.equals(product2)) {
+                        final String contact1 = (String) _o1.get("contact");
+                        final String contact2 = (String) _o2.get("contact");
+                        ret = contact1.compareTo(contact2);
                     } else {
-                        ret = date1.compareTo(date2);
+                        ret = product1.compareTo(product2);
                     }
+
                     return ret;
                 }});
 
