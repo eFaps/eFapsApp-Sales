@@ -54,8 +54,6 @@
             <child>Sales_ProductRequestMyDesk</child>
             <child>Sales_IncomingReceiptMyDesk</child>
             <child>Sales_RetentionCertificateMyDesk</child>
-            <child>Sales_Product4Provider_Report</child>
-            <child>Sales_Product4Provider_Report2</child>
         </childs>
     </definition>
 </ui-menu>
