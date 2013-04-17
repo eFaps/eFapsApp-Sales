@@ -51,6 +51,7 @@ import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -83,6 +84,8 @@ public abstract class BulkPayment_Base
         final Insert insert = new Insert(CISales.BulkPayment);
         insert.add(CISales.BulkPayment.Date, _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.date.name));
         insert.add(CISales.BulkPayment.Name, _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.name.name));
+        insert.add(CISales.BulkPayment.BulkDefinitionId,
+                        _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.bulkDefinition.name));
         insert.add(CISales.BulkPayment.CrossTotal, BigDecimal.ZERO);
         insert.add(CISales.BulkPayment.CrossTotal, BigDecimal.ZERO);
         insert.add(CISales.BulkPayment.NetTotal, BigDecimal.ZERO);
@@ -152,8 +155,29 @@ public abstract class BulkPayment_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final DRDataSource ret = new DRDataSource("contact", "taxnumber", "docName", "amount");
+            final DRDataSource ret = new DRDataSource("contact", "taxnumber", "accountNumber", "docName", "amount");
             final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+
+            final Map<String, String> cont2Acc = new HashMap<String, String>();
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CISales.BulkPayment.BulkDefinitionId);
+            print.execute();
+
+            final QueryBuilder queryBldrCont = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
+            queryBldrCont.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.FromLink,
+                            print.getAttribute(CISales.BulkPayment.BulkDefinitionId));
+            final MultiPrintQuery multiCont = queryBldrCont.getPrint();
+            multiCont.addAttribute(CISales.BulkPaymentDefinition2Contact.AccountNumber);
+            final SelectBuilder selContOid = new SelectBuilder()
+                            .linkto(CISales.BulkPaymentDefinition2Contact.ToLink).oid();
+            multiCont.addSelect(selContOid);
+            multiCont.execute();
+            while (multiCont.next()) {
+                final String contOid = multiCont.<String>getSelect(selContOid);
+                final String account = multiCont
+                                .<String>getAttribute(CISales.BulkPaymentDefinition2Contact.AccountNumber);
+                cont2Acc.put(contOid, account);
+            }
 
             // TODO add more status
             final QueryBuilder pdAttrQueryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
@@ -173,27 +197,31 @@ public abstract class BulkPayment_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selDocName = new SelectBuilder().linkto(CISales.Payment.CreateDocument).attribute(
                             CIERP.DocumentAbstract.Name);
+            final SelectBuilder selContactOid = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+                            .linkto(CISales.PaymentDocumentOutAbstract.Contact).oid();
             final SelectBuilder selContact = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                            .linkto(CISales.PaymentDocumentOutAbstract.Contact).attribute(
-                                            CIContacts.Contact.Name);
+                            .linkto(CISales.PaymentDocumentOutAbstract.Contact)
+                            .attribute(CIContacts.Contact.Name);
             final SelectBuilder selTaxnumber = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
                             .linkto(CISales.PaymentDocumentOutAbstract.Contact)
                             .clazz(CIContacts.ClassOrganisation)
                             .attribute(CIContacts.ClassOrganisation.TaxNumber);
-            multi.addSelect(selDocName, selContact, selTaxnumber);
+            multi.addSelect(selContactOid, selDocName, selContact, selTaxnumber);
             multi.addAttribute(CISales.Payment.Amount);
             multi.execute();
             while (multi.next()) {
+                final String contactOid = multi.<String>getSelect(selContactOid);
                 final Map<String, Object> map = new HashMap<String, Object>();
                 values.add(map);
                 map.put("amount", multi.getAttribute(CISales.Payment.Amount));
                 map.put("docName", multi.getSelect(selDocName));
                 map.put("contact", multi.getSelect(selContact));
+                map.put("accountNumber", cont2Acc.containsKey(contactOid) ? cont2Acc.get(contactOid) : "");
                 map.put("taxnumber", multi.getSelect(selTaxnumber));
             }
+
             Collections.sort(values, new Comparator<Map<String, Object>>()
             {
-
                 @Override
                 public int compare(final Map<String, Object> _map,
                                    final Map<String, Object> _map1)
@@ -203,7 +231,11 @@ public abstract class BulkPayment_Base
             });
 
             for (final Map<String, Object> map : values) {
-                ret.add(map.get("contact"), map.get("taxnumber"), map.get("docName"), map.get("amount"));
+                ret.add(map.get("contact"),
+                        map.get("taxnumber"),
+                        map.get("accountNumber"),
+                        map.get("docName"),
+                        map.get("amount"));
             }
 
             return ret;
@@ -217,6 +249,9 @@ public abstract class BulkPayment_Base
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.contact"),
                             "contact", DynamicReports.type.stringType()).setColumns(60);
+            final TextColumnBuilder<String> accountNumberColumn  = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.accountNumber"),
+                            "accountNumber", DynamicReports.type.stringType());
             final TextColumnBuilder<String> taxnumberColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.taxnumber"),
                             "taxnumber", DynamicReports.type.stringType());
@@ -229,7 +264,7 @@ public abstract class BulkPayment_Base
 
             final AggregationSubtotalBuilder<BigDecimal> subtotal = DynamicReports.sbt.sum(amountColumn);
 
-            _builder.addColumn(contactColumn, taxnumberColumn, docNameColumn, amountColumn);
+            _builder.addColumn(contactColumn, taxnumberColumn, accountNumberColumn, docNameColumn, amountColumn);
             _builder.addSubtotalAtColumnFooter(subtotal);
         }
     }

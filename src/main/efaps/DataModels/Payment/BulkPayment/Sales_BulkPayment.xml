@@ -32,6 +32,18 @@
         <name>Sales_BulkPayment</name>
         <parent>Sales_DocumentSumAbstract</parent>
         <attribute>
+            <name>BulkDefinitionId</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_BulkPaymentDefinition</typelink>
+            <sqltable>Sales_BulkPaymentSQLTable</sqltable>
+            <sqlcolumn>BULKDEFID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+                <property name="Value">Name</property>
+                <property name="Type">Sales_BulkPaymentDefinition</property>
+            </trigger>
+        </attribute>
+        <attribute>
             <name>Status</name>
             <type>Status</type>
             <typelink>Sales_BulkPaymentStatus</typelink>

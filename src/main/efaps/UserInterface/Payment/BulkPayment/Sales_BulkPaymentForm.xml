@@ -101,6 +101,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="bulkDefinition">
+            <property name="SelectAlternateOID">linkto[BulkDefinitionId].oid</property>
+            <property name="Attribute">BulkDefinitionId</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
         <field name="reportHeading" character="Heading">
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_BulkPaymentForm.reportHeading.Heading</property>
