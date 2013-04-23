@@ -37,7 +37,7 @@
             <child>Sales_PaymentAbstractMyDesk</child>
             <child>Sales_PaymentAbstractOutMyDesk</child>
             <child>Sales_ScheduleMyDesk</child>
-            <child>Sales_Reports_ProviderProduct</child>
+            <child>Sales_ReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

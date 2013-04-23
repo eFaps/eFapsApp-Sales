@@ -25,10 +25,12 @@
     <file-revision>$Rev: 9125 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Reports_ProviderProduct</name>
+        <name>Sales_ReportMyDesk</name>
         <childs>
             <child>Sales_Product4Provider_Report</child>
-			<child>Sales_Product4Provider_Report2</child>
+            <child>Sales_Product4Provider_Report2</child>
+            <child>Sales_ProductABC4Product_Report</child>
+            <child>Sales_ProductABC4Provider_Report</child>
         </childs>
     </definition>
 </ui-menu>
