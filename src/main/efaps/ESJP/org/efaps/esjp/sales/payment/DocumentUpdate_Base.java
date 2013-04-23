@@ -207,6 +207,8 @@ public abstract class DocumentUpdate_Base
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentExchangeOut");
         } else if (instance.getType().getUUID().equals(CISales.PaymentRetentionOut.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentRetentionOut");
+        } else if (instance.getType().getUUID().equals(CISales.PaymentSupplierOut.uuid)) {
+            createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentSupplierOut");
         }
         return ret;
     }

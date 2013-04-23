@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,19 +19,16 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0eac8218-273c-4e6a-ae54-2528a93c9112</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f0c72a34-d6ba-468c-ad51-790556d8ea80</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentTree_PayDoc_Menu_Action</name>
+        <name>Sales_PaymentSupplierOutTree_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDetractionOut</child>
-            <child>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentSupplierOut</child>
+            <child>Sales_PaymentSupplierOutTree_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

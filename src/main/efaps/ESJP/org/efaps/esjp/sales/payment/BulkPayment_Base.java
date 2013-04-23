@@ -182,7 +182,8 @@ public abstract class BulkPayment_Base
             // TODO add more status
             final QueryBuilder pdAttrQueryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
             pdAttrQueryBldr.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
-                            Status.find(CISales.PaymentDetractionOutStatus.uuid, "Canceled").getId());
+                            Status.find(CISales.PaymentDetractionOutStatus.uuid, "Canceled").getId(),
+                            Status.find(CISales.PaymentSupplierOutStatus.uuid, "Canceled").getId());
             final AttributeQuery pdAttrQuery = pdAttrQueryBldr.getAttributeQuery(CISales.PaymentDocumentOutAbstract.ID);
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPayment2PaymentDocument);
