@@ -34,6 +34,7 @@ import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
@@ -264,13 +265,13 @@ public abstract class SalesProductABCReport_Base
             final AggregationSubtotalBuilder<BigDecimal> amountSum = DynamicReports.sbt.sum(amountColumn);
             final AggregationSubtotalBuilder<BigDecimal> linesSum = DynamicReports.sbt.sum(linesColumn);
 
-            _builder.addColumn(productColumn.setFixedWidth(400),
+            _builder.addColumn(productColumn.setFixedWidth(300),
                                 linesColumn,
-                                linesAbcColumn,
+                                linesAbcColumn.setHorizontalAlignment(HorizontalAlignment.CENTER),
                                 itemsColumn,
-                                itemsAbcColumn,
+                                itemsAbcColumn.setHorizontalAlignment(HorizontalAlignment.CENTER),
                                 amountColumn,
-                                amountAbcColumn);
+                                amountAbcColumn.setHorizontalAlignment(HorizontalAlignment.CENTER));
             _builder.addSubtotalAtSummary(linesSum, itemsSum, amountSum);
         }
     }
@@ -392,14 +393,15 @@ public abstract class SalesProductABCReport_Base
                             .getProperty("org.efaps.esjp.sales.report.ABC4ProviderReport.LinesAbc"), "linesAbc",
                             DynamicReports.type.stringType());
 
+            final AggregationSubtotalBuilder<BigDecimal> linesSum = DynamicReports.sbt.sum(linesColumn);
             final AggregationSubtotalBuilder<BigDecimal> netPriceContSum = DynamicReports.sbt.sum(amountColumn);
 
-            _builder.addColumn(contactColumn.setFixedWidth(400),
+            _builder.addColumn(contactColumn.setFixedWidth(300),
                             linesColumn,
-                            linesAbcColumn,
+                            linesAbcColumn.setHorizontalAlignment(HorizontalAlignment.CENTER),
                             amountColumn,
-                            amountAbcColumn);
-            _builder.addSubtotalAtSummary(netPriceContSum);
+                            amountAbcColumn.setHorizontalAlignment(HorizontalAlignment.CENTER));
+            _builder.addSubtotalAtSummary(linesSum, netPriceContSum);
         }
 
     }
