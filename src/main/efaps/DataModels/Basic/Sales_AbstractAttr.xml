@@ -34,5 +34,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AbstractAttr</name>
         <parent>ERP_AttributeDefinitionAbstract</parent>
+        <purpose abstract="true"/>
     </definition>
 </datamodel-type>

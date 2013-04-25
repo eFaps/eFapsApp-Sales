@@ -33,5 +33,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Document2DocumentAbstract</name>
         <parent>ERP_Document2DocumentAbstract</parent>
+        <purpose abstract="true"/>
     </definition>
 </datamodel-type>
