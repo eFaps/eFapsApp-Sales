@@ -1604,6 +1604,74 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Update the form after change of date.
+     * 
+     * @param _parameter Parameter as passed by the eFaps API for esjp
+     * @return javascript for update
+     * @throws EFapsException on error
+     */
+    public Return updateFields4RateCurrencyFromDate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                        _parameter.getParameterValue("rateCurrencyId"));
+        // Sales-Configuration
+        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getLink("CurrencyBase");
+        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+
+        final List<Calculator> calculators = analyseTable(_parameter, null);
+
+        final StringBuilder js = new StringBuilder();
+        int i = 0;
+        for (final Calculator calculator : calculators) {
+            if (!calculator.isEmpty()) {
+                calculator.applyRate(newInst, rates[2]);
+                js.append("document.getElementsByName('netUnitPrice')[")
+                                .append(i)
+                                .append("].value='")
+                                .append(calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)))
+                                .append("';")
+                                .append("document.getElementsByName('netPrice')[")
+                                .append(i)
+                                .append("].firstChild.data='")
+                                .append(calculator.getNetPriceFmtStr(getTwoDigitsformater()))
+                                .append("';")
+                                .append("document.getElementsByName('discountNetUnitPrice')[")
+                                .append(i)
+                                .append("].firstChild.data='")
+                                .append(calculator
+                                                .getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)))
+                                .append("';");
+            }
+            i++;
+        }
+        if (calculators.size() > 0) {
+            js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'crossTotal','")
+                            .append(getCrossTotalFmtStr(calculators)).append("');")
+                            .append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'netTotal','")
+                            .append(getNetTotalFmtStr(calculators)).append("');")
+                            .append(addFields4RateCurrency(_parameter, calculators));
+            if (_parameter.getParameterValue("openAmount") != null) {
+                js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'openAmount','")
+                                .append(getBaseCrossTotal(calculators)).append("');");
+            }
+        }
+        js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'rateCurrencyData','")
+                        .append(rates[3].setScale(2, BigDecimal.ROUND_HALF_UP)).append("');")
+                        .append("document.getElementsByName('rate')[0].value='").append(rates[3]).append("';")
+                        .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                        .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
+        map.put("eFapsFieldUpdateJS", js.toString());
+        list.add(map);
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+    /**
      * Method to add extra fields to update when the currency change.
      *
      * @param _parameter as passed from eFaps API.
