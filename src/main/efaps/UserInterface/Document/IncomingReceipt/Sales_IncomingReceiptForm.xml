@@ -46,7 +46,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Reminder"
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt"
                 method="updateFields4RateCurrencyFromDate"
                 name="Sales_CreditNoteForm.currencyId.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
