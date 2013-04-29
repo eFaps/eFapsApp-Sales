@@ -38,9 +38,12 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.Command;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Checkin;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
@@ -168,7 +171,7 @@ public abstract class DocumentUpdate_Base
         throws EFapsException
     {
         Return ret = new Return();
-
+        
         final Instance instance = _parameter.getInstance();
 
         if (instance.getType().getUUID().equals(CISales.PaymentCash.uuid)) {
@@ -207,9 +210,7 @@ public abstract class DocumentUpdate_Base
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentExchangeOut");
         } else if (instance.getType().getUUID().equals(CISales.PaymentRetentionOut.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentRetentionOut");
-        } else if (instance.getType().getUUID().equals(CISales.PaymentSupplierOut.uuid)) {
-            createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentSupplierOut");
-        }
+        } 
         return ret;
     }
 
@@ -251,6 +252,30 @@ public abstract class DocumentUpdate_Base
         }
         final StandartReport report = new StandartReport();
         report.setFileName(name);
+        
+        
+        String retCurName = "";
+        String retCurName2 = "";
+        final QueryBuilder qlb1 =  new QueryBuilder(CISales.Payment);
+        qlb1.addWhereAttrEqValue(CISales.Payment.TargetDocument, _instance.getId());
+        final AttributeQuery attr1 =  qlb1.getAttributeQuery(CISales.Payment.ID);
+        
+        final QueryBuilder qlb2 = new QueryBuilder(CISales.TransactionAbstract);
+        qlb2.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attr1);
+        final MultiPrintQuery multi3 = qlb2.getPrint();
+        final SelectBuilder select = new SelectBuilder().linkto(CISales.TransactionAbstract.Account).attribute(CISales.AccountAbstract.Name);
+        final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.TransactionAbstract.Account).linkto(CISales.AccountAbstract.CurrencyLink).attribute(CIERP.Currency.Name);
+        multi3.addSelect(selCurName,select);
+        multi3.execute();
+        if(multi3.next()){
+            retCurName= multi3.<String>getSelect(select);
+            retCurName2= multi3.<String>getSelect(selCurName);
+        }
+        
+        report.getJrParameters().put("accountName",retCurName);
+        report.getJrParameters().put("accountCurrencyName",retCurName2);
+        
+       
         final Return ret = report.execute(_parameter);
 
         final File file = (File) ret.get(ReturnValues.VALUES);
@@ -264,4 +289,5 @@ public abstract class DocumentUpdate_Base
         final Checkin checkin = new Checkin(_instance);
         checkin.execute(name + "." + mime, input, ((Long) file.length()).intValue());
     }
+  
 }
