@@ -412,10 +412,10 @@ public abstract class AbstractPaymentDocument_Base
         final int selected = getSelectedRow(_parameter);
         final String doc = _parameter.getParameterValues("createDocument")[selected];
         if (doc != null) {
-            final BigDecimal total4Doc = getCrossTotal4Document(doc);
+            final BigDecimal total4Doc = getAttribute4Document(doc, CISales.DocumentSumAbstract.RateCrossTotal.name);
             final BigDecimal payments4Doc = getPayments4Document(doc);
             final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
-            final String symbol = getSymbol4Document(doc);
+            final String symbol = getSymbol4Document(doc, CISales.DocumentSumAbstract.RateCurrencyId.name, CIERP.Currency.Symbol.name);
             final StringBuilder bldr = new StringBuilder();
             bldr.append(getTwoDigitsformater().format(total4Doc))
                             .append(" / ").append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
@@ -462,14 +462,15 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
-    protected String getSymbol4Document(final String _doc)
+    protected String getSymbol4Document(final String _doc,
+                                        final String _linkTo,
+                                        final String _attribute)
         throws EFapsException
     {
         String ret = "";
         final Instance docInst = Instance.get(_doc);
         if (docInst.isValid()) {
-            final SelectBuilder selSymbol = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selSymbol = new SelectBuilder().linkto(_linkTo).attribute(_attribute);
             final PrintQuery print = new PrintQuery(_doc);
             print.addSelect(selSymbol);
             print.execute();
@@ -496,18 +497,19 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
-    protected BigDecimal getCrossTotal4Document(final String _doc)
+    protected BigDecimal getAttribute4Document(final String _doc,
+                                               final String _attribute)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
         final Instance docInst = Instance.get(_doc);
         if (docInst.isValid()) {
             final PrintQuery print = new PrintQuery(_doc);
-            print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            print.addAttribute(_attribute);
             print.execute();
-            ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            ret = print.<BigDecimal>getAttribute(_attribute);
         }
-        return ret;
+        return ret == null ? BigDecimal.ZERO : ret;
     }
 
     protected BigDecimal getSumsPositions(final Parameter _parameter)
