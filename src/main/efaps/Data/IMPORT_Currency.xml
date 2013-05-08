@@ -28,7 +28,7 @@
         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <!-- connect the Soles currency to the SystemConfiguration -->
     <object type="Admin_Common_SystemConfigurationLink">
-        <attribute name="Key">Currency4Invoice</attribute>
+        <attribute name="Key">org.efaps.sales.Currency4Invoice</attribute>
         <attribute name="Description">This link defines the exchange rate of which currency will be displayed in the Invoices.</attribute>
         <linkattribute name="Value" type="ERP_Currency" select="OID">
             <queryattribute name="UUID">41823aa0-a961-46cb-b04e-adc48d8eec2c</queryattribute>
@@ -48,7 +48,7 @@
         </linkattribute>
     </object>
     <object type="Admin_Common_SystemConfigurationLink">
-        <attribute name="Key">CurrencyBase</attribute>
+        <attribute name="Key">org.efaps.sales.CurrencyBase</attribute>
         <attribute name="Description">Base Currency used for all calculations. Meaning that e.g a invoice will always be stored in this currency.</attribute>
         <linkattribute name="Value" type="ERP_Currency" select="OID">
             <queryattribute name="UUID">41823aa0-a961-46cb-b04e-adc48d8eec2c</queryattribute>
