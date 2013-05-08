@@ -97,7 +97,7 @@
         <!-- connect the Sales_ContactTree_Documents command to the tree menu from contacts -->
         update.add2Menu("cc930e6c-4ed6-467e-a5d6-10f460c13118", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
-        <!-- connect the Sales_ContactTree_Documents command to the tree menu from contacts -->
+        <!-- connect the Sales_ContactTree_PaymentDocuments command to the tree menu from contacts -->
         update.add2Menu("318f81cf-483d-4076-8244-7b64adb88ee5", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
         <!-- Sales_Products_VirtualInventoryMyDesk -->
