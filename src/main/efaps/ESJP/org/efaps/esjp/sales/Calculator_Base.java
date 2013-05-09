@@ -403,13 +403,22 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-        final ProductPrice ret = new PriceUtil().new ProductPrice();
+        final ProductPrice ret = new PriceUtil().getProductPrice(getParameter());
         ret.setBaseRate(this.productPrice == null ? BigDecimal.ONE : this.productPrice.getBaseRate());
         ret.setCurrentCurrencyInstance(this.productPrice == null
                         ? baseInst : this.productPrice.getCurrentCurrencyInstance());
         ret.setOrigCurrencyInstance(this.productPrice == null
                         ? baseInst : this.productPrice.getOrigCurrencyInstance());
         return ret;
+    }
+
+
+    /**
+     * To be used by implementation to be able to pass Parameter.
+     * @return null
+     */
+    protected Parameter getParameter() {
+        return null;
     }
 
     /**
@@ -983,13 +992,16 @@ public abstract class Calculator_Base
                 } else {
                     ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getCurrentPrice().divide(BigDecimal.ONE.add(factor)));
+                                    : this.productPrice.getCurrentPrice().divide(BigDecimal.ONE.add(factor),
+                                                    BigDecimal.ROUND_HALF_UP));
                     ret.setBasePrice(this.productPrice.getBasePrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getBasePrice().divide(BigDecimal.ONE.add(factor)));
+                                    : this.productPrice.getBasePrice().divide(BigDecimal.ONE.add(factor),
+                                                    BigDecimal.ROUND_HALF_UP));
                     ret.setOrigPrice(this.productPrice.getOrigPrice() == null
                                     ? BigDecimal.ZERO
-                                    : this.productPrice.getOrigPrice().divide(BigDecimal.ONE.add(factor)));
+                                    : this.productPrice.getOrigPrice().divide(BigDecimal.ONE.add(factor),
+                                                    BigDecimal.ROUND_HALF_UP));
                 }
             }
         }
