@@ -35,7 +35,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("7064717a-308f-4793-be28-82af0087866d")
 @EFapsRevision("$Rev$")
-public class PriceUtil extends PriceUtil_Base
+public class PriceUtil
+    extends PriceUtil_Base
 {
-
+    /**
+     * Needed for serialization.
+     */
+    private static final long serialVersionUID = 1L;
 }

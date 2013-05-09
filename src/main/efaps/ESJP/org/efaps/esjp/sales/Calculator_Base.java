@@ -28,7 +28,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -40,6 +39,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.Tax_Base.TaxRate;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.LocalDate;
@@ -122,6 +123,9 @@ public abstract class Calculator_Base
      */
     private LocalDate localDate;
 
+    /**
+     * Length of the Decimal.
+     */
     private int longDecimal;
 
     /**
@@ -147,7 +151,7 @@ public abstract class Calculator_Base
      * @param _unitPrice            unit price
      * @param _discount             discount
      * @param _priceFromDB          must the price set from DB
-     * @param _includeMinRetail     must the minimum retail price be included
+     * @param _config               Config for this Calculator
      * @throws EFapsException on error
      */
     //CHECKSTYLE:OFF
@@ -158,14 +162,14 @@ public abstract class Calculator_Base
                            final String _unitPrice,
                            final String _discount,
                            final boolean _priceFromDB,
-                           final ICalculatorConfig _calculatorUse)
+                           final ICalculatorConfig _config)
         throws EFapsException
     //CHECKSTYLE:ON
     {
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
-        if (_calculatorUse != null) {
-            this.longDecimal = _calculatorUse.isLongDecimal(_parameter);
+        if (_config != null) {
+            this.longDecimal = _config.isLongDecimal(_parameter);
         } else {
             this.longDecimal = 2;
         }
@@ -189,7 +193,7 @@ public abstract class Calculator_Base
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    if (_calculatorUse != null && _calculatorUse.isIncludeMinRetail(_parameter)) {
+                    if (_config != null && _config.isIncludeMinRetail(_parameter)) {
                         this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
@@ -208,7 +212,7 @@ public abstract class Calculator_Base
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
                 this.taxcatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
-                if (_calculatorUse != null && _calculatorUse.isIncludeMinRetail(_parameter)) {
+                if (_config != null && _config.isIncludeMinRetail(_parameter)) {
                     this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
@@ -257,10 +261,9 @@ public abstract class Calculator_Base
 
         final Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID
-                        .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
         if (this.productPrice == null) {
             this.productPrice = getNewPrice();
         }
@@ -361,9 +364,8 @@ public abstract class Calculator_Base
     /**
      * Setter method for instance variable {@link #productNetUnitPrice}.
      *
-     * @param _netUnitPrice value for instance variable
-     *            {@link #productNetUnitPrice}
-     * @throws EFapsException
+     * @param _netUnitPrice value for instance variable {@link #productNetUnitPrice}
+     * @throws EFapsException on error
      */
     public void setNetUnitPrice(final BigDecimal _netUnitPrice)
         throws EFapsException
@@ -395,13 +397,12 @@ public abstract class Calculator_Base
 
     /**
      * @return get the new Price
+     * @throws EFapsException on error
      */
     protected ProductPrice getNewPrice()
         throws EFapsException
     {
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final ProductPrice ret = new PriceUtil().new ProductPrice();
         ret.setBaseRate(this.productPrice == null ? BigDecimal.ONE : this.productPrice.getBaseRate());
         ret.setCurrentCurrencyInstance(this.productPrice == null
@@ -413,7 +414,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the net unit price.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getNetUnitPriceStr()
         throws EFapsException
@@ -426,7 +427,7 @@ public abstract class Calculator_Base
      *
      * @param _formater formater to use
      * @return formated string representation of the net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getNetUnitPriceFmtStr(final Format _formater)
         throws EFapsException
@@ -436,7 +437,7 @@ public abstract class Calculator_Base
 
     /**
      * @return the net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public BigDecimal getNetUnitPrice()
         throws EFapsException
@@ -467,7 +468,7 @@ public abstract class Calculator_Base
      * Setter method for instance variable {@link #productNetUnitPrice}.
      *
      * @param _crossUnitPrice cross unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public void setCrossUnitPrice(final BigDecimal _crossUnitPrice)
         throws EFapsException
@@ -500,7 +501,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the cross unit price.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getCrossUnitPriceStr()
         throws EFapsException
@@ -513,7 +514,7 @@ public abstract class Calculator_Base
      *
      * @param _formater formater to use
      * @return formated string representation of the net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getCrossUnitPriceFmtStr(final Format _formater)
         throws EFapsException
@@ -525,7 +526,7 @@ public abstract class Calculator_Base
      * Get the cross unit price.
      *
      * @return cross unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public BigDecimal getCrossUnitPrice()
         throws EFapsException
@@ -585,7 +586,7 @@ public abstract class Calculator_Base
 
     /**
      * @return the discount net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public BigDecimal getDiscountNetUnitPrice()
         throws EFapsException
@@ -597,7 +598,7 @@ public abstract class Calculator_Base
      * net unit price - (net unit price / 100 * discount).
      *
      * @return discount price for the product
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductDiscountNetUnitPrice()
         throws EFapsException
@@ -622,7 +623,7 @@ public abstract class Calculator_Base
      *
      * @param _formater formater to use
      * @return formated string representation of the net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getDiscountNetUnitPriceFmtStr(final Format _formater)
         throws EFapsException
@@ -632,7 +633,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the discount net unit price.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getDiscountNetUnitPriceStr()
         throws EFapsException
@@ -666,7 +667,7 @@ public abstract class Calculator_Base
      * Getter method for the instance variable {@link #productPrice}.
      *
      * @return value of instance variable {@link #productPrice}
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductPrice()
         throws EFapsException
@@ -699,6 +700,10 @@ public abstract class Calculator_Base
         return getFormater().format(getQuantity());
     }
 
+    /**
+     * @param _formater formater to be applied
+     * @return formated Quantity
+     */
     public String getQuantityFmtStr(final Format _formater)
     {
         return _formater.format(getQuantity());
@@ -706,7 +711,7 @@ public abstract class Calculator_Base
 
     /**
      * @return the net price
-     * @throws EFapsException
+     * @throws EFapsException on errro
      */
     public BigDecimal getNetPrice()
         throws EFapsException
@@ -718,7 +723,7 @@ public abstract class Calculator_Base
      * discount net unit price * quantity.
      *
      * @return net price for the product
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductNetPrice()
         throws EFapsException
@@ -736,7 +741,7 @@ public abstract class Calculator_Base
      *
      * @param _formater formater to use
      * @return formated string representation of the net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getNetPriceFmtStr(final Format _formater)
         throws EFapsException
@@ -746,7 +751,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the cross price.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getCrossPriceStr()
         throws EFapsException
@@ -756,7 +761,7 @@ public abstract class Calculator_Base
 
     /**
      * @return the cross price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public BigDecimal getCrossPrice()
         throws EFapsException
@@ -772,7 +777,7 @@ public abstract class Calculator_Base
 
     /**
      * @return product cross price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductCrossPrice()
         throws EFapsException
@@ -790,7 +795,7 @@ public abstract class Calculator_Base
      * when the factor is different of 1, because the discount price has to be rounded before.
      *
      * @return @return discount price for the product, depending the tax factor.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductDiscountCrossUnitPrice()
         throws EFapsException
@@ -816,7 +821,7 @@ public abstract class Calculator_Base
      * Getter method for the instance variable {@link #minProductPrice}.
      *
      * @return value of instance variable {@link #minProductPrice}
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getMinProductPrice()
         throws EFapsException
@@ -849,7 +854,7 @@ public abstract class Calculator_Base
      *
      * @param _formater formater to use
      * @return formated string representation of the net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getCrossPriceFmtStr(final Format _formater)
         throws EFapsException
@@ -859,7 +864,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the net price.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getNetPriceStr()
         throws EFapsException
@@ -869,7 +874,7 @@ public abstract class Calculator_Base
 
     /**
      * @return unit cross price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductCrossUnitPrice()
         throws EFapsException
@@ -883,7 +888,7 @@ public abstract class Calculator_Base
     /**
      * @param _price depending if it is calculating the cross unit price
      * @return eval new cross unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     protected ProductPrice evalProductCrossUnitPrice(final ProductPrice _price)
         throws EFapsException
@@ -895,10 +900,7 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            // get SystemConfiguration "Sales-Configuration"
-            final SystemConfiguration sysconf = SystemConfiguration.get(UUID
-                            .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-            if (sysconf.getAttributeValueAsBoolean("ProductPriceIsNetPrice") && this.taxcatId > 0) {
+            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxcatId > 0) {
                 final TaxRate rate = getTaxRate();
                 final BigDecimal denom = new BigDecimal(rate.getDenominator());
                 final BigDecimal num = new BigDecimal(rate.getNumerator());
@@ -941,7 +943,7 @@ public abstract class Calculator_Base
 
     /**
      * @return eval new cross unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     protected ProductPrice evalProductNetUnitPrice()
         throws EFapsException
@@ -953,10 +955,7 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            // get SystemConfiguration "Sales-Configuration"
-            final SystemConfiguration sysconf = SystemConfiguration.get(UUID
-                            .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-            if (sysconf.getAttributeValueAsBoolean("ProductPriceIsNetPrice") && this.taxcatId > 0) {
+            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxcatId > 0) {
                 ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
                                 : this.productPrice.getCurrentPrice());
@@ -999,7 +998,7 @@ public abstract class Calculator_Base
 
     /**
      * @return net unit price
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public ProductPrice getProductNetUnitPrice()
         throws EFapsException

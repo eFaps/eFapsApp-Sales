@@ -33,7 +33,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales-Configuration</name>
         <attribute>
-            <key>ProductPriceIsNetPrice</key>
+            <key>org.efaps.sales.ProductPriceIsNetPrice</key>
             <value>true</value>
             <description>Do the product prices include already the tax, or must it be added? (Crossprice or netprice)</description>
         </attribute>

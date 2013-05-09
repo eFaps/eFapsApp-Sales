@@ -100,6 +100,16 @@ public abstract class PriceUtil_Base
         return getPrice(_parameter, getDateFromParameter(_parameter), Instance.get(_oid), _typeUUID);
     }
 
+    /**
+     * Method to get the Price for a product.
+     *
+     * @param _parameter    Parameter as passed form the eFaps API
+     * @param _date         Date to be used for the search
+     * @param _instance     Instance of the product the price is wanted for
+     * @param _type         price type wanted
+     * @return price for the product as BigDecimal
+     * @throws EFapsException on error
+     */
     public ProductPrice getPrice(final Parameter _parameter,
                                  final DateTime _date,
                                  final Instance _instance,
@@ -112,9 +122,10 @@ public abstract class PriceUtil_Base
     /**
      * Method to get the Price for a product.
      *
-     * @param _parameter Parameter as passed form the efaps API
-     * @param _oid oid of the product the price is wanted for
-     * @param _typeUUID uuid of th eprice type wanted
+     * @param _parameter    Parameter as passed form the eFaps API
+     * @param _date         Date to be used for the search
+     * @param _instance     Instance of the product the price is wanted for
+     * @param _typeUUID     uuid of the price type wanted
      * @return price for the product as BigDecimal
      * @throws EFapsException on error
      */
@@ -182,6 +193,7 @@ public abstract class PriceUtil_Base
      *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @param _queryBldr QueryBuilder to add to throws EFapsException
+     * @throws EFapsException on error
      */
     protected void add2QueryBldr4PriceList(final Parameter _parameter,
                                            final QueryBuilder _queryBldr)
@@ -442,8 +454,8 @@ public abstract class PriceUtil_Base
                                              final Instance _instanceProduct)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked") final Map<String, String[]> parameters = (Map<String, String[]>) _parameter
-                        .get(ParameterValues.PARAMETERS);
+        @SuppressWarnings("unchecked")
+        final Map<String, String[]> parameters = (Map<String, String[]>) _parameter.get(ParameterValues.PARAMETERS);
         final List<String> lstPrice = new ArrayList<String>();
         final DateTimeFormatter fmt = getDateFormat(null);
         final DateTimeFormatter fmt2 = getDateFormat("MM/dd");
@@ -485,9 +497,8 @@ public abstract class PriceUtil_Base
                 }
             }
         } else if (_range[0].equals(PriceUtil_Base.RangeInterval.YEAR.getKey())) {
-
+            //TODO
         }
-
         return lstPrice;
     }
 
@@ -532,9 +543,8 @@ public abstract class PriceUtil_Base
     public Return getProductsList(final Parameter _parameter)
         throws EFapsException
     {
-        return new MultiPrint()
+        final MultiPrint multi = new MultiPrint()
         {
-
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
                                          final QueryBuilder _queryBldr)
@@ -553,7 +563,8 @@ public abstract class PriceUtil_Base
                     }
                 }
             }
-        }.execute(_parameter);
+        };
+        return multi.execute(_parameter);
     }
 
     /**
@@ -590,6 +601,11 @@ public abstract class PriceUtil_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter get a ProductPrice instance
+     * @return a ProductPrice instance
+     * @throws EFapsException on error
+     */
     protected ProductPrice getProductPrice(final Parameter _parameter)
         throws EFapsException
     {

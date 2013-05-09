@@ -45,5 +45,9 @@ public interface SalesSettings
      */
     String CURRENCY4INVOICE = "org.efaps.sales.Currency4Invoice";
 
-
+    /**
+     * Boolean (true/false).
+     * Do the product prices include already the tax, or must it be added? (Crossprice or netprice)
+     */
+    String PRODPRICENET = "org.efaps.sales.ProductPriceIsNetPrice";
 }
