@@ -49,6 +49,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
@@ -90,10 +92,7 @@ public abstract class DocumentSum_Base
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
         createdDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
-
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
                         ? baseCurrInst
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
@@ -101,7 +100,6 @@ public abstract class DocumentSum_Base
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
-
 
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         final String name = getDocName4Create(_parameter);
@@ -147,21 +145,28 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
         }
 
-        insert.add(CISales.Invoice.RateCrossTotal,
+        final String groupId = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Group.name));
+        if (groupId != null) {
+            insert.add(CISales.DocumentSumAbstract.Group, groupId);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
+        }
+
+        insert.add(CISales.DocumentSumAbstract.RateCrossTotal,
                         getCrossTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.RateNetTotal,
+        insert.add(CISales.DocumentSumAbstract.RateNetTotal,
                        getNetTotal(_parameter, calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Invoice.CrossTotal,
+        insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.DocumentSumAbstract.CrossTotal,
                         getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
                                         isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.NetTotal,
+        insert.add(CISales.DocumentSumAbstract.NetTotal,
                         getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
                                         isLongDecimal(_parameter),
                                         BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.DiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 
         insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
         insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
@@ -342,9 +347,8 @@ public abstract class DocumentSum_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("rateCurrencyId"));
         final Object[] rateObj = getRateObject(_parameter);
