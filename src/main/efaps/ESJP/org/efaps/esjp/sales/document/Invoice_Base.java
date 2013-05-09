@@ -20,28 +20,15 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-
-import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
-import org.efaps.db.Instance;
-import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.sales.Calculator;
-import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateMidnight;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id$
  */
@@ -50,10 +37,9 @@ import org.joda.time.DateMidnight;
 public abstract class Invoice_Base
     extends DocumentSum
 {
-
     /**
      * Method for create a new Quotation.
-     * 
+     *
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.
@@ -61,135 +47,8 @@ public abstract class Invoice_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
         return new Return();
-    }
-
-    /**
-     * Internal Method to create the document and the position.
-     * 
-     * @param _parameter Parameter as passed from eFaps API.
-     * @return new Instance of CreatedDoc.
-     * @throws EFapsException on error.
-     */
-    protected CreatedDoc createDoc(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String date = _parameter.getParameterValue("date");
-        final List<Calculator> calcList = analyseTable(_parameter, null);
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
-
-        final Object[] rateObj = getRateObject(_parameter);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
-
-        final Insert insert = new Insert(CISales.Invoice);
-        insert.add(CISales.Invoice.RateCrossTotal, getCrossTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.RateNetTotal, getNetTotal(calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Invoice.CrossTotal,
-                        getCrossTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
-                                        BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.NetTotal,
-                        getNetTotal(calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
-                                        BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.Invoice.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Invoice.Contact, contactid);
-        insert.add(CISales.Invoice.Date, date == null ? DateTimeUtil.normalize(new DateMidnight().toDateTime()) : date);
-        insert.add(CISales.Invoice.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.Invoice.Name, getDocName4Create(_parameter));
-        insert.add(CISales.Invoice.Status, ((Long) Status.find("Sales_InvoiceStatus", "Open").getId()).toString());
-        insert.add(CISales.Invoice.Note, _parameter.getParameterValue("note"));
-        insert.add(CISales.Invoice.DueDate, _parameter.getParameterValue("dueDate"));
-        insert.add(CISales.Invoice.CurrencyId, baseCurrInst.getId());
-        insert.add(CISales.Invoice.RateCurrencyId, rateCurrInst.getId());
-        insert.add(CISales.Invoice.Rate, rateObj);
-        insert.execute();
-
-        final CreatedDoc createdDoc = new CreatedDoc(insert.getInstance());
-        createPositions(_parameter, calcList, createdDoc);
-        return createdDoc;
-    }
-
-    /**
-     * Internal Method to create the positions for this Document.
-     * 
-     * @param _parameter Parameter as passed from eFaps API.
-     * @param _calcList List of Calculators
-     * @param _createdDoc cretaed Document
-     * @throws EFapsException on error
-     */
-    protected void createPositions(final Parameter _parameter,
-                                   final List<Calculator> _calcList,
-                                   final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
-
-        final Object[] rateObj = getRateObject(_parameter);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
-        Integer i = 0;
-        for (final Calculator calc : _calcList) {
-            final Insert posIns = new Insert(CISales.InvoicePosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.InvoicePosition.Invoice, _createdDoc.getInstance().getId());
-            posIns.add(CISales.InvoicePosition.PositionNumber, i);
-            posIns.add(CISales.InvoicePosition.Product, productdId);
-            posIns.add(CISales.InvoicePosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
-            posIns.add(CISales.InvoicePosition.Quantity, calc.getQuantity());
-            posIns.add(CISales.InvoicePosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.add(CISales.InvoicePosition.Tax, calc.getTaxId());
-            posIns.add(CISales.InvoicePosition.Discount, calc.getDiscount());
-            posIns.add(CISales.InvoicePosition.CurrencyId, baseCurrInst.getId());
-            posIns.add(CISales.InvoicePosition.Rate, rateObj);
-            posIns.add(CISales.InvoicePosition.RateCurrencyId, rateCurrInst.getId());
-            posIns.add(CISales.InvoicePosition.CrossUnitPrice,
-                            calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
-                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.NetUnitPrice,
-                            calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
-                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.CrossPrice,
-                            calc.getCrossPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
-                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.NetPrice,
-                            calc.getNetPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
-                                            .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice().divide(rate,
-                            BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.RateNetUnitPrice,
-                            calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.RateCrossUnitPrice,
-                            calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.RateDiscountNetUnitPrice,
-                            calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.RateNetPrice,
-                            calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            posIns.add(CISales.InvoicePosition.RateCrossPrice,
-                            calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-
-            posIns.execute();
-            i++;
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getJavaScript(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getJavaScript(_parameter, false);
     }
 }
