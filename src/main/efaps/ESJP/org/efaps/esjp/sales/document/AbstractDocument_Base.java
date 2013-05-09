@@ -77,6 +77,8 @@ import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -1511,9 +1513,7 @@ public abstract class AbstractDocument_Base
         while (multi.next()) {
             values.put(multi.<String> getAttribute(CIERP.Currency.Name), multi.getCurrentInstance().getId());
         }
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, baseInst);
         final StringBuilder html = new StringBuilder();
         html.append("<select ").append(UIInterface.EFAPSTMPTAG)
@@ -1548,9 +1548,7 @@ public abstract class AbstractDocument_Base
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         if (currentInst == null) {
             currentInst = baseInst;
         }
@@ -1580,10 +1578,10 @@ public abstract class AbstractDocument_Base
             }
             if (calculators.size() > 0) {
                 js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'crossTotal','")
-                                .append(getCrossTotalFmtStr(calculators)).append("');")
-                                .append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'netTotal','")
-                                .append(getNetTotalFmtStr(calculators)).append("');")
-                                .append(addFields4RateCurrency(_parameter, calculators));
+                        .append(getCrossTotalFmtStr(calculators)).append("');")
+                        .append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'netTotal','")
+                        .append(getNetTotalFmtStr(calculators)).append("');")
+                        .append(addFields4RateCurrency(_parameter, calculators));
                 if (_parameter.getParameterValue("openAmount") != null) {
                     js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'openAmount','")
                                     .append(getBaseCrossTotal(calculators)).append("');");
@@ -1605,7 +1603,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Update the form after change of date.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return javascript for update
      * @throws EFapsException on error
@@ -1617,9 +1615,7 @@ public abstract class AbstractDocument_Base
         final Map<String, String> map = new HashMap<String, String>();
         final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("rateCurrencyId"));
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
 
         final List<Calculator> calculators = analyseTable(_parameter, null);
