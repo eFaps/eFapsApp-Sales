@@ -38,17 +38,17 @@
             <description>Do the product prices include already the tax, or must it be added? (Crossprice or netprice)</description>
         </attribute>
         <attribute>
-            <key>ActivateCalculateCosts</key>
+            <key>org.efaps.sales.ActivateCalculateCosts</key>
             <value>false</value>
             <description>boolean (true/false). Activate the calculation of Costs for a product in stock. Executed by calling en esjp after the insertion of a Incoming Invoice.</description>
         </attribute>
         <attribute>
-            <key>ActivateLongDecimal</key>
+            <key>org.efaps.sales.ActivateLongDecimal</key>
             <value><![CDATA[Sales_DocumentAbstract=2]]></value>
-            <description>Activate the possibility the unit price of the specified type will have until 4 decimal digits with boolean (true/false). </description>
+            <description>Properties. Activate the possibility the unit price of the specified type will have until n decimal digits. </description>
         </attribute>
         <attribute>
-            <key>ActivateMinRetailPrice</key>
+            <key>org.efaps.sales.ActivateMinRetailPrice</key>
             <value>false</value>
             <description>boolean (true/false). Activate the possibility to define a minimum retail price. </description>
         </attribute>

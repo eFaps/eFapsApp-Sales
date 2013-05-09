@@ -35,19 +35,46 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsRevision("$Rev$")
 public interface SalesSettings
 {
-    /**
-     * OID for a Link. BSe Currency for the System.
-     */
-    String CURRENCYBASE = "org.efaps.sales.CurrencyBase";
 
     /**
-     * OID for a Link. BSe Currency for the System.
+     * Boolean (true/false).<br/>
+     * Activate the calculation of Costs for a product in
+     * stock. Executed by calling en esjp after the insertion of a Incoming
+     * Invoice..
+     */
+    String CALCULATECOSTS = "org.efaps.sales.ActivateCalculateCosts";
+
+    /**
+     * OID for a Link.<br/>
+     * Default Currency for the Form like Invoice etc..
      */
     String CURRENCY4INVOICE = "org.efaps.sales.Currency4Invoice";
 
     /**
-     * Boolean (true/false).
-     * Do the product prices include already the tax, or must it be added? (Crossprice or netprice)
+     * OID for a Link.<br/>
+     * Base Currency for the System.
+     */
+    String CURRENCYBASE = "org.efaps.sales.CurrencyBase";
+
+    /**
+     * Properties.<br/>
+     * Activate the possibility the unit price of the specified type
+     * will have until n decimal digits.
+     */
+    String LONGDECIMAL = "org.efaps.sales.ActivateLongDecimal";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the possibility to define a minimum retail
+     * price.
+     */
+    String MINRETAILPRICE = "org.efaps.sales.ActivateMinRetailPrice";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Do the product prices include already the tax, or
+     * must it be added? (Crossprice or netprice)
      */
     String PRODPRICENET = "org.efaps.sales.ProductPriceIsNetPrice";
+
 }

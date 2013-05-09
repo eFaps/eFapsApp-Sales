@@ -1259,56 +1259,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return return granting access or not
-     * @throws EFapsException on error
-     */
-    public Return accessCheck4NetUnitPrice(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-        if ((field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter))
-                        || (field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter))) {
-            ret.put(ReturnValues.TRUE, true);
-        }
-        return ret;
-    }
-
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return true it minimum retail price must be applied else false
-     * @throws EFapsException on error
-     *
-     */
-    @Override
-    public boolean isIncludeMinRetail(final Parameter _parameter)
-        throws EFapsException
-    {
-        // Sales-Configuration
-        final SystemConfiguration config = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-        return config.getAttributeValueAsBoolean("ActivateMinRetailPrice");
-    }
-
-    @Override
-    public int isLongDecimal(final Parameter _parameter)
-        throws EFapsException
-    {
-        int ret = 2;
-        // Sales-Configuration
-        final SystemConfiguration config = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-        final Properties props = config.getAttributeValueAsProperties("ActivateLongDecimal");
-        final String type = getTypeName4SystemConfiguration();
-
-        if (props.containsKey(type) && Integer.valueOf(props.getProperty(type)) != ret) {
-            ret = Integer.valueOf(props.getProperty(type));
-        }
-        return ret;
-    }
-
-    /**
      * @return the type name used in SystemConfiguration
      */
     protected String getTypeName4SystemConfiguration()
@@ -1861,5 +1811,32 @@ public abstract class AbstractDocument_Base
         final String[] countAr = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                         CISales.PositionAbstract.Quantity.name));
         return countAr == null ? 0 : countAr.length;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return true it minimum retail price must be applied else false
+     * @throws EFapsException on error
+     *
+     */
+    @Override
+    public boolean isIncludeMinRetail(final Parameter _parameter)
+        throws EFapsException
+    {
+        return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
+    }
+
+    @Override
+    public int isLongDecimal(final Parameter _parameter)
+        throws EFapsException
+    {
+        int ret = 2;
+        final Properties props =  Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.LONGDECIMAL);
+        final String type = getTypeName4SystemConfiguration();
+
+        if (props.containsKey(type) && Integer.valueOf(props.getProperty(type)) != ret) {
+            ret = Integer.valueOf(props.getProperty(type));
+        }
+        return ret;
     }
 }

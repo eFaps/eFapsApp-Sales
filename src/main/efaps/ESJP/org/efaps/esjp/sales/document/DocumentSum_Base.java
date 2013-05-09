@@ -33,10 +33,13 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -76,6 +79,23 @@ public abstract class DocumentSum_Base
      * Key to the Calculator.
      */
     public static final String CALCULATORS_VALUE = "org.efaps.esjp.sales.document.DocumentSum.CalculatorValue";
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return return granting access or not
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4NetUnitPrice(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        if ((field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter))
+                        || (field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter))) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
 
     /**
      * Method to create the basic Document. The method checks for the Type to be
@@ -747,5 +767,4 @@ public abstract class DocumentSum_Base
         }
         return ret;
     }
-
 }
