@@ -77,4 +77,16 @@ public interface SalesSettings
      */
     String PRODPRICENET = "org.efaps.sales.ProductPriceIsNetPrice";
 
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the UserInterface for Sales Channel.
+     */
+    String CHANNELSALES = "org.efaps.sales.ActivateSalesChannel";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the UserInterface for Buying Route.
+     */
+    String CHANNELBUY = "org.efaps.sales.ActivateBuyingRoute";
+
 }

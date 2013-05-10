@@ -82,5 +82,15 @@
             <value><![CDATA[UUID=935a2a87-056d-4278-916b-388c53fa98e0]]></value>
             <description>Company should be setted.</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateSalesChannel</key>
+            <value>false</value>
+            <description>Boolean (true/false). Activate the UserInterface for Sales Channel.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateBuyingRoute</key>
+            <value>false</value>
+            <description>Boolean (true/false). Activate the UserInterface for Buying Route.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>
