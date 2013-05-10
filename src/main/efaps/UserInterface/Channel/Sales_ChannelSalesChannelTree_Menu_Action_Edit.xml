@@ -20,20 +20,26 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>acf896ea-21d6-4619-b4b9-90d859a2231e</uuid>
+
+    <uuid>4a4e3071-ceb8-43f2-bf19-003803af3aec</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelMyDesk</name>
-        <childs>
-            <child>Sales_ChannelSalesChannelMyDesk</child>
-            <!--
-                TODO
-                <child>Sales_ChannelBuyingRouteMyDesk</child>
-             -->
-        </childs>
+        <name>Sales_ChannelSalesChannelTree_Menu_Action_Edit</name>
+
+        <!-- target definitions -->
+        <target>
+            <form>Sales_ChannelForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
-</ui-menu>
+</ui-command>
