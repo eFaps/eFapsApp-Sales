@@ -32,7 +32,7 @@ import org.joda.time.format.DateTimeFormat;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: EventSchedule_Base.java $
  */
@@ -103,7 +103,7 @@ public class EventSchedule_Base
 
     /**
      * Generic method to get the listmap for update event.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
      * @throws EFapsException on error
@@ -181,7 +181,8 @@ public class EventSchedule_Base
     }
 
     @Override
-    protected String getMaxNumber(final Type _type,
+    protected String getMaxNumber(final Parameter _parameter,
+                                  final Type _type,
                                   final boolean _expandChild)
         throws EFapsException
     {
@@ -240,7 +241,7 @@ public class EventSchedule_Base
 
         /**
          * Getter method for the instance variable {@link #values}.
-         * 
+         *
          * @return value of instance variable {@link #values}
          */
         public Map<String, Object> getValues()
@@ -250,7 +251,7 @@ public class EventSchedule_Base
 
         /**
          * Getter method for the instance variable {@link #instance}.
-         * 
+         *
          * @return value of instance variable {@link #instance}
          */
         public Instance getInstance()
@@ -260,7 +261,7 @@ public class EventSchedule_Base
 
         /**
          * Getter method for the instance variable {@link #positions}.
-         * 
+         *
          * @return value of instance variable {@link #positions}
          */
         public List<Instance> getPositions()

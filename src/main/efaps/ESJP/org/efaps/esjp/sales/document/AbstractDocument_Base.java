@@ -1380,13 +1380,14 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the maximum for a value from the database.
-     *
+     * @param _parameter Parameter as passed by the eFaps API for esjp
      * @param _type type to search for
      * @param _expandChild expand childs
      * @return maximum
      * @throws EFapsException on error
      */
-    protected String getMaxNumber(final Type _type,
+    protected String getMaxNumber(final Parameter _parameter,
+                                  final Type _type,
                                   final boolean _expandChild)
         throws EFapsException
     {
@@ -1419,7 +1420,7 @@ public abstract class AbstractDocument_Base
         final String type = (String) properties.get("Type");
         final String includeChildTypes = (String) properties.get("IncludeChildTypes");
 
-        String number = getMaxNumber(Type.get(type), !"false".equalsIgnoreCase(includeChildTypes));
+        String number = getMaxNumber(_parameter, Type.get(type), !"false".equalsIgnoreCase(includeChildTypes));
         if (number == null) {
             number = "001-000001";
         } else {
