@@ -20,29 +20,21 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>31c8fb6b-23fb-4394-8eba-0e9d82e64121</uuid>
+    <uuid>23757f0b-09f8-486d-a5ce-8b5b1b03919e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelSalesChannel2Contact</name>
-        <parent>Sales_Channel2ContactAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_ChannelSalesChannel</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Contacts_Contact</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Sales_ChannelSalesChannelTree_Contact_Menu_Action_AddExisting_Search</name>
+        <!-- defaults -->
+        <default>
+            <command>Contacts_ContactSearch</command>
+        </default>
+        <!-- childs -->
+        <childs>
+            <child>Contacts_ContactSearch</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-search>

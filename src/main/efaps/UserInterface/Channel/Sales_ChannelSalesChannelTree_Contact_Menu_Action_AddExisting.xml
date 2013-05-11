@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,29 +20,25 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
+<ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>31c8fb6b-23fb-4394-8eba-0e9d82e64121</uuid>
+    <uuid>fd6cbc57-de02-404f-8f6b-1b0b9f8ec14b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelSalesChannel2Contact</name>
-        <parent>Sales_Channel2ContactAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_ChannelSalesChannel</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Contacts_Contact</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <name>Sales_ChannelSalesChannelTree_Contact_Menu_Action_AddExisting</name>
+        <target>
+            <search>Sales_ChannelSalesChannelTree_Contact_Menu_Action_AddExisting_Search</search>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="ConnectType">Sales_ChannelSalesChannel2Contact</property>
+            </execute>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCmdRevise">true</property>
     </definition>
-</datamodel-type>
+</ui-command>

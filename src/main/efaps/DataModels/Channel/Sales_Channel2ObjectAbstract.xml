@@ -49,8 +49,8 @@
             <sqlcolumn>ID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>FromLinkAbstract</name>
-            <type>Type</type>
+            <name>FromAbstractLink</name>
+            <type>Link</type>
             <typelink>Sales_ChannelAbstract</typelink>
             <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>

@@ -37,6 +37,9 @@
         </target>
         <!-- type tree for -->
         <type>Sales_ChannelSalesChannel</type>
+        <childs>
+            <child>Sales_ChannelSalesChannelTree_Contact</child>
+        </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
