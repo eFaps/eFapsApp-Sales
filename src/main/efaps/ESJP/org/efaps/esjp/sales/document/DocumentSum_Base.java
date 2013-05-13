@@ -227,6 +227,7 @@ public abstract class DocumentSum_Base
             map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
             map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
             map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -249,9 +250,7 @@ public abstract class DocumentSum_Base
         final Map<String, String> map = new HashMap<String, String>();
 
         final int selected = getSelectedRow(_parameter);
-
         final List<Calculator> calcList = analyseTable(_parameter, null);
-
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
             map.put("quantity", cal.getQuantityStr());
@@ -260,8 +259,8 @@ public abstract class DocumentSum_Base
             map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
             map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
             map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
             list.add(map);
-
             retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
@@ -284,7 +283,6 @@ public abstract class DocumentSum_Base
         final int selected = getSelectedRow(_parameter);
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
-
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
             map.put("quantity", cal.getQuantityStr());
@@ -293,11 +291,8 @@ public abstract class DocumentSum_Base
             map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
             map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
             map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            if (cal.getDiscount().compareTo(BigDecimal.ZERO) == 0) {
-                map.put("discount", cal.getDiscountStr());
-            }
+            map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
             list.add(map);
-
             retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
@@ -329,7 +324,6 @@ public abstract class DocumentSum_Base
         } else {
             name = "";
         }
-
         if (name.length() > 0) {
             final List<Calculator> calcList = analyseTable(_parameter, selected);
             if (calcList.size() > 0) {
@@ -341,6 +335,7 @@ public abstract class DocumentSum_Base
                 map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
                 map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
                 map.put("productAutoComplete", name);
+                map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
                 list.add(map);
                 retVal.put(ReturnValues.VALUES, list);
             }
@@ -729,6 +724,30 @@ public abstract class DocumentSum_Base
     {
         return getNetTotal(_parameter, _calcList).toString();
     }
+
+
+    /**
+     * @param _calc calculator the format is wanted for
+     * @return Decimal Format
+     * @throws EFapsException on error
+     */
+    protected DecimalFormat getDigitsFormater4Disount(final Calculator _calc)
+        throws EFapsException
+    {
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
+        if (_calc.isLongDecimal() != 2) {
+            formater.setMaximumFractionDigits(_calc.isLongDecimal());
+            formater.setMinimumFractionDigits(_calc.isLongDecimal());
+        } else {
+            formater.setMaximumFractionDigits(2);
+            formater.setMinimumFractionDigits(2);
+        }
+        formater.setRoundingMode(RoundingMode.HALF_UP);
+        formater.setParseBigDecimal(true);
+        return formater;
+    }
+
+
 
     /**
      * Method to get the net total for a list of Calculators.

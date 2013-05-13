@@ -1199,12 +1199,16 @@ public abstract class AbstractDocument_Base
     {
         final List<Calculator> ret = new ArrayList<Calculator>();
         final String[] quantities = _parameter.getParameterValues("quantity");
+        String[] discounts = _parameter.getParameterValues("discount");
         String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
         if (unitPrices == null && quantities != null) {
             unitPrices = new String[quantities.length];
             Arrays.fill(unitPrices, "");
         }
-        final String[] discounts = _parameter.getParameterValues("discount");
+        if (discounts == null && quantities != null) {
+            discounts = new String[quantities.length];
+            Arrays.fill(discounts, "");
+        }
         final String[] oids = _parameter.getParameterValues("product");
         final boolean withoutTax = "true".equals(_parameter.getParameterValue("withoutVAT"));
 

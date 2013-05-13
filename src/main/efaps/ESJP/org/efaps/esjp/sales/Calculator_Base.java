@@ -221,7 +221,7 @@ public abstract class Calculator_Base
         }
         setDiscount(_discount);
 
-        if (getMinProductPrice() != null) {
+        if (_config.isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
             final BigDecimal discountPrice = getProductPrice().getBasePrice().subtract(getProductPrice().getBasePrice()
                             .divide(new BigDecimal(100)).multiply(getDiscount()));
             if (discountPrice.compareTo(getMinProductPrice().getBasePrice()) < 0) {
@@ -554,11 +554,24 @@ public abstract class Calculator_Base
     }
 
     /**
+     * Get the cross price formated with the given formater.
+     *
+     * @param _formater formater to use
+     * @return formated string representation of the net unit price
+     * @throws EFapsException on error
+     */
+    public String getDiscountFmtStr(final Format _formater)
+        throws EFapsException
+    {
+        return _formater.format(getDiscount());
+    }
+
+    /**
      * @return string representation of the discount.
      */
     public String getDiscountStr()
     {
-        return this.formater.format(this.discount);
+        return this.formater.format(getDiscount());
     }
 
     /**
