@@ -221,17 +221,33 @@ public abstract class DocumentSum_Base
 
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
-            map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-            map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
-            map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
+            add2Map4UpdateField(_parameter, map, calcList, cal);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _map          Map the values will be added to
+     * @param calcList      list of all calculators
+     * @param cal           current calculator
+     * @throws EFapsException on error
+     */
+    protected void add2Map4UpdateField(final Parameter _parameter,
+                                       final Map<String, String> _map,
+                                       final List<Calculator> calcList,
+                                       final Calculator cal)
+        throws EFapsException
+    {
+        _map.put("quantity", cal.getQuantityStr());
+        _map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+        _map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
+        _map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
+        _map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
+        _map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+        _map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
     }
 
     /**
@@ -253,13 +269,7 @@ public abstract class DocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
-            map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-            map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
-            map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
+            add2Map4UpdateField(_parameter, map, calcList, cal);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -328,14 +338,8 @@ public abstract class DocumentSum_Base
             final List<Calculator> calcList = analyseTable(_parameter, selected);
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
-                map.put("quantity", cal.getQuantityStr());
-                map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-                map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-                map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-                map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
-                map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
+                add2Map4UpdateField(_parameter, map, calcList, cal);
                 map.put("productAutoComplete", name);
-                map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
                 list.add(map);
                 retVal.put(ReturnValues.VALUES, list);
             }
