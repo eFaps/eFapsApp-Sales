@@ -221,7 +221,7 @@ public abstract class Calculator_Base
         }
         setDiscount(_discount);
 
-        if (_config.isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
+        if (_config != null && _config.isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
             final BigDecimal discountPrice = getProductPrice().getBasePrice().subtract(getProductPrice().getBasePrice()
                             .divide(new BigDecimal(100)).multiply(getDiscount()));
             if (discountPrice.compareTo(getMinProductPrice().getBasePrice()) < 0) {
