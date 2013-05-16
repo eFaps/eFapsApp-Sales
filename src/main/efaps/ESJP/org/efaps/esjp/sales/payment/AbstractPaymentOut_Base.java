@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
@@ -37,14 +38,20 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -122,10 +129,11 @@ public abstract class AbstractPaymentOut_Base
     }
 
 
+    @Override
     protected CreatedDoc createDoc(final Parameter _parameter)
         throws EFapsException
     {
-        CreatedDoc ret = super.createDoc(_parameter);
+        final CreatedDoc ret = super.createDoc(_parameter);
 
         // in case of bulkpayment connect the paymentdoc to the bulkpayment
         if (_parameter.getInstance() != null
@@ -201,6 +209,138 @@ public abstract class AbstractPaymentOut_Base
         if (instance == null || !instance.getType().isKindOf(CISales.BulkPayment.getType())) {
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
+
+    public Return getPaymentDocuments4Pay(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+                final Object[] ids = getPayableDocuments(_parameter);
+                attrQueryBldr.addWhereAttrNotEqValue(CISales.DocumentSumAbstract.Type, ids);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
+
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.Payment);
+                attrQueryBldr2.addWhereAttrInQuery(CISales.Payment.CreateDocument, attrQuery);
+                final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.Payment.TargetDocument);
+
+                _queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentOutAbstract.ID, attrQuery2);
+
+            }
+        }.execute(_parameter);
+        return ret;
+    }
+
+    protected Object[] getPayableDocuments(final Parameter _parameter)
+    {
+        return new Object[] { CISales.IncomingInvoice.getType().getId(),
+                                CISales.IncomingReceipt.getType().getId() };
+    }
+
+    public Return dropDown4CreateDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Field()
+        {
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+                attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance().getId());
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
+
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+            }
+        }.dropDownFieldValue(_parameter);
+        return ret;
+    }
+
+    public Return updateField4PayableDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Long idDoc = Long.parseLong(_parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
+
+        final StringBuilder js = new StringBuilder();
+        js.append("var select = document.getElementsByName('")
+                        .append(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistRelatedDocument.name)
+                        .append("')[0];")
+                        .append(" select.options.length = 0; ");
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, idDoc);
+        final AttributeQuery attrQuery = attrQueryBldr
+                        .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, getPayableDocuments(_parameter));
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.DocumentSumAbstract.Name);
+        multi.execute();
+        while (multi.next()) {
+            final String typeLabel = multi.getCurrentInstance().getType().getLabel();
+            final String name = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
+            final Instance inst = multi.getCurrentInstance();
+            js.append(" select.options[select.options.length] = new Option('")
+                .append(StringEscapeUtils.escapeEcmaScript(StringEscapeUtils.escapeHtml4(typeLabel + " - " + name)))
+                .append("','").append(inst.getOid()).append("'); ");
+
+        }
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        list.add(map);
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    public Return updatePayableDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Long idDoc = Long.parseLong(_parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance().getId());
+        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, idDoc);
+
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        if (query.next()) {
+            Long newIdDoc = null;
+            if (_parameter.getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm
+                            .createExistRelatedDocument.name) != null) {
+                newIdDoc = Instance.get(_parameter.getParameterValue(CIFormSales.
+                                Sales_PaymentCheckOut4PayPaymentForm.createExistRelatedDocument.name)).getId();
+            } else {
+                newIdDoc = Instance.get(_parameter.getParameterValue("createDocument")).getId();
+            }
+            if (newIdDoc != null) {
+                final Update updatePay = new Update(query.getCurrentValue());
+                updatePay.add(CISales.Payment.CreateDocument, newIdDoc);
+                updatePay.execute();
+
+                final Insert insert = new Insert(CISales.Document2DerivativeDocument);
+                insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, newIdDoc);
+                insert.add(CISales.Document2DocumentAbstract.ToAbstractLink, idDoc);
+                insert.execute();
+            }
+        }
+
         return ret;
     }
 

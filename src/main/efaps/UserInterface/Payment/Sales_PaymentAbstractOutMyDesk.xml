@@ -29,6 +29,7 @@
         <name>Sales_PaymentAbstractOutMyDesk</name>
         <childs>
             <child>Sales_PaymentDocumentOutMyDesk</child>
+            <child>Sales_PaymentDocumentOut4PayPaymentMyDesk</child>
             <child>Sales_PaymentOrder_MyDesk</child>
             <child>Sales_BulkPaymentMyDesk</child>
             <child>Sales_BulkPaymentDefinitionMyDesk</child>

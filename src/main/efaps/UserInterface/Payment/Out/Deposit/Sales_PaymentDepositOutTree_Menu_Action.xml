@@ -32,6 +32,7 @@
             <child>Sales_PaymentDocumentTree_Renew</child>
             <child>Sales_PaymentDepositOutTree_Menu_Action_SetCanceled</child>
             <child>Sales_PaymentDocumentCheckout</child>
+            <child>Sales_PaymentDepositOutTree_Menu_Action_PayPayment</child>
         </childs>
     </definition>
 </ui-menu>
