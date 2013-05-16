@@ -1772,7 +1772,15 @@ public abstract class AbstractDocument_Base
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
-        return _parameter.getParameterValue("name4create");
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final boolean useNumGen = "true".equalsIgnoreCase((String) properties.get("UseNumberGenerator4Name"));
+        String ret;
+        if (useNumGen) {
+            ret = super.getDocName4Create(_parameter);
+        } else {
+            ret = _parameter.getParameterValue("name4create");
+        }
+        return ret;
     }
 
     protected BigDecimal getFormat4BigDecimal(final String _number)
