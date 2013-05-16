@@ -35,8 +35,15 @@ import org.efaps.util.cache.CacheReloadException;
  */
 @EFapsUUID("70a6a397-b8ef-40c5-853e-cff331bc79bb")
 @EFapsRevision("$Rev$")
-public class Sales
+public final class Sales
 {
+    /**
+     * Singelton.
+     */
+    private Sales()
+    {
+    }
+
     /**
      * @return the SystemConfigruation for Sales
      * @throws CacheReloadException on error
