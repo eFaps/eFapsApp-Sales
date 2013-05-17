@@ -326,7 +326,7 @@ public abstract class AbstractPaymentOut_Base
         final Long idDoc = Long.parseLong(_parameter
                         .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance().getId());
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance().getId());
         queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, idDoc);
 
         final InstanceQuery query = queryBldr.getQuery();
