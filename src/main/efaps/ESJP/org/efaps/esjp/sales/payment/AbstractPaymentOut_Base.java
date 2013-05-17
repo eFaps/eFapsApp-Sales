@@ -347,9 +347,9 @@ public abstract class AbstractPaymentOut_Base
                 updatePay.add(CISales.Payment.CreateDocument, newInstDoc.getId());
                 updatePay.execute();
 
-                final Insert insert = new Insert(CISales.Document2DerivativeDocument);
-                insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, newInstDoc.getId());
-                insert.add(CISales.Document2DocumentAbstract.ToAbstractLink, idDoc);
+                final Insert insert = new Insert(CISales.PaymentDocument2PayableDocument);
+                insert.add(CISales.PaymentDocument2PayableDocument.FromLink, newInstDoc.getId());
+                insert.add(CISales.PaymentDocument2PayableDocument.ToLink, idDoc);
                 insert.execute();
             }
         }
