@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
@@ -351,6 +352,24 @@ public abstract class AbstractPaymentOut_Base
                 insert.add(CISales.PaymentDocument2PayableDocument.FromLink, newInstDoc.getId());
                 insert.add(CISales.PaymentDocument2PayableDocument.ToLink, idDoc);
                 insert.execute();
+
+                final PrintQuery printPay = new PrintQuery(query.getCurrentValue());
+                printPay.addAttribute(CISales.Payment.Amount);
+                printPay.execute();
+                final BigDecimal amountPay = printPay.<BigDecimal>getAttribute(CISales.Payment.Amount);
+
+                final PrintQuery printDoc = new PrintQuery(newInstDoc);
+                printDoc.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                printDoc.execute();
+                final BigDecimal amountDoc = printDoc.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+
+                if (amountDoc.compareTo(amountPay) == 0) {
+                    final Update updateDoc = new Update(newInstDoc);
+                    updateDoc.add(CISales.DocumentSumAbstract.StatusAbstract,
+                                    Status.find(newInstDoc.getType().getStatusAttribute().getUUID(), "Paid").getId());
+                    updateDoc.execute();
+                }
+
             }
         }
 
