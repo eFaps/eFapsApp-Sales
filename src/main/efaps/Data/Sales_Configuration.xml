@@ -92,5 +92,10 @@
             <value>false</value>
             <description>Boolean (true/false). Activate the UserInterface for Buying Route.</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.PayableDocuments</key>
+            <value><![CDATA[491aa65f-cbc8-464c-86bc-ef19ed6302ad]]></value>
+            <description>UUID of the documents to pay. Incoming Invoice like default</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

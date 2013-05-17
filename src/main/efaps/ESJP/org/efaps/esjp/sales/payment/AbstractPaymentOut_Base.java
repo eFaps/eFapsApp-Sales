@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -53,6 +54,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -239,9 +242,17 @@ public abstract class AbstractPaymentOut_Base
     }
 
     protected Object[] getPayableDocuments(final Parameter _parameter)
+        throws EFapsException
     {
-        return new Object[] { CISales.IncomingInvoice.getType().getId(),
-                                CISales.IncomingReceipt.getType().getId() };
+        final String uuidsStr = Sales.getSysConfig().getAttributeValue(SalesSettings.PAYABLEDOCS);
+        final String[] uuids = uuidsStr.split(";");
+        final List<Long> lstIds = new ArrayList<Long>();
+        for (final String uuid : uuids) {
+            final Type type = Type.get(UUID.fromString(uuid));
+            lstIds.add(type.getId());
+        }
+
+        return lstIds.toArray();
     }
 
     public Return dropDown4CreateDocuments(final Parameter _parameter)
@@ -321,21 +332,23 @@ public abstract class AbstractPaymentOut_Base
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
         if (query.next()) {
-            Long newIdDoc = null;
+            Instance newInstDoc = null;
             if (_parameter.getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm
-                            .createExistRelatedDocument.name) != null) {
-                newIdDoc = Instance.get(_parameter.getParameterValue(CIFormSales.
-                                Sales_PaymentCheckOut4PayPaymentForm.createExistRelatedDocument.name)).getId();
+                            .createExistRelatedDocument.name) != null
+                            && !_parameter.getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm
+                                            .createExistRelatedDocument.name).isEmpty()) {
+                newInstDoc = Instance.get(_parameter.getParameterValue(CIFormSales.
+                                Sales_PaymentCheckOut4PayPaymentForm.createExistRelatedDocument.name));
             } else {
-                newIdDoc = Instance.get(_parameter.getParameterValue("createDocument")).getId();
+                newInstDoc = Instance.get(_parameter.getParameterValue("createDocument"));
             }
-            if (newIdDoc != null) {
+            if (newInstDoc != null && newInstDoc.isValid()) {
                 final Update updatePay = new Update(query.getCurrentValue());
-                updatePay.add(CISales.Payment.CreateDocument, newIdDoc);
+                updatePay.add(CISales.Payment.CreateDocument, newInstDoc.getId());
                 updatePay.execute();
 
                 final Insert insert = new Insert(CISales.Document2DerivativeDocument);
-                insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, newIdDoc);
+                insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, newInstDoc.getId());
                 insert.add(CISales.Document2DocumentAbstract.ToAbstractLink, idDoc);
                 insert.execute();
             }

@@ -47,7 +47,7 @@
             <trigger event="UI_FIELD_VALUE" method="emptyDropDownFieldValue" name="Sales_PaymentExchangeOut4PayPaymentForm.createExistRelatedDocument.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
             </trigger>
         </field>
-        <field name="createDocumentAutoComplete">
+        <field name="createDocument">
             <property name="Label">Sales_PaymentExchangeOut4PayPaymentForm.createDocumentAutoComplete.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>

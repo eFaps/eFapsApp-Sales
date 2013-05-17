@@ -89,4 +89,10 @@ public interface SalesSettings
      */
     String CHANNELBUY = "org.efaps.sales.ActivateBuyingRoute";
 
+    /**
+     * UUID's. <br/>
+     * UUID of the documents to pay. Incoming Invoice like default.
+     */
+    String PAYABLEDOCS = "org.efaps.sales.PayableDocuments";
+
 }
