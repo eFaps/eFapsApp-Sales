@@ -32,8 +32,8 @@
         </access>
         <target>
             <menu>Sales_PaymentOrderTree_Payment_Menu</menu>
-            <table>Sales_PaymentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+            <table>Sales_PaymentOrderPaymentTable</table>
+            <evaluate program="org.efaps.esjp.sales.document.PaymentOrder" method="getPayments">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">CreateDocument</property>
             </evaluate>

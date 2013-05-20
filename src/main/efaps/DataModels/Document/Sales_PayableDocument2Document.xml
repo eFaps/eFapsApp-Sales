@@ -27,7 +27,7 @@
   <definition>
 
     <version-expression>(version==latest)</version-expression>
-    <name>Sales_PaymentDocument2PayableDocument</name>
+    <name>Sales_PayableDocument2Document</name>
     <parent>Sales_Document2DocumentAbstract</parent>
 
     <!-- attributes -->

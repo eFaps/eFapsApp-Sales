@@ -324,11 +324,11 @@ public abstract class AbstractPaymentOut_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Long idDoc = Long.parseLong(_parameter
+        final Instance instDoc = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
         queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance().getId());
-        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, idDoc);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, instDoc.getId());
 
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();
@@ -348,9 +348,9 @@ public abstract class AbstractPaymentOut_Base
                 updatePay.add(CISales.Payment.CreateDocument, newInstDoc.getId());
                 updatePay.execute();
 
-                final Insert insert = new Insert(CISales.PaymentDocument2PayableDocument);
-                insert.add(CISales.PaymentDocument2PayableDocument.FromLink, newInstDoc.getId());
-                insert.add(CISales.PaymentDocument2PayableDocument.ToLink, idDoc);
+                final Insert insert = new Insert(CISales.PayableDocument2Document);
+                insert.add(CISales.PayableDocument2Document.FromLink, newInstDoc.getId());
+                insert.add(CISales.PayableDocument2Document.ToLink, instDoc);
                 insert.execute();
 
                 final PrintQuery printPay = new PrintQuery(query.getCurrentValue());
