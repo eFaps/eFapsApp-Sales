@@ -279,7 +279,7 @@ public abstract class AbstractPaymentOut_Base
     public Return updateField4PayableDocuments(final Parameter _parameter)
         throws EFapsException
     {
-        final Long idDoc = Long.parseLong(_parameter
+        final Instance instDoc = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
 
         final StringBuilder js = new StringBuilder();
@@ -289,7 +289,7 @@ public abstract class AbstractPaymentOut_Base
                         .append(" select.options.length = 0; ");
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, idDoc);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, instDoc.getId());
         final AttributeQuery attrQuery = attrQueryBldr
                         .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
 
@@ -350,7 +350,7 @@ public abstract class AbstractPaymentOut_Base
 
                 final Insert insert = new Insert(CISales.PayableDocument2Document);
                 insert.add(CISales.PayableDocument2Document.FromLink, newInstDoc.getId());
-                insert.add(CISales.PayableDocument2Document.ToLink, instDoc);
+                insert.add(CISales.PayableDocument2Document.ToLink, instDoc.getId());
                 insert.execute();
 
                 final PrintQuery printPay = new PrintQuery(query.getCurrentValue());
@@ -366,7 +366,7 @@ public abstract class AbstractPaymentOut_Base
                 if (amountDoc.compareTo(amountPay) == 0) {
                     final Update updateDoc = new Update(newInstDoc);
                     updateDoc.add(CISales.DocumentSumAbstract.StatusAbstract,
-                                    Status.find(newInstDoc.getType().getStatusAttribute().getUUID(), "Paid").getId());
+                                    Status.find(newInstDoc.getType().getStatusAttribute().getLink().getUUID(), "Paid").getId());
                     updateDoc.execute();
                 }
 
