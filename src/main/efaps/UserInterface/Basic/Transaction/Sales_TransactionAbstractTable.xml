@@ -75,5 +75,16 @@
             <property name="Label">Sales_TransactionAbstract/Payment.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="bulkPayment">
+            <property name="ModeView">READONLY</property>
+            <property name="SelectAlternateOID">linkto[Payment].linkto[TargetDocument].linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkto[Payment].linkto[TargetDocument].linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkto[Payment].linkto[TargetDocument].linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].attribute[Date]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_TransactionAbstract/BulkPayment.Label</property>
+            <trigger program="org.efaps.esjp.sales.Transaction"
+                    method="formatDate"
+                    name="Sales_TransactionAbstractTable.bulkPayment.UI_FIELD_FORMAT"
+                    event="UI_FIELD_FORMAT"></trigger>
+        </field>
     </definition>
 </ui-table>

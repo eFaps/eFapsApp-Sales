@@ -33,6 +33,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -241,7 +242,7 @@ public abstract class Transaction_Base
     /**
      * Method is called from a transaction to recalculate all values for the
      * accounts.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return empty Return
      * @throws EFapsException on error
@@ -278,7 +279,24 @@ public abstract class Transaction_Base
         }
 
         return new Return();
-
     }
 
+    public Return formatDate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final Return retVal = new Return();
+        final FieldValue value = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (value.getDisplay().equals(Display.READONLY)) {
+            String dec = (String) value.getValue();
+            if (dec == null || (dec != null && dec.contains("null"))) {
+                dec = "";
+            }
+            js.append(dec);
+        } else {
+            js.append(value.getValue());
+        }
+        retVal.put(ReturnValues.VALUES, js.toString());
+    return retVal;
+    }
 }
