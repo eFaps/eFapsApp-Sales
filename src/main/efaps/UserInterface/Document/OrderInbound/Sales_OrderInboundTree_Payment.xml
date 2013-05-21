@@ -21,19 +21,19 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>44521189-665b-4ccf-b54c-f05efa55e242</uuid>
+    <uuid>ff74c16d-9e50-4d04-8225-b9c066f279cd</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderTree_Payment</name>
+        <name>Sales_OrderInboundTree_Payment</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_PaymentOrderTree_Payment_Menu</menu>
+            <menu>Sales_OrderInboundTree_Payment_Menu</menu>
             <table>Sales_DocumentSumPaymentTable</table>
-            <evaluate program="org.efaps.esjp.sales.payment.PaymentCheck" method="getPayments4Document">
+            <evaluate method="getPayments4Document" program="org.efaps.esjp.sales.payment.PaymentCheck">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">CreateDocument</property>
             </evaluate>

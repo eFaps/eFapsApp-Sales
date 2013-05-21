@@ -27,7 +27,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderPaymentTable</name>
+        <name>Sales_DocumentSumPaymentTable</name>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>

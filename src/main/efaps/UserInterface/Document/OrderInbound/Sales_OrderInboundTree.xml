@@ -43,6 +43,7 @@
         <childs>
             <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_OrderInboundTree_Position</child>
+            <child>Sales_OrderInboundTree_Payment</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>

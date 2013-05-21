@@ -29,13 +29,10 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
@@ -153,27 +150,4 @@ public abstract class PaymentOrder_Base
         // paymentpayout secuencie
         return NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
     }
-
-    public Return getPayments(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PayableDocument2Document);
-                attrQueryBldr.addWhereAttrEqValue(CISales.PayableDocument2Document.ToLink,
-                                _parameter.getInstance().getId());
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CISales.PayableDocument2Document.FromLink);
-
-                _queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument, attrQuery);
-                _queryBldr.setOr(true);
-            }
-        }.execute(_parameter);
-    }
-
 }

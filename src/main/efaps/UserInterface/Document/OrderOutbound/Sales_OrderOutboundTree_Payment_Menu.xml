@@ -19,28 +19,19 @@
  Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
  Last Changed By: $Author: miguel.a.aranya $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>44521189-665b-4ccf-b54c-f05efa55e242</uuid>
+    <uuid>b0869f7b-757e-492a-a3ff-9b081058ec84</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5313 $</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderTree_Payment</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_PaymentOrderTree_Payment_Menu</menu>
-            <table>Sales_DocumentSumPaymentTable</table>
-            <evaluate program="org.efaps.esjp.sales.payment.PaymentCheck" method="getPayments4Document">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">CreateDocument</property>
-            </evaluate>
-        </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_OrderOutboundTree_Payment_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_OrderOutboundTree_Payment_Menu_Action</child>
+        </childs>
     </definition>
-</ui-command>
+
+</ui-menu>

@@ -49,6 +49,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAttribute;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -63,6 +64,7 @@ import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
@@ -836,5 +838,27 @@ public abstract class AbstractPaymentDocument_Base
         updatePayment.executeWithoutAccessCheck();
 
         return new StatusValue().setStatus(_parameter);
+    }
+
+    public Return getPayments4Document(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PayableDocument2Document);
+                attrQueryBldr.addWhereAttrEqValue(CISales.PayableDocument2Document.ToLink,
+                                _parameter.getInstance().getId());
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CISales.PayableDocument2Document.FromLink);
+
+                _queryBldr.addWhereAttrInQuery(CISales.Payment.CreateDocument, attrQuery);
+                _queryBldr.setOr(true);
+            }
+        }.execute(_parameter);
     }
 }
