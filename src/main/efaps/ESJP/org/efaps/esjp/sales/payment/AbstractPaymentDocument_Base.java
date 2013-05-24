@@ -66,6 +66,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -306,6 +307,12 @@ public abstract class AbstractPaymentDocument_Base
     public Return autoComplete4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
+        formater.setMaximumFractionDigits(2);
+        formater.setMinimumFractionDigits(2);
+        formater.setRoundingMode(RoundingMode.HALF_UP);
+        formater.setParseBigDecimal(true);
+
         final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
 
@@ -346,7 +353,11 @@ public abstract class AbstractPaymentDocument_Base
                     final MultiPrintQuery multi = queryBldr.getPrint();
                     multi.addAttribute(CISales.DocumentAbstract.OID,
                                     CISales.DocumentAbstract.Name,
-                                    CISales.DocumentAbstract.Date);
+                                    CISales.DocumentAbstract.Date,
+                                    CISales.DocumentSumAbstract.RateCrossTotal);
+                    final SelectBuilder selCur = new SelectBuilder()
+                                                    .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                    multi.addSelect(selCur);
                     multi.execute();
                     while (multi.next()) {
                         final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
@@ -357,6 +368,12 @@ public abstract class AbstractPaymentDocument_Base
                                         .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
                                         .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
                                                         Context.getThreadContext().getLocale())));
+                        if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                            final BigDecimal amount = multi
+                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                            final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
+                            choice.append(" - ").append(curr.getSymbol()).append(" ").append(formater.format(amount));
+                        }
                         final Map<String, String> map = new HashMap<String, String>();
                         map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                         map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
