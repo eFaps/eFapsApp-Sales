@@ -94,7 +94,7 @@
         </attribute>
         <attribute>
             <key>org.efaps.sales.PayableDocuments</key>
-            <value><![CDATA[491aa65f-cbc8-464c-86bc-ef19ed6302ad]]></value>
+            <value><![CDATA[491aa65f-cbc8-464c-86bc-ef19ed6302ad;612efbd7-8843-447f-bb44-7983a3e87a43]]></value>
             <description>UUID of the documents to pay. Incoming Invoice like default</description>
         </attribute>
     </definition>
