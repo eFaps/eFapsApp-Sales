@@ -261,8 +261,14 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4OrderInbound(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.OrderInbound.uuid,
-                        Status.find(CISales.OrderInboundStatus.uuid, "Open"));
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Status status;
+        if (props.containsKey("Status")) {
+            status = Status.find(CISales.OrderInboundStatus.uuid, (String) props.get("Status"));
+        } else {
+            status = Status.find(CISales.OrderInboundStatus.uuid, "Open");
+        }
+        return autoComplete4Doc(_parameter, CISales.OrderInbound.uuid, status);
     }
 
     /**
