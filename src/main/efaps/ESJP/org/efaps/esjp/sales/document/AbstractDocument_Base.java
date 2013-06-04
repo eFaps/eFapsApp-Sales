@@ -966,7 +966,6 @@ public abstract class AbstractDocument_Base
             map.put("productAutoComplete", multi.<String>getSelect(selProdName));
             map.put("product",  multi.<String>getSelect(selProdOID));
             map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
-            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
             map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                             multi.<Long>getSelect(selProdDim)));
             if (TargetMode.EDIT.equals(Context.getThreadContext()
@@ -993,14 +992,14 @@ public abstract class AbstractDocument_Base
         noEscape.add("uoM");
 
         add2SetValuesString4Postions(_parameter, values, noEscape);
-        js.append("Wicket.Event.add(window, \"domready\", function(event) {")
+        js.append("\n Wicket.Event.add(window, \"domready\", function(event) {")
             .append("setValue();");
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
             js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
         } else {
-            getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
-                            getOnCompleteScript(_parameter), false, false, noEscape);
+            js.append(getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
+                            getOnCompleteScript(_parameter), false, false, noEscape));
         }
         js.append(getDomReadyScript(_parameter, _instance))
             .append(" });");
