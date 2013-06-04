@@ -43,7 +43,9 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
-                <property name="PositionType">Sales_QuotationPosition</property>
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
 
