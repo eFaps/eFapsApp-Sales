@@ -838,10 +838,10 @@ public abstract class AbstractDocument_Base
             if (instance.isValid()) {
                 js.append("ele.value='").append(oid).append("';")
                                 .append("ele.name='").append(copy ? "copy" : "derived").append("';")
-                                .append(getSetValuesString(instance));
+                                .append(getSetValuesString(_parameter, instance));
             } else if (instCall != null && instCall.isValid()
                             && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
-                js.append(getSetValuesString(instCall));
+                js.append(getSetValuesString(_parameter, instCall));
             }
         }
         js.append("</script>");
@@ -851,11 +851,13 @@ public abstract class AbstractDocument_Base
     /**
      * Method to get the javascript part for setting the values.
      *
+     * @param _parameter Paramter as passed by the eFaps API
      * @param _instance instance to be copied
      * @return javascript
      * @throws EFapsException on error
      */
-    protected String getSetValuesString(final Instance _instance)
+    protected String getSetValuesString(final Parameter _parameter,
+                                        final Instance _instance)
         throws EFapsException
     {
 
@@ -888,32 +890,34 @@ public abstract class AbstractDocument_Base
         BigDecimal[] ratesCur = null;
         if (rates != null) {
             if (!rates[2].equals(rates[3])) {
-                currency.append("document.getElementsByName('rateCurrencyId')[0].selectedIndex=")
+                currency.append(" require([\"dojo/query\",\"dojo/NodeList-traverse\"], function(query){")
+                    .append("query(\"select[name=rateCurrencyId]\")[0].selectedIndex=")
                                 .append(((Long) rates[2]) - 1).append(";");
                 rate = (BigDecimal) rates[1];
                 final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
                 Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
                 ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
                 currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
-                        .append("document.getElementsByName('rate')[0].value='").append(ratesCur[1].toString()).append("';")
-                        .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
-                        .append("')[0].value='").append(new CurrencyInst(newInst).isInvert()).append("';");
+                    .append("query(\"input[name=rate]\")[0].value='").append(ratesCur[1].toString()).append("';")
+                    .append("query(\"input[name=rate").append(RateUI.INVERTEDSUFFIX).append("]\")[0].value='")
+                        .append(new CurrencyInst(newInst).isInvert()).append("';")
+                    .append(" });");
             }
         }
 
         js.append("function setValue() {")
-                        .append(currency)
-                        .append(getSetFieldValue(0, "contact", contactOid))
-                        .append(getSetFieldValue(0, "contactAutoComplete", contactName))
-                        .append(getSetFieldValue(0, "contactData", contactData))
-                        .append(getSetFieldValue(0, "netTotal", netTotal == null
-                                        ? BigDecimal.ZERO.toString() : formater.format(netTotal)))
-                        .append(getSetFieldValue(0, "crossTotal", netTotal == null
-                                        ? BigDecimal.ZERO.toString() : formater.format(crossTotal)))
-                        .append(getSetFieldValue(0, "note", note))
-                        .append(addAdditionalFields(_instance))
-                        .append("}")
-                        .append("function setRows() {");
+            .append(currency)
+            .append(getSetFieldValue(0, "contact", contactOid))
+            .append(getSetFieldValue(0, "contactAutoComplete", contactName))
+            .append(getSetFieldValue(0, "contactData", contactData))
+            .append(getSetFieldValue(0, "netTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(netTotal)))
+            .append(getSetFieldValue(0, "crossTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal)))
+            .append(getSetFieldValue(0, "note", note))
+            .append(addAdditionalFields(_parameter, _instance))
+            .append("}")
+            .append("function setRows() {");
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _instance.getId());
@@ -940,66 +944,70 @@ public abstract class AbstractDocument_Base
         multi.addSelect(selProdOID, selProdName, selProdDim);
         multi.execute();
 
-        final Map<Integer, Object[]> values = new TreeMap<Integer, Object[]>();
+        final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
 
         while (multi.next()) {
-            final BigDecimal netUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+            final Map<String, String> map = new HashMap<String, String>();
+
+            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
             final BigDecimal discountNetUnitPrice = multi.
-                            <BigDecimal> getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
-            final BigDecimal netPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.NetPrice);
-
-            final BigDecimal rateNetUnitPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
+                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
+            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+            final BigDecimal rateNetUnitPrice = multi.<BigDecimal>getAttribute(
+                            CISales.PositionSumAbstract.RateNetUnitPrice);
             final BigDecimal rateDiscountNetUnitPrice = multi.
-                            <BigDecimal> getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
-            final BigDecimal rateNetPrice = multi.<BigDecimal> getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
+            final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
 
-            final Object[] value = new Object[] { multi.getAttribute(CISales.PositionSumAbstract.Quantity),
-                            multi.getSelect(selProdName),
-                            multi.getSelect(selProdOID),
-                            multi.getAttribute(CISales.PositionSumAbstract.ProductDesc),
-                            multi.getAttribute(CISales.PositionSumAbstract.UoM),
-                            rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice,
-                            multi.getAttribute(CISales.PositionSumAbstract.Discount),
-                            rate != null ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                            : discountNetUnitPrice,
-                            rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice,
-                            multi.getSelect(selProdDim),
-                            multi.getCurrentInstance(),
-                            rate != null ? rateNetUnitPrice : netUnitPrice,
-                            rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice,
-                            rate != null ? rateNetPrice : netPrice };
-
-            values.put(multi.<Integer> getAttribute(CISales.PositionSumAbstract.PositionNumber), value);
+            map.put("oid", multi.getCurrentInstance().getOid());
+            map.put("quantity", multi.<BigDecimal>getAttribute(
+                            CISales.PositionSumAbstract.Quantity).stripTrailingZeros().toPlainString());
+            map.put("productAutoComplete", multi.<String>getSelect(selProdName));
+            map.put("product",  multi.<String>getSelect(selProdOID));
+            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
+                                            multi.<Long>getSelect(selProdDim)));
+            if (TargetMode.EDIT.equals(Context.getThreadContext()
+                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+                map.put("netUnitPrice", formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
+                map.put("discountNetUnitPrice",
+                                formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
+                map.put("netPrice", formater.format(rate != null ? rateNetPrice : netPrice));
+            } else {
+                map.put("netUnitPrice", formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
+                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
+                map.put("discountNetUnitPrice", formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
+                                BigDecimal.ROUND_HALF_UP)
+                                : discountNetUnitPrice));
+                map.put("netPrice", formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                : netPrice));
+                map.put("discount",
+                                formater.format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount)));
+            }
+            values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
         }
         int i = 0;
         if (!values.isEmpty()) {
-            for (final Entry<Integer, Object[]> entry : values.entrySet()) {
-                js.append(getSetFieldValue(i, "quantity",
-                                ((BigDecimal) entry.getValue()[0]).stripTrailingZeros().toPlainString()))
-                                .append(getSetFieldValue(i, "productAutoComplete", (String) entry.getValue()[1]))
-                                .append(getSetFieldValue(i, "product", (String) entry.getValue()[2]))
-                                .append(getSetFieldValue(i, "productDesc", (String) entry.getValue()[3]));
-
-                if (TargetMode.EDIT.equals(Context.getThreadContext()
-                                .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                    js.append(getSetFieldValue(i, "netUnitPrice", formaterSysConf.format(entry.getValue()[11])))
-                                    .append(getSetFieldValue(i, "discountNetUnitPrice", formaterSysConf.format(entry.getValue()[12])))
-                                    .append(getSetFieldValue(i, "netPrice", formater.format(entry.getValue()[13])));
-                } else {
-                    js.append(getSetFieldValue(i, "netUnitPrice", formaterSysConf.format(entry.getValue()[5])))
-                                    .append(getSetFieldValue(i, "discount", formater.format(entry.getValue()[6])))
-                                    .append(getSetFieldValue(i, "discountNetUnitPrice", formaterSysConf.format(entry.getValue()[7])))
-                                    .append(getSetFieldValue(i, "netPrice", formater.format(entry.getValue()[8])));
+            for (final Map<String, String> map : values.values()) {
+                js.append(getSetFieldValue(i, "quantity", map.get("quantity")))
+                    .append(getSetFieldValue(i, "productAutoComplete", map.get("productAutoComplete")))
+                    .append(getSetFieldValue(i, "product",  map.get("product")))
+                    .append(getSetFieldValue(i, "productDesc", map.get("productDesc")))
+                    .append(getSetFieldValue(i, "netUnitPrice", map.get("netUnitPrice")))
+                    .append(getSetFieldValue(i, "discountNetUnitPrice", map.get("discountNetUnitPrice")))
+                    .append(getSetFieldValue(i, "netPrice", map.get("netPrice")));
+                if (map.containsKey("discount")) {
+                    js.append(getSetFieldValue(i, "discount", map.get("discount")));
                 }
-
-                js.append(addAdditionalPositions((Instance) entry.getValue()[10], i, (String) entry.getValue()[2]))
-                                .append(getSetFieldValue(i, "uoM",
-                                                getUoMFieldStr((Long) entry.getValue()[4], (Long) entry.getValue()[9]), false));
+                js.append(getSetFieldValue(i, "uoM", map.get("uoM"), false))
+                    .append(addAdditionalPositions(_parameter, map.get("oid"), i,  map.get("product")));
                 i++;
             }
         }
-        js.append("}").append("Wicket.Event.add(window, \"domready\", function(event) {")
-                        .append("setValue();");
+        js.append("}")
+            .append("Wicket.Event.add(window, \"domready\", function(event) {")
+                    .append("setValue();");
 
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
@@ -1007,7 +1015,7 @@ public abstract class AbstractDocument_Base
         } else {
             js.append("addNewRows_positionTable(").append(i - 1).append(", setRows, null);");
         }
-        js.append(getDomReadyScript(_instance))
+        js.append(getDomReadyScript(_parameter, _instance))
                         .append(" });");
 
         return js.toString();
@@ -1016,11 +1024,13 @@ public abstract class AbstractDocument_Base
     /**
      * Method to set additional fields for the document.
      *
+     * @param _parameter Paramter as passed by the eFaps API
      * @param _instance Instance of the document.
      * @return new StringBuilder with the additional fields.
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
-    protected StringBuilder addAdditionalFields(final Instance _instance)
+    protected StringBuilder addAdditionalFields(final Parameter _parameter,
+                                                final Instance _instance)
         throws EFapsException
     {
         return new StringBuilder();
@@ -1029,13 +1039,15 @@ public abstract class AbstractDocument_Base
     /**
      * Method to set additional positions for the document.
      *
-     * @param _instPos Instance of the document.
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _oidPos OID of the position.
      * @param _oidProd OID of the product in the position.
      * @param _position Integer with the position in the positions.
      * @return new StringBuilder with the additional positions.
      * @throws EFapsException on error.
      */
-    protected StringBuilder addAdditionalPositions(final Instance _instPos,
+    protected StringBuilder addAdditionalPositions(final Parameter _parameter,
+                                                   final String _oidPos,
                                                    final Integer _position,
                                                    final String _oidProd)
         throws EFapsException
@@ -1047,11 +1059,13 @@ public abstract class AbstractDocument_Base
      * Add additional JavaScript to the Script that will be executed after the
      * DOM of the Html-Document was loaded. Can be used by implementations.
      *
+     * @param _parameter Paramter as passed by the eFaps API
      * @param _instance Instance of the derived Document
      * @return String containing valid Javascript
      * @throws EFapsException on error
      */
-    protected String getDomReadyScript(final Instance _instance)
+    protected String getDomReadyScript(final Parameter _parameter,
+                                       final Instance _instance)
         throws EFapsException
     {
         return "";
