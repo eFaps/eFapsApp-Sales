@@ -116,7 +116,7 @@ public abstract class Calculator_Base
     /**
      * Is this Calculator an empty calculator.
      */
-    private final boolean empty;
+    private boolean empty;
 
     /**
      * Date this Calculator is based on. Used for e.g. date of Taxes.
@@ -1166,5 +1166,27 @@ public abstract class Calculator_Base
     public int isLongDecimal()
     {
         return this.longDecimal;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #oid}.
+     *
+     * @param _oid value for instance variable {@link #oid}
+     */
+    public void setOid(final String _oid)
+    {
+        this.oid = _oid;
+    }
+
+
+    /**
+     * Setter method for instance variable {@link #empty}.
+     *
+     * @param _empty value for instance variable {@link #empty}
+     */
+    public void setEmpty(final boolean _empty)
+    {
+        this.empty = _empty;
     }
 }

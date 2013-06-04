@@ -28,10 +28,12 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -916,8 +918,7 @@ public abstract class AbstractDocument_Base
                             ? BigDecimal.ZERO.toString() : formater.format(crossTotal)))
             .append(getSetFieldValue(0, "note", note))
             .append(addAdditionalFields(_parameter, _instance))
-            .append("}")
-            .append("function setRows() {");
+            .append("}");
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _instance.getId());
@@ -987,38 +988,49 @@ public abstract class AbstractDocument_Base
             }
             values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
         }
-        int i = 0;
-        if (!values.isEmpty()) {
-            for (final Map<String, String> map : values.values()) {
-                js.append(getSetFieldValue(i, "quantity", map.get("quantity")))
-                    .append(getSetFieldValue(i, "productAutoComplete", map.get("productAutoComplete")))
-                    .append(getSetFieldValue(i, "product",  map.get("product")))
-                    .append(getSetFieldValue(i, "productDesc", map.get("productDesc")))
-                    .append(getSetFieldValue(i, "netUnitPrice", map.get("netUnitPrice")))
-                    .append(getSetFieldValue(i, "discountNetUnitPrice", map.get("discountNetUnitPrice")))
-                    .append(getSetFieldValue(i, "netPrice", map.get("netPrice")));
-                if (map.containsKey("discount")) {
-                    js.append(getSetFieldValue(i, "discount", map.get("discount")));
-                }
-                js.append(getSetFieldValue(i, "uoM", map.get("uoM"), false))
-                    .append(addAdditionalPositions(_parameter, map.get("oid"), i,  map.get("product")));
-                i++;
-            }
-        }
-        js.append("}")
-            .append("Wicket.Event.add(window, \"domready\", function(event) {")
-                    .append("setValue();");
 
+        final Set<String> noEscape = new HashSet<String>();
+        noEscape.add("uoM");
+
+        add2SetValuesString4Postions(_parameter, values, noEscape);
+        js.append("Wicket.Event.add(window, \"domready\", function(event) {")
+            .append("setValue();");
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-            js.append("setRows();");
+            js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
         } else {
-            js.append("addNewRows_positionTable(").append(i - 1).append(", setRows, null);");
+            getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
+                            getOnCompleteScript(_parameter), false, false, noEscape);
         }
         js.append(getDomReadyScript(_parameter, _instance))
-                        .append(" });");
-
+            .append(" });");
         return js.toString();
+    }
+
+    /**
+     * Method for acon complete script.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @return new StringBuilder with the additional fields.
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getOnCompleteScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new StringBuilder();
+    }
+
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _values values to be added to
+     * @param _noEscape no escape fields
+     */
+    protected void add2SetValuesString4Postions(final Parameter _parameter,
+                                                final Map<Integer, Map<String, String>> _values,
+                                                final Set<String> _noEscape)
+    {
+        // to be used by implementations
     }
 
     /**
@@ -1031,25 +1043,6 @@ public abstract class AbstractDocument_Base
      */
     protected StringBuilder addAdditionalFields(final Parameter _parameter,
                                                 final Instance _instance)
-        throws EFapsException
-    {
-        return new StringBuilder();
-    }
-
-    /**
-     * Method to set additional positions for the document.
-     *
-     * @param _parameter Paramter as passed by the eFaps API
-     * @param _oidPos OID of the position.
-     * @param _oidProd OID of the product in the position.
-     * @param _position Integer with the position in the positions.
-     * @return new StringBuilder with the additional positions.
-     * @throws EFapsException on error.
-     */
-    protected StringBuilder addAdditionalPositions(final Parameter _parameter,
-                                                   final String _oidPos,
-                                                   final Integer _position,
-                                                   final String _oidProd)
         throws EFapsException
     {
         return new StringBuilder();
