@@ -36,13 +36,15 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="channelName">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Channel2ContactTable.channelName.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="contactName">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Select">linkto[ToAbstractLink].attribute[Name]</property>
             <property name="Label">Sales_Channel2ContactTable.contactName.Label</property>
             <property name="ModeSearch">READONLY</property>
