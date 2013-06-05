@@ -798,7 +798,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        js.append("<script type=\"text/javascript\">");
+        js.append("<script type=\"text/javascript\">\n");
         if (_setStyle) {
             js.append("Wicket.Event.add(window, \"domready\", function(event) {")
                 .append(" var nt = document.getElementsByName('netTotal')[0];")
@@ -814,7 +814,7 @@ public abstract class AbstractDocument_Base
                 .append(" }});");
         }
 
-        js.append("Wicket.Event.add(window, \"domready\", function(event) {")
+        js.append("Wicket.Event.add(window, \"domready\", function(event) {\n")
                 .append("var cn = document.getElementsByName('rateCurrencyData');")
                 .append("if (cn.length > 0) { ")
                 .append(" cn[0].appendChild(document.createTextNode(1));")
@@ -825,7 +825,7 @@ public abstract class AbstractDocument_Base
                 .append("ele.setAttributeNode(attr);")
                 .append("require([\"dojo/query\"],function(query){")
                 .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
-                .append("});");
+                .append("});\n");
 
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = command.getTargetMode();
@@ -846,7 +846,7 @@ public abstract class AbstractDocument_Base
                 js.append(getSetValuesString(_parameter, instCall));
             }
         }
-        js.append("</script>");
+        js.append("</script>\n");
         return js.toString();
     }
 
@@ -892,7 +892,7 @@ public abstract class AbstractDocument_Base
         BigDecimal[] ratesCur = null;
         if (rates != null) {
             if (!rates[2].equals(rates[3])) {
-                currency.append(" require([\"dojo/query\",\"dojo/NodeList-traverse\"], function(query){")
+                currency.append(" require([\"dojo/query\",\"dojo/NodeList-traverse\"], function(query){\n")
                     .append("query(\"select[name=rateCurrencyId]\")[0].selectedIndex=")
                                 .append(((Long) rates[2]) - 1).append(";");
                 rate = (BigDecimal) rates[1];
@@ -903,22 +903,22 @@ public abstract class AbstractDocument_Base
                     .append("query(\"input[name=rate]\")[0].value='").append(ratesCur[1].toString()).append("';")
                     .append("query(\"input[name=rate").append(RateUI.INVERTEDSUFFIX).append("]\")[0].value='")
                         .append(new CurrencyInst(newInst).isInvert()).append("';")
-                    .append(" });");
+                    .append(" });\n");
             }
         }
 
-        js.append("function setValue() {")
+        js.append("function setValue() {\n")
             .append(currency)
-            .append(getSetFieldValue(0, "contact", contactOid))
-            .append(getSetFieldValue(0, "contactAutoComplete", contactName))
-            .append(getSetFieldValue(0, "contactData", contactData))
+            .append(getSetFieldValue(0, "contact", contactOid)).append("\n")
+            .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
+            .append(getSetFieldValue(0, "contactData", contactData)).append("\n")
             .append(getSetFieldValue(0, "netTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(netTotal)))
+                            ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
             .append(getSetFieldValue(0, "crossTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal)))
-            .append(getSetFieldValue(0, "note", note))
-            .append(addAdditionalFields(_parameter, _instance))
-            .append("}");
+                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n")
+            .append(getSetFieldValue(0, "note", note)).append("\n")
+            .append(addAdditionalFields(_parameter, _instance)).append("\n")
+            .append("}\n");
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _instance.getId());
@@ -992,8 +992,8 @@ public abstract class AbstractDocument_Base
         noEscape.add("uoM");
 
         add2SetValuesString4Postions(_parameter, values, noEscape);
-        js.append("\n Wicket.Event.add(window, \"domready\", function(event) {")
-            .append("setValue();");
+        js.append("require([\"dojo/domReady!\"], function(){\n")
+            .append("setValue();\n");
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
             js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
@@ -1002,7 +1002,7 @@ public abstract class AbstractDocument_Base
                             getOnCompleteScript(_parameter), false, false, noEscape));
         }
         js.append(getDomReadyScript(_parameter, _instance))
-            .append(" });");
+            .append(" });\n");
         return js.toString();
     }
 
