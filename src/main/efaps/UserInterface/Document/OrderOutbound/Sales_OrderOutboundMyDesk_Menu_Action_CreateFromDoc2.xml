@@ -5,7 +5,7 @@
  Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
+ you may not use this file except in compliance with the License.9
  You may obtain a copy of the License at
 
       http://www.apache.org/licenses/LICENSE-2.0
@@ -23,34 +23,32 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>27c0b295-34ba-4e56-9d8a-60b5a5f69f49</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderOutboundMyDesk_Menu_Action_CreateFromDoc2</name>
-    <access>
-      <role>Sales_Admin</role>
-    </access>
-    <!-- target definitions -->
-    <target>
-      <form>Sales_OrderOutboundForm</form>
-      <execute program="org.efaps.esjp.sales.document.OrderOutbound"
-               method="create"/>
-    </target>
-
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_OrderOutbound</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>27c0b295-34ba-4e56-9d8a-60b5a5f69f49</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderOutboundMyDesk_Menu_Action_CreateFromDoc2</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_OrderOutboundForm</form>
+            <execute program="org.efaps.esjp.sales.document.OrderOutbound" method="create">
+                <property name="PositionType">Sales_OrderOutboundPosition</property>
+                <property name="StatusGroup">Sales_OrderOutboundStatus</property>
+                <property name="Status">Open</property>
+            </execute>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_OrderOutbound</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 </ui-command>
