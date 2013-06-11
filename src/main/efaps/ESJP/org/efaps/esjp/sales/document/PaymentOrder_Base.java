@@ -138,6 +138,7 @@ public abstract class PaymentOrder_Base
         insert.add(CISales.DocumentSumAbstract.Rate, rate);
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
+        add2DocCreate(_parameter, insert, createdDoc);
         insert.execute();
 
         createdDoc.setInstance(insert.getInstance());
