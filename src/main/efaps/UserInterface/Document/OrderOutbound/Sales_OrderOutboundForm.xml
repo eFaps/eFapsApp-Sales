@@ -295,7 +295,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">HIDDEN</property>
+            <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
