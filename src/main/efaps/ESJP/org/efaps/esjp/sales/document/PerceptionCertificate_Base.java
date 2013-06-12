@@ -51,8 +51,9 @@ public abstract class PerceptionCertificate_Base
 {
 
     /**
-     * @param _parameter
-     * @param _createdDoc
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc document the Certificate belongs to
+     * @throws EFapsException on error
      */
     public void create4Doc(final Parameter _parameter,
                            final CreatedDoc _createdDoc)
@@ -90,6 +91,11 @@ public abstract class PerceptionCertificate_Base
                             perception.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
                                             BigDecimal.ROUND_HALF_UP));
             insert.execute();
+
+            final Insert relInsert = new Insert(CISales.PerceptionCertificate2Document);
+            relInsert.add(CISales.PerceptionCertificate2Document.FromLink, insert.getInstance());
+            relInsert.add(CISales.PerceptionCertificate2Document.ToLink, _createdDoc.getInstance());
+            relInsert.execute();
         }
     }
 

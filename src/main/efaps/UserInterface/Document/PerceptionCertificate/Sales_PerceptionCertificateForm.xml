@@ -78,11 +78,20 @@
                 <property name="Type">Sales_PerceptionCertificate</property>
             </trigger>
         </field>
+        <field name="nameGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="relatedDocument">
+            <property name="Label">Sales_PerceptionCertificateForm.relatedDocument.Label</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].type.label&gt; - $&lt;linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].attribute[Name]&gt;</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
@@ -118,6 +127,25 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="RowSpan">3</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_PerceptionCertificate/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+         <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_PerceptionCertificate/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
