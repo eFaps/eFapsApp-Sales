@@ -188,9 +188,13 @@ public abstract class DocumentSum_Base
                                         BigDecimal.ROUND_HALF_UP));
         insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 
-        insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
-        insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
+        insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
         insert.add(CISales.DocumentSumAbstract.Rate, rateObj);
+        insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, baseCurrInst);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, rateCurrInst);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, rateObj);
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
         add2DocCreate(_parameter, insert, createdDoc);
