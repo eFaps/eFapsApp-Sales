@@ -231,23 +231,30 @@ public abstract class DocumentSum_Base
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _map          Map the values will be added to
-     * @param calcList      list of all calculators
-     * @param cal           current calculator
+     * @param _calcList      list of all calculators
+     * @param _cal           current calculator
      * @throws EFapsException on error
      */
     protected void add2Map4UpdateField(final Parameter _parameter,
                                        final Map<String, String> _map,
-                                       final List<Calculator> calcList,
-                                       final Calculator cal)
+                                       final List<Calculator> _calcList,
+                                       final Calculator _cal)
         throws EFapsException
     {
-        _map.put("quantity", cal.getQuantityStr());
-        _map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-        _map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-        _map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
-        _map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
-        _map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-        _map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
+        //positions
+        _map.put("quantity", _cal.getQuantityStr());
+        _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(_cal)));
+        _map.put("netPrice", _cal.getNetPriceFmtStr(getTwoDigitsformater()));
+        _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(_cal)));
+        _map.put("discount", _cal.getDiscountFmtStr(getDigitsFormater4Disount(_cal)));
+
+        //totals
+        _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
+        _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
+
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
+            _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
+        }
     }
 
     /**
@@ -787,6 +794,58 @@ public abstract class DocumentSum_Base
         BigDecimal ret = BigDecimal.ZERO;
         for (final Calculator calculator : _calcList) {
             ret = ret.add(calculator.getProductCrossPrice().getBasePrice());
+        }
+        return ret;
+    }
+
+
+
+
+    /**
+     * Method to get formated String representation of the cross total for a
+     * list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return formated String representation of the cross total
+     * @throws EFapsException on error
+     */
+    protected String getPerceptionTotalFmtStr(final Parameter _parameter,
+                                         final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getTwoDigitsformater().format(getPerceptionTotal(_parameter, _calcList));
+    }
+
+    /**
+     * Method to get String representation of the cross total for a list of Calculators.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return String representation of the cross total
+     * @throws EFapsException on error
+     */
+    protected String getPerceptionTotalStr(final Parameter _parameter,
+                                      final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getPerceptionTotal(_parameter, _calcList).toString();
+    }
+
+    /**
+     * Method to get the perception total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the net total is wanted for
+     * @return the cross total
+     * @throws EFapsException on error
+     */
+    protected BigDecimal getPerceptionTotal(final Parameter _parameter,
+                                           final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calc : _calcList) {
+            ret = ret.add(calc.getPerception());
         }
         return ret;
     }

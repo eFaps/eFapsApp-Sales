@@ -129,6 +129,16 @@ public abstract class Calculator_Base
     private int longDecimal;
 
     /**
+     * Must for this Product perception be applied.
+     */
+    private boolean perceptionProduct;
+
+    /**
+     * Parameter from the eFaps API.
+     */
+    private Parameter parameter;
+
+    /**
      * Constructor used to instantiate an empty calculator.
      * @throws EFapsException on error
      */
@@ -166,6 +176,7 @@ public abstract class Calculator_Base
         throws EFapsException
     //CHECKSTYLE:ON
     {
+        this.parameter = _parameter;
         this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
         if (_config != null) {
@@ -229,6 +240,8 @@ public abstract class Calculator_Base
             }
         }
         setQuantity(_quantity);
+
+        this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
     }
 
     /**
@@ -326,6 +339,26 @@ public abstract class Calculator_Base
     }
 
     /**
+     * Getter method for the instance variable {@link #perceptionProduct}.
+     *
+     * @return value of instance variable {@link #perceptionProduct}
+     */
+    public boolean isPerceptionProduct()
+    {
+        return this.perceptionProduct;
+    }
+
+    /**
+     * Setter method for instance variable {@link #perceptionProduct}.
+     *
+     * @param _perceptionProduct value for instance variable {@link #perceptionProduct}
+     */
+    public void setPerceptionProduct(final boolean _perceptionProduct)
+    {
+        this.perceptionProduct = _perceptionProduct;
+    }
+
+    /**
      * Setter method for instance variable {@link #quantity}.
      *
      * @param _quantity value for instance variable {@link #quantity}
@@ -412,13 +445,13 @@ public abstract class Calculator_Base
         return ret;
     }
 
-
     /**
      * To be used by implementation to be able to pass Parameter.
      * @return null
      */
-    protected Parameter getParameter() {
-        return null;
+    protected Parameter getParameter()
+    {
+        return this.parameter;
     }
 
     /**
@@ -1035,6 +1068,45 @@ public abstract class Calculator_Base
     }
 
     /**
+     * @return perception
+     * @throws EFapsException on error
+     */
+    public BigDecimal getPerception()
+        throws EFapsException
+    {
+        final BigDecimal ret;
+        if (isPerceptionProduct()) {
+            ret = new Perception().calculatePerception(getParameter(), this);
+        } else {
+            ret = BigDecimal.ZERO;
+        }
+        return ret;
+    }
+
+    /**
+     * @return string representation of the Perception.
+     * @throws EFapsException on error
+     */
+    public String getPerceptionStr()
+        throws EFapsException
+    {
+        return getFormater().format(getPerception());
+    }
+
+    /**
+     * Get the Perception formated with the given formater.
+     *
+     * @param _formater formater to use
+     * @return formated string representation of the net unit price
+     * @throws EFapsException on error
+     */
+    public String getPerceptionFmtStr(final Format _formater)
+        throws EFapsException
+    {
+        return _formater.format(getPerception());
+    }
+
+    /**
      * Get the if of the current tax.
      *
      * @return tax id
@@ -1178,7 +1250,6 @@ public abstract class Calculator_Base
     {
         this.oid = _oid;
     }
-
 
     /**
      * Setter method for instance variable {@link #empty}.

@@ -95,4 +95,10 @@ public interface SalesSettings
      */
     String PAYABLEDOCS = "org.efaps.sales.PayableDocuments";
 
+    /**
+     * Boolean (true/false).<br/>
+     * Acvtivate the calculation of Perception.
+     */
+    String PERCEPTION = "org.efaps.sales.PerceptionActivate";
+
 }
