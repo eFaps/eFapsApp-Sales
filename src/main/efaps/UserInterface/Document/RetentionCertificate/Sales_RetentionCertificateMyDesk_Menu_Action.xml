@@ -19,18 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>680ff77c-dcf3-4fb9-8a72-cce29c9f1795</uuid>
+    <uuid>1fbc22df-71d7-42ee-aa74-589f8d9433e2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificateMyDeskMyDesk_Menu</name>
+        <name>Sales_RetentionCertificateMyDesk_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Sales_RetentionCertificateMyDeskMyDesk_Menu_Action</child>
+            <child>Sales_RetentionCertificateMyDesk_Menu_Action_Create</child>
+            <child>Sales_RetentionCertificateMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
 

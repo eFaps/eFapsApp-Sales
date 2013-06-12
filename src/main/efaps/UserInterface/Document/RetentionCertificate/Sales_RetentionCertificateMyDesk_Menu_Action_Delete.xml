@@ -19,20 +19,29 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>1fbc22df-71d7-42ee-aa74-589f8d9433e2</uuid>
+    <uuid>2f60bbdc-8c67-4605-b03a-50d679a8ea2f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificateMyDeskMyDesk_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_RetentionCertificateMyDeskMyDesk_Menu_Action_Create</child>
-            <child>Sales_RetentionCertificateMyDeskMyDesk_Menu_Action_Delete</child>
-        </childs>
-    </definition>
+        <name>Sales_RetentionCertificateMyDesk_Menu_Action_Delete</name>
 
-</ui-menu>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+
+        <!-- target definitions -->
+        <target>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+        </target>
+
+        <!-- properties -->
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+    </definition>
+</ui-command>

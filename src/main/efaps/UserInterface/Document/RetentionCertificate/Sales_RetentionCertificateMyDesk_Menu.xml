@@ -19,27 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>ef82486c-ff27-4f1e-b41b-92375e9e69a1</uuid>
+    <uuid>680ff77c-dcf3-4fb9-8a72-cce29c9f1795</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificateMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_RetentionCertificate</role>
-        </access>
-        <target>
-            <menu>Sales_RetentionCertificateMyDesk_Menu</menu>
-            <table>Sales_DocumentAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_RetentionCertificate</property>
-            </evaluate>
-        </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_RetentionCertificateMyDesk_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_RetentionCertificateMyDesk_Menu_Action</child>
+        </childs>
     </definition>
-</ui-command>
+
+</ui-menu>
