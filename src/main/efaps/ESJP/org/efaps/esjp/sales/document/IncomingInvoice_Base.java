@@ -36,6 +36,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Costs;
@@ -72,7 +73,23 @@ public abstract class IncomingInvoice_Base
         createPositions(_parameter, createdDoc);
         new Costs().updateCosts(_parameter, createdDoc.getInstance());
         incomingInvoiceCreateTransaction(_parameter, createdDoc);
+        connect2DocumentType(_parameter, createdDoc.getInstance());
         return new Return();
+    }
+
+    @Override
+    protected void connect2DocumentType(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.documentType.name));
+        if (instDocType.isValid() && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
     }
 
     /**
@@ -134,6 +151,7 @@ public abstract class IncomingInvoice_Base
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
             _insert.add(CISales.IncomingInvoice.Revision, revision);
         }
+
     }
 
     /**

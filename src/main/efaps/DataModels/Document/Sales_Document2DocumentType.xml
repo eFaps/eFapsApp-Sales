@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 9277 $
+ Last Changed:    $Date: 2013-04-25 14:11:19 -0500 (jue, 25 abr 2013) $
+ Last Changed By: $Author: jorge.cueva@moxter.net $
+
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>24fe1e8e-ff25-4b1d-aed5-032278a57ded</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 9277 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Document2DocumentType</name>
+        <parent>ERP_Document2DocumentTypeAbstract</parent>
+        <attribute>
+            <name>DocumentLink</name>
+            <type>Link</type>
+            <typelink>Sales_DocumentAbstract</typelink>
+            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DocumentTypeLink</name>
+            <type>Link</type>
+            <typelink>ERP_DocumentType</typelink>
+            <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
+    </definition>
+</datamodel-type>

@@ -205,6 +205,19 @@ public abstract class DocumentSum_Base
     }
 
     /**
+     * Method to connect the document with the selected document type.
+     *
+     * @param _parameter
+     * @param _instance
+     * @throws EFapsException
+     */
+    protected void connect2DocumentType(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+    }
+
+    /**
      * Method is executed as an update event of the field containing the
      * quantity of products to calculate the new totals.
      *

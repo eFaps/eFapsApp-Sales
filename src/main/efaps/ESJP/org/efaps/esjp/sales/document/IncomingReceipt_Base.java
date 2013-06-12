@@ -35,9 +35,9 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.sales.Costs;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -72,7 +72,23 @@ public abstract class IncomingReceipt_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         incomingReceiptCreateTransaction(_parameter, createdDoc);
+        connect2DocumentType(_parameter, createdDoc.getInstance());
         return new Return();
+    }
+
+    @Override
+    protected void connect2DocumentType(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingReceiptForm.documentType.name));
+        if (instDocType.isValid() && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
     }
 
     /**

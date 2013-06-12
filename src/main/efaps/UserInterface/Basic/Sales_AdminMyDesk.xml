@@ -35,6 +35,7 @@
         <name>Sales_AdminMyDesk</name>
         <childs>
             <child>Sales_TaxCategoryMyDesk</child>
+            <child>ERP_DocumentTypeMyDesk</child>
             <child>ERP_CurrencyMyDesk</child>
             <child>Sales_AccountAbstractMyDesk</child>
             <child>Sales_PaymentMyDesk</child>
