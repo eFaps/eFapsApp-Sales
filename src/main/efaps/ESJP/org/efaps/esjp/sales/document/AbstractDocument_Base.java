@@ -70,6 +70,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
@@ -439,25 +440,8 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Contact(final Parameter _parameter)
         throws EFapsException
     {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
-        queryBldr.addWhereAttrMatchValue(CIContacts.Contact.Name, input + "*").setIgnoreCase(true);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIContacts.Contact.OID, CIContacts.Contact.Name);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String> getAttribute(CIContacts.Contact.Name);
-            final String oid = multi.<String> getAttribute(CIContacts.Contact.OID);
-            final Map<String, String> map = new HashMap<String, String>();
-            map.put("eFapsAutoCompleteKEY", oid);
-            map.put("eFapsAutoCompleteVALUE", name);
-            map.put("eFapsAutoCompleteCHOICE", name);
-            list.add(map);
-        }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
+        final Contacts contacts = new Contacts();
+        return contacts.autoComplete4Contact(_parameter);
     }
 
     protected void add2QueryBldr(final Parameter _parameter,
