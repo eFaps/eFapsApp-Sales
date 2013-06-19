@@ -149,22 +149,4 @@ public class PaymentSchedule_Base
         }
         return new Return();
     }
-
-    public Return getPaymentScheduleDocuments(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String status = (String) properties.get("Status");
-        return new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                _queryBldr.addWhereAttrEqValue(CISales.IncomingInvoice.Status,
-                                Status.find(CISales.IncomingInvoiceStatus.uuid, status).getId());
-            }
-        }.execute(_parameter);
-    }
 }
