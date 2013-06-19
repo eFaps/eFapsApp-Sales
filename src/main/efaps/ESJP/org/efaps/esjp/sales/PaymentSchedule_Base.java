@@ -18,11 +18,9 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
 
 /**
