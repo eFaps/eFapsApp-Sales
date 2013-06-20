@@ -94,7 +94,7 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        
+
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
@@ -130,6 +130,13 @@
             <property name="ModeEdit">READONLY</property>
             <property name="Attribute">RateCrossTotal</property>
             <property name="Required">true</property>
+        </field>
+        <field name="spendingLink">
+            <property name="Columns">15</property>
+            <property name="Attribute">SpendingLink</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="note">
             <property name="Columns">80</property>

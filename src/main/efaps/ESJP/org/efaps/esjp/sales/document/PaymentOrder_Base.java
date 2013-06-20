@@ -69,7 +69,8 @@ public abstract class PaymentOrder_Base
         final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
                         ? baseCurrInst
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
-
+        
+        final String spendingLink = _parameter.getParameterValue("spendingLink");
         final String rateCrossTotal = _parameter.getParameterValue("rateCrossTotal");
         final BigDecimal ratcross = new BigDecimal(rateCrossTotal);
 
@@ -126,6 +127,7 @@ public abstract class PaymentOrder_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
         }
 
+        insert.add("SpendingLink", spendingLink);
         insert.add(CISales.Invoice.RateCrossTotal, ratcross);
         insert.add(CISales.Invoice.RateNetTotal, rateCrossTotal);
         insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);

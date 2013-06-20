@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+
+ Copyright 2010 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 2183 $
+  Last Changed:    $Date: 2013-05-31 16:04:32 -0500 (vie, 31 may 2013) $
+  Last Changed By: $Author: Rosa Ordonez $
+
+-->
+
+<datamodel-sqltable  xmlns="http://www.efaps.org/xsd"
+                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1045a435-d85d-4eb6-90f2-4df8193504b9</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 2183 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_DocumentExtendSQLTable</name>
+        <parent>ERP_DocumentAbstractSQLTable</parent>
+        <database>
+            <table-name>T_SAL_DOCEXT</table-name>
+            <table-parent>T_ERPDOC</table-parent>
+            <column name="INTEGER1"      type="INTEGER"/>
+        </database>
+    </definition>
+</datamodel-sqltable>

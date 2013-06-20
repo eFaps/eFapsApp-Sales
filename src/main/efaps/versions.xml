@@ -106,6 +106,9 @@
         <!-- connect the Sales_AbstractAttrMyDesk_Menu_Action_Create_PettyCashReceiptType  to  ERP_AttributeDefinitionMyDesk_Menu_Action-->
         update.add2Menu("2d69080a-7e46-411c-8eca-52a0b812eea4", "cc4a3bc2-26a7-4b51-b8e5-fabfef5ce2fa", -1);
 
+        <!-- connect Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_Create_PaymentOrderType to ERP_AttributeDefinitionMyDesk_Menu_Action -->
+        update.add2Menu("ee9db564-aea8-4a92-ab47-7dd94de13570", "cc4a3bc2-26a7-4b51-b8e5-fabfef5ce2fa", -1);
+
         <!-- connect the Sales_Products_ProductTree_SalesReport  to Products_ProductTree -->
         update.add2Menu("c6cec8fb-4f34-423d-a7cd-8bf0f136bfbf", "6de24737-8943-4258-9ef4-cc768136e266", -1);
 
