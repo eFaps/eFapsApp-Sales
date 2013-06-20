@@ -40,6 +40,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -49,6 +50,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
@@ -878,5 +880,30 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         return new org.efaps.esjp.common.uiform.Field().dropDownFieldValue(_parameter);
+    }
+
+    /**
+     * @param _parameter as passed from eFaps API.
+     * @return
+     * @throws EFapsException on error.
+     */
+    public Return search4DocumentType(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Search()
+        {
+            @Override
+            protected void add2QueryBuilder(final Parameter _parameter,
+                                            final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
+                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, instance);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentType.DocumentLink);
+
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery);
+            }
+        }.execute(_parameter);
     }
 }
