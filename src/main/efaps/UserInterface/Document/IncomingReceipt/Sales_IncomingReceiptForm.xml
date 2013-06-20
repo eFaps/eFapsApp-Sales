@@ -93,8 +93,8 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingReceiptForm.documentType.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                    method="dropDownFieldValue"
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt"
+                    method="dropDown4DocumentType"
                     name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE"
                     event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>

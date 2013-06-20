@@ -39,7 +39,10 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.sales.Costs;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -171,5 +174,40 @@ public abstract class IncomingInvoice_Base
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    @Override
+    public Return dropDown4DocumentType(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Field() {
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values) throws EFapsException
+            {
+                Boolean hasSelect = false;
+                for (final DropDownPosition val : _values) {
+                    if (val.isSelected()) {
+                        hasSelect = true;
+                    }
+                }
+                if (!hasSelect) {
+                    final Properties props = Sales.getSysConfig()
+                                    .getAttributeValueAsProperties(SalesSettings.DEFAULTDOCTYPE4DOC);
+                    if (props != null) {
+                        final Instance defInst = Instance.get(props.getProperty(CISales.IncomingInvoice.getType()
+                                        .getUUID().toString()));
+                        if (defInst.isValid()) {
+                            for (final DropDownPosition val : _values) {
+                                if (val.getValue().toString().equals(defInst.getOid())) {
+                                    val.setSelected(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }.dropDownFieldValue(_parameter);
     }
 }

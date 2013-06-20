@@ -1848,4 +1848,17 @@ public abstract class AbstractDocument_Base
         }
         return ret;
     }
+
+    /**
+     * Method to override if a default value is required for a document,
+     *
+     * @param _parameter as passed from eFaps API
+     * @return
+     * @throws EFapsException on error.
+     */
+    public Return dropDown4DocumentType(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new org.efaps.esjp.common.uiform.Field().dropDownFieldValue(_parameter);
+    }
 }
