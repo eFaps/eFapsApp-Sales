@@ -40,8 +40,8 @@
             <menu>Sales_InvoiceTree_Position_Menu</menu>
             <table>Sales_InvoicePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_InvoicePositionAbstract</property>
-                <property name="LinkFroms">InvoiceAbstract</property>
+                <property name="Type">Sales_InvoicePosition</property>
+                <property name="LinkFrom">Invoice</property>
             </evaluate>
         </target>
         <!-- properties -->
