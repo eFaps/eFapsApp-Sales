@@ -35,6 +35,7 @@
             <child>Sales_PaymentExchangeMyDesk</child>
             <child>Sales_PaymentDocument_Report</child>
             <child>Sales_CollectionOrder_MyDesk</child>
+            <child>Sales_DatedCheckMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

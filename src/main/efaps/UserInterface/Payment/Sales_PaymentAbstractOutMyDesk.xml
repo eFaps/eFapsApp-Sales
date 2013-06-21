@@ -33,6 +33,7 @@
             <child>Sales_PaymentOrder_MyDesk</child>
             <child>Sales_BulkPaymentMyDesk</child>
             <child>Sales_BulkPaymentDefinitionMyDesk</child>
+            <child>Sales_DatedCheckOutMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
