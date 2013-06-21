@@ -34,7 +34,6 @@
         <name>Sales_PaymentMyDesk_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Sales_PaymentMyDesk_Menu_Action_Create</child>
             <child>Sales_PaymentMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

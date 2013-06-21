@@ -897,9 +897,7 @@ public abstract class DocumentSum_Base
                                             final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final Instance instance = _parameter.getInstance();
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
-                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, instance);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentType.DocumentLink);
 
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery);
