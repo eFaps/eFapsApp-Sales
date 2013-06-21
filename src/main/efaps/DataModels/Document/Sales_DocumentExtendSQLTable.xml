@@ -29,7 +29,7 @@
         <parent>ERP_DocumentAbstractSQLTable</parent>
         <database>
             <table-name>T_SAL_DOCEXT</table-name>
-            <table-parent>T_ERPDOC</table-parent>
+            <parent-table>T_ERPDOC</parent-table>
             <column name="INTEGER1"      type="INTEGER"/>
         </database>
     </definition>
