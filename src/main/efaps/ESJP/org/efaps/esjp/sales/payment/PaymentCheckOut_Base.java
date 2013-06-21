@@ -24,6 +24,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
 import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.util.EFapsException;
 
@@ -52,6 +53,19 @@ public abstract class PaymentCheckOut_Base
         createPayment(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String dueDate = _parameter.getParameterValue("dueDate");
+        if (dueDate != null) {
+            _insert.add("DueDate", dueDate);
+            _createdDoc.getValues().put("DueDate", dueDate);
+        }
     }
 
 }
