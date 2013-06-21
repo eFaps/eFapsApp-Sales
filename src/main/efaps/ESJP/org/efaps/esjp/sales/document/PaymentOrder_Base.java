@@ -62,7 +62,7 @@ public abstract class PaymentOrder_Base
         throws EFapsException
     {
         final CreatedDoc createdDoc = new CreatedDoc();
-        final String name = NumberGenerator.get("PaymentOrderSequence").getNextVal();
+        final String name = getName4Create(_parameter);
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
