@@ -32,6 +32,7 @@
         <database>
             <table-name>T_SALESBULKPAYDEF</table-name>
             <!-- columns -->
+            <column name="COMPANYID"       type="INTEGER"         not-null="true"/>
             <column name="TYPEID"   not-null="true" type="INTEGER" />
             <column name="NAME"     not-null="true" type="STRING_SHORT" length="128" />
             <column name="DESCR"    not-null="true" type="STRING_SHORT" length="256" />
@@ -40,8 +41,9 @@
             <column name="CREATED"  not-null="true" type="DATETIME" />
             <column name="MODIFIER" not-null="true" type="INTEGER" />
             <column name="MODIFIED" not-null="true" type="DATETIME" />
-            <foreign name="T_SALESBULKPAYDEF_FK_CRTR" key="CREATOR"  reference="T_USERPERSON(ID)" />
-            <foreign name="T_SALESBULKPAYDEF_FK_MDFR" key="MODIFIER"  reference="T_USERPERSON(ID)" />
+            <foreign name="T_SALESBULKPAYDEF_FK_COMPANYID"  key="COMPANYID"     reference="T_USERABSTRACT(ID)"/>
+            <foreign name="T_SALESBULKPAYDEF_FK_CRTR"       key="CREATOR"  reference="T_USERPERSON(ID)" />
+            <foreign name="T_SALESBULKPAYDEF_FK_MDFR"       key="MODIFIER"  reference="T_USERPERSON(ID)" />
         </database>
     </definition>
 </datamodel-sqltable>
