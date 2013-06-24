@@ -155,7 +155,7 @@ public abstract class PriceUtil_Base
             query = queryBldr.getCachedQuery(PriceUtil_Base.CACHE_KEY).setLifespan(12)
                             .setLifespanUnit(TimeUnit.HOURS);
         } else {
-             query = queryBldr.getQuery();
+            query = queryBldr.getQuery();
         }
         query.execute();
         if (query.next()) {
@@ -164,8 +164,8 @@ public abstract class PriceUtil_Base
                             query.getCurrentValue().getId());
             final MultiPrintQuery multi;
             if (_cache) {
-                multi= queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(12)
-                            .setLifespanUnit(TimeUnit.DAYS);
+                multi = queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(12)
+                                .setLifespanUnit(TimeUnit.DAYS);
             } else {
                 multi = queryBldr2.getPrint();
             }

@@ -203,6 +203,8 @@ public abstract class DocumentSum_Base
         insert.execute();
 
         createdDoc.setInstance(insert.getInstance());
+
+        Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
         return createdDoc;
     }
 
