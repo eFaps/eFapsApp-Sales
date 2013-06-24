@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -79,6 +80,11 @@ public abstract class PriceUtil_Base
     public static final String PRODFILTER_KEY = "SALES_PRODUCT_FILTER_SESSION_KEY";
 
     /**
+     * For get the filter in the picker event.
+     */
+    public static final String CACHE_KEY = "org.efaps.esjp.sales.PriceUtil.CacheKey";
+
+    /**
      * Needed for serialization.
      */
     private static final long serialVersionUID = 1L;
@@ -97,7 +103,7 @@ public abstract class PriceUtil_Base
                                  final UUID _typeUUID)
         throws EFapsException
     {
-        return getPrice(_parameter, getDateFromParameter(_parameter), Instance.get(_oid), _typeUUID);
+        return getPrice(_parameter, getDateFromParameter(_parameter), Instance.get(_oid), _typeUUID, true);
     }
 
     /**
@@ -116,7 +122,7 @@ public abstract class PriceUtil_Base
                                  final CIType _type)
         throws EFapsException
     {
-        return getPrice(_parameter, _date, _instance, _type.getType().getUUID());
+        return getPrice(_parameter, _date, _instance, _type.getType().getUUID(), true);
     }
 
     /**
@@ -126,13 +132,15 @@ public abstract class PriceUtil_Base
      * @param _date         Date to be used for the search
      * @param _instance     Instance of the product the price is wanted for
      * @param _typeUUID     uuid of the price type wanted
+     * @param _cache        allow caching
      * @return price for the product as BigDecimal
      * @throws EFapsException on error
      */
     public ProductPrice getPrice(final Parameter _parameter,
                                  final DateTime _date,
                                  final Instance _instance,
-                                 final UUID _typeUUID)
+                                 final UUID _typeUUID,
+                                 final boolean _cache)
         throws EFapsException
     {
         final ProductPrice ret = getProductPrice(_parameter);
@@ -142,13 +150,25 @@ public abstract class PriceUtil_Base
         queryBldr.addWhereAttrLessValue(CIProducts.ProductPricelistAbstract.ValidFrom, _date.plusSeconds(1));
         queryBldr.addWhereAttrGreaterValue(CIProducts.ProductPricelistAbstract.ValidUntil, _date.minusSeconds(1));
         add2QueryBldr4PriceList(_parameter, queryBldr);
-        final InstanceQuery query = queryBldr.getQuery();
+        final InstanceQuery query;
+        if (_cache) {
+            query = queryBldr.getCachedQuery(PriceUtil_Base.CACHE_KEY).setLifespan(12)
+                            .setLifespanUnit(TimeUnit.HOURS);
+        } else {
+             query = queryBldr.getQuery();
+        }
         query.execute();
         if (query.next()) {
             final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.ProductPricelistPosition);
             queryBldr2.addWhereAttrEqValue(CIProducts.ProductPricelistPosition.ProductPricelist,
                             query.getCurrentValue().getId());
-            final MultiPrintQuery multi = queryBldr2.getPrint();
+            final MultiPrintQuery multi;
+            if (_cache) {
+                multi= queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(12)
+                            .setLifespanUnit(TimeUnit.DAYS);
+            } else {
+                multi = queryBldr2.getPrint();
+            }
             multi.addAttribute(CIProducts.ProductPricelistPosition.Price,
                             CIProducts.ProductPricelistPosition.CurrencyId);
             multi.execute();
