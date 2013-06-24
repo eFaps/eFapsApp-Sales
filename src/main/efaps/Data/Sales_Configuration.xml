@@ -100,8 +100,9 @@
         <attribute>
             <key>org.efaps.sales.DefaultDocumentType4Document</key>
             <value><![CDATA[491aa65f-cbc8-464c-86bc-ef19ed6302ad=
-8b19ef73-b093-480a-8596-f1380b4e24f6=]]></value>
-            <description>UUID of the documents with the document type name. (Invoice, Receipt)</description>
+8b19ef73-b093-480a-8596-f1380b4e24f6=
+612efbd7-8843-447f-bb44-7983a3e87a43=]]></value>
+            <description>UUID of the documents with the document type name. (Invoice, Receipt, ExternalVoucher)</description>
         </attribute>
     </definition>
 </common-systemconfiguration>
