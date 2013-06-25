@@ -28,6 +28,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.SelectBuilder;
@@ -35,8 +36,6 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.InfinispanCache;
-import org.infinispan.Cache;
 
 /**
  * TODO comment!
@@ -48,12 +47,6 @@ import org.infinispan.Cache;
 @EFapsRevision("$Rev$")
 public abstract class Perception_Base
 {
-
-    /**
-     * Name of the Cache from Infinispan.
-     */
-    public static final String CHACHE4OID = "Perception4OID";
-
     /**
      * @param _parameter parameter as passed by the eFaps API
      * @param _instance instance of a product to be checked
@@ -67,12 +60,7 @@ public abstract class Perception_Base
         boolean ret = false;
         // only if activated by SytemConfguration
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION) && _instance.isValid()) {
-            final Cache<String, PerceptionInfo> cache = InfinispanCache.get().<String, PerceptionInfo>getCache(
-                            Perception_Base.CHACHE4OID);
-            if (!cache.containsKey(_instance.getOid())) {
-                evalProduct4Perception(_parameter, _instance);
-            }
-            final PerceptionInfo info = cache.get(_instance.getOid());
+            final PerceptionInfo info = evalProduct4Perception(_parameter, _instance);
             if (info != null) {
                 ret = info.isApply();
             }
@@ -83,15 +71,18 @@ public abstract class Perception_Base
     /**
      * @param _parameter parameter as passed by the eFaps API
      * @param _instance instance of a product to be checked
+     * @return PerceptionInfo
      * @throws EFapsException on error
      */
-    public void evalProduct4Perception(final Parameter _parameter,
-                                       final Instance _instance)
+    public PerceptionInfo evalProduct4Perception(final Parameter _parameter,
+                                                 final Instance _instance)
         throws EFapsException
     {
+        final PerceptionInfo ret = newPerceptionInfo(_parameter);
         if (_instance.isValid()) {
-            final PerceptionInfo info = newPerceptionInfo(_parameter);
-            final PrintQuery print = new PrintQuery(_instance);
+
+            final PrintQuery print = new CachedPrintQuery(_instance, PriceUtil_Base.CACHE_KEY)
+                            .setLifespan(5).setLifespanUnit(TimeUnit.MINUTES);
             final SelectBuilder numSel = SelectBuilder.get().clazz(CIProducts.ClassPerception)
                             .attribute(CIProducts.ClassPerception.Numerator);
             final SelectBuilder denSel = SelectBuilder.get().clazz(CIProducts.ClassPerception)
@@ -107,17 +98,15 @@ public abstract class Perception_Base
                     final Integer denominator = print.<Integer>getSelect(denSel);
                     final BigDecimal amount = print.<BigDecimal>getSelect(amountSel);
                     final Instance currInst = print.<Instance>getSelect(currInstSel);
-                    info.setApply(true);
-                    info.setDenominator(denominator);
-                    info.setNumerator(numerator);
-                    info.setAmount(amount);
-                    info.setCurrencyInst(currInst);
+                    ret.setApply(true);
+                    ret.setDenominator(denominator);
+                    ret.setNumerator(numerator);
+                    ret.setAmount(amount);
+                    ret.setCurrencyInst(currInst);
                 }
             }
-            final Cache<String, PerceptionInfo> cache = InfinispanCache.get().<String, PerceptionInfo>getCache(
-                            Perception_Base.CHACHE4OID);
-            cache.put(_instance.getOid(), info, 5, TimeUnit.MINUTES);
         }
+        return ret;
     }
 
     /**
@@ -139,13 +128,14 @@ public abstract class Perception_Base
             if (info.getCurrencyInst().equals(currenctCurInst)) {
                 min = info.getAmount().compareTo(cross) < 0;
             } else {
-                final BigDecimal[] rates = new PriceUtil().getRates(_parameter, currenctCurInst, info.getCurrencyInst());
+                final BigDecimal[] rates = new PriceUtil()
+                                .getRates(_parameter, currenctCurInst, info.getCurrencyInst());
                 final BigDecimal compare = info.getAmount().setScale(8).multiply(rates[2]);
                 min = compare.compareTo(cross) < 0;
             }
             if (min) {
                 ret = cross.multiply(new BigDecimal(info.getNumerator()).setScale(8))
-                            .divide(new BigDecimal(info.getDenominator()).setScale(8), BigDecimal.ROUND_HALF_UP);
+                                .divide(new BigDecimal(info.getDenominator()).setScale(8), BigDecimal.ROUND_HALF_UP);
             } else {
                 ret = BigDecimal.ZERO;
             }
@@ -167,9 +157,7 @@ public abstract class Perception_Base
     {
         PerceptionInfo ret;
         if (productIsPerception(_parameter, _prodInstance)) {
-            final Cache<String, PerceptionInfo> cache = InfinispanCache.get().<String, PerceptionInfo>getCache(
-                            Perception_Base.CHACHE4OID);
-            ret = cache.get(_prodInstance.getOid());
+            ret = evalProduct4Perception(_parameter, _prodInstance);
         } else {
             ret = new PerceptionInfo();
         }
@@ -235,7 +223,7 @@ public abstract class Perception_Base
         /**
          * Setter method for instance variable {@link #apply}.
          *
-         * @param apply value for instance variable {@link #apply}
+         * @param _apply value for instance variable {@link #apply}
          */
         public void setApply(final boolean _apply)
         {
