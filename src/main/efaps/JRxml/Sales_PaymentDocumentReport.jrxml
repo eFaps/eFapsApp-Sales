@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="d52d074f-e544-4a9c-a394-1c296b0faa32">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.y" value="0"/>
 	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
 	<import value="org.efaps.number2words.Converter"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
@@ -189,7 +189,7 @@
 				<textElement>
 					<font size="10" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[($F{TypeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{TypeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03"))) ? "PRESENTACION" : ""]]></textFieldExpression>
+				<textFieldExpression><![CDATA[($F{TypeUUID}.equals( UUID.fromString("ba186b3c-fe9c-4fbf-acc2-5dff78df001b")) || $F{TypeUUID}.equals( UUID.fromString("70e1e369-711e-4959-ad68-6342a7150d03"))) ? "PRESENTACI\u00D3N" : ""]]></textFieldExpression>
 			</textField>
 		</band>
 	</columnHeader>
