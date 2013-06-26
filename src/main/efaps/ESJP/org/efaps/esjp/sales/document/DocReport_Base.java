@@ -57,6 +57,8 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -190,7 +192,7 @@ public abstract class DocReport_Base
         final String currency = _parameter.getParameterValue("currency");
         final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
         final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
-        //final String rateStr = _parameter.getParameterValue("rate");
+        // final String rateStr = _parameter.getParameterValue("rate");
 
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
         final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
@@ -205,14 +207,27 @@ public abstract class DocReport_Base
         report.getJrParameters().put("Currency", curInst.getName());
         report.getJrParameters().put("CurrencyId", curInst.getInstance().getId());
 
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+                report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
+
         addAdditionalParameters(_parameter, report);
 
         if (active) {
             final Map<String, BigDecimal> map = getRates4DateRange(curInst.getInstance(), from, to, rateCurType);
             report.getJrParameters().put("Rates", map);
             report.getJrParameters().put("Active", active);
-            /*report.getJrParameters().put("Rate", curInst.isInvert()
-                                ? BigDecimal.ONE.divide(rate, 12, BigDecimal.ROUND_HALF_UP) : rate);*/
+            /*
+             * report.getJrParameters().put("Rate", curInst.isInvert() ? BigDecimal.ONE.divide(rate, 12,
+             * BigDecimal.ROUND_HALF_UP) : rate);
+             */
         } else {
             report.getJrParameters().put("Active", active);
         }

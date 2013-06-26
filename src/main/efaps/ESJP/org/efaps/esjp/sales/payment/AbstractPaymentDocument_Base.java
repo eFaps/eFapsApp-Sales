@@ -67,6 +67,8 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -732,7 +734,8 @@ public abstract class AbstractPaymentDocument_Base
             final StandartReport report = new StandartReport();
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             _parameter.put(ParameterValues.INSTANCE, _createdDoc.getInstance());
-            Object name = _createdDoc.getValues().get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name));
+            Object name = _createdDoc.getValues().get(
+                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name));
             if (name == null) {
                 name = _createdDoc.getValues()
                                 .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Name.name));
@@ -744,11 +747,26 @@ public abstract class AbstractPaymentDocument_Base
             final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
                             .attribute(CIERP.Currency.Name);
             report.getJrParameters().put("accountName",
-                            getSelectString4AttributeAccount((String) _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.TransactionAbstract.Account.name)), null, CISales.AccountCashDesk.Name));
+                    getSelectString4AttributeAccount((String) _createdDoc.getValues()
+                                .get(getFieldName4Attribute(_parameter,
+                                            CISales.TransactionAbstract.Account.name)),
+                                            null, CISales.AccountCashDesk.Name));
             report.getJrParameters().put("accountCurrencyName",
-                            getSelectString4AttributeAccount((String) _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
+                    getSelectString4AttributeAccount((String) _createdDoc.getValues()
+                                .get(getFieldName4Attribute(_parameter,
                                             CISales.TransactionAbstract.Account.name)), selCurName, null));
+
+            final SystemConfiguration config = ERP.getSysConfig();
+            if (config != null) {
+                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+                final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+                if (companyName != null && companyTaxNumb != null && !companyName.isEmpty()
+                                && !companyTaxNumb.isEmpty()) {
+                    report.getJrParameters().put("CompanyName", companyName);
+                    report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+                }
+            }
             addParameter4Report(_parameter, report);
             ret = report.execute(_parameter);
             ret.put(ReturnValues.TRUE, true);
