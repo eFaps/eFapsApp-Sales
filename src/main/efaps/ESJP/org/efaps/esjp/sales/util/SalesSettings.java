@@ -107,4 +107,25 @@ public interface SalesSettings
      */
     String DEFAULTDOCTYPE4DOC = "org.efaps.sales.DefaultDocumentType4Document";
 
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the show variable.
+     */
+    String ACTIVATECODE4PAYMENTDOCUMENT = "org.efaps.sales.ActivateCode4PaymentDocument";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the show variable.
+     */
+    String ACTIVATECODE4PAYMENTDOCUMENTOUT = "org.efaps.sales.ActivateCode4PaymentDocumentOut";
+
+    /**
+     * UUID of the Sequence to payments document.
+     */
+    String SEQUENCE4PAYMENTDOCUMENT = "org.efaps.sales.NumberGenerator4PaymentDocument";
+
+    /**
+     * UUID of the Sequence to payments document out.
+     */
+    String SEQUENCE4PAYMENTDOCUMENTOUT = "org.efaps.sales.NumberGenerator4PaymentDocumentOut";
 }

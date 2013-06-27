@@ -73,6 +73,7 @@ import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.Invoice;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -672,16 +673,16 @@ public abstract class AbstractPaymentDocument_Base
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
         if (config != null) {
             if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())) {
-                final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocument");
+                final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENT);
                 if (active) {
-                    // Sales_PaymentDocumentAbstractSequence
-                    ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
+                    final String uuid = config.getAttributeValue(SalesSettings.SEQUENCE4PAYMENTDOCUMENT);
+                    ret = NumberGenerator.get(UUID.fromString(uuid)).getNextVal();
                 }
             } else if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
-                final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocumentOut");
+                final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENTOUT);
                 if (active) {
-                    // Sales_PaymentDocumentAbstractOutSequence
-                    ret = NumberGenerator.get(UUID.fromString("c930aeab-31ad-47d9-9aa4-fbf803a472b2")).getNextVal();
+                    final String uuid = config.getAttributeValue(SalesSettings.SEQUENCE4PAYMENTDOCUMENTOUT);
+                    ret = NumberGenerator.get(UUID.fromString(uuid)).getNextVal();
                 }
             }
         }

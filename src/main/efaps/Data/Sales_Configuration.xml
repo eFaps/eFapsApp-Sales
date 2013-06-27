@@ -63,14 +63,24 @@
             <description>boolean (true/false). Activate the mechanism to evaluate if the transaction must include Reservation.</description>
         </attribute>
         <attribute>
-            <key>ActivateCode4PaymentDocument</key>
+            <key>org.efaps.sales.ActivateCode4PaymentDocument</key>
             <value>false</value>
             <description>boolean (true/false). Activate the code to generated a new code string to insert payment document.</description>
         </attribute>
         <attribute>
-            <key>ActivateCode4PaymentDocumentOut</key>
+            <key>org.efaps.sales.ActivateCode4PaymentDocumentOut</key>
             <value>false</value>
             <description>boolean (true/false). Activate the code to generated a new code string to insert payment document out.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.NumberGenerator4PaymentDocument</key>
+            <value><![CDATA[617c3a4c-a06d-462b-8460-92cb194f1235]]></value>
+            <description>Generated number if case code is active to payment documents.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.NumberGenerator4PaymentDocumentOut</key>
+            <value><![CDATA[c930aeab-31ad-47d9-9aa4-fbf803a472b2]]></value>
+            <description>Generated sequence if case code is active to payment documents out.</description>
         </attribute>
         <attribute>
             <key>ActivatePrintReport4PaymentDocument</key>
