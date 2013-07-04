@@ -48,7 +48,6 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.datamodel.ui.UIInterface;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -444,6 +443,25 @@ public abstract class AbstractDocument_Base
         return contacts.autoComplete4Contact(_parameter);
     }
 
+    /**
+     * @param _parameter Parameter as passeb by the eFaps API
+     * @return update map
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Contacts contacts = new Contacts() {
+            @Override
+            public String getFieldValue4Contact(final Instance _instance)
+                throws EFapsException
+            {
+                return AbstractDocument_Base.this.getFieldValue4Contact(_instance);
+            }
+        };
+        return contacts.updateFields4Contact(_parameter);
+    }
+
     protected void add2QueryBldr(final Parameter _parameter,
                                  final QueryBuilder _queryBldr)
         throws EFapsException
@@ -688,28 +706,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter Parameter as passeb by the eFaps API
-     * @return update map
-     * @throws EFapsException on error
-     */
-    public Return updateFields4Contact(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instance = Instance.get(_parameter.getParameterValue("contact"));
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
-        if (instance.getId() > 0) {
-            map.put("contactData", getFieldValue4Contact(instance));
-        } else {
-            map.put("contactData", "????");
-        }
-        list.add(map);
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
-    }
-
-    /**
      * Method to get the value for the field directly under the Contact.
      *
      * @param _instance Instacne of the contact
@@ -719,26 +715,8 @@ public abstract class AbstractDocument_Base
     protected String getFieldValue4Contact(final Instance _instance)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_instance);
-        print.addSelect("class[Sales_Contacts_ClassClient].attribute[BillingAdressStreet]");
-        print.addSelect("class[Contacts_ClassOrganisation].attribute[TaxNumber]");
-        print.addSelect("class[Contacts_ClassPerson].attribute[IdentityCard]");
-        print.addSelect("class[Contacts_ClassLocation].attribute[LocationAdressStreet]");
-        print.execute();
-        final String taxnumber = print.<String> getSelect("class[Contacts_ClassOrganisation].attribute[TaxNumber]");
-        final String idcard = print.<String> getSelect("class[Contacts_ClassPerson].attribute[IdentityCard]");
-        final boolean dni = taxnumber == null || (taxnumber.length() < 1 && idcard != null && idcard.length() > 1);
-        final String street = print.getSelect("class[Sales_Contacts_ClassClient].attribute[BillingAdressStreet]");
-        final String locStreet = print.getSelect("class[Contacts_ClassLocation].attribute[LocationAdressStreet]");
-
-        final StringBuilder strBldr = new StringBuilder();
-        strBldr.append(dni ? DBProperties.getProperty("Contacts_ClassPerson/IdentityCard.Label")
-                        : DBProperties.getProperty("Contacts_ClassOrganisation/TaxNumber.Label"))
-                        .append(": ").append(dni ? idcard : taxnumber).append("  -  ")
-                        .append(DBProperties.getProperty("Sales_Contacts_ClassClient/BillingAdressStreet.Label"))
-                        .append(": ")
-                        .append(street.length() > 0 ? street : locStreet);
-        return strBldr.toString();
+        final Contacts contacts = new Contacts();
+        return contacts.getFieldValue4Contact(_instance);
     }
 
     /**
