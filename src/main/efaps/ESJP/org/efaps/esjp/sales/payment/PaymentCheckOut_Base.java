@@ -67,6 +67,8 @@ public abstract class PaymentCheckOut_Base
      * @throws EFapsException on error
      */
 
+    private final static String PAYMENT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getpayableDocument";
+    private final static String ACCOUNT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getAccount";
 
     public Return create(final Parameter _parameter)
         throws EFapsException
@@ -106,7 +108,7 @@ public abstract class PaymentCheckOut_Base
             type = Type.get(typeStr);
             QueryBuilder _queryBldr = new QueryBuilder(CISales.Payment);
             QueryBuilder qlb = new QueryBuilder(type);
-            final AttributeQuery attrQuery = qlb.getAttributeQuery("ID");
+            final AttributeQuery attrQuery = qlb.getAttributeQuery(CISales.Payment.ID);
             _queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
 
             MultiPrintQuery multi = _queryBldr.getPrint();
@@ -125,7 +127,8 @@ public abstract class PaymentCheckOut_Base
                     band = true;
                 } else {
                     QueryBuilder qlb2 = new QueryBuilder(CISales.PayableDocument2Document);
-                    qlb2.addWhereAttrEqValue("PayDocLink", multi.getCurrentInstance().getId());
+                    qlb2.addWhereAttrEqValue(CISales.PayableDocument2Document.PayDocLink, multi.getCurrentInstance()
+                                    .getId());
                     MultiPrintQuery multi2 = qlb2.getPrint();
                     final SelectBuilder selDerivaded = new SelectBuilder().linkto(
                                     CISales.PayableDocument2Document.ToLink).attribute(CISales.DocumentAbstract.Name);
@@ -148,7 +151,125 @@ public abstract class PaymentCheckOut_Base
 
     }
 
+    @SuppressWarnings("unchecked")
+    public Return getpayableDocument(Parameter _parameter)
+        throws EFapsException
+    {
+        Return ret = new Return();
 
+        Map<Instance, String> values;
+        if (Context.getThreadContext().containsRequestAttribute(PaymentCheckOut_Base.PAYMENT)) {
+            values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
+                            PaymentCheckOut_Base.PAYMENT);
+        } else {
+            values = new HashMap<Instance, String>();
+            Context.getThreadContext().setRequestAttribute(PaymentCheckOut_Base.PAYMENT, values);
+            final Map<Instance, Instance> paymentList = new HashMap<Instance, Instance>();
 
+            final List<Instance> paymentceListPos = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            final MultiPrintQuery priceListMulti = new MultiPrintQuery(paymentceListPos);
+            priceListMulti.execute();
+            while (priceListMulti.next()) {
+                paymentList.put(priceListMulti.getCurrentInstance(),
+                                priceListMulti.getCurrentInstance());
+            }
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PayableDocument2Document);
+
+            final MultiPrintQuery multi = queryBldr.getPrint();
+
+            final SelectBuilder selOrderOutboundName = new SelectBuilder().linkto(
+                            CISales.PayableDocument2Document.ToLink)
+                            .attribute(CISales.DocumentAbstract.Name);
+            final SelectBuilder selCreated = new SelectBuilder().linkto(
+                            CISales.PayableDocument2Document.FromLink)
+                            .oid();
+            final SelectBuilder selPaymentOid = new SelectBuilder().linkto(
+                            CISales.PayableDocument2Document.PayDocLink)
+                            .oid();
+
+            multi.addSelect(selOrderOutboundName, selPaymentOid, selCreated);
+            multi.execute();
+            final Map<Instance, String> derivadedDocumentPayment = new HashMap<Instance, String>();
+            while (multi.next()) {
+                if (multi.<String>getSelect(selPaymentOid) != null) {
+                    final Instance prodInst = Instance.get(multi.<String>getSelect(selPaymentOid));
+                    String name = multi.<String>getSelect(selOrderOutboundName);
+                    derivadedDocumentPayment.put(prodInst, name);
+                }
+
+            }
+
+            for (final Entry<Instance, String> entry : derivadedDocumentPayment.entrySet()) {
+                if (entry.getKey() != null && paymentList.get(entry.getKey()) != null) {
+                    values.put(paymentList.get(entry.getKey()), entry.getValue().toString());
+                }
+            }
+
+        }
+        ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+
+        return ret;
+    }
+
+    @SuppressWarnings("unchecked")
+    public Return getAccount(Parameter _parameter)
+        throws EFapsException
+    {
+        Return ret = new Return();
+
+        Map<Instance, String> values;
+        if (Context.getThreadContext().containsRequestAttribute(PaymentCheckOut_Base.ACCOUNT)) {
+            values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
+                            PaymentCheckOut_Base.ACCOUNT);
+        } else {
+            values = new HashMap<Instance, String>();
+            Context.getThreadContext().setRequestAttribute(PaymentCheckOut_Base.ACCOUNT, values);
+            final Map<Instance, Instance> paymentList = new HashMap<Instance, Instance>();
+
+            final List<Instance> paymentceListPos = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            final MultiPrintQuery priceListMulti = new MultiPrintQuery(paymentceListPos);
+            priceListMulti.execute();
+            while (priceListMulti.next()) {
+                paymentList.put(priceListMulti.getCurrentInstance(),
+                                priceListMulti.getCurrentInstance());
+            }
+
+            QueryBuilder qlb = new QueryBuilder(CISales.Payment);
+            final AttributeQuery attrQuery = qlb.getAttributeQuery(CISales.Payment.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
+
+            final MultiPrintQuery multi = queryBldr.getPrint();
+
+            final SelectBuilder selAccountName = new SelectBuilder().linkto(
+                            CISales.TransactionAbstract.Account)
+                            .attribute(CISales.AccountAbstract.Name);
+            final SelectBuilder selPaymentOid = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment).oid();
+
+            multi.addSelect(selAccountName, selPaymentOid);
+            multi.execute();
+            final Map<Instance, String> derivadedAccountPayment = new HashMap<Instance, String>();
+            while (multi.next()) {
+                final Instance paymentInst = Instance.get(multi.<String>getSelect(selPaymentOid));
+                if (multi.<String>getSelect(selPaymentOid) != null) {
+                    String name = multi.<String>getSelect(selAccountName);
+                    derivadedAccountPayment.put(paymentInst, name);
+                }
+
+            }
+
+            for (final Entry<Instance, String> entry : derivadedAccountPayment.entrySet()) {
+                if (entry.getKey() != null && paymentList.get(entry.getKey()) != null) {
+                    values.put(paymentList.get(entry.getKey()), entry.getValue().toString());
+                }
+            }
+
+        }
+        ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+
+        return ret;
+    }
 
 }

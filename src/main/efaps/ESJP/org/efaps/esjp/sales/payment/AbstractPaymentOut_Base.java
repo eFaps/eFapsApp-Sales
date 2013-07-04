@@ -351,7 +351,7 @@ public abstract class AbstractPaymentOut_Base
                 final Insert insert = new Insert(CISales.PayableDocument2Document);
                 insert.add(CISales.PayableDocument2Document.FromLink, newInstDoc.getId());
                 insert.add(CISales.PayableDocument2Document.ToLink, instDoc.getId());
-                insert.add("PayDocLink", query.getCurrentValue().getId());
+                insert.add(CISales.PayableDocument2Document.PayDocLink, query.getCurrentValue().getId());
                 insert.execute();
 
                 final PrintQuery printPay = new PrintQuery(query.getCurrentValue());
