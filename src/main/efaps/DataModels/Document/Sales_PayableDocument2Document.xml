@@ -24,26 +24,33 @@
   <file-application>eFapsApp-Sales</file-application>
   <file-revision>$Rev: 5313 $</file-revision>
 
-  <definition>
+    <definition>
 
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_PayableDocument2Document</name>
-    <parent>Sales_Document2DocumentAbstract</parent>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PayableDocument2Document</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
 
-    <!-- attributes -->
-    <attribute>
-      <name>FromLink</name>
-      <type>Link</type>
-      <typelink>Sales_DocumentAbstract</typelink>
-      <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-      <sqlcolumn>FROMID</sqlcolumn>
-    </attribute>
-    <attribute>
-      <name>ToLink</name>
-      <type>Link</type>
-      <typelink>Sales_DocumentAbstract</typelink>
-      <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-      <sqlcolumn>TOID</sqlcolumn>
-    </attribute>
-  </definition>
+        <!-- attributes -->
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_DocumentAbstract</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_DocumentAbstract</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>PayDocLink</name>
+            <type>Link</type>
+            <typelink>Sales_Payment</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>PAYDOCID</sqlcolumn>
+        </attribute>
+    </definition>
 </datamodel-type>

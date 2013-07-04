@@ -351,6 +351,7 @@ public abstract class AbstractPaymentOut_Base
                 final Insert insert = new Insert(CISales.PayableDocument2Document);
                 insert.add(CISales.PayableDocument2Document.FromLink, newInstDoc.getId());
                 insert.add(CISales.PayableDocument2Document.ToLink, instDoc.getId());
+                insert.add("PayDocLink", query.getCurrentValue().getId());
                 insert.execute();
 
                 final PrintQuery printPay = new PrintQuery(query.getCurrentValue());
@@ -361,12 +362,14 @@ public abstract class AbstractPaymentOut_Base
                 final PrintQuery printDoc = new PrintQuery(newInstDoc);
                 printDoc.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                 printDoc.execute();
-                final BigDecimal amountDoc = printDoc.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                final BigDecimal amountDoc = printDoc
+                                .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
 
                 if (amountDoc.compareTo(amountPay) == 0) {
                     final Update updateDoc = new Update(newInstDoc);
                     updateDoc.add(CISales.DocumentSumAbstract.StatusAbstract,
-                                    Status.find(newInstDoc.getType().getStatusAttribute().getLink().getUUID(), "Paid").getId());
+                                    Status.find(newInstDoc.getType().getStatusAttribute().getLink().getUUID(), "Paid")
+                                                    .getId());
                     updateDoc.execute();
                 }
 

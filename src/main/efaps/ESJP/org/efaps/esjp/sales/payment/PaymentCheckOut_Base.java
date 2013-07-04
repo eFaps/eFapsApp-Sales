@@ -20,13 +20,33 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.Map.Entry;
+
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.Command;
+import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -46,6 +66,8 @@ public abstract class PaymentCheckOut_Base
      * @return new Return
      * @throws EFapsException on error
      */
+
+
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -67,5 +89,66 @@ public abstract class PaymentCheckOut_Base
             _createdDoc.getValues().put("DueDate", dueDate);
         }
     }
+
+    public Return getPayment2CheckOutPositionInstances(final Parameter _parameter)
+        throws EFapsException
+    {
+
+        final Return ret = new Return();
+        final Map<?, ?> properties = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typeStr = (String) properties.get("Types");
+        Type type;
+        boolean band = false;
+        final String cmd = (String) properties.get("AllCheckDifered");
+
+        final List<Instance> instances = new ArrayList<Instance>();
+        if (typeStr != null) {
+            type = Type.get(typeStr);
+            QueryBuilder _queryBldr = new QueryBuilder(CISales.Payment);
+            QueryBuilder qlb = new QueryBuilder(type);
+            final AttributeQuery attrQuery = qlb.getAttributeQuery("ID");
+            _queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+
+            MultiPrintQuery multi = _queryBldr.getPrint();
+            final SelectBuilder seldate = new SelectBuilder().linkto(CISales.Payment.TargetDocument).attribute(
+                            CISales.PaymentDocumentAbstract.Date);
+            final SelectBuilder selduedate = new SelectBuilder().linkto(CISales.Payment.TargetDocument).attribute(
+                            CISales.PaymentDocumentAbstract.DueDate);
+            multi.addSelect(seldate, selduedate);
+            multi.execute();
+            while (multi.next()) {
+                Instance inst = multi.getCurrentInstance();
+                final DateTime date = multi.<DateTime>getSelect(seldate);
+                final DateTime dueDate = multi.<DateTime>getSelect(selduedate);
+                if (cmd != null
+                                && "AllDifered".equalsIgnoreCase(cmd)) {
+                    band = true;
+                } else {
+                    QueryBuilder qlb2 = new QueryBuilder(CISales.PayableDocument2Document);
+                    qlb2.addWhereAttrEqValue("PayDocLink", multi.getCurrentInstance().getId());
+                    MultiPrintQuery multi2 = qlb2.getPrint();
+                    final SelectBuilder selDerivaded = new SelectBuilder().linkto(
+                                    CISales.PayableDocument2Document.ToLink).attribute(CISales.DocumentAbstract.Name);
+                    multi2.addSelect(selDerivaded);
+                    multi2.execute();
+                    if (multi2.next()) {
+                        band = true;
+                    } else {
+                        band = false;
+                    }
+                }
+                if (!(date.compareTo(dueDate) == 0) && band) {
+                    instances.add(inst);
+                }
+            }
+
+        }
+        ret.put(ReturnValues.VALUES, instances);
+        return ret;
+
+    }
+
+
+
 
 }

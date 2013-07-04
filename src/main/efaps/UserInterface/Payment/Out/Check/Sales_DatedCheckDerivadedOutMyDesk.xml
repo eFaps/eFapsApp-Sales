@@ -21,12 +21,12 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>266b1441-304e-44ce-a194-e8297291d285</uuid>
+    <uuid>84529a6d-a0fc-4fbd-888e-0ab6ceecf1df</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 8215 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DatedCheckOutMyDesk</name>
+        <name>Sales_DatedCheckDerivadedOutMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
@@ -35,7 +35,6 @@
             <table>Sales_PaymentCheckOutDiferedTable</table>
             <evaluate method="getPayment2CheckOutPositionInstances" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
                 <property name="Types">Sales_PaymentCheckOut</property>
-                <property name="AllCheckDifered">AllDifered</property>
             </evaluate>
         </target>
 

@@ -28,63 +28,71 @@
         <name>Sales_PaymentCheckOutDiferedTable</name>
         <!-- fields -->
         <field name="type">
-            <property name="Attribute">Type</property>
+            <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
+            <property name="Select">linkto[TargetDocument].attribute[Type]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Type.Label</property>
-            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="code">
-            <property name="Attribute">Code</property>
+            <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
+            <property name="Select">linkto[TargetDocument].attribute[Code]</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Code.Label</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_PaymentDocumentAbstractOutTable.code.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessOnField">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">ActivateCode4PaymentDocumentOut</property>
-            </trigger>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="name">
-            <property name="Attribute">Name</property>
+            <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
+            <property name="Select">linkto[TargetDocument].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Name.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">ALL</property>
-        </field>
-        <field name="contact">
-            <property name="SelectAlternateOID">linkto[Contact].oid</property>
-            <property name="Select">linkto[Contact].attribute[Name]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract/Contact.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="date">
-            <property name="Attribute">Date</property>
+            <property name="Select">linkto[TargetDocument].attribute[Date]</property>
+            <property name="Label">Sales_OrderInbound/Date.Label</property>
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">MONTH</property>
-            <property name="Label">Sales_PaymentCheckDifered/Date.Label</property>
         </field>
         <field name="dueDate">
-            <property name="Attribute">DueDate</property>
+            <property name="Select">linkto[TargetDocument].attribute[DueDate]</property>
+            <property name="Label">Sales_OrderInbound/DueDate.Label</property>
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">MONTH</property>
-            <property name="Label">Sales_PaymentCheckDifered/DueDate.Label</property>
         </field>
+
         <field name="status">
-            <property name="Attribute">StatusAbstract</property>
+            <property name="Select">linkto[TargetDocument].attribute[StatusAbstract]</property>
             <property name="FilterType">PICKLIST</property>
             <property name="Label">Sales_PaymentDocumentAbstract/StatusAbstract.Label</property>
         </field>
+        <field name="account">
+            <property name="Label">Sales_PaymentCheckDifered/account.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" name="Sales_PaymentCheckOutDiferedTable.account.UI_FIELD_VALUE"
+                method="getAccount" event="UI_FIELD_VALUE" />
+        </field>
         <field name="amount">
-            <property name="Attribute">Amount</property>
+            <property name="Select">linkto[TargetDocument].attribute[Amount]</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Amount.Label</property>
         </field>
         <field name="currencyLink">
-            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
-            <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
+            <property name="Select">linkto[TargetDocument].linkto[RateCurrencyLink].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstract.Currency.Label</property>
+        </field>
+        <field name="payableDocument2Document">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Document_listProductRequest/Derivaded.Label</property>
+        </field>
+        <field name="orderOutbound">
+            <property name="Label">Sales_PaymentCheckDifered/orderOutbound.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" name="Sales_PaymentCheckOutDiferedTable.payableDocument2Document.UI_FIELD_VALUE"
+                method="getpayableDocument" event="UI_FIELD_VALUE" />
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
