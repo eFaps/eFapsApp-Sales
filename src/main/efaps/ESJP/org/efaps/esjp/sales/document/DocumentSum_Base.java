@@ -49,6 +49,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -356,9 +357,9 @@ public abstract class DocumentSum_Base
         // validate that a product was selected
         if (oid.length() > 0) {
             final PrintQuery print = new PrintQuery(oid);
-            print.addAttribute("Name");
+            print.addAttribute(CIProducts.ProductAbstract.Name);
             print.execute();
-            name = print.getAttribute("Name");
+            name = print.getAttribute(CIProducts.ProductAbstract.Name);
         } else {
             name = "";
         }
@@ -872,10 +873,10 @@ public abstract class DocumentSum_Base
     }
 
     /**
-     * Method to override if a default value is required for a document,
+     * Method to override if a default value is required for a document.
      *
      * @param _parameter as passed from eFaps API
-     * @return
+     * @return DropDownfield
      * @throws EFapsException on error.
      */
     public Return dropDown4DocumentType(final Parameter _parameter)
@@ -886,7 +887,7 @@ public abstract class DocumentSum_Base
 
     /**
      * @param _parameter as passed from eFaps API.
-     * @return
+     * @return Return for a search
      * @throws EFapsException on error.
      */
     public Return search4DocumentType(final Parameter _parameter)
@@ -894,13 +895,15 @@ public abstract class DocumentSum_Base
     {
         return new Search()
         {
+
             @Override
             protected void add2QueryBuilder(final Parameter _parameter,
                                             final QueryBuilder _queryBldr)
                 throws EFapsException
             {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
-                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentType.DocumentLink);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CISales.Document2DocumentType.DocumentLink);
 
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery);
             }
