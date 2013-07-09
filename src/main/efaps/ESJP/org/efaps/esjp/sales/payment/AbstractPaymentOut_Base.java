@@ -132,25 +132,6 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
-
-    @Override
-    protected CreatedDoc createDoc(final Parameter _parameter)
-        throws EFapsException
-    {
-        final CreatedDoc ret = super.createDoc(_parameter);
-
-        // in case of bulkpayment connect the paymentdoc to the bulkpayment
-        if (_parameter.getInstance() != null
-                        && _parameter.getInstance().getType().isKindOf(CISales.BulkPayment.getType())) {
-            final Insert insert = new Insert(CISales.BulkPayment2PaymentDocument);
-            insert.add(CISales.BulkPayment2PaymentDocument.FromLink, _parameter.getInstance().getId());
-            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, ret.getInstance().getId());
-            insert.execute();
-        }
-        return ret;
-    }
-
-
     public Return getJavaScriptUIValue(final Parameter _parameter)
         throws EFapsException
     {

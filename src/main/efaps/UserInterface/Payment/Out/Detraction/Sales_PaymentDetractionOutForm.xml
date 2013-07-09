@@ -186,6 +186,34 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
+        <field name="operationType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocument/OperationType.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                    method="dropDownFieldValue"
+                    name="Sales_PaymentDetractionOutForm.operationType.Label"
+                    event="UI_FIELD_VALUE">
+                <property name="Type">Sales_AttributeDefinitionOperationType</property>
+                <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
+            </trigger>
+        </field>
+        <field name="serviceType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocument/ServiceType.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                    method="dropDownFieldValue"
+                    name="Sales_PaymentDetractionOutForm.operationType.Label"
+                    event="UI_FIELD_VALUE">
+                <property name="Type">Sales_AttributeDefinitionServiceType</property>
+                <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
+            </trigger>
+        </field>
          <field character="Heading" name="headingPayment">
             <property name="Level">2</property>
             <property name="Label">Sales_PaymentDetractionOutForm.headingPayment.Heading</property>

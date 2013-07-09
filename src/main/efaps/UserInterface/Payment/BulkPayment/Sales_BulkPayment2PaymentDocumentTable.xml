@@ -31,6 +31,19 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_BulkPayment2PaymentDocumentTable</name>
         <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocument/Type.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
+        <field name="operationType">
+            <property name="Attribute">OperationType</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocument/OperationType.Label</property>
+        </field>
+        <field name="serviceType">
+            <property name="Attribute">ServiceType</property>
+            <property name="Label">Sales_BulkPayment2PaymentDocument/ServiceType.Label</property>
+        </field>
         <field name="name">
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[Name]</property>

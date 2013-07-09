@@ -44,5 +44,31 @@
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>OperationType</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionOperationType</typelink>
+            <sqltable>Sales_BulkPayment2PaymentDocumentExtendSQLTable</sqltable>
+            <sqlcolumn>OPTYPE</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                     name="Sales_PaymentOrder_Class.SpendingLink.RANGE_VALUE"
+                     event="RANGE_VALUE">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Sales_AttributeDefinitionOperationType</property>
+            </trigger>
+        </attribute>
+        <attribute>
+            <name>ServiceType</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionServiceType</typelink>
+            <sqltable>Sales_BulkPayment2PaymentDocumentExtendSQLTable</sqltable>
+            <sqlcolumn>SERVTYPE</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                     name="Sales_PaymentOrder_Class.SpendingLink.RANGE_VALUE"
+                     event="RANGE_VALUE">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Sales_AttributeDefinitionServiceType</property>
+            </trigger>
+        </attribute>
     </definition>
 </datamodel-type>

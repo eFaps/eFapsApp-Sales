@@ -24,6 +24,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -50,6 +53,29 @@ public abstract class PaymentDetractionOut_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
+        return ret;
+    }
+
+    @Override
+    protected CreatedDoc createDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc ret = super.createDoc(_parameter);
+
+        // in case of bulkpayment connect the paymentdoc to the bulkpayment
+        if (_parameter.getInstance() != null
+                        && _parameter.getInstance().getType().isKindOf(CISales.BulkPayment.getType())) {
+            final Insert insert = new Insert(CISales.BulkPayment2PaymentDocument);
+            insert.add(CISales.BulkPayment2PaymentDocument.FromLink, _parameter.getInstance().getId());
+            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, ret.getInstance().getId());
+            final String opTypeId = _parameter
+                            .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
+            final String servTypeId = _parameter
+                            .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.serviceType.name);
+            insert.add(CISales.BulkPayment2PaymentDocument.OperationType, opTypeId);
+            insert.add(CISales.BulkPayment2PaymentDocument.ServiceType, servTypeId);
+            insert.execute();
+        }
         return ret;
     }
 }

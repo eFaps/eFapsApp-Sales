@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,34 +15,32 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 6537 $
- Last Changed:    $Date: 2011-05-12 17:39:01 -0500 (jue, 12 may 2011) $
+ Revision:        $Rev: 8920 $
+ Last Changed:    $Date: 2013-02-21 12:38:22 -0500 (jue, 21 feb 2013) $
  Last Changed By: $Author: jan@moxter.net $
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>ee9db564-aea8-4a92-ab47-7dd94de13570</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 6537 $</file-revision>
+    <uuid>9a989b30-5dae-4356-9f0c-a02bef05d610</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 8920 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AbstractAttrMyDesk_Menu_Action_Create_PaymentOrderType</name>
-
+        <name>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateOperationType</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
+
         <target>
             <form>ERP_AttributeDefinitionForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_PaymentOrderTypeAttr</property>
+        <property name="TargetCreateType">Sales_AttributeDefinitionOperationType</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
     </definition>
 
 </ui-command>
