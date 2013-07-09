@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
  *          jorge.cueva@moxter.net $
@@ -68,7 +68,7 @@ public abstract class CollectionOrder_Base
         throws EFapsException
     {
         final CreatedDoc createdDoc = new CreatedDoc();
-        final String name = NumberGenerator.get("CollectionOrderSequence").getNextVal();
+        final String name = NumberGenerator.get(UUID.fromString("e89316af-42c6-4df1-ae7e-7c9f9c2bb73c")).getNextVal();
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
