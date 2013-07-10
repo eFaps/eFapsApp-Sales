@@ -49,7 +49,7 @@
             <child>Sales_QuoteRequestMyDesk</child>
             <child>Sales_OrderOutboundMyDesk</child>
             <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_Document_Report</child>
+            <child>Sales_Document_ReportMyDesk</child>
             <child>Sales_UsageReportMyDesk</child>
             <child>Sales_ProductRequestMyDesk</child>
             <child>Sales_IncomingReceiptMyDesk</child>
