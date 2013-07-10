@@ -19,7 +19,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>PaymentOrderSequence</name>
+        <name>Sales_PaymentOrderSequence</name>
         <format>%04d</format>
         <startvalue>1</startvalue>
     </definition>
