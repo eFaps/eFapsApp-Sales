@@ -68,7 +68,7 @@ public abstract class CollectionOrder_Base
         throws EFapsException
     {
         final CreatedDoc createdDoc = new CreatedDoc();
-        final String name = NumberGenerator.get(UUID.fromString("e89316af-42c6-4df1-ae7e-7c9f9c2bb73c")).getNextVal();
+        final String name = getName4Create(_parameter);
         // Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
                         UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
