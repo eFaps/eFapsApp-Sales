@@ -106,6 +106,7 @@ public abstract class ReturnSlip_Base
     {
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
         final String[] storageIds = param.get("storage");
+        final String[] date = param.get("date");
 
         final Instance instance = _parameter.getInstance();
         final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
@@ -138,7 +139,7 @@ public abstract class ReturnSlip_Base
         insert.add(CIProducts.TransactionInbound.Product, productID[0]);
         insert.add(CIProducts.TransactionInbound.Description,
                         DBProperties.getProperty("org.efaps.esjp.sales.document.ReturnSlip.description4Trigger"));
-        insert.add(CIProducts.TransactionInbound.Date, new DateTime());
+        insert.add(CIProducts.TransactionInbound.Date, date[0] == null ? new DateTime() : date[0]);
         insert.add(CIProducts.TransactionInbound.Document, deliveryNodeId[0]);
         insert.add(CIProducts.TransactionInbound.UoM, uom[0]);
         insert.execute();

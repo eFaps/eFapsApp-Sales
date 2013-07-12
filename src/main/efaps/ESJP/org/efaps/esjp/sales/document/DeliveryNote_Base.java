@@ -54,7 +54,7 @@ import org.joda.time.DateTime;
 
 /**
  * TODO comment!
- * 
+ *
  * @author The eFaps Team
  * @version $Id: DeliveryNote_Base.java 7915 2012-08-17 15:30:12Z
  *          m.aranya@moxter.net $
@@ -96,7 +96,7 @@ public abstract class DeliveryNote_Base
 
     /**
      * PositionNumber must start with 1.
-     * 
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
      * @throws EFapsException on error
@@ -106,6 +106,7 @@ public abstract class DeliveryNote_Base
     {
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
         final String[] storageIds = param.get("storage");
+        final String[] date = param.get("date");
 
         final Instance instance = _parameter.getInstance();
         final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
@@ -180,7 +181,7 @@ public abstract class DeliveryNote_Base
                         insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
                         insert.add(CIProducts.TransactionAbstract.Description,
                                         DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
-                        insert.add(CIProducts.TransactionAbstract.Date, new DateTime());
+                        insert.add(CIProducts.TransactionAbstract.Date, date[0] == null ? new DateTime() : date[0]);
                         insert.add(CIProducts.TransactionAbstract.Document, deliveryNoteId[0]);
                         insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
                         insert.execute();

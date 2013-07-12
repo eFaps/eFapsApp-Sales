@@ -108,6 +108,7 @@ public abstract class IncomingReceipt_Base
         throws EFapsException
     {
         final String storage = _parameter.getParameterValue("storage");
+        final String date = _parameter.getParameterValue("date");
 
         if (storage != null) {
             final List<Instance> positions = _createdDoc.getPositions();
@@ -129,7 +130,7 @@ public abstract class IncomingReceipt_Base
                 insert.add(CIProducts.TransactionInbound.Product, productID);
                 insert.add(CIProducts.TransactionInbound.Description,
                          DBProperties.getProperty("org.efaps.esjp.sales.document.IncomingReceipt.description4Trigger"));
-                insert.add(CIProducts.TransactionInbound.Date, new DateTime());
+                insert.add(CIProducts.TransactionInbound.Date, date == null ? new DateTime() : date);
                 insert.add(CIProducts.TransactionInbound.Document, incomingInvoiceId);
                 insert.add(CIProducts.TransactionInbound.UoM, uom);
                 insert.execute();
