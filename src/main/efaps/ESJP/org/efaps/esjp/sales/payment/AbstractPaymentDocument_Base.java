@@ -381,7 +381,7 @@ public abstract class AbstractPaymentDocument_Base
                         map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                         map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                         map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                        tmpMap.put(name, map);
+                        tmpMap.put(oid, map);
                     }
                     list.addAll(tmpMap.values());
                 }
