@@ -123,7 +123,10 @@ public abstract class Perception_Base
         final BigDecimal cross = _calculator.getCrossPrice();
         final PerceptionInfo info = getPerceptionInfo(_parameter, Instance.get(_calculator.getOid()));
         if (info.isApply()) {
-            final Instance currenctCurInst = _calculator.getProductCrossPrice().getCurrentCurrencyInstance();
+            Instance currenctCurInst = _calculator.getProductCrossPrice().getCurrentCurrencyInstance();
+            if (currenctCurInst == null) {
+                currenctCurInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            }
             boolean min;
             if (info.getCurrencyInst().equals(currenctCurInst)) {
                 min = info.getAmount().compareTo(cross) < 0;
