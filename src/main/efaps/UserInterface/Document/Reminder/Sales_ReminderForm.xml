@@ -285,7 +285,8 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="getJavaScriptUIValue"
                 name="Sales_ReminderPositionTable.javaScript.UI_Field_Value"

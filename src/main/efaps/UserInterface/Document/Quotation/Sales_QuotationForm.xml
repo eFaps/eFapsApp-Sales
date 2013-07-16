@@ -223,7 +223,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
-        </field>
+        </field>getJavaScriptU
        <field name="netTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
