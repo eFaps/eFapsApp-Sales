@@ -43,7 +43,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
                 name="Sales_PaymentDebitCardForm.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">ActivateCode4PaymentDocument</property>
+                <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocument</property>
             </trigger>
         </field>
         <field character="Group" name="nameGroup">

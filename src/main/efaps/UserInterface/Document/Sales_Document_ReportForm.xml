@@ -38,7 +38,10 @@
             <trigger program="org.efaps.esjp.ui.print.UserInterface"
                 method="getMimeFieldValueUI"
                 name="Sales_Document_ReportForm.mime.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE"/>
+                event="UI_FIELD_VALUE">
+                <property name="DefaultMime">pdf</property>
+                <property name="IgnoreMime">txt</property>
+            </trigger>
         </field>
         <field name="dateFrom">
             <property name="Label">Sales_Document_ReportForm.dateFrom.Label</property>

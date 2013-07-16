@@ -40,7 +40,7 @@
             <property name="Attribute">Code</property>
             <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_PaymentDepositOutForm.code.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">ActivateCode4PaymentDocumentOut</property>
+                <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocumentOut</property>
             </trigger>
         </field>
         <field character="Group" name="nameGroup">

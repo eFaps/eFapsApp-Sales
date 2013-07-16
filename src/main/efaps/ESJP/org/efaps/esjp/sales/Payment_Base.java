@@ -61,6 +61,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -536,10 +538,9 @@ public abstract class Payment_Base
     {
         String ret = "";
         // Sales-Configuration
-        final SystemConfiguration config = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        final SystemConfiguration config = Sales.getSysConfig();
         if (config != null) {
-            final boolean active = config.getAttributeValueAsBoolean("ActivateCode4PaymentDocument");
+            final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENT);
             if (active) {
                 // Sales_PaymentDocumentAbstractSequence
                 ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
