@@ -33,6 +33,7 @@
         <target>
             <form>Sales_BulkPaymentDefinition2ContactForm</form>
             <execute program="org.efaps.esjp.common.uiform.Create" />
+            <validate program="org.efaps.esjp.sales.payment.BulkPayment" method="validate"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

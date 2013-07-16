@@ -50,6 +50,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -268,5 +269,37 @@ public abstract class BulkPayment_Base
             _builder.addColumn(contactColumn, taxnumberColumn, accountNumberColumn, docNameColumn, amountColumn);
             _builder.addSubtotalAtColumnFooter(subtotal);
         }
+    }
+
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final Return ret = new Return();
+        final String accNumBank = _parameter
+                        .getParameterValue(CIFormSales.Sales_BulkPaymentDefinition2ContactForm.accountNumber.name);
+        if (accNumBank != null && !accNumBank.isEmpty()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDefinition);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDefinition.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
+            queryBldr.addWhereAttrInQuery(CISales.BulkPaymentDefinition2Contact.FromLink, attrQuery);
+            queryBldr.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.AccountNumber, accNumBank);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.existingAccount"));
+            }
+        }
+
+        if (!html.toString().isEmpty()) {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        } else {
+            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.nonExistingAccount"));
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+            ret.put(ReturnValues.TRUE, true);
+        }
+
+        return ret;
     }
 }
