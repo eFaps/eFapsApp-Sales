@@ -45,6 +45,8 @@
             <form>Sales_QuotationForm</form>
             <execute program="org.efaps.esjp.sales.document.Quotation" method="create" >
                 <property name="PositionType">Sales_QuotationPosition</property>
+                <property name="StatusGroup">Sales_QuotationStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
 
