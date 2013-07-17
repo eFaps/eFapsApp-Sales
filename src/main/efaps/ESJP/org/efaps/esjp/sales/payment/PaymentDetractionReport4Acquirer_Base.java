@@ -26,7 +26,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -50,6 +53,7 @@ import org.efaps.esjp.common.jasperreport.EFapsTextReport;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -80,7 +84,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 final String companyTaxNum = config.getAttributeValue(ERPSettings.COMPANYTAX);
 
                 final String name = buildName4TextReport(PaymentDetractionReport4Acquirer_Base.FILE_STARTCHAR,
-                                companyTaxNum, "");
+                                companyTaxNum, getSequenceNumber(_parameter));
                 final File file = new FileUtil().getFile(name, PaymentDetractionReport4Acquirer_Base.FILE_EXTENSION);
                 return file;
             }
@@ -116,7 +120,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 ret.add(PaymentDetractionReport4Acquirer_Base.MASTER_INDICATOR);
                 ret.add(companyTaxNum);
                 ret.add(companyName);
-                ret.add("");
+                ret.add(getSequenceNumber(_parameter));
                 ret.add(totalAmount);
 
                 return ret;
@@ -224,5 +228,32 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 return lst;
             }
         }.getTextReport(_parameter);
+    }
+
+    protected String getSequenceNumber(final Parameter _parameter)
+        throws EFapsException
+    {
+        String ret = "";
+        final Instance instance = _parameter.getInstance();
+        final PrintQuery print = new PrintQuery(instance);
+        print.addAttribute(CISales.BulkPayment.Date,
+                        CISales.BulkPayment.DueDate);
+        print.execute();
+        final DateTime dateFrom = print.<DateTime>getAttribute(CISales.BulkPayment.Date);
+        final DateTime dateTo = print.<DateTime>getAttribute(CISales.BulkPayment.DueDate);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPayment);
+        queryBldr.addWhereAttrGreaterValue(CISales.BulkPayment.Date,
+                        new DateTime(dateFrom.getYear(), 1, 1, 0, 0, 0).minusSeconds(1));
+        queryBldr.addWhereAttrLessValue(CISales.BulkPayment.Date, dateFrom);
+        final String year = new SimpleDateFormat("yy").format(dateFrom.toDate());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        final Integer num = query.getValues().size() + 1;
+        final Formatter formatter = new Formatter();
+        ret = formatter.format("%1$2s%2$04d", year, num).toString();
+        formatter.close();
+
+        return ret;
     }
 }
