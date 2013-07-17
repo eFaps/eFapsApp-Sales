@@ -24,27 +24,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.Map.Entry;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.Command;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.uitable.MultiPrint;
-import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -61,15 +56,16 @@ public abstract class PaymentCheckOut_Base
     extends AbstractPaymentOut
 {
 
+    private final static String PAYMENT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getpayableDocument";
+    private final static String ACCOUNT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getAccount";
+
     /**
+     * Create a new PaymentCheckOut.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @return new Return
      * @throws EFapsException on error
      */
-
-    private final static String PAYMENT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getpayableDocument";
-    private final static String ACCOUNT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getAccount";
-
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -79,23 +75,9 @@ public abstract class PaymentCheckOut_Base
         return ret;
     }
 
-    @Override
-    protected void add2DocCreate(final Parameter _parameter,
-                                 final Insert _insert,
-                                 final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final String dueDate = _parameter.getParameterValue("dueDate");
-        if (dueDate != null) {
-            _insert.add("DueDate", dueDate);
-            _createdDoc.getValues().put("DueDate", dueDate);
-        }
-    }
-
     public Return getPayment2CheckOutPositionInstances(final Parameter _parameter)
         throws EFapsException
     {
-
         final Return ret = new Return();
         final Map<?, ?> properties = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String typeStr = (String) properties.get("Types");

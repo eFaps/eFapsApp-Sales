@@ -20,7 +20,6 @@
 
 package org.efaps.esjp.sales.payment;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,18 +27,15 @@ import java.util.Map;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -70,19 +66,6 @@ public abstract class PaymentCheck_Base
         return ret;
     }
 
-    @Override
-    protected void add2DocCreate(final Parameter _parameter,
-                                 final Insert _insert,
-                                 final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final String dueDate = _parameter.getParameterValue("dueDate");
-        if (dueDate != null) {
-            _insert.add("DueDate", dueDate);
-            _createdDoc.getValues().put("DueDate", dueDate);
-        }
-    }
-
     public Return returnDiffered(final Parameter _parameter)
         throws EFapsException
     {
@@ -94,8 +77,8 @@ public abstract class PaymentCheck_Base
         final List<Instance> instances = new ArrayList<Instance>();
         if (typeStr != null) {
             type = Type.get(typeStr);
-            QueryBuilder qlb = new QueryBuilder(type);
-            MultiPrintQuery multi = qlb.getPrint();
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            MultiPrintQuery multi = queryBldr.getPrint();
 
             multi.addAttribute(CISales.PaymentDocumentAbstract.Date, CISales.PaymentDocumentAbstract.DueDate);
             multi.execute();

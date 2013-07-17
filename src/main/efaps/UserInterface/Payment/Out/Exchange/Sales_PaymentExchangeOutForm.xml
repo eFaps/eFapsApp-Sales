@@ -51,7 +51,7 @@
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
         </field>
-        <field name="uniqueNumber">
+        <field name="revision">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Revision</property>

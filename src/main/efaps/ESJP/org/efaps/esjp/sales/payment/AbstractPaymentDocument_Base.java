@@ -138,6 +138,22 @@ public abstract class AbstractPaymentDocument_Base
                             date);
         }
 
+        final String dueDate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.DueDate.name));
+        if (dueDate != null) {
+            insert.add(CISales.PaymentDocumentAbstract.DueDate, dueDate);
+            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.DueDate.name),
+                            dueDate);
+        }
+
+        final String revision = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentDocumentAbstract.Revision.name));
+        if (revision != null) {
+            insert.add(CISales.PaymentDocumentAbstract.Revision, revision);
+            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Revision.name),
+                            revision);
+        }
+
         final String currencyLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.CurrencyLink.name));
         if (currencyLink != null) {
