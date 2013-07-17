@@ -960,7 +960,8 @@ public abstract class AbstractDocument_Base
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
             js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
         } else {
-            js.append(getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
+            js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                .append(getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
                             getOnCompleteScript(_parameter), false, false, noEscape));
         }
         js.append(getDomReadyScript(_parameter, _instance))
