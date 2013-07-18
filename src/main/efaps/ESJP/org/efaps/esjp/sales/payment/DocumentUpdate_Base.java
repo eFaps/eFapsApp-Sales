@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventDefinition;
@@ -49,6 +50,8 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.util.EFapsException;
 
@@ -224,60 +227,76 @@ public abstract class DocumentUpdate_Base
     {
         final Command cmd = Command.get(_cmd);
         final List<EventDefinition> events = cmd.getEvents(EventType.UI_COMMAND_EXECUTE);
-        final EventDefinition def = events.get(0);
-        final String reportName = def.getProperty("JasperReport");
-        final String mime2 = def.getProperty("Mime");
-        final String clazz = def.getProperty("DataSourceClass");
+        final EventDefinition definition = events.get(0);
+        final String reportName = definition.getProperty("JasperReport");
+        final String mimeDef = definition.getProperty("Mime");
+        final String clazzDef = definition.getProperty("DataSourceClass");
 
-        final PrintQuery print = new PrintQuery(_instance);
         final SelectBuilder selFileName = new SelectBuilder().file().label();
+        final PrintQuery print = new PrintQuery(_instance);
+
         print.addSelect(selFileName);
         print.addAttribute("Name");
         print.execute();
         String name = print.<String>getSelect(selFileName);
-        _parameter.get(ParameterValues.PROPERTIES);
+
         _parameter.put(ParameterValues.INSTANCE, _instance);
         final Map<String, String> props = (Map<String, String>) _parameter.get(ParameterValues.PROPERTIES);
         props.put("JasperReport", reportName);
         String mime = _parameter.getParameterValue("mime");
-        if (!(mime != null && mime.length() > 0)) {
-            mime = mime2 != null ? mime2 : "txt";
+        if (!(mime != null && !mime.isEmpty())) {
+            mime = mimeDef != null ? mimeDef : "txt";
         }
         props.put("Mime", mime);
-        if (clazz != null) {
-            props.put("DataSourceClass", clazz);
+        if (clazzDef != null) {
+            props.put("DataSourceClass", clazzDef);
         }
+
         if (name != null && !name.isEmpty()) {
             name = name.substring(0, name.lastIndexOf("."));
         } else {
-            name = _instance.getType().getLabel() + "_" + print.getAttribute("Name");
+            name = _instance.getType().getLabel() + "_" + print.<String>getAttribute("Name");
         }
+
+        String accName = null;
+        String accCurName = null;
+
         final StandartReport report = new StandartReport();
         report.setFileName(name);
 
+        final QueryBuilder attrQueryBldr =  new QueryBuilder(CISales.Payment);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _instance.getId());
+        final AttributeQuery attrQuery =  attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
 
-        String retCurName = "";
-        String retCurName2 = "";
-        final QueryBuilder qlb1 =  new QueryBuilder(CISales.Payment);
-        qlb1.addWhereAttrEqValue(CISales.Payment.TargetDocument, _instance.getId());
-        final AttributeQuery attr1 =  qlb1.getAttributeQuery(CISales.Payment.ID);
+        final SelectBuilder selAccName = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
+                        .attribute(CISales.AccountAbstract.Name);
+        final SelectBuilder selAccCurName = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
+                        .linkto(CISales.AccountAbstract.CurrencyLink).attribute(CIERP.Currency.Name);
 
-        final QueryBuilder qlb2 = new QueryBuilder(CISales.TransactionAbstract);
-        qlb2.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attr1);
-        final MultiPrintQuery multi3 = qlb2.getPrint();
-        final SelectBuilder select = new SelectBuilder().linkto(CISales.TransactionAbstract.Account).attribute(CISales.AccountAbstract.Name);
-        final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.TransactionAbstract.Account).linkto(CISales.AccountAbstract.CurrencyLink).attribute(CIERP.Currency.Name);
-        multi3.addSelect(selCurName,select);
-        multi3.execute();
-        if(multi3.next()){
-            retCurName= multi3.<String>getSelect(select);
-            retCurName2= multi3.<String>getSelect(selCurName);
+        final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
+        queryBldr2.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
+        final MultiPrintQuery multi = queryBldr2.getPrint();
+        multi.addSelect(selAccName, selAccCurName);
+        multi.execute();
+        if (multi.next()){
+            accName = multi.<String>getSelect(selAccName);
+            accCurName = multi.<String>getSelect(selAccCurName);
         }
+        report.getJrParameters().put("accountName", accName);
+        report.getJrParameters().put("accountCurrencyName", accCurName);
 
-        report.getJrParameters().put("accountName",retCurName);
-        report.getJrParameters().put("accountCurrencyName",retCurName2);
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
 
-
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty()
+                            && !companyTaxNumb.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+                report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
+        addParameterReport4Renew(_instance, report);
         final Return ret = report.execute(_parameter);
 
         final File file = (File) ret.get(ReturnValues.VALUES);
@@ -290,6 +309,14 @@ public abstract class DocumentUpdate_Base
 
         final Checkin checkin = new Checkin(_instance);
         checkin.execute(name + "." + mime, input, ((Long) file.length()).intValue());
+    }
+
+    protected void addParameterReport4Renew(final Instance _instance,
+                                            final StandartReport _report)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
+
     }
 
 }
