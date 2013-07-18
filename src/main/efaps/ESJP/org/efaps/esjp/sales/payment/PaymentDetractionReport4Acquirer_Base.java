@@ -148,6 +148,8 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 format.setRoundingMode(RoundingMode.HALF_UP);
                 _columnsList.add(new ColumnDefinition("", 15, 2, false, format, "0", Type.NUMBERTYPE, null));
                 _columnsList.add(new ColumnDefinition("", 2, 0, null, null, " ", Type.STRINGTYPE, "%1$-2s"));
+                _columnsList.add(new ColumnDefinition("", 6, 0, null, new SimpleDateFormat("yyyyMM"),
+                                " ", Type.DATETYPE, "%1$-6s"));
                 /*
                  * final SimpleDateFormat format2 = new SimpleDateFormat("yyyyMMdd"); _columnsList.add(new
                  * ColumnDefinition("", 6, 0, null, format2, "\\s", Type.DATETYPE, "%1$-6s"));
@@ -204,7 +206,9 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                                 .linkfrom(CISales.BulkPayment2PaymentDocument, CISales.BulkPayment2PaymentDocument.ToLink)
                                 .linkto(CISales.BulkPayment2PaymentDocument.ServiceType)
                                 .attribute(CISales.AttributeDefinitionOperationType.Value);
-                multi.addSelect(selProvTaxNum, selProvId, selOperType, selServType);
+                final SelectBuilder selDocDate = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
+                                .attribute(CISales.DocumentSumAbstract.Date);
+                multi.addSelect(selProvTaxNum, selProvId, selOperType, selServType, selDocDate);
                 multi.addAttribute(CISales.Payment.Amount);
                 multi.execute();
                 while (multi.next()) {
@@ -216,12 +220,14 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                     final String accNum = map.get(provId);
                     final String operType = multi.<String>getSelect(selOperType);
                     final String servType = multi.<String>getSelect(selServType);
+                    final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
                     rowLst.add(provTaxNum);
                     rowLst.add("");
                     rowLst.add(servType);
                     rowLst.add(accNum);
                     rowLst.add(amount);
                     rowLst.add(operType);
+                    rowLst.add(docDate);
                     lst.add(rowLst);
                 }
 
@@ -240,7 +246,6 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                         CISales.BulkPayment.DueDate);
         print.execute();
         final DateTime dateFrom = print.<DateTime>getAttribute(CISales.BulkPayment.Date);
-        final DateTime dateTo = print.<DateTime>getAttribute(CISales.BulkPayment.DueDate);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPayment);
         queryBldr.addWhereAttrGreaterValue(CISales.BulkPayment.Date,
