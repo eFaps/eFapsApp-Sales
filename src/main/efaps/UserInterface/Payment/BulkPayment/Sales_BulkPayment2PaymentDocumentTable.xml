@@ -46,7 +46,7 @@
         </field>
         <field name="name">
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
-            <property name="Select">linkto[ToLink].attribute[Name]</property>
+            <property name="Phrase">$&lt;linkto[ToLink].type.label&gt; - $&lt;linkto[ToLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_BulkPayment2PaymentDocumentTable.name.Label</property>
             <property name="HRef">TREE</property>
         </field>
