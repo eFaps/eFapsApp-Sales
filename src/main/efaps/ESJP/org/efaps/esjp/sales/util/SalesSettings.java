@@ -128,4 +128,9 @@ public interface SalesSettings
      * UUID of the Sequence to payments document out.
      */
     String SEQUENCE4PAYMENTDOCUMENTOUT = "org.efaps.sales.NumberGenerator4PaymentDocumentOut";
+
+    /**
+     * UUID of the Sequence to payments document report.
+     */
+    String ACTIVATEPRINTREPORT4PAYMENTDOCUMENT = "org.efaps.sales.ActivatePrintReport4PaymentDocument";
 }

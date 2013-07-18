@@ -73,6 +73,7 @@ import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.Invoice;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -709,10 +710,9 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         boolean ret = false;
-        final SystemConfiguration config = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        final SystemConfiguration config = Sales.getSysConfig();
         if (config != null) {
-            final boolean active = config.getAttributeValueAsBoolean("ActivatePrintReport4PaymentDocument");
+            final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATEPRINTREPORT4PAYMENTDOCUMENT);
             if (active) {
                 ret = true;
             }

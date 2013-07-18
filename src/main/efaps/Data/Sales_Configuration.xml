@@ -83,7 +83,7 @@
             <description>Generated sequence if case code is active to payment documents out.</description>
         </attribute>
         <attribute>
-            <key>ActivatePrintReport4PaymentDocument</key>
+            <key>org.efaps.sales.ActivatePrintReport4PaymentDocument</key>
             <value>false</value>
             <description>boolean (true/false). Activate generated report to create a payments documents.</description>
         </attribute>
