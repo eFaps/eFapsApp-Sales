@@ -784,7 +784,7 @@ public abstract class AbstractPaymentDocument_Base
                     report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
                 }
             }
-            addParameter4Report(_parameter, report);
+            addParameter4Report(_parameter, _createdDoc, report);
             ret = report.execute(_parameter);
             ret.put(ReturnValues.TRUE, true);
 
@@ -835,6 +835,7 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     protected void addParameter4Report(final Parameter _parameter,
+                                       final CreatedDoc _createdDoc,
                                        final StandartReport _report)
         throws EFapsException
     {
