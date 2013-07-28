@@ -236,6 +236,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4IncomingInvoice(final Parameter _parameter)
         throws EFapsException
     {
+
         return autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, null);
     }
 
@@ -249,7 +250,14 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Invoice(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.Invoice.uuid, null);
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Status status;
+        if (props.containsKey("Status")) {
+            status = Status.find(CISales.Invoice, (String) props.get("Status"));
+        } else {
+            status = null;
+        }
+        return autoComplete4Doc(_parameter, CISales.Invoice.uuid, status);
     }
 
     /**
