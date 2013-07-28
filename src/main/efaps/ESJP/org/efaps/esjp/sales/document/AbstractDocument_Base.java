@@ -253,7 +253,7 @@ public abstract class AbstractDocument_Base
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final Status status;
         if (props.containsKey("Status")) {
-            status = Status.find(CISales.Invoice, (String) props.get("Status"));
+            status = Status.find(CISales.InvoiceStatus, (String) props.get("Status"));
         } else {
             status = null;
         }
@@ -406,6 +406,8 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
@@ -414,7 +416,9 @@ public abstract class AbstractDocument_Base
         if (_status != null) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status.getId());
         }
+        final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
         final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(key);
         multi.addAttribute(CISales.DocumentAbstract.OID, CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
         multi.execute();
         while (multi.next()) {
@@ -423,7 +427,7 @@ public abstract class AbstractDocument_Base
             final DateTime date = multi.<DateTime> getAttribute(CISales.DocumentAbstract.Date);
 
             final Map<String, String> map = new HashMap<String, String>();
-            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
                             name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
@@ -632,20 +636,24 @@ public abstract class AbstractDocument_Base
     protected Return updateFields4Doc(final Parameter _parameter)
         throws EFapsException
     {
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
-        final String oid = _parameter.getParameterValue("selectedDoc");
+        final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
+        final String oid = _parameter.getParameterValue(input);
         if (oid != null && oid.length() > 0) {
             final PrintQuery print = new PrintQuery(oid);
-            print.addAttribute("Name", "Date");
-            print.addSelect("type.label");
+            print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
+            final SelectBuilder sel = SelectBuilder.get().type().label();
+            print.addSelect(sel);
             print.execute();
 
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String field = props.containsKey("field") ? (String) props.get("field") : "info";
+            final String field = properties.containsKey("field") ? (String) properties.get("field") : "info";
             final StringBuilder bldr = new StringBuilder();
-            bldr.append(print.getSelect("type.label")).append(" - ").append(print.getAttribute("Name"))
-                            .append(" - ").append(print.<DateTime> getAttribute("Date").toString(
+            bldr.append(print.getSelect(sel)).append(" - ")
+                .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
+                .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
             map.put(field, StringEscapeUtils.escapeEcmaScript(bldr.toString()));
 
@@ -670,12 +678,12 @@ public abstract class AbstractDocument_Base
 
         final StringBuilder js = new StringBuilder();
         js.append("inputs = document.getElementsByTagName('INPUT');")
-                        .append("for (i=0;i<inputs.length;i++) {")
-                        .append("if (inputs[i].type == 'text' && inputs[i].name != '").append(field.getName())
-                        .append("AutoComplete') {")
-                        .append("inputs[i].value='';")
-                        .append("}")
-                        .append("}");
+            .append("for (i=0;i<inputs.length;i++) {")
+            .append("if (inputs[i].type == 'text' && inputs[i].name != '").append(field.getName())
+            .append("AutoComplete') {")
+            .append("inputs[i].value='';")
+            .append("}")
+            .append("}");
         return js.toString();
     }
 
