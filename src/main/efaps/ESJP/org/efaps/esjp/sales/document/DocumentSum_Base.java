@@ -406,17 +406,17 @@ public abstract class DocumentSum_Base
         @SuppressWarnings("unchecked")
         final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
 
-        Integer i = 0;
+        Integer idx = 0;
         for (final Calculator calc : calcList) {
             if (!calc.isEmpty()) {
                 final Insert posIns = new Insert(getType4PositionCreate(_parameter));
-                posIns.add(CISales.PositionAbstract.PositionNumber, i + 1);
+                posIns.add(CISales.PositionAbstract.PositionNumber, idx + 1);
                 posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance().getId());
 
                 final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                                 CISales.PositionAbstract.Product.name));
-                if (product != null && product.length > i) {
-                    final Instance inst = Instance.get(product[i]);
+                if (product != null && product.length > idx) {
+                    final Instance inst = Instance.get(product[idx]);
                     if (inst.isValid()) {
                         posIns.add(CISales.PositionAbstract.Product, inst.getId());
                     }
@@ -424,14 +424,14 @@ public abstract class DocumentSum_Base
 
                 final String[] productDesc = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                                 CISales.PositionAbstract.ProductDesc.name));
-                if (productDesc != null && productDesc.length > i) {
-                    posIns.add(CISales.PositionAbstract.ProductDesc, productDesc[i]);
+                if (productDesc != null && productDesc.length > idx) {
+                    posIns.add(CISales.PositionAbstract.ProductDesc, productDesc[idx]);
                 }
 
                 final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                                 CISales.PositionAbstract.UoM.name));
-                if (uoM != null && uoM.length > i) {
-                    posIns.add(CISales.PositionAbstract.UoM, uoM[i]);
+                if (uoM != null && uoM.length > idx) {
+                    posIns.add(CISales.PositionAbstract.UoM, uoM[idx]);
                 }
 
                 posIns.add(CISales.PositionSumAbstract.Quantity, calc.getQuantity());
@@ -472,11 +472,11 @@ public abstract class DocumentSum_Base
                                 calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossPrice,
                                 calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                add2PositionInsert(_parameter, calc, posIns);
+                add2PositionInsert(_parameter, calc, posIns, idx);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());
             }
-            i++;
+            idx++;
         }
     }
 
@@ -485,11 +485,13 @@ public abstract class DocumentSum_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @param _calc Calculator
      * @param _posIns insert
+     * @param _idx index
      * @throws EFapsException on error
      */
     protected void add2PositionInsert(final Parameter _parameter,
                                       final Calculator _calc,
-                                      final Insert _posIns)
+                                      final Insert _posIns,
+                                      final int _idx)
         throws EFapsException
     {
         // to be implemented by subclasses
