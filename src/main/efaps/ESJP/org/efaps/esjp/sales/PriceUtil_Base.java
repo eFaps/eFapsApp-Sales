@@ -58,6 +58,7 @@ import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -147,8 +148,10 @@ public abstract class PriceUtil_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
         queryBldr.addWhereAttrEqValue(CIProducts.ProductPricelistAbstract.ProductAbstractLink, _instance.getId());
-        queryBldr.addWhereAttrLessValue(CIProducts.ProductPricelistAbstract.ValidFrom, _date.plusSeconds(1));
-        queryBldr.addWhereAttrGreaterValue(CIProducts.ProductPricelistAbstract.ValidUntil, _date.minusSeconds(1));
+        queryBldr.addWhereAttrLessValue(CIProducts.ProductPricelistAbstract.ValidFrom,
+                                new DateMidnight(_date).toDateTime().plusSeconds(1));
+        queryBldr.addWhereAttrGreaterValue(CIProducts.ProductPricelistAbstract.ValidUntil,
+                                new DateMidnight(_date).toDateTime().minusSeconds(1));
         add2QueryBldr4PriceList(_parameter, queryBldr);
         final InstanceQuery query;
         if (_cache) {
