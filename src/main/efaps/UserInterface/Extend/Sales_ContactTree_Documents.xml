@@ -44,7 +44,7 @@
             <menu>Contacts_ContactTree_MoveObject_Menu</menu>
             <table>Sales_DocumentAbstractUnfilteredTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_DocumentAbstract</property>
+                <property name="Types">ERP_DocumentAbstract</property>
                 <property name="LinkFroms">Contact</property>
             </evaluate>
         </target>
