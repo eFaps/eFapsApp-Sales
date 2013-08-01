@@ -76,4 +76,16 @@ public class Calculator
     {
         super();
     }
+
+    /**
+     * @param _parameter
+     * @param _config
+     * @throws EFapsException
+     */
+    public Calculator(final Parameter _parameter,
+                      final ICalculatorConfig _config)
+        throws EFapsException
+    {
+        super(_parameter, _config);
+    }
 }

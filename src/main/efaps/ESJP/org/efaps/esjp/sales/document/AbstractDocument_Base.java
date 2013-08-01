@@ -145,6 +145,18 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Method to get a formater.
+     *
+     * @return a formater
+     * @throws EFapsException on error
+     */
+    protected DecimalFormat getZeroDigitsformater()
+        throws EFapsException
+    {
+        return getFormater(0, 0);
+    }
+
+    /**
      * @return a formater used to format bigdecimal for the user interface
      * @param _maxFrac maximum Faction, null to deactivate
      * @param _minFrac minimum Faction, null to activate
@@ -183,6 +195,7 @@ public abstract class AbstractDocument_Base
             formater.setMinimumFractionDigits(2);
         }
         formater.setRoundingMode(RoundingMode.HALF_UP);
+        formater.setGroupingUsed(true);
         formater.setParseBigDecimal(true);
         return formater;
     }
@@ -863,7 +876,8 @@ public abstract class AbstractDocument_Base
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
         final DecimalFormat formater = getTwoDigitsformater();
-        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator());
+        final DecimalFormat formaterZero = getZeroDigitsformater();
+        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
 
         final StringBuilder currency = new StringBuilder();
         BigDecimal rate = null;
@@ -939,8 +953,8 @@ public abstract class AbstractDocument_Base
             final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
 
             map.put("oid", multi.getCurrentInstance().getOid());
-            map.put("quantity", multi.<BigDecimal>getAttribute(
-                            CISales.PositionSumAbstract.Quantity).stripTrailingZeros().toPlainString());
+            map.put("quantity", formaterZero
+                            .format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             map.put("productAutoComplete", multi.<String>getSelect(selProdName));
             map.put("product",  multi.<String>getSelect(selProdOID));
             map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
@@ -1003,10 +1017,12 @@ public abstract class AbstractDocument_Base
      * @param _parameter Paramter as passed by the eFaps API
      * @param _values values to be added to
      * @param _noEscape no escape fields
+     * @throws EFapsException
      */
     protected void add2SetValuesString4Postions(final Parameter _parameter,
                                                 final Map<Integer, Map<String, String>> _values,
                                                 final Set<String> _noEscape)
+        throws EFapsException
     {
         // to be used by implementations
     }

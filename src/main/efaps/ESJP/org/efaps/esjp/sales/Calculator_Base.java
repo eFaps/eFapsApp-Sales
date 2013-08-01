@@ -154,6 +154,22 @@ public abstract class Calculator_Base
     }
 
     /**
+     * Constructor used to instantiate an empty calculator with long decimal config.
+     * @throws EFapsException on error
+     */
+
+    public Calculator_Base(final Parameter _parameter,
+                           final ICalculatorConfig _config)
+        throws EFapsException
+    {
+        this.taxcatId = 0;
+        this.formater = Calculator_Base.getFormatInstance();
+        this.longDecimal = _config.isLongDecimal(_parameter);
+        this.empty = true;
+        setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
+    }
+
+    /**
      * @param _parameter            Parameter  parameter as passed from the eFaps API
      * @param _calc                 calculator
      * @param _oid                  oid of the product
