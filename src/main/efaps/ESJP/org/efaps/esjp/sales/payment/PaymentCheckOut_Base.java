@@ -100,24 +100,24 @@ public abstract class PaymentCheckOut_Base
         };
 
         if (!multiPrint.getInstances(_parameter).isEmpty()) {
-            final MultiPrintQuery multi = new MultiPrintQuery(multiPrint.getInstances(_parameter));
             final SelectBuilder seldate = new SelectBuilder().linkto(CISales.Payment.TargetDocument).attribute(
                             CISales.PaymentDocumentAbstract.Date);
             final SelectBuilder selduedate = new SelectBuilder().linkto(CISales.Payment.TargetDocument).attribute(
                             CISales.PaymentDocumentAbstract.DueDate);
+
+            final MultiPrintQuery multi = new MultiPrintQuery(multiPrint.getInstances(_parameter));
             multi.addSelect(seldate, selduedate);
             multi.execute();
             while (multi.next()) {
                 final DateTime date = multi.<DateTime>getSelect(seldate);
                 final DateTime dueDate = multi.<DateTime>getSelect(selduedate);
-                if (cmd != null
-                                && "AllDifered".equalsIgnoreCase(cmd)) {
+                if (cmd != null && "AllDifered".equalsIgnoreCase(cmd)) {
                     band = true;
                 } else {
-                    QueryBuilder qlb2 = new QueryBuilder(CISales.PayableDocument2Document);
-                    qlb2.addWhereAttrEqValue(CISales.PayableDocument2Document.PayDocLink, multi.getCurrentInstance()
-                                    .getId());
-                    MultiPrintQuery multi2 = qlb2.getPrint();
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PayableDocument2Document);
+                    queryBldr.addWhereAttrEqValue(CISales.PayableDocument2Document.PayDocLink,
+                                    multi.getCurrentInstance().getId());
+                    final MultiPrintQuery multi2 = queryBldr.getPrint();
                     final SelectBuilder selDerivaded = new SelectBuilder().linkto(
                                     CISales.PayableDocument2Document.ToLink).attribute(CISales.DocumentAbstract.Name);
                     multi2.addSelect(selDerivaded);
