@@ -52,16 +52,12 @@
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">MONTH</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
         </field>
         <field name="dueDate">
             <property name="Select">linkto[TargetDocument].attribute[DueDate]</property>
             <property name="Label">Sales_OrderInbound/DueDate.Label</property>
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">MONTH</property>
         </field>
-
         <field name="status">
             <property name="Select">linkto[TargetDocument].attribute[StatusAbstract]</property>
             <property name="FilterType">PICKLIST</property>

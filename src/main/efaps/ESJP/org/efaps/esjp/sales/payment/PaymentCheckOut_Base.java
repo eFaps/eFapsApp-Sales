@@ -40,6 +40,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -80,20 +81,26 @@ public abstract class PaymentCheckOut_Base
     {
         final Return ret = new Return();
         final Map<?, ?> properties = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typeStr = (String) properties.get("Types");
-        Type type;
-        boolean band = false;
         final String cmd = (String) properties.get("AllCheckDifered");
 
-        final List<Instance> instances = new ArrayList<Instance>();
-        if (typeStr != null) {
-            type = Type.get(typeStr);
-            QueryBuilder _queryBldr = new QueryBuilder(CISales.Payment);
-            QueryBuilder qlb = new QueryBuilder(type);
-            final AttributeQuery attrQuery = qlb.getAttributeQuery(CISales.Payment.ID);
-            _queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+        boolean band = false;
 
-            MultiPrintQuery multi = _queryBldr.getPrint();
+        final List<Instance> instances = new ArrayList<Instance>();
+        final MultiPrint multiPrint = new MultiPrint() {
+            @Override
+            protected void add2QueryBldr(Parameter _parameter,
+                                         QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentCheckOut);
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentCheckOut.ID);
+
+                _queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+            }
+        };
+
+        if (!multiPrint.getInstances(_parameter).isEmpty()) {
+            final MultiPrintQuery multi = new MultiPrintQuery(multiPrint.getInstances(_parameter));
             final SelectBuilder seldate = new SelectBuilder().linkto(CISales.Payment.TargetDocument).attribute(
                             CISales.PaymentDocumentAbstract.Date);
             final SelectBuilder selduedate = new SelectBuilder().linkto(CISales.Payment.TargetDocument).attribute(
@@ -101,7 +108,6 @@ public abstract class PaymentCheckOut_Base
             multi.addSelect(seldate, selduedate);
             multi.execute();
             while (multi.next()) {
-                Instance inst = multi.getCurrentInstance();
                 final DateTime date = multi.<DateTime>getSelect(seldate);
                 final DateTime dueDate = multi.<DateTime>getSelect(selduedate);
                 if (cmd != null
@@ -123,14 +129,13 @@ public abstract class PaymentCheckOut_Base
                     }
                 }
                 if (!(date.compareTo(dueDate) == 0) && band) {
-                    instances.add(inst);
+                    instances.add(multi.getCurrentInstance());
                 }
             }
-
         }
+
         ret.put(ReturnValues.VALUES, instances);
         return ret;
-
     }
 
     @SuppressWarnings("unchecked")

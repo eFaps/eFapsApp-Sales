@@ -34,7 +34,7 @@
             <menu>Sales_PaymentDocumentOutMyDesk_Menu</menu>
             <table>Sales_PaymentCheckOutDiferedTable</table>
             <evaluate method="getPayment2CheckOutPositionInstances" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
-                <property name="Types">Sales_PaymentCheckOut</property>
+                <property name="Types">Sales_Payment</property>
                 <property name="AllCheckDifered">AllDifered</property>
             </evaluate>
         </target>
