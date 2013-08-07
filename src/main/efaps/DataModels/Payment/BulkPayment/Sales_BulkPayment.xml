@@ -39,7 +39,7 @@
             <sqlcolumn>BULKDEFID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
                 name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
-                <property name="Value">Name</property>
+                <property name="Value">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="Type">Sales_BulkPaymentDefinition</property>
             </trigger>
         </attribute>
