@@ -30,6 +30,11 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ChannelSalesChannelMyDesk</name>
 
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Salesman</role>
+        </access>
+
         <target>
             <menu>Sales_ChannelSalesChannelMyDesk_Menu</menu>
             <table>Sales_ChannelTable</table>

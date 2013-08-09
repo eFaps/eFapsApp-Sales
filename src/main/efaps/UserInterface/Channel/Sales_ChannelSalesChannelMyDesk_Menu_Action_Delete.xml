@@ -31,6 +31,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ChannelSalesChannelMyDesk_Menu_Action_Delete</name>
 
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
