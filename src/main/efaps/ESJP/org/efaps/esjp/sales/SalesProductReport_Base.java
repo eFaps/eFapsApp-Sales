@@ -140,6 +140,7 @@ public abstract class SalesProductReport_Base
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
             for (final String type : types) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
+                add2QueryBuilder(_parameter, attrQueryBldr);
                 attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, date2Filter);
                 if (instance.getType().isKindOf(CIContacts.Contact.getType())) {
                     attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, instance.getId());
@@ -254,6 +255,18 @@ public abstract class SalesProductReport_Base
             }
 
             return dataSource;
+        }
+
+        /**
+         * @param _parameter Parameter as passed from the eFaps API
+         * @param _queryBldr QueryBuilder the criteria will be added to
+         * @throws EFapsException on error
+         */
+        protected void add2QueryBuilder(final Parameter _parameter,
+                                        final QueryBuilder _queryBldr)
+            throws EFapsException
+        {
+            // to be implemented by subclasses
         }
 
         @Override
