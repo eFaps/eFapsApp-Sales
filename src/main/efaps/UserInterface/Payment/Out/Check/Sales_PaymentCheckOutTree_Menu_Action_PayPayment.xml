@@ -33,6 +33,10 @@
         <target>
             <form>Sales_PaymentCheckOut4PayPaymentForm</form>
             <execute program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updatePayableDocuments"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_PaymentCheckOutTree_Menu_Action_PayPayment.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Stati">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
