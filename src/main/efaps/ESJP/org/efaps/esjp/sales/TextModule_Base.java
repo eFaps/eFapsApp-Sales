@@ -63,8 +63,14 @@ public abstract class TextModule_Base
         throws EFapsException
     {
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Type type = Type.get(CISales.Invoice.uuid);
-
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typeStr = (String) properties.get("Type");
+        final Type type;
+        if (typeStr != null) {
+            type = Type.get(typeStr);
+        } else {
+            type = Type.get(CISales.Invoice.uuid);
+        }
         final QueryBuilder queryBldr = new QueryBuilder(CISales.TextModule);
         queryBldr.addWhereAttrEqValue(CISales.TextModule.ForTypeId, type.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
