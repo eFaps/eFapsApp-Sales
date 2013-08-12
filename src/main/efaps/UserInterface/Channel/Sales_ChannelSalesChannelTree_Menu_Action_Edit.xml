@@ -31,6 +31,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ChannelSalesChannelTree_Menu_Action_Edit</name>
 
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+
         <!-- target definitions -->
         <target>
             <form>Sales_ChannelForm</form>
