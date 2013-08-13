@@ -289,6 +289,14 @@ public abstract class Payment_Base
         return html;
     }
 
+    public OpenAmount getOpenAmount(final Parameter _parameter,
+                                    final Instance _instance)
+        throws EFapsException
+    {
+        return getOpenAmount(_parameter, _instance, true);
+    }
+
+
     /**
      * Method to calculate the open amount for an instance.
      *
@@ -298,7 +306,8 @@ public abstract class Payment_Base
      * @throws EFapsException on error
      */
     public OpenAmount getOpenAmount(final Parameter _parameter,
-                                    final Instance _instance)
+                                    final Instance _instance,
+                                    final boolean _accessCheck)
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_instance);
@@ -308,7 +317,11 @@ public abstract class Payment_Base
         final SelectBuilder sel = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                         .attribute(CIERP.Currency.Symbol);
         print.addSelect(sel);
-        print.execute();
+        if (_accessCheck) {
+            print.execute();
+        } else {
+            print.executeWithoutAccessCheck();
+        }
         final BigDecimal ratecrossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         print.<String>getSelect(sel);
 
@@ -319,7 +332,11 @@ public abstract class Payment_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
         queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _instance.getId());
         final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
+        if (_accessCheck) {
+            query.execute();
+        } else {
+            query.executeWithoutAccessCheck();
+        }
         final List<Instance> instances = query.getValues();
         BigDecimal paid = BigDecimal.ZERO;
 
@@ -337,7 +354,11 @@ public abstract class Payment_Base
             final PriceUtil priceUtil = new PriceUtil();
             final MultiPrintQuery multi = new MultiPrintQuery(instances);
             multi.addSelect(amountSel, currIdSel, oidSel);
-            multi.execute();
+            if (_accessCheck) {
+                multi.execute();
+            } else {
+                multi.executeWithoutAccessCheck();
+            }
             final Set<String> oids = new HashSet<String>();
             while (multi.next()) {
                 if (multi.isList4Select(amountSel.toString())) {
