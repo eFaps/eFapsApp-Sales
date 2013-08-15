@@ -175,20 +175,29 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
         }
 
-        insert.add(CISales.DocumentSumAbstract.RateCrossTotal,
-                        getCrossTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
-                                        BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.DocumentSumAbstract.RateNetTotal,
-                       getNetTotal(_parameter, calcList).setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+        final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
+                        BigDecimal.ROUND_HALF_UP);
+        insert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
+
+        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
+                        BigDecimal.ROUND_HALF_UP);
+        insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
+
         insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.DocumentSumAbstract.CrossTotal,
-                        getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
-                                        isLongDecimal(_parameter),
-                                        BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.DocumentSumAbstract.NetTotal,
-                        getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
-                                        isLongDecimal(_parameter),
-                                        BigDecimal.ROUND_HALF_UP));
+
+        final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                        .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP);
+        insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
+
+        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
+                        isLongDecimal(_parameter),
+                        BigDecimal.ROUND_HALF_UP);
+        insert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+        createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
+
         insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 
         insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
