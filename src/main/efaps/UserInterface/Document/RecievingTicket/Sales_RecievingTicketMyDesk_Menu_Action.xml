@@ -37,6 +37,7 @@
     <!-- childs -->
     <childs>
       <child>Sales_RecievingTicketMyDesk_Menu_Action_Create</child>
+      <child>Sales_RecievingTicketMyDesk_Menu_Action_CreateFromDoc</child>
       <child>Sales_RecievingTicketMyDesk_Menu_Action_Delete</child>
     </childs>
   </definition>
