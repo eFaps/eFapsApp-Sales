@@ -81,6 +81,7 @@ import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -829,14 +830,21 @@ public abstract class AbstractDocument_Base
         final TargetMode mode = command.getTargetMode();
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
 
-        final boolean copy = _parameter.getParameterValue("selectedRow") != null;
+        boolean copy = _parameter.getParameterValue("selectedRow") != null;
         if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
             final Instance instCall = _parameter.getCallInstance();
-            final String oid = copy ? _parameter.getParameterValue("selectedRow")
-                            : _parameter.getParameterValue("selectedDoc");
-            final Instance instance = Instance.get(oid);
+            final Instance instance = getInstance4Derived(_parameter);
             if (instance.isValid()) {
-                js.append("ele.value='").append(oid).append("';")
+                // in case of copy check if it is really a copy (meaning the same type will be created)
+                final Object object = _parameter.get(ParameterValues.CLASS);
+                if (copy && object instanceof UIForm) {
+                    final UIForm uiForm = (UIForm) object;
+                    final Type type = uiForm.getCommand().getTargetCreateType();
+                    if (type != null && !instance.getType().equals(type)) {
+                        copy = false;
+                    }
+                }
+                js.append("ele.value='").append(instance.getOid()).append("';")
                                 .append("ele.name='").append(copy ? "copy" : "derived").append("';")
                                 .append(getSetValuesString(_parameter, instance));
             } else if (instCall != null && instCall.isValid()
@@ -847,6 +855,22 @@ public abstract class AbstractDocument_Base
         js.append("</script>\n");
         return js.toString();
     }
+
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the Instance used for the derived on the javascript field. returns
+     */
+    protected Instance getInstance4Derived(final Parameter _parameter)
+    {
+        Instance ret = Instance.get(_parameter.getParameterValue("selectedDoc"));
+        if (!ret.isValid()) {
+            ret = Instance.get( _parameter.getParameterValue("selectedRow"));
+        }
+        return ret;
+    }
+
 
     protected String getRateCurrencyData(final Parameter _parameter,
                                          final Instance _instanceCurrency,
@@ -863,9 +887,16 @@ public abstract class AbstractDocument_Base
         return formatter.format(rateValue);
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _newInst      new Instance
+     * @param _currentInst  current Instance
+     * @return html for field
+     * @throws EFapsException on error
+     */
     protected String updateRateFields(final Parameter _parameter,
-                                   final Instance _newInst,
-                                   final Instance _currentInst)
+                                      final Instance _newInst,
+                                      final Instance _currentInst)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
