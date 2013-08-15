@@ -824,7 +824,7 @@ public abstract class AbstractDocument_Base
                 .append("require([\"dojo/query\"],function(query){")
                 .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
                 .append("});\n");
-
+        js.append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n");
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = command.getTargetMode();
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
@@ -861,6 +861,21 @@ public abstract class AbstractDocument_Base
         formatter.setMinimumFractionDigits(3);
         formatter.setRoundingMode(RoundingMode.HALF_UP);
         return formatter.format(rateValue);
+    }
+
+    protected String updateRateFields(final Parameter _parameter,
+                                   final Instance _newInst,
+                                   final Instance _currentInst)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        if (!_newInst.equals(_currentInst)) {
+            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _newInst, _currentInst);
+            js.append("document.getElementsByName('rate')[0].value='").append(rates[3]).append("';")
+                            .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                            .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
+        }
+        return js.toString();
     }
 
     /**
