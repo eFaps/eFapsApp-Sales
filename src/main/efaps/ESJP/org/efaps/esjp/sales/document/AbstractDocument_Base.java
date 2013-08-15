@@ -808,9 +808,16 @@ public abstract class AbstractDocument_Base
         js.append("Wicket.Event.add(window, \"domready\", function(event) {\n")
                 .append("var cn = document.getElementsByName('rateCurrencyData');")
                 .append("if (cn.length > 0) { ")
-                .append(" cn[0].appendChild(document.createTextNode(1));")
-                .append("}}); ")
-                .append("var ele = document.createElement('input');")
+                .append(" cn[0].appendChild(document.createTextNode('");
+        final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+        final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        if (currency4Invoice.equals(baseCurrency)) {
+            js.append("1").append("'));");
+        } else {
+            js.append(getRateCurrencyData(_parameter, currency4Invoice, baseCurrency)).append("'));");
+        }
+        js.append("}}); ");
+        js.append("var ele = document.createElement('input');")
                 .append("var attr = document.createAttribute('type');")
                 .append("attr.nodeValue = 'hidden';")
                 .append("ele.setAttributeNode(attr);")
@@ -839,6 +846,21 @@ public abstract class AbstractDocument_Base
         }
         js.append("</script>\n");
         return js.toString();
+    }
+
+    protected String getRateCurrencyData(final Parameter _parameter,
+                                         final Instance _instanceCurrency,
+                                         final Instance _baseCurrency)
+        throws EFapsException
+    {
+
+        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _instanceCurrency, _baseCurrency);
+        final BigDecimal rateValue = rates[3].setScale(3, BigDecimal.ROUND_HALF_UP);
+        final DecimalFormat formatter = Calculator_Base.getFormatInstance();
+        formatter.setMaximumFractionDigits(3);
+        formatter.setMinimumFractionDigits(3);
+        formatter.setRoundingMode(RoundingMode.HALF_UP);
+        return formatter.format(rateValue);
     }
 
     /**
@@ -1475,7 +1497,7 @@ public abstract class AbstractDocument_Base
         while (multi.next()) {
             values.put(multi.<String> getAttribute(CIERP.Currency.Name), multi.getCurrentInstance().getId());
         }
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, baseInst);
         final StringBuilder html = new StringBuilder();
         html.append("<select ").append(UIInterface.EFAPSTMPTAG)
