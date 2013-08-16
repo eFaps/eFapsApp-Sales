@@ -1618,7 +1618,7 @@ public abstract class AbstractDocument_Base
                 }
             }
             js.append("eFapsSetFieldValue(document.getElementsByName('netTotal')[0].id,'rateCurrencyData','")
-                            .append(rates[3].setScale(2, BigDecimal.ROUND_HALF_UP)).append("');")
+                            .append(rates[3].setScale(3, BigDecimal.ROUND_HALF_UP)).append("');")
                             .append("document.getElementsByName('rate')[0].value='").append(rates[3]).append("';")
                             .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
                             .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
