@@ -115,10 +115,13 @@
         <!-- connect the Sales_ERP_DocumentTypeTree_Document_Menu_Action_AddExisting  to ERP_DocumentTypeTree_Document_Menu_Action -->
         update.add2Menu("38138df5-aa40-4a53-b960-26376d4aff3d", "32af8b50-83f2-4e75-87d7-3642e28c1b92", -1);
 
+        <!-- Sales_ProductDocumentTypeMyDesk_Menu_Action_Create to ERP_DocumentTypeMyDesk_Menu_Action -->
+        update.add2Menu("4a5634f9-0413-4cb8-a009-0c04ca1ce84c", "31c9a626-f6a9-4d23-9eaf-053276f0d910", -1);
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
         update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
     </script>
     </version>
-    </install>
+</install>

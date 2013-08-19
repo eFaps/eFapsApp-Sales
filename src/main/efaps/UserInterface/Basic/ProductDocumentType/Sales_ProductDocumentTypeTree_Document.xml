@@ -15,25 +15,23 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5311 $
- Last Changed:    $Date: 2010-08-16 10:52:24 -0500 (lun, 16 ago 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fe5e1215-33cf-47eb-bb65-a0a7eb432b66</uuid>
-    <file-application>eFapsApp-Commons</file-application>
-    <file-revision>$Rev: 5311 $</file-revision>
+    <uuid>dfb44773-2665-4ec3-b323-bb38424bbdcf</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>ERP_DocumentTypeMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_ProductDocumentTypeTree_Document</name>
         <target>
-            <menu>ERP_DocumentTypeMyDesk_Menu</menu>
-            <table>ERP_DocumentTypeTable</table>
+            <menu>Sales_ProductDocumentTypeTree_Document_Menu</menu>
+            <table>ERP_DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">ERP_DocumentTypeAbstract</property>
+                <property name="Types">ERP_Document2DocumentTypeAbstract</property>
+                <property name="LinkFroms">DocumentTypeLinkAbstract</property>
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>

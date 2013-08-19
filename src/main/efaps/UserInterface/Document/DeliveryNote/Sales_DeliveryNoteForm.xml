@@ -72,6 +72,23 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="documentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_DeliveryNoteForm.documentType.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+                name="Sales_DeliveryNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+            </trigger>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>

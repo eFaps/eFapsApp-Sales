@@ -75,6 +75,7 @@ public abstract class DeliveryNote_Base
     {
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
+        connect2ProductDocumentType(_parameter, doc.getInstance());
         return new Return();
     }
 
@@ -92,6 +93,19 @@ public abstract class DeliveryNote_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
+    }
+
+    protected void connect2ProductDocumentType(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
+        if (instDocType.isValid() && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
     }
 
     /**

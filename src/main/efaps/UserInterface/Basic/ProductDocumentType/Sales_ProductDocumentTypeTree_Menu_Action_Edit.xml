@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,30 +15,29 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5311 $
- Last Changed:    $Date: 2010-08-16 10:52:24 -0500 (lun, 16 ago 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fe5e1215-33cf-47eb-bb65-a0a7eb432b66</uuid>
-    <file-application>eFapsApp-Commons</file-application>
-    <file-revision>$Rev: 5311 $</file-revision>
+
+    <uuid>05dfc221-fc8c-4b5d-84aa-69e3092c5ea8</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>ERP_DocumentTypeMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_ProductDocumentTypeTree_Menu_Action_Edit</name>
+
+        <!-- target definitions -->
         <target>
-            <menu>ERP_DocumentTypeMyDesk_Menu</menu>
-            <table>ERP_DocumentTypeTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">ERP_DocumentTypeAbstract</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
+            <form>ERP_DocumentTypeForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit"/>
         </target>
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>

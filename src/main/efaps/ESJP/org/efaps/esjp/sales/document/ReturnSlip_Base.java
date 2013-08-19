@@ -61,7 +61,8 @@ public abstract class ReturnSlip_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final Instance returnSlip = createDoc(_parameter);
+        connect2ProductDocumentType(_parameter, returnSlip);
         return new Return();
     }
 
@@ -99,6 +100,19 @@ public abstract class ReturnSlip_Base
             i++;
         }
         return insert.getInstance();
+    }
+
+    protected void connect2ProductDocumentType(final Parameter _parameter,
+                                               final Instance _instance)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
+        if (instDocType.isValid() && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
     }
 
     public Return returnSlipPositionInsertTrigger(final Parameter _parameter)
