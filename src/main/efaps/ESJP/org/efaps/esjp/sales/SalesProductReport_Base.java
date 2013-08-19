@@ -34,7 +34,10 @@ import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.builder.VariableBuilder;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
+import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
@@ -65,6 +68,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -78,15 +82,19 @@ import org.joda.time.DateTime;
 @EFapsRevision("$Rev: 8120 $")
 public abstract class SalesProductReport_Base
 {
+    /**
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @return Return containing html snipplet
+     * @throws EFapsException on error
+     */
     public Return generateReport(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = getReport(_parameter);
         dyRp.setFileName("PurchaseSaleReport");
-        final String html = dyRp.getHtml((_parameter));
+        final String html = dyRp.getHtmlSnipplet(_parameter);
         ret.put(ReturnValues.SNIPLETT, html);
-
         return ret;
     }
 
@@ -134,8 +142,8 @@ public abstract class SalesProductReport_Base
 
             final DateTime date2Filter = new DateTime().minusYears(yearsAgo);
 
-            final DRDataSource dataSource = new DRDataSource("document", "currency", "contact", "date", "quantity",
-                            "netUnitPrice", "netPrice", "contactInst", "productInst", "productName");
+            final DRDataSource dataSource = new DRDataSource("docOID", "document", "currency", "contact", "date",
+                            "quantity", "netUnitPrice", "netPrice", "contactInst", "productInst", "productName");
 
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
             for (final String type : types) {
@@ -183,8 +191,12 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selDocName = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                                         .attribute(CISales.DocumentSumAbstract.Name);
+                final SelectBuilder selDocInst = new SelectBuilder()
+                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                        .instance();
+
                 multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName,
-                                selCurSymbol, selProductInst, selProductName, selProductDesc);
+                                selCurSymbol, selProductInst, selProductName, selProductDesc, selDocInst);
                 multi.execute();
                 while (multi.next()) {
                     final Map<String, Object> map = new HashMap<String, Object>();
@@ -193,14 +205,17 @@ public abstract class SalesProductReport_Base
                     final String productDesc = multi.<String>getSelect(selProductDesc);
                     final String curSymbol = multi.<String>getSelect(selCurSymbol);
                     final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-                    final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                    final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(
+                                    CISales.PositionSumAbstract.NetUnitPrice);
                     final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
                     final Instance contactInst = multi.<Instance>getSelect(selContactInst);
                     final String contactName = multi.<String>getSelect(selContactName);
                     final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
                     final String docName = multi.<String>getSelect(selDocName);
+                    final Instance docInst = multi.<Instance>getSelect(selDocInst);
                     final String docType = multi.<String>getSelect(selDocType);
+                    map.put("docOID", docInst.getOid());
                     map.put("document", docType + ": " + docName);
                     map.put("currency", curSymbol);
                     map.put("contact", contactName);
@@ -217,7 +232,8 @@ public abstract class SalesProductReport_Base
                 }
             }
 
-            Collections.sort(lst, new Comparator<Map<String, Object>>(){
+            Collections.sort(lst, new Comparator<Map<String, Object>>()
+            {
                 @Override
                 public int compare(final Map<String, Object> _o1,
                                    final Map<String, Object> _o2)
@@ -239,10 +255,12 @@ public abstract class SalesProductReport_Base
                         ret = date1.compareTo(date2);
                     }
                     return ret;
-                }});
+                }
+            });
 
             for (final Map<String, Object> map : lst) {
-                dataSource.add(map.get("document"),
+                dataSource.add(map.get("docOID"),
+                                map.get("document"),
                                 map.get("currency"),
                                 map.get("contact"),
                                 map.get("date"),
@@ -276,7 +294,7 @@ public abstract class SalesProductReport_Base
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final boolean oppositeFilter = Boolean.parseBoolean((String) props.get("OppositeFilter"));
-            final String dateFilter = (String) props.get("DateFilter");
+            props.get("DateFilter");
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
 
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
@@ -330,24 +348,30 @@ public abstract class SalesProductReport_Base
                             .setStyle(DynamicReports.stl.style().setBold(true)
                                             .setTopBorder(DynamicReports.stl.penDouble()));
 
-            quantitySum = DynamicReports.variable("quantity", BigDecimal.class, Calculation.SUM);
-            netPriceSum = DynamicReports.variable("netPrice", BigDecimal.class, Calculation.SUM);
+            final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
+                            "http://www.efaps.org", "efapslink")
+                            .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression())
+                            .setHeight(12).setWidth(25);
 
+            final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
+
+            this.quantitySum = DynamicReports.variable("quantity", BigDecimal.class, Calculation.SUM);
+            this.netPriceSum = DynamicReports.variable("netPrice", BigDecimal.class, Calculation.SUM);
 
             if (oppositeFilter) {
                 if (_parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract.getType())) {
-                    quantitySum.setResetGroup(contactGroup);
-                    netPriceSum.setResetGroup(contactGroup);
+                    this.quantitySum.setResetGroup(contactGroup);
+                    this.netPriceSum.setResetGroup(contactGroup);
                 } else {
-                    quantitySum.setResetGroup(productGroup);
-                    netPriceSum.setResetGroup(productGroup);
+                    this.quantitySum.setResetGroup(productGroup);
+                    this.netPriceSum.setResetGroup(productGroup);
                 }
             } else {
-                quantitySum.setResetGroup(monthGroup);
-                netPriceSum.setResetGroup(monthGroup);
+                this.quantitySum.setResetGroup(monthGroup);
+                this.netPriceSum.setResetGroup(monthGroup);
             }
 
-            _builder.addVariable(quantitySum, netPriceSum);
+            _builder.addVariable(this.quantitySum, this.netPriceSum);
 
             _builder.addColumn(yearColumn,
                                 monthColumn);
@@ -357,6 +381,9 @@ public abstract class SalesProductReport_Base
                 } else {
                     _builder.addColumn(productColumn);
                 }
+            }
+            if (getExType().equals(ExportType.HTML)) {
+                _builder.addColumn(linkColumn);
             }
             _builder.addColumn(documentColumn.setFixedWidth(200),
                                 dateColumn,
@@ -403,8 +430,8 @@ public abstract class SalesProductReport_Base
             @Override
             public BigDecimal evaluate(final ReportParameters reportParameters)
             {
-                final BigDecimal quantitySumValue = reportParameters.getValue(quantitySum);
-                final BigDecimal priceSumValue = reportParameters.getValue(netPriceSum);
+                final BigDecimal quantitySumValue = reportParameters.getValue(BuySellReport.this.quantitySum);
+                final BigDecimal priceSumValue = reportParameters.getValue(BuySellReport.this.netPriceSum);
 
                 final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
                 return total;
@@ -417,6 +444,26 @@ public abstract class SalesProductReport_Base
         {
             return DynamicReports.stl.style().bold()
                             .setTopBorder(DynamicReports.stl.penThin());
+        }
+    }
+
+    public static class LinkExpression
+        extends AbstractComplexExpression<EmbeddedLink>
+    {
+
+        private static final long serialVersionUID = 1L;
+
+        public LinkExpression()
+        {
+            addExpression(DynamicReports.field("docOID", String.class));
+        }
+
+        @Override
+        public EmbeddedLink evaluate(final List<?> _values,
+                                     final ReportParameters _reportParameters)
+        {
+            final String oid = (String) _values.get(0);
+            return EmbeddedLink.getJasperLink(oid);
         }
     }
 }
