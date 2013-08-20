@@ -951,19 +951,39 @@ public abstract class AbstractDocument_Base
         BigDecimal rate = null;
         BigDecimal[] ratesCur = null;
         if (rates != null) {
+            final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance instanceDerived = getInstance4Derived(_parameter);
+            boolean derived = false;
+            if (instanceDerived.isValid()) {
+                derived = true;
+            }
+            if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived) {
+                currency.append("document.getElementsByName('rateCurrencyId')[0].selectedIndex=")
+                                .append(((Long) rates[2]) - 1).append(";");
+                final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
+                Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
+                ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
+                currency.append("document.getElementsByName('rateCurrencyData')[0].innerHTML='")
+                                .append(ratesCur[1].toString()).append("';")
+                                .append("document.getElementsByName('rate')[0].value='").append(ratesCur[1].toString())
+                                .append("';")
+                                .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                                .append("')[0].value='").append(new CurrencyInst(newInst).isInvert()).append("';");
+            }
             if (!rates[2].equals(rates[3])) {
-                currency.append(" require([\"dojo/query\",\"dojo/NodeList-traverse\"], function(query){\n")
-                    .append("query(\"select[name=rateCurrencyId]\")[0].selectedIndex=")
+                currency.append("document.getElementsByName('rateCurrencyId')[0].selectedIndex=")
                                 .append(((Long) rates[2]) - 1).append(";");
                 rate = (BigDecimal) rates[1];
                 final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
                 Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
                 ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
-                currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
-                    .append("query(\"input[name=rate]\")[0].value='").append(ratesCur[1].toString()).append("';")
-                    .append("query(\"input[name=rate").append(RateUI.INVERTEDSUFFIX).append("]\")[0].value='")
-                        .append(new CurrencyInst(newInst).isInvert()).append("';")
-                    .append(" });\n");
+                currency.append("document.getElementsByName('rateCurrencyData')[0].innerHTML='")
+                                .append(ratesCur[1].toString()).append("';")
+                                .append("document.getElementsByName('rate')[0].value='").append(ratesCur[1].toString())
+                                .append("';")
+                                .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
+                                .append("')[0].value='").append(new CurrencyInst(newInst).isInvert()).append("';");
             }
         }
 
