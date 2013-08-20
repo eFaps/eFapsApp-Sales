@@ -45,6 +45,20 @@ public final class Sales
     }
 
     /**
+     * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
+     */
+    public enum TaxPerception
+    {
+        /** Cliente final. */
+        ENDCOSTUMER,
+        /** Agente de Percepcion. */
+        AGENT,
+        /** Cliente Normal. */
+        CLIENT;
+    }
+
+
+    /**
      * @return the SystemConfigruation for Sales
      * @throws CacheReloadException on error
      */
