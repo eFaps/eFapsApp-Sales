@@ -28,8 +28,10 @@
         <name>Sales_PaymentOrderStatus</name>
         <parent>Sales_DocumentStatus</parent>
         <status key="Open">
-            <description>The products where not delivered yet.
-            </description>
+            <description>The products where not delivered yet.</description>
+        </status>
+        <status key="Booked">
+            <description>Invoice was booked.</description>
         </status>
         <status key="Closed">
             <description>The products where delivered.</description>
