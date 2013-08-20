@@ -1,4 +1,5 @@
 /*
+
  * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -33,6 +34,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -63,9 +65,47 @@ public abstract class Perception_Base
             final PerceptionInfo info = evalProduct4Perception(_parameter, _instance);
             if (info != null) {
                 ret = info.isApply();
+                if (ret) {
+                    ret = contactApplies2Perception(_parameter);
+                }
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFaps API
+     * @return true if the contact applies 2 perception he product, else false
+     * @throws EFapsException on error
+     */
+    public boolean contactApplies2Perception(final Parameter _parameter)
+        throws EFapsException
+    {
+        boolean ret = true;
+        final Instance contactInst = getContactInst(_parameter);
+        if (contactInst.isValid()) {
+            final PrintQuery print = new PrintQuery(contactInst);
+            final SelectBuilder sel = SelectBuilder.get().clazz(CISales.Contacts_ClassTaxinfo)
+                            .attribute(CISales.Contacts_ClassTaxinfo.Perception);
+            print.addSelect(sel);
+            print.executeWithoutAccessCheck();
+            final Object val = print.getSelect(sel);
+            if (val != null) {
+                ret = Sales.TaxPerception.CLIENT.ordinal() == (Integer) val;
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFaps API
+     * @return the Contact instcane that will be used for evaluation
+     * @throws EFapsException on error
+     */
+    protected Instance getContactInst(final Parameter _parameter)
+        throws EFapsException
+    {
+        return Instance.get(_parameter.getParameterValue("contact"));
     }
 
     /**

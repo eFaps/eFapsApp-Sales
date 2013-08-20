@@ -155,9 +155,10 @@ public abstract class Calculator_Base
 
     /**
      * Constructor used to instantiate an empty calculator with long decimal config.
+     * @param _parameter            Parameter  parameter as passed from the eFaps API
+     * @param _config               Config for this Calculator
      * @throws EFapsException on error
      */
-
     public Calculator_Base(final Parameter _parameter,
                            final ICalculatorConfig _config)
         throws EFapsException

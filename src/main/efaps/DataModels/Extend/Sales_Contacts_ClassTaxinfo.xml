@@ -59,5 +59,11 @@
             <sqltable>Sales_Contacts_ClassTaxinfoSQLTable</sqltable>
             <sqlcolumn>PERCEPTION</sqlcolumn>
         </attribute>
+        <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+            method="configCheck" name="Sales_Contacts_ClassTaxinfo.ACCESSCHECK.1"
+            event="ACCESSCHECK" index="1">
+            <property name="SystemConfig">Sales-Configuration</property>
+            <property name="Attribute">org.efaps.sales.PerceptionActivate</property>
+        </trigger>
     </definition>
 </datamodel-type>
