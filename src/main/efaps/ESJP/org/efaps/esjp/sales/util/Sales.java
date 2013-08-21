@@ -49,12 +49,12 @@ public final class Sales
      */
     public enum TaxPerception
     {
+        /** Cliente Normal. DEFAULT VALUE if no information available.*/
+        CLIENT,
         /** Cliente final. */
         ENDCOSTUMER,
         /** Agente de Percepcion. */
-        AGENT,
-        /** Cliente Normal. */
-        CLIENT;
+        AGENT;
     }
 
 
