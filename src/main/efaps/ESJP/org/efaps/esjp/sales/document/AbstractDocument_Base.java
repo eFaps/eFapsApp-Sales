@@ -1030,6 +1030,7 @@ public abstract class AbstractDocument_Base
             final BigDecimal rateDiscountNetUnitPrice = multi.
                             <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
             final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
 
             map.put("oid", multi.getCurrentInstance().getOid());
             map.put("quantity", formaterZero
@@ -1041,20 +1042,32 @@ public abstract class AbstractDocument_Base
                                             multi.<Long>getSelect(selProdDim)));
             if (TargetMode.EDIT.equals(Context.getThreadContext()
                             .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                map.put("netUnitPrice", formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
-                map.put("discountNetUnitPrice",
-                                formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
-                map.put("netPrice", formater.format(rate != null ? rateNetPrice : netPrice));
+                map.put("netUnitPrice", rateNetUnitPrice == null || netUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
+                map.put("discountNetUnitPrice", rateDiscountNetUnitPrice == null || discountNetUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
+                map.put("netPrice", rateNetPrice == null || netPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(rate != null ? rateNetPrice : netPrice));
             } else {
-                map.put("netUnitPrice", formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
-                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
-                map.put("discountNetUnitPrice", formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
-                                BigDecimal.ROUND_HALF_UP)
-                                : discountNetUnitPrice));
-                map.put("netPrice", formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                : netPrice));
-                map.put("discount",
-                                formater.format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount)));
+                map.put("netUnitPrice", netUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
+                                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
+                map.put("discountNetUnitPrice", discountNetUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
+                                                BigDecimal.ROUND_HALF_UP)
+                                                : discountNetUnitPrice));
+                map.put("netPrice", netPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                : netPrice));
+                map.put("discount", discount == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(discount));
             }
             values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
         }
