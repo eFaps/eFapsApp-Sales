@@ -902,9 +902,10 @@ public abstract class AbstractDocument_Base
         final StringBuilder js = new StringBuilder();
         if (!_newInst.equals(_currentInst)) {
             final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _newInst, _currentInst);
-            js.append("document.getElementsByName('rate')[0].value='").append(rates[3]).append("';")
-                            .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
-                            .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
+            js.append(getSetFieldValue(0, "rate", rates[3].toString()))
+                .append("\n")
+                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,"" + (rates[3].compareTo(rates[0]) != 0)))
+                .append("\n");
         }
         return js.toString();
     }
@@ -950,40 +951,55 @@ public abstract class AbstractDocument_Base
         final StringBuilder currency = new StringBuilder();
         BigDecimal rate = null;
         BigDecimal[] ratesCur = null;
-        if (rates != null) {
-            final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-            final Instance instanceDerived = getInstance4Derived(_parameter);
-            boolean derived = false;
-            if (instanceDerived.isValid()) {
-                derived = true;
-            }
-            if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived) {
-                currency.append("document.getElementsByName('rateCurrencyId')[0].selectedIndex=")
-                                .append(((Long) rates[2]) - 1).append(";");
+        if (_instance.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+            if (rates != null) {
+                final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+                final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                final Instance instanceDerived = getInstance4Derived(_parameter);
+                boolean derived = false;
+                if (instanceDerived.isValid()) {
+                    derived = true;
+                }
                 final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
                 Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
                 ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
-                currency.append("document.getElementsByName('rateCurrencyData')[0].innerHTML='")
-                                .append(ratesCur[1].toString()).append("';")
-                                .append("document.getElementsByName('rate')[0].value='").append(ratesCur[1].toString())
-                                .append("';")
-                                .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
-                                .append("')[0].value='").append(new CurrencyInst(newInst).isInvert()).append("';");
-            }
-            if (!rates[2].equals(rates[3])) {
-                currency.append("document.getElementsByName('rateCurrencyId')[0].selectedIndex=")
-                                .append(((Long) rates[2]) - 1).append(";");
-                rate = (BigDecimal) rates[1];
-                final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
-                Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
-                ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
-                currency.append("document.getElementsByName('rateCurrencyData')[0].innerHTML='")
-                                .append(ratesCur[1].toString()).append("';")
-                                .append("document.getElementsByName('rate')[0].value='").append(ratesCur[1].toString())
-                                .append("';")
-                                .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
-                                .append("')[0].value='").append(new CurrencyInst(newInst).isInvert()).append("';");
+
+                if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived) {
+                    currency.append(getSetFieldValue(0, "rateCurrencyId", "" + (((Long) rates[2]) - 1)))
+                            .append("\n");
+                    /*currency.append(" require([\"dojo/query\",\"dojo/NodeList-traverse\"], function(query){\n")
+                            .append("query(\"select[name=rateCurrencyId]\")[0].selectedIndex=")
+                            .append(((Long) rates[2]) - 1).append(";");*/
+                    currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                            .append(getSetFieldValue(0, "rate", ratesCur[1].toString()))
+                            .append("\n")
+                            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                                            "" + new CurrencyInst(newInst).isInvert()))
+                            .append("\n");
+                    /*currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                            .append("query(\"input[name=rate]\")[0].value='").append(ratesCur[1].toString()).append("';")
+                            .append("query(\"input[name=rate").append(RateUI.INVERTEDSUFFIX).append("]\")[0].value='")
+                                .append(new CurrencyInst(newInst).isInvert()).append("';")
+                            .append(" });\n");*/
+                } else if (!rates[2].equals(rates[3])) {
+                    rate = (BigDecimal) rates[1];
+                    currency.append(getSetFieldValue(0, "rateCurrencyId", "" + (((Long) rates[2]) - 1)))
+                            .append("\n");
+                    /*currency.append(" require([\"dojo/query\",\"dojo/NodeList-traverse\"], function(query){\n")
+                            .append("query(\"select[name=rateCurrencyId]\")[0].selectedIndex=")
+                            .append(((Long) rates[2]) - 1).append(";");*/
+                    currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                            .append(getSetFieldValue(0, "rate", ratesCur[1].toString()))
+                            .append("\n")
+                            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                                            "" + new CurrencyInst(newInst).isInvert()))
+                            .append("\n");
+                    /*currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                            .append("query(\"input[name=rate]\")[0].value='").append(ratesCur[1].toString()).append("';")
+                            .append("query(\"input[name=rate").append(RateUI.INVERTEDSUFFIX).append("]\")[0].value='")
+                                .append(new CurrencyInst(newInst).isInvert()).append("';")
+                            .append(" });\n");*/
+                }
             }
         }
 
@@ -1000,13 +1016,13 @@ public abstract class AbstractDocument_Base
             .append(addAdditionalFields(_parameter, _instance)).append("\n")
             .append("}\n");
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _instance.getId());
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.PositionSumAbstract.PositionNumber,
-                        CISales.PositionSumAbstract.ProductDesc,
-                        CISales.PositionSumAbstract.Quantity,
-                        CISales.PositionSumAbstract.UoM,
+        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
+                        CISales.PositionAbstract.ProductDesc,
+                        CISales.PositionAbstract.Quantity,
+                        CISales.PositionAbstract.UoM,
                         CISales.PositionSumAbstract.CrossUnitPrice,
                         CISales.PositionSumAbstract.NetUnitPrice,
                         CISales.PositionSumAbstract.DiscountNetUnitPrice,
@@ -1048,22 +1064,24 @@ public abstract class AbstractDocument_Base
             map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
             map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                             multi.<Long>getSelect(selProdDim)));
-            if (TargetMode.EDIT.equals(Context.getThreadContext()
-                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                map.put("netUnitPrice", formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
-                map.put("discountNetUnitPrice",
-                                formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
-                map.put("netPrice", formater.format(rate != null ? rateNetPrice : netPrice));
-            } else {
-                map.put("netUnitPrice", formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
-                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
-                map.put("discountNetUnitPrice", formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
-                                BigDecimal.ROUND_HALF_UP)
-                                : discountNetUnitPrice));
-                map.put("netPrice", formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                : netPrice));
-                map.put("discount",
-                                formater.format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount)));
+            if (_instance.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                if (TargetMode.EDIT.equals(Context.getThreadContext()
+                                .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+                    map.put("netUnitPrice", formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
+                    map.put("discountNetUnitPrice",
+                                    formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
+                    map.put("netPrice", formater.format(rate != null ? rateNetPrice : netPrice));
+                } else {
+                    map.put("netUnitPrice", formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
+                                    BigDecimal.ROUND_HALF_UP) : netUnitPrice));
+                    map.put("discountNetUnitPrice", formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
+                                    BigDecimal.ROUND_HALF_UP)
+                                    : discountNetUnitPrice));
+                    map.put("netPrice", formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                    : netPrice));
+                    map.put("discount",
+                                    formater.format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount)));
+                }
             }
             values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
         }
