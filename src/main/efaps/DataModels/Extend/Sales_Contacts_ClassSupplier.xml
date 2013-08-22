@@ -33,9 +33,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Contacts_ClassSupplier</name>
-        <parent>Contacts_Class</parent>
+        
         <purpose classification="true">
             <LinkColumn>ContactId</LinkColumn>
+            <parent>Contacts_Class</parent>
         </purpose>
         <attribute>
             <name>OID</name>

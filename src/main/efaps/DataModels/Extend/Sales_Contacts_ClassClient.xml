@@ -35,9 +35,10 @@
             <profile name="eFaps" />
         </profiles>
         <name>Sales_Contacts_ClassClient</name>
-        <parent>Contacts_Class</parent>
+        
         <purpose classification="true">
             <LinkColumn>ContactId</LinkColumn>
+            <parent>Contacts_Class</parent>
         </purpose>
         <attribute>
             <name>OID</name>
@@ -85,9 +86,10 @@
             <profile name="ubicaciones" />
         </profiles>
         <name>Sales_Contacts_ClassClient</name>
-        <parent>Contacts_Class</parent>
+        
         <purpose classification="true">
             <LinkColumn>ContactId</LinkColumn>
+            <parent>Contacts_Class</parent>
         </purpose>
         <attribute>
             <name>OID</name>
