@@ -33,6 +33,15 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentSearchForm</name>
         <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <trigger program="org.efaps.esjp.common.uisearch.Search" method="typeFieldValue"
+                name="Sales_DocumentSearchForm.type.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Types">ERP_DocumentAbstract</property>
+            </trigger>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
