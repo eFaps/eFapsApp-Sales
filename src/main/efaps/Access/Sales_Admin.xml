@@ -70,6 +70,7 @@
         <type>Sales_RetentionCertificate</type>
         <type>Sales_BulkPayment</type>
         <type>Sales_QuoteRequest</type>
+        <type>Sales_IncomingCreditNote</type>
         <type>Sales_PerceptionCertificate</type>
 
         <status group="Sales_CostSheetStatus">
@@ -224,15 +225,19 @@
             <key>Canceled</key>
         </status>
 
+        <status group="Sales_IncomingCreditNoteStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
         <status group="Sales_PerceptionCertificateStatus">
             <key>Open</key>
             <key>Paid</key>
             <key>Canceled</key>
         </status>
 
-
         <role>Sales_Admin</role>
     </definition>
 </access-set>
-
-
