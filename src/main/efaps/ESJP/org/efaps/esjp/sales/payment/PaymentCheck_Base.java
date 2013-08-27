@@ -122,9 +122,9 @@ public abstract class PaymentCheck_Base
                 throws EFapsException
             {
                 final PrintQuery print = new PrintQuery(_parameter.getInstance());
-                print.addAttribute(CISales.PaymentCheck.CurrencyLink);
+                print.addAttribute(CISales.PaymentCheck.RateCurrencyLink);
                 print.execute();
-                final Long curId = print.<Long>getAttribute(CISales.PaymentCheck.CurrencyLink);
+                final Long curId = print.<Long>getAttribute(CISales.PaymentCheck.RateCurrencyLink);
 
                 _queryBldr.addWhereAttrEqValue(CISales.AccountCashDesk.CurrencyLink, curId);
             }
