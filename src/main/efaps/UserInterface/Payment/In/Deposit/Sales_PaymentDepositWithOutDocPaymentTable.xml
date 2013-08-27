@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2012 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 9021 $
+ Last Changed:    $Date: 2013-03-08 19:09:52 -0500 (vie, 08 mar 2013) $
+ Last Changed By: $Author: m.aranya@moxter.net $
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>310eab9b-eeef-4c5d-a337-0ce49e56754c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 9021 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentDepositWithOutDocPaymentTable</name>
+        <!-- fields -->
+        <field name="createDocument">
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCheck">
+                <property name="Type0">Sales_Invoice</property>
+                <property name="StatusGroup0">Sales_InvoiceStatus</property>
+                <property name="Stati0">Open</property>
+                <property name="Type1">Sales_Receipt</property>
+                <property name="StatusGroup1">Sales_ReceiptStatus</property>
+                <property name="Stati1">Open</property>
+                <property name="Type2">Sales_CollectionOrder</property>
+                <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
+                <property name="Stati2">Open</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+        </field>
+        <field name="createDocumentDesc">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.createDocumentDesc.Label</property>
+        </field>
+        <field name="payment4Pay">
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.payment4Pay.Label</property>
+        </field>
+        <!-- different name to prevent collision with parent formular -->
+        <field name="paymentAmount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_Payment/Amount.Label</property>
+            <property name="Attribute">Amount</property>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount" name="Sales_PaymentCheckPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+        </field>
+        <field name="paymentAmountDesc">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCheckPaymentTable.paymentAmountDesc.Label</property>
+        </field>
+    </definition>
+</ui-table>

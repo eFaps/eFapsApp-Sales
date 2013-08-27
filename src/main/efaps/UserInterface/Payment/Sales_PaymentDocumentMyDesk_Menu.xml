@@ -32,6 +32,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_ActionWithOutDoc</child>
         </childs>
     </definition>
 </ui-menu>

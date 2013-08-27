@@ -62,6 +62,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
@@ -162,9 +163,7 @@ public abstract class AbstractPaymentDocument_Base
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
                             currencyLink);
-            // Sales-Configuration
-            final Instance baseCurrInst = SystemConfiguration.get(
-                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
@@ -177,9 +176,7 @@ public abstract class AbstractPaymentDocument_Base
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
                             currencyLink4Account);
-            // Sales-Configuration
-            final Instance baseCurrInst = SystemConfiguration.get(
-                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
@@ -248,7 +245,11 @@ public abstract class AbstractPaymentDocument_Base
 
             final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
             Insert transIns;
-            if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+            if ((getType4DocCreate(_parameter) != null
+                        && getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType()))
+                    || (_parameter.getInstance() != null
+                        && _parameter.getInstance().isValid()
+                        && _parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType()))) {
                 transIns = new Insert(CISales.TransactionInbound);
             } else {
                 transIns = new Insert(CISales.TransactionOutbound);
@@ -284,6 +285,7 @@ public abstract class AbstractPaymentDocument_Base
             transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
             _createdDoc.getValues().put(getFieldName4Attribute(_parameter,
                             CISales.TransactionAbstract.Account.name), _parameter.getParameterValue("account"));
+
             transIns.execute();
         }
     }
@@ -609,24 +611,21 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(), _parameter.getParameterValue("account"));
+        final PrintQuery print = new PrintQuery(CISales.AccountCashDesk.getType(),
+                        _parameter.getParameterValue("account"));
         print.addAttribute(CISales.AccountCashDesk.CurrencyLink);
         print.execute();
 
         final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
 
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final Map<String, String> map = new HashMap<String, String>();
-        final StringBuilder js = new StringBuilder();
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
-        js.append("document.getElementsByName('rate')[0].value='").append(rates[3].stripTrailingZeros()).append("';")
-                        .append("document.getElementsByName('rate").append(RateUI.INVERTEDSUFFIX)
-                        .append("')[0].value='").append(rates[3].compareTo(rates[0]) != 0).append("';");
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        map.put(CIFormSales.Sales_PaymentCheckWithOutDocForm.rate.name, getFormater(0, 2).format(rates[3]));
+        map.put(CIFormSales.Sales_PaymentCheckWithOutDocForm.rate.name + RateUI.INVERTEDSUFFIX,
+                        "" + (rates[3].compareTo(rates[0]) != 0));
         list.add(map);
 
         final Return retVal = new Return();
@@ -657,12 +656,47 @@ public abstract class AbstractPaymentDocument_Base
         return new Return();
     }
 
+    /**
+     * Method to get a formater.
+     *
+     * @return a formater
+     * @throws EFapsException on error
+     */
     protected DecimalFormat getTwoDigitsformater()
         throws EFapsException
     {
+        return getFormater(2, 2);
+    }
+
+    /**
+     * Method to get a formater.
+     *
+     * @return a formater
+     * @throws EFapsException on error
+     */
+    protected DecimalFormat getZeroDigitsformater()
+        throws EFapsException
+    {
+        return getFormater(0, 0);
+    }
+
+    /**
+     * @return a formater used to format bigdecimal for the user interface
+     * @param _maxFrac maximum Faction, null to deactivate
+     * @param _minFrac minimum Faction, null to activate
+     * @throws EFapsException on error
+     */
+    public DecimalFormat getFormater(final Integer _minFrac,
+                                     final Integer _maxFrac)
+        throws EFapsException
+    {
         final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        formater.setMaximumFractionDigits(2);
-        formater.setMinimumFractionDigits(2);
+        if (_maxFrac != null) {
+            formater.setMaximumFractionDigits(_maxFrac);
+        }
+        if (_minFrac != null) {
+            formater.setMinimumFractionDigits(_minFrac);
+        }
         formater.setRoundingMode(RoundingMode.HALF_UP);
         formater.setParseBigDecimal(true);
         return formater;

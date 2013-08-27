@@ -15,27 +15,21 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 8257 $
+ Last Changed:    $Date: 2012-11-27 06:25:10 -0500 (mar, 27 nov 2012) $
+ Last Changed By: $Author: m.aranya@moxter.net $
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>27a70578-12bd-4e03-baf3-c330a3c8428d</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>3c877262-5f79-4f7f-a66e-5aca117fffdd</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 8257 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckTree_Menu_Action</name>
+        <name>Sales_PaymentDocumentMyDesk_Menu_ActionWithOutDoc</name>
         <!-- childs -->
         <childs>
-            <child>Sales_PaymentCheckTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentCheckTree_Menu_Action_AddDoc</child>
-            <child>Sales_PaymentDocumentTree_Renew</child>
-            <child>Sales_PaymentCheckTree_Menu_Action_SetCanceled</child>
-            <child>Sales_PaymentDocumentCheckout</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCheckWithOutDoc</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDepositWithOutDoc</child>
         </childs>
     </definition>
 </ui-menu>

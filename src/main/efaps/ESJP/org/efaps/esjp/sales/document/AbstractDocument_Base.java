@@ -963,7 +963,8 @@ public abstract class AbstractDocument_Base
             Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
             ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
 
-            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived) || !rates[2].equals(rates[3])) {
+            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
+                            || !rates[2].equals(rates[3])) {
                 currency.append(getSetFieldValue(0, "rateCurrencyId", "" + ((Long) rates[2])))
                         .append("\n");
                 currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
