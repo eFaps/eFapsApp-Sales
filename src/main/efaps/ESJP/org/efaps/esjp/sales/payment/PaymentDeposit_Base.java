@@ -34,9 +34,11 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -157,5 +159,29 @@ public abstract class PaymentDeposit_Base
         return retVal;
     }
 
+    public Return checkbox4InvoiceFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selContInst = new SelectBuilder().linkto(CISales.PaymentCheck.Contact).instance();
+        print.addSelect(selContInst);
+        print.execute();
+        final Instance contInst = print.<Instance>getSelect(selContInst);
+
+        final boolean checked = "true".equalsIgnoreCase((String) props.get("checked"));
+        if (!checked) {
+            if (contInst.isValid()) {
+                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY,
+                                contInst);
+            } else {
+                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+            }
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+        }
+        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contInst);
+        return new org.efaps.esjp.common.uiform.Field().checkboxFieldValue(_parameter);
+    }
 }
