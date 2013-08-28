@@ -123,12 +123,19 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
-        <field name="amount4Edit">
+        <field name="amountTotal">
             <property name="Attribute">Amount</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="restAmount">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <property name="Label">Sales_PaymentCheckForm.restAmount.Label</property>
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
@@ -201,6 +208,13 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                    method="getJavaScript4AmountAddDoc"
+                    name="Sales_PaymentCheckForm.account.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE"/>
         </field>
     </definition>
 </ui-form>

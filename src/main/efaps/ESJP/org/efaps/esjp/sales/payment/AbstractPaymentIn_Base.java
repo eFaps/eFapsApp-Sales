@@ -21,8 +21,33 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.efaps.admin.datamodel.ui.RateUI;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field;
+import org.efaps.db.Context;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -36,5 +61,89 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public abstract class AbstractPaymentIn_Base
     extends AbstractPaymentDocument
 {
+    @Override
+    public Return updateFields4RateCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        Return retVal = new Return();
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        if (CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name.equals(field.getName())) {
+            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final Map<String, String> map = new HashMap<String, String>();
 
+            final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                        _parameter.getParameterValue(CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name));
+            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+
+            map.put(CIFormSales.Sales_PaymentDepositWithOutDocForm.rate.name, getFormater(0, 2).format(rates[3]));
+            map.put(CIFormSales.Sales_PaymentDepositWithOutDocForm.rate.name + RateUI.INVERTEDSUFFIX,
+                            "" + "" + (rates[3].compareTo(rates[0]) != 0));
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        } else {
+            retVal = super.updateFields4RateCurrency(_parameter);
+        }
+
+        return retVal;
+    }
+
+    public Return checkbox4InvoiceFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selContInst = new SelectBuilder().linkto(CISales.PaymentCheck.Contact).instance();
+        print.addSelect(selContInst);
+        print.execute();
+        final Instance contInst = print.<Instance>getSelect(selContInst);
+
+        final boolean checked = "true".equalsIgnoreCase((String) props.get("checked"));
+        if (!checked) {
+            if (contInst.isValid()) {
+                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY,
+                                contInst);
+            } else {
+                Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+            }
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, null);
+        }
+        Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contInst);
+        return new org.efaps.esjp.common.uiform.Field().checkboxFieldValue(_parameter);
+    }
+
+    public Return getJavaScript4AmountAddDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        final Return ret = new Return();
+        if (instance != null && instance.isValid()) {
+            final PrintQuery print = new PrintQuery(instance);
+            print.addAttribute(CISales.PaymentCheck.Amount);
+            print.execute();
+            BigDecimal amountTotal = print.<BigDecimal>getAttribute(CISales.PaymentCheck.Amount);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, instance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.Payment.Amount);
+            multi.execute();
+            while (multi.next()) {
+                final BigDecimal amountPay = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
+                amountTotal = amountTotal.subtract(amountPay);
+            }
+            final StringBuilder js = new StringBuilder();
+            js.append("<script type=\"text/javascript\">\n")
+                .append(getSetFieldValue(0, "amount", getTwoDigitsformater().format(amountTotal)))
+                .append(getSetFieldValue(0, "restAmount", getTwoDigitsformater().format(amountTotal)))
+                .append("</script>\n");
+
+            ret.put(ReturnValues.SNIPLETT, js.toString());
+        }
+
+        return ret;
+    }
 }
