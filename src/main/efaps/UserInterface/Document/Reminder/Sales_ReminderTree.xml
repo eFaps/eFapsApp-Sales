@@ -45,6 +45,7 @@
         <childs>
             <child>Sales_ReminderTree_Payment</child>
             <child>Sales_ReminderTree_Position</child>
+            <child>Sales_DocumentAbstractTree_Doc</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
