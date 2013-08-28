@@ -146,4 +146,12 @@ public abstract class AbstractPaymentIn_Base
 
         return ret;
     }
+
+    public Return getEmptyTable4PaymentDocWithOutDoc(final Parameter _parameter)
+    {
+        final List<Instance> lst = new ArrayList<Instance>();
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, lst);
+        return ret;
+    }
 }

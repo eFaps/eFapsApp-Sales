@@ -198,7 +198,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <table>Sales_PaymentCheckWithOutDocPaymentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+            <evaluate program="org.efaps.esjp.sales.payment.PaymentCheck" method="getEmptyTable4PaymentDocWithOutDoc">
                 <property name="Types">Sales_Payment</property>
                 <property name="LinkFroms">TargetDocument</property>
             </evaluate>
