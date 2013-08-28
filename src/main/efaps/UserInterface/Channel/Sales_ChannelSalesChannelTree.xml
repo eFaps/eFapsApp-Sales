@@ -39,6 +39,7 @@
         <type>Sales_ChannelSalesChannel</type>
         <childs>
             <child>Sales_ChannelSalesChannelTree_Contact</child>
+            <child>Sales_ChannelSalesChannelTree_Document</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
