@@ -26,12 +26,16 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -392,6 +396,176 @@ public abstract class DocumentSum_Base
         return retVal;
     }
 
+    /**
+     * Update the form after change of rate currency.
+     *
+     * @param _parameter Parameter as passed by the eFaps API for esjp
+     * @return javascript for update
+     * @throws EFapsException on error
+     */
+    public Return updateFields4RateCurrency(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                        _parameter.getParameterValue("rateCurrencyId"));
+        final Map<String, String> map = new HashMap<String, String>();
+        Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractDocument_Base.CURRENCYINST_KEY);
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        if (currentInst == null) {
+            currentInst = baseInst;
+        }
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
+
+        if (!newInst.equals(currentInst)) {
+
+            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, currentInst);
+
+            final List<Calculator> calculators = analyseTable(_parameter, null);
+
+            final StringBuilder js = new StringBuilder();
+            int i = 0;
+            final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
+            for (final Calculator calculator : calculators) {
+                final Map<String, String> map2 = new HashMap<String, String>();
+                if (!calculator.isEmpty()) {
+                    calculator.applyRate(newInst, rates[2]);
+                    map2.put("netUnitPrice",
+                                    calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
+                    map2.put("netPrice",
+                                    calculator.getNetPriceFmtStr(getTwoDigitsformater()));
+                    map2.put("discountNetUnitPrice",
+                                    calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
+                    values.put(i, map2);
+                }
+                i++;
+            }
+
+            final Set<String> noEscape = new HashSet<String>();
+            add2SetValuesString4Postions4CurrencyUpdate(_parameter, calculators, values, noEscape);
+            js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
+
+            if (calculators.size() > 0) {
+                js.append(getSetFieldValue(0, "crossTotal", getCrossTotalFmtStr(_parameter, calculators)))
+                    .append(getSetFieldValue(0, "netTotal", getNetTotalFmtStr(_parameter, calculators)))
+                    .append(addFields4RateCurrency(_parameter, calculators));
+                if (_parameter.getParameterValue("openAmount") != null) {
+                    js.append(getSetFieldValue(0, "openAmount", getBaseCrossTotalFmtStr(_parameter, calculators)));
+                }
+                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
+                    js.append(getSetFieldValue(0, "perceptionTotal",
+                                    getPerceptionTotalFmtStr(_parameter, calculators)));
+                }
+            }
+            js.append(getSetFieldValue(0, "rateCurrencyData",
+                            getFormater(0, 3).format(rates[3].setScale(3, BigDecimal.ROUND_HALF_UP))))
+                .append(getSetFieldValue(0, "rate", getFormater(null, null).format(rates[3])))
+                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0)))
+                .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
+
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            list.add(map);
+        }
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    /**
+     * Method to set additional fields for the currency update method.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _instance Instance of the document.
+     * @return new StringBuilder with the additional fields.
+     * @throws EFapsException on error
+     */
+    protected StringBuilder addAdditionalFields4CurrencyUpdate(final Parameter _parameter,
+                                                               final List<Calculator> _calculators)
+        throws EFapsException
+    {
+        return new StringBuilder();
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _values values to be added to
+     * @param _noEscape no escape fields
+     * @throws EFapsException
+     */
+    protected void add2SetValuesString4Postions4CurrencyUpdate(final Parameter _parameter,
+                                                               final List<Calculator> _calculators,
+                                                               final Map<Integer, Map<String, String>> _values,
+                                                               final Set<String> _noEscape)
+        throws EFapsException
+    {
+        // to be used by implementations
+    }
+
+    /**
+     * Update the form after change of date.
+     *
+     * @param _parameter Parameter as passed by the eFaps API for esjp
+     * @return javascript for update
+     * @throws EFapsException on error
+     */
+    public Return updateFields4RateCurrencyFromDate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final Instance newInst = Instance.get(CIERP.Currency.getType(),
+                        _parameter.getParameterValue("rateCurrencyId"));
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+
+        final List<Calculator> calculators = analyseTable(_parameter, null);
+
+        final StringBuilder js = new StringBuilder();
+        int i = 0;
+        final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
+        for (final Calculator calculator : calculators) {
+            final Map<String, String> map2 = new HashMap<String, String>();
+            if (!calculator.isEmpty()) {
+                calculator.applyRate(newInst, rates[2]);
+                map2.put("netUnitPrice",
+                                calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
+                map2.put("netPrice",
+                                calculator.getNetPriceFmtStr(getTwoDigitsformater()));
+                map2.put("discountNetUnitPrice",
+                                calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
+                values.put(i, map2);
+            }
+            i++;
+        }
+
+        final Set<String> noEscape = new HashSet<String>();
+        add2SetValuesString4Postions4CurrencyUpdate(_parameter, calculators, values, noEscape);
+        js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
+
+        if (calculators.size() > 0) {
+            js.append(getSetFieldValue(0, "crossTotal", getCrossTotalFmtStr(_parameter, calculators)))
+                .append(getSetFieldValue(0, "netTotal", getNetTotalFmtStr(_parameter, calculators)))
+                .append(addFields4RateCurrency(_parameter, calculators));
+            if (_parameter.getParameterValue("openAmount") != null) {
+                js.append(getSetFieldValue(0, "openAmount", getBaseCrossTotalFmtStr(_parameter, calculators)));
+            }
+        }
+        js.append(getSetFieldValue(0, "rateCurrencyData",
+                        getFormater(0, 3).format(rates[3].setScale(3, BigDecimal.ROUND_HALF_UP))))
+            .append(getSetFieldValue(0, "rate", getFormater(null, null).format(rates[3])))
+            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0)))
+            .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
+
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        list.add(map);
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
 
     /**
      * Internal Method to create the positions for this Document.
@@ -831,7 +1005,35 @@ public abstract class DocumentSum_Base
         return ret;
     }
 
+    /**
+     * Method to get formated string representation of the base cross total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the base cross total is wanted for
+     * @return the base cross total
+     * @throws EFapsException on error
+     */
+    protected String getBaseCrossTotalFmtStr(final Parameter _parameter,
+                                           final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getTwoDigitsformater().format(getBaseCrossTotal(_parameter, _calcList));
+    }
 
+    /**
+     * Method to get String representation of the base cross total for a list of Calculators.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _calcList list of Calculator the base cross total is wanted for
+     * @return the base cross total
+     * @throws EFapsException on error
+     */
+    protected String getBaseCrossTotalStr(final Parameter _parameter,
+                                           final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return getBaseCrossTotal(_parameter, _calcList).toString();
+    }
 
 
     /**
