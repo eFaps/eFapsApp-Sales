@@ -1,20 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocOfficialReport" language="groovy" pageWidth="1168" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1128" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="cb4fb8b8-a5a7-4f1e-ab19-aa9859338665">
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="columnHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="lastPageFooter"/>
-	<property name="ireport.zoom" value="1.1000000000000005"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<import value="java.text.SimpleDateFormat"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="lastPageFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="columnFooter"/>
+    <import value="java.text.SimpleDateFormat"/>
 	<import value="org.efaps.admin.datamodel.Status"/>
 	<import value="org.efaps.db.Context"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
@@ -175,7 +171,7 @@
 			</staticText>
 			<textField>
 				<reportElement uuid="51f0e567-2df1-4ff5-b181-c196f09b3cde" x="1040" y="33" width="88" height="14">
-					<printWhenExpression><![CDATA[$V{PAGE_NUMBER}!=1]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && $V{PAGE_NUMBER}!=1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right" markup="none">
 					<font size="10"/>
@@ -730,7 +726,7 @@ Y/O PAGO]]></text>
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{canceled}.booleanValue()
-? "" : ($V{type}.equals("07") ? $F{invoiceDate}.toDate() : "")]]></textFieldExpression>
+? null : ($V{type}.equals("07") ? $F{invoiceDate}.toDate() : null)]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="4677a8d1-80c9-4cdc-9fbf-c62be9a4ec94" stretchType="RelativeToTallestObject" x="941" y="0" width="34" height="14"/>
@@ -779,7 +775,7 @@ Y/O PAGO]]></text>
 		</band>
 	</detail>
 	<columnFooter>
-		<band height="15" splitType="Stretch">
+		<band height="16" splitType="Stretch">
 			<textField pattern="#,##0.00">
 				<reportElement uuid="b651e5d0-4ffd-4849-8b3b-af8f4bcf0a5b" x="638" y="0" width="65" height="14"/>
 				<textElement textAlignment="Right">
@@ -816,7 +812,9 @@ Y/O PAGO]]></text>
 				<text><![CDATA[Total:]]></text>
 			</staticText>
 			<line>
-				<reportElement uuid="b279410b-aef0-44b5-b42b-53c00906e802" x="0" y="0" width="1128" height="1"/>
+				<reportElement uuid="b279410b-aef0-44b5-b42b-53c00906e802" x="0" y="0" width="1128" height="1">
+                    <printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}))]]></printWhenExpression>
+                </reportElement>
 			</line>
 		</band>
 	</columnFooter>
