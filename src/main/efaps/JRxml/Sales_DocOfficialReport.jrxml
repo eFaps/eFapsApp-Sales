@@ -470,7 +470,7 @@ Y/O PAGO]]></text>
         </band>
     </columnHeader>
     <detail>
-        <band height="14" splitType="Stretch">
+        <band height="14" splitType="Prevent">
             <rectangle>
                 <reportElement uuid="7ca43168-036d-4602-bb9c-74c5466ec5ca" key="" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="1128" height="14" backcolor="#DBD8D8">
                     <printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{background}.intValue() % 2)==1)]]></printWhenExpression>
