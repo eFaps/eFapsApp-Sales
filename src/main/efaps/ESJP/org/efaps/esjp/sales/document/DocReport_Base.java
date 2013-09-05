@@ -252,7 +252,7 @@ public abstract class DocReport_Base
         final Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
         DateTime fromAux = _from;
         Rate rate;
-        while (fromAux.isBefore(_to)) {
+        while (fromAux.isBefore(_to.plusDays(1))) {
             final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
             queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
             queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, fromAux.minusMinutes(1));
