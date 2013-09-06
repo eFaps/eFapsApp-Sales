@@ -35,6 +35,7 @@
             <child>Sales_BulkPaymentDefinitionMyDesk</child>
             <child>Sales_DatedCheckOutMyDesk</child>
             <child>Sales_DatedCheckDerivadedOutMyDesk</child>
+            <child>Sales_PaymentRetention_Report</child>
         </childs>
     </definition>
 </ui-menu>
