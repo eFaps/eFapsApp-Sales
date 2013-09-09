@@ -21,9 +21,9 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
-import java.text.Format;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,10 +31,10 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -50,9 +50,10 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.jasperreport.EFapsDataSource;
+import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.CurrencyInst_Base;
@@ -60,12 +61,16 @@ import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -76,8 +81,78 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsUUID("8e6fa637-760a-48ab-8bb9-bf643f4d65d1")
 @EFapsRevision("$Rev$")
 public abstract class DocReport_Base
-    extends EFapsDataSource
+    extends EFapsMapDataSource
 {
+
+    protected static final Logger LOG = LoggerFactory.getLogger(DocReport_Base.class);
+
+    /**
+     * Enum used to define the keys for the map.
+     */
+    public enum Field
+    {
+        /** */
+        DOC_DATE("date"),
+        /** */
+        DOC_DUEDATE("dueDate"),
+        /** */
+        DOC_DOCTYPE("documentType"),
+        /** */
+        DOC_NAME("name"),
+        /** */
+        DOC_TAXNUM("taxNumber"),
+        /** */
+        DOC_CONTACT("contact"),
+        /** */
+        DOC_CROSSTOTAL("crossTotal"),
+        /** */
+        DOC_NETTOTAL("netTotal"),
+        /** */
+        DOC_IGV("igv"),
+        /** */
+        DOC_EXPORT("export"),
+        /** */
+        DOC_RATE("rate"),
+        /** */
+        DOCREL_DATE("derivedDocumentDate"),
+        /** */
+        DOCREL_TYPE("derivedDocumentType"),
+        /** */
+        DOCREL_PREFNAME("derivedDocumentPreffixName"),
+        /** */
+        DOCREL_SUFNAME("derivedDocumentSuffixName");
+
+        /**
+         * key.
+         */
+        private final String key;
+
+        /**
+         * @param _key key
+         */
+        private Field(final String _key)
+        {
+            this.key = _key;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #key}.
+         *
+         * @return value of instance variable {@link #key}
+         */
+        public String getKey()
+        {
+            return this.key;
+        }
+    }
+
+    private static final Map<Long, String> DOCTYPE_MAP = new HashMap<Long, String>();
+    static {
+        DocReport_Base.DOCTYPE_MAP.put(CISales.Invoice.getType().getId(), "01");
+        DocReport_Base.DOCTYPE_MAP.put(CISales.Receipt.getType().getId(), "02");
+        DocReport_Base.DOCTYPE_MAP.put(CISales.CreditNote.getType().getId(), "07");
+        DocReport_Base.DOCTYPE_MAP.put(CISales.Reminder.getType().getId(), "08");
+    }
 
     @Override
     public void init(final JasperReport _jasperReport,
@@ -88,24 +163,197 @@ public abstract class DocReport_Base
     {
         final String dateFromStr = Context.getThreadContext().getParameter("dateFrom");
         final String dateToStr = Context.getThreadContext().getParameter("dateTo");
+        final String currency = _parameter.getParameterValue("currency");
+        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+        final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
+        final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
+
+        final SystemConfiguration system = Sales.getSysConfig();
+        final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+
         final DateTime from = DateTimeUtil.normalize(new DateTime(dateFromStr));
         final DateTime to = DateTimeUtil.normalize(new DateTime(dateToStr));
 
+        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         final List<Instance> instances = getInstances(_parameter, from, to);
+
         if (instances.size() > 0) {
             final MultiPrintQuery multiPrint = new MultiPrintQuery(instances);
-            setPrint(multiPrint);
-            if (_jasperReport.getMainDataset().getFields() != null) {
-                for (final JRField field : _jasperReport.getMainDataset().getFields()) {
-                    final String select = field.getPropertiesMap().getProperty("Select");
-                    if (select != null) {
-                        multiPrint.addSelect(select);
-                    }
-                }
-            }
-            multiPrint.setEnforceSorted(true);
+            multiPrint.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.NetTotal,
+                            CISales.DocumentSumAbstract.RateCrossTotal,
+                            CISales.DocumentSumAbstract.RateNetTotal,
+                            CISales.DocumentSumAbstract.Rate,
+                            CISales.DocumentSumAbstract.Name,
+                            CISales.DocumentSumAbstract.Date,
+                            CISales.DocumentSumAbstract.DueDate,
+                            CISales.DocumentSumAbstract.StatusAbstract);
+            final SelectBuilder selCurInst = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder selContactName = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.Contact)
+                            .attribute(CIContacts.Contact.Name);
+            final SelectBuilder selContactTaxNum = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.Contact)
+                            .clazz(CIContacts.ClassOrganisation)
+                            .attribute(CIContacts.ClassOrganisation.TaxNumber);
+            final SelectBuilder selDocRelInst = new SelectBuilder()
+                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.From)
+                            .linkto(CISales.Document2DerivativeDocument.To).instance();
+            final SelectBuilder selDocRelName = new SelectBuilder()
+                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.From)
+                            .linkto(CISales.Document2DerivativeDocument.To)
+                            .attribute(CISales.DocumentSumAbstract.Name);
+            final SelectBuilder selDocRelDate = new SelectBuilder()
+                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.From)
+                            .linkto(CISales.Document2DerivativeDocument.To)
+                            .attribute(CISales.DocumentSumAbstract.Date);
+            multiPrint.addSelect(selCurInst, selContactName, selContactTaxNum,
+                            selDocRelDate, selDocRelInst, selDocRelName);
             multiPrint.execute();
+
+            while (multiPrint.next()) {
+                final Map<String, Object> map = new HashMap<String, Object>();
+                final Instance instDoc = multiPrint.getCurrentInstance();
+                final String docName = multiPrint.<String>getAttribute(CISales.DocumentSumAbstract.Name);
+                final DateTime docDate = multiPrint.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
+                final DateTime docDueDate = multiPrint.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate);
+                final String contactName = multiPrint.<String>getSelect(selContactName);
+                final String contactTaxNum = multiPrint.<String>getSelect(selContactTaxNum);
+                final Instance docRelInst = multiPrint.<Instance>getSelect(selDocRelInst);
+                final String docRelName = multiPrint.<String>getSelect(selDocRelName);
+                final DateTime docRelDate = multiPrint.<DateTime>getSelect(selDocRelDate);
+                final CurrencyInst curInstDoc = new CurrencyInst(multiPrint.<Instance>getSelect(selCurInst));
+                final Long status = multiPrint.<Long>getAttribute(CISales.DocumentSumAbstract.StatusAbstract);
+                final Boolean canceled = new Boolean(status.equals(new Long(Status.find(CISales.InvoiceStatus,
+                                                CISales.InvoiceStatus.Replaced).getId()))
+                                || status.equals(new Long(Status.find(CISales.ReminderStatus,
+                                                CISales.ReminderStatus.Replaced).getId()))
+                                || status.equals(new Long(Status.find(CISales.CreditNoteStatus,
+                                                CISales.CreditNoteStatus.Replaced).getId())));
+
+                DateTime date = docDate;
+
+                final boolean negate = instDoc.getType().isKindOf(CISales.CreditNote.getType());
+
+                if (instDoc.getType().isKindOf(CISales.CreditNote.getType())
+                                || instDoc.getType().isKindOf(CISales.Reminder.getType())) {
+                    DocReport_Base.LOG.info("Document '{}' related with document '{}'", docName, docRelName);
+                    date = docRelDate;
+                }
+
+                BigDecimal netTotal = BigDecimal.ZERO;
+                BigDecimal crossTotal = BigDecimal.ZERO;
+                BigDecimal igv = BigDecimal.ZERO;
+                if (active) {
+                    if (curInstDoc.getInstance().getId() != curInst.getInstance().getId()) {
+                        if (curInstDoc.getInstance().getId() != curBase.getId()) {
+                            final Rate rateTmp = getRates4DateRange(curInstDoc.getInstance(), date, rateCurType);
+                            final BigDecimal netTotalTmp = multiPrint
+                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                                        .multiply(rateTmp.getLabel());
+                            final BigDecimal crossTotalTmp = multiPrint
+                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                                        .multiply(rateTmp.getLabel());
+
+                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                            map.put(DocReport_Base.Field.DOC_RATE.getKey(), rateTmp.getLabel());
+                            netTotal = negate ? netTotalTmp.multiply(rate.getLabel()).negate()
+                                              : netTotalTmp.multiply(rate.getLabel());
+                            crossTotal = negate ? crossTotalTmp.multiply(rate.getLabel()).negate()
+                                                : crossTotalTmp.multiply(rate.getLabel());
+                        } else {
+                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
+                            map.put(DocReport_Base.Field.DOC_RATE.getKey(), rate.getLabel());
+                            netTotal = negate
+                                        ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                                        .multiply(rate.getValue()).negate()
+                                        : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                                        .multiply(rate.getValue());
+                            crossTotal = negate
+                                        ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                                        .multiply(rate.getValue()).negate()
+                                        : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                                        .multiply(rate.getValue());
+                        }
+
+                    } else {
+                        map.put(DocReport_Base.Field.DOC_RATE.getKey(), BigDecimal.ONE);
+                        netTotal = negate
+                                    ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                                    .negate()
+                                    : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+                        crossTotal = negate
+                                    ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                                    .negate()
+                                    : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    }
+                } else {
+                    map.put(DocReport_Base.Field.DOC_RATE.getKey(), BigDecimal.ONE);
+                    netTotal = negate
+                                ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal).negate()
+                                : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
+                    crossTotal = negate
+                                ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal).negate()
+                                : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                }
+
+                igv = negate ? crossTotal.subtract(netTotal).negate() : crossTotal.subtract(netTotal);
+
+                final Boolean export = BigDecimal.ZERO.compareTo(igv) == 0;
+
+                map.put(DocReport_Base.Field.DOC_DATE.getKey(), docDate);
+                map.put(DocReport_Base.Field.DOC_DUEDATE.getKey(), docDueDate);
+                map.put(DocReport_Base.Field.DOC_NAME.getKey(), docName);
+                map.put(DocReport_Base.Field.DOC_DOCTYPE.getKey(),
+                                DocReport_Base.DOCTYPE_MAP.get(instDoc.getType().getId()));
+                if (!canceled) {
+                    map.put(DocReport_Base.Field.DOC_CONTACT.getKey(), contactName);
+                    map.put(DocReport_Base.Field.DOC_TAXNUM.getKey(), contactTaxNum);
+                    map.put(DocReport_Base.Field.DOC_NETTOTAL.getKey(), export ? null : netTotal);
+                    map.put(DocReport_Base.Field.DOC_CROSSTOTAL.getKey(), crossTotal);
+                    map.put(DocReport_Base.Field.DOC_IGV.getKey(), export ? null : igv);
+                    map.put(DocReport_Base.Field.DOC_EXPORT.getKey(), export ? crossTotal : null);
+                    if (instDoc.getType().isKindOf(CISales.CreditNote.getType())
+                                    || instDoc.getType().isKindOf(CISales.Reminder.getType())) {
+                        map.put(DocReport_Base.Field.DOCREL_DATE.getKey(), docRelDate);
+                        map.put(DocReport_Base.Field.DOCREL_PREFNAME.getKey(),
+                                        docRelName.split("-").length == 2 ? docRelName.split("-")[0] : "001");
+                        map.put(DocReport_Base.Field.DOCREL_SUFNAME.getKey(),
+                                        docRelName.split("-").length == 2 ? docRelName.split("-")[1] : docRelName);
+                        map.put(DocReport_Base.Field.DOCREL_TYPE.getKey(),
+                                        DocReport_Base.DOCTYPE_MAP.get(docRelInst.getType().getId()));
+                    }
+                } else {
+                    map.put(DocReport_Base.Field.DOC_CONTACT.getKey(),
+                                    Status.find(CISales.InvoiceStatus, CISales.InvoiceStatus.Replaced).getLabel());
+                }
+
+                values.add(map);
+            }
         }
+
+        Collections.sort(values, new Comparator<Map<String, Object>>() {
+
+            @Override
+            public int compare(final Map<String, Object> _o1,
+                               final Map<String, Object> _o2)
+            {
+                final DateTime date1 = (DateTime) _o1.get(DocReport_Base.Field.DOC_DATE.getKey());
+                final DateTime date2 = (DateTime) _o2.get(DocReport_Base.Field.DOC_DATE.getKey());
+                final int ret;
+                if (date1.isEqual(date2)) {
+                    final String sort1 = (String) _o1.get(DocReport_Base.Field.DOC_NAME.getKey());
+                    final String sort2 = (String) _o2.get(DocReport_Base.Field.DOC_NAME.getKey());
+                    ret = sort1.compareTo(sort2);
+                } else {
+                    ret = date1.compareTo(date2);
+                }
+                return ret;
+            }
+        });
+        getValues().addAll(values);
+
     }
 
 
@@ -190,9 +438,6 @@ public abstract class DocReport_Base
         final String dateTo = _parameter.getParameterValue("dateTo");
         final String mime = _parameter.getParameterValue("mime");
         final String currency = _parameter.getParameterValue("currency");
-        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
-        final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
-        // final String rateStr = _parameter.getParameterValue("rate");
 
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
         final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
@@ -220,17 +465,6 @@ public abstract class DocReport_Base
 
         addAdditionalParameters(_parameter, report);
 
-        if (active) {
-            final Map<String, BigDecimal> map = getRates4DateRange(curInst.getInstance(), from, to, rateCurType);
-            report.getJrParameters().put("Rates", map);
-            report.getJrParameters().put("Active", active);
-            /*
-             * report.getJrParameters().put("Rate", curInst.isInvert() ? BigDecimal.ONE.divide(rate, 12,
-             * BigDecimal.ROUND_HALF_UP) : rate);
-             */
-        } else {
-            report.getJrParameters().put("Active", active);
-        }
         return report.execute(_parameter);
     }
 
@@ -242,44 +476,35 @@ public abstract class DocReport_Base
     }
 
 
-    protected Map<String, BigDecimal> getRates4DateRange(final Instance _curInst,
-                                                            final DateTime _from,
-                                                            final DateTime _to,
-                                                            final Long _rateCurType)
+    protected Rate getRates4DateRange(final Instance _curInst,
+                                      final DateTime _date,
+                                      final Long _rateCurType)
         throws EFapsException
     {
-        final Format formatter = new SimpleDateFormat("yyyyMMdd");
-        final Map<String, BigDecimal> map = new HashMap<String, BigDecimal>();
-        DateTime fromAux = _from;
         Rate rate;
-        while (fromAux.isBefore(_to.plusDays(1))) {
-            final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
-            queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
-            queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, fromAux.minusMinutes(1));
-            queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, fromAux.plusMinutes(1));
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder valSel = new SelectBuilder()
+        final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
+        queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
+        queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, _date.minusMinutes(1));
+        queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, _date.plusMinutes(1));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder valSel = new SelectBuilder()
                         .attribute(CIERP.CurrencyRateAbstract.Rate).value();
-            final SelectBuilder labSel = new SelectBuilder()
+        final SelectBuilder labSel = new SelectBuilder()
                         .attribute(CIERP.CurrencyRateAbstract.Rate).label();
-            final SelectBuilder curSel = new SelectBuilder()
+        final SelectBuilder curSel = new SelectBuilder()
                         .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
-            multi.addSelect(valSel, labSel, curSel);
-            multi.execute();
-            if (multi.next()) {
-                rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
-                           multi.<BigDecimal>getSelect(valSel),
-                           multi.<BigDecimal>getSelect(labSel));
-            } else {
-                rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
-                                _curInst.getId())), BigDecimal.ONE);
-            }
-
-            map.put(formatter.format(fromAux.toDate()), rate.getValue());
-            fromAux = fromAux.plusDays(1);
+        multi.addSelect(valSel, labSel, curSel);
+        multi.execute();
+        if (multi.next()) {
+            rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
+                            multi.<BigDecimal>getSelect(valSel),
+                            multi.<BigDecimal>getSelect(labSel));
+        } else {
+            rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
+                            _curInst.getId())), BigDecimal.ONE);
         }
 
-        return map;
+        return rate;
     }
 
     /**

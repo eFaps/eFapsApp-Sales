@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocReport" language="groovy" pageWidth="1168" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1128" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="cb4fb8b8-a5a7-4f1e-ab19-aa9859338665">
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
@@ -14,7 +15,6 @@
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="java.text.SimpleDateFormat"/>
-	<import value="org.efaps.admin.datamodel.Status"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="UUID" value="e4b4666f-8213-47e6-9a1c-31d18c94f80c"/>
 	</parameter>
@@ -29,119 +29,68 @@
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<parameter name="CompanyTaxNum" class="java.lang.String"/>
 	<field name="name" class="java.lang.String">
-		<property name="Select" value="attribute[Name]"/>
+		<property name="Key" value="name"/>
 	</field>
 	<field name="date" class="org.joda.time.DateTime">
-		<property name="Select" value="attribute[Date]"/>
+		<property name="Key" value="date"/>
 	</field>
 	<field name="dueDate" class="org.joda.time.DateTime">
-		<property name="Select" value="attribute[DueDate]"/>
+		<property name="Key" value="dueDate"/>
+	</field>
+	<field name="documentType" class="java.lang.String">
+		<property name="Key" value="documentType"/>
 	</field>
 	<field name="taxNumber" class="java.lang.String">
-		<property name="Select" value="linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+		<property name="Key" value="taxNumber"/>
 	</field>
 	<field name="contactName" class="java.lang.String">
-		<property name="Select" value="linkto[Contact].attribute[Name]"/>
-	</field>
-	<field name="status" class="java.lang.Long">
-		<property name="Select" value="attribute[Status]"/>
+		<property name="Key" value="contact"/>
 	</field>
 	<field name="netTotal" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[NetTotal]"/>
+		<property name="Key" value="netTotal"/>
+	</field>
+	<field name="export" class="java.math.BigDecimal">
+		<property name="Key" value="export"/>
 	</field>
 	<field name="crossTotal" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[CrossTotal]"/>
+		<property name="Key" value="crossTotal"/>
+	</field>
+	<field name="igv" class="java.math.BigDecimal">
+		<property name="Key" value="igv"/>
 	</field>
 	<field name="rate" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Rate].value"/>
-	</field>
-	<field name="rateLabel" class="java.math.BigDecimal">
-		<property name="Select" value="attribute[Rate].label"/>
-	</field>
-	<field name="typeUUID" class="java.util.UUID">
-		<property name="Select" value="type.uuid"/>
-	</field>
-	<field name="id" class="java.lang.Long">
-		<property name="Select" value="id"/>
+		<property name="Key" value="rate"/>
 	</field>
 	<field name="invoiceName" class="java.lang.String">
-		<property name="Select" value="linkfrom[Sales_Document2DerivativeDocument#From].linkto[To].attribute[Name]"/>
+		<property name="Key" value="linkfrom[Sales_Document2DerivativeDocument#From].linkto[To].attribute[Name]"/>
 	</field>
-	<field name="invoiceDate" class="org.joda.time.DateTime">
-		<property name="Select" value="linkfrom[Sales_Document2DerivativeDocument#From].linkto[To].attribute[Date]"/>
+	<field name="derivedDocumentDate" class="org.joda.time.DateTime">
+		<property name="Key" value="derivedDocumentDate"/>
 	</field>
-	<field name="invoiceTypeUUID" class="java.util.UUID">
-		<property name="Select" value="linkfrom[Sales_Document2DerivativeDocument#From].linkto[To].type.uuid"/>
+	<field name="derivedDocumentType" class="java.lang.String">
+		<property name="Key" value="derivedDocumentType"/>
 	</field>
-	<variable name="date" class="java.lang.String">
-		<variableExpression><![CDATA[new SimpleDateFormat("yyyyMMdd").format($F{date}.toDate())]]></variableExpression>
-	</variable>
-	<variable name="rate" class="java.math.BigDecimal">
-		<variableExpression><![CDATA[$P{Active} ? $P{Rates}.get($V{date}) : java.math.BigDecimal.ONE]]></variableExpression>
-	</variable>
-	<variable name="canceled" class="java.lang.Boolean">
-		<variableExpression><![CDATA[new Boolean($F{status}.equals(new Long(Status.find("Sales_InvoiceStatus", "Replaced").getId()))
-|| $F{status}.equals(new Long(Status.find("Sales_ReminderStatus", "Replaced").getId()))
-|| $F{status}.equals(new Long(Status.find("Sales_CreditNoteStatus", "Replaced").getId())))]]></variableExpression>
-	</variable>
-	<variable name="negative" class="java.lang.Boolean">
-		<variableExpression><![CDATA[new Boolean($F{typeUUID}.equals(UUID.fromString("6409ee95-3cd2-4063-8080-d010466fd5c7")))]]></variableExpression>
-	</variable>
-	<variable name="export" class="java.lang.Boolean">
-		<variableExpression><![CDATA[new Boolean(!(BigDecimal.ZERO.compareTo($F{crossTotal}.subtract($F{netTotal})) < 0))]]></variableExpression>
-	</variable>
+	<field name="derivedDocumentPreffixName" class="java.lang.String">
+		<property name="Key" value="derivedDocumentPreffixName"/>
+	</field>
+	<field name="derivedDocumentSuffixName" class="java.lang.String">
+		<property name="Key" value="derivedDocumentSuffixName"/>
+	</field>
+	<field name="id" class="java.lang.Long">
+		<property name="Key" value="id"/>
+	</field>
 	<variable name="sumNetTotal" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$V{canceled}.booleanValue() || $V{export}.booleanValue()
-? BigDecimal.ZERO
-: ($V{negative}.booleanValue()
-? $F{netTotal}.multiply( $V{rate} ).negate()
-: $F{netTotal}.multiply( $V{rate} ))]]></variableExpression>
+		<variableExpression><![CDATA[$F{netTotal}]]></variableExpression>
 		<initialValueExpression><![CDATA[BigDecimal.ZERO]]></initialValueExpression>
 	</variable>
 	<variable name="sumCrossTotal" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$V{canceled}.booleanValue()
-? BigDecimal.ZERO
-: ($V{negative}.booleanValue()
-    ? $F{crossTotal}.multiply( $V{rate} ).negate()
-    : $F{crossTotal}.multiply( $V{rate} ))]]></variableExpression>
+		<variableExpression><![CDATA[$F{crossTotal}]]></variableExpression>
 	</variable>
 	<variable name="sumTaxTotal" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$V{canceled}.booleanValue()
-? BigDecimal.ZERO
-: ($V{negative}.booleanValue()
-    ? $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )).negate()
-    : $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )))]]></variableExpression>
+		<variableExpression><![CDATA[$F{igv}]]></variableExpression>
 	</variable>
 	<variable name="sumExport" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$V{canceled}.booleanValue() || !$V{export}.booleanValue()
-? BigDecimal.ZERO
-: ($V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $V{rate} ).negate()
-: $F{crossTotal}.multiply( $V{rate} ))]]></variableExpression>
-	</variable>
-	<variable name="type" class="java.lang.String">
-		<variableExpression><![CDATA[$F{typeUUID}.equals( UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))
-? "01"
-: ($F{typeUUID}.equals( UUID.fromString("40ebe7bf-ab1e-4ac5-bfbf-81f7c13e8530"))
-    ? "03"
-    : ($F{typeUUID}.equals( UUID.fromString("6409ee95-3cd2-4063-8080-d010466fd5c7"))
-        ? "07"
-        : ($F{typeUUID}.equals( UUID.fromString("77b5c009-0b45-40d4-8417-a79c30568904"))
-            ? "08"
-            : ""
-)))]]></variableExpression>
-	</variable>
-	<variable name="invoiceType" class="java.lang.String">
-		<variableExpression><![CDATA[$F{invoiceTypeUUID}.equals( UUID.fromString("180bf737-8816-4e36-ad71-5ee6392e185b"))
-? "01"
-: ($F{invoiceTypeUUID}.equals( UUID.fromString("40ebe7bf-ab1e-4ac5-bfbf-81f7c13e8530"))
-    ? "03"
-    : ($F{invoiceTypeUUID}.equals( UUID.fromString("6409ee95-3cd2-4063-8080-d010466fd5c7"))
-        ? "07"
-        : ($F{invoiceTypeUUID}.equals( UUID.fromString("77b5c009-0b45-40d4-8417-a79c30568904"))
-            ? "08"
-            : ""
-)))]]></variableExpression>
+		<variableExpression><![CDATA[$F{crossTotal}]]></variableExpression>
 	</variable>
 	<variable name="background" class="java.lang.Integer" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{id}]]></variableExpression>
@@ -492,7 +441,7 @@ Y/O PAGO]]></text>
 		<band height="14" splitType="Stretch">
 			<rectangle>
 				<reportElement uuid="7ca43168-036d-4602-bb9c-74c5466ec5ca" key="" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="1128" height="14" backcolor="#DBD8D8">
-					<printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{background}.intValue() % 2)==1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{REPORT_COUNT}.intValue() % 2)==1)]]></printWhenExpression>
 				</reportElement>
 				<graphicElement>
 					<pen lineWidth="0.0"/>
@@ -592,10 +541,8 @@ Y/O PAGO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="7a1ab806-177d-45d4-a3a6-bab418e59e25" key="" stretchType="RelativeToBandHeight" x="284" y="0" width="72" height="14">
-					<printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue())]]></printWhenExpression>
-				</reportElement>
+			<textField isBlankWhenNull="true">
+				<reportElement uuid="7a1ab806-177d-45d4-a3a6-bab418e59e25" key="" stretchType="RelativeToBandHeight" x="284" y="0" width="72" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -607,7 +554,7 @@ Y/O PAGO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="97eda04e-c51a-463b-a34e-eeed509005e9" stretchType="RelativeToBandHeight" x="356" y="0" width="217" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
@@ -618,14 +565,10 @@ Y/O PAGO]]></text>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{canceled}.booleanValue()
-? Status.find("Sales_InvoiceStatus", "Replaced").getLabel()
-: $F{contactName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="d94c05dd-7b6d-4b65-bfda-3542defb1b87" stretchType="RelativeToBandHeight" x="768" y="0" width="65" height="14">
-					<printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue())]]></printWhenExpression>
-				</reportElement>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="d94c05dd-7b6d-4b65-bfda-3542defb1b87" stretchType="RelativeToBandHeight" x="768" y="0" width="65" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -635,14 +578,10 @@ Y/O PAGO]]></text>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $V{rate} ).negate()
-: $F{crossTotal}.multiply( $V{rate} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="5fe2581b-750c-4165-8b64-ee367df84455" key="" stretchType="RelativeToBandHeight" x="638" y="0" width="65" height="14">
-					<printWhenExpression><![CDATA[new Boolean((BigDecimal.ZERO.compareTo($F{crossTotal}.subtract($F{netTotal})) < 0)&& !$V{canceled}.booleanValue())]]></printWhenExpression>
-				</reportElement>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="5fe2581b-750c-4165-8b64-ee367df84455" key="" stretchType="RelativeToBandHeight" x="638" y="0" width="65" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -652,14 +591,10 @@ Y/O PAGO]]></text>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{negative}.booleanValue()
-? $F{netTotal}.multiply( $V{rate} ).negate()
-: $F{netTotal}.multiply( $V{rate} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{netTotal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="459df011-13e0-4955-a46e-c7acd2e622bb" key="" stretchType="RelativeToBandHeight" x="573" y="0" width="65" height="14">
-					<printWhenExpression><![CDATA[new Boolean(!(BigDecimal.ZERO.compareTo($F{crossTotal}.subtract($F{netTotal})) < 0) && !$V{canceled}.booleanValue())]]></printWhenExpression>
-				</reportElement>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="459df011-13e0-4955-a46e-c7acd2e622bb" key="" stretchType="RelativeToBandHeight" x="573" y="0" width="65" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -669,16 +604,11 @@ Y/O PAGO]]></text>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $V{rate} ).negate()
-: $F{crossTotal}.multiply( $V{rate} )]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{export}]]></textFieldExpression>
 			</textField>
-			<textField pattern="###0.00##">
+			<textField pattern="###0.00##" isBlankWhenNull="true">
 				<reportElement uuid="e6576d24-c30e-4a9a-a1ff-ad892bce1ada" key="" stretchType="RelativeToBandHeight" x="833" y="0" width="48" height="14">
-					<printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue()
-    && $P{Active} ? (($V{rate}.compareTo(BigDecimal.ONE)!=0 && $F{rate}.compareTo(BigDecimal.ONE)==0)
-                    || ($V{rate}.compareTo(BigDecimal.ONE)==0 && $F{rate}.compareTo(BigDecimal.ONE)!=0))
-                : ($F{rate}.compareTo(BigDecimal.ONE)!=0))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[BigDecimal.ONE.compareTo($F{rate}) != 0]]></printWhenExpression>
 				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
@@ -689,7 +619,7 @@ Y/O PAGO]]></text>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{Active} ? ($V{rate}.compareTo(BigDecimal.ONE)!=0 ? java.math.BigDecimal.ONE.divide($V{rate}, 4, BigDecimal.ROUND_HALF_UP) : $F{rateLabel}) : $F{rateLabel}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="17c3fde5-1354-4df1-8843-4bf17aecedc3" stretchType="RelativeToBandHeight" x="180" y="0" width="34" height="14"/>
@@ -702,7 +632,7 @@ Y/O PAGO]]></text>
 				<textElement textAlignment="Center">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{type}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{documentType}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="57cdeb67-ea22-4b58-b95f-d9818db17c48" stretchType="RelativeToBandHeight" x="214" y="0" width="70" height="14"/>
@@ -717,10 +647,8 @@ Y/O PAGO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
-				<reportElement uuid="b191b413-c0a6-4493-bf39-2791e86bc64c" key="" stretchType="RelativeToBandHeight" x="703" y="0" width="65" height="14">
-					<printWhenExpression><![CDATA[new Boolean(!$V{canceled}.booleanValue())]]></printWhenExpression>
-				</reportElement>
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement uuid="b191b413-c0a6-4493-bf39-2791e86bc64c" key="" stretchType="RelativeToBandHeight" x="703" y="0" width="65" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<topPen lineWidth="0.0"/>
 					<leftPen lineWidth="0.0"/>
@@ -730,9 +658,7 @@ Y/O PAGO]]></text>
 				<textElement textAlignment="Right">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{negative}.booleanValue()
-? $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} )).negate()
-: $F{crossTotal}.multiply( $V{rate} ).subtract($F{netTotal}.multiply( $V{rate} ))]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{igv}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="4677a8d1-80c9-4cdc-9fbf-c62be9a4ec94" stretchType="RelativeToTallestObject" x="881" y="0" width="60" height="14"/>
@@ -745,8 +671,7 @@ Y/O PAGO]]></text>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{canceled}.booleanValue()
-? "" : ($V{type}.equals("07") ? $F{invoiceDate}.toDate() : "")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{derivedDocumentDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="4677a8d1-80c9-4cdc-9fbf-c62be9a4ec94" stretchType="RelativeToTallestObject" x="941" y="0" width="34" height="14"/>
@@ -759,8 +684,7 @@ Y/O PAGO]]></text>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{canceled}.booleanValue()
-? "" : ($V{type}.equals("07") ? $V{invoiceType} : "")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{derivedDocumentType}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="4677a8d1-80c9-4cdc-9fbf-c62be9a4ec94" stretchType="RelativeToTallestObject" x="975" y="0" width="65" height="14"/>
@@ -773,9 +697,7 @@ Y/O PAGO]]></text>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{canceled}.booleanValue()
-? ""
-: ($V{type}.equals("07") ? ($F{invoiceName}.split("-").length == 2 ? $F{invoiceName}.split("-")[0] : "001") : "")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{derivedDocumentPreffixName}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="4677a8d1-80c9-4cdc-9fbf-c62be9a4ec94" stretchType="RelativeToTallestObject" x="1040" y="0" width="88" height="14"/>
@@ -788,9 +710,7 @@ Y/O PAGO]]></text>
 				<textElement>
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$V{canceled}.booleanValue()
-? ""
-: ($V{type}.equals("07") ? ($F{invoiceName}.split("-").length == 2 ? $F{invoiceName}.split("-")[1] : $F{invoiceName}) : "")]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{derivedDocumentSuffixName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
