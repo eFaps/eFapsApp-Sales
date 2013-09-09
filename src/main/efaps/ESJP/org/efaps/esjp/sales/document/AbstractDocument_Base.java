@@ -965,7 +965,7 @@ public abstract class AbstractDocument_Base
 
             if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
                             || !rates[2].equals(rates[3])) {
-                currency.append(getSetFieldValue(0, "rateCurrencyId", "" + ((Long) rates[2])))
+                currency.append(getSetFieldValue(0, "rateCurrencyId", "" + (rates[2])))
                         .append("\n");
                 currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
                         .append(getSetFieldValue(0, "rate", ratesCur[1].toString()))
@@ -1164,6 +1164,7 @@ public abstract class AbstractDocument_Base
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
         if (!input.isEmpty()) {
             final boolean nameSearch = Character.isDigit(input.charAt(0));
             final String typeStr = (String) properties.get("Type");
@@ -1200,6 +1201,30 @@ public abstract class AbstractDocument_Base
                 }
             }
 
+            if (properties.containsKey("Catalog")) {
+                final String key = (String) properties.get("Catalog");
+                final Properties props = Sales.getSysConfig()
+                                .getAttributeValueAsProperties(SalesSettings.CATALOGFILTER);
+                if (props.containsKey(key)) {
+                    final String[] oids = ((String) props.get(key)).split(";");
+                    final List<Instance> instances = new ArrayList<Instance>();
+                    for (final String oid : oids) {
+                        final Instance instance = Instance.get(oid);
+                        if (instance.isValid()) {
+                            instances.add(instance);
+                        }
+                    }
+                    if (!instances.isEmpty()) {
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Catalog2Products);
+                        attrQueryBldr.addWhereAttrEqValue(CIProducts.Catalog2Products.CatalogLinkAbstract,
+                                        instances.toArray());
+                        final AttributeQuery attrQuery = attrQueryBldr
+                                        .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
+                        queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+                    }
+                }
+            }
+
             final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.ProductAbstract.Name,
@@ -1217,9 +1242,9 @@ public abstract class AbstractDocument_Base
                     choice = desc + " - " + name;
                 }
                 final Map<String, String> map = new HashMap<String, String>();
-                map.put("eFapsAutoCompleteKEY", oid);
-                map.put("eFapsAutoCompleteVALUE", name);
-                map.put("eFapsAutoCompleteCHOICE", choice);
+                map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
                 map.put("productDesc", desc);
                 map.put("uoM", getUoMFieldStr(multi.<Long> getAttribute(CIProducts.ProductAbstract.Dimension)));
                 map.put("discount", "0");
