@@ -72,6 +72,7 @@
         <type>Sales_QuoteRequest</type>
         <type>Sales_IncomingCreditNote</type>
         <type>Sales_PerceptionCertificate</type>
+        <type>Sales_ProductionReport</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -235,6 +236,12 @@
         <status group="Sales_PerceptionCertificateStatus">
             <key>Open</key>
             <key>Paid</key>
+            <key>Canceled</key>
+        </status>
+        
+        <status group="Sales_ProductionReportStatus">
+            <key>Open</key>
+            <key>Closed</key>
             <key>Canceled</key>
         </status>
 

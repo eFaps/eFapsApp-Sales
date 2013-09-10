@@ -44,18 +44,14 @@
             <child>Sales_GoodsIssueSlipMyDesk</child>
             <child>Sales_ReturnSlipMyDesk</child>
             <child>Sales_ReservationMyDesk</child>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_QuoteRequestMyDesk</child>
             <child>Sales_OrderOutboundMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
+            <child>Sales_QuoteRequestMyDesk</child>
             <child>Sales_Document_ReportMyDesk</child>
             <child>Sales_UsageReportMyDesk</child>
             <child>Sales_ProductRequestMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
             <child>Sales_RetentionCertificateMyDesk</child>
             <child>Sales_PerceptionCertificateMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
+            <child>Sales_ProductionReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,25 +20,19 @@
  Last Changed By: $Author$
 
 -->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>70b1b5b6-11e5-4b05-ab5d-da6a25612234</uuid>
+    <uuid>3da14419-4f3a-454f-9579-66526664687d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_MyDesk</name>
+        <name>Sales_ProductionReportMyDesk_Menu</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_DocumentsMyDesk</child>
-            <child>Sales_DocumentsIncomingMyDesk</child>
-            <child>Sales_ChannelMyDesk</child>
-            <child>Sales_AdminMyDesk</child>
-            <child>Sales_PaymentAbstractMyDesk</child>
-            <child>Sales_PaymentAbstractOutMyDesk</child>
-            <child>Sales_ScheduleMyDesk</child>
-            <child>Sales_ReportMyDesk</child>
+            <child>Sales_ProductionReportMyDesk_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>
