@@ -90,7 +90,7 @@
 		<variableExpression><![CDATA[$F{igv}]]></variableExpression>
 	</variable>
 	<variable name="sumExport" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{crossTotal}]]></variableExpression>
+		<variableExpression><![CDATA[$F{export}]]></variableExpression>
 	</variable>
 	<variable name="background" class="java.lang.Integer" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{id}]]></variableExpression>

@@ -85,7 +85,7 @@
 		<variableExpression><![CDATA[$F{igv}]]></variableExpression>
 	</variable>
 	<variable name="sumExport" class="java.math.BigDecimal" calculation="Sum">
-		<variableExpression><![CDATA[$F{crossTotal}]]></variableExpression>
+		<variableExpression><![CDATA[$F{export}]]></variableExpression>
 	</variable>
 	<variable name="background" class="java.lang.Integer" calculation="DistinctCount">
 		<variableExpression><![CDATA[$F{id}]]></variableExpression>
@@ -415,7 +415,7 @@ Y/O PAGO]]></text>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="14" splitType="Prevent">
+		<band height="16" splitType="Prevent">
 			<rectangle>
 				<reportElement uuid="7ca43168-036d-4602-bb9c-74c5466ec5ca" key="" stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="1128" height="14" backcolor="#DBD8D8">
 					<printWhenExpression><![CDATA[new Boolean("pdf".equalsIgnoreCase($P{Mime}) && ($V{REPORT_COUNT}.intValue() % 2)==1)]]></printWhenExpression>
@@ -430,7 +430,7 @@ Y/O PAGO]]></text>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[]]></text>
@@ -441,7 +441,7 @@ Y/O PAGO]]></text>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[]]></text>
@@ -452,7 +452,7 @@ Y/O PAGO]]></text>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[]]></text>
@@ -463,18 +463,20 @@ Y/O PAGO]]></text>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="3a11442f-18c2-4c6e-adc7-c38b73dfb315" stretchType="RelativeToBandHeight" x="703" y="0" width="65" height="14"/>
+				<reportElement uuid="3a11442f-18c2-4c6e-adc7-c38b73dfb315" stretchType="RelativeToBandHeight" x="703" y="0" width="65" height="14">
+					<property name="local_mesure_unitheight" value="pixel"/>
+				</reportElement>
 				<box>
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<text><![CDATA[]]></text>
@@ -487,7 +489,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
@@ -500,7 +502,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
@@ -513,7 +515,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
@@ -526,7 +528,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{taxNumber}]]></textFieldExpression>
@@ -539,7 +541,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
@@ -552,7 +554,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{crossTotal}]]></textFieldExpression>
@@ -565,7 +567,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{netTotal}]]></textFieldExpression>
@@ -578,7 +580,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{export}]]></textFieldExpression>
@@ -593,7 +595,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
@@ -606,7 +608,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement textAlignment="Center">
+				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{documentType}]]></textFieldExpression>
@@ -619,7 +621,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
@@ -632,7 +634,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="0.0"/>
 				</box>
-				<textElement textAlignment="Right">
+				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{igv}]]></textFieldExpression>
@@ -645,7 +647,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{derivedDocumentDate}.toDate()]]></textFieldExpression>
@@ -658,7 +660,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{derivedDocumentType}]]></textFieldExpression>
@@ -671,7 +673,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{derivedDocumentPreffixName}]]></textFieldExpression>
@@ -684,7 +686,7 @@ Y/O PAGO]]></text>
 					<bottomPen lineWidth="0.0"/>
 					<rightPen lineWidth="1.0"/>
 				</box>
-				<textElement>
+				<textElement verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{derivedDocumentSuffixName}]]></textFieldExpression>
