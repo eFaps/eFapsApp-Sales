@@ -44,6 +44,12 @@
                 name="Sales_ProductionReportPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ProductionReport" />
         </field>
+         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].linkfrom[Products_StockProductAbstract2Batch#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkto[Product].linkfrom[Products_StockProductAbstract2Batch#ToLink].linkto[FromLink].attribute[Name].attribute[Name]</property>
+            <property name="Label">Products_Inventory/Product.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
