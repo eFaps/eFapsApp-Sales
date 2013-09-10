@@ -144,10 +144,34 @@
             <property name="ModeEdit">HIDDEN</property>
             <property name="Required">true</property>
         </field>
+        <field name="statusGroup" character="Group">
+            <property name="ModeCreate">READONLY</property>
+            <property name="GroupCount">2</property>
+        </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Status</property>
+        </field>
+        <field name="updateButton" character="Command">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Label">Sales_PaymentCheckForm.updateButton.Label</property>
+            <property name="CmdIcon">ACCEPT</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
+                method="executeButton"
+                name="Sales_PaymentCheckForm.UI_FIELD_CMD"
+                event="UI_FIELD_CMD">
+                <property name="Type0">Sales_Invoice</property>
+                <property name="StatusGroup0">Sales_InvoiceStatus</property>
+                <property name="Stati0">Open</property>
+                <property name="Type1">Sales_Receipt</property>
+                <property name="StatusGroup1">Sales_ReceiptStatus</property>
+                <property name="Stati1">Open</property>
+                <property name="Type2">Sales_CollectionOrder</property>
+                <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
+                <property name="Stati2">Open</property>
+            </trigger>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>

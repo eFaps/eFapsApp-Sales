@@ -948,4 +948,252 @@ public abstract class AbstractPaymentDocument_Base
             }
         }.execute(_parameter);
     }
+
+    /**
+     * Executed the command on the button.
+     * 
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return executeButton(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        StringBuilder js = new StringBuilder();
+        final String account = _parameter.getParameterValue("account");
+        final PrintQuery printAccount = new PrintQuery(Instance.get(CISales.AccountCashDesk.getType(), account));
+        final SelectBuilder selCurInst = new SelectBuilder().linkto(
+                        CISales.AccountAbstract.CurrencyLink).instance();
+        printAccount.addSelect(selCurInst);
+        printAccount.execute();
+        final Instance currencyId = printAccount.<Instance>getSelect(selCurInst);
+
+        BigDecimal restAmount = getAmount4Pay(_parameter);
+        BigDecimal sumPayments = BigDecimal.ZERO;
+        final List<Instance> instances = getDocInstances(_parameter);
+        final List<Instance> instances2Print = new ArrayList<Instance>();
+
+        for (final Instance inst : instances) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, inst.getId());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentSumAbstract.RateCrossTotal);
+            final SelectBuilder selCurrencyInst = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+            multi.addSelect(selCurrencyInst);
+            multi.execute();
+            if (multi.next()) {
+                final Instance instCurrency = multi.<Instance>getSelect(selCurrencyInst);
+
+                final BigDecimal pay = BigDecimal.ZERO;
+                final String doc = inst.getOid();
+                final BigDecimal total4Doc = getAttribute4Document(doc, CISales.DocumentSumAbstract.RateCrossTotal.name);
+                final BigDecimal payments4Doc = getPayments4Document(doc);
+                final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
+                BigDecimal amountDue = amount2Pay.subtract(pay);
+
+                // comprobar que esta cogiendo la cantidad adecuada
+                // de acuerdo con el rate
+                if (!currencyId.equals(instCurrency)) {
+                    final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyId.getId());
+                    final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, instCurrency);
+                    amountDue = amountDue.multiply(rates[2]);
+                }
+
+                instances2Print.add(multi.getCurrentInstance());
+                if (amountDue.compareTo(restAmount) == 1 || amountDue.compareTo(restAmount) == 0) {
+                    break;
+                } else {
+                    restAmount = restAmount.subtract(amountDue);
+                    sumPayments = sumPayments.add(amountDue);
+                }
+
+            }
+        }
+        sumPayments = sumPayments.add(restAmount);
+        js = buildHtml4ExecuteButton(_parameter, instances2Print, restAmount, sumPayments, currencyId);
+        ret.put(ReturnValues.SNIPLETT, js.toString());
+        return ret;
+    }
+
+    protected StringBuilder buildHtml4ExecuteButton(final Parameter _parameter,
+                                                    final List<Instance> _instancesList,
+                                                    final BigDecimal _restAmount,
+                                                    final BigDecimal _sumPayments,
+                                                    final Instance _currencyActual)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final String tablename = _parameter.getInstance().getType().getName().concat("WithOutDocPaymentTable");
+        js.append(getTableRemoveScript(_parameter, tablename));
+
+        js.append("function setPayment(){");
+        int index = 0;
+        boolean lastPos = false;
+
+        for (final Instance payment : _instancesList) {
+            if (_instancesList.size() == index + 1) {
+                lastPos = true;
+            }
+            js.append(getScriptLine(_parameter, payment, index, lastPos, _restAmount, _currencyActual));
+            index++;
+        }
+
+        js.append("}\n").append(getScriptValues(_parameter, _instancesList)).append("\n");
+
+        final BigDecimal total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(_sumPayments);
+        js.append(getSetFieldValue(0, "total4DiscountPay", total4DiscountPay == null
+                        ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(total4DiscountPay))).append("\n");
+
+        return js;
+    }
+
+    /**
+     * @param _instances instances to print
+     * @return StringBuilder
+     */
+    protected StringBuilder getScriptValues(final Parameter _parameter,
+                                            final List<Instance> _instances)
+    {
+        final StringBuilder ret = new StringBuilder();
+        ret.append(" addNewRows_paymentTable(").append(_instances.size() - 1)
+                        .append(", setPayment, null);");
+
+        return ret;
+    }
+
+    /**
+     * @param _instance Instance of each document
+     * @param _index index of each document
+     * @param _lastPosition boolean to indicate the last position to print
+     * @param _restAmount last quantity to pay
+     * @param _currencyActual current currency of document
+     * @return StringBuilder
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getScriptLine(final Parameter _parameter,
+                                          final Instance _instance,
+                                          final Integer _index,
+                                          final boolean _lastPosition,
+                                          final BigDecimal _restAmount,
+                                          final Instance _currencyActual)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, _instance.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.CurrencyId);
+        final SelectBuilder selCurrencyInst = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+        multi.addSelect(selCurrencyInst);
+        multi.execute();
+        if (multi.next()){
+            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+            final BigDecimal rateCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            
+            BigDecimal pay = BigDecimal.ZERO;
+            final String doc = _instance.getOid();
+            final BigDecimal total4Doc = getAttribute4Document(doc, CISales.DocumentSumAbstract.RateCrossTotal.name);
+            final BigDecimal payments4Doc = getPayments4Document(doc);
+            final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
+            final BigDecimal amountDue = amount2Pay.subtract(pay);
+            final String symbol = getSymbol4Document(_instance.getOid(), CISales.DocumentSumAbstract.RateCurrencyId.name, CIERP.Currency.Symbol.name);
+            final StringBuilder bldr = new StringBuilder();
+            bldr.append(getTwoDigitsformater().format(rateCrossTotal))
+                            .append(" / ").append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
+
+
+            ret.append(getSetFieldValue(_index, "createDocument", _instance.getOid())).append("\n")
+            .append(getSetFieldValue(_index, "createDocumentAutoComplete", name)).append("\n")
+            .append(getSetFieldValue(_index, "createDocumentDesc", bldr.toString())).append("\n");
+
+
+            final Instance currencyDocInst = Instance.get(CIERP.Currency.getType(), multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            // final Instance currentInst = (Instance)
+            // Context.getThreadContext().getSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
+
+            // duda con esta condicional
+            if (!_currencyActual.equals(currencyDocInst)) {
+                final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _currencyActual, currencyDocInst);
+                _restAmount.multiply(rates[2]);
+            }
+
+            if (!_lastPosition) {
+                ret.append(getSetFieldValue(_index, "paymentAmount", amountDue == null
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDue))).append("\n");
+                pay = amountDue;
+            } else {
+                ret.append(getSetFieldValue(_index, "paymentAmount", _restAmount == null
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount))).append("\n");
+                pay = _restAmount;
+            }
+
+            ret.append(getSetFieldValue(_index, "paymentAmountDesc",
+                            getTwoDigitsformater().format(amount2Pay.subtract(pay)))).append("\n");
+        }
+
+        return ret;
+    }
+
+    protected List<Instance> getDocInstances(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> instances = new ArrayList<Instance>();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
+
+        final Instance contactSessionInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
+        for (int i = 0; i < 100; i++) {
+            if (props.containsKey("Type" + i)) {
+                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
+                if (type != null) {
+                    final QueryBuilder queryBldr = new QueryBuilder(type);
+                    if (contactInst != null && contactInst.isValid() && contactSessionInst != null
+                                    && contactSessionInst.isValid()) {
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+                    }
+                    add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
+
+                    if (props.containsKey("StatusGroup" + i)) {
+                        final String statiStr = String.valueOf(props.get("Stati" + i));
+                        final String[] statiAr = statiStr.split(";");
+                        final List<Object> statusList = new ArrayList<Object>();
+                        for (final String stati : statiAr) {
+                            final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
+                            if (status != null) {
+                                statusList.add(status.getId());
+                            }
+                        }
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
+                    }
+                    final InstanceQuery query = queryBldr.getQuery();
+                    query.execute();
+                    instances.addAll(query.getValues());
+                }
+            }
+        }
+
+        final List<Long> listIds = new ArrayList<Long>();
+        for (final Instance instanceAux : instances) {
+            listIds.add(instanceAux.getId());
+        }
+        if (!listIds.isEmpty()) {
+            final QueryBuilder queryBldrDocs = new QueryBuilder(CISales.DocumentAbstract);
+            queryBldrDocs.addWhereAttrEqValue(CISales.DocumentAbstract.ID, listIds.toArray());
+            queryBldrDocs.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
+            queryBldrDocs.addOrderByAttributeAsc(CISales.DocumentAbstract.ID);
+            final MultiPrintQuery multi = queryBldrDocs.getPrint();
+            multi.setEnforceSorted(true);
+            multi.execute();
+            instances.clear();
+            instances.addAll(multi.getInstanceList());
+        }
+
+        return instances;
+    }
+
 }
