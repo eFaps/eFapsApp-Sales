@@ -737,7 +737,7 @@ Y/O PAGO]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sumTaxTotal}]]></textFieldExpression>
 			</textField>
-			<textField pattern="#,##0.00">
+			<textField pattern="#,##0.00" isBlankWhenNull="true">
 				<reportElement uuid="4a9b3ee6-f364-444b-b3b2-61e81b7ed00f" x="573" y="0" width="65" height="14"/>
 				<textElement textAlignment="Right">
 					<font size="9"/>
