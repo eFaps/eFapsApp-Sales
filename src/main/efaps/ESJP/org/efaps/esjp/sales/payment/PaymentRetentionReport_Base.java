@@ -157,8 +157,8 @@ public abstract class PaymentRetentionReport_Base
         final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentRetentionOut);
-        attrQueryBldr.addWhereAttrGreaterValue(CISales.PaymentRetentionOut.Date, dateFrom);
-        attrQueryBldr.addWhereAttrLessValue(CISales.PaymentRetentionOut.Date, dateTo);
+        attrQueryBldr.addWhereAttrGreaterValue(CISales.PaymentRetentionOut.Date, dateFrom.minusMinutes(1));
+        attrQueryBldr.addWhereAttrLessValue(CISales.PaymentRetentionOut.Date, dateTo.plusMinutes(1));
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentRetentionOut.ID);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
