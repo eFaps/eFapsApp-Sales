@@ -30,6 +30,7 @@
         <name>Sales_ReturnUsageReportTree_Menu_Action_Edit</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_Delivery</role>
         </access>
         <!-- target definitions -->
         <target>

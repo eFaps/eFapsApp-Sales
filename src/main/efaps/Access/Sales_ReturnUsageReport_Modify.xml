@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2009 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,31 +19,26 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>df6d63eb-7927-46f1-b6e0-b69e41cb8b6e</uuid>
+--><access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>670425eb-51ff-4f0f-8285-70d8ac472dae</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReturnUsageReportTree</name>
-        <access>
-            <role>Sales_Delivery</role>
-            <role>Sales_Admin</role>
-        </access>
-        <!-- targets -->
-        <target>
-            <menu>Sales_ReturnUsageReportTree_Menu</menu>
-            <form>Sales_ReturnUsageReportForm</form>
-        </target>
-        <!-- type tree for -->
+        <name>Sales_ReturnUsageReport_Modify</name>
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
         <type>Sales_ReturnUsageReport</type>
-        <childs>
-            <child>Sales_ReturnUsageReportTree_Position</child>
-        </childs>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <status group="Sales_ReturnUsageReportStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+        <role>Sales_Delivery</role>
     </definition>
-</ui-menu>
+</access-set>
