@@ -52,6 +52,7 @@
             <child>Sales_RetentionCertificateMyDesk</child>
             <child>Sales_PerceptionCertificateMyDesk</child>
             <child>Sales_ProductionReportMyDesk</child>
+            <child>Sales_ReturnUsageReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
