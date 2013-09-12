@@ -38,13 +38,13 @@
         <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingWithDateSelectForm</form>
-            <command>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate</command>
-            <trigger program="org.efaps.esjp.sales.Account"
-                method="check4SystemConfiguration"
-                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate.UI_ACCESSCHECK"
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
+                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDateSelect.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
+                <property name="AccessCheck4SystemConfiguration">true</property>
                 <property name="WithDate">true</property>
             </trigger>
+            <command>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate</command>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

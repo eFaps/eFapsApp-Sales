@@ -986,4 +986,34 @@ public abstract class Account_Base
     {
         return null;
     }
+
+    public Return accessCheck4Active(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
+        Return ret = new Return();
+        final Instance accountInst = _parameter.getInstance();
+
+        if (accountInst.isValid()) {
+            final PrintQuery print = new PrintQuery(accountInst);
+            print.addAttribute(CISales.AccountAbstract.Active);
+            print.execute();
+
+            final boolean active = print.<Boolean>getAttribute(CISales.AccountAbstract.Active) == null
+                                                ? false : print.<Boolean>getAttribute(CISales.AccountAbstract.Active);
+
+            if (active) {
+                if (props.containsKey("AccessCheck4SystemConfiguration")) {
+                    if ("true".equalsIgnoreCase((String) props.get("AccessCheck4SystemConfiguration"))) {
+                        ret = check4SystemConfiguration(_parameter);
+                    }
+                } else {
+                    ret.put(ReturnValues.TRUE, true);
+                }
+            }
+        }
+
+        return ret;
+    }
 }

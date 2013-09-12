@@ -43,10 +43,10 @@
             <form>Sales_AccountPettyCashBalancingForm</form>
             <execute program="org.efaps.esjp.sales.Account"
                 method="pettyCashBalance" />
-            <trigger program="org.efaps.esjp.sales.Account"
-                method="check4SystemConfiguration"
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
+                <property name="AccessCheck4SystemConfiguration">true</property>
                 <property name="WithDate">false</property>
             </trigger>
         </target>

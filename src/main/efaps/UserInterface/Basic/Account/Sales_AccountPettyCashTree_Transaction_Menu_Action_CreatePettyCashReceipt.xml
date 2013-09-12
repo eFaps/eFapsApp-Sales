@@ -43,6 +43,9 @@
             <form>Sales_AccountPettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.Account" method="createPettyCashReceipt" />
             <validate program="org.efaps.esjp.sales.Account" method="validatePettyCashReceipt"/>
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
+                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
