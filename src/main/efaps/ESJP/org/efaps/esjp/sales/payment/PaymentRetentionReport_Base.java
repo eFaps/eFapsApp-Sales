@@ -40,6 +40,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -260,9 +261,11 @@ public abstract class PaymentRetentionReport_Base
         final String companyNumber = erpConfig.getAttributeValue(ERPSettings.COMPANYTAX);
 
         final StringBuilder dateFormat = new StringBuilder()
-                        .append(new SimpleDateFormat("MMMMM").format(dateFrom.toDate()).toUpperCase())
+                        .append(new SimpleDateFormat("MMMMM", Context.getThreadContext().getLocale())
+                                        .format(dateFrom.toDate()).toUpperCase())
                         .append(" ")
-                        .append(new SimpleDateFormat("yyyy").format(dateFrom.toDate()));
+                        .append(new SimpleDateFormat("yyyy", Context.getThreadContext().getLocale())
+                                        .format(dateFrom.toDate()));
         report.getJrParameters().put("date", dateFormat.toString());
         report.getJrParameters().put("companyName", companyName);
         report.getJrParameters().put("companyNumber", companyNumber);
