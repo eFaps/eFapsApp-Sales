@@ -298,7 +298,7 @@ public abstract class DocReport_Base
                                 : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                 }
 
-                igv = negate ? crossTotal.subtract(netTotal).negate() : crossTotal.subtract(netTotal);
+                igv = crossTotal.subtract(netTotal);
 
                 final Boolean export = BigDecimal.ZERO.compareTo(igv) == 0;
 
@@ -316,13 +316,15 @@ public abstract class DocReport_Base
                     map.put(DocReport_Base.Field.DOC_EXPORT.getKey(), export ? crossTotal : null);
                     if (instDoc.getType().isKindOf(CISales.CreditNote.getType())
                                     || instDoc.getType().isKindOf(CISales.Reminder.getType())) {
-                        map.put(DocReport_Base.Field.DOCREL_DATE.getKey(), docRelDate);
-                        map.put(DocReport_Base.Field.DOCREL_PREFNAME.getKey(),
-                                        docRelName.split("-").length == 2 ? docRelName.split("-")[0] : "001");
-                        map.put(DocReport_Base.Field.DOCREL_SUFNAME.getKey(),
-                                        docRelName.split("-").length == 2 ? docRelName.split("-")[1] : docRelName);
-                        map.put(DocReport_Base.Field.DOCREL_TYPE.getKey(),
-                                        DocReport_Base.DOCTYPE_MAP.get(docRelInst.getType().getId()));
+                        if (docRelInst != null && docRelInst.isValid()) {
+                            map.put(DocReport_Base.Field.DOCREL_DATE.getKey(), docRelDate);
+                            map.put(DocReport_Base.Field.DOCREL_PREFNAME.getKey(),
+                                            docRelName.split("-").length == 2 ? docRelName.split("-")[0] : "001");
+                            map.put(DocReport_Base.Field.DOCREL_SUFNAME.getKey(),
+                                            docRelName.split("-").length == 2 ? docRelName.split("-")[1] : docRelName);
+                            map.put(DocReport_Base.Field.DOCREL_TYPE.getKey(),
+                                            DocReport_Base.DOCTYPE_MAP.get(docRelInst.getType().getId()));
+                        }
                     }
                 } else {
                     map.put(DocReport_Base.Field.DOC_CONTACT.getKey(),
