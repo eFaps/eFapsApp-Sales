@@ -348,7 +348,7 @@ public abstract class AbstractPaymentDocument_Base
 
         for (int i = 0; i < 100; i++) {
             if (props.containsKey("Type" + i)) {
-                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                final Map<Integer, Map<String, String>> tmpMap = new TreeMap<Integer, Map<String, String>>();
                 final Type type = Type.get(String.valueOf(props.get("Type" + i)));
                 if (type != null) {
                     final QueryBuilder queryBldr = new QueryBuilder(type);
@@ -356,6 +356,8 @@ public abstract class AbstractPaymentDocument_Base
                     if (contactInst != null && contactInst.isValid() && contactSessionInst != null
                                     && contactSessionInst.isValid()) {
                         queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+                        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
+                        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
                     }
                     add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
@@ -373,14 +375,16 @@ public abstract class AbstractPaymentDocument_Base
                     }
 
                     final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addAttribute(CISales.DocumentAbstract.OID,
+                    multi.addAttribute(CISales.DocumentAbstract.Date,
                                     CISales.DocumentAbstract.Name,
-                                    CISales.DocumentAbstract.Date,
+                                    CISales.DocumentAbstract.OID,
                                     CISales.DocumentSumAbstract.RateCrossTotal);
                     final SelectBuilder selCur = new SelectBuilder()
                                                     .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
                     multi.addSelect(selCur);
+                    multi.setEnforceSorted(true);
                     multi.execute();
+                    int number=0;
                     while (multi.next()) {
                         final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
                         final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
@@ -400,7 +404,8 @@ public abstract class AbstractPaymentDocument_Base
                         map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                         map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                         map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                        tmpMap.put(oid, map);
+                        number++;
+                        tmpMap.put(number, map);
                     }
                     list.addAll(tmpMap.values());
                 }
@@ -951,7 +956,7 @@ public abstract class AbstractPaymentDocument_Base
 
     /**
      * Executed the command on the button.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API
      * @return new Return
      * @throws EFapsException on error
@@ -993,8 +998,7 @@ public abstract class AbstractPaymentDocument_Base
                 final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
                 BigDecimal amountDue = amount2Pay.subtract(pay);
 
-                // comprobar que esta cogiendo la cantidad adecuada
-                // de acuerdo con el rate
+                //review to get correct amount
                 if (!currencyId.equals(instCurrency)) {
                     final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyId.getId());
                     final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, instCurrency);
@@ -1025,8 +1029,7 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        final String tablename = _parameter.getInstance().getType().getName().concat("WithOutDocPaymentTable");
-        js.append(getTableRemoveScript(_parameter, tablename));
+        js.append(getTableRemoveScript(_parameter, "paymentTable"));
 
         js.append("function setPayment(){");
         int index = 0;
@@ -1040,11 +1043,12 @@ public abstract class AbstractPaymentDocument_Base
             index++;
         }
 
-        js.append("}\n").append(getScriptValues(_parameter, _instancesList)).append("\n");
+        js.append("}\n");
+        js.append(getScriptValues(_parameter, _instancesList));
 
         final BigDecimal total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(_sumPayments);
         js.append(getSetFieldValue(0, "total4DiscountPay", total4DiscountPay == null
-                        ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(total4DiscountPay))).append("\n");
+                        ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(total4DiscountPay)));
 
         return js;
     }
@@ -1057,7 +1061,7 @@ public abstract class AbstractPaymentDocument_Base
                                             final List<Instance> _instances)
     {
         final StringBuilder ret = new StringBuilder();
-        ret.append(" addNewRows_paymentTable(").append(_instances.size() - 1)
+        ret.append(" addNewRows_paymentTable(").append(_instances.size())
                         .append(", setPayment, null);");
 
         return ret;
@@ -1092,7 +1096,7 @@ public abstract class AbstractPaymentDocument_Base
         if (multi.next()){
             final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
             final BigDecimal rateCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            
+
             BigDecimal pay = BigDecimal.ZERO;
             final String doc = _instance.getOid();
             final BigDecimal total4Doc = getAttribute4Document(doc, CISales.DocumentSumAbstract.RateCrossTotal.name);
@@ -1115,9 +1119,10 @@ public abstract class AbstractPaymentDocument_Base
             // Context.getThreadContext().getSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
 
             // duda con esta condicional
+            BigDecimal _rest= _restAmount;
             if (!_currencyActual.equals(currencyDocInst)) {
                 final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _currencyActual, currencyDocInst);
-                _restAmount.multiply(rates[2]);
+                _rest=_rest.multiply(rates[3]);
             }
 
             if (!_lastPosition) {
@@ -1126,8 +1131,8 @@ public abstract class AbstractPaymentDocument_Base
                 pay = amountDue;
             } else {
                 ret.append(getSetFieldValue(_index, "paymentAmount", _restAmount == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount))).append("\n");
-                pay = _restAmount;
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_rest))).append("\n");
+                pay = _rest;
             }
 
             ret.append(getSetFieldValue(_index, "paymentAmountDesc",
@@ -1155,6 +1160,8 @@ public abstract class AbstractPaymentDocument_Base
                     if (contactInst != null && contactInst.isValid() && contactSessionInst != null
                                     && contactSessionInst.isValid()) {
                         queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+                        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
+                        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
                     }
                     add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
@@ -1185,7 +1192,7 @@ public abstract class AbstractPaymentDocument_Base
             final QueryBuilder queryBldrDocs = new QueryBuilder(CISales.DocumentAbstract);
             queryBldrDocs.addWhereAttrEqValue(CISales.DocumentAbstract.ID, listIds.toArray());
             queryBldrDocs.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
-            queryBldrDocs.addOrderByAttributeAsc(CISales.DocumentAbstract.ID);
+            queryBldrDocs.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
             final MultiPrintQuery multi = queryBldrDocs.getPrint();
             multi.setEnforceSorted(true);
             multi.execute();
