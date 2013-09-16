@@ -238,7 +238,7 @@ public abstract class DocReport_Base
 
                 if (instDoc.getType().isKindOf(CISales.CreditNote.getType())
                                 || instDoc.getType().isKindOf(CISales.Reminder.getType())) {
-                    DocReport_Base.LOG.info("Document '{}' related with document '{}'", docName, docRelName);
+                    DocReport_Base.LOG.debug("Document '{}' related with document '{}'", docName, docRelName);
                     date = docRelDate;
                 }
 
@@ -304,6 +304,8 @@ public abstract class DocReport_Base
 
                 map.put(DocReport_Base.Field.DOC_DATE.getKey(), docDate);
                 map.put(DocReport_Base.Field.DOC_DUEDATE.getKey(), docDueDate);
+                DocReport_Base.LOG.debug("Document OID '{}'", instDoc.getOid());
+                DocReport_Base.LOG.debug("Document name '{}'", docName);
                 map.put(DocReport_Base.Field.DOC_NAME.getKey(), docName);
                 map.put(DocReport_Base.Field.DOC_DOCTYPE.getKey(),
                                 DocReport_Base.DOCTYPE_MAP.get(instDoc.getType().getId()));
@@ -374,15 +376,16 @@ public abstract class DocReport_Base
         throws EFapsException
     {
         final List<Instance> ret = new ArrayList<Instance>();
-        final Map<String, Map<String, Instance>> values = new TreeMap<String, Map<String, Instance>>();
+        final Map<String, List<Instance>> values = new TreeMap<String, List<Instance>>();
 
         values.put("A", getInstances(_parameter, CISales.Invoice.uuid, _from, _to));
         values.put("B", getInstances(_parameter, CISales.Receipt.uuid, _from, _to));
         values.put("C", getInstances(_parameter, CISales.CreditNote.uuid, _from, _to));
         values.put("D", getInstances(_parameter, CISales.Reminder.uuid, _from, _to));
 
-        for (final Map<String, Instance> value : values.values()) {
-            for (final Instance inst : value.values()) {
+        for (final List<Instance> instances : values.values()) {
+            for (final Instance inst : instances) {
+                DocReport_Base.LOG.debug("Document OID '{}'", inst.getOid());
                 ret.add(inst);
             }
         }
@@ -399,7 +402,7 @@ public abstract class DocReport_Base
      * @return ret with values.
      * @throws EFapsException on error.
      */
-    protected Map<String, Instance> getInstances(final Parameter _parameter,
+    protected List<Instance> getInstances(final Parameter _parameter,
                                                   final UUID _typeUUID,
                                                   final DateTime _from,
                                                   final DateTime _to)
@@ -408,7 +411,7 @@ public abstract class DocReport_Base
         final String contactOid = _parameter.getParameterValue("contact");
         final String contactName = _parameter.getParameterValue("contactAutoComplete");
 
-        final Map<String, Instance> ret = new TreeMap<String, Instance>();
+        final List<Instance> ret = new ArrayList<Instance>();
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
         queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, _from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, _to.plusDays(1));
@@ -421,7 +424,7 @@ public abstract class DocReport_Base
         multi.addAttribute(CIERP.DocumentAbstract.Name);
         multi.execute();
         while (multi.next()) {
-            ret.put(multi.<String>getAttribute(CIERP.DocumentAbstract.Name), multi.getCurrentInstance());
+            ret.add(multi.getCurrentInstance());
         }
         return ret;
     }
