@@ -21,6 +21,9 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -71,27 +74,31 @@ public abstract class Transaction_Base
         final Return retVal = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TreeMap<String, Long> cashDeskMap = new TreeMap<String, Long>();
+        final List<String> cashDeskDesc = new ArrayList<String>();
         final long actual = 0;
         final StringBuilder ret = new StringBuilder();
 
         final QueryBuilder cashDeskQuery = new QueryBuilder(CISales.AccountCashDesk);
         final MultiPrintQuery cashDeskMulti = cashDeskQuery.getPrint();
-        cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID, CISales.AccountCashDesk.Name);
+        cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID, CISales.AccountCashDesk.Name, CISales.AccountCashDesk.Description);
         cashDeskMulti.execute();
 
         while (cashDeskMulti.next()) {
             cashDeskMap.put(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Name),
                             cashDeskMulti.<Long>getAttribute(CISales.AccountCashDesk.ID));
+            cashDeskDesc.add(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Description));
         }
-
+        int i=0;
+        
         ret.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
         for (final Map.Entry<String, Long> entry : cashDeskMap.entrySet()) {
+            
             ret.append("<option");
 
             if (entry.getValue().equals(actual)) {
                 ret.append(" selected=\"selected\" ");
             }
-            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append("</option>");
+            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append(" - ").append(cashDeskDesc.get(i++)).append("</option>");
         }
 
         ret.append("</select>");
