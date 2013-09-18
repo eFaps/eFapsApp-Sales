@@ -45,6 +45,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
@@ -75,18 +76,22 @@ public abstract class Transaction_Base
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TreeMap<String, Long> cashDeskMap = new TreeMap<String, Long>();
         final List<String> cashDeskDesc = new ArrayList<String>();
+        final List<String> cashDeskCurr = new ArrayList<String>();
         final long actual = 0;
         final StringBuilder ret = new StringBuilder();
 
         final QueryBuilder cashDeskQuery = new QueryBuilder(CISales.AccountCashDesk);
         final MultiPrintQuery cashDeskMulti = cashDeskQuery.getPrint();
         cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID, CISales.AccountCashDesk.Name, CISales.AccountCashDesk.Description);
+        final SelectBuilder selCur = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink).attribute(CIERP.Currency.Name);
+        cashDeskMulti.addSelect(selCur);
         cashDeskMulti.execute();
 
         while (cashDeskMulti.next()) {
             cashDeskMap.put(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Name),
                             cashDeskMulti.<Long>getAttribute(CISales.AccountCashDesk.ID));
             cashDeskDesc.add(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Description));
+            cashDeskCurr.add(cashDeskMulti.<String>getSelect(selCur));
         }
         int i=0;
         
@@ -98,7 +103,8 @@ public abstract class Transaction_Base
             if (entry.getValue().equals(actual)) {
                 ret.append(" selected=\"selected\" ");
             }
-            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append(" - ").append(cashDeskDesc.get(i++)).append("</option>");
+            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append(" - ").append(cashDeskDesc.get(i)).append(" - ").append(cashDeskCurr.get(i)).append("</option>");
+            i++;
         }
 
         ret.append("</select>");
