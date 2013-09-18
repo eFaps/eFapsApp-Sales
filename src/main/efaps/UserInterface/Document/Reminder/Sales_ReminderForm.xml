@@ -165,6 +165,22 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="derived">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="Required">true</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_ReminderForm.derived.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Reminder" method="autoComplete4Invoice"
+                name="Sales_ReminderForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_Invoice</property>
+            </trigger>
+        </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_ReminderForm.headingPositon.Heading</property>
