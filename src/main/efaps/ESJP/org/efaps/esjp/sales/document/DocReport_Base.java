@@ -29,10 +29,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.apache.commons.collections.comparators.ComparatorChain;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -84,6 +87,9 @@ public abstract class DocReport_Base
     extends EFapsMapDataSource
 {
 
+    /**
+     * Logger for this class.
+     */
     protected static final Logger LOG = LoggerFactory.getLogger(DocReport_Base.class);
 
     /**
@@ -99,6 +105,10 @@ public abstract class DocReport_Base
         DOC_DOCTYPE("documentType"),
         /** */
         DOC_NAME("name"),
+        /** */
+        DOC_SN("docSerialNo"),
+        /** */
+        DOC_NUMBER("docNumber"),
         /** */
         DOC_TAXNUM("taxNumber"),
         /** */
@@ -146,6 +156,9 @@ public abstract class DocReport_Base
         }
     }
 
+    /**
+     * Mapping for No es defined by SUNAT.
+     */
     private static final Map<Long, String> DOCTYPE_MAP = new HashMap<Long, String>();
     static {
         DocReport_Base.DOCTYPE_MAP.put(CISales.Invoice.getType().getId(), "01");
@@ -154,6 +167,7 @@ public abstract class DocReport_Base
         DocReport_Base.DOCTYPE_MAP.put(CISales.Reminder.getType().getId(), "08");
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
@@ -271,9 +285,9 @@ public abstract class DocReport_Base
                                         : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
                                                         .multiply(rate.getValue());
                             crossTotal = negate
-                                        ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                       ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
                                                         .multiply(rate.getValue()).negate()
-                                        : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                       : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
                                                         .multiply(rate.getValue());
                         }
 
@@ -307,6 +321,23 @@ public abstract class DocReport_Base
                 DocReport_Base.LOG.debug("Document OID '{}'", instDoc.getOid());
                 DocReport_Base.LOG.debug("Document name '{}'", docName);
                 map.put(DocReport_Base.Field.DOC_NAME.getKey(), docName);
+
+                final Pattern patternSN = Pattern.compile("^\\d+");
+                final Matcher matcherSN = patternSN.matcher(docName);
+                if (matcherSN.find()) {
+                    map.put(DocReport_Base.Field.DOC_SN.getKey(), matcherSN.group());
+                } else {
+                    map.put(DocReport_Base.Field.DOC_SN.getKey(), docName);
+                }
+
+                final Pattern patternNo = Pattern.compile("(?<=\\D)\\d+");
+                final Matcher matcherNo = patternNo.matcher(docName);
+                if (matcherNo.find()) {
+                    map.put(DocReport_Base.Field.DOC_NUMBER.getKey(), matcherNo.group());
+                } else {
+                    map.put(DocReport_Base.Field.DOC_NUMBER.getKey(), docName);
+                }
+
                 map.put(DocReport_Base.Field.DOC_DOCTYPE.getKey(),
                                 DocReport_Base.DOCTYPE_MAP.get(instDoc.getType().getId()));
                 if (!canceled) {
@@ -336,8 +367,19 @@ public abstract class DocReport_Base
                 values.add(map);
             }
         }
+        final ComparatorChain chain = new ComparatorChain();
+        chain.addComparator(new Comparator<Map<String, Object>>() {
 
-        Collections.sort(values, new Comparator<Map<String, Object>>() {
+            @Override
+            public int compare(final Map<String, Object> _o1,
+                               final Map<String, Object> _o2)
+            {
+                final String val1 = (String) _o1.get(DocReport_Base.Field.DOC_DOCTYPE.getKey());
+                final String val2 = (String) _o2.get(DocReport_Base.Field.DOC_DOCTYPE.getKey());
+                return val1.compareTo(val2);
+            }
+        });
+        chain.addComparator(new Comparator<Map<String, Object>>() {
 
             @Override
             public int compare(final Map<String, Object> _o1,
@@ -345,19 +387,23 @@ public abstract class DocReport_Base
             {
                 final DateTime date1 = (DateTime) _o1.get(DocReport_Base.Field.DOC_DATE.getKey());
                 final DateTime date2 = (DateTime) _o2.get(DocReport_Base.Field.DOC_DATE.getKey());
-                final int ret;
-                if (date1.isEqual(date2)) {
-                    final String sort1 = (String) _o1.get(DocReport_Base.Field.DOC_NAME.getKey());
-                    final String sort2 = (String) _o2.get(DocReport_Base.Field.DOC_NAME.getKey());
-                    ret = sort1.compareTo(sort2);
-                } else {
-                    ret = date1.compareTo(date2);
-                }
-                return ret;
+                return date1.compareTo(date2);
             }
         });
-        getValues().addAll(values);
+        chain.addComparator(new Comparator<Map<String, Object>>() {
 
+            @Override
+            public int compare(final Map<String, Object> _o1,
+                               final Map<String, Object> _o2)
+            {
+                final String val1 = (String) _o1.get(DocReport_Base.Field.DOC_NAME.getKey());
+                final String val2 = (String) _o2.get(DocReport_Base.Field.DOC_NAME.getKey());
+                return val1.compareTo(val2);
+            }
+        });
+
+        Collections.sort(values, chain);
+        getValues().addAll(values);
     }
 
 
