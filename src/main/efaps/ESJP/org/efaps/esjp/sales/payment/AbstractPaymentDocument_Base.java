@@ -482,8 +482,16 @@ public abstract class AbstractPaymentDocument_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
         final int selected = getSelectedRow(_parameter);
+        final String docStr = _parameter.getParameterValues("createDocument")[selected];
         final String payStr = _parameter.getParameterValues("paymentAmount")[selected];
         final String amount4PayStr = _parameter.getParameterValues("payment4Pay")[selected];
+        final String account = _parameter.getParameterValue("account");
+        final PrintQuery printAccount = new PrintQuery(Instance.get(CISales.AccountCashDesk.getType(), account));
+        final SelectBuilder selCurInst = new SelectBuilder().linkto(CISales.AccountAbstract.CurrencyLink).instance();
+        printAccount.addSelect(selCurInst);
+        printAccount.execute();
+        final Instance currencyAccount = printAccount.<Instance>getSelect(selCurInst);
+
         final DecimalFormat formater = Calculator_Base.getFormatInstance();
         BigDecimal pay = BigDecimal.ZERO;
         BigDecimal amount4Pay = BigDecimal.ZERO;
@@ -498,9 +506,28 @@ public abstract class AbstractPaymentDocument_Base
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+
+        BigDecimal payConverted = pay;
+        final Instance instanceDoc = Instance.get(docStr);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, instanceDoc.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCurrencyInst = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+        multi.addSelect(selCurrencyInst);
+        multi.execute();
+        if (multi.next()) {
+            final Instance currencyDocSelected = multi.<Instance>getSelect(selCurrencyInst);
+            if (!currencyDocSelected.equals(currencyAccount)) {
+                final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyAccount.getId());
+                final BigDecimal[] rates = new PriceUtil().getRates(_parameter, currencyDocSelected, baseInstDoc);
+                payConverted = payConverted.multiply(rates[2]);
+            }
+        }
+
         final Return retVal = new Return();
         map.put("paymentAmount", getTwoDigitsformater().format(pay));
-        map.put("paymentAmountDesc", getTwoDigitsformater().format(amount4Pay.subtract(pay)));
+        map.put("paymentAmountDesc", getTwoDigitsformater().format(amount4Pay.subtract(payConverted)));
         map.put("total4DiscountPay", getTwoDigitsformater()
                         .format(getAmount4Pay(_parameter).abs().subtract(getSumsPositions(_parameter))));
         list.add(map);
@@ -998,7 +1025,6 @@ public abstract class AbstractPaymentDocument_Base
                 final BigDecimal amount2Pay = total4Doc.subtract(payments4Doc);
                 BigDecimal amountDue = amount2Pay.subtract(pay);
 
-                //review to get correct amount
                 if (!currencyId.equals(instCurrency)) {
                     final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyId.getId());
                     final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, instCurrency);
@@ -1115,10 +1141,7 @@ public abstract class AbstractPaymentDocument_Base
 
 
             final Instance currencyDocInst = Instance.get(CIERP.Currency.getType(), multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-            // final Instance currentInst = (Instance)
-            // Context.getThreadContext().getSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
 
-            // duda con esta condicional
             BigDecimal _rest= _restAmount;
             if (!_currencyActual.equals(currencyDocInst)) {
                 final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _currencyActual, currencyDocInst);
