@@ -159,7 +159,7 @@ public abstract class DocReport_Base
     /**
      * Mapping for No es defined by SUNAT.
      */
-    private static final Map<Long, String> DOCTYPE_MAP = new HashMap<Long, String>();
+    protected static final Map<Long, String> DOCTYPE_MAP = new HashMap<Long, String>();
     static {
         DocReport_Base.DOCTYPE_MAP.put(CISales.Invoice.getType().getId(), "01");
         DocReport_Base.DOCTYPE_MAP.put(CISales.Receipt.getType().getId(), "02");
