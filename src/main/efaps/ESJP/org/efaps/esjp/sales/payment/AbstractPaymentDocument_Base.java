@@ -1148,7 +1148,7 @@ public abstract class AbstractPaymentDocument_Base
                 final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), _currencyActual.getId());
                 final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, currencyDocInst);
                 amountDueConverted = amountDueConverted.multiply(rates[2]);
-                restAmountConverted = restAmountConverted.multiply(rates[2]);
+                restAmountConverted = restAmountConverted.multiply(rates[3]);
             }
 
             if (!_lastPosition) {
@@ -1158,9 +1158,9 @@ public abstract class AbstractPaymentDocument_Base
                 pay = amountDue;
             } else {
                 ret.append(getSetFieldValue(_index, "paymentAmount", _restAmount == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(restAmountConverted)))
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount)))
                                 .append("\n");
-                pay = _restAmount;
+                pay = restAmountConverted;
             }
 
             ret.append(getSetFieldValue(_index, "paymentAmountDesc",
