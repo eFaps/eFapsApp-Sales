@@ -21,7 +21,11 @@
 package org.efaps.esjp.sales.document;
 
 import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -35,6 +39,8 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -50,6 +56,7 @@ import org.joda.time.DateTime;
 public abstract class RecievingTicket_Base
     extends AbstractProductDocument
 {
+    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.RecievingTicket.RevisionKey";
 
     /**
      * @param _parameter Parameter as passed from the eFaps API.
@@ -61,6 +68,7 @@ public abstract class RecievingTicket_Base
     {
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
+        connect2ProductDocumentType(_parameter, doc.getInstance());
         return new Return();
     }
 
@@ -69,6 +77,37 @@ public abstract class RecievingTicket_Base
         throws EFapsException
     {
         return _parameter.getParameterValue("name");
+    }
+
+    protected void connect2ProductDocumentType(final Parameter _parameter,
+                                               final Instance _instance)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
+        if (instDocType.isValid() && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final SystemConfiguration config = Sales.getSysConfig();
+        final Properties props = config.getAttributeValueAsProperties(SalesSettings.RECIEVINGTICKETSEQUENCE);
+
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        if (numgen != null) {
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingCreditNote_Base.REVISIONKEY, revision);
+            _insert.add(CISales.RecievingTicket.Revision, revision);
+        }
+
     }
 
     /**
