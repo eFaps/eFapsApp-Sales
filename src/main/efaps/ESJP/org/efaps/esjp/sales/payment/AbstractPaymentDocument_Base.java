@@ -1028,7 +1028,7 @@ public abstract class AbstractPaymentDocument_Base
                 if (!currencyId.equals(instCurrency)) {
                     final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyId.getId());
                     final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, instCurrency);
-                    amountDue = amountDue.multiply(rates[3]);
+                    amountDue = amountDue.multiply(rates[2]);
                 }
 
                 instances2Print.add(multi.getCurrentInstance());
@@ -1147,19 +1147,20 @@ public abstract class AbstractPaymentDocument_Base
             if (!_currencyActual.equals(currencyDocInst)) {
                 final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), _currencyActual.getId());
                 final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, currencyDocInst);
-                amountDueConverted = amountDueConverted.multiply(rates[3]);
-                restAmountConverted = restAmountConverted.multiply(rates[3]);
+                amountDueConverted = amountDueConverted.multiply(rates[2]);
+                restAmountConverted = restAmountConverted.multiply(rates[2]);
             }
 
             if (!_lastPosition) {
                 ret.append(getSetFieldValue(_index, "paymentAmount", amountDue == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDue))).append("\n");
-                pay = amountDueConverted;
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDueConverted)))
+                                .append("\n");
+                pay = amountDue;
             } else {
                 ret.append(getSetFieldValue(_index, "paymentAmount", _restAmount == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount)))
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(restAmountConverted)))
                                 .append("\n");
-                pay = restAmountConverted;
+                pay = _restAmount;
             }
 
             ret.append(getSetFieldValue(_index, "paymentAmountDesc",
