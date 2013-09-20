@@ -1028,7 +1028,7 @@ public abstract class AbstractPaymentDocument_Base
                 if (!currencyId.equals(instCurrency)) {
                     final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyId.getId());
                     final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, instCurrency);
-                    amountDue = amountDue.multiply(rates[2]);
+                    amountDue = amountDue.multiply(rates[3]);
                 }
 
                 instances2Print.add(multi.getCurrentInstance());
@@ -1087,7 +1087,7 @@ public abstract class AbstractPaymentDocument_Base
                                             final List<Instance> _instances)
     {
         final StringBuilder ret = new StringBuilder();
-        ret.append(" addNewRows_paymentTable(").append(_instances.size())
+        ret.append(" addNewRows_paymentTable(").append(_instances.size() - 1)
                         .append(", setPayment, null);");
 
         return ret;
@@ -1140,22 +1140,26 @@ public abstract class AbstractPaymentDocument_Base
             .append(getSetFieldValue(_index, "createDocumentDesc", bldr.toString())).append("\n");
 
 
-            final Instance currencyDocInst = Instance.get(CIERP.Currency.getType(), multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            final Instance currencyDocInst = multi.<Instance>getSelect(selCurrencyInst);
 
-            BigDecimal _rest= _restAmount;
+            BigDecimal amountDueConverted = amountDue;
+            BigDecimal restAmountConverted = _restAmount;
             if (!_currencyActual.equals(currencyDocInst)) {
-                final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _currencyActual, currencyDocInst);
-                _rest=_rest.multiply(rates[3]);
+                final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), _currencyActual.getId());
+                final BigDecimal[] rates = new PriceUtil().getRates(_parameter, baseInstDoc, currencyDocInst);
+                amountDueConverted = amountDueConverted.multiply(rates[3]);
+                restAmountConverted = restAmountConverted.multiply(rates[3]);
             }
 
             if (!_lastPosition) {
                 ret.append(getSetFieldValue(_index, "paymentAmount", amountDue == null
                                 ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDue))).append("\n");
-                pay = amountDue;
+                pay = amountDueConverted;
             } else {
                 ret.append(getSetFieldValue(_index, "paymentAmount", _restAmount == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_rest))).append("\n");
-                pay = _rest;
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount)))
+                                .append("\n");
+                pay = restAmountConverted;
             }
 
             ret.append(getSetFieldValue(_index, "paymentAmountDesc",
