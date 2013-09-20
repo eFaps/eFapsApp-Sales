@@ -122,6 +122,10 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingCreditNoteForm.headingClient.Heading</property>

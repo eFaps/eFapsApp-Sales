@@ -22,10 +22,9 @@ package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -45,7 +44,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.esjp.ci.CICommon;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
@@ -74,36 +72,43 @@ public abstract class Transaction_Base
     {
         final Return retVal = new Return();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final TreeMap<String, Long> cashDeskMap = new TreeMap<String, Long>();
+        final Map<Long, String> cashDeskMap = new LinkedHashMap<Long, String>();
         final List<String> cashDeskDesc = new ArrayList<String>();
         final List<String> cashDeskCurr = new ArrayList<String>();
         final long actual = 0;
         final StringBuilder ret = new StringBuilder();
 
         final QueryBuilder cashDeskQuery = new QueryBuilder(CISales.AccountCashDesk);
+        cashDeskQuery.addOrderByAttributeAsc(CISales.AccountCashDesk.Name);
         final MultiPrintQuery cashDeskMulti = cashDeskQuery.getPrint();
-        cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID, CISales.AccountCashDesk.Name, CISales.AccountCashDesk.Description);
-        final SelectBuilder selCur = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink).attribute(CIERP.Currency.Name);
+        cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID,
+                        CISales.AccountCashDesk.Name,
+                        CISales.AccountCashDesk.Description);
+        final SelectBuilder selCur = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink).attribute(
+                        CIERP.Currency.Name);
         cashDeskMulti.addSelect(selCur);
+        cashDeskMulti.setEnforceSorted(true);
         cashDeskMulti.execute();
 
         while (cashDeskMulti.next()) {
-            cashDeskMap.put(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Name),
-                            cashDeskMulti.<Long>getAttribute(CISales.AccountCashDesk.ID));
+            cashDeskMap.put(cashDeskMulti.<Long>getAttribute(CISales.AccountCashDesk.ID),
+                            cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Name));
             cashDeskDesc.add(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Description));
             cashDeskCurr.add(cashDeskMulti.<String>getSelect(selCur));
         }
-        int i=0;
-        
+        int i = 0;
+
         ret.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
-        for (final Map.Entry<String, Long> entry : cashDeskMap.entrySet()) {
-            
+        for (final Map.Entry<Long, String> entry : cashDeskMap.entrySet()) {
+
             ret.append("<option");
 
             if (entry.getValue().equals(actual)) {
                 ret.append(" selected=\"selected\" ");
             }
-            ret.append(" value=\"").append(entry.getValue()).append("\">").append(entry.getKey()).append(" - ").append(cashDeskDesc.get(i)).append(" - ").append(cashDeskCurr.get(i)).append("</option>");
+            ret.append(" value=\"").append(entry.getKey()).append("\">")
+                .append(entry.getValue()).append(" - ").append(cashDeskDesc.get(i)).append(" - ").append(cashDeskCurr.get(i))
+                .append("</option>");
             i++;
         }
 

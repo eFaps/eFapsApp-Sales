@@ -140,4 +140,9 @@ public interface SalesSettings
      * e.g.: Quotation=123.40;123.48
      */
     String CATALOGFILTER = "org.efaps.sales.CatalogFilter4ProductAutocomplete";
+
+    /**
+     * UUID of the Sequence to Incoming Credit Note.
+     */
+    String INCOMINGCREDITNOTESEQUENCE = "org.efaps.sales.IncomingCreditNoteSequence";
 }

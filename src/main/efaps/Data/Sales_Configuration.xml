@@ -114,5 +114,10 @@
 612efbd7-8843-447f-bb44-7983a3e87a43=]]></value>
             <description>UUID of the documents with the document type name. (Invoice, Receipt, ExternalVoucher)</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.IncomingCreditNoteSequence</key>
+            <value><![CDATA[UUID=6b311421-3e33-43ed-a7b8-e8c9167aa843]]></value>
+            <description>Company should be setted.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

@@ -20,10 +20,20 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.Properties;
+import java.util.UUID;
+
+import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -38,6 +48,8 @@ public abstract class IncomingCreditNote_Base
     extends DocumentSum
 {
 
+    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingCreditNote.RevisionKey";
+
     /**
      * Method for create a new Incoming Credit Note.
      *
@@ -51,5 +63,23 @@ public abstract class IncomingCreditNote_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         return new Return();
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final SystemConfiguration config = Sales.getSysConfig();
+        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGCREDITNOTESEQUENCE);
+
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        if (numgen != null) {
+            final String revision = numgen.getNextVal();
+            Context.getThreadContext().setSessionAttribute(IncomingCreditNote_Base.REVISIONKEY, revision);
+            _insert.add(CISales.IncomingCreditNote.Revision, revision);
+        }
+
     }
 }

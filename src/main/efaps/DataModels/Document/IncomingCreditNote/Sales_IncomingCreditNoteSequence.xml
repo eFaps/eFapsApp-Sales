@@ -19,28 +19,14 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>d2c0bcb6-eb84-4cd5-9599-402cedfb9ab6</uuid>
+--><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>6b311421-3e33-43ed-a7b8-e8c9167aa843</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingCreditNoteMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
-        </access>
-        <target>
-            <menu>Sales_IncomingCreditNoteMyDesk_Menu</menu>
-            <table>Sales_IncomingCreditNoteTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_IncomingCreditNote</property>
-            </evaluate>
-        </target>
-
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_IncomingCreditNoteSequence</name>
+        <format>D-%05d</format>
+        <startvalue>1</startvalue>
     </definition>
-</ui-command>
+</numbergenerator>
