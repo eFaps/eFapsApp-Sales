@@ -102,12 +102,6 @@ public interface SalesSettings
     String PERCEPTION = "org.efaps.sales.PerceptionActivate";
 
     /**
-     * UUID's. <br/>
-     * UUID of the documents with the document type name.
-     */
-    String DEFAULTDOCTYPE4DOC = "org.efaps.sales.DefaultDocumentType4Document";
-
-    /**
      * Boolean (true/false).<br/>
      * Activate the show variable.
      */

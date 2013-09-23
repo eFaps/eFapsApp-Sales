@@ -108,15 +108,6 @@
             <description>UUID of the documents to pay. Incoming Invoice like default</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.DefaultDocumentType4Document</key>
-            <value><![CDATA[491aa65f-cbc8-464c-86bc-ef19ed6302ad=
-8b19ef73-b093-480a-8596-f1380b4e24f6=
-612efbd7-8843-447f-bb44-7983a3e87a43=
-e6274de0-4ca3-48cd-a0e5-97932e420668=
-5ec375f7-acb3-49d1-900e-4c447e1db2d8=]]></value>
-            <description>UUID of the documents with the document type name. (Invoice, Receipt, ExternalVoucher)</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.IncomingCreditNoteSequence</key>
             <value><![CDATA[UUID=6b311421-3e33-43ed-a7b8-e8c9167aa843]]></value>
             <description>Company should be setted.</description>
