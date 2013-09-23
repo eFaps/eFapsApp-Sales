@@ -147,6 +147,11 @@ public interface SalesSettings
     String INCOMINGCREDITNOTESEQUENCE = "org.efaps.sales.IncomingCreditNoteSequence";
 
     /**
+     * UUID of the Sequence to Incoming Reminder.
+     */
+    String INCOMINGREMINDERSEQUENCE = "org.efaps.sales.IncomingReminderSequence";
+
+    /**
      * UUID of the Sequence to Incoming Credit Note.
      */
     String RECIEVINGTICKETSEQUENCE = "org.efaps.sales.RecievingTicketSequence";

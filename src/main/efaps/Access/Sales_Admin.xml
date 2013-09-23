@@ -71,6 +71,7 @@
         <type>Sales_BulkPayment</type>
         <type>Sales_QuoteRequest</type>
         <type>Sales_IncomingCreditNote</type>
+        <type>Sales_IncomingReminder</type>
         <type>Sales_PerceptionCertificate</type>
         <type>Sales_ReturnUsageReport</type>
         <type>Sales_ProductionReport</type>
@@ -228,6 +229,13 @@
         </status>
 
         <status group="Sales_IncomingCreditNoteStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <status group="Sales_IncomingReminderStatus">
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>

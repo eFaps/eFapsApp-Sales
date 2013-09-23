@@ -120,6 +120,11 @@
             <description>Company should be setted.</description>
         </attribute>
         <attribute>
+            <key>org.efaps.sales.IncomingReminderSequence</key>
+            <value><![CDATA[UUID=8842a5a0-cc0f-4b6b-927e-0a0d92e855b2]]></value>
+            <description>Company should be setted.</description>
+        </attribute>
+        <attribute>
             <key>org.efaps.sales.RecievingTicketSequence</key>
             <value><![CDATA[UUID=89e1f319-95c7-43da-a5e4-66a74f56cebd]]></value>
             <description>Company should be setted.</description>
