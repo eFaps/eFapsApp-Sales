@@ -86,7 +86,7 @@
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="Regex4DefaultValue">08 - [\w]*</property>
+                <property name="Regex4DefaultValue">08 - .*</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">
