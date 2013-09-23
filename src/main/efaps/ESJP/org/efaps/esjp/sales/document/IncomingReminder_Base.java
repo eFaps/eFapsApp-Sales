@@ -21,6 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -30,7 +31,10 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -81,4 +85,56 @@ public abstract class IncomingReminder_Base
 
     }
 
+    @Override
+    protected void connect2DocumentType(Parameter _parameter,
+                                        Instance _instance)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingReminderForm.documentType.name));
+        if (instDocType.isValid() && _instance.isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
+    }
+
+    @Override
+    public Return dropDown4DocumentType(Parameter _parameter)
+        throws EFapsException
+    {
+        return new Field()
+        {
+
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                Boolean hasSelect = false;
+                for (final DropDownPosition val : _values) {
+                    if (val.isSelected()) {
+                        hasSelect = true;
+                    }
+                }
+                if (!hasSelect) {
+                    final Properties props = Sales.getSysConfig()
+                                    .getAttributeValueAsProperties(SalesSettings.DEFAULTDOCTYPE4DOC);
+                    if (props != null) {
+                        final Instance defInst = Instance.get(props.getProperty(CISales.IncomingReminder.getType()
+                                        .getUUID().toString()));
+                        if (defInst.isValid()) {
+                            for (final DropDownPosition val : _values) {
+                                if (val.getValue().toString().equals(defInst.getOid())) {
+                                    val.setSelected(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+        }.dropDownFieldValue(_parameter);
+    }
 }
