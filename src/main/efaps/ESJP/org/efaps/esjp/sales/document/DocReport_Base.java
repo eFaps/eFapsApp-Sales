@@ -212,15 +212,15 @@ public abstract class DocReport_Base
                             .clazz(CIContacts.ClassOrganisation)
                             .attribute(CIContacts.ClassOrganisation.TaxNumber);
             final SelectBuilder selDocRelInst = new SelectBuilder()
-                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.From)
-                            .linkto(CISales.Document2DerivativeDocument.To).instance();
+                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.To)
+                            .linkto(CISales.Document2DerivativeDocument.From).instance();
             final SelectBuilder selDocRelName = new SelectBuilder()
-                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.From)
-                            .linkto(CISales.Document2DerivativeDocument.To)
+                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.To)
+                            .linkto(CISales.Document2DerivativeDocument.From)
                             .attribute(CISales.DocumentSumAbstract.Name);
             final SelectBuilder selDocRelDate = new SelectBuilder()
-                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.From)
-                            .linkto(CISales.Document2DerivativeDocument.To)
+                            .linkfrom(CISales.Document2DerivativeDocument, CISales.Document2DerivativeDocument.To)
+                            .linkto(CISales.Document2DerivativeDocument.From)
                             .attribute(CISales.DocumentSumAbstract.Date);
             multiPrint.addSelect(selCurInst, selContactName, selContactTaxNum,
                             selDocRelDate, selDocRelInst, selDocRelName);
@@ -239,12 +239,12 @@ public abstract class DocReport_Base
                 final DateTime docRelDate = multiPrint.<DateTime>getSelect(selDocRelDate);
                 final CurrencyInst curInstDoc = new CurrencyInst(multiPrint.<Instance>getSelect(selCurInst));
                 final Long status = multiPrint.<Long>getAttribute(CISales.DocumentSumAbstract.StatusAbstract);
-                final Boolean canceled = new Boolean(status.equals(new Long(Status.find(CISales.InvoiceStatus,
-                                                CISales.InvoiceStatus.Replaced).getId()))
-                                || status.equals(new Long(Status.find(CISales.ReminderStatus,
-                                                CISales.ReminderStatus.Replaced).getId()))
-                                || status.equals(new Long(Status.find(CISales.CreditNoteStatus,
-                                                CISales.CreditNoteStatus.Replaced).getId())));
+                final Boolean canceled = new Boolean(status.equals(new Long(Status.find(CISales.InvoiceStatus.uuid,
+                                                "Replaced").getId()))
+                                || status.equals(new Long(Status.find(CISales.ReminderStatus.uuid,
+                                                "Replaced").getId()))
+                                || status.equals(new Long(Status.find(CISales.CreditNoteStatus.uuid,
+                                                "Replaced").getId())));
 
                 DateTime date = docDate;
 
@@ -361,7 +361,7 @@ public abstract class DocReport_Base
                     }
                 } else {
                     map.put(DocReport_Base.Field.DOC_CONTACT.getKey(),
-                                    Status.find(CISales.InvoiceStatus, CISales.InvoiceStatus.Replaced).getLabel());
+                                    Status.find(CISales.InvoiceStatus.uuid, "Replaced").getLabel());
                 }
 
                 values.add(map);
