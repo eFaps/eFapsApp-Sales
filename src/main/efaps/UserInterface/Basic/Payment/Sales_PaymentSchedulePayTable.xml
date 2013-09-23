@@ -46,6 +46,10 @@
             <property name="Attribute">Date</property>
             <property name="Label">Sales_PaymentSchedulePayTable.date.Label</property>
         </field>
+        <field name="dueDate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_PaymentSchedulePayTable.dueDate.Label</property>
+        </field>
         <field name="crossTotal">
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
