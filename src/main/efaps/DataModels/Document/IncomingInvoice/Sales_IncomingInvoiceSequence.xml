@@ -28,7 +28,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceSequence</name>
-        <format>NC-%05d</format>
+        <format>C-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>
