@@ -92,7 +92,7 @@
 
         UIUpdate update = new UIUpdate();
         <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
-        update.add2Menu("70b1b5b6-11e5-4b05-ab5d-da6a25612234", "87001cc3-c45c-44de-b8f1-776df507f268", 1);
+        update.add2Menu("70b1b5b6-11e5-4b05-ab5d-da6a25612234", "87001cc3-c45c-44de-b8f1-776df507f268", 2);
 
         <!-- connect the Sales_ContactTree_Documents command to the tree menu from contacts -->
         update.add2Menu("cc930e6c-4ed6-467e-a5d6-10f460c13118", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
