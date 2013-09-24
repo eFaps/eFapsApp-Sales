@@ -21,6 +21,9 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * TODO comment!
@@ -28,6 +31,8 @@ package org.efaps.esjp.sales.document;
  * @author The eFaps Team
  * @version $Id: CodeTemplates.xml 8342 2012-12-11 14:42:17Z jan@moxter.net $
  */
+@EFapsUUID("cf1df523-2129-4e81-9342-af1e1065ca64")
+@EFapsRevision("$Rev: 10270 $")
 public class IncomingReminder
     extends IncomingReminder_Base
 {

@@ -28,6 +28,8 @@ import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -44,6 +46,8 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  * @version $Id: CodeTemplates.xml 8342 2012-12-11 14:42:17Z jan@moxter.net $
  */
+@EFapsUUID("a126d27b-105b-4751-bc88-22d320f5b177")
+@EFapsRevision("$Rev: 10270 $")
 public abstract class IncomingReminder_Base
     extends DocumentSum
 {
