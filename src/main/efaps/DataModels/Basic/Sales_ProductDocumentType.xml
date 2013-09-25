@@ -19,9 +19,12 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>42ec125b-46ee-4822-8de4-b4cd55072f74</uuid>
-    <file-application>eFapsApp-Commons</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>

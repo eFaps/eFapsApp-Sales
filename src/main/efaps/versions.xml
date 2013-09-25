@@ -89,6 +89,15 @@
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Currency.xml")).updateInDB();
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Taxes.xml")).updateInDB();
         }
+        
+        // Sales_ProductDocumentType
+        queryBldr = new QueryBuilder(UUID.fromString("42ec125b-46ee-4822-8de4-b4cd55072f74"));
+        query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        if (!query.next()) {
+            DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_ProductDocumentType.xml")).updateInDB();
+        }
+        
 
         UIUpdate update = new UIUpdate();
         <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
