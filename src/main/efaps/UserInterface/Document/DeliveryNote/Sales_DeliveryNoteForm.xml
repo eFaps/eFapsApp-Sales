@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2013 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -38,7 +38,7 @@
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="date">
-            <property name="Columns">40</property>
+            <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
@@ -174,8 +174,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_DeliveryNotePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_DeliveryNotePosition</property>
-                <property name="LinkFroms">DeliveryNote</property>
+                <property name="Type">Sales_DeliveryNotePosition</property>
+                <property name="LinkFrom">DeliveryNote</property>
             </evaluate>
         </field>
         <field name="note">
@@ -188,7 +188,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">HIDDEN</property>
+            <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="getJavaScriptUIValue"
                 name="Sales_DeliveryNoteForm.javaScript.UI_Field_Value"
