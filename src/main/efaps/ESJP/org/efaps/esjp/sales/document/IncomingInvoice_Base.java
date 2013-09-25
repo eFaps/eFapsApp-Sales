@@ -40,6 +40,8 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Costs;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -141,10 +143,8 @@ public abstract class IncomingInvoice_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        // Sales_Configuration
-        final SystemConfiguration config = SystemConfiguration
-                        .get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-        final Properties props = config.getAttributeValueAsProperties("IncomingInvoiceSequence");
+        final SystemConfiguration config = Sales.getSysConfig();
+        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGINVOICESEQUENCE);
 
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {

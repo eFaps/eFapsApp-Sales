@@ -149,4 +149,14 @@ public interface SalesSettings
      * UUID of the Sequence to Incoming Credit Note.
      */
     String RECIEVINGTICKETSEQUENCE = "org.efaps.sales.RecievingTicketSequence";
+
+    /**
+     * UUID of the Sequence to Incoming Receipt.
+     */
+    String INCOMINGRECEIPTSEQUENCE = "org.efaps.sales.IncomingReceiptSequence";
+
+    /**
+     * UUID of the Sequence to Incoming Receipt.
+     */
+    String INCOMINGINVOICESEQUENCE = "org.efaps.sales.IncomingInvoiceSequence";
 }

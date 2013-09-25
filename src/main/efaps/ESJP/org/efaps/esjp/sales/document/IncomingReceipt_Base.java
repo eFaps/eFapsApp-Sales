@@ -22,9 +22,11 @@
 package org.efaps.esjp.sales.document;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -38,6 +40,8 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -140,8 +144,10 @@ public abstract class IncomingReceipt_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        // Sales_IncomingReceiptSequence
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString("58d89fbf-0c0a-4a27-b1df-90f34759011e"));
+        final SystemConfiguration config = Sales.getSysConfig();
+        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGRECEIPTSEQUENCE);
+
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingReceipt_Base.REVISIONKEY, revision);
