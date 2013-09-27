@@ -39,6 +39,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Costs;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -172,5 +173,29 @@ public abstract class IncomingInvoice_Base
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    @Override
+    public Calculator getCalculator(final Parameter _parameter,
+                                    final Calculator _oldCalc,
+                                    final String _oid,
+                                    final String _quantity,
+                                    final String _unitPrice,
+                                    final String _discount,
+                                    final boolean _priceFromDB)
+        throws EFapsException
+    {
+
+        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this)
+        {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected UUID getPriceListUUID()
+            {
+                return CIProducts.ProductPricelistPurchase.uuid;
+            }
+        };
     }
 }

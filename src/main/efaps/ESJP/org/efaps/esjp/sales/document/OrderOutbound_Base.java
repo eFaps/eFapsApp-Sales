@@ -20,13 +20,17 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.UUID;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 /**
@@ -68,5 +72,29 @@ public abstract class OrderOutbound_Base
             insert.add(CISales.ChannelSalesChannel2Document.ToLink, _instanceDoc);
             insert.execute();
         }
+    }
+
+    @Override
+    public Calculator getCalculator(final Parameter _parameter,
+                                    final Calculator _oldCalc,
+                                    final String _oid,
+                                    final String _quantity,
+                                    final String _unitPrice,
+                                    final String _discount,
+                                    final boolean _priceFromDB)
+        throws EFapsException
+    {
+
+        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this)
+        {
+
+            private static final long serialVersionUID = 1L;
+
+            @Override
+            protected UUID getPriceListUUID()
+            {
+                return CIProducts.ProductPricelistPurchase.uuid;
+            }
+        };
     }
 }
