@@ -64,6 +64,7 @@ import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
@@ -1057,40 +1058,31 @@ public abstract class AbstractPaymentDocument_Base
         final StringBuilder js = new StringBuilder();
         js.append(getTableRemoveScript(_parameter, "paymentTable"));
 
-        js.append("function setPayment(){");
+        final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+
         int index = 0;
         boolean lastPos = false;
-
         for (final Instance payment : _instancesList) {
+            final Map<String, String> map = new HashMap<String, String>();
+            values.add(map);
             if (_instancesList.size() == index + 1) {
                 lastPos = true;
             }
-            js.append(getScriptLine(_parameter, payment, index, lastPos, _restAmount, _currencyActual));
+            add2MapPositions(_parameter, payment, index, lastPos, _restAmount, _currencyActual, map);
             index++;
         }
 
-        js.append("}\n");
-        js.append(getScriptValues(_parameter, _instancesList));
+        js.append("\n");
+        js.append(getTableAddNewRowsScript(_parameter, "paymentTable", values, null));
 
         final BigDecimal total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(_sumPayments);
-        js.append(getSetFieldValue(0, "total4DiscountPay", total4DiscountPay == null
-                        ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(total4DiscountPay)));
+        js.append(getSetFieldValue(
+                        0,
+                        CIFormSales.Sales_PaymentCheckWithOutDocForm.total4DiscountPay.name,
+                        total4DiscountPay == null ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(
+                                        total4DiscountPay)));
 
         return js;
-    }
-
-    /**
-     * @param _instances instances to print
-     * @return StringBuilder
-     */
-    protected StringBuilder getScriptValues(final Parameter _parameter,
-                                            final List<Instance> _instances)
-    {
-        final StringBuilder ret = new StringBuilder();
-        ret.append(" addNewRows_paymentTable(").append(_instances.size() - 1)
-                        .append(", setPayment, null);");
-
-        return ret;
     }
 
     /**
@@ -1102,15 +1094,15 @@ public abstract class AbstractPaymentDocument_Base
      * @return StringBuilder
      * @throws EFapsException on error
      */
-    protected StringBuilder getScriptLine(final Parameter _parameter,
+    protected void add2MapPositions(final Parameter _parameter,
                                           final Instance _instance,
                                           final Integer _index,
                                           final boolean _lastPosition,
                                           final BigDecimal _restAmount,
-                                          final Instance _currencyActual)
+                                    final Instance _currencyActual,
+                                    Map<String, String> _map)
         throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
         queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -1135,10 +1127,9 @@ public abstract class AbstractPaymentDocument_Base
                             .append(" / ").append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
 
 
-            ret.append(getSetFieldValue(_index, "createDocument", _instance.getOid())).append("\n")
-            .append(getSetFieldValue(_index, "createDocumentAutoComplete", name)).append("\n")
-            .append(getSetFieldValue(_index, "createDocumentDesc", bldr.toString())).append("\n");
-
+            _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocument.name, _instance.getOid());
+            _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocument.name + "AutoComplete", name);
+            _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocumentDesc.name, bldr.toString());
 
             final Instance currencyDocInst = multi.<Instance>getSelect(selCurrencyInst);
 
@@ -1152,22 +1143,19 @@ public abstract class AbstractPaymentDocument_Base
             }
 
             if (!_lastPosition) {
-                ret.append(getSetFieldValue(_index, "paymentAmount", amountDue == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDueConverted)))
-                                .append("\n");
+                _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name, amountDue == null
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDueConverted));
                 pay = amountDue;
             } else {
-                ret.append(getSetFieldValue(_index, "paymentAmount", _restAmount == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount)))
-                                .append("\n");
+                _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name, _restAmount == null
+                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount));
                 pay = restAmountConverted;
             }
 
-            ret.append(getSetFieldValue(_index, "paymentAmountDesc",
-                            getTwoDigitsformater().format(amount2Pay.subtract(pay)))).append("\n");
+            _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmountDesc.name,
+                            getTwoDigitsformater().format(amount2Pay.subtract(pay)));
         }
 
-        return ret;
     }
 
     protected List<Instance> getDocInstances(final Parameter _parameter)
