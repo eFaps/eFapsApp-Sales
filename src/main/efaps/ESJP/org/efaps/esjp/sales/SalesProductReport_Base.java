@@ -50,6 +50,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -143,7 +144,8 @@ public abstract class SalesProductReport_Base
             final DateTime date2Filter = new DateTime().minusYears(yearsAgo);
 
             final DRDataSource dataSource = new DRDataSource("docOID", "document", "currency", "contact", "date",
-                            "quantity", "netUnitPrice", "netPrice", "contactInst", "productInst", "productName");
+                            "quantity", "netUnitPrice", "netPrice", "contactInst", "productInst", "productName",
+                            "statusDoc", "productUoM", "productDiscount");
 
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
             for (final String type : types) {
@@ -164,6 +166,7 @@ public abstract class SalesProductReport_Base
                 multi.addAttribute(CISales.PositionSumAbstract.Quantity,
                                 CISales.PositionSumAbstract.NetUnitPrice,
                                 CISales.PositionSumAbstract.NetPrice,
+                                CISales.PositionSumAbstract.Discount,
                                 CISales.PositionSumAbstract.UoM);
                 final SelectBuilder selCurSymbol = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.CurrencyId)
@@ -194,9 +197,12 @@ public abstract class SalesProductReport_Base
                 final SelectBuilder selDocInst = new SelectBuilder()
                                         .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
                                         .instance();
+                final SelectBuilder selDocStatus = new SelectBuilder()
+                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                        .attribute(CISales.DocumentSumAbstract.StatusAbstract);
 
                 multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName,
-                                selCurSymbol, selProductInst, selProductName, selProductDesc, selDocInst);
+                                selCurSymbol, selProductInst, selProductName, selProductDesc, selDocInst, selDocStatus);
                 multi.execute();
                 while (multi.next()) {
                     final Map<String, Object> map = new HashMap<String, Object>();
@@ -215,6 +221,8 @@ public abstract class SalesProductReport_Base
                     final String docName = multi.<String>getSelect(selDocName);
                     final Instance docInst = multi.<Instance>getSelect(selDocInst);
                     final String docType = multi.<String>getSelect(selDocType);
+                    final String statusName = Status.get(multi.<Long>getSelect(selDocStatus)).getLabel();
+                    final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
                     map.put("docOID", docInst.getOid());
                     map.put("document", docType + ": " + docName);
                     map.put("currency", curSymbol);
@@ -228,6 +236,9 @@ public abstract class SalesProductReport_Base
                     map.put("contactInst", contactInst);
                     map.put("productInst", productInst);
                     map.put("productName", productName + ": " + productDesc);
+                    map.put("statusDoc", statusName);
+                    map.put("productUoM", uoM.getDimension().getBaseUoM().getName());
+                    map.put("productDiscount", discount);
                     lst.add(map);
                 }
             }
@@ -269,7 +280,10 @@ public abstract class SalesProductReport_Base
                                 map.get("netPrice"),
                                 map.get("contactInst"),
                                 map.get("productInst"),
-                                map.get("productName"));
+                                map.get("productName"),
+                                map.get("statusDoc"),
+                                map.get("productUoM"),
+                                map.get("productDiscount"));
             }
 
             return dataSource;
@@ -294,7 +308,7 @@ public abstract class SalesProductReport_Base
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             final boolean oppositeFilter = Boolean.parseBoolean((String) props.get("OppositeFilter"));
-            props.get("DateFilter");
+
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
 
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
@@ -328,6 +342,16 @@ public abstract class SalesProductReport_Base
             final TextColumnBuilder<String> documentColumn = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.SalesProductReport.Document"), "document",
                             DynamicReports.type.stringType());
+
+            final TextColumnBuilder<String> statusColumn = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.SalesProductReport.Status"), "statusDoc",
+                            DynamicReports.type.stringType());
+            final TextColumnBuilder<String> uomColumn = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.SalesProductReport.UoM"), "productUoM",
+                            DynamicReports.type.stringType());
+            final TextColumnBuilder<BigDecimal> discountColumn = DynamicReports.col.column(DBProperties
+                            .getProperty("org.efaps.esjp.sales.SalesProductReport.Discount"), "productDiscount",
+                            DynamicReports.type.bigDecimalType());
 
             final ColumnGroupBuilder yearGroup  = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
@@ -386,9 +410,12 @@ public abstract class SalesProductReport_Base
                 _builder.addColumn(linkColumn);
             }
             _builder.addColumn(documentColumn.setFixedWidth(200),
+                                statusColumn.setHorizontalAlignment(HorizontalAlignment.CENTER),
                                 dateColumn,
+                                uomColumn.setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(70),
                                 quantityColumn,
                                 netUnitPriceColumn,
+                                discountColumn,
                                 netPriceColumn,
                                 currencyColumn.setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(70));
             if (!showDetails) {
