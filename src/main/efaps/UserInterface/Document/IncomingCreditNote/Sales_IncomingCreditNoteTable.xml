@@ -62,13 +62,13 @@
             <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
         </field>
         <field name="crosstotal">
-            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt;</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="nettotal">
-            <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt;</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/NetTotal.Label</property>
             <property name="Align">right</property>
@@ -77,6 +77,11 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="symbol">
+            <property name="Phrase">$&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentAbstract/Symbol.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
