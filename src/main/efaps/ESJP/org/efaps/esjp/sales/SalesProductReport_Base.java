@@ -363,6 +363,7 @@ public abstract class SalesProductReport_Base
                                       .setDataType(DynamicReports.type.bigDecimalType());
 
             final AggregationSubtotalBuilder<BigDecimal> quantityProdSum = DynamicReports.sbt.sum(quantityColumn);
+            final AggregationSubtotalBuilder<BigDecimal> netUnitPriceProdSum = DynamicReports.sbt.sum(netUnitPriceColumn);
             final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum = DynamicReports.sbt.sum(netPriceColumn);
 
             final AggregationSubtotalBuilder<BigDecimal> quantityTotSum = DynamicReports.sbt.sum(quantityColumn)
@@ -425,21 +426,21 @@ public abstract class SalesProductReport_Base
                 if (_parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract.getType())) {
                     _builder.groupBy(yearGroup, monthGroup, contactGroup);
                     _builder.addSubtotalAtGroupFooter(contactGroup, quantityProdSum);
-                    //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
-                    _builder.addSubtotalAtGroupFooter(contactGroup, unitPriceSbt);
+                    //_builder.addSubtotalAtGroupFooter(contactGroup, unitPriceSbt);
+                    _builder.addSubtotalAtGroupFooter(contactGroup, netUnitPriceProdSum);
                 } else {
                     _builder.groupBy(yearGroup, monthGroup, productGroup);
                     _builder.addSubtotalAtGroupFooter(productGroup, quantityProdSum);
-                    //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
-                    _builder.addSubtotalAtGroupFooter(productGroup, unitPriceSbt);
+                    //_builder.addSubtotalAtGroupFooter(productGroup, unitPriceSbt);
+                    _builder.addSubtotalAtGroupFooter(productGroup, netUnitPriceProdSum);
                     _builder.addSubtotalAtGroupFooter(productGroup, netPriceProdSum);
                     _builder.addSubtotalAtSummary(quantityTotSum, netPriceTotSum);
                 }
             } else {
                 _builder.groupBy(yearGroup, monthGroup);
                 _builder.addSubtotalAtGroupFooter(monthGroup, quantityProdSum);
-                //_builder.addSubtotalAtLastGroupFooter(netPriceSum2);
-                _builder.addSubtotalAtGroupFooter(monthGroup, unitPriceSbt);
+                //_builder.addSubtotalAtGroupFooter(monthGroup, unitPriceSbt);
+                _builder.addSubtotalAtGroupFooter(monthGroup, netUnitPriceProdSum);
                 _builder.addSubtotalAtGroupFooter(monthGroup, netPriceProdSum);
                 _builder.addSubtotalAtSummary(quantityTotSum, netPriceTotSum);
             }
