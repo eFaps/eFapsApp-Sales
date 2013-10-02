@@ -58,6 +58,7 @@ public abstract class OrderOutbound_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connectChannel2Document(_parameter, createdDoc.getInstance());
+        executeProcess(_parameter, createdDoc);
         return new Return();
     }
 

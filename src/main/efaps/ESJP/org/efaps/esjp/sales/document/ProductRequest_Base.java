@@ -46,8 +46,9 @@ public abstract class ProductRequest_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        executeProcess(_parameter, createdDoc);
         return new Return();
     }
 }
