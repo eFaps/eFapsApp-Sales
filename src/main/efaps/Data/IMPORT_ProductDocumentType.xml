@@ -91,4 +91,26 @@
         <attribute name="Name">99</attribute>
         <attribute name="Description">OTROS (ESPECIFICAR)</attribute>
     </object>
+
+    <!-- connect the ProductDocumentType links to the SystemConfiguration -->
+    <object type="Admin_Common_SystemConfigurationLink">
+        <attribute name="Key">org.efaps.sales.ProductDocumentType4UsageReport</attribute>
+        <attribute name="Description">This link defines the product document type to usage report.</attribute>
+        <linkattribute name="Value" type="Sales_ProductDocumentType" select="OID">
+            <queryattribute name="Name">10</queryattribute>
+        </linkattribute>
+        <linkattribute name="AbstractLink" type="Admin_Common_SystemConfiguration">
+            <queryattribute name="UUID">c9a1cbc3-fd35-4463-80d2-412422a3802f</queryattribute>
+        </linkattribute>
+    </object>
+    <object type="Admin_Common_SystemConfigurationLink">
+        <attribute name="Key">org.efaps.sales.ProductDocumentType4ReturnUsageReport</attribute>
+        <attribute name="Description">This link defines the product document type to return usage report.</attribute>
+        <linkattribute name="Value" type="Sales_ProductDocumentType" select="OID">
+            <queryattribute name="Name">05</queryattribute>
+        </linkattribute>
+        <linkattribute name="AbstractLink" type="Admin_Common_SystemConfiguration">
+            <queryattribute name="UUID">c9a1cbc3-fd35-4463-80d2-412422a3802f</queryattribute>
+        </linkattribute>
+    </object>
 </import>
