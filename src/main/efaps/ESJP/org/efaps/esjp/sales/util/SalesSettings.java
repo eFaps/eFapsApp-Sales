@@ -159,4 +159,14 @@ public interface SalesSettings
      * UUID of the Sequence to Incoming Receipt.
      */
     String INCOMINGINVOICESEQUENCE = "org.efaps.sales.IncomingInvoiceSequence";
+
+    /**
+     *  OID default productDocumentType to usage report.
+     */
+    String PRODUCTDOCUMENTTYPE4USAGEREPORT = "org.efaps.sales.ProductDocumentType4UsageReport";
+
+    /**
+     *  OID default productDocumentType to return usage report.
+     */
+    String PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT = "org.efaps.sales.ProductDocumentType4ReturnUsageReport";
 }

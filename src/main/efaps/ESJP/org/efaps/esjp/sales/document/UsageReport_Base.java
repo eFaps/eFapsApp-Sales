@@ -22,6 +22,7 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -30,6 +31,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -48,10 +51,28 @@ public class UsageReport_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return create(final Parameter _parameter) throws EFapsException
+    public Return create(final Parameter _parameter)
+        throws EFapsException
     {
-        createDoc(_parameter);
+        final Instance doc = createDoc(_parameter);
+        connect2ProductDocumentType(_parameter, doc);
         return new Return();
+    }
+
+    protected void connect2ProductDocumentType(final Parameter _parameter,
+                                               final Instance _docInstance)
+        throws EFapsException
+    {
+        final SystemConfiguration salesConfig = Sales.getSysConfig();
+        if (salesConfig != null) {
+            final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4USAGEREPORT);
+            if (productDocType != null && productDocType.isValid()) {
+                final Insert insert = new Insert(CISales.Document2DocumentType);
+                insert.add(CISales.Document2DocumentType.DocumentLink, _docInstance.getId());
+                insert.add(CISales.Document2DocumentType.DocumentTypeLink, productDocType.getId());
+                insert.execute();
+            }
+        }
     }
 
     /**Method to obtain the instance of a return slip.

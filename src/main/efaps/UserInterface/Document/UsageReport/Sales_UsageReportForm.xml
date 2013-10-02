@@ -72,6 +72,16 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="productDocumentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_UsageReportForm.productDocumentType.Label</property>
+        </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
