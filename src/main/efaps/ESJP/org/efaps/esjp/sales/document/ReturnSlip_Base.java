@@ -91,8 +91,8 @@ public abstract class ReturnSlip_Base
             final Insert posIns = new Insert(CISales.ReturnSlipPosition);
             final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
             posIns.add(CISales.ReturnSlipPosition.ReturnSlip, insert.getId());
-            posIns.add(CISales.ReturnSlipPosition.PositionNumber, i.toString());
-            posIns.add(CISales.ReturnSlipPosition.Product, productdId.toString());
+            posIns.add(CISales.ReturnSlipPosition.PositionNumber, i + 1);
+            posIns.add(CISales.ReturnSlipPosition.Product, productdId);
             posIns.add(CISales.ReturnSlipPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
             posIns.add(CISales.ReturnSlipPosition.Quantity, (new BigDecimal(quantity)).toString());
             posIns.add(CISales.ReturnSlipPosition.UoM, _parameter.getParameterValues("uoM")[i]);
