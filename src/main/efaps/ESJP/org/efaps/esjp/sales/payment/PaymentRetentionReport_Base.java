@@ -32,6 +32,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -45,6 +46,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -72,6 +74,13 @@ public abstract class PaymentRetentionReport_Base
     extends EFapsMapDataSource
 {
     public static final String format = "0626";
+
+    public static final Map<UUID, String> typeMap = new HashMap<UUID, String>();
+    static {
+        typeMap.put(CISales.IncomingInvoice.uuid, "01");
+        /*typeMap.put(CISales.IncomingCreditNote.uuid, "07");
+        typeMap.put(CISales.IncomingReminder.uuid, "08");*/
+    }
 
     /**
      * Enum used to define the keys for the map.
@@ -107,6 +116,8 @@ public abstract class PaymentRetentionReport_Base
         /** */
         CROSSAMOUNT("crossAmount"),
         /** */
+        TOTALAMOUNT("totalAmount"),
+        /** */
         RETENTION("retentionEffect"),
         /** */
         NETAMOUNT("netAmount");
@@ -135,7 +146,7 @@ public abstract class PaymentRetentionReport_Base
         }
     }
 
-    public enum DocType
+    public enum DocIdentType
     {
         /** */
         OTHER("0"),
@@ -156,7 +167,7 @@ public abstract class PaymentRetentionReport_Base
         /**
          * @param _key key
          */
-        private DocType(final String _key)
+        private DocIdentType(final String _key)
         {
             this.key = _key;
         }
@@ -211,15 +222,15 @@ public abstract class PaymentRetentionReport_Base
             final Map<String, Object> map = new HashMap<String, Object>();
             final String contactName = multi.<String>getSelect(selContact);
             String docNum = multi.<String>getSelect(selDocNumRuc);
-            String docType = PaymentRetentionReport_Base.DocType.RUC.getKey();
+            String docType = PaymentRetentionReport_Base.DocIdentType.RUC.getKey();
             if (docNum == null) {
                 docNum = multi.<String>getSelect(selDocNumDni);
                 if (docNum.length() == 8) {
-                    docType = PaymentRetentionReport_Base.DocType.DNI.getKey();
+                    docType = PaymentRetentionReport_Base.DocIdentType.DNI.getKey();
                 } else if (docNum.length() == 9) {
-                    docType = PaymentRetentionReport_Base.DocType.CE.getKey();
+                    docType = PaymentRetentionReport_Base.DocIdentType.CE.getKey();
                 } else {
-                    docType = PaymentRetentionReport_Base.DocType.OTHER.getKey();
+                    docType = PaymentRetentionReport_Base.DocIdentType.OTHER.getKey();
                 }
             }
             final DateTime date = multi.<DateTime>getSelect(selDate);
@@ -401,6 +412,8 @@ public abstract class PaymentRetentionReport_Base
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.Payment.Amount,
                                     CISales.Payment.CurrencyLink);
+                final SelectBuilder selCreateDocInst = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
+                                .instance();
                 final SelectBuilder selContact = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                                 .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
                 final SelectBuilder selDocNumRuc = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
@@ -419,7 +432,7 @@ public abstract class PaymentRetentionReport_Base
                                 .linkto(CISales.DocumentSumAbstract.Contact).clazz(CIContacts.ClassPerson)
                                 .attribute(CIContacts.ClassPerson.Forename);
                 final SelectBuilder selCrossTotal = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
-                                .attribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                                .attribute(CISales.DocumentSumAbstract.CrossTotal);
                 final SelectBuilder selCreateDocName = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                                 .attribute(CISales.DocumentSumAbstract.Name);
                 final SelectBuilder selCreateDocDate = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
@@ -428,11 +441,12 @@ public abstract class PaymentRetentionReport_Base
                                 .attribute(CISales.PaymentRetentionOut.Date);
                 final SelectBuilder selTargetDocName = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
                                 .attribute(CISales.PaymentRetentionOut.Name);
-                multi.addSelect(selContact, selDocNumDni, selDocNumRuc, selCreateDocDate,
+                multi.addSelect(selContact, selDocNumDni, selDocNumRuc, selCreateDocDate, selCreateDocInst,
                                 selCrossTotal, selTargetDocDate, selCreateDocName, selTargetDocName,
                                 selDocPersFLName, selDocPersSLName, selDocPersFName);
                 multi.execute();
                 final List<Map<String, Object>> lstMap = new ArrayList<Map<String, Object>>();
+                final Map<String, BigDecimal> totalMap = new HashMap<String, BigDecimal>();
                 while (multi.next()) {
                     final Map<String, Object> map = new HashMap<String, Object>();
 
@@ -441,18 +455,11 @@ public abstract class PaymentRetentionReport_Base
                     final String secondLastName = multi.<String>getSelect(selDocPersSLName);
                     final String docNum = multi.<String>getSelect(selDocNumRuc);
 
-                    if (firstLastName != null && !firstLastName.isEmpty()
-                                    && secondLastName != null && !secondLastName.isEmpty()) {
+                    if (firstLastName != null && !firstLastName.isEmpty()) {
                         contactName = multi.<String>getSelect(selDocPersFName);
                     }
-                    final DateTime voucherDate = multi.<DateTime>getSelect(selCreateDocDate);
-                    final DateTime retVoucherDate = multi.<DateTime>getSelect(selTargetDocDate);
-                    final BigDecimal crossTot = multi.<BigDecimal>getSelect(selCrossTotal);
-                    final BigDecimal retention = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
-
                     map.put(PaymentRetentionReport_Base.Field.DOCNUM.getKey(), docNum);
-                    if (firstLastName != null && !firstLastName.isEmpty()
-                                    && secondLastName != null && !secondLastName.isEmpty()) {
+                    if (firstLastName != null && !firstLastName.isEmpty()) {
                         map.put(PaymentRetentionReport_Base.Field.COMPANYNAME.getKey(), null);
                         map.put(PaymentRetentionReport_Base.Field.NAME.getKey(), contactName);
                         map.put(PaymentRetentionReport_Base.Field.LASTNAME.getKey(), firstLastName);
@@ -464,6 +471,8 @@ public abstract class PaymentRetentionReport_Base
                         map.put(PaymentRetentionReport_Base.Field.LASTNAME2.getKey(), null);
                     }
 
+                    final DateTime retVoucherDate = multi.<DateTime>getSelect(selTargetDocDate);
+                    //final BigDecimal retention = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
                     final String retentionVoucherName = multi.<String>getSelect(selTargetDocName);
                     final String[] retentionVoucherNameArr = retentionVoucherName.split("-");
                     if (retentionVoucherNameArr.length == 2) {
@@ -476,11 +485,15 @@ public abstract class PaymentRetentionReport_Base
                         map.put(PaymentRetentionReport_Base.Field.RETVOUCHERSERIE.getKey(), null);
                         map.put(PaymentRetentionReport_Base.Field.RETVOUCHERNUMB.getKey(), retVoucherNumb);
                     }
-                    map.put(PaymentRetentionReport_Base.Field.RETENTION.getKey(), retention);
                     map.put(PaymentRetentionReport_Base.Field.PAYDATE.getKey(), retVoucherDate);
 
-                    map.put(PaymentRetentionReport_Base.Field.VOUCHERTYPE.getKey(), "01");
+                    final Instance docInstance = multi.<Instance>getSelect(selCreateDocInst);
+                    final String docVoucType = PaymentRetentionReport_Base.typeMap.get(docInstance.getType().getUUID());
+                    map.put(PaymentRetentionReport_Base.Field.VOUCHERTYPE.getKey(),
+                                    docVoucType != null ? docVoucType : "99");
 
+                    final DateTime voucherDate = multi.<DateTime>getSelect(selCreateDocDate);
+                    final BigDecimal crossTot = multi.<BigDecimal>getSelect(selCrossTotal);
                     final String voucherName = multi.<String>getSelect(selCreateDocName);
                     final String[] voucherNameArr = voucherName.split("-");
                     if (voucherNameArr.length == 2) {
@@ -496,6 +509,13 @@ public abstract class PaymentRetentionReport_Base
                     map.put(PaymentRetentionReport_Base.Field.VOUCHERDATE.getKey(), voucherDate);
                     map.put(PaymentRetentionReport_Base.Field.CROSSAMOUNT.getKey(), crossTot);
 
+                    if (totalMap.containsKey(docNum)) {
+                        final BigDecimal totTmp = totalMap.get(docNum);
+                        totalMap.put(docNum, crossTot.add(totTmp));
+                    } else {
+                        totalMap.put(docNum, crossTot);
+                    }
+
                     lstMap.add(map);
                 }
 
@@ -505,15 +525,25 @@ public abstract class PaymentRetentionReport_Base
                     public int compare(final Map<String, Object> _o1,
                                        final Map<String, Object> _o2)
                     {
-                        final DateTime date1 = (DateTime) _o1.get(PaymentRetentionReport_Base.Field.PAYDATE.getKey());
-                        final DateTime date2 = (DateTime) _o2.get(PaymentRetentionReport_Base.Field.PAYDATE.getKey());
-                        final int ret;
-                        ret = date1.compareTo(date2);
+                        final String docN1 = (String) _o1.get(PaymentRetentionReport_Base.Field.DOCNUM.getKey());
+                        final String docN2 = (String) _o2.get(PaymentRetentionReport_Base.Field.DOCNUM.getKey());
+                        int ret;
+                        if (docN1.compareTo(docN2) == 0) {
+                            final DateTime date1 = (DateTime) _o1.get(PaymentRetentionReport_Base.Field.VOUCHERDATE.getKey());
+                            final DateTime date2 = (DateTime) _o2.get(PaymentRetentionReport_Base.Field.VOUCHERDATE.getKey());
+                            ret = date1.compareTo(date2);
+                        } else {
+                            ret = docN1.compareTo(docN2);
+                        }
                         return ret;
                     }
                 });
 
                 for (final Map<String, Object> map : lstMap) {
+                    final String docN = (String) map.get(PaymentRetentionReport_Base.Field.DOCNUM.getKey());
+                    final BigDecimal tot = totalMap.get(docN);
+                    map.put(PaymentRetentionReport_Base.Field.TOTALAMOUNT.getKey(), tot);
+
                     final List<Object> rowLst = new ArrayList<Object>();
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.DOCNUM.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.COMPANYNAME.getKey()));
@@ -523,7 +553,7 @@ public abstract class PaymentRetentionReport_Base
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.RETVOUCHERSERIE.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.RETVOUCHERNUMB.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.PAYDATE.getKey()));
-                    rowLst.add(map.get(PaymentRetentionReport_Base.Field.RETENTION.getKey()));
+                    rowLst.add(map.get(PaymentRetentionReport_Base.Field.TOTALAMOUNT.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.VOUCHERTYPE.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.VOUCHERSERIE.getKey()));
                     rowLst.add(map.get(PaymentRetentionReport_Base.Field.VOUCHERNUMB.getKey()));
