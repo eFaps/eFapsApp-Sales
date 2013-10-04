@@ -89,7 +89,7 @@
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Currency.xml")).updateInDB();
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_Taxes.xml")).updateInDB();
         }
-        
+
         // Sales_ProductDocumentType
         queryBldr = new QueryBuilder(UUID.fromString("42ec125b-46ee-4822-8de4-b4cd55072f74"));
         query = queryBldr.getQuery();
@@ -97,7 +97,7 @@
         if (!query.next()) {
             DataImport.readFile(new URL(EFAPS_ROOTURL, "Data/IMPORT_ProductDocumentType.xml")).updateInDB();
         }
-        
+
 
         UIUpdate update = new UIUpdate();
         <!-- connect the Sales_MyDesk Menu to the main menu from efaps -->
@@ -126,6 +126,9 @@
 
         <!-- Sales_ProductDocumentTypeMyDesk_Menu_Action_Create to ERP_DocumentTypeMyDesk_Menu_Action -->
         update.add2Menu("4a5634f9-0413-4cb8-a009-0c04ca1ce84c", "31c9a626-f6a9-4d23-9eaf-053276f0d910", -1);
+
+        <!-- Sales_Products_Kardex_OfficialReport to Products_KardexMyDesk -->
+        update.add2Menu("3460a573-b8fd-4010-b2b1-d093d1aacee8", "9800bc8a-3d9c-41ca-86d7-bdc0bc96c2e8", -1);
 
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
