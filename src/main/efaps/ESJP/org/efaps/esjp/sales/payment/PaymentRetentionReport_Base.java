@@ -58,6 +58,7 @@ import org.efaps.esjp.common.jasperreport.EFapsTextReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -78,8 +79,8 @@ public abstract class PaymentRetentionReport_Base
     public static final Map<UUID, String> typeMap = new HashMap<UUID, String>();
     static {
         typeMap.put(CISales.IncomingInvoice.uuid, "01");
-        /*typeMap.put(CISales.IncomingCreditNote.uuid, "07");
-        typeMap.put(CISales.IncomingReminder.uuid, "08");*/
+        typeMap.put(CISales.IncomingCreditNote.uuid, "07");
+        typeMap.put(CISales.IncomingReminder.uuid, "08");
     }
 
     /**
@@ -432,7 +433,9 @@ public abstract class PaymentRetentionReport_Base
                                 .linkto(CISales.DocumentSumAbstract.Contact).clazz(CIContacts.ClassPerson)
                                 .attribute(CIContacts.ClassPerson.Forename);
                 final SelectBuilder selCrossTotal = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
-                                .attribute(CISales.DocumentSumAbstract.CrossTotal);
+                                .attribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                final SelectBuilder selRateCurInst = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
+                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
                 final SelectBuilder selCreateDocName = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                                 .attribute(CISales.DocumentSumAbstract.Name);
                 final SelectBuilder selCreateDocDate = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
@@ -443,7 +446,7 @@ public abstract class PaymentRetentionReport_Base
                                 .attribute(CISales.PaymentRetentionOut.Name);
                 multi.addSelect(selContact, selDocNumDni, selDocNumRuc, selCreateDocDate, selCreateDocInst,
                                 selCrossTotal, selTargetDocDate, selCreateDocName, selTargetDocName,
-                                selDocPersFLName, selDocPersSLName, selDocPersFName);
+                                selDocPersFLName, selDocPersSLName, selDocPersFName, selRateCurInst);
                 multi.execute();
                 final List<Map<String, Object>> lstMap = new ArrayList<Map<String, Object>>();
                 final Map<String, BigDecimal> totalMap = new HashMap<String, BigDecimal>();
@@ -493,7 +496,11 @@ public abstract class PaymentRetentionReport_Base
                                     docVoucType != null ? docVoucType : "99");
 
                     final DateTime voucherDate = multi.<DateTime>getSelect(selCreateDocDate);
-                    final BigDecimal crossTot = multi.<BigDecimal>getSelect(selCrossTotal);
+                    final BigDecimal rateCrossTot = multi.<BigDecimal>getSelect(selCrossTotal);
+                    final Instance rateCurInst = multi.<Instance>getSelect(selRateCurInst);
+                    final BigDecimal rate = new PriceUtil().getExchangeRate(retVoucherDate, rateCurInst)[0];
+                    final BigDecimal crossTot = rateCrossTot.divide(rate, 4, BigDecimal.ROUND_HALF_UP);
+
                     final String voucherName = multi.<String>getSelect(selCreateDocName);
                     final String[] voucherNameArr = voucherName.split("-");
                     if (voucherNameArr.length == 2) {
@@ -509,11 +516,11 @@ public abstract class PaymentRetentionReport_Base
                     map.put(PaymentRetentionReport_Base.Field.VOUCHERDATE.getKey(), voucherDate);
                     map.put(PaymentRetentionReport_Base.Field.CROSSAMOUNT.getKey(), crossTot);
 
-                    if (totalMap.containsKey(docNum)) {
-                        final BigDecimal totTmp = totalMap.get(docNum);
-                        totalMap.put(docNum, crossTot.add(totTmp));
+                    if (totalMap.containsKey(docNum + "_" + retentionVoucherName)) {
+                        final BigDecimal totTmp = totalMap.get(docNum + "_" + retentionVoucherName);
+                        totalMap.put(docNum + "_" + retentionVoucherName, crossTot.add(totTmp));
                     } else {
-                        totalMap.put(docNum, crossTot);
+                        totalMap.put(docNum + "_" + retentionVoucherName, crossTot);
                     }
 
                     lstMap.add(map);
@@ -541,7 +548,13 @@ public abstract class PaymentRetentionReport_Base
 
                 for (final Map<String, Object> map : lstMap) {
                     final String docN = (String) map.get(PaymentRetentionReport_Base.Field.DOCNUM.getKey());
-                    final BigDecimal tot = totalMap.get(docN);
+                    final StringBuilder retVouName = new StringBuilder();
+                    if (map.get(PaymentRetentionReport_Base.Field.RETVOUCHERSERIE.getKey()) != null) {
+                        retVouName.append((String) map.get(PaymentRetentionReport_Base.Field.RETVOUCHERSERIE.getKey()))
+                                    .append("-");
+                    }
+                    retVouName.append((String) map.get(PaymentRetentionReport_Base.Field.RETVOUCHERNUMB.getKey()));
+                    final BigDecimal tot = totalMap.get(docN + "_" + retVouName.toString());
                     map.put(PaymentRetentionReport_Base.Field.TOTALAMOUNT.getKey(), tot);
 
                     final List<Object> rowLst = new ArrayList<Object>();
