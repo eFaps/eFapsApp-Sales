@@ -85,23 +85,59 @@
             <property name="ShowTypeIcon">true</property>
         </field>
         <field name="documentType">
-            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingReceiptForm.documentType.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt"
-                    method="dropDown4DocumentType"
-                    name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE"
-                    event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="dropDown4DocumentType"
+                name="Sales_IncomingReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Regex4DefaultValue">03 - .*</property>
+            </trigger>
+        </field>
+        <field name="documentType4View">
+            <property name="Label">Sales_IncomingReceiptForm.documentType.Label</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getDocumentType4View"
+                name="Sales_IncomingReceiptForm.productDocumentType4View.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <!-- ERP_DocumentType -->
+                <property name="Search4Type">90796449-0121-4fc1-9632-7d52f3adf85e</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+            </trigger>
+        </field>
+        <field name="productDocumentType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingReceiptForm.productDocumentType.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="dropDown4DocumentType"
+                name="Sales_IncomingReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Regex4DefaultValue">02 - .*</property>
+            </trigger>
+        </field>
+        <field name="productDocumentType4View">
+            <property name="Label">Sales_IncomingReceiptForm.productDocumentType.Label</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getDocumentType4View"
+                name="Sales_IncomingReceiptForm.productDocumentType4View.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <!-- Sales_ProductDocumentType -->
+                <property name="Search4Type">42ec125b-46ee-4822-8de4-b4cd55072f74</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">
