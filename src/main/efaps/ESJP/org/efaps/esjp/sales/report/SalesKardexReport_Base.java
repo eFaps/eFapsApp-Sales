@@ -52,7 +52,6 @@ import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.document.DocReport_Base;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -74,7 +73,7 @@ public abstract class SalesKardexReport_Base
     /**
      * Logger for this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(DocReport_Base.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(SalesKardexReport_Base.class);
 
     /**
      * Mapping for No es defined by SUNAT.
