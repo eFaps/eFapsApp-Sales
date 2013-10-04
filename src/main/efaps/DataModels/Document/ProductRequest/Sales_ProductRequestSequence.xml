@@ -26,7 +26,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductRequestSequence</name>
-        <format>PR-%05d</format>
+        <format>RM-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>

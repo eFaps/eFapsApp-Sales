@@ -45,6 +45,7 @@
                 <property name="PositionType">Sales_QuotationPosition</property>
                 <property name="StatusGroup">Sales_QuotationStatus</property>
                 <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
 

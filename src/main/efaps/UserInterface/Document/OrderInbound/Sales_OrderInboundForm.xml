@@ -113,20 +113,6 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.OrderInbound"
-                method="getNameFieldValueUI"
-                name="Sales_OrderInboundForm.name4create.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
-                <property name="Type">Sales_OrderInbound</property>
-            </trigger>
-        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>

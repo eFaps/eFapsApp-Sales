@@ -39,7 +39,9 @@
         <!-- target definitions -->
         <target>
             <form>Sales_CostSheetForm</form>
-            <execute program="org.efaps.esjp.sales.document.CostSheet" method="create" />
+            <execute program="org.efaps.esjp.sales.document.CostSheet" method="create" >
+                <property name="UseNumberGenerator4Name">true</property>
+            </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

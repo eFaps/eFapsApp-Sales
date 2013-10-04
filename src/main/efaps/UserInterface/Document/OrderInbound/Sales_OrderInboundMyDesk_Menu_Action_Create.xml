@@ -44,6 +44,7 @@
                 <property name="StatusGroup">Sales_OrderInboundStatus</property>
                 <property name="Status">Open</property>
                 <property name="PositionType">Sales_OrderInboundPosition</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
 

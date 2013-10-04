@@ -20,13 +20,13 @@
  Last Changed By: $Author: jan@moxter.net $
 
 --><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d7e3e088-4dea-43eb-8b09-710605405092</uuid>
+    <uuid>8560c89c-3733-403c-a135-e0c63ff65279</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 10177 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_OrderOutboundSequence</name>
-        <format>OC-%05d</format>
+        <name>Sales_OrderInboundSequence</name>
+        <format>PE-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>

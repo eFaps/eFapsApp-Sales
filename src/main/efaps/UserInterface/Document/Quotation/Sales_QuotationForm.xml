@@ -114,19 +114,6 @@
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Quotation"
-                method="getNameFieldValueUI"
-                name="Sales_QuotationForm.name.UI_Field_Value"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Sales_Quotation</property>
-            </trigger>
-        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
