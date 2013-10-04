@@ -10,8 +10,8 @@
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="false"/>
 	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="false"/>
-	<import value="org.efaps.number2words.Converter"/>
 	<import value="java.math.BigDecimal"/>
+	<import value="org.efaps.number2words.Converter"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="UUID" value="330f23a7-ed04-40b1-854f-1983657fdfe2"/>
 	</parameter>
@@ -19,9 +19,11 @@
 	<parameter name="Periode" class="java.lang.String"/>
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<parameter name="CompanyTaxNum" class="java.lang.String"/>
+	<parameter name="StorageName" class="java.lang.String"/>
 	<parameter name="ProductName" class="java.lang.String"/>
 	<parameter name="ProductDesc" class="java.lang.String"/>
 	<parameter name="ProductUoM" class="java.lang.String"/>
+	<parameter name="ProductExistType" class="java.lang.String"/>
 	<field name="transDate" class="org.joda.time.DateTime">
 		<property name="Key" value="transDate"/>
 	</field>
@@ -305,14 +307,17 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="7837ec59-7af0-4616-9c8f-d1d8bb3ab70c" x="80" y="95" width="1220" height="15"/>
 				<textElement/>
+				<textFieldExpression><![CDATA[$P{ProductExistType}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="93a88b04-b74d-4340-b905-2627e2ce9011" x="160" y="65" width="1140" height="15"/>
 				<textElement/>
+				<textFieldExpression><![CDATA[$P{StorageName}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="939aaaee-f629-408d-b07e-fd098d2c16f1" x="160" y="140" width="1140" height="15"/>
 				<textElement/>
+				<textFieldExpression><![CDATA["Promedio"]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement uuid="336c1f5c-3d79-43e1-b422-4ed797539bc7" x="240" y="125" width="1060" height="15"/>
@@ -367,7 +372,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be" stretchType="RelativeToTallestObject" x="500" y="0" width="100" height="14">
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(G" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>

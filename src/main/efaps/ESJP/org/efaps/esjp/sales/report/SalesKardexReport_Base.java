@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -85,6 +86,15 @@ public abstract class SalesKardexReport_Base
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.ReturnSlip.getType().getId(), "09");
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.UsageReport.getType().getId(), "00");
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.ReturnUsageReport.getType().getId(), "00");
+    }
+
+    /**
+     * Mapping for No es defined by SUNAT.
+     */
+    protected static final Map<Long, String> EXISTTYPE_MAP = new HashMap<Long, String>();
+    static {
+        SalesKardexReport_Base.EXISTTYPE_MAP.put(CIProducts.ProductMaterial.getType().getId(),
+                        "03 MATERIAS PRIMAS Y AUXILIARES - MATERIALES");
     }
 
     /**
@@ -155,6 +165,8 @@ public abstract class SalesKardexReport_Base
                         .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.storage.name));
 
         if (product.isValid()) {
+            values.add(getInventoryValue(_parameter, product, storage, dateFrom));
+
             final SelectBuilder selTrans = new SelectBuilder().linkto(CIProducts.TransactionInOutAbstract.Document);
             final SelectBuilder selTransDocInst = new SelectBuilder(selTrans).instance();
             final SelectBuilder selTransDocType = new SelectBuilder(selTrans).type();
@@ -204,6 +216,101 @@ public abstract class SalesKardexReport_Base
             }
         }
         getValues().addAll(values);
+    }
+
+    protected Map<String, Object> getInventoryValue(final Parameter _parameter,
+                                                    final Instance _product,
+                                                    final Instance _storage,
+                                                    final DateTime _dateFrom)
+        throws EFapsException
+    {
+        final Map<String, BigDecimal> actual = new HashMap<String, BigDecimal>();
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, _storage.getId());
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _product.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIProducts.Inventory.Quantity);
+        final SelectBuilder sel = new SelectBuilder().linkto(CIProducts.Inventory.Product).oid();
+        multi.addSelect(sel);
+        multi.execute();
+        while (multi.next()) {
+            final String oid = multi.<String>getSelect(sel);
+            final BigDecimal quantity = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
+            actual.put(oid, quantity);
+        }
+
+        final QueryBuilder transQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, _storage.getId());
+        transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, _product.getId());
+        transQueryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, _dateFrom.minusMinutes(1));
+        final MultiPrintQuery transMulti = transQueryBldr.getPrint();
+        transMulti.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
+                                CIProducts.TransactionInOutAbstract.UoM);
+        final SelectBuilder transSel = new SelectBuilder().linkto(CIProducts.TransactionInOutAbstract.Product).oid();
+        transMulti.addSelect(transSel);
+        transMulti.execute();
+        while (transMulti.next()) {
+            final String oid = transMulti.<String>getSelect(transSel);
+            BigDecimal quantity = transMulti.<BigDecimal>getAttribute(CIProducts.TransactionInbound.Quantity);
+            final Long uoMId = transMulti.<Long>getAttribute(CIProducts.TransactionInbound.UoM);
+            final UoM uoM = Dimension.getUoM(uoMId);
+            quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())
+                                            .divide(new BigDecimal(uoM.getDenominator())));
+            final Instance inst = transMulti.getCurrentInstance();
+            if (inst.getType().isKindOf(CIProducts.TransactionInbound.getType())) {
+                quantity = quantity.negate();
+            }
+            if (actual.containsKey(oid)) {
+                quantity = actual.get(oid).add(quantity);
+            }
+            actual.put(oid, quantity);
+        }
+
+        final List<Instance> instances = new ArrayList<Instance>();
+        for (final Entry<String, BigDecimal> entry : actual.entrySet()) {
+            if (entry.getValue().compareTo(BigDecimal.ZERO) != 0) {
+                instances.add(Instance.get(entry.getKey()));
+            }
+        }
+        BigDecimal quantity = BigDecimal.ZERO;
+        BigDecimal cost = BigDecimal.ONE.negate();
+
+        final Map<String, Object> map = new HashMap<String, Object>();
+        if (!instances.isEmpty()) {
+
+            final MultiPrintQuery multiRes = new MultiPrintQuery(instances);
+            multiRes.execute();
+            while (multiRes.next()) {
+                quantity = actual.get(multiRes.getCurrentInstance().getOid());
+                cost = getCost(_parameter, multiRes.getCurrentInstance(), _dateFrom);
+            }
+        }
+        map.put(Field.TRANS_DOC_OPERATION.getKey(), "16");
+        map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), quantity);
+        map.put(Field.TRANS_INBOUND_COST.getKey(), cost);
+
+        return map;
+    }
+
+    protected BigDecimal getCost(final Parameter _parameter,
+                                 final Instance _productInstance,
+                                 final DateTime _dateFrom)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductCost);
+        queryBldr.addWhereAttrEqValue(CIProducts.ProductCost.ProductLink, _productInstance.getId());
+        queryBldr.addWhereAttrGreaterValue(CIProducts.ProductCost.ValidUntil, _dateFrom.minusMinutes(1));
+        queryBldr.addWhereAttrLessValue(CIProducts.ProductCost.ValidFrom, _dateFrom.plusMinutes(1));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIProducts.ProductCost.Price);
+        multi.execute();
+        if (multi.next()) {
+            ret = multi.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
+        }
+
+        return ret;
     }
 
     protected void addMap2DocumentTypeIn(final Parameter _parameter,
@@ -311,6 +418,8 @@ public abstract class SalesKardexReport_Base
         final String dateTo = _parameter.getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateTo.name);
         final Instance productInst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name));
+        final Instance storageInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.storage.name));
         final DateTime from = new DateTime(dateFrom);
         final DateTime to = new DateTime(dateTo);
 
@@ -332,6 +441,14 @@ public abstract class SalesKardexReport_Base
             report.getJrParameters().put("ProductName", product.getProductName());
             report.getJrParameters().put("ProductDesc", product.getProductDesc());
             report.getJrParameters().put("ProductUoM", product.getProductUoM());
+            report.getJrParameters().put("ProductExistType", product.getProductExistType());
+        }
+        if (storageInst.isValid()) {
+            final PrintQuery print = new PrintQuery(storageInst);
+            print.addAttribute(CIProducts.StorageAbstract.Name);
+            print.execute();
+
+            report.getJrParameters().put("StorageName", print.<String>getAttribute(CIProducts.StorageAbstract.Name));
         }
         addAdditionalParameters(_parameter, report);
 
@@ -399,6 +516,17 @@ public abstract class SalesKardexReport_Base
             print.execute();
 
             return Dimension.get(print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension)).getBaseUoM().getName();
+        }
+
+        protected String getProductExistType()
+            throws EFapsException
+        {
+            String ret = "";
+            if (SalesKardexReport_Base.EXISTTYPE_MAP.containsKey(this.product.getType().getId())) {
+                ret = SalesKardexReport_Base.EXISTTYPE_MAP.get(this.product.getType().getId());
+            }
+
+            return ret;
         }
     }
 
