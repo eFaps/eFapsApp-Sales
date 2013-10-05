@@ -607,7 +607,8 @@ public abstract class SalesKardexReport_Base
             } else {
                 if (CISales.RecievingTicket.getType().equals(_docInst.getType())) {
                     ret = getDoc2Doc4DocName(_docInst);
-                } else if (CISales.ReturnSlip.getType().equals(_docInst.getType())) {
+                } else if (CISales.ReturnSlip.getType().equals(_docInst.getType())
+                                || CISales.ReturnUsageReport.getType().equals(_docInst.getType())) {
                     if (SalesKardexReport.DOCTYPE_MAP.containsKey(_docInst.getType().getId())) {
                         ret = SalesKardexReport.DOCTYPE_MAP.get(_docInst.getType().getId());
                         this.doc2docInstance = _docInst;
@@ -664,7 +665,8 @@ public abstract class SalesKardexReport_Base
             if (CISales.IncomingInvoice.getType().equals(_docInst.getType())
                             || CISales.IncomingReceipt.getType().equals(_docInst.getType())
                             || CISales.RecievingTicket.getType().equals(_docInst.getType())
-                            || CISales.ReturnSlip.getType().equals(_docInst.getType())) {
+                            || CISales.ReturnSlip.getType().equals(_docInst.getType())
+                            || CISales.ReturnUsageReport.getType().equals(_docInst.getType())) {
                 ret = getDocumentName(CISales.ProductDocumentType.getType(), _docInst);
             }
 
