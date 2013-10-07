@@ -54,6 +54,10 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.Quotation"
+                method="updateFields4RateCurrencyFromDate"
+                name="Sales_InvoiceForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
@@ -210,7 +214,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
-        </field>getJavaScriptU
+        </field>
        <field name="netTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
