@@ -38,6 +38,7 @@
             <table-name>T_SAL_DOCEXT</table-name>
             <parent-table>T_ERPDOC</parent-table>
             <column name="INTEGER1"      type="INTEGER"/>
+            <column name="STRING1"    type="STRING_SHORT" length="256"/>
         </database>
     </definition>
 </datamodel-sqltable>
