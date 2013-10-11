@@ -682,15 +682,22 @@ public abstract class SalesKardexReport_Base
                                 || this.doc2docInstance.getType().equals(CISales.IncomingReceipt.getType())) {
                     if (this.product.getInstance().isValid()) {
                         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, this.doc2docInstance.getId());
-                        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, this.product.getInstance().getId());
+                        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink,
+                                        this.doc2docInstance.getId());
+                        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, this.product.getInstance()
+                                        .getId());
                         queryBldr.addOrderByAttributeAsc(CISales.PositionSumAbstract.PositionNumber);
                         final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                        multi.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
+                                        CISales.PositionSumAbstract.UoM);
                         multi.setEnforceSorted(true);
                         multi.execute();
                         while (multi.next()) {
-                            ret = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                            final Long uoMId = multi.<Long>getAttribute(CISales.IncomingInvoicePosition.UoM);
+                            final UoM uoM = Dimension.getUoM(uoMId);
+                            ret = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice)
+                                        .multiply(new BigDecimal(uoM.getNumerator())
+                                        .divide(new BigDecimal(uoM.getDenominator()))).setScale(2, BigDecimal.ROUND_HALF_UP);
                             break;
                         }
                     }

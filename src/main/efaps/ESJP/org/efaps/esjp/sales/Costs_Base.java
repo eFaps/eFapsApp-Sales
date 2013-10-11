@@ -26,6 +26,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -85,7 +87,8 @@ public abstract class Costs_Base
                 queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.IncomingInvoice, _docInst.getId());
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.IncomingInvoicePosition.NetPrice,
-                                   CISales.IncomingInvoicePosition.Quantity);
+                                   CISales.IncomingInvoicePosition.Quantity,
+                                   CISales.IncomingInvoicePosition.UoM);
                 final SelectBuilder sel = new SelectBuilder().linkto(CISales.IncomingInvoicePosition.Product)
                                 .oid();
                 final SelectBuilder currSel = new SelectBuilder().linkto(CISales.IncomingInvoicePosition.CurrencyId)
@@ -98,10 +101,12 @@ public abstract class Costs_Base
                 BigDecimal netTotal = BigDecimal.ZERO;
                 BigDecimal extra = BigDecimal.ZERO;
                 while (multi.next()) {
-                    BigDecimal netprice = multi.
-                                            <BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetPrice);
-                    final BigDecimal quantity = multi.
-                                            <BigDecimal>getAttribute(CISales.IncomingInvoicePosition.Quantity);
+                    BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.Quantity);
+                    final Long uoMId = multi.<Long>getAttribute(CISales.IncomingInvoicePosition.UoM);
+                    final UoM uoM = Dimension.getUoM(uoMId);
+                    BigDecimal netprice = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetPrice);
+                    netprice = netprice.multiply(new BigDecimal(uoM.getNumerator())
+                                        .divide(new BigDecimal(uoM.getDenominator()))).setScale(2,BigDecimal.ROUND_HALF_UP);
                     final Instance curInst = Instance.get(multi.<String>getSelect(currSel));
                     final Instance prodInst = Instance.get(multi.<String>getSelect(sel));
                     final Map<Instance, Position> map;
