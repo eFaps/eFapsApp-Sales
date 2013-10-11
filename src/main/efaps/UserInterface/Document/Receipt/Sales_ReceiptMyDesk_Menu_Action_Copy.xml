@@ -26,11 +26,9 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>1a0e8690-371b-4338-9aeb-746879387bd0</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReceiptMyDesk_Menu_Action_Copy</name>
@@ -38,14 +36,15 @@
             <role>Sales_Teller</role>
             <role>Sales_Admin</role>
         </access>
-
         <!-- target definitions -->
         <target>
             <form>Sales_ReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.Receipt"
-                method="create" />
+            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
+                <property name="PositionType">Sales_ReceiptPosition</property>
+                <property name="StatusGroup">Sales_ReceiptStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
-
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Receipt</property>
