@@ -26,33 +26,32 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>cbab4d23-05d3-4a47-9fa6-aa4309535b10</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_ReceiptMyDesk_Menu_Action_Create</name>
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Teller</role>
-    </access>
-
-    <!-- target definitions -->
-    <target>
-      <form>Sales_ReceiptForm</form>
-      <execute program="org.efaps.esjp.sales.document.Receipt"
-               method="create"/>
-    </target>
-
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_Receipt</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
+    <uuid>cbab4d23-05d3-4a47-9fa6-aa4309535b10</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ReceiptMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Teller</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_ReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
+                <property name="PositionType">Sales_ReceiptPosition</property>
+                <property name="StatusGroup">Sales_ReceiptStatus</property>
+                <property name="Status">Open</property>
+            </execute>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Receipt</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 
 </ui-command>

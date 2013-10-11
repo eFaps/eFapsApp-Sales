@@ -42,8 +42,11 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.Receipt"
-                method="create" />
+            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
+                <property name="PositionType">Sales_ReceiptPosition</property>
+                <property name="StatusGroup">Sales_ReceiptStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
 
         <!-- properties -->
