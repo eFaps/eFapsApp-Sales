@@ -46,6 +46,7 @@
                 <property name="PositionType">Sales_RecievingTicketPosition</property>
                 <property name="StatusGroup">Sales_RecievingTicketStatus</property>
                 <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
              </execute>
         </target>
 
