@@ -36,7 +36,7 @@
         <name>Sales_CashDeskBalanceForm</name>
         <!-- fields -->
         <field name="date">
-            <property name="Columns">40</property>
+            <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
