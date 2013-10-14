@@ -330,6 +330,20 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form for ProductRequest.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+
+    public Return autoComplete4ProductRequest(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid, null);
+    }
+
+    /**
      * Used by the AutoCompleteField used in the select doc form for Receipts.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -596,6 +610,20 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     public Return updateFields4Quotation(final Parameter _parameter)
+        throws EFapsException
+    {
+        return updateFields4Doc(_parameter);
+    }
+
+    /**
+     * Used by the update event used in the select doc form for ProductRequest
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+
+    public Return updateFields4ProductRequest(final Parameter _parameter)
         throws EFapsException
     {
         return updateFields4Doc(_parameter);
@@ -1194,8 +1222,8 @@ public abstract class AbstractDocument_Base
             final String exclude = (String) properties.get("ExcludeTypes");
             if (exclude != null) {
                 final String[] typesArray = exclude.split(";");
-                for (int x = 0; x < typesArray.length; x++) {
-                    final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(typesArray[x]));
+                for (String element : typesArray) {
+                    final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(element));
                     final AttributeQuery attrQuery = queryBldr2.getAttributeQuery(CIProducts.ProductAbstract.ID);
                     queryBldr.addWhereAttrNotInQuery(CIProducts.ProductAbstract.ID, attrQuery);
                 }
