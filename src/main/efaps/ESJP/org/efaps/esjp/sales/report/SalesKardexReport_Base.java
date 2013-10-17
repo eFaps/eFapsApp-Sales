@@ -644,8 +644,8 @@ public abstract class SalesKardexReport_Base
             String ret = "";
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.To, _instance.getId());
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.From);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _instance.getId());
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.To);
 
             final QueryBuilder queryBldr = new QueryBuilder(CIERP.DocumentAbstract);
             queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
