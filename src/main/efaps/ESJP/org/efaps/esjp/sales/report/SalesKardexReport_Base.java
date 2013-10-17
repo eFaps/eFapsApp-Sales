@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
@@ -41,6 +40,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -165,7 +165,8 @@ public abstract class SalesKardexReport_Base
                         .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.storage.name));
 
         if (product.isValid()) {
-            values.add(getInventoryValue(_parameter, product, storage, dateFrom));
+            final List<Long> listStorage = getStorage4List(storage);
+            values.add(getInventoryValue(_parameter, product, listStorage, dateFrom));
 
             final SelectBuilder selTrans = new SelectBuilder().linkto(CIProducts.TransactionInOutAbstract.Document);
             final SelectBuilder selTransDocInst = new SelectBuilder(selTrans).instance();
@@ -176,8 +177,11 @@ public abstract class SalesKardexReport_Base
             queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, product.getId());
             queryBldr.addWhereAttrLessValue(CIProducts.TransactionInOutAbstract.Date, dateTo.plusSeconds(1));
             queryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, dateFrom.minusSeconds(1));
-            if (storage.isValid()) {
-                queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, storage.getId());
+            if (!listStorage.isEmpty()) {
+                queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, listStorage.toArray());
+            } else {
+                queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, 0);
+                SalesKardexReport_Base.LOG.debug("Report not contains storage");
             }
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -220,37 +224,43 @@ public abstract class SalesKardexReport_Base
 
     protected Map<String, Object> getInventoryValue(final Parameter _parameter,
                                                     final Instance _product,
-                                                    final Instance _storage,
+                                                    final List<Long> _listStorage,
                                                     final DateTime _dateFrom)
         throws EFapsException
     {
-        final Map<String, BigDecimal> actual = new HashMap<String, BigDecimal>();
+        BigDecimal actualInventory = BigDecimal.ZERO;
+        SalesKardexReport_Base.LOG.debug("Start evaluate inventory");
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, _storage.getId());
+        if (!_listStorage.isEmpty()) {
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, _listStorage.toArray());
+        } else {
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, 0);
+            SalesKardexReport_Base.LOG.debug("Report not contains storage");
+        }
         queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _product.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIProducts.Inventory.Quantity);
-        final SelectBuilder sel = new SelectBuilder().linkto(CIProducts.Inventory.Product).oid();
-        multi.addSelect(sel);
         multi.execute();
         while (multi.next()) {
-            final String oid = multi.<String>getSelect(sel);
             final BigDecimal quantity = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
-            actual.put(oid, quantity);
+            actualInventory = actualInventory.add(quantity);
+            SalesKardexReport_Base.LOG.debug("Inventory: {}", actualInventory);
         }
 
         final QueryBuilder transQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-        transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, _storage.getId());
+        if (!_listStorage.isEmpty()) {
+            transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, _listStorage.toArray());
+        } else {
+            transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, 0);
+            SalesKardexReport_Base.LOG.debug("Report not contains storage");
+        }
         transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, _product.getId());
         transQueryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, _dateFrom.minusMinutes(1));
         final MultiPrintQuery transMulti = transQueryBldr.getPrint();
         transMulti.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
                                 CIProducts.TransactionInOutAbstract.UoM);
-        final SelectBuilder transSel = new SelectBuilder().linkto(CIProducts.TransactionInOutAbstract.Product).oid();
-        transMulti.addSelect(transSel);
         transMulti.execute();
         while (transMulti.next()) {
-            final String oid = transMulti.<String>getSelect(transSel);
             BigDecimal quantity = transMulti.<BigDecimal>getAttribute(CIProducts.TransactionInbound.Quantity);
             final Long uoMId = transMulti.<Long>getAttribute(CIProducts.TransactionInbound.UoM);
             final UoM uoM = Dimension.getUoM(uoMId);
@@ -260,36 +270,41 @@ public abstract class SalesKardexReport_Base
             if (inst.getType().isKindOf(CIProducts.TransactionInbound.getType())) {
                 quantity = quantity.negate();
             }
-            if (actual.containsKey(oid)) {
-                quantity = actual.get(oid).add(quantity);
-            }
-            actual.put(oid, quantity);
+            actualInventory = actualInventory.add(quantity);
+            SalesKardexReport_Base.LOG.debug("Transaction: {} ,Inventory: {}", quantity, actualInventory);
         }
-
-        final List<Instance> instances = new ArrayList<Instance>();
-        for (final Entry<String, BigDecimal> entry : actual.entrySet()) {
-            if (entry.getValue().compareTo(BigDecimal.ZERO) != 0) {
-                instances.add(Instance.get(entry.getKey()));
-            }
-        }
-        BigDecimal quantity = BigDecimal.ZERO;
-        BigDecimal cost = BigDecimal.ONE.negate();
 
         final Map<String, Object> map = new HashMap<String, Object>();
-        if (!instances.isEmpty()) {
-
-            final MultiPrintQuery multiRes = new MultiPrintQuery(instances);
-            multiRes.execute();
-            while (multiRes.next()) {
-                quantity = actual.get(multiRes.getCurrentInstance().getOid());
-                cost = getCost(_parameter, multiRes.getCurrentInstance(), _dateFrom);
-            }
-        }
         map.put(Field.TRANS_DOC_OPERATION.getKey(), "16");
-        map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), quantity);
-        map.put(Field.TRANS_INBOUND_COST.getKey(), cost);
+        map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), actualInventory);
+        map.put(Field.TRANS_INBOUND_COST.getKey(), getCost(_parameter, _product, _dateFrom.minusDays(1)));
 
         return map;
+    }
+
+    protected List<Long> getStorage4List(final Instance _storage)
+        throws EFapsException
+    {
+        final List<Long> list = new ArrayList<Long>();
+
+        if (_storage.getType().isKindOf(CIProducts.StorageGroupAbstract.getType())) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StorageGroupAbstract2StorageAbstract);
+            attrQueryBldr.addWhereAttrEqValue(CIProducts.StorageGroupAbstract2StorageAbstract.FromAbstractLink,
+                            _storage.getId());
+            final AttributeQuery attrQuery =
+                            attrQueryBldr.getAttributeQuery(CIProducts.StorageGroupAbstract2StorageAbstract.ToAbstractLink);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StorageAbstract);
+            queryBldr.addWhereAttrInQuery(CIProducts.StorageAbstract.ID, attrQuery);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            while (query.next()) {
+                list.add(query.getCurrentValue().getId());
+            }
+        } else {
+            list.add(_storage.getId());
+        }
+        return list;
     }
 
     protected BigDecimal getCost(final Parameter _parameter,
@@ -297,7 +312,7 @@ public abstract class SalesKardexReport_Base
                                  final DateTime _dateFrom)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ZERO;
+        BigDecimal ret = BigDecimal.ONE.negate();
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductCost);
         queryBldr.addWhereAttrEqValue(CIProducts.ProductCost.ProductLink, _productInstance.getId());
@@ -418,7 +433,7 @@ public abstract class SalesKardexReport_Base
         final String dateTo = _parameter.getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateTo.name);
         final Instance productInst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name));
-        final Instance storageInst = Instance.get(_parameter
+        final Instance storageGroupInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.storage.name));
         final DateTime from = new DateTime(dateFrom);
         final DateTime to = new DateTime(dateTo);
@@ -443,12 +458,12 @@ public abstract class SalesKardexReport_Base
             report.getJrParameters().put("ProductUoM", product.getProductUoM());
             report.getJrParameters().put("ProductExistType", product.getProductExistType());
         }
-        if (storageInst.isValid()) {
-            final PrintQuery print = new PrintQuery(storageInst);
-            print.addAttribute(CIProducts.StorageAbstract.Name);
+        if (storageGroupInst.isValid()) {
+            final PrintQuery print = new PrintQuery(storageGroupInst);
+            print.addAttribute(CIProducts.StorageGroupAbstract.Name);
             print.execute();
 
-            report.getJrParameters().put("StorageName", print.<String>getAttribute(CIProducts.StorageAbstract.Name));
+            report.getJrParameters().put("StorageName", print.<String>getAttribute(CIProducts.StorageGroupAbstract.Name));
         }
         addAdditionalParameters(_parameter, report);
 
@@ -593,7 +608,7 @@ public abstract class SalesKardexReport_Base
                     break;
                 }
             }
-            return ret.isEmpty() ? "-" : ret;
+            return ret;
         }
 
         protected String getDocumentTypeName(final Instance _docInst)
@@ -607,6 +622,10 @@ public abstract class SalesKardexReport_Base
             } else {
                 if (CISales.RecievingTicket.getType().equals(_docInst.getType())) {
                     ret = getDoc2Doc4DocName(_docInst);
+                    if (SalesKardexReport.DOCTYPE_MAP.containsKey(_docInst.getType().getId()) && ret.isEmpty()) {
+                        ret = SalesKardexReport.DOCTYPE_MAP.get(_docInst.getType().getId());
+                        this.doc2docInstance = _docInst;
+                    }
                 } else if (CISales.ReturnSlip.getType().equals(_docInst.getType())
                                 || CISales.ReturnUsageReport.getType().equals(_docInst.getType())) {
                     if (SalesKardexReport.DOCTYPE_MAP.containsKey(_docInst.getType().getId())) {
@@ -648,7 +667,7 @@ public abstract class SalesKardexReport_Base
                     ret = getExtendDoc2Doc4DocName(multi.getCurrentInstance());
                 }
             }
-            return ret.isEmpty() ? "-" : ret;
+            return ret;
         }
 
         public String getExtendDoc2Doc4DocName(final Instance _doc2doc)
