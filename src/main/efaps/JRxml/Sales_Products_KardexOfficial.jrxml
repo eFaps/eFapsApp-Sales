@@ -392,7 +392,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement uuid="be2d922e-23b3-4e97-ab37-b991a0bbed9f" stretchType="RelativeToTallestObject" x="800" y="0" width="100" height="14">
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=IF(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,ROUND(M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2))"]]></propertyExpression>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
