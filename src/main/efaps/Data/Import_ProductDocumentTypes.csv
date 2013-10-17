@@ -1,13 +1,13 @@
 Name,Description
-1,Venta
-2,Compra
-3,Consignación recibida
-4,Consignación entregada
-5,Devolución recibida
-6,Devolución entregada
-7,Promoción
-8,Premio
-9,Donación
+01,Venta
+02,Compra
+03,Consignación recibida
+04,Consignación entregada
+05,Devolución recibida
+06,Devolución entregada
+07,Promoción
+08,Premio
+09,Donación
 10,Salida a producción
 11,Transfarencia entre Almacenes
 12,Retiro
