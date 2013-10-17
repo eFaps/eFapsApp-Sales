@@ -20,29 +20,23 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -118,54 +112,8 @@ public abstract class RecievingTicket_Base
     public Return recievingTicketPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] storageIds = param.get("storage");
-        final String[] date = param.get("date");
-
-        final Instance instance = _parameter.getInstance();
-        final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
-
-        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.RecievingTicketPosition.Product.name));
-        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.RecievingTicketPosition.Quantity.name));
-        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.DeliveryNotePosition.UoM.name));
-        final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.RecievingTicketPosition.PositionNumber.name));
-        Object[] reTickId = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.RecievingTicketPosition.RecievingTicket.name));
-        // if it did not work check the abstract attribute
-        if (reTickId == null) {
-            reTickId = (Object[]) map.get(instance.getType().getAttribute(
-                            CISales.RecievingTicketPosition.DocumentAbstractLink.name));
-        }
-
-        Long storage = null;
-        if (storageIds != null) {
-            final Integer posInt = (Integer) pos[0];
-            storage = Long.valueOf(storageIds[posInt - 1]);
-        } else {
-            final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
-            query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
-            final MultiPrintQuery multi = query.getPrint();
-            multi.addAttribute(CIProducts.Inventory.Storage);
-            multi.execute();
-            if (multi.next()) {
-                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage);
-            }
-        }
-
-        final Insert insert = new Insert(CIProducts.TransactionInbound);
-        insert.add(CIProducts.TransactionInbound.Quantity, qauntity[0]);
-        insert.add(CIProducts.TransactionInbound.Storage, storage);
-        insert.add(CIProducts.TransactionInbound.Product, productID[0]);
-        insert.add(CIProducts.TransactionInbound.Description,
-                        DBProperties.getProperty("org.efaps.esjp.sales.document.RecievingTicket.description4Trigger"));
-        insert.add(CIProducts.TransactionInbound.Date, date[0] == null ? new DateTime() : date[0]);
-        insert.add(CIProducts.TransactionInbound.Document, reTickId[0]);
-        insert.add(CIProducts.TransactionInbound.UoM, uom[0]);
-        insert.execute();
-
+        createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
+                        evaluateStorage4PositionTrigger(_parameter));
         return new Return();
     }
 }

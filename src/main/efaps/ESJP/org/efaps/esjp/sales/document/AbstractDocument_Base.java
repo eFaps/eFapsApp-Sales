@@ -40,7 +40,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
@@ -75,6 +74,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.ICalculatorConfig;
@@ -1739,33 +1740,34 @@ public abstract class AbstractDocument_Base
     public Return getStorageFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StorageAbstract);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIProducts.StorageAbstract.ID, CIProducts.StorageAbstract.Name);
-        multi.execute();
-
-        final Map<String, Long> values = new TreeMap<String, Long>();
-        while (multi.next()) {
-            values.put(multi.<String> getAttribute("Name"), multi.<Long> getAttribute("ID"));
+        @SuppressWarnings("unchecked")
+        final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        final String typeStr = (String) props.get("Type");
+        if (typeStr == null) {
+            props.put("Type", CIProducts.StorageAbstract.getType().getName());
         }
-        // Sales_Configuration
-        final Instance warehouse = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("DefaultWarehouse");
+        final String select = (String) props.get("Select");
+        if (select == null) {
+            props.put("Select", "attribute[" + CIProducts.StorageAbstract.Name.name + "]");
+        }
 
-        final StringBuilder html = new StringBuilder();
-        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
-        for (final Entry<String, Long> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue());
-            if (entry.getValue().equals(warehouse.getId())) {
-                html.append("\" selected=\"selected");
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field() {
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                final Instance inst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+                if (inst.isValid()) {
+                    for (final DropDownPosition value  :_values) {
+                        if (value.getValue().equals(inst.getId())) {
+                            value.setSelected(true);
+                        }
+                    }
+                }
             }
-            html.append("\">").append(entry.getKey()).append("</option>");
-        }
-        html.append("</select>");
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, html.toString());
-        return retVal;
+        };
+        return field.dropDownFieldValue(_parameter);
     }
 
     /**

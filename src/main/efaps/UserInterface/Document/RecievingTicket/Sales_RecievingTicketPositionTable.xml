@@ -39,6 +39,8 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="product">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_RecievingTicketPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -67,17 +69,21 @@
             <property name="Label">Sales_RecievingTicketPosition/UoM.Label</property>
         </field>
         <field name="storage">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="Label">Sales_RecievingTicketPositionTable.storage.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Width">2</property>
-            <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_RecievingTicketPositionTable.storage.Label</property>
+             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                    method="getStorageFieldValueUI"
                    name="Sales_RecievingTicketPositionTable.storage.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE"/>
+                    event="UI_FIELD_VALUE"/>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_RecievingTicketPositionTable.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
         </field>
     </definition>
 </ui-table>

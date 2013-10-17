@@ -174,7 +174,7 @@
              <property name="ModeCreate">EDITABLE</property>
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
-             <property name="Label">Sales_DeliveryNote.storage.Label</property>
+             <property name="Label">Sales_DeliveryNoteForm.storage.Label</property>
              <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Storage"
                 name="Sales_DeliveryNoteForm.storage.UI_FIELD_AUTOCOMPLETE"
