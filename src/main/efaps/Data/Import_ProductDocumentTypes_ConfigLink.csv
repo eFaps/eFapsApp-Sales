@@ -1,0 +1,3 @@
+key,description,valueType,valueSelect,valueAttr,valueValue,linkType,linkSelect,linkAttr,linkValue
+org.efaps.sales.ProductDocumentType4UsageReport,This link defines the product document type to usage report.,Sales_ProductDocumentType,oid,Name,10,Admin_Common_SystemConfiguration,id,UUID,c9a1cbc3-fd35-4463-80d2-412422a3802f
+org.efaps.sales.ProductDocumentType4ReturnUsageReport,This link defines the product document type to return usage report.,Sales_ProductDocumentType,oid,Name,05,Admin_Common_SystemConfiguration,id,UUID,c9a1cbc3-fd35-4463-80d2-412422a3802f
