@@ -28,6 +28,11 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_TransactionDocumentAbstractMyDesk</name>
+        <access>
+            <role>Products_Admin</role>
+            <role>Products_Modifier</role>
+            <role>Products_Reader</role>
+        </access>
         <target>
             <table>ERP_DocumentAbstractTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
