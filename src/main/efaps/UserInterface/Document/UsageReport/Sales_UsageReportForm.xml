@@ -110,20 +110,6 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.UsageReport"
-                method="getNameFieldValueUI"
-                name="Sales_UsageReportForm.name4create.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Sales_UsageReport</property>
-            </trigger>
-        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>

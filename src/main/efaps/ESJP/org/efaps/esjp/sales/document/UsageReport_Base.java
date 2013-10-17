@@ -86,11 +86,12 @@ public class UsageReport_Base
     {
         final String date = _parameter.getParameterValue("date");
         final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
+        final String name = getDocName4Create(_parameter);
         final Insert insert = new Insert(CISales.UsageReport);
         insert.add(CISales.UsageReport.Contact, contactid.toString());
         insert.add(CISales.UsageReport.Date, date);
         insert.add(CISales.UsageReport.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.UsageReport.Name, _parameter.getParameterValue("name4create"));
+        insert.add(CISales.UsageReport.Name, name);
         insert.add(CISales.UsageReport.Status, ((Long) Status.find(CISales.UsageReportStatus.uuid, "Closed")
                                                                                                 .getId()).toString());
         insert.execute();

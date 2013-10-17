@@ -40,6 +40,7 @@
                 <property name="PositionType">Sales_ReturnUsageReportPosition</property>
                 <property name="StatusGroup">Sales_ReturnUsageReportStatus</property>
                 <property name="Status">Closed</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
 

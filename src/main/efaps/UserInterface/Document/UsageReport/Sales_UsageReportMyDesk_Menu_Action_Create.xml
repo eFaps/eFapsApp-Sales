@@ -43,6 +43,7 @@
         <target>
             <form>Sales_UsageReportForm</form>
             <execute program="org.efaps.esjp.sales.document.UsageReport" method="create">
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
 
