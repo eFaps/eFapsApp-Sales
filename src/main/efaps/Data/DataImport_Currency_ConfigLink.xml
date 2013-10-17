@@ -33,6 +33,7 @@
         <type name="Admin_Common_SystemConfigurationLink">
             <attribute name="Key" column="key" validate="false"/>
             <attribute name="Description" column="description" validate="false"/>
+            <attribute name="CompanyLink" fixedValue="0"/>
             <attribute name="Value" class="org.efaps.esjp.data.columns.QueryColumn" validateClass="org.efaps.esjp.data.columns.QueryColumn">
                 <property name="TypeColumn">valueType</property>
                 <property name="SelectColumn">valueSelect</property>
