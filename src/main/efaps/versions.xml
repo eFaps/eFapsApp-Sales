@@ -123,6 +123,9 @@
         <!-- Sales_Products_Kardex_OfficialReport to Products_KardexMyDesk -->
         update.add2Menu("3460a573-b8fd-4010-b2b1-d093d1aacee8", "9800bc8a-3d9c-41ca-86d7-bdc0bc96c2e8", -1);
 
+        <!-- Sales_Products_CatalogTree_DocumentType to Products_CatalogTree -->
+        update.add2Menu("d8ebc551-dc0d-4e52-8ebe-8d6e267272ff", "f5c8e12a-8509-447d-a9df-82b88c505e22", -1);
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->

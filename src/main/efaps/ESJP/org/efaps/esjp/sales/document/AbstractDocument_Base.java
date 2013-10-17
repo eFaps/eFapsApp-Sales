@@ -54,11 +54,13 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
@@ -67,6 +69,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
@@ -81,6 +84,7 @@ import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -1222,35 +1226,34 @@ public abstract class AbstractDocument_Base
             final String exclude = (String) properties.get("ExcludeTypes");
             if (exclude != null) {
                 final String[] typesArray = exclude.split(";");
-                for (String element : typesArray) {
+                for (final String element : typesArray) {
                     final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(element));
                     final AttributeQuery attrQuery = queryBldr2.getAttributeQuery(CIProducts.ProductAbstract.ID);
                     queryBldr.addWhereAttrNotInQuery(CIProducts.ProductAbstract.ID, attrQuery);
                 }
             }
 
-            if (properties.containsKey("Catalog")) {
-                final String key = (String) properties.get("Catalog");
-                final Properties props = Sales.getSysConfig()
-                                .getAttributeValueAsProperties(SalesSettings.CATALOGFILTER);
-                if (props.containsKey(key)) {
-                    final String[] oids = ((String) props.get(key)).split(";");
-                    final List<Instance> instances = new ArrayList<Instance>();
-                    for (final String oid : oids) {
-                        final Instance instance = Instance.get(oid);
-                        if (instance.isValid()) {
-                            instances.add(instance);
-                        }
-                    }
-                    if (!instances.isEmpty()) {
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Catalog2Products);
-                        attrQueryBldr.addWhereAttrEqValue(CIProducts.Catalog2Products.CatalogLinkAbstract,
-                                        instances.toArray());
-                        final AttributeQuery attrQuery = attrQueryBldr
-                                        .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
-                        queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
-                    }
-                }
+            final Type typeDoc = getType4AutComplete(_parameter);
+
+            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Products_Catalog2DocumentType);
+            queryBldr2.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
+            final MultiPrintQuery multi2 = queryBldr2.getPrint();
+            final SelectBuilder selCat = new SelectBuilder()
+                        .linkto(CISales.Products_Catalog2DocumentType.CatalogLinkAbstract).instance();
+            multi2.addSelect(selCat);
+            multi2.execute();
+            final List<Instance> instances = new ArrayList<Instance>();
+            while (multi2.next()) {
+                final Instance catInst = multi2.<Instance>getSelect(selCat);
+                instances.add(catInst);
+            }
+            if (!instances.isEmpty()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Catalog2Products);
+                attrQueryBldr.addWhereAttrEqValue(CIProducts.Catalog2Products.CatalogLinkAbstract,
+                                instances.toArray());
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
+                queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
             }
 
             final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
@@ -1284,6 +1287,14 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected Type getType4AutComplete(final Parameter _parameter)
+        throws EFapsException
+    {
+        final UITableCell tableCell = (UITableCell) _parameter.get(ParameterValues.CLASS);
+        final AbstractCommand command = tableCell.getParent().getCommand();
+        return command.getTargetCreateType();
     }
 
 
@@ -1868,5 +1879,19 @@ public abstract class AbstractDocument_Base
             ret = Integer.valueOf(props.getProperty(type));
         }
         return ret;
+    }
+
+    public Return connectDocumentType2Catalog(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance catInst = _parameter.getInstance();
+        final Long typeId = Long.parseLong(_parameter
+                        .getParameterValue(CIFormSales.Sales_Products_Catalog2DocumentTypeForm.type.name));
+
+        final Insert insert = new Insert(CISales.Products_Catalog2DocumentType);
+        insert.add(CISales.Products_Catalog2DocumentType.CatalogLinkAbstract, catInst);
+        insert.add(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeId);
+        insert.execute();
+        return new Return();
     }
 }

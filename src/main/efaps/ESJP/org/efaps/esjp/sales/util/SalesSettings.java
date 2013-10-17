@@ -129,13 +129,6 @@ public interface SalesSettings
     String ACTIVATEPRINTREPORT4PAYMENTDOCUMENT = "org.efaps.sales.ActivatePrintReport4PaymentDocument";
 
     /**
-     * Properties.<br/>
-     * Mapping of a Key to list of Catalog Instances separated by semicolon.
-     * e.g.: Quotation=123.40;123.48
-     */
-    String CATALOGFILTER = "org.efaps.sales.CatalogFilter4ProductAutocomplete";
-
-    /**
      * UUID of the Sequence to Incoming Credit Note.
      */
     String INCOMINGCREDITNOTESEQUENCE = "org.efaps.sales.IncomingCreditNoteSequence";
