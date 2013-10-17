@@ -1233,28 +1233,7 @@ public abstract class AbstractDocument_Base
                 }
             }
 
-            final Type typeDoc = getType4AutComplete(_parameter);
-
-            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Products_Catalog2DocumentType);
-            queryBldr2.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
-            final MultiPrintQuery multi2 = queryBldr2.getPrint();
-            final SelectBuilder selCat = new SelectBuilder()
-                        .linkto(CISales.Products_Catalog2DocumentType.CatalogLinkAbstract).instance();
-            multi2.addSelect(selCat);
-            multi2.execute();
-            final List<Instance> instances = new ArrayList<Instance>();
-            while (multi2.next()) {
-                final Instance catInst = multi2.<Instance>getSelect(selCat);
-                instances.add(catInst);
-            }
-            if (!instances.isEmpty()) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Catalog2Products);
-                attrQueryBldr.addWhereAttrEqValue(CIProducts.Catalog2Products.CatalogLinkAbstract,
-                                instances.toArray());
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
-                queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
-            }
+            catalogFilter4productAutoComplete(_parameter, queryBldr);
 
             final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -1289,14 +1268,36 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
-    protected Type getType4AutComplete(final Parameter _parameter)
+    protected void catalogFilter4productAutoComplete(final Parameter _parameter,
+                                                     final QueryBuilder _queryBldr)
         throws EFapsException
     {
         final UITableCell tableCell = (UITableCell) _parameter.get(ParameterValues.CLASS);
         final AbstractCommand command = tableCell.getParent().getCommand();
-        return command.getTargetCreateType();
-    }
 
+        final Type typeDoc = command.getTargetCreateType();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_Catalog2DocumentType);
+        queryBldr.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCat = new SelectBuilder()
+                        .linkto(CISales.Products_Catalog2DocumentType.CatalogLinkAbstract).instance();
+        multi.addSelect(selCat);
+        multi.execute();
+        final List<Instance> instances = new ArrayList<Instance>();
+        while (multi.next()) {
+            final Instance catInst = multi.<Instance>getSelect(selCat);
+            instances.add(catInst);
+        }
+        if (!instances.isEmpty()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Catalog2Products);
+            attrQueryBldr.addWhereAttrEqValue(CIProducts.Catalog2Products.CatalogLinkAbstract,
+                            instances.toArray());
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
+            _queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+        }
+    }
 
     protected String getUoMFieldStr(final long _selected,
                                     final long _dimId)
