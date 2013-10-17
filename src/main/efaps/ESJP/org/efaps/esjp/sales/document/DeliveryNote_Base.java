@@ -26,9 +26,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -49,6 +47,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Revision;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -119,7 +118,7 @@ public abstract class DeliveryNote_Base
         throws EFapsException
     {
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] storageIds = param.get("storage");
+
         final String[] date = param.get("date");
 
         final Instance instance = _parameter.getInstance();
@@ -130,8 +129,7 @@ public abstract class DeliveryNote_Base
         final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
                         CISales.DeliveryNotePosition.Quantity.name));
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.DeliveryNotePosition.UoM.name));
-        final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.DeliveryNotePosition.PositionNumber.name));
+
 
         Object[] deliveryNoteId = (Object[]) map.get(instance.getType().getAttribute(
                         CISales.DeliveryNotePosition.DeliveryNote.name));
@@ -141,24 +139,8 @@ public abstract class DeliveryNote_Base
                             CISales.RecievingTicketPosition.DocumentAbstractLink.name));
         }
 
-        Long storage = null;
-        if (storageIds != null) {
-            final Integer posInt = (Integer) pos[0];
-            storage = Long.valueOf(storageIds[posInt - 1]);
-        } else {
-            final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
-            query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
-            final MultiPrintQuery multi = query.getPrint();
-            multi.addAttribute(CIProducts.Inventory.Storage);
-            multi.execute();
-            if (multi.next()) {
-                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage);
-            }
-        }
-        // Sales-Configuration
-        final SystemConfiguration conf = SystemConfiguration.get(UUID
-                        .fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-        if (conf.getAttributeValueAsBoolean("DeliveryNote_TransactionTrigger4Reservation")) {
+        final Long storageID = evaluateStorage4PositionTrigger(_parameter);
+        if (Sales.getSysConfig().getAttributeValueAsBoolean("DeliveryNote_TransactionTrigger4Reservation")) {
             final Instance contactInst = Instance.get(param.get("contact")[0]);
             String quantitystring = qauntity[0].toString();
             quantitystring = quantitystring.replace(",", "");
@@ -191,10 +173,10 @@ public abstract class DeliveryNote_Base
                     if (quantity.signum() == 1) {
                         final Insert insert = new Insert(CIProducts.TransactionReservationOutbound);
                         insert.add(CIProducts.TransactionAbstract.Quantity, reservedTmp);
-                        insert.add(CIProducts.TransactionAbstract.Storage, storage);
+                        insert.add(CIProducts.TransactionAbstract.Storage, storageID);
                         insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
-                        insert.add(CIProducts.TransactionAbstract.Description,
-                                        DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
+                        insert.add(CIProducts.TransactionAbstract.Description, DBProperties.getProperty(
+                                        "org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
                         insert.add(CIProducts.TransactionAbstract.Date, date[0] == null ? new DateTime() : date[0]);
                         insert.add(CIProducts.TransactionAbstract.Document, deliveryNoteId[0]);
                         insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
@@ -217,20 +199,17 @@ public abstract class DeliveryNote_Base
                 updateReservation(_parameter, entry.getKey(), entry.getValue());
             }
         }
+        createTransaction4PositionTrigger(_parameter, CIProducts.TransactionOutbound.getType(), storageID);
 
-        final Insert insert = new Insert(CIProducts.TransactionOutbound);
-        insert.add(CIProducts.TransactionOutbound.Quantity, qauntity[0]);
-        insert.add(CIProducts.TransactionOutbound.Storage, storage);
-        insert.add(CIProducts.TransactionOutbound.Product, productID[0]);
-        insert.add(CIProducts.TransactionOutbound.Description,
-                        DBProperties.getProperty("org.efaps.esjp.sales.document.DeliveryNote.description4Trigger"));
-        insert.add(CIProducts.TransactionOutbound.Date, new DateTime());
-        insert.add(CIProducts.TransactionOutbound.Document, deliveryNoteId[0]);
-        insert.add(CIProducts.TransactionOutbound.UoM, uom[0]);
-        insert.execute();
         return new Return();
     }
 
+    /**
+     * @param _parameter    Paramter as passed by the eFaps API
+     * @param _reservationInstance istance of the reservation
+     * @param _pos2Reserved position mapping
+     * @throws EFapsException on error
+     */
     protected void updateReservation(final Parameter _parameter,
                                      final Instance _reservationInstance,
                                      final Map<Instance, BigDecimal> _pos2Reserved)
@@ -241,8 +220,8 @@ public abstract class DeliveryNote_Base
         parameter.put(ParameterValues.PARAMETERS, _parameter.get(ParameterValues.PARAMETERS));
         parameter.put(ParameterValues.PROPERTIES, _parameter.get(ParameterValues.PROPERTIES));
 
-        @SuppressWarnings("unchecked") final Map<Object, Object> props = (Map<Object, Object>) _parameter
-                        .get(ParameterValues.PROPERTIES);
+        @SuppressWarnings("unchecked")
+        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
         props.put("Status", "Replaced");
 
         final Revision revision = new Revision()

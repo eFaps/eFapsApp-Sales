@@ -21,13 +21,26 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.Map;
+
+import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 
 /**
@@ -109,6 +122,11 @@ public abstract class AbstractProductDocument_Base
     }
 
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc created doc
+     * @throws EFapsException on error
+     */
     protected void createPositions(final Parameter _parameter,
                                    final CreatedDoc _createdDoc)
         throws EFapsException
@@ -153,7 +171,7 @@ public abstract class AbstractProductDocument_Base
     }
 
     /**
-     * Method is calles in the preocess of creation
+     * Method is called in the process of creation.
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _posInsert    insert to add to
      * @param _createdDoc   document created
@@ -167,5 +185,148 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         // used by implementation
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return mapping for autocomplete
+     */
+    public Return autoComplete4Storage(final Parameter _parameter)
+    {
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return update mapping
+     */
+    public Return updateFields4Storage(final Parameter _parameter)
+    {
+        return new Return();
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return storage id
+     * @throws EFapsException on error
+     */
+    protected long evaluateStorage4PositionTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        long ret = 0;
+        final Map<String, String[]> param = Context.getThreadContext().getParameters();
+        final String[] storageIds = param.get("storage");
+
+        final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        final Instance instance = _parameter.getInstance();
+
+        // first check for explicitly set warehouses
+        if (storageIds != null) {
+            final Object[] posObj = (Object[]) map.get(instance.getType().getAttribute(
+                            CISales.PositionAbstract.PositionNumber.name));
+            final int pos = (Integer) posObj[0];
+            final String[] productOids = param.get("product");
+            int i = 0;
+            int idx = 0;
+            while (i < pos) {
+                if (i < productOids.length && Instance.get(productOids[i]).isValid()) {
+                    idx = i;
+                }
+                i++;
+            }
+            ret = Long.valueOf(storageIds[idx]);
+        } else {
+            // check for a warehouse by the inventory
+            final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
+                            CISales.PositionAbstract.Product.name));
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.Inventory.Storage);
+            multi.executeWithoutAccessCheck();
+            if (multi.next()) {
+                ret = multi.<Long>getAttribute(CIProducts.Inventory.Storage);
+            }
+        }
+        if (ret == 0) {
+            // if we did not find on yet, get a warehouse
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Warehouse);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            if (query.next()) {
+                ret = query.getCurrentValue().getId();
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _type Type to create
+     * @param _storageId sorage id
+     * @throws EFapsException on error
+     */
+    protected void createTransaction4PositionTrigger(final Parameter _parameter,
+                                                     final Type _type,
+                                                     final long _storageId)
+        throws EFapsException
+    {
+        final Map<String, String[]> param = Context.getThreadContext().getParameters();
+        final String[] date = param.get("date");
+        final Instance instance = _parameter.getInstance();
+
+        final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+
+        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.PositionAbstract.Product.name));
+        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
+                        CISales.PositionAbstract.Quantity.name));
+        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.PositionAbstract.UoM.name));
+
+        final Insert insert = new Insert(_type);
+        insert.add(CIProducts.TransactionAbstract.Quantity, qauntity[0]);
+        insert.add(CIProducts.TransactionAbstract.Storage, _storageId);
+        insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
+        insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
+        insert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime() : date[0]);
+        insert.add(CIProducts.TransactionAbstract.Document, evaluateParentDocId4PositionTrigger(_parameter));
+        insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
+        insert.execute();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return description
+     * @throws EFapsException on error
+     */
+    protected String getDescription4PositionTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        return DBProperties.getProperty(_parameter.getInstance().getType().getName() + ".description4Trigger");
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return id of parent doc
+     * @throws EFapsException on error
+     */
+    protected Long evaluateParentDocId4PositionTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        long ret = 0;
+        final Instance instance = _parameter.getInstance();
+        final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        for (final Attribute attr : instance.getType().getAttributes().values()) {
+            if (attr.hasLink() && attr.getLink().isKindOf(CISales.DocumentAbstract.getType())) {
+                final Object[] docObj = (Object[]) map.get(attr);
+                if (docObj != null) {
+                    ret = (long) docObj[0];
+                    break;
+                }
+            }
+        }
+        return ret;
     }
 }
