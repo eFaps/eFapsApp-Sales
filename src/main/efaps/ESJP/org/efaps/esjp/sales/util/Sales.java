@@ -37,35 +37,34 @@ import org.efaps.util.cache.CacheReloadException;
 @EFapsRevision("$Rev$")
 public final class Sales
 {
-    /**
-     * Singelton.
-     */
-    private Sales()
-    {
-    }
+	/**
+	 * Singelton.
+	 */
+	private Sales()
+	{
+	}
 
-    /**
-     * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
-     */
-    public enum TaxPerception
-    {
-        /** Cliente Normal. DEFAULT VALUE if no information available.*/
-        CLIENT,
-        /** Cliente final. */
-        ENDCOSTUMER,
-        /** Agente de Percepcion. */
-        AGENT;
-    }
+	/**
+	 * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
+	 */
+	public enum TaxPerception {
+		/** Cliente Normal. DEFAULT VALUE if no information available. */
+		CLIENT,
+		/** Cliente final. */
+		ENDCOSTUMER,
+		/** Agente de Percepcion. */
+		AGENT;
+	}
 
-
-    /**
-     * @return the SystemConfigruation for Sales
-     * @throws CacheReloadException on error
-     */
-    public static SystemConfiguration getSysConfig()
-        throws CacheReloadException
-    {
-        // Sales-Configuration
-        return SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-    }
+	/**
+	 * @return the SystemConfigruation for Sales
+	 * @throws CacheReloadException on error
+	 */
+	public static SystemConfiguration getSysConfig()
+			throws CacheReloadException
+			{
+		// Sales-Configuration
+		return SystemConfiguration.get(UUID
+				.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+	}
 }
