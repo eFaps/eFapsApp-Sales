@@ -53,6 +53,7 @@ public class ReturnUsageReport_Base
         throws EFapsException
     {
         final CreatedDoc doc = createDoc(_parameter);
+        createPositions(_parameter, doc);
         connect2ProductDocumentType(_parameter, doc.getInstance());
         return new Return();
     }
