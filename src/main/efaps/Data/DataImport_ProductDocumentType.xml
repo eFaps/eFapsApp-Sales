@@ -36,7 +36,7 @@
         </type>
     </definition>
     
-     <definition name="ImportConfigLink4ProductDocumentType" file="Import_ConfigLinks4ProductDocumentType.csv">
+     <definition name="ImportConfigLink4ProductDocumentType" file="Import_ProductDocumentTypes_ConfigLink.csv">
         <type name="Admin_Common_SystemConfigurationLink">
             <attribute name="Key" column="key" validate="false"/>
             <attribute name="Description" column="description" validate="false"/>
