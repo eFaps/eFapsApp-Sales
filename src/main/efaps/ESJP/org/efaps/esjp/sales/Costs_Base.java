@@ -23,7 +23,6 @@ package org.efaps.esjp.sales;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
@@ -41,6 +40,8 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -74,9 +75,8 @@ public abstract class Costs_Base
         throws EFapsException
     {
         // Sales-Configuration
-        final SystemConfiguration config = SystemConfiguration.get(
-                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
-        if (config != null && config.getAttributeValueAsBoolean("ActivateCalculateCosts")) {
+        final SystemConfiguration config = Sales.getSysConfig();
+        if (config != null && config.getAttributeValueAsBoolean(SalesSettings.CALCULATECOSTS)) {
             if (CISales.IncomingInvoice.getType().equals(_docInst.getType())) {
                 final PrintQuery print = new PrintQuery(_docInst);
                 print.addAttribute(CISales.IncomingInvoice.Date);
@@ -101,7 +101,7 @@ public abstract class Costs_Base
                 BigDecimal netTotal = BigDecimal.ZERO;
                 BigDecimal extra = BigDecimal.ZERO;
                 while (multi.next()) {
-                    BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.Quantity);
+                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.Quantity);
                     final Long uoMId = multi.<Long>getAttribute(CISales.IncomingInvoicePosition.UoM);
                     final UoM uoM = Dimension.getUoM(uoMId);
                     BigDecimal netprice = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetPrice);
