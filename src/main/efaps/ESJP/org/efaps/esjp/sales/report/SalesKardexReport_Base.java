@@ -86,6 +86,7 @@ public abstract class SalesKardexReport_Base
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.ReturnSlip.getType().getId(), "09");
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.UsageReport.getType().getId(), "00");
         SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.ReturnUsageReport.getType().getId(), "00");
+        SalesKardexReport_Base.DOCTYPE_MAP.put(CISales.TransactionDocument.getType().getId(), "00");
     }
 
     /**
@@ -627,7 +628,8 @@ public abstract class SalesKardexReport_Base
                         this.doc2docInstance = _docInst;
                     }
                 } else if (CISales.ReturnSlip.getType().equals(_docInst.getType())
-                                || CISales.ReturnUsageReport.getType().equals(_docInst.getType())) {
+                                || CISales.ReturnUsageReport.getType().equals(_docInst.getType())
+                                || CISales.TransactionDocument.getType().equals(_docInst.getType())) {
                     if (SalesKardexReport.DOCTYPE_MAP.containsKey(_docInst.getType().getId())) {
                         ret = SalesKardexReport.DOCTYPE_MAP.get(_docInst.getType().getId());
                         this.doc2docInstance = _docInst;
@@ -685,7 +687,8 @@ public abstract class SalesKardexReport_Base
                             || CISales.IncomingReceipt.getType().equals(_docInst.getType())
                             || CISales.RecievingTicket.getType().equals(_docInst.getType())
                             || CISales.ReturnSlip.getType().equals(_docInst.getType())
-                            || CISales.ReturnUsageReport.getType().equals(_docInst.getType())) {
+                            || CISales.ReturnUsageReport.getType().equals(_docInst.getType())
+                            || CISales.TransactionDocument.getType().equals(_docInst.getType())) {
                 ret = getDocumentName(CISales.ProductDocumentType.getType(), _docInst);
             }
 
