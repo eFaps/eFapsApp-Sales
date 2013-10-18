@@ -21,6 +21,9 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Attribute;
@@ -29,6 +32,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -39,6 +43,8 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.products.Storage;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -205,23 +211,45 @@ public abstract class AbstractProductDocument_Base
         // used by implementation
     }
 
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return mapping for autocomplete
+     * @throws EFapsException on error
      */
     public Return autoComplete4Storage(final Parameter _parameter)
+        throws EFapsException
     {
-        return new Return();
+        @SuppressWarnings("unchecked")
+        final Map<Object, Object> properties = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        if (!properties.containsKey("key")) {
+            properties.put("Key", "ID");
+        }
+        final Storage storage = new Storage();
+        return storage.autoComplete4Storage(_parameter);
     }
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return update mapping
+     * @throws EFapsException on error
      */
     public Return updateFields4Storage(final Parameter _parameter)
+        throws EFapsException
     {
-        return new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        list.add(map);
+        final StringBuilder js = new StringBuilder()
+            .append("require([\"dojo/query\"], function(query){")
+            .append("query(\"select[name=storage]\").forEach(function(node){")
+            .append("node.value=\"").append(_parameter.getParameterValue("storageSetter")).append("\";")
+            .append("});")
+            .append("});");
+
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
     }
 
 
