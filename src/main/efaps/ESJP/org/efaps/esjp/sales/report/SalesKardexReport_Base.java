@@ -662,12 +662,29 @@ public abstract class SalesKardexReport_Base
                                 || multi.getCurrentInstance().getType().equals(CISales.IncomingReceipt.getType())) {
                     if (multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).isAfter(this.dateTransactionInStart.minusSeconds(1)) &&
                                     multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).isBefore(this.dateTransactionInFinish.plusSeconds(1))) {
-                        ret = getDocumentName(CIERP.DocumentType.getType(), multi.getCurrentInstance());
-                        break;
+                        if (existsProduct4Document(multi.getCurrentInstance())) {
+                            ret = getDocumentName(CIERP.DocumentType.getType(), multi.getCurrentInstance());
+                            break;
+                        }
                     }
                 } else {
                     ret = getExtendDoc2Doc4DocName(multi.getCurrentInstance());
                 }
+            }
+            return ret;
+        }
+
+        protected boolean existsProduct4Document(final Instance _curInst)
+            throws EFapsException
+        {
+            boolean ret = false;
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _curInst.getId());
+            queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, this.product.getInstance());
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                ret = true;
             }
             return ret;
         }
