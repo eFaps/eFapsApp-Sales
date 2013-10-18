@@ -20,16 +20,14 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.math.BigDecimal;
-
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -43,8 +41,8 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("f3252401-2007-4ff3-997d-5e5d1a7ab863")
 @EFapsRevision("$Rev$")
-public class UsageReport_Base
-    extends AbstractDocument
+public abstract class UsageReport_Base
+    extends AbstractProductDocument
 {
     /**
      * @param _parameter Parameter as passed from the eFaps API.
@@ -54,13 +52,15 @@ public class UsageReport_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance doc = createDoc(_parameter);
+        final CreatedDoc doc = createDoc(_parameter);
+        createPositions(_parameter, doc);
         connect2ProductDocumentType(_parameter, doc);
         return new Return();
     }
 
+    @Override
     protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final Instance _docInstance)
+                                               final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final SystemConfiguration salesConfig = Sales.getSysConfig();
@@ -68,47 +68,11 @@ public class UsageReport_Base
             final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4USAGEREPORT);
             if (productDocType != null && productDocType.isValid()) {
                 final Insert insert = new Insert(CISales.Document2DocumentType);
-                insert.add(CISales.Document2DocumentType.DocumentLink, _docInstance.getId());
-                insert.add(CISales.Document2DocumentType.DocumentTypeLink, productDocType.getId());
+                insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
+                insert.add(CISales.Document2DocumentType.DocumentTypeLink, productDocType);
                 insert.execute();
             }
         }
-    }
-
-    /**Method to obtain the instance of a return slip.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return Instance of the document.
-     * @throws EFapsException on error.
-     */
-    public Instance createDoc(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String date = _parameter.getParameterValue("date");
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final String name = getDocName4Create(_parameter);
-        final Insert insert = new Insert(CISales.UsageReport);
-        insert.add(CISales.UsageReport.Contact, contactid.toString());
-        insert.add(CISales.UsageReport.Date, date);
-        insert.add(CISales.UsageReport.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.UsageReport.Name, name);
-        insert.add(CISales.UsageReport.Status, ((Long) Status.find(CISales.UsageReportStatus.uuid, "Closed")
-                                                                                                .getId()).toString());
-        insert.execute();
-        Integer i = 0;
-        for (final String quantity : _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert(CISales.UsageReportPosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.UsageReportPosition.UsageReportLink, insert.getId());
-            posIns.add(CISales.UsageReportPosition.PositionNumber, i.toString());
-            posIns.add(CISales.UsageReportPosition.Product, productdId.toString());
-            posIns.add(CISales.UsageReportPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
-            posIns.add(CISales.UsageReportPosition.Quantity, (new BigDecimal(quantity)).toString());
-            posIns.add(CISales.UsageReportPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.execute();
-            i++;
-        }
-        return insert.getInstance();
     }
 
     /**
@@ -121,7 +85,8 @@ public class UsageReport_Base
     public Return usageReportPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
-       //TODO
+        createTransaction4PositionTrigger(_parameter, CIProducts.TransactionOutbound.getType(),
+                        evaluateStorage4PositionTrigger(_parameter));
         return new Return();
     }
 }

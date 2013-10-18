@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -67,18 +67,22 @@
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_DeliveryNotePosition/UoM.Label</property>
         </field>
-         <field name="storage">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="Label">Sales_ReturnSlipPositionTable.storage.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Width">2</property>
-            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+        <field name="storage">
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_ReturnSlipPositionTable.storage.Label</property>
+             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                    method="getStorageFieldValueUI"
                    name="Sales_ReturnSlipPositionTable.storage.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE"/>
+                    event="UI_FIELD_VALUE"/>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_ReturnSlipPositionTable.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
         </field>
     </definition>
 </ui-table>

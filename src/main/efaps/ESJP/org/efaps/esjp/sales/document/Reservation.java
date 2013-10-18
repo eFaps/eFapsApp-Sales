@@ -33,7 +33,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("45c82398-9bc1-4fc5-8663-77d9a1e97733")
 @EFapsRevision("$Rev$")
-public class Reservation extends Reservation_Base
+public class Reservation
+    extends Reservation_Base
 {
 
 }

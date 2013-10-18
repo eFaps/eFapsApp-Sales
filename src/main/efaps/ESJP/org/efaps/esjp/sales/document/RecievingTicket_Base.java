@@ -31,7 +31,6 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
-import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
@@ -62,7 +61,7 @@ public abstract class RecievingTicket_Base
     {
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc.getInstance());
+        connect2ProductDocumentType(_parameter, doc);
         return new Return();
     }
 
@@ -71,19 +70,6 @@ public abstract class RecievingTicket_Base
         throws EFapsException
     {
         return _parameter.getParameterValue("name");
-    }
-
-    protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final Instance _instance)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
-        if (instDocType.isValid() && _instance.isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
     }
 
     @Override

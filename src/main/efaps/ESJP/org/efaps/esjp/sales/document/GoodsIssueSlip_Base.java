@@ -30,23 +30,18 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Context;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -57,7 +52,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("bc9f7db3-8a53-4b57-951e-da1fbc2c7307")
 @EFapsRevision("$Rev$")
 public abstract class GoodsIssueSlip_Base
-    extends AbstractDocument
+    extends AbstractProductDocument
 {
     /**
      * Method for create a new GoodsIssueSlip.
@@ -69,29 +64,9 @@ public abstract class GoodsIssueSlip_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final String date = _parameter.getParameterValue("date");
-        final Long contactid = Instance.get(_parameter.getParameterValue("contact")).getId();
-        final Insert insert = new Insert(CISales.GoodsIssueSlip);
-        insert.add(CISales.GoodsIssueSlip.Contact, contactid.toString());
-        insert.add(CISales.GoodsIssueSlip.Date, date);
-        insert.add(CISales.GoodsIssueSlip.Salesperson, _parameter.getParameterValue("salesperson"));
-        insert.add(CISales.GoodsIssueSlip.Name, _parameter.getParameterValue("name4create"));
-        insert.add(CISales.GoodsIssueSlip.Status,
-                        ((Long) Status.find(CISales.GoodsIssueSlipStatus.uuid, "Open").getId()).toString());
-        insert.execute();
-        Integer i = 0;
-        for (final String quantity : _parameter.getParameterValues("quantity")) {
-            final Insert posIns = new Insert(CISales.GoodsIssueSlipPosition);
-            final Long productdId = Instance.get(_parameter.getParameterValues("product")[i]).getId();
-            posIns.add(CISales.GoodsIssueSlipPosition.GoodsIssueSlip, insert.getId());
-            posIns.add(CISales.GoodsIssueSlipPosition.PositionNumber, i.toString());
-            posIns.add(CISales.GoodsIssueSlipPosition.Product, productdId.toString());
-            posIns.add(CISales.GoodsIssueSlipPosition.ProductDesc, _parameter.getParameterValues("productDesc")[i]);
-            posIns.add(CISales.GoodsIssueSlipPosition.Quantity, (new BigDecimal(quantity)).toString());
-            posIns.add(CISales.GoodsIssueSlipPosition.UoM, _parameter.getParameterValues("uoM")[i]);
-            posIns.execute();
-            i++;
-        }
+        final CreatedDoc doc = createDoc(_parameter);
+        createPositions(_parameter, doc);
+        connect2ProductDocumentType(_parameter, doc);
         return new Return();
     }
 
@@ -105,46 +80,8 @@ public abstract class GoodsIssueSlip_Base
     public Return goodsIssueSlipPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] productOids = param.get("product");
-        final String[] storageIds = param.get("storage");
-
-        final Instance instance = _parameter.getInstance();
-        final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
-
-        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute("Product"));
-        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute("Quantity"));
-        final Object[] deliveryNodeId = (Object[]) map.get(instance.getType().getAttribute("GoodsIssueSlip"));
-        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute("UoM"));
-        String storage = null;
-        if (storageIds != null) {
-            for (int i = 0; i < productOids.length; i++) {
-                if (productID[0].equals(((Long) Instance.get(productOids[i]).getId()).toString())) {
-                    storage = storageIds[i];
-                }
-            }
-        } else {
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, Long.parseLong(productID[0].toString()));
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIProducts.Inventory.Storage);
-            multi.execute();
-            if (multi.next()) {
-                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage).toString();
-            }
-        }
-
-        final Insert insert = new Insert(CIProducts.TransactionOutbound);
-        insert.add(CIProducts.TransactionOutbound.Quantity, qauntity[0].toString());
-        insert.add(CIProducts.TransactionOutbound.Storage, storage.toString());
-        insert.add(CIProducts.TransactionOutbound.Product, productID[0].toString());
-        insert.add(CIProducts.TransactionOutbound.Description,
-                        DBProperties.getProperty("org.efaps.esjp.sales.document.GoodsIssueSlip.description4Trigger"));
-        insert.add(CIProducts.TransactionOutbound.Date, new DateTime());
-        insert.add("Document", deliveryNodeId[0]);
-        insert.add(CIProducts.TransactionOutbound.UoM, uom[0]);
-        insert.execute();
-
+        createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
+                        evaluateStorage4PositionTrigger(_parameter));
         return new Return();
     }
 

@@ -110,11 +110,45 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="storageGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_UsageReportForm.headingGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="storageSetter">
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_UsageReportForm.storage.Label</property>
+             <trigger program="org.efaps.esjp.sales.document.UsageReport"
+                method="autoComplete4Storage"
+                name="Sales_UsageReportForm.storage.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+             <trigger program="org.efaps.esjp.sales.document.UsageReportTicket"
+                method="updateFields4Storage"
+                name="Sales_UsageReportForm.storage.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_UsageReportForm.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>

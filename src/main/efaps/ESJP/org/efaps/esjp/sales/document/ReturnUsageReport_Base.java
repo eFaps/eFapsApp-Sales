@@ -27,6 +27,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -40,7 +41,7 @@ import org.efaps.util.EFapsException;
  */
 @EFapsUUID("af083c87-5220-4365-8e29-42d740104d3e")
 @EFapsRevision("$Rev$")
-public class ReturnUsageReport_Base
+public abstract class ReturnUsageReport_Base
     extends AbstractProductDocument
 {
 
@@ -54,12 +55,13 @@ public class ReturnUsageReport_Base
     {
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc.getInstance());
+        connect2ProductDocumentType(_parameter, doc);
         return new Return();
     }
 
+    @Override
     protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final Instance _docInstance)
+                                               final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final SystemConfiguration salesConfig = Sales.getSysConfig();
@@ -67,8 +69,8 @@ public class ReturnUsageReport_Base
             final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT);
             if (productDocType != null && productDocType.isValid()) {
                 final Insert insert = new Insert(CISales.Document2DocumentType);
-                insert.add(CISales.Document2DocumentType.DocumentLink, _docInstance.getId());
-                insert.add(CISales.Document2DocumentType.DocumentTypeLink, productDocType.getId());
+                insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
+                insert.add(CISales.Document2DocumentType.DocumentTypeLink, productDocType);
                 insert.execute();
             }
         }
@@ -84,7 +86,8 @@ public class ReturnUsageReport_Base
     public Return returnUsageReportPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        // TODO
+        createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
+                        evaluateStorage4PositionTrigger(_parameter));
         return new Return();
     }
 }

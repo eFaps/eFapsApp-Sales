@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>94c86ccd-2fa3-4278-b183-06bbf863aa3d</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -36,7 +38,8 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ReturnUsageReportForm</form>
-            <execute program="org.efaps.esjp.sales.document.ReturnUsageReport" method="create">
+            <execute program="org.efaps.esjp.sales.document.ReturnUsageReport"
+                method="create">
                 <property name="PositionType">Sales_ReturnUsageReportPosition</property>
                 <property name="StatusGroup">Sales_ReturnUsageReportStatus</property>
                 <property name="Status">Closed</property>
@@ -51,6 +54,6 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="ShowStorage">true</property>
     </definition>
-
 </ui-command>

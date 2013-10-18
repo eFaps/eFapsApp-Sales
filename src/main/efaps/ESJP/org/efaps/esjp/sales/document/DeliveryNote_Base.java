@@ -74,7 +74,7 @@ public abstract class DeliveryNote_Base
     {
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc.getInstance());
+        connect2ProductDocumentType(_parameter, doc);
         return new Return();
     }
 
@@ -83,28 +83,15 @@ public abstract class DeliveryNote_Base
     {
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">")
-                        .append("Wicket.Event.add(window, \"domready\", function(event) {")
-                        .append("var obj=wicketGet(\"label25\");")
-                        .append("obj.setfocus();")
-                        .append(" });")
-                        .append("</script>");
+            .append("Wicket.Event.add(window, \"domready\", function(event) {")
+            .append("var obj=wicketGet(\"label25\");")
+            .append("obj.setfocus();")
+            .append(" });")
+            .append("</script>");
 
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
-    }
-
-    protected void connect2ProductDocumentType(final Parameter _parameter,
-                                        final Instance _instance)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
-        if (instDocType.isValid() && _instance.isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
     }
 
     /**

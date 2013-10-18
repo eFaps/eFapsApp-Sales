@@ -60,5 +60,22 @@
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_ReturnUsageReportPosition/UoM.Label</property>
         </field>
+        <field name="storage">
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_ReturnUsageReportPositionTable.storage.Label</property>
+             <trigger program="org.efaps.esjp.sales.document.ReturnUsageReport"
+                   method="getStorageFieldValueUI"
+                   name="Sales_ReturnUsageReportPositionTable.storage.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE"/>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_ReturnUsageReportPositionTable.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
     </definition>
 </ui-table>

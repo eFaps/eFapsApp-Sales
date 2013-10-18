@@ -20,26 +20,17 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.util.Map;
-
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.products.Product;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -88,49 +79,8 @@ public abstract class ProductionReport_Base
     public Return productionReportPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] storageIds = param.get(CITableSales.Sales_ProductionReportPositionTable.storage.name);
-        final String[] date = param.get(CIFormSales.Sales_ProductionReportForm.date.name);
-
-        final Instance instance = _parameter.getInstance();
-        final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
-
-        final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.PositionAbstract.Product.name));
-        final Object[] qauntity = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.PositionAbstract.Quantity.name));
-        final Object[] docId = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.PositionAbstract.DocumentAbstractLink.name));
-        final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.PositionAbstract.UoM.name));
-        final Object[] pos = (Object[]) map.get(instance.getType().getAttribute(
-                        CISales.PositionAbstract.PositionNumber.name));
-
-        Long storage = null;
-        if (storageIds != null) {
-            final Integer posInt = (Integer) pos[0];
-            storage = Long.valueOf(storageIds[posInt - 1]);
-        } else {
-            final QueryBuilder query = new QueryBuilder(CIProducts.Inventory);
-            query.addWhereAttrEqValue(CIProducts.Inventory.Product, productID[0]);
-            final MultiPrintQuery multi = query.getPrint();
-            multi.addAttribute(CIProducts.Inventory.Storage);
-            multi.execute();
-            if (multi.next()) {
-                storage = multi.<Long>getAttribute(CIProducts.Inventory.Storage);
-            }
-        }
-
-        final Insert insert = new Insert(CIProducts.TransactionInbound);
-        insert.add(CIProducts.TransactionInbound.Quantity, qauntity[0]);
-        insert.add(CIProducts.TransactionInbound.Storage, storage);
-        insert.add(CIProducts.TransactionInbound.Product, productID[0]);
-        insert.add(CIProducts.TransactionInbound.Description,
-                        DBProperties.getProperty("org.efaps.esjp.sales.document.ProductionReport.description4Trigger"));
-        insert.add(CIProducts.TransactionInbound.Date, date[0] == null ? new DateTime() : date[0]);
-        insert.add(CIProducts.TransactionInbound.Document, docId[0]);
-        insert.add(CIProducts.TransactionInbound.UoM, uom[0]);
-        insert.execute();
-
+        createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
+                        evaluateStorage4PositionTrigger(_parameter));
         return new Return();
     }
 }
