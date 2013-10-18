@@ -185,6 +185,7 @@ public abstract class SalesKardexReport_Base
                 SalesKardexReport_Base.LOG.debug("Report not contains storage");
             }
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
+            queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.TransactionInOutAbstract.Date,
                             CIProducts.TransactionInOutAbstract.Quantity,
@@ -412,8 +413,8 @@ public abstract class SalesKardexReport_Base
                 ret = multi.<String>getSelect(selDocTypeLinkName);
             }
         }
-        if (SalesKardexReport.DOCTYPE_MAP.containsKey(_transDocType.getId())) {
-            _map.put(Field.TRANS_DOC_TYPE.getKey(), SalesKardexReport.DOCTYPE_MAP.get(_transDocType.getId()));
+        if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_transDocType.getId())) {
+            _map.put(Field.TRANS_DOC_TYPE.getKey(), SalesKardexReport_Base.DOCTYPE_MAP.get(_transDocType.getId()));
         } else {
             _map.put(Field.TRANS_DOC_TYPE.getKey(), "-");
         }
@@ -623,15 +624,15 @@ public abstract class SalesKardexReport_Base
             } else {
                 if (CISales.RecievingTicket.getType().equals(_docInst.getType())) {
                     ret = getDoc2Doc4DocName(_docInst);
-                    if (SalesKardexReport.DOCTYPE_MAP.containsKey(_docInst.getType().getId()) && ret.isEmpty()) {
-                        ret = SalesKardexReport.DOCTYPE_MAP.get(_docInst.getType().getId());
+                    if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_docInst.getType().getId()) && ret.isEmpty()) {
+                        ret = SalesKardexReport_Base.DOCTYPE_MAP.get(_docInst.getType().getId());
                         this.doc2docInstance = _docInst;
                     }
                 } else if (CISales.ReturnSlip.getType().equals(_docInst.getType())
                                 || CISales.ReturnUsageReport.getType().equals(_docInst.getType())
                                 || CISales.TransactionDocument.getType().equals(_docInst.getType())) {
-                    if (SalesKardexReport.DOCTYPE_MAP.containsKey(_docInst.getType().getId())) {
-                        ret = SalesKardexReport.DOCTYPE_MAP.get(_docInst.getType().getId());
+                    if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_docInst.getType().getId())) {
+                        ret = SalesKardexReport_Base.DOCTYPE_MAP.get(_docInst.getType().getId());
                         this.doc2docInstance = _docInst;
                     }
                 }
