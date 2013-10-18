@@ -126,6 +126,9 @@
         <!-- Sales_Products_CatalogTree_DocumentType to Products_CatalogTree -->
         update.add2Menu("d8ebc551-dc0d-4e52-8ebe-8d6e267272ff", "f5c8e12a-8509-447d-a9df-82b88c505e22", -1);
 
+        <!-- Sales_TransactionDocumentAbstractMyDesk to Products_Product_MyDesk -->
+        update.add2Menu("ca7eef58-f4a4-4c68-b356-f7bcdd843710", "246542fc-173b-48ec-8cc4-9b635920dc9a", -1);
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
