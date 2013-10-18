@@ -149,6 +149,7 @@
             <property name="Label">Sales_OrderInboundForm.contactData.Label</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
