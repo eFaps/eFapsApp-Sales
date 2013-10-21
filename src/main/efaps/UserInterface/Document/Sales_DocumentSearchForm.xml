@@ -37,6 +37,7 @@
             <property name="Attribute">Type</property>
             <property name="Columns">15</property>
             <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_DocumentSearchForm.type.Label</property>
             <trigger program="org.efaps.esjp.common.uisearch.Search" method="typeFieldValue"
                 name="Sales_DocumentSearchForm.type.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Types">ERP_DocumentAbstract</property>
