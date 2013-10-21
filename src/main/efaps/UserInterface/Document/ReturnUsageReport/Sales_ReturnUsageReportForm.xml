@@ -102,19 +102,6 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="storageGroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="propertyCheck"
-                name="Sales_ReturnUsageReportForm.headingGroup.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" >
-                <property name="CheckCallingCommand">true</property>
-                <property name="Property">ShowStorage</property>
-             </trigger>
-        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
