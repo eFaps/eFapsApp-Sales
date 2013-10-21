@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2009 - 2013 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 532 $
+  Last Changed:    $Date: 2013-08-20 14:57:57 -0500 (mar, 20 ago 2013) $
+  Last Changed By: $Author: Jan Moxter $
+
+--><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4c232bc5-06ae-4dad-8dca-3c177de9ea68</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 532 $</file-revision>
+
+    <definition>
+
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Channel2ContactStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Requested">
+            <description>RiskCondition is requested.</description>
+        </status>
+        <status key="Approved">
+            <description>RiskCondition is requested.</description>
+        </status>
+        <status key="Denied">
+            <description>Order was denied.</description>
+        </status>
+    </definition>
+</datamodel-statusgroup>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2010 - 2013 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 532 $
+  Last Changed:    $Date: 2013-08-20 14:57:57 -0500 (mar, 20 ago 2013) $
+  Last Changed By: $Author: Jan Moxter $
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>35759e4b-e1c7-4def-a3a3-a5ef0e4dcac4</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 532 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ChannelCondition2ContactTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Sales_Channel2ContactAbstract/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_ChannelCondition2Contact/Status.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="channelName">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
+            <property name="Label">Sales_Channel2ContactTable.channelName.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="contactName">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
+            <property name="Select">linkto[ToAbstractLink].attribute[Name]</property>
+            <property name="Label">Sales_Channel2ContactTable.contactName.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+    </definition>
+</ui-table>

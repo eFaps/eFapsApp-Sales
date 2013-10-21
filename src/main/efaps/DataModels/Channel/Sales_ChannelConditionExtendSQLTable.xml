@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2009 - 2013 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 391 $
+  Last Changed:    $Date: 2013-07-30 17:50:50 -0500 (mar, 30 jul 2013) $
+  Last Changed By: $Author: Jan Moxter $
+
+--><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>cd5e0153-fcc4-44e1-b55f-bfc12a29d6d3</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 391 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ChannelConditionExtendSQLTable</name>
+        <parent>Sales_ChannelSQLTable</parent>
+        <database>
+            <table-name>T_SALESCHANNELEXTEND</table-name>
+            <parent-table>T_SALESCHANNEL</parent-table>
+            <!-- columns -->
+            <column name="QUANTITYDAYS" type="INTEGER"/>
+            <column length="128" name="EXACTUS" type="STRING_SHORT"/>
+        </database>
+    </definition>
+</datamodel-sqltable>

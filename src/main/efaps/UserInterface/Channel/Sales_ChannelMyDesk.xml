@@ -30,6 +30,7 @@
         <name>Sales_ChannelMyDesk</name>
         <childs>
             <child>Sales_ChannelSalesChannelMyDesk</child>
+            <child>Sales_ChannelConditionMyDesk</child>
             <!--
                 TODO
                 <child>Sales_ChannelBuyingRouteMyDesk</child>

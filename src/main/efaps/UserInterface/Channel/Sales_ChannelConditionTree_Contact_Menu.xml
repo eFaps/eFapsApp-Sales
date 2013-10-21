@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2010 - 2013 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev: 75 $
+  Last Changed:    $Date: 2013-05-13 14:15:06 -0500 (lun, 13 may 2013) $
+  Last Changed By: $Author: Jan Moxter $
+
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>b603ba19-a8ce-44e8-ae8a-04adc22998a3</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 75 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ChannelConditionTree_Contact_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_ChannelConditionTree_Contact_Menu_Action</child>
+        </childs>
+    </definition>
+
+</ui-menu>
