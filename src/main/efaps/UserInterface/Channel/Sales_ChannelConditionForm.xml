@@ -43,14 +43,6 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-        <field name="exactus">
-            <property name="Attribute">Exactus</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="Required">true</property>
-        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Columns">60</property>

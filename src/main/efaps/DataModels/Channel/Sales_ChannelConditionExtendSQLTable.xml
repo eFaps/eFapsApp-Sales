@@ -26,7 +26,6 @@
             <parent-table>T_SALESCHANNEL</parent-table>
             <!-- columns -->
             <column name="QUANTITYDAYS" type="INTEGER"/>
-            <column length="128" name="EXACTUS" type="STRING_SHORT"/>
         </database>
     </definition>
 </datamodel-sqltable>

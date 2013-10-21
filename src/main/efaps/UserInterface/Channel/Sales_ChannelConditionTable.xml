@@ -44,11 +44,6 @@
             <property name="Label">Sales_ChannelAbstract/QuantityDays.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="exactus">
-            <property name="Attribute">Exactus</property>
-            <property name="Label">Sales_ChannelAbstract/Exactus.Label</property>
-            <property name="ModeSearch">READONLY</property>
-        </field>
         <field name="description">
             <property name="Attribute">Description</property>
             <property name="Label">Sales_ChannelAbstract/Description.Label</property>

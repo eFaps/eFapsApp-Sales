@@ -35,11 +35,5 @@
             <sqltable>Sales_ChannelConditionExtendSQLTable</sqltable>
             <sqlcolumn>QUANTITYDAYS</sqlcolumn>
         </attribute>
-        <attribute>
-        <name>Exactus</name>
-            <type>String</type>
-            <sqltable>Sales_ChannelConditionExtendSQLTable</sqltable>
-            <sqlcolumn>EXACTUS</sqlcolumn>
-        </attribute>
     </definition>
 </datamodel-type>
