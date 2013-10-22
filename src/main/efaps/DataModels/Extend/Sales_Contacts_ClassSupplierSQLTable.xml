@@ -36,6 +36,7 @@
     <database>
       <table-name>T_SALESCOCLASSSUP</table-name>
       <column name="CONTACTID" type="INTEGER"           not-null="true" />
+      <unique name="T_SALESCOCLASSSUP_UK_CONTACTID"  columns="CONTACTID" />
       <foreign name="T_SALESCOCLASSSUP_FK_CONTACTID" key="CONTACTID" reference="T_COCONTACT(ID)"/>
      </database>
   </definition>
