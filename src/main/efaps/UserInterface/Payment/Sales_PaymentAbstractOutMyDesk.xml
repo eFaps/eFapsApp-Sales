@@ -36,6 +36,7 @@
             <child>Sales_DatedCheckOutMyDesk</child>
             <child>Sales_DatedCheckDerivadedOutMyDesk</child>
             <child>Sales_PaymentRetention_Report</child>
+            Sales_PaymentDocumentOutMyDesk
         </childs>
     </definition>
 </ui-menu>
