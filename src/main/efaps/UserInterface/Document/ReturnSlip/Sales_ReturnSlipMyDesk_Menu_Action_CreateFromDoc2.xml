@@ -49,5 +49,6 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="ShowStorage">true</property>
     </definition>
 </ui-command>
