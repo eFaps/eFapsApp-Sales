@@ -85,6 +85,7 @@ import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.jaas.AppAccessHandler;
 import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -438,18 +439,20 @@ public abstract class AbstractDocument_Base
                                       final Status _status)
         throws EFapsException
     {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final String req = (String) _parameter.get(ParameterValues.OTHERS);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
         add2QueryBldr(_parameter, queryBldr);
-        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
+        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
         if (_status != null) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status.getId());
         }
         final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
+        final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
+
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(key);
         multi.addAttribute(CISales.DocumentAbstract.OID, CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
@@ -465,7 +468,7 @@ public abstract class AbstractDocument_Base
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
                             name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
                                                             Context.getThreadContext().getLocale())));
-            map.put("selectedDoc", oid);
+            map.put(input, oid);
             tmpMap.put(name, map);
         }
         list.addAll(tmpMap.values());
@@ -621,7 +624,7 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the update event used in the select doc form for ProductRequest
+     * Used by the update event used in the select doc form for ProductRequest.
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
@@ -688,23 +691,59 @@ public abstract class AbstractDocument_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
         final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
+        final String field = properties.containsKey("field") ? (String) properties.get("field") : "info";
+        final boolean multiple = "true".equalsIgnoreCase((String) properties.get("multiple"));
+
         final String oid = _parameter.getParameterValue(input);
-        if (oid != null && oid.length() > 0) {
+        final String oids[] = _parameter.getParameterValues(input);
+        if (oid != null && !oid.isEmpty()) {
             final PrintQuery print = new PrintQuery(oid);
             print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
             final SelectBuilder sel = SelectBuilder.get().type().label();
             print.addSelect(sel);
             print.execute();
-
-            final String field = properties.containsKey("field") ? (String) properties.get("field") : "info";
-            final StringBuilder bldr = new StringBuilder();
-            bldr.append(print.getSelect(sel)).append(" - ")
+            final StringBuilder label = new StringBuilder();
+            label.append(print.getSelect(sel)).append(" - ")
                 .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
                 .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
-            map.put(field, StringEscapeUtils.escapeEcmaScript(bldr.toString()));
+            if (multiple) {
+                if (!Arrays.asList(Arrays.copyOfRange(oids, 1, oids.length)).contains(
+                                print.getCurrentInstance().getOid())) {
+                    final StringBuilder js = new StringBuilder();
 
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getCleanJS(_parameter));
+                    js.append("require([\"dojo/query\", \"dojo/dom\", \"dojo/dom-construct\",\"dojo/on\"], ")
+                        .append("function(query, dom, domConstruct, on) {")
+                        .append(" query(\"span[name='").append(field).append("']\").forEach(function(node){")
+                        .append("var ul;")
+                        .append("if (node.innerHTML ==\"\") {")
+                        .append("query(\"input[name='").append(input).append("']\").forEach(domConstruct.destroy);")
+                        .append("domConstruct.place(\"<input type=\\\"hidden\\\" name=\\\"").append(input)
+                        .append("\\\" value=\\\"\\\">\", node);")
+                        .append("ul = domConstruct.place(\"<ul></ul>\", node);")
+                        .append("} else {")
+                        .append("ul = query(\"ul\", node)[0];")
+                        .append("}")
+                        .append("var x = domConstruct.place(\"<li>").append(label)
+                        .append("<img style=\\\"cursor:pointer\\\"")
+                        .append(" src=\\\"/").append(AppAccessHandler.getApplicationKey())
+                        .append("/servlet/image/org.efaps.ui.wicket.components.table.delete.png?\\\">")
+                        .append("<input type=\\\"hidden\\\" ")
+                        .append("name=\\\"").append(input).append("\\\" ")
+                        .append("value=\\\"").append(oid).append("\\\"></li>\"")
+                        .append(", ul, \"last\"); \n")
+                        .append("var img = query(\"img\", x)[0];")
+                        .append("on(img, \"click\", function(e){")
+                        .append("domConstruct.destroy(img.parentNode);")
+                        .append("});")
+                        .append("});")
+                        .append("});");
+                    map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+                }
+            } else {
+                map.put(field, StringEscapeUtils.escapeEcmaScript(label.toString()));
+                map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getCleanJS(_parameter));
+            }
             list.add(map);
         }
         final Return retVal = new Return();
