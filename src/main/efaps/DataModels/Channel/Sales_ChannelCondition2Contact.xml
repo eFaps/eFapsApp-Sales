@@ -40,9 +40,8 @@
             <typelink>Sales_Channel2ContactStatus</typelink>
             <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Pecsa_Sales_ChannelCondition2Contact.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <trigger event="RANGE_VALUE" name="Sales_ChannelCondition2Contact.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
-        <trigger event="INSERT_POST" method="insertTrigger" name="Sales_ChannelCondition2Contact.INSERT_POST" program="org.efaps.esjp.sales.Condition"/>
     </definition>
 </datamodel-type>

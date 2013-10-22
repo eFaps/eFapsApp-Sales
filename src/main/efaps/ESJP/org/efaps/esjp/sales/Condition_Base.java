@@ -21,23 +21,12 @@
 
 package org.efaps.esjp.sales;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import org.drools.runtime.process.ProcessInstance;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.bpm.BPM;
 import org.efaps.db.Insert;
-import org.efaps.db.Instance;
-import org.efaps.db.PrintQuery;
-import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Connect;
 import org.efaps.util.EFapsException;
@@ -71,30 +60,4 @@ public abstract class Condition_Base
         return connect.execute(_parameter);
     }
 
-    public Return insertTrigger(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instance = _parameter.getInstance();
-        final PrintQuery print = new PrintQuery(instance);
-        final SelectBuilder selName = SelectBuilder.get().linkto(CISales.ChannelCondition2Contact.FromLink)
-                        .attribute(CISales.ChannelCondition.Name);
-        final SelectBuilder selName2 = SelectBuilder.get().linkto(CISales.ChannelCondition2Contact.ToLink)
-                        .attribute(CIContacts.ContactAbstract.Name);
-        print.addSelect(selName, selName2);
-        print.executeWithoutAccessCheck();
-        final Map<String, Object> params = new HashMap<String, Object>();
-        params.put("OID", instance.getOid());
-        params.put("comment4Approve",
-                        DBProperties.getFormatedDBProperty(Condition.class.getName() + ".comment4Approve",
-                                        new Object[] { print.getSelect(selName), print.getSelect(selName2) }));
-        final ProcessInstance processInstance = BPM
-                        .startProcess("org.efaps.esjp.sales.bpmn.ConditionAssignProcess", params);
-
-        final Insert insert = new Insert(UUID.fromString("f6731331-e3a7-4a98-be35-ad1bb8e88497"));
-        insert.add("ProcessId", processInstance.getId());
-        insert.add("GeneralInstanceLink", instance.getGeneralId());
-        insert.executeWithoutTrigger();
-
-        return new Return();
-    }
 }
