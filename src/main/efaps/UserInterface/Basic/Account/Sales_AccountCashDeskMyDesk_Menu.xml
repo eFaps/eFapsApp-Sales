@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2009 The eFaps Team
 
@@ -21,21 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>b819e730-e886-4ba8-890e-5f349f65074a</uuid>
+  <uuid>704ab5ef-932b-4af2-9938-f11ee4e68bf3</uuid>
   <file-application>eFapsApp-Sales</file-application>
   <file-revision>$Rev$</file-revision>
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountAbstractMyDesk</name>
-        <childs>
-            <child>Sales_AccountCashDeskMyDesk</child>
-            <child>Sales_AccountPettyCashMyDesk</child>
-        </childs>
-    </definition>
+
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <name>Sales_AccountCashDeskMyDesk_Menu</name>
+    <!-- childs -->
+    <childs>
+      <child>Sales_AccountCashDeskMyDesk_Menu_Action</child>
+    </childs>
+  </definition>
+
 </ui-menu>
