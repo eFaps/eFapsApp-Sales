@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -88,8 +87,8 @@ public abstract class PaymentCheckOut_Base
         final List<Instance> instances = new ArrayList<Instance>();
         final MultiPrint multiPrint = new MultiPrint() {
             @Override
-            protected void add2QueryBldr(Parameter _parameter,
-                                         QueryBuilder _queryBldr)
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
                 throws EFapsException
             {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentCheckOut);
@@ -139,10 +138,10 @@ public abstract class PaymentCheckOut_Base
     }
 
     @SuppressWarnings("unchecked")
-    public Return getpayableDocument(Parameter _parameter)
+    public Return getpayableDocument(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
 
         Map<Instance, String> values;
         if (Context.getThreadContext().containsRequestAttribute(PaymentCheckOut_Base.PAYMENT)) {
@@ -181,7 +180,7 @@ public abstract class PaymentCheckOut_Base
             while (multi.next()) {
                 if (multi.<String>getSelect(selPaymentOid) != null) {
                     final Instance prodInst = Instance.get(multi.<String>getSelect(selPaymentOid));
-                    String name = multi.<String>getSelect(selOrderOutboundName);
+                    final String name = multi.<String>getSelect(selOrderOutboundName);
                     derivadedDocumentPayment.put(prodInst, name);
                 }
 
@@ -200,10 +199,10 @@ public abstract class PaymentCheckOut_Base
     }
 
     @SuppressWarnings("unchecked")
-    public Return getAccount(Parameter _parameter)
+    public Return getAccount(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
 
         Map<Instance, String> values;
         if (Context.getThreadContext().containsRequestAttribute(PaymentCheckOut_Base.ACCOUNT)) {
@@ -222,7 +221,7 @@ public abstract class PaymentCheckOut_Base
                                 priceListMulti.getCurrentInstance());
             }
 
-            QueryBuilder qlb = new QueryBuilder(CISales.Payment);
+            final QueryBuilder qlb = new QueryBuilder(CISales.Payment);
             final AttributeQuery attrQuery = qlb.getAttributeQuery(CISales.Payment.ID);
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
@@ -241,7 +240,7 @@ public abstract class PaymentCheckOut_Base
             while (multi.next()) {
                 final Instance paymentInst = Instance.get(multi.<String>getSelect(selPaymentOid));
                 if (multi.<String>getSelect(selPaymentOid) != null) {
-                    String name = multi.<String>getSelect(selAccountName);
+                    final String name = multi.<String>getSelect(selAccountName);
                     derivadedAccountPayment.put(paymentInst, name);
                 }
 

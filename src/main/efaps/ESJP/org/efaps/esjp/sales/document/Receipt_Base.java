@@ -20,20 +20,10 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.UUID;
-
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
-import org.efaps.db.Instance;
-import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 /**
