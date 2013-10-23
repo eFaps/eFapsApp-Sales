@@ -145,10 +145,10 @@ public abstract class AbstractPaymentOut_Base
             multi.addAttribute(CISales.BulkPayment2Account.ToLink);
             multi.execute();
             multi.next();
-            html.append("document.getElementsByName('account')[0].value=")
-                            .append(multi.getAttribute(CISales.BulkPayment2Account.ToLink)).append(";\n")
-                            .append("document.getElementsByName('account')[0].disabled = true;\n");
-            html.append(addCurrencyValue(_parameter, multi.<Long>getAttribute(CISales.BulkPayment2Account.ToLink)));
+            String accountStr = multi.getAttribute(CISales.BulkPayment2Account.ToLink).toString();
+            if (accountStr != null && !accountStr.isEmpty()) {
+                html.append(getSetDrowpDown(_parameter, accountStr, "account"));
+            }
         }
         html.append("/*]]>*/ </script>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
