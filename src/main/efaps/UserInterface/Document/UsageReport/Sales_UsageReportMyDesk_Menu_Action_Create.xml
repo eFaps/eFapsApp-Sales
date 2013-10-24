@@ -44,6 +44,9 @@
             <form>Sales_UsageReportForm</form>
             <execute program="org.efaps.esjp.sales.document.UsageReport" method="create">
                 <property name="UseNumberGenerator4Name">true</property>
+                <property name="PositionType">Sales_UsageReportPosition</property>
+                <property name="StatusGroup">Sales_UsageReportStatus</property>
+                <property name="Status">Closed</property>
             </execute>
         </target>
 
