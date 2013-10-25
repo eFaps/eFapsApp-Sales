@@ -39,8 +39,11 @@
         <!-- target definitions -->
         <target>
             <form>Sales_ReturnSlipForm</form>
-            <execute program="org.efaps.esjp.sales.document.ReturnSlip"
-                method="create" />
+            <execute program="org.efaps.esjp.sales.document.ReturnSlip" method="create">
+                <property name="PositionType">Sales_ReturnSlipPosition</property>
+                <property name="StatusGroup">Sales_ReturnSlipStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
 
         <!-- properties -->
