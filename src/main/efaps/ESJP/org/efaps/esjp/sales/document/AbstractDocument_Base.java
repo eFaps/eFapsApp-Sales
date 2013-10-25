@@ -93,6 +93,8 @@ import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -122,6 +124,11 @@ public abstract class AbstractDocument_Base
      * Key used to store the target mode for the Document in the session.
      */
     public static final String TARGETMODE_DOC_KEY = "org.efaps.esjp.sales.document.AbstractDocument.TargeModeKey";
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractDocument.class);
 
     /**
      * Method must be called on opening the form containing positions to
@@ -1314,8 +1321,44 @@ public abstract class AbstractDocument_Base
     {
         final UITableCell tableCell = (UITableCell) _parameter.get(ParameterValues.CLASS);
         final AbstractCommand command = tableCell.getParent().getCommand();
+        // evaluate the type
+        Type typeDoc = command.getTargetCreateType();
+        if (typeDoc == null) {
+            if (_parameter.getInstance() == null) {
+                UITableCell cell = (UITableCell) _parameter.get(ParameterValues.CLASS);
+                if (cell.getParent().getInstance() != null) {
+                    typeDoc = cell.getParent().getInstance().getType();
+                }
+            } else {
+                typeDoc = _parameter.getInstance().getType();
+            }
+        }
 
-        final Type typeDoc = command.getTargetCreateType();
+        if (typeDoc == null) {
+            LOG.error("No type found for: {}", _parameter);
+        } else {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_Catalog2DocumentType);
+            queryBldr.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selCat = new SelectBuilder()
+                            .linkto(CISales.Products_Catalog2DocumentType.CatalogLinkAbstract).instance();
+            multi.addSelect(selCat);
+            multi.execute();
+            final List<Instance> instances = new ArrayList<Instance>();
+            while (multi.next()) {
+                final Instance catInst = multi.<Instance>getSelect(selCat);
+                instances.add(catInst);
+            }
+            if (!instances.isEmpty()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Catalog2Products);
+                attrQueryBldr.addWhereAttrEqValue(CIProducts.Catalog2Products.CatalogLinkAbstract,
+                                instances.toArray());
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
+                _queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+            }
+        }
+
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_Catalog2DocumentType);
         queryBldr.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
