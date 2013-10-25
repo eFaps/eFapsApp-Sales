@@ -436,7 +436,7 @@ public abstract class AbstractDocument_Base
      */
     protected Return autoComplete4Doc(final Parameter _parameter,
                                       final UUID _typeUUID,
-                                      final Status _status)
+                                      final Status... _status)
         throws EFapsException
     {
         final String req = (String) _parameter.get(ParameterValues.OTHERS);
@@ -448,7 +448,7 @@ public abstract class AbstractDocument_Base
         add2QueryBldr(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
         if (_status != null) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, _status.getId());
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) _status);
         }
         final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
         final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
