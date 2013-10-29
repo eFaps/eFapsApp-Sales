@@ -263,7 +263,6 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4IncomingInvoice(final Parameter _parameter)
         throws EFapsException
     {
-
         return autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, (Status[]) null);
     }
 
@@ -277,14 +276,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Invoice(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Status status;
-        if (props.containsKey("Status")) {
-            status = Status.find(CISales.InvoiceStatus, (String) props.get("Status"));
-        } else {
-            status = null;
-        }
-        return autoComplete4Doc(_parameter, CISales.Invoice.uuid, status);
+        return autoComplete4Doc(_parameter, CISales.Invoice.uuid, (Status[]) null);
     }
 
     /**
@@ -298,14 +290,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4OrderInbound(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Status status;
-        if (props.containsKey("Status")) {
-            status = Status.find(CISales.OrderInboundStatus.uuid, (String) props.get("Status"));
-        } else {
-            status = Status.find(CISales.OrderInboundStatus.uuid, "Open");
-        }
-        return autoComplete4Doc(_parameter, CISales.OrderInbound.uuid, status);
+        return autoComplete4Doc(_parameter, CISales.OrderInbound.uuid, (Status[]) null);
     }
 
     /**
@@ -319,14 +304,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4OrderOutbound(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Status status;
-        if (props.containsKey("Status")) {
-            status = Status.find(CISales.OrderOutboundStatus.uuid, (String) props.get("Status"));
-        } else {
-            status = Status.find(CISales.OrderOutboundStatus.uuid, "Open");
-        }
-        return autoComplete4Doc(_parameter, CISales.OrderOutbound.uuid, status);
+        return autoComplete4Doc(_parameter, CISales.OrderOutbound.uuid, (Status[]) null);
     }
 
     /**
@@ -353,7 +331,16 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4ProductRequest(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid, (Status[]) null);
+        final List<Status> statusList = new ArrayList<Status>();
+        final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
+        for (final String statusStr : statusMap.values()) {
+            final Status status = Status.find(CISales.ProductRequestStatus, statusStr);
+            if (status != null) {
+                statusList.add(status);
+            }
+        }
+        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid,
+                        statusList.isEmpty() ? (Status[]) null : statusList.toArray(new Status[statusList.size()]));
     }
 
     /**
@@ -420,14 +407,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Reservation(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final Status status;
-        if (props.containsKey("Status")) {
-            status = Status.find(CISales.ReservationStatus .uuid, (String) props.get("Status"));
-        } else {
-            status = Status.find(CISales.ReservationStatus.uuid, "Open");
-        }
-        return autoComplete4Doc(_parameter, CISales.Reservation.uuid, status);
+        return autoComplete4Doc(_parameter, CISales.Reservation.uuid, (Status[]) null);
     }
 
 
@@ -446,6 +426,24 @@ public abstract class AbstractDocument_Base
                                       final Status... _status)
         throws EFapsException
     {
+        final Type type = Type.get(_typeUUID);
+        // if the status is not set explicitly we analyze the properties
+        Status[] status;
+        if (_status == null && type.isCheckStatus()) {
+            final Type statusType = type.getStatusAttribute().getLink();
+            final List<Status> statusList = new ArrayList<Status>();
+            final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
+            for (final String statusStr : statusMap.values()) {
+                final Status statusTmp = Status.find(statusType.getUUID(), statusStr);
+                if (statusTmp != null) {
+                    statusList.add(statusTmp);
+                }
+            }
+            status = statusList.isEmpty() ? (Status[]) null : statusList.toArray(new Status[statusList.size()]);
+        } else {
+            status = _status;
+        }
+
         final String req = (String) _parameter.get(ParameterValues.OTHERS);
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
@@ -455,7 +453,7 @@ public abstract class AbstractDocument_Base
         add2QueryBldr(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
         if (_status != null) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) _status);
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) status);
         }
         final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
         final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
