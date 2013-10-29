@@ -58,20 +58,21 @@ public abstract class OrderOutbound_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        connectChannel2Document(_parameter, createdDoc.getInstance());
+        connectChannel2Document(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
         executeProcess(_parameter, createdDoc);
         return new Return();
     }
 
     protected void connectChannel2Document(final Parameter _parameter,
-                                           final Instance _instanceDoc)
+                                           final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final Instance instCondition = Instance.get(_parameter.getParameterValue("conditionSales"));
-        if (instCondition.isValid() && _instanceDoc.isValid()) {
+        if (instCondition.isValid() && _createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.ChannelSalesChannel2Document);
             insert.add(CISales.ChannelSalesChannel2Document.FromLink, instCondition);
-            insert.add(CISales.ChannelSalesChannel2Document.ToLink, _instanceDoc);
+            insert.add(CISales.ChannelSalesChannel2Document.ToLink, _createdDoc.getInstance());
             insert.execute();
         }
     }

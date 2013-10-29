@@ -379,7 +379,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4RecievingTicket(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.RecievingTicket.uuid, (Status[])null);
+        return autoComplete4Doc(_parameter, CISales.RecievingTicket.uuid, (Status[]) null);
     }
 
     /**
@@ -1255,7 +1255,8 @@ public abstract class AbstractDocument_Base
     protected List<Instance> getInstances4Derived(final Parameter _parameter)
     {
         final List<Instance> ret = new ArrayList<Instance>();
-        final String[] selectedDoc = _parameter.getParameterValues("selectedDoc");
+        final String[] selectedDoc = _parameter.getParameterValues("selectedDoc") == null
+                        ? _parameter.getParameterValues("selectedRow") : _parameter.getParameterValues("selectedDoc");
         if (selectedDoc != null) {
             if (selectedDoc.length > 1) {
                 for (int i = 1; i < selectedDoc.length; i++) {
@@ -1269,11 +1270,6 @@ public abstract class AbstractDocument_Base
                 if (instance.isValid()) {
                     ret.add(instance);
                 }
-            }
-        } else {
-            final Instance instance = Instance.get(_parameter.getParameterValue("selectedRow"));
-            if (instance.isValid()) {
-                ret.add(instance);
             }
         }
         return ret;
@@ -1991,6 +1987,35 @@ public abstract class AbstractDocument_Base
         insert.execute();
         return new Return();
     }
+
+
+    /**
+     * Method to connect the document with the selected document type.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instance instance of the document to be connected
+     * @throws EFapsException on error
+     */
+    protected void connect2Derived(final Parameter _parameter,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String[] deriveds = _parameter.getParameterValues("derived") == null
+                        ? _parameter.getParameterValues("copy")
+                        : _parameter.getParameterValues("derived");
+        if (deriveds != null) {
+            for (final String derived : deriveds) {
+                final Instance derivedInst = Instance.get(derived);
+                if (derivedInst.isValid() && _createdDoc.getInstance().isValid()) {
+                    final Insert insert = new Insert(CISales.Document2DerivativeDocument);
+                    insert.add(CISales.Document2DerivativeDocument.From, derivedInst);
+                    insert.add(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance());
+                    insert.execute();
+                }
+            }
+        }
+    }
+
 
     /**
      * Method to get the javascript.
