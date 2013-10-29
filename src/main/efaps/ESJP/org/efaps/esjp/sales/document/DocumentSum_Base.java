@@ -35,6 +35,8 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -58,6 +60,9 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Payment;
+import org.efaps.esjp.sales.Payment_Base;
+import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -397,6 +402,49 @@ public abstract class DocumentSum_Base
     }
 
     /**
+     * @param _parameter Paraemter as passed by the eFasp API
+     * @return List map for the update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Uom(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        if (calcList.size() > 0) {
+            final Calculator cal = calcList.get(selected);
+
+            final Long uomID = Long.parseLong(_parameter.getParameterValues("uoM")[selected]);
+            final UoM uom = Dimension.getUoM(uomID);
+            final BigDecimal up = cal.getProductPrice().getCurrentPrice().multiply(new BigDecimal(uom.getNumerator()))
+                            .divide(new BigDecimal(uom.getDenominator()));
+
+            cal.setUnitPrice(up);
+            map.put("quantity", cal.getQuantityStr());
+            map.put("netunitprice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
+            map.put("netprice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
+            map.put("nettotal", getNetTotalFmtStr(_parameter, calcList));
+            list.add(map);
+
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    @Override
+    protected StringBuilder getJavaScript4Positions(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        return super.getJavaScript4Positions(_parameter, _instances).append("executeCalculator();");
+    }
+
+
+    /**
      * Update the form after change of rate currency.
      *
      * @param _parameter Parameter as passed by the eFaps API for esjp
@@ -473,6 +521,26 @@ public abstract class DocumentSum_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
+
+    /**
+     * Method to set the openAmount into the session cache.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _calcList List of <code>Calculator</code>
+     * @throws EFapsException on error
+     */
+    protected void setOpenAmount(final Parameter _parameter,
+                                 final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        final Instance curInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractDocument_Base.CURRENCYINST_KEY);
+        final OpenAmount openAmount = new Payment().new OpenAmount(new CurrencyInst(curInst),
+                        getCrossTotal(_parameter, _calcList),
+                        new PriceUtil().getDateFromParameter(_parameter));
+        Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
+    }
+
 
     /**
      * Method to set additional fields for the currency update method.
@@ -679,6 +747,25 @@ public abstract class DocumentSum_Base
     {
         // to be implemented by subclasses
     }
+
+    public Return executeCalculatorOnScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        int i = 0;
+        for (final Calculator cal : calcList) {
+            final Map<String, String> map = new HashMap<String, String>();
+            _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
+            add2Map4UpdateField(_parameter, map, calcList, cal);
+            list.add(map);
+            i++;
+        }
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
 
     /**
      * Used by the update event used in the select doc form for CostSheet.

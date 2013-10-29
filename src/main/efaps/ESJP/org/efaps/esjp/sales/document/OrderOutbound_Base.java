@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
@@ -73,6 +74,18 @@ public abstract class OrderOutbound_Base
             insert.add(CISales.ChannelSalesChannel2Document.ToLink, _instanceDoc);
             insert.execute();
         }
+    }
+
+    @Override
+    protected boolean isContact2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        boolean ret = true;
+        if (!_instances.isEmpty() && _instances.get(0).isValid()) {
+            ret = !_instances.get(0).getType().isKindOf(CISales.ProductRequest.getType());
+        }
+        return ret;
     }
 
     @Override

@@ -295,5 +295,17 @@
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
+         <field name="executeCalculator" character="Command">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="CmdRenderButton">false</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="executeCalculatorOnScript"
+                name="Sales_OrderOutboundForm.javaScript2.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
     </definition>
 </ui-form>

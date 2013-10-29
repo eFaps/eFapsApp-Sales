@@ -27,8 +27,11 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -79,9 +82,6 @@ import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.ICalculatorConfig;
-import org.efaps.esjp.sales.Payment;
-import org.efaps.esjp.sales.Payment_Base;
-import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -249,7 +249,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4DeliveryNote(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.DeliveryNote.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.DeliveryNote.uuid, (Status[]) null);
     }
 
     /**
@@ -264,7 +264,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
 
-        return autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, (Status[]) null);
     }
 
     /**
@@ -339,7 +339,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Quotation(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.Quotation.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.Quotation.uuid, (Status[]) null);
     }
 
     /**
@@ -353,7 +353,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4ProductRequest(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid, (Status[]) null);
     }
 
     /**
@@ -366,7 +366,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Receipt(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.Receipt.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.Receipt.uuid, (Status[]) null);
     }
 
     /**
@@ -379,7 +379,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4RecievingTicket(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.RecievingTicket.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.RecievingTicket.uuid, (Status[])null);
     }
 
     /**
@@ -392,7 +392,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4CreditNote(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.CreditNote.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.CreditNote.uuid, (Status[]) null);
     }
 
     /**
@@ -405,7 +405,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4CostSheet(final Parameter _parameter)
         throws EFapsException
     {
-        return autoComplete4Doc(_parameter, CISales.CostSheet.uuid, null);
+        return autoComplete4Doc(_parameter, CISales.CostSheet.uuid, (Status[]) null);
     }
 
 
@@ -702,7 +702,7 @@ public abstract class AbstractDocument_Base
         final boolean multiple = "true".equalsIgnoreCase((String) properties.get("multiple"));
 
         final String oid = _parameter.getParameterValue(input);
-        final String oids[] = _parameter.getParameterValues(input);
+        final String[] oids = _parameter.getParameterValues(input);
         if (oid != null && !oid.isEmpty()) {
             final PrintQuery print = new PrintQuery(oid);
             print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
@@ -780,39 +780,7 @@ public abstract class AbstractDocument_Base
         return js.toString();
     }
 
-    /**
-     * @param _parameter Paraemter as passed by the eFasp API
-     * @return List map for the update event
-     * @throws EFapsException on error
-     */
-    public Return updateFields4Uom(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
 
-        final int selected = getSelectedRow(_parameter);
-        final List<Calculator> calcList = analyseTable(_parameter, null);
-        if (calcList.size() > 0) {
-            final Calculator cal = calcList.get(selected);
-
-            final Long uomID = Long.parseLong(_parameter.getParameterValues("uoM")[selected]);
-            final UoM uom = Dimension.getUoM(uomID);
-            final BigDecimal up = cal.getProductPrice().getCurrentPrice().multiply(new BigDecimal(uom.getNumerator()))
-                            .divide(new BigDecimal(uom.getDenominator()));
-
-            cal.setUnitPrice(up);
-            map.put("quantity", cal.getQuantityStr());
-            map.put("netunitprice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("netprice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-            map.put("nettotal", getNetTotalFmtStr(calcList));
-            list.add(map);
-
-            retVal.put(ReturnValues.VALUES, list);
-        }
-        return retVal;
-    }
 
     /**
      * Method to get the value for the field directly under the Contact.
@@ -839,72 +807,38 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, getJavaScript(_parameter));
+        retVal.put(ReturnValues.SNIPLETT, getJavaScript4SelectDoc(_parameter));
         return retVal;
     }
 
     /**
-     * Method to get the javascript.
+     * Get the JavaScript for setting the values on a "Create From" command.
      *
      * @param _parameter Parameter as passed from the eFaps API
-     * @return javascript
+     * @return Return containing the JavaScript
      * @throws EFapsException on error
      */
-    protected String getJavaScript(final Parameter _parameter)
+    protected String getJavaScript4SelectDoc(final Parameter _parameter)
         throws EFapsException
     {
-        return getJavaScript(_parameter, false);
-    }
-
-    /**
-     * Method to get a javascript used to fill fields in a form.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _setStyle must the style be set
-     * @return javascript
-     * @throws EFapsException on error
-     */
-    protected String getJavaScript(final Parameter _parameter,
-                                   final boolean _setStyle)
-        throws EFapsException
-    {
-        final StringBuilder js = new StringBuilder();
-        js.append("<script type=\"text/javascript\">\n");
-        if (_setStyle) {
-            js.append("Wicket.Event.add(window, \"domready\", function(event) {")
-                .append(" var nt = document.getElementsByName('netTotal')[0];")
-                .append(" if(typeof nt=='undefined') {")
-                .append("   nt = document.getElementsByName('netTotal4Read')[0];")
-                .append(" }")
-                .append(" if(typeof nt!='undefined') {")
-                .append(" while (nt.nodeName != 'TABLE') {")
-                .append(" nt = nt.parentNode;")
-                .append("}")
-                .append("nt.style.marginLeft='auto';")
-                .append("nt.style.width='2%';")
-                .append(" }});");
-        }
-
-        js.append("Wicket.Event.add(window, \"domready\", function(event) {\n")
-                .append("var cn = document.getElementsByName('rateCurrencyData');")
-                .append("if (cn.length > 0) { ")
-                .append(" cn[0].appendChild(document.createTextNode('");
         final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
         final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+        final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">\n")
+            .append("require([\"dojo/query\",\"dojo/dom-construct\",\"dojo/domReady!\"],")
+                .append(" function(query, domConstruct){\n");
+
+        String rateStr;
         if (currency4Invoice.equals(baseCurrency)) {
-            js.append("1").append("'));");
+            rateStr = "1";
         } else {
-            js.append(getRateCurrencyData(_parameter, currency4Invoice, baseCurrency)).append("'));");
+            rateStr = getRateCurrencyData(_parameter, currency4Invoice, baseCurrency);
         }
-        js.append("}}); ");
-        js.append("var ele = document.createElement('input');")
-                .append("var attr = document.createAttribute('type');")
-                .append("attr.nodeValue = 'hidden';")
-                .append("ele.setAttributeNode(attr);")
-                .append("require([\"dojo/query\"],function(query){")
-                .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
-                .append("});\n");
-        js.append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n");
+        js.append(getSetFieldValue(0, "rateCurrencyData", rateStr)).append("\n")
+            .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
+            .append("var pN = dojo.query('.eFapsContentDiv')[0];\n");
+
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = command.getTargetMode();
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
@@ -912,40 +846,435 @@ public abstract class AbstractDocument_Base
         boolean copy = _parameter.getParameterValue("selectedRow") != null;
         if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
             final Instance instCall = _parameter.getCallInstance();
-            final Instance instance = getInstance4Derived(_parameter);
-            if (instance.isValid()) {
-                // in case of copy check if it is really a copy (meaning the same type will be created)
-                final Object object = _parameter.get(ParameterValues.CLASS);
-                if (copy && object instanceof UIForm) {
-                    final UIForm uiForm = (UIForm) object;
-                    final Type type = uiForm.getCommand().getTargetCreateType();
-                    if (type != null && !instance.getType().equals(type)) {
-                        copy = false;
+            final List<Instance> instances = getInstances4Derived(_parameter);
+            if (!instances.isEmpty()) {
+                // if obnly one instance is given it might be a copy and not a derived
+                if (instances.size() == 1) {
+                    final Instance instance = instances.get(0);
+                    // in case of copy check if it is really a copy (meaning the same type will be created)
+                    final Object object = _parameter.get(ParameterValues.CLASS);
+                    if (copy && object instanceof UIForm) {
+                        final UIForm uiForm = (UIForm) object;
+                        final Type type = uiForm.getCommand().getTargetCreateType();
+                        if (type != null && !instance.getType().equals(type)) {
+                            copy = false;
+                        }
+                    }
+                    js.append("domConstruct.create(\"input\", {\n")
+                        .append(" value: \"").append(instance.getOid()).append("\", ")
+                        .append(" name: \"").append(copy ? "copy" : "derived").append("\", ")
+                        .append(" type: \"hidden\" ")
+                        .append("}, pN);\n");
+                } else  {
+                    for (final Instance instance : instances) {
+                        js.append("domConstruct.create(\"input\", {")
+                            .append(" value: \"").append(instance.getOid()).append("\", ")
+                            .append(" name: \"derived\", ")
+                            .append(" type: \"hidden\" ")
+                            .append("}, pN);\n");
                     }
                 }
-                js.append("ele.value='").append(instance.getOid()).append("';")
-                                .append("ele.name='").append(copy ? "copy" : "derived").append("';")
-                                .append(getSetValuesString(_parameter, instance));
+                js.append(getJavaScript4Document(_parameter, instances))
+                    .append(instances.size() == 1 ?  getJavaScript4Positions(_parameter, instances.get(0))
+                                    : getJavaScript4Positions(_parameter, instances))
+                    .append(addDomReadyScript(_parameter, instances));
             } else if (instCall != null && instCall.isValid()
                             && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
-                js.append(getSetValuesString(_parameter, instCall));
+                js.append(getJavaScript4Positions(_parameter, instCall));
             }
         }
-        js.append("</script>\n");
+        js.append("});\n</script>\n");
         return js.toString();
     }
 
 
+    /**
+     * Add additional on Dom Ready JavaScript for
+     * setting the values on a "Create From" command.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instances list of instance the values are copied from
+     * @return Return containing the JavaScript
+     * @throws EFapsException on error
+     */
+    protected StringBuilder addDomReadyScript(final Parameter _parameter,
+                                              final List<Instance> _instances)
+        throws EFapsException
+    {
+        return new StringBuilder();
+    }
+
+    /**
+     * JavaScript part for setting the Document Head.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instances list of instance the values are copied from
+     * @return Return containing the JavaScript
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getJavaScript4Document(final Parameter _parameter,
+                                                   final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        // as a default
+        final Instance instance = _instances.get(0);
+        final PrintQuery print = new PrintQuery(instance);
+        print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal,
+                        CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentSumAbstract.Rate,
+                        CIERP.DocumentAbstract.Name,
+                        CIERP.DocumentAbstract.Note);
+        final SelectBuilder selContOID = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).oid();
+        final SelectBuilder selContName = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact)
+                        .attribute(CIContacts.Contact.Name);
+        print.addSelect(selContOID, selContName);
+        print.execute();
+
+        final BigDecimal netTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+        final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final String contactOid = print.<String> getSelect(selContOID);
+        final String contactName = print.<String> getSelect(selContName);
+        final String contactData = getFieldValue4Contact(Instance.get(contactOid));
+        final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
+        final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
+
+        final DecimalFormat formater = getTwoDigitsformater();
+
+        final StringBuilder currStrBldr = new StringBuilder();
+        BigDecimal[] ratesCur = null;
+        if (rates != null) {
+            final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance instanceDerived = getInstances4Derived(_parameter).get(0);
+            boolean derived = false;
+            if (instanceDerived.isValid()) {
+                derived = true;
+            }
+            final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
+            Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
+            ratesCur = new PriceUtil().getExchangeRate(new DateTime().withTimeAtStartOfDay(), newInst);
+
+            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
+                            || !rates[2].equals(rates[3])) {
+                currStrBldr.append(getSetFieldValue(0, "rateCurrencyId", "" + (rates[2]))).append("\n")
+                    .append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                    .append(getSetFieldValue(0, "rate", ratesCur[1].toString())).append("\n")
+                    .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                                    "" + new CurrencyInst(newInst).isInvert())).append("\n");
+            }
+        }
+
+        js.append(currStrBldr);
+        if (isContact2JavaScript4Document(_parameter, _instances)) {
+            js.append(getSetFieldValue(0, "contact", contactOid)).append("\n")
+                .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
+                .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
+        }
+
+        js.append(getSetFieldValue(0, "netTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
+            .append(getSetFieldValue(0, "crossTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n")
+            .append(getSetFieldValue(0, "note", note)).append("\n")
+            .append(add2JavaScript4Document(_parameter, _instances)).append("\n")
+            .append("\n");
+        return js;
+    }
+
+    /**
+     * Must the contact information be added to the JavaScript.
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instances list of instance the values are copied from
+     * @return true if it should be added
+     * @throws EFapsException on error
+     */
+    protected boolean isContact2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        return true;
+    }
+
+    /**
+     * Add JavaScript part to  the Document Head.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instances list of instance the values are copied from
+     * @return Return containing the JavaScript
+     * @throws EFapsException on error
+     */
+    protected StringBuilder add2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        return new StringBuilder();
+    }
+
+    /**
+     * JavaScript part for setting the Positions.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instance instance the values are copied from
+     * @return Return containing the JavaScript
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getJavaScript4Positions(final Parameter _parameter,
+                                                    final Instance _instance)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final DecimalFormat formaterZero = getZeroDigitsformater();
+        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
+        final DecimalFormat formater = getTwoDigitsformater();
+        final BigDecimal rate = BigDecimal.ONE;
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance);
+        queryBldr.addOrderByAttributeAsc(CISales.PositionAbstract.PositionNumber);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
+                        CISales.PositionAbstract.ProductDesc,
+                        CISales.PositionAbstract.Quantity,
+                        CISales.PositionAbstract.UoM,
+                        CISales.PositionSumAbstract.CrossUnitPrice,
+                        CISales.PositionSumAbstract.NetUnitPrice,
+                        CISales.PositionSumAbstract.DiscountNetUnitPrice,
+                        CISales.PositionSumAbstract.CrossPrice,
+                        CISales.PositionSumAbstract.NetPrice,
+                        CISales.PositionSumAbstract.RateNetUnitPrice,
+                        CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
+                        CISales.PositionSumAbstract.RateNetPrice,
+                        CISales.PositionSumAbstract.Tax,
+                        CISales.PositionSumAbstract.Discount);
+        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
+        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Dimension);
+        multi.addSelect(selProdOID, selProdName, selProdDim);
+        multi.setEnforceSorted(true);
+        multi.execute();
+
+        final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+
+        while (multi.next()) {
+            final Map<String, String> map = new HashMap<String, String>();
+
+            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+            final BigDecimal discountNetUnitPrice = multi.
+                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
+            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+            final BigDecimal rateNetUnitPrice = multi.<BigDecimal>getAttribute(
+                            CISales.PositionSumAbstract.RateNetUnitPrice);
+            final BigDecimal rateDiscountNetUnitPrice = multi.
+                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
+            final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
+
+            map.put("oid", multi.getCurrentInstance().getOid());
+            map.put("quantity", formaterZero
+                            .format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
+            map.put("productAutoComplete", multi.<String>getSelect(selProdName));
+            map.put("product",  multi.<String>getSelect(selProdOID));
+            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
+                                            multi.<Long>getSelect(selProdDim)));
+            if (TargetMode.EDIT.equals(Context.getThreadContext()
+                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+                map.put("netUnitPrice", rateNetUnitPrice == null || netUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
+                map.put("discountNetUnitPrice", rateDiscountNetUnitPrice == null || discountNetUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice
+                                                : discountNetUnitPrice));
+                map.put("netPrice", rateNetPrice == null || netPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(rate != null ? rateNetPrice : netPrice));
+            } else {
+                map.put("netUnitPrice", netUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
+                                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
+                map.put("discountNetUnitPrice", discountNetUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
+                                                BigDecimal.ROUND_HALF_UP)
+                                                : discountNetUnitPrice));
+                map.put("netPrice", netPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                : netPrice));
+                map.put("discount", discount == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(discount));
+            }
+            values.add(map);
+        }
+
+        final Set<String> noEscape = new HashSet<String>();
+        noEscape.add("uoM");
+
+        add2JavaScript4Postions(_parameter, values, noEscape);
+        if (TargetMode.EDIT.equals(Context.getThreadContext()
+                        .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+            js.append(getSetFieldValuesScript(_parameter, values, noEscape));
+        } else {
+            js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
+                            getOnCompleteScript(_parameter), false, false, noEscape));
+        }
+        js.append("\n");
+        return js;
+    }
+
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _values values to be added to
+     * @param _noEscape no escape fields
+     * @throws EFapsException on error
+     */
+    protected void add2JavaScript4Postions(final Parameter _parameter,
+                                                final List<Map<String, String>> _values,
+                                                final Set<String> _noEscape)
+        throws EFapsException
+    {
+        // to be used by implementations
+    }
+
+
+    /**
+     * JavaScript part for setting the Positions.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instances list of instances the values are copied from
+     * @return Return containing the JavaScript
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getJavaScript4Positions(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final DecimalFormat formaterZero = getZeroDigitsformater();
+        getDigitsformater4UnitPrice(new Calculator(_parameter, this));
+        getTwoDigitsformater();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instances.toArray());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
+                        CISales.PositionAbstract.ProductDesc,
+                        CISales.PositionAbstract.Quantity,
+                        CISales.PositionAbstract.UoM);
+        final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
+        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Dimension);
+        multi.addSelect(selProdInst, selProdName, selProdDim);
+        multi.execute();
+
+        final Map<Instance, Map<String, Object>> valuesTmp = new LinkedHashMap<Instance, Map<String, Object>>();
+
+        while (multi.next()) {
+            final Instance prodInst = multi.<Instance>getSelect(selProdInst);
+            final Map<String, Object> map;
+            if (valuesTmp.containsKey(prodInst)) {
+                map = valuesTmp.get(prodInst);
+                final BigDecimal quantity = (BigDecimal) map.get("quantity");
+                map.put("quantity", quantity.add(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
+            } else {
+                map = new HashMap<String, Object>();
+                valuesTmp.put(prodInst, map);
+                map.put("productAutoComplete", multi.<String>getSelect(selProdName));
+                map.put("product",  prodInst.getOid());
+                map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+                map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
+                                                multi.<Long>getSelect(selProdDim)));
+                map.put("quantity", multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+            }
+        }
+
+        final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+
+        for (final Map<String, Object> map : valuesTmp.values()) {
+            final Map<String, String> tmpMap = new HashMap<String, String>();
+            tmpMap.put("quantity", formaterZero.format(map.get("quantity")));
+            tmpMap.put("productAutoComplete", (String) map.get("productAutoComplete"));
+            tmpMap.put("product", (String) map.get("product"));
+            tmpMap.put("productDesc", (String) map.get("productDesc"));
+            tmpMap.put("uoM", (String) map.get("uoM"));
+            values.add(tmpMap);
+        }
+        Collections.sort(values, new Comparator<Map<String, String>>()
+        {
+            @Override
+            public int compare(final Map<String, String> _o1,
+                               final Map<String, String> _o2)
+            {
+                return _o1.get("productAutoComplete").compareTo(_o2.get("productAutoComplete"));
+            }
+        });
+
+        updateValues4JavaScript4Positions(_parameter, values);
+
+        final Set<String> noEscape = new HashSet<String>();
+        noEscape.add("uoM");
+
+        if (TargetMode.EDIT.equals(Context.getThreadContext()
+                        .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+            js.append(getSetFieldValuesScript(_parameter, values, noEscape));
+        } else {
+            js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
+                            getOnCompleteScript(_parameter), false, false, noEscape));
+        }
+        js.append("\n");
+        return js;
+    }
+
+    /**
+     * Update the values for the position script.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _values list of values the values are copied from
+     * @throws EFapsException on error
+     */
+    protected void updateValues4JavaScript4Positions(final Parameter _parameter,
+                                                     final List<Map<String, String>> _values)
+        throws EFapsException
+    {
+
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return the Instance used for the derived on the javascript field. returns
      */
-    protected Instance getInstance4Derived(final Parameter _parameter)
+    protected List<Instance> getInstances4Derived(final Parameter _parameter)
     {
-        Instance ret = Instance.get(_parameter.getParameterValue("selectedDoc"));
-        if (!ret.isValid()) {
-            ret = Instance.get( _parameter.getParameterValue("selectedRow"));
+        final List<Instance> ret = new ArrayList<Instance>();
+        final String[] selectedDoc = _parameter.getParameterValues("selectedDoc");
+        if (selectedDoc != null) {
+            if (selectedDoc.length > 1) {
+                for (int i = 1; i < selectedDoc.length; i++) {
+                    final Instance instance = Instance.get(selectedDoc[i]);
+                    if (instance.isValid()) {
+                        ret.add(instance);
+                    }
+                }
+            } else {
+                final Instance instance = Instance.get(selectedDoc[0]);
+                if (instance.isValid()) {
+                    ret.add(instance);
+                }
+            }
+        } else {
+            final Instance instance = Instance.get(_parameter.getParameterValue("selectedRow"));
+            if (instance.isValid()) {
+                ret.add(instance);
+            }
         }
         return ret;
     }
@@ -983,193 +1312,13 @@ public abstract class AbstractDocument_Base
             final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _newInst, _currentInst);
             js.append(getSetFieldValue(0, "rate", rates[3].toString()))
                 .append("\n")
-                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,"" + (rates[3].compareTo(rates[0]) != 0)))
+                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0)))
                 .append("\n");
         }
         return js.toString();
     }
 
-    /**
-     * Method to get the javascript part for setting the values.
-     *
-     * @param _parameter Paramter as passed by the eFaps API
-     * @param _instance instance to be copied
-     * @return javascript
-     * @throws EFapsException on error
-     */
-    protected String getSetValuesString(final Parameter _parameter,
-                                        final Instance _instance)
-        throws EFapsException
-    {
 
-        final StringBuilder js = new StringBuilder();
-        final PrintQuery print = new PrintQuery(_instance);
-        print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal,
-                        CISales.DocumentSumAbstract.RateCrossTotal,
-                        CISales.DocumentSumAbstract.Rate,
-                        CIERP.DocumentAbstract.Name,
-                        CIERP.DocumentAbstract.Note);
-        final SelectBuilder selContOID = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).oid();
-        final SelectBuilder selContName = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact)
-                        .attribute(CIContacts.Contact.Name);
-        print.addSelect(selContOID, selContName);
-        print.execute();
-
-        final BigDecimal netTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
-        final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-        final String contactOid = print.<String> getSelect(selContOID);
-        final String contactName = print.<String> getSelect(selContName);
-        final String contactData = getFieldValue4Contact(Instance.get(contactOid));
-        final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
-        final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
-
-        final DecimalFormat formater = getTwoDigitsformater();
-        final DecimalFormat formaterZero = getZeroDigitsformater();
-        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
-
-        final StringBuilder currency = new StringBuilder();
-        BigDecimal rate = null;
-        BigDecimal[] ratesCur = null;
-        if (rates != null) {
-            final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-            final Instance instanceDerived = getInstance4Derived(_parameter);
-            boolean derived = false;
-            if (instanceDerived.isValid()) {
-                derived = true;
-            }
-            final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
-            Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
-            ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
-
-            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
-                            || !rates[2].equals(rates[3])) {
-                currency.append(getSetFieldValue(0, "rateCurrencyId", "" + (rates[2])))
-                        .append("\n");
-                currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
-                        .append(getSetFieldValue(0, "rate", ratesCur[1].toString()))
-                        .append("\n")
-                        .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
-                                        "" + new CurrencyInst(newInst).isInvert()))
-                        .append("\n");
-                if (!rates[2].equals(rates[3])) {
-                    rate = (BigDecimal) rates[1];
-                }
-            }
-        }
-
-        js.append("function setValue() {\n")
-            .append(currency)
-            .append(getSetFieldValue(0, "contact", contactOid)).append("\n")
-            .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
-            .append(getSetFieldValue(0, "contactData", contactData)).append("\n")
-            .append(getSetFieldValue(0, "netTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
-            .append(getSetFieldValue(0, "crossTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n")
-            .append(getSetFieldValue(0, "note", note)).append("\n")
-            .append(addAdditionalFields(_parameter, _instance)).append("\n")
-            .append("}\n");
-
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance.getId());
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
-                        CISales.PositionAbstract.ProductDesc,
-                        CISales.PositionAbstract.Quantity,
-                        CISales.PositionAbstract.UoM,
-                        CISales.PositionSumAbstract.CrossUnitPrice,
-                        CISales.PositionSumAbstract.NetUnitPrice,
-                        CISales.PositionSumAbstract.DiscountNetUnitPrice,
-                        CISales.PositionSumAbstract.CrossPrice,
-                        CISales.PositionSumAbstract.NetPrice,
-                        CISales.PositionSumAbstract.RateNetUnitPrice,
-                        CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
-                        CISales.PositionSumAbstract.RateNetPrice,
-                        CISales.PositionSumAbstract.Tax,
-                        CISales.PositionSumAbstract.Discount);
-        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
-        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
-                        .attribute(CIProducts.ProductAbstract.Name);
-        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
-                        .attribute(CIProducts.ProductAbstract.Dimension);
-        multi.addSelect(selProdOID, selProdName, selProdDim);
-        multi.execute();
-
-        final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
-
-        while (multi.next()) {
-            final Map<String, String> map = new HashMap<String, String>();
-
-            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
-            final BigDecimal discountNetUnitPrice = multi.
-                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
-            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
-            final BigDecimal rateNetUnitPrice = multi.<BigDecimal>getAttribute(
-                            CISales.PositionSumAbstract.RateNetUnitPrice);
-            final BigDecimal rateDiscountNetUnitPrice = multi.
-                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
-            final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
-            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
-
-            map.put("oid", multi.getCurrentInstance().getOid());
-            map.put("quantity", formaterZero
-                            .format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
-            map.put("productAutoComplete", multi.<String>getSelect(selProdName));
-            map.put("product",  multi.<String>getSelect(selProdOID));
-            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
-            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
-                                            multi.<Long>getSelect(selProdDim)));
-            if (TargetMode.EDIT.equals(Context.getThreadContext()
-                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                map.put("netUnitPrice", rateNetUnitPrice == null || netUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
-                map.put("discountNetUnitPrice", rateDiscountNetUnitPrice == null || discountNetUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
-                map.put("netPrice", rateNetPrice == null || netPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formater.format(rate != null ? rateNetPrice : netPrice));
-            } else {
-                map.put("netUnitPrice", netUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
-                                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
-                map.put("discountNetUnitPrice", discountNetUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
-                                                BigDecimal.ROUND_HALF_UP)
-                                                : discountNetUnitPrice));
-                map.put("netPrice", netPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                : netPrice));
-                map.put("discount", discount == null
-                                ? BigDecimal.ZERO.toString()
-                                : formater.format(discount));
-            }
-            values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
-        }
-
-        final Set<String> noEscape = new HashSet<String>();
-        noEscape.add("uoM");
-
-        add2SetValuesString4Postions(_parameter, values, noEscape);
-        js.append("require([\"dojo/domReady!\"], function(){\n")
-            .append("setValue();\n");
-        if (TargetMode.EDIT.equals(Context.getThreadContext()
-                        .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-            js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
-        } else {
-            js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                .append(getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
-                            getOnCompleteScript(_parameter), false, false, noEscape));
-        }
-        js.append(getDomReadyScript(_parameter, _instance))
-            .append(" });\n");
-        return js.toString();
-    }
 
     /**
      * Method for acon complete script.
@@ -1189,8 +1338,9 @@ public abstract class AbstractDocument_Base
      * @param _parameter Paramter as passed by the eFaps API
      * @param _values values to be added to
      * @param _noEscape no escape fields
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
+    @Deprecated
     protected void add2SetValuesString4Postions(final Parameter _parameter,
                                                 final Map<Integer, Map<String, String>> _values,
                                                 final Set<String> _noEscape)
@@ -1199,20 +1349,6 @@ public abstract class AbstractDocument_Base
         // to be used by implementations
     }
 
-    /**
-     * Method to set additional fields for the document.
-     *
-     * @param _parameter Paramter as passed by the eFaps API
-     * @param _instance Instance of the document.
-     * @return new StringBuilder with the additional fields.
-     * @throws EFapsException on error
-     */
-    protected StringBuilder addAdditionalFields(final Parameter _parameter,
-                                                final Instance _instance)
-        throws EFapsException
-    {
-        return new StringBuilder();
-    }
 
     /**
      * Add additional JavaScript to the Script that will be executed after the
@@ -1223,6 +1359,7 @@ public abstract class AbstractDocument_Base
      * @return String containing valid Javascript
      * @throws EFapsException on error
      */
+    @Deprecated
     protected String getDomReadyScript(final Parameter _parameter,
                                        final Instance _instance)
         throws EFapsException
@@ -1325,7 +1462,7 @@ public abstract class AbstractDocument_Base
         Type typeDoc = command.getTargetCreateType();
         if (typeDoc == null) {
             if (_parameter.getInstance() == null) {
-                UITableCell cell = (UITableCell) _parameter.get(ParameterValues.CLASS);
+                final UITableCell cell = (UITableCell) _parameter.get(ParameterValues.CLASS);
                 if (cell.getParent().getInstance() != null) {
                     typeDoc = cell.getParent().getInstance().getType();
                 }
@@ -1335,7 +1472,7 @@ public abstract class AbstractDocument_Base
         }
 
         if (typeDoc == null) {
-            LOG.error("No type found for: {}", _parameter);
+            AbstractDocument_Base.LOG.error("No type found for: {}", _parameter);
         } else {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_Catalog2DocumentType);
             queryBldr.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
@@ -1519,118 +1656,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Method to get formated String representation of the cross total for a
-     * list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return formated String representation of the cross total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected String getCrossTotalFmtStr(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        return getTwoDigitsformater().format(getCrossTotal(_calcList));
-    }
-
-    /**
-     * Method to get String representation of the cross total for a list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return String representation of the cross total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected String getCrossTotalStr(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        return getCrossTotal(_calcList).toString();
-    }
-
-    /**
-     * Method to get the cross total for a list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return the cross total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected BigDecimal getCrossTotal(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calc : _calcList) {
-            ret = ret.add(calc.getCrossPrice());
-        }
-        return ret;
-    }
-
-    /**
-     * Method to get formated String representation of the net total for a
-     * list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return formated String representation of the net total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected String getNetTotalFmtStr(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        return getTwoDigitsformater().format(getNetTotal(_calcList));
-    }
-
-    /**
-     * Method to get String representation of the net total for a list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return String representation of the net total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected String getNetTotalStr(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        return getNetTotal(_calcList).toString();
-    }
-
-    /**
-     * Method to get the net total for a list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return the net total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected BigDecimal getNetTotal(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calc : _calcList) {
-            ret = ret.add(calc.getNetPrice());
-        }
-        return ret;
-    }
-
-    /**
-     * Method to get the base cross total for a list of Calculators.
-     *
-     * @param _calcList list of Calculator the net total is wanted for
-     * @return the base cross total
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected BigDecimal getBaseCrossTotal(final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calculator : _calcList) {
-            ret = ret.add(calculator.getProductCrossPrice().getBasePrice());
-        }
-        return ret;
-    }
-
-    /**
      * Method to get the maximum for a value from the database.
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @param _type type to search for
@@ -1795,24 +1820,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Method to set the openAmount into the session cache.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _calcList List of <code>Calculator</code>
-     * @throws EFapsException on error
-     */
-    protected void setOpenAmount(final Parameter _parameter,
-                                 final List<Calculator> _calcList)
-        throws EFapsException
-    {
-        final Instance curInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCYINST_KEY);
-        final OpenAmount openAmount = new Payment().new OpenAmount(new CurrencyInst(curInst), getCrossTotal(_calcList),
-                        new PriceUtil().getDateFromParameter(_parameter));
-        Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
-    }
-
-    /**
      * Method to render a drop-down field containing all warehouses.
      *
      * @param _parameter Parameter as passed from eFaps.
@@ -1896,6 +1903,11 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
+    /**
+     * @param _number number to format
+     * @return BigDecimal
+     * @throws EFapsException
+     */
     protected BigDecimal getFormat4BigDecimal(final String _number)
         throws EFapsException
     {
@@ -1979,4 +1991,301 @@ public abstract class AbstractDocument_Base
         insert.execute();
         return new Return();
     }
+
+    /**
+     * Method to get the javascript.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return javascript
+     * @throws EFapsException on error
+     */
+    @Deprecated
+    protected String getJavaScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getJavaScript(_parameter, false);
+    }
+
+    /**
+     * Method to get a javascript used to fill fields in a form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _setStyle must the style be set
+     * @return javascript
+     * @throws EFapsException on error
+     */
+    @Deprecated
+    protected String getJavaScript(final Parameter _parameter,
+                                   final boolean _setStyle)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">\n");
+        if (_setStyle) {
+            js.append("Wicket.Event.add(window, \"domready\", function(event) {")
+                .append(" var nt = document.getElementsByName('netTotal')[0];")
+                .append(" if(typeof nt=='undefined') {")
+                .append("   nt = document.getElementsByName('netTotal4Read')[0];")
+                .append(" }")
+                .append(" if(typeof nt!='undefined') {")
+                .append(" while (nt.nodeName != 'TABLE') {")
+                .append(" nt = nt.parentNode;")
+                .append("}")
+                .append("nt.style.marginLeft='auto';")
+                .append("nt.style.width='2%';")
+                .append(" }});");
+        }
+
+        js.append("Wicket.Event.add(window, \"domready\", function(event) {\n")
+                .append("var cn = document.getElementsByName('rateCurrencyData');")
+                .append("if (cn.length > 0) { ")
+                .append(" cn[0].appendChild(document.createTextNode('");
+        final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+        final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        if (currency4Invoice.equals(baseCurrency)) {
+            js.append("1").append("'));");
+        } else {
+            js.append(getRateCurrencyData(_parameter, currency4Invoice, baseCurrency)).append("'));");
+        }
+        js.append("}}); ");
+        js.append("var ele = document.createElement('input');")
+                .append("var attr = document.createAttribute('type');")
+                .append("attr.nodeValue = 'hidden';")
+                .append("ele.setAttributeNode(attr);")
+                .append("require([\"dojo/query\"],function(query){")
+                .append("dojo.query('.eFapsContentDiv')[0].appendChild(ele);")
+                .append("});\n");
+        js.append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n");
+        final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final TargetMode mode = command.getTargetMode();
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
+
+        boolean copy = _parameter.getParameterValue("selectedRow") != null;
+        if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
+            final Instance instCall = _parameter.getCallInstance();
+            final Instance instance = getInstances4Derived(_parameter).get(0);
+            if (instance.isValid()) {
+                // in case of copy check if it is really a copy (meaning the same type will be created)
+                final Object object = _parameter.get(ParameterValues.CLASS);
+                if (copy && object instanceof UIForm) {
+                    final UIForm uiForm = (UIForm) object;
+                    final Type type = uiForm.getCommand().getTargetCreateType();
+                    if (type != null && !instance.getType().equals(type)) {
+                        copy = false;
+                    }
+                }
+                js.append("ele.value='").append(instance.getOid()).append("';")
+                                .append("ele.name='").append(copy ? "copy" : "derived").append("';")
+                                .append(getSetValuesString(_parameter, instance));
+            } else if (instCall != null && instCall.isValid()
+                            && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
+                js.append(getSetValuesString(_parameter, instCall));
+            }
+        }
+        js.append("</script>\n");
+        return js.toString();
+    }
+
+
+    /**
+     * Method to set additional fields for the document.
+     *
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _instance Instance of the document.
+     * @return new StringBuilder with the additional fields.
+     * @throws EFapsException on error
+     */
+    @Deprecated
+    protected StringBuilder addAdditionalFields(final Parameter _parameter,
+                                                final Instance _instance)
+        throws EFapsException
+    {
+        return new StringBuilder();
+    }
+
+
+    /**
+     * Method to get the JavaScript part for setting the values of the
+     * document header and positions.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance instance to be copied
+     * @return JavaScript
+     * @throws EFapsException on error
+     */
+    @Deprecated
+    protected String getSetValuesString(final Parameter _parameter,
+                                        final Instance _instance)
+        throws EFapsException
+    {
+
+        final StringBuilder js = new StringBuilder();
+        final PrintQuery print = new PrintQuery(_instance);
+        print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal,
+                        CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentSumAbstract.Rate,
+                        CIERP.DocumentAbstract.Name,
+                        CIERP.DocumentAbstract.Note);
+        final SelectBuilder selContOID = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).oid();
+        final SelectBuilder selContName = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact)
+                        .attribute(CIContacts.Contact.Name);
+        print.addSelect(selContOID, selContName);
+        print.execute();
+
+        final BigDecimal netTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+        final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final String contactOid = print.<String> getSelect(selContOID);
+        final String contactName = print.<String> getSelect(selContName);
+        final String contactData = getFieldValue4Contact(Instance.get(contactOid));
+        final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
+        final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
+
+        final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formaterZero = getZeroDigitsformater();
+        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
+
+        final StringBuilder currency = new StringBuilder();
+        BigDecimal rate = null;
+        BigDecimal[] ratesCur = null;
+        if (rates != null) {
+            final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance instanceDerived = getInstances4Derived(_parameter).get(0);
+            boolean derived = false;
+            if (instanceDerived.isValid()) {
+                derived = true;
+            }
+            final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
+            Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
+            ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
+
+            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
+                            || !rates[2].equals(rates[3])) {
+                currency.append(getSetFieldValue(0, "rateCurrencyId", "" + (rates[2])))
+                        .append("\n");
+                currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
+                        .append(getSetFieldValue(0, "rate", ratesCur[1].toString()))
+                        .append("\n")
+                        .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                                        "" + new CurrencyInst(newInst).isInvert()))
+                        .append("\n");
+                if (!rates[2].equals(rates[3])) {
+                    rate = (BigDecimal) rates[1];
+                }
+            }
+        }
+
+        js.append("function setValue() {\n")
+            .append(currency)
+            .append(getSetFieldValue(0, "contact", contactOid)).append("\n")
+            .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
+            .append(getSetFieldValue(0, "contactData", contactData)).append("\n")
+            .append(getSetFieldValue(0, "netTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
+            .append(getSetFieldValue(0, "crossTotal", netTotal == null
+                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n")
+            .append(getSetFieldValue(0, "note", note)).append("\n")
+            .append(addAdditionalFields(_parameter, _instance)).append("\n")
+            .append("}\n");
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PositionAbstract.PositionNumber,
+                        CISales.PositionAbstract.ProductDesc,
+                        CISales.PositionAbstract.Quantity,
+                        CISales.PositionAbstract.UoM,
+                        CISales.PositionSumAbstract.CrossUnitPrice,
+                        CISales.PositionSumAbstract.NetUnitPrice,
+                        CISales.PositionSumAbstract.DiscountNetUnitPrice,
+                        CISales.PositionSumAbstract.CrossPrice,
+                        CISales.PositionSumAbstract.NetPrice,
+                        CISales.PositionSumAbstract.RateNetUnitPrice,
+                        CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
+                        CISales.PositionSumAbstract.RateNetPrice,
+                        CISales.PositionSumAbstract.Tax,
+                        CISales.PositionSumAbstract.Discount);
+        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
+        final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Dimension);
+        multi.addSelect(selProdOID, selProdName, selProdDim);
+        multi.execute();
+
+        final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
+
+        while (multi.next()) {
+            final Map<String, String> map = new HashMap<String, String>();
+
+            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+            final BigDecimal discountNetUnitPrice = multi.
+                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
+            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+            final BigDecimal rateNetUnitPrice = multi.<BigDecimal>getAttribute(
+                            CISales.PositionSumAbstract.RateNetUnitPrice);
+            final BigDecimal rateDiscountNetUnitPrice = multi.
+                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
+            final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
+
+            map.put("oid", multi.getCurrentInstance().getOid());
+            map.put("quantity", formaterZero
+                            .format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
+            map.put("productAutoComplete", multi.<String>getSelect(selProdName));
+            map.put("product",  multi.<String>getSelect(selProdOID));
+            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
+                                            multi.<Long>getSelect(selProdDim)));
+            if (TargetMode.EDIT.equals(Context.getThreadContext()
+                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+                map.put("netUnitPrice", rateNetUnitPrice == null || netUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
+                map.put("discountNetUnitPrice", rateDiscountNetUnitPrice == null || discountNetUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
+                map.put("netPrice", rateNetPrice == null || netPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(rate != null ? rateNetPrice : netPrice));
+            } else {
+                map.put("netUnitPrice", netUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
+                                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
+                map.put("discountNetUnitPrice", discountNetUnitPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
+                                                BigDecimal.ROUND_HALF_UP)
+                                                : discountNetUnitPrice));
+                map.put("netPrice", netPrice == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                : netPrice));
+                map.put("discount", discount == null
+                                ? BigDecimal.ZERO.toString()
+                                : formater.format(discount));
+            }
+            values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
+        }
+
+        final Set<String> noEscape = new HashSet<String>();
+        noEscape.add("uoM");
+
+        add2SetValuesString4Postions(_parameter, values, noEscape);
+        js.append("require([\"dojo/domReady!\"], function(){\n")
+            .append("setValue();\n");
+        if (TargetMode.EDIT.equals(Context.getThreadContext()
+                        .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+            js.append(getSetFieldValuesScript(_parameter, values.values(), noEscape));
+        } else {
+            js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                .append(getTableAddNewRowsScript(_parameter, "positionTable", values.values(),
+                            getOnCompleteScript(_parameter), false, false, noEscape));
+        }
+        js.append(getDomReadyScript(_parameter, _instance))
+            .append(" });\n");
+        return js.toString();
+    }
+
 }
