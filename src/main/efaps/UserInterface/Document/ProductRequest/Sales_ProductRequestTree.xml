@@ -36,6 +36,7 @@
         <!-- type tree for -->
         <type>Sales_ProductRequest</type>
         <childs>
+            <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_ProductRequestTree_Position</child>
         </childs>
         <!-- properties -->
