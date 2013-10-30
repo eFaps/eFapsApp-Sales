@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2013 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 6547 $
+  Last Changed:    $Date: 2011-05-13 10:46:26 -0500 (vie, 13 may 2011) $
+  Last Changed By: $Author: jorge.cueva@moxter.net $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5d8b7bcc-65a9-497c-889c-e906aede5e19</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 1408 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Products_ProductStock4ProductRequestForm</name>
+        <!-- fields -->
+        <field name="description">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                    method="getDBPropertiesFieldValue"
+                    name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE">
+                <property name="DBProperty">org.efaps.sales.StorageGroup4ProductRequestReport.Title</property>
+            </trigger>
+        </field>
+        <field name="salesReport">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
+                    method="generateReport"
+                    name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE">
+                <property name="ProductRow">true</property>
+
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

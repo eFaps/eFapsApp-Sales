@@ -162,4 +162,9 @@ public interface SalesSettings
      *  OID default productDocumentType to return usage report.
      */
     String PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT = "org.efaps.sales.ProductDocumentType4ReturnUsageReport";
+
+    /**
+     *  OID default productDocumentType to return usage report.
+     */
+    String STORAGEGROUP4PRODUCTREQUESTREPORT = "org.efaps.sales.StorageGroup4ProductRequestReport";
 }

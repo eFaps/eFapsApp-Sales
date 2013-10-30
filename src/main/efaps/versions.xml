@@ -129,6 +129,9 @@
         <!-- Sales_TransactionDocumentAbstractMyDesk to Products_Product_MyDesk -->
         update.add2Menu("ca7eef58-f4a4-4c68-b356-f7bcdd843710", "246542fc-173b-48ec-8cc4-9b635920dc9a", -1);
 
+        <!-- connect the Sales_Products_ProductStock4ProductRequestReportMyDesk to Products_MyDesk -->
+        update.add2Menu("3e3e1b63-e6be-44c1-a0f8-47caf61a2f36", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
+
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
