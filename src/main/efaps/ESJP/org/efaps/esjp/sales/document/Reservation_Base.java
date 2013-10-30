@@ -67,6 +67,7 @@ public abstract class Reservation_Base
     {
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
+        connect2Derived(_parameter, doc);
         return new Return();
     }
 
