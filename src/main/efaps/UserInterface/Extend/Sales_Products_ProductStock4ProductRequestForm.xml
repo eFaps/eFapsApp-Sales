@@ -43,7 +43,6 @@
                     name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"
                     event="UI_FIELD_VALUE">
                 <property name="ProductRow">true</property>
-
             </trigger>
         </field>
     </definition>

@@ -58,6 +58,8 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -70,6 +72,11 @@ import org.efaps.util.EFapsException;
 public abstract class ProductStockReport_Base
 {
     /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(ProductStockReport.class);
+
+    /**
      * @param _parameter    Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
@@ -79,7 +86,7 @@ public abstract class ProductStockReport_Base
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName("PurchaseSaleReport");
+        dyRp.setFileName(DBProperties.getProperty("org.efaps.esjp.sales.report.ProductStockReport.FileName"));
         final String html = dyRp.getHtmlSnipplet(_parameter);
         ret.put(ReturnValues.SNIPLETT, html);
         return ret;
@@ -205,21 +212,25 @@ public abstract class ProductStockReport_Base
             final SystemConfiguration config = Sales.getSysConfig();
             final Instance storGrpInstance = config.getLink(SalesSettings.STORAGEGROUP4PRODUCTREQUESTREPORT);
 
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StorageGroupAbstract2StorageAbstract);
-            attrQueryBldr.addWhereAttrEqValue(CIProducts.StorageGroupAbstract2StorageAbstract.FromAbstractLink,
-                            storGrpInstance);
-            final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CIProducts.StorageGroupAbstract2StorageAbstract.ToAbstractLink);
+            if (storGrpInstance != null && storGrpInstance.isValid()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StorageGroupAbstract2StorageAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CIProducts.StorageGroupAbstract2StorageAbstract.FromAbstractLink,
+                                storGrpInstance);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CIProducts.StorageGroupAbstract2StorageAbstract.ToAbstractLink);
 
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _prodInstance);
-            queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, attrQuery);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIProducts.Inventory.Quantity);
-            multi.execute();
-            while (multi.next()) {
-                final BigDecimal quantityTmp = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
-                quantity = quantity.add(quantityTmp);
+                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+                queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _prodInstance);
+                queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, attrQuery);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIProducts.Inventory.Quantity);
+                multi.execute();
+                while (multi.next()) {
+                    final BigDecimal quantityTmp = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
+                    quantity = quantity.add(quantityTmp);
+                }
+            } else {
+                ProductStockReport_Base.LOG.warn("It's required a system configuration for Storage Group");
             }
             return quantity;
         }

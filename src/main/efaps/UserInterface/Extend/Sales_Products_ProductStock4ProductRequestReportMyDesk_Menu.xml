@@ -20,25 +20,18 @@
  Last Changed By: $Author: miguel.a.aranya $
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3e3e1b63-e6be-44c1-a0f8-47caf61a2f36</uuid>
+    <uuid>517b2b2c-4dcd-42db-a54f-a24b09235f49</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Products_Admin</role>
-            <role>Products_Modifier</role>
-        </access>
-        <target>
-            <menu>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu</menu>
-            <form>Sales_Products_ProductStock4ProductRequestForm</form>
-        </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadPDF</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

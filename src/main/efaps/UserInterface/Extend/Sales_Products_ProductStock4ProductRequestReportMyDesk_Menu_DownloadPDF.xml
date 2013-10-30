@@ -15,30 +15,33 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5313 $
- Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (lun, 16 ago 2010) $
- Last Changed By: $Author: miguel.a.aranya $
+ Revision:        $Rev: 261 $
+ Last Changed:    $Date: 2013-09-19 18:12:02 -0500 (jue, 19 sep 2013) $
+ Last Changed By: $Author: Jan Moxter $
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3e3e1b63-e6be-44c1-a0f8-47caf61a2f36</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>70d4910e-35ca-4636-95e8-8ff90f4d27af</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
+    <file-revision>$Rev: 261 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk</name>
+        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadPDF</name>
+        <icon>Document_PDF</icon>
         <access>
             <role>Sales_Admin</role>
             <role>Products_Admin</role>
             <role>Products_Modifier</role>
         </access>
+        <!-- target definitions -->
         <target>
-            <menu>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu</menu>
-            <form>Sales_Products_ProductStock4ProductRequestForm</form>
+            <execute method="exportReport" program="org.efaps.esjp.sales.report.ProductStockReport">
+                <property name="Mime">pdf</property>
+                <property name="ProductRow">true</property>
+            </execute>
         </target>
+
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
