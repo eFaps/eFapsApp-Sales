@@ -43,6 +43,7 @@
                 <property name="PositionType">Sales_ReservationPosition</property>
                 <property name="StatusGroup">Sales_ReservationStatus</property>
                 <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
 
