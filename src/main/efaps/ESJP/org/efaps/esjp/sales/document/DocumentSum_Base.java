@@ -37,6 +37,7 @@ import java.util.UUID;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -406,6 +407,7 @@ public abstract class DocumentSum_Base
      * @return List map for the update event
      * @throws EFapsException on error
      */
+
     public Return updateFields4Uom(final Parameter _parameter)
         throws EFapsException
     {
@@ -529,6 +531,7 @@ public abstract class DocumentSum_Base
      * @param _calcList List of <code>Calculator</code>
      * @throws EFapsException on error
      */
+
     protected void setOpenAmount(final Parameter _parameter,
                                  final List<Calculator> _calcList)
         throws EFapsException
@@ -1201,7 +1204,14 @@ public abstract class DocumentSum_Base
                                             final QueryBuilder _queryBldr)
                 throws EFapsException
             {
+                final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+                final String typeStr = (String) properties.get("SelectType");
+                final Type type = Type.get(typeStr);
+                QueryBuilder query = new QueryBuilder(type);
+                final AttributeQuery attQueryType = query.getAttributeQuery(CIERP.DocumentTypeAbstract.ID);
+
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
+                attrQueryBldr.addWhereAttrInQuery(CISales.Document2DocumentType.DocumentTypeLink, attQueryType);
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CISales.Document2DocumentType.DocumentLink);
 
