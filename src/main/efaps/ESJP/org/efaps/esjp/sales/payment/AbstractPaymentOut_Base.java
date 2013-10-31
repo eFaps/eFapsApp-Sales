@@ -145,9 +145,9 @@ public abstract class AbstractPaymentOut_Base
             multi.addAttribute(CISales.BulkPayment2Account.ToLink);
             multi.execute();
             multi.next();
-            String accountStr = multi.getAttribute(CISales.BulkPayment2Account.ToLink).toString();
+            final String accountStr = multi.getAttribute(CISales.BulkPayment2Account.ToLink).toString();
             if (accountStr != null && !accountStr.isEmpty()) {
-                html.append(getSetDrowpDown(_parameter, accountStr, "account"));
+                html.append(getSetDropDownScript(_parameter, accountStr, "account"));
             }
         }
         html.append("/*]]>*/ </script>");
