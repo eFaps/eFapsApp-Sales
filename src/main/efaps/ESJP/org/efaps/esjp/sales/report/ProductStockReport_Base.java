@@ -92,6 +92,11 @@ public abstract class ProductStockReport_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @return Return containing the file
+     * @throws EFapsException on error
+     */
     public Return exportReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -99,7 +104,7 @@ public abstract class ProductStockReport_Base
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String mime = (String) props.get("Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName("PurchaseSaleReport");
+        dyRp.setFileName(DBProperties.getProperty("org.efaps.esjp.sales.report.ProductStockReport.FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -108,17 +113,24 @@ public abstract class ProductStockReport_Base
         }
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
-
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @return the report class
+     * @throws EFapsException on error
+     */
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new BuySellReport();
+        return new ProdStockReport();
     }
 
-    public class BuySellReport
+    /**
+     * Report class.
+     */
+    public class ProdStockReport
         extends AbstractDynamicReport
     {
 
@@ -141,16 +153,20 @@ public abstract class ProductStockReport_Base
             multi.addAttribute(CISales.ProductRequestPosition.Quantity);
             final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.ProductRequestPosition.Product)
                             .attribute(CIProducts.ProductAbstract.Name);
+            final SelectBuilder selProdDesc = new SelectBuilder().linkto(CISales.ProductRequestPosition.Product)
+                            .attribute(CIProducts.ProductAbstract.Description);
             final SelectBuilder selProdInstance = new SelectBuilder().linkto(CISales.ProductRequestPosition.Product)
                             .instance();
             final SelectBuilder selProdReq = new SelectBuilder()
                             .linkto(CISales.ProductRequestPosition.ProductRequestLink)
                             .attribute(CISales.ProductRequest.Name);
-            multi.addSelect(selProdReq, selProdName, selProdInstance);
+            multi.addSelect(selProdReq, selProdName, selProdInstance, selProdDesc);
             multi.execute();
             while (multi.next()) {
                 final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.ProductRequestPosition.Quantity);
-                final String prodName = multi.<String>getSelect(selProdName);
+                String prodName = multi.<String>getSelect(selProdName);
+                final String prodDesc = multi.<String>getSelect(selProdDesc);
+                prodName = prodName + " " + prodDesc;
                 final Instance prodInst = multi.<Instance>getSelect(selProdInstance);
                 final String docName = multi.<String>getSelect(selProdReq);
                 if (rowMap.containsKey(docName)) {
@@ -204,6 +220,12 @@ public abstract class ProductStockReport_Base
             return dataSource;
         }
 
+        /**
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _prodInstance instance of the product
+         * @return value
+         * @throws EFapsException on error
+         */
         protected BigDecimal getStock4Product(final Parameter _parameter,
                                               final Instance _prodInstance)
             throws EFapsException
@@ -261,6 +283,9 @@ public abstract class ProductStockReport_Base
             if (productRow) {
                 final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("product", String.class)
                                 .setShowTotal(false);
+                if (ExportType.HTML.equals(getExType())) {
+                    rowGroup.setHeaderWidth(250);
+                }
 
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
                                 .columnGroup("document", String.class);
@@ -270,19 +295,19 @@ public abstract class ProductStockReport_Base
                                         .setStyle(DynamicReports.stl.style().setBold(true)))
                         .rowGroups(rowGroup)
                         .columnGroups(columnGroup)
-                        .measures(quantityMeasure);;
+                        .measures(quantityMeasure);
             } else {
                 final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("document", String.class);
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
                                 .columnGroup("product", String.class)
-                                .setShowTotal(false);;
+                                .setShowTotal(false);
 
                 crosstab.headerCell(DynamicReports.cmp.text(DBProperties
                                 .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell2"))
                                         .setStyle(DynamicReports.stl.style().setBold(true)))
                         .rowGroups(rowGroup)
                         .columnGroups(columnGroup)
-                        .measures(quantityMeasure);;
+                        .measures(quantityMeasure);
             }
             _builder.summary(crosstab);
         }
