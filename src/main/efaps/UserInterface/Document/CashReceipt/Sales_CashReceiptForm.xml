@@ -35,6 +35,10 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt"
+                method="updateFields4RateCurrencyFromDate"
+                name="Sales_CashReceiptForm.date.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
