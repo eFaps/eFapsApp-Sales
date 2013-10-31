@@ -274,7 +274,8 @@ public abstract class ProductStockReport_Base
             } else {
                 final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("document", String.class);
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
-                                .columnGroup("product", String.class);
+                                .columnGroup("product", String.class)
+                                .setShowTotal(false);;
 
                 crosstab.headerCell(DynamicReports.cmp.text(DBProperties
                                 .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell2"))
