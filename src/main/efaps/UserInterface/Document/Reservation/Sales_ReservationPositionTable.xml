@@ -38,6 +38,13 @@
             <property name="Label">Sales_ReservationPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
+        <field name="quantityInStock">
+            <property name="Label">Sales_ReservationPosition/QuantityInStock.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Width">1</property>
+        </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
@@ -50,6 +57,10 @@
                 event="UI_FIELD_AUTOCOMPLETE" >
                 <property name="InStock">true</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Reservation"
+                     method="updateFields4Product"
+                     name="Sales_ReservationPositionTable.product.UI_FIELD_UPDATE"
+                     event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>

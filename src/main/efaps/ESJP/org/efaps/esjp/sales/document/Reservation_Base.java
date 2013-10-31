@@ -21,7 +21,9 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -30,8 +32,10 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -42,6 +46,9 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.ci.CITableSales;
+import org.efaps.esjp.sales.Calculator;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -216,4 +223,53 @@ public abstract class Reservation_Base
         }
         return ret;
     }
+
+    public Return updateFields4Product(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+        final String oid = _parameter.getParameterValues("product")[selected];
+        final Instance instProd = Instance.get(oid);
+        // validate that a product was selected
+        if (instProd.isValid()) {
+
+            final QueryBuilder storeBldr = new QueryBuilder(CIProducts.Warehouse);
+            final AttributeQuery storequery = storeBldr.getAttributeQuery(CIProducts.Warehouse.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, instProd);
+            queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, storequery);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.Inventory.Quantity);
+            multi.execute();
+            if (multi.next()) {
+                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
+                map.put(CITableSales.Sales_ReceiptPositionTable.quantity.name,
+                                BigDecimal.ONE.toString());
+                map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
+                                formaterSysConf.format(quantity));
+            } else {
+                map.put(CITableSales.Sales_ReservationPositionTable.quantity.name,
+                                BigDecimal.ONE.toString());
+                map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
+                                formaterSysConf.format(BigDecimal.ZERO));
+            }
+
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        } else {
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+            final StringBuilder js = new StringBuilder();
+            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        }
+        return retVal;
+    }
+
 }
