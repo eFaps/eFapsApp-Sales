@@ -259,7 +259,8 @@ public abstract class ProductStockReport_Base
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure  = DynamicReports.ctab.measure("quantity",
                             BigDecimal.class, Calculation.SUM);
             if (productRow) {
-                final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("product", String.class);
+                final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("product", String.class)
+                                .setShowTotal(false);
 
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
                                 .columnGroup("document", String.class);
