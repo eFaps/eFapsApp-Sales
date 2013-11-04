@@ -1152,11 +1152,89 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
+    /**
+     * @param _parameter as passed from eFaps API.
+     * @param _values
+     * @param _instances
+     * @throws EFapsException
+     */
     protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
-                                                      final Collection<Map<KeyDef, Object>> values,
+                                                      final Collection<Map<KeyDef, Object>> _values,
                                                       final Instance... _instances)
+        throws EFapsException
     {
+        final Map<Integer, String> relTypes = analyseProperty(_parameter, "RelType");
+        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "RelLinkFrom");
+        final Map<Integer, String> linkTos = analyseProperty(_parameter, "RelLinkTo");
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGrp");
+        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
+        final Map<Integer, String> substracts = analyseProperty(_parameter, "RelSubstracts");
 
+        final List<Map<KeyDef, Object>> lstRemove = new ArrayList<Map<KeyDef, Object>>();
+        for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
+            final Integer key = relTypeEntry.getKey();
+            final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
+            final Type relType = Type.get(relTypeEntry.getValue());
+            final Map<String, BigDecimal> prodQuantMap = new HashMap<String, BigDecimal>();
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(relType);
+            attrQueryBldr.addWhereAttrEqValue(linkFroms.get(key), (Object[]) _instances);
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(linkTos.get(key));
+
+            final Type type = Type.get(types.get(key));
+            final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
+            final String[] statusArr = status.get(key).split(";");
+            for (final String stat : statusArr) {
+                final Status st = Status.find(statusGrps.get(key), stat);
+                attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, st);
+            }
+            attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
+            final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.DocumentAbstract.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, attrQuery2);
+
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
+            multi.addAttribute(CISales.PositionAbstract.Quantity);
+            multi.addSelect(selProdOID);
+            multi.execute();
+            while (multi.next()) {
+                final String prodOid = multi.<String>getSelect(selProdOID);
+                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
+
+                if (prodQuantMap.containsKey(prodOid)) {
+                    prodQuantMap.put(prodOid, prodQuantMap.get(prodOid).add(quantity));
+                } else {
+                    prodQuantMap.put(prodOid, quantity);
+                }
+            }
+
+            for (final Map<KeyDef, Object> map : _values) {
+                if (prodQuantMap.containsKey(map.get(new KeyDefFrmt("product")))) {
+                    final BigDecimal quantityTotal = (BigDecimal) map.get(new KeyDefFrmt("quantity"));
+                    final BigDecimal quantityPartial = prodQuantMap.get(map.get(new KeyDefFrmt("product")));
+
+                    if (substract) {
+                        final BigDecimal quantityCurr = quantityTotal.subtract(quantityPartial);
+                        if (quantityCurr.compareTo(BigDecimal.ZERO) > 0) {
+                            map.put(new KeyDefZeroFrmt("quantity"), quantityCurr);
+                        } else {
+                            lstRemove.add(map);
+                        }
+                    } else {
+                        final BigDecimal quantityCurr = quantityTotal.add(quantityPartial);
+                        map.put(new KeyDefZeroFrmt("quantity"), quantityCurr);
+                    }
+                }
+            }
+        }
+
+        for (final Map<KeyDef, Object> remove : lstRemove) {
+            _values.remove(remove);
+        }
     }
 
     /**
@@ -1212,7 +1290,7 @@ public abstract class AbstractDocument_Base
             final Map<KeyDef, Object> map;
             if (valuesTmp.containsKey(prodInst)) {
                 map = valuesTmp.get(prodInst);
-                final BigDecimal quantity = (BigDecimal) map.get("quantity");
+                final BigDecimal quantity = (BigDecimal) map.get(new KeyDefZeroFrmt("quantity"));
                 map.put(new KeyDefZeroFrmt("quantity"),
                                 quantity.add(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             } else {
@@ -2361,7 +2439,7 @@ public abstract class AbstractDocument_Base
         {
             boolean ret = false;
             if (_obj instanceof KeyDef) {
-                ((KeyDef) _obj).getName().equals(getName());
+                ret = ((KeyDef) _obj).getName().equals(getName());
             } else {
                 ret = super.equals(_obj);
             }
