@@ -167,5 +167,17 @@
             <property name="Attribute">CrossTotal</property>
             <property name="Required">true</property>
         </field>
+        <field name="voucherType">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">VoucherType</property>
+        </field>
+        <field name="voucherNro">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">VoucherNro</property>
+        </field>
     </definition>
 </ui-form>

@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
@@ -1407,6 +1408,21 @@ public abstract class AbstractDocument_Base
                                 .setIgnoreCase(true);
             }
             queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Active, true);
+
+            if (properties.containsKey("Classifications")) {
+                final String classesStr = (String) properties.get("Classifications");
+                String[] classes = new String[0];
+                if (classesStr != null) {
+                    classes = classesStr.split(";");
+                }
+                if (classes.length > 0) {
+                    final Classification[] classTypes = new Classification[classes.length];
+                    for (int i = 0; i < classes.length; i++) {
+                        classTypes[i] = (Classification) Type.get(classes[i]);
+                    }
+                    queryBldr.addWhereClassification(classTypes);
+                }
+            }
 
             if (properties.containsKey("InStock")) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
