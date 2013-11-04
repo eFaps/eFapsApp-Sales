@@ -27,6 +27,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1010,7 +1011,14 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * JavaScript part for setting the Positions.
+     * JavaScript part for setting the Positions.<br/>
+     * <ol>
+     * <li>Get the data and fill a <code>Map&lt;String,Object&gt;</code> with the values</li>
+     * <li>Substract/add data by evaluating related document</li>
+     * <li>Give the chance to correct/manipulate the original data</li>
+     * <li>Convert the <code>Map&lt;String,Object&gt;</code> into a <code>Map&lt;String,String&gt;</code></li>
+     * <li>Generate the JavaScript for the data</li>
+     * </ol>
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _instance instance the values are copied from
@@ -1022,9 +1030,6 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        final DecimalFormat formaterZero = getZeroDigitsformater();
-        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
-        final DecimalFormat formater = getTwoDigitsformater();
         final BigDecimal rate = BigDecimal.ONE;
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance);
@@ -1053,10 +1058,10 @@ public abstract class AbstractDocument_Base
         multi.setEnforceSorted(true);
         multi.execute();
 
-        final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+        final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
 
         while (multi.next()) {
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
 
             final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
             final BigDecimal discountNetUnitPrice = multi.
@@ -1069,43 +1074,38 @@ public abstract class AbstractDocument_Base
             final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
 
-            map.put("oid", multi.getCurrentInstance().getOid());
-            map.put("quantity", formaterZero
-                            .format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
-            map.put("productAutoComplete", multi.<String>getSelect(selProdName));
-            map.put("product",  multi.<String>getSelect(selProdOID));
-            map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
-            map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
+            map.put(new KeyDefStr("oid"), multi.getCurrentInstance().getOid());
+            map.put(new KeyDefZeroFrmt("quantity"),
+                            multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+            map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
+            map.put(new KeyDefStr("product"),  multi.<String>getSelect(selProdOID));
+            map.put(new KeyDefStr("productDesc"),  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+            map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                             multi.<Long>getSelect(selProdDim)));
             if (TargetMode.EDIT.equals(Context.getThreadContext()
                             .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                map.put("netUnitPrice", rateNetUnitPrice == null || netUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
-                map.put("discountNetUnitPrice", rateDiscountNetUnitPrice == null || discountNetUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice
-                                                : discountNetUnitPrice));
-                map.put("netPrice", rateNetPrice == null || netPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formater.format(rate != null ? rateNetPrice : netPrice));
+                map.put(new KeyDefConfigFrmt("netUnitPrice"), rateNetUnitPrice == null || netUnitPrice == null
+                                ? BigDecimal.ZERO
+                                : rate != null ? rateNetUnitPrice : netUnitPrice);
+                map.put(new KeyDefConfigFrmt("discountNetUnitPrice"), rateDiscountNetUnitPrice == null
+                                || discountNetUnitPrice == null ? BigDecimal.ZERO
+                                : rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice);
+                map.put(new KeyDefTwoFrmt("netPrice"), rateNetPrice == null || netPrice == null
+                                ? BigDecimal.ZERO
+                                : rate != null ? rateNetPrice : netPrice);
             } else {
-                map.put("netUnitPrice", netUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
-                                                BigDecimal.ROUND_HALF_UP) : netUnitPrice));
-                map.put("discountNetUnitPrice", discountNetUnitPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
-                                                BigDecimal.ROUND_HALF_UP)
-                                                : discountNetUnitPrice));
-                map.put("netPrice", netPrice == null
-                                ? BigDecimal.ZERO.toString()
-                                : formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                : netPrice));
-                map.put("discount", discount == null
-                                ? BigDecimal.ZERO.toString()
-                                : formater.format(discount));
+                map.put(new KeyDefConfigFrmt("netUnitPrice"), netUnitPrice == null
+                                ? BigDecimal.ZERO
+                                : rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice);
+                map.put(new KeyDefConfigFrmt("discountNetUnitPrice"), discountNetUnitPrice == null
+                                ? BigDecimal.ZERO
+                                : rate != null
+                                    ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                    : discountNetUnitPrice);
+                map.put(new KeyDefTwoFrmt("netPrice"), netPrice == null
+                                ? BigDecimal.ZERO
+                                : rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice);
+                map.put(new KeyDefTwoFrmt("discount"), discount == null ? BigDecimal.ZERO : discount);
             }
             values.add(map);
         }
@@ -1113,19 +1113,50 @@ public abstract class AbstractDocument_Base
         final Set<String> noEscape = new HashSet<String>();
         noEscape.add("uoM");
 
+        evaluatePositions4RelatedInstances(_parameter, values, _instance);
+
         add2JavaScript4Postions(_parameter, values, noEscape);
+
+        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-            js.append(getSetFieldValuesScript(_parameter, values, noEscape));
+            js.append(getSetFieldValuesScript(_parameter, strValues, noEscape));
         } else {
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
+                .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
                             getOnCompleteScript(_parameter), false, false, noEscape));
         }
         js.append("\n");
         return js;
     }
 
+    /**
+     * @param _parameter
+     * @param _values
+     * @return
+     */
+    protected List<Map<String, String>> convertMap4Script(final Parameter _parameter,
+                                                          final Collection<Map<KeyDef, Object>> _values)
+        throws EFapsException
+    {
+        final List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
+        for (final Map<KeyDef, Object> valueMap :_values) {
+            final Map<String, String> map  = new HashMap<String, String>();
+            for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
+                map.put(entry.getKey().getName(), entry.getKey().convert2String(entry.getValue()));
+            }
+            ret.add(map);
+        }
+        return ret;
+    }
+
+    protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
+                                                      final Collection<Map<KeyDef, Object>> values,
+                                                      final Instance... _instances)
+    {
+
+    }
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
@@ -1134,8 +1165,8 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected void add2JavaScript4Postions(final Parameter _parameter,
-                                                final List<Map<String, String>> _values,
-                                                final Set<String> _noEscape)
+                                           final Collection<Map<KeyDef, Object>> _values,
+                                           final Set<String> _noEscape)
         throws EFapsException
     {
         // to be used by implementations
@@ -1155,7 +1186,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        final DecimalFormat formaterZero = getZeroDigitsformater();
+        getZeroDigitsformater();
         getDigitsformater4UnitPrice(new Calculator(_parameter, this));
         getTwoDigitsformater();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
@@ -1173,39 +1204,41 @@ public abstract class AbstractDocument_Base
         multi.addSelect(selProdInst, selProdName, selProdDim);
         multi.execute();
 
-        final Map<Instance, Map<String, Object>> valuesTmp = new LinkedHashMap<Instance, Map<String, Object>>();
+        final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
 
         while (multi.next()) {
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);
-            final Map<String, Object> map;
+            final Map<KeyDef, Object> map;
             if (valuesTmp.containsKey(prodInst)) {
                 map = valuesTmp.get(prodInst);
                 final BigDecimal quantity = (BigDecimal) map.get("quantity");
-                map.put("quantity", quantity.add(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
+                map.put(new KeyDefZeroFrmt("quantity"),
+                                quantity.add(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             } else {
-                map = new HashMap<String, Object>();
+                map = new HashMap<KeyDef, Object>();
                 valuesTmp.put(prodInst, map);
-                map.put("productAutoComplete", multi.<String>getSelect(selProdName));
-                map.put("product",  prodInst.getOid());
-                map.put("productDesc",  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
-                map.put("uoM", getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
+                map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
+                map.put(new KeyDefStr("product"),  prodInst.getOid());
+                map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(
+                                CISales.PositionSumAbstract.ProductDesc));
+                map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                                 multi.<Long>getSelect(selProdDim)));
-                map.put("quantity", multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+                map.put(new KeyDefZeroFrmt("quantity"),
+                                multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
             }
         }
+        final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
 
-        final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+        final Set<String> noEscape = new HashSet<String>();
+        noEscape.add("uoM");
 
-        for (final Map<String, Object> map : valuesTmp.values()) {
-            final Map<String, String> tmpMap = new HashMap<String, String>();
-            tmpMap.put("quantity", formaterZero.format(map.get("quantity")));
-            tmpMap.put("productAutoComplete", (String) map.get("productAutoComplete"));
-            tmpMap.put("product", (String) map.get("product"));
-            tmpMap.put("productDesc", (String) map.get("productDesc"));
-            tmpMap.put("uoM", (String) map.get("uoM"));
-            values.add(tmpMap);
-        }
-        Collections.sort(values, new Comparator<Map<String, String>>()
+        evaluatePositions4RelatedInstances(_parameter, values, _instances.toArray(new Instance[_instances.size()]));
+
+        add2JavaScript4Postions(_parameter, values, noEscape);
+
+        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+
+        Collections.sort(strValues, new Comparator<Map<String, String>>()
         {
             @Override
             public int compare(final Map<String, String> _o1,
@@ -1215,35 +1248,16 @@ public abstract class AbstractDocument_Base
             }
         });
 
-        updateValues4JavaScript4Positions(_parameter, values);
-
-        final Set<String> noEscape = new HashSet<String>();
-        noEscape.add("uoM");
-
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-            js.append(getSetFieldValuesScript(_parameter, values, noEscape));
+            js.append(getSetFieldValuesScript(_parameter, strValues, noEscape));
         } else {
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
+                .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
                             getOnCompleteScript(_parameter), false, false, noEscape));
         }
         js.append("\n");
         return js;
-    }
-
-    /**
-     * Update the values for the position script.
-     *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _values list of values the values are copied from
-     * @throws EFapsException on error
-     */
-    protected void updateValues4JavaScript4Positions(final Parameter _parameter,
-                                                     final List<Map<String, String>> _values)
-        throws EFapsException
-    {
-
     }
 
     /**
@@ -2309,6 +2323,170 @@ public abstract class AbstractDocument_Base
         js.append(getDomReadyScript(_parameter, _instance))
             .append(" });\n");
         return js.toString();
+    }
+
+    public abstract static class KeyDef
+    {
+        private final String name;
+
+        public KeyDef(final String _name) {
+            this.name = _name;
+        }
+
+        public String getName()
+        {
+            return this.name;
+        }
+
+        public abstract String convert2String(final Object _value) throws EFapsException;
+
+        @Override
+        public boolean equals(final Object _obj)
+        {
+            boolean ret = false;
+            if (_obj instanceof KeyDef) {
+                ((KeyDef) _obj).getName().equals(getName());
+            } else {
+                ret = super.equals(_obj);
+            }
+            return ret ;
+        }
+
+        @Override
+        public int hashCode()
+        {
+            return getName().hashCode();
+        }
+    }
+
+    public static class KeyDefStr
+        extends KeyDef
+    {
+        /**
+         * @param _name
+         */
+        public KeyDefStr(final String _name)
+        {
+            super(_name);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String convert2String(final Object _value)
+        {
+            return (String) _value;
+        }
+    }
+
+    public static class KeyDefFrmt
+        extends KeyDef
+    {
+
+        /**
+         * @param _name
+         */
+        public KeyDefFrmt(final String _name)
+        {
+            super(_name);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String convert2String(final Object _value) throws EFapsException
+        {
+            return getFrmt(2,0).format(_value);
+        }
+
+        protected DecimalFormat getFrmt(final Integer _minFrac,
+                                        final Integer _maxFrac)
+            throws EFapsException
+        {
+            final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext()
+                            .getLocale());
+            if (_maxFrac != null) {
+                formater.setMaximumFractionDigits(_maxFrac);
+            }
+            if (_minFrac != null) {
+                formater.setMinimumFractionDigits(_minFrac);
+            }
+            formater.setRoundingMode(RoundingMode.HALF_UP);
+            formater.setGroupingUsed(true);
+            formater.setParseBigDecimal(true);
+            return formater;
+        }
+    }
+
+    public static class KeyDefZeroFrmt
+        extends KeyDefFrmt
+    {
+
+        /**
+         * @param _name
+         */
+        public KeyDefZeroFrmt(final String _name)
+        {
+            super(_name);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String convert2String(final Object _value) throws EFapsException
+        {
+            return getFrmt(0,0).format(_value);
+        }
+    }
+
+    public static class KeyDefTwoFrmt
+        extends KeyDefFrmt
+    {
+
+        /**
+         * @param _name
+         */
+        public KeyDefTwoFrmt(final String _name)
+        {
+            super(_name);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String convert2String(final Object _value) throws EFapsException
+        {
+            return getFrmt(2,2).format(_value);
+        }
+    }
+
+    public static class KeyDefConfigFrmt
+        extends KeyDefFrmt
+    {
+
+        /**
+         * @param _name
+         */
+        public KeyDefConfigFrmt(final String _name)
+        {
+            super(_name);
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public String convert2String(final Object _value)
+            throws EFapsException
+        {
+            final DecimalFormat frmt = getFrmt(null, null);
+            frmt.applyPattern("###.00");
+            return frmt.format(_value);
+        }
     }
 
 }
