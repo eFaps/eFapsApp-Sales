@@ -332,7 +332,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">HIDDEN</property>
+            <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_IncomingReceiptForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
         </field>
