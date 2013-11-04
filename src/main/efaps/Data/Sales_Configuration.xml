@@ -40,12 +40,14 @@
         <attribute>
             <key>org.efaps.sales.ActivateCalculateCosts</key>
             <value>false</value>
-            <description>boolean (true/false). Activate the calculation of Costs for a product in stock. Executed by calling en esjp after the insertion of a Incoming Invoice.</description>
+            <description>boolean (true/false). Activate the calculation of Costs for a product in stock. Executed by calling en esjp after
+                the insertion of a Incoming Invoice.</description>
         </attribute>
         <attribute>
             <key>org.efaps.sales.ActivateLongDecimal</key>
             <value><![CDATA[Sales_DocumentAbstract=2]]></value>
-            <description>Properties. Activate the possibility the unit price of the specified type will have until n decimal digits. </description>
+            <description>Properties. Activate the possibility the unit price of the specified type will have until n decimal digits.
+            </description>
         </attribute>
         <attribute>
             <key>org.efaps.sales.ActivateMinRetailPrice</key>
@@ -55,7 +57,8 @@
         <attribute>
             <key>PettyCashBalance_CommandWithDate</key>
             <value>false</value>
-            <description>boolean (true/false). Activate the command to create a balance setting the date and choosing the petty cash receipts.</description>
+            <description>boolean (true/false). Activate the command to create a balance setting the date and choosing the petty cash
+                receipts.</description>
         </attribute>
         <attribute>
             <key>DeliveryNote_TransactionTrigger4Reservation</key>
@@ -70,7 +73,8 @@
         <attribute>
             <key>org.efaps.sales.ActivateCode4PaymentDocumentOut</key>
             <value>false</value>
-            <description>boolean (true/false). Activate the code to generated a new code string to insert payment document out.</description>
+            <description>boolean (true/false). Activate the code to generated a new code string to insert payment document out.
+            </description>
         </attribute>
         <attribute>
             <key>org.efaps.sales.NumberGenerator4PaymentDocument</key>
@@ -120,6 +124,11 @@
         <attribute>
             <key>org.efaps.sales.RecievingTicketSequence</key>
             <value><![CDATA[UUID=89e1f319-95c7-43da-a5e4-66a74f56cebd]]></value>
+            <description>Company should be setted.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.IncomingReceiptSequence</key>
+            <value><![CDATA[UUID=58d89fbf-0c0a-4a27-b1df-90f34759011e]]></value>
             <description>Company should be setted.</description>
         </attribute>
     </definition>
