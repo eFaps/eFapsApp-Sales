@@ -67,6 +67,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -112,7 +113,8 @@ public abstract class Account_Base
 
         //Sales-Configuration
         final Instance baseCurrInst = SystemConfiguration.get(
-                                UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+                        .getLink(SalesSettings.CURRENCYBASE);
 
         final DateTime date = new DateTime(_parameter.getParameterValue("date"));
         final Insert insert = new Insert(CISales.CashDeskBalance);
