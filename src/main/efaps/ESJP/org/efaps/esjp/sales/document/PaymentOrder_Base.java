@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -35,6 +34,8 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -63,13 +64,12 @@ public abstract class PaymentOrder_Base
     {
         final CreatedDoc createdDoc = new CreatedDoc();
         final String name = getName4Create(_parameter);
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
                         ? baseCurrInst
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
-        
+
         final String spendingLink = _parameter.getParameterValue("spendingLink");
         final String rateCrossTotal = _parameter.getParameterValue("rateCrossTotal");
         final BigDecimal ratcross = new BigDecimal(rateCrossTotal);
