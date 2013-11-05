@@ -147,18 +147,13 @@ public abstract class Account_Base
 
             final Long currId = Long.parseLong(currIds[i]);
             final Object[] rates;
-            final BigDecimal rate;
-            if (curr2Rate.containsKey(currId)) {
-                rate = curr2Rate.get(currId);
-            } else {
-                rates = getRate(date, currId);
-                if (rates != null) {
-                    rate = (BigDecimal) rates[2];
-                } else {
-                    rate = BigDecimal.ONE;
-                }
-                curr2Rate.put(currId, rate);
-            }
+            final BigDecimal rate = BigDecimal.ONE;
+            /*
+             * if (curr2Rate.containsKey(currId)) { rate =
+             * curr2Rate.get(currId); } else { rates = getRate(date, currId); if
+             * (rates != null) { rate = (BigDecimal) rates[1]; } else { rate =
+             * BigDecimal.ONE; } curr2Rate.put(currId, rate); }
+             */
             crossTotal = crossTotal.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP));
             final Insert transInsert = new Insert(CISales.TransactionOutbound);
             transInsert.add(CISales.TransactionOutbound.Amount, amount);
