@@ -24,7 +24,6 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.UUID;
 
@@ -36,6 +35,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.Tax_Base.TaxRate;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -99,11 +99,6 @@ public abstract class Calculator_Base
     private final long taxcatId;
 
     /**
-     * Standard formatter used in this class.
-     */
-    private final DecimalFormat formater;
-
-    /**
      * The Calculation must be done without tax.
      */
     private boolean withoutTax = false;
@@ -124,11 +119,6 @@ public abstract class Calculator_Base
     private LocalDate localDate;
 
     /**
-     * Length of the Decimal.
-     */
-    private int longDecimal;
-
-    /**
      * Must for this Product perception be applied.
      */
     private boolean perceptionProduct;
@@ -139,17 +129,20 @@ public abstract class Calculator_Base
     private Parameter parameter;
 
     /**
+     * TypeName used to access SystemConfigurations.
+     */
+    private final String typeName;
+
+    /**
      * Constructor used to instantiate an empty calculator.
      * @throws EFapsException on error
      */
-
     public Calculator_Base()
         throws EFapsException
     {
         this.taxcatId = 0;
-        this.formater = Calculator_Base.getFormatInstance();
-        this.longDecimal = 2;
         this.empty = true;
+        this.typeName = CISales.DocumentAbstract.getType().getName();
         setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
     }
 
@@ -164,9 +157,8 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         this.taxcatId = 0;
-        this.formater = Calculator_Base.getFormatInstance();
-        this.longDecimal = _config.isLongDecimal(_parameter);
         this.empty = true;
+        this.typeName = _config.getTypeName4SysConf(_parameter);
         setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
     }
 
@@ -194,14 +186,8 @@ public abstract class Calculator_Base
     //CHECKSTYLE:ON
     {
         this.parameter = _parameter;
-        this.formater = Calculator_Base.getFormatInstance();
         this.empty = false;
-        if (_config != null) {
-            this.longDecimal = _config.isLongDecimal(_parameter);
-        } else {
-            this.longDecimal = 2;
-        }
-
+        this.typeName = _config.getTypeName4SysConf(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setLocalDate(DateUtil.getDateFromParameter(dateStr).toLocalDate());
@@ -283,11 +269,10 @@ public abstract class Calculator_Base
                                   final String _unitPrice)
         throws EFapsException
     {
-        int decDigCant = 2;
-        if (isLongDecimal() != decDigCant) {
-            decDigCant = isLongDecimal();
-        }
-        final BigDecimal unitPrice = parse(_unitPrice).setScale(decDigCant, BigDecimal.ROUND_HALF_UP);
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+
+        final BigDecimal unitPrice = parse(_unitPrice).setScale(format.getMaximumFractionDigits(),
+                        BigDecimal.ROUND_HALF_UP);
 
         final Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
@@ -478,7 +463,7 @@ public abstract class Calculator_Base
     public String getNetUnitPriceStr()
         throws EFapsException
     {
-        return this.formater.format(getNetUnitPrice());
+        return getFormatter().format(getNetUnitPrice());
     }
 
     /**
@@ -565,7 +550,7 @@ public abstract class Calculator_Base
     public String getCrossUnitPriceStr()
         throws EFapsException
     {
-        return this.formater.format(getCrossUnitPrice());
+        return getFormatter().format(getCrossUnitPrice());
     }
 
     /**
@@ -620,8 +605,9 @@ public abstract class Calculator_Base
      * @return string representation of the discount.
      */
     public String getDiscountStr()
+        throws EFapsException
     {
-        return this.formater.format(getDiscount());
+        return getFormatter().format(getDiscount());
     }
 
     /**
@@ -677,10 +663,10 @@ public abstract class Calculator_Base
     {
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
-        int decDigCant = 2;
-        if (isLongDecimal() != decDigCant) {
-            decDigCant = isLongDecimal();
-        }
+
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+        final int decDigCant = format.getMaximumFractionDigits();
+
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
@@ -710,7 +696,7 @@ public abstract class Calculator_Base
     public String getDiscountNetUnitPriceStr()
         throws EFapsException
     {
-        return getFormater().format(getDiscountNetUnitPrice());
+        return getFormatter().format(getDiscountNetUnitPrice());
     }
 
     /**
@@ -768,8 +754,9 @@ public abstract class Calculator_Base
      * @return string representation of the quantity.
      */
     public String getQuantityStr()
+        throws EFapsException
     {
-        return getFormater().format(getQuantity());
+        return getFormatter().format(getQuantity());
     }
 
     /**
@@ -828,7 +815,7 @@ public abstract class Calculator_Base
     public String getCrossPriceStr()
         throws EFapsException
     {
-        return this.formater.format(getCrossPrice());
+        return getFormatter().format(getCrossPrice());
     }
 
     /**
@@ -872,10 +859,9 @@ public abstract class Calculator_Base
     public ProductPrice getProductDiscountCrossUnitPrice()
         throws EFapsException
     {
-        int decDigCant = 2;
-        if (isLongDecimal() != decDigCant) {
-            decDigCant = isLongDecimal();
-        }
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+        final int decDigCant = format.getMaximumFractionDigits();
+
         ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
@@ -941,7 +927,7 @@ public abstract class Calculator_Base
     public String getNetPriceStr()
         throws EFapsException
     {
-        return this.formater.format(getNetPrice());
+        return getFormatter().format(getNetPrice());
     }
 
     /**
@@ -1107,7 +1093,7 @@ public abstract class Calculator_Base
     public String getPerceptionStr()
         throws EFapsException
     {
-        return getFormater().format(getPerception());
+        return getFormatter().format(getPerception());
     }
 
     /**
@@ -1158,10 +1144,12 @@ public abstract class Calculator_Base
      * Getter method for instance variable {@link #formater}.
      *
      * @return value of instance variable {@link #formater}
+     * @throws EFapsException on error
      */
-    protected DecimalFormat getFormater()
+    protected DecimalFormat getFormatter()
+        throws EFapsException
     {
-        return this.formater;
+        return NumberFormatter.get().getFormatter();
     }
 
     /**
@@ -1187,7 +1175,7 @@ public abstract class Calculator_Base
     {
         final BigDecimal ret;
         try {
-            ret = (BigDecimal) this.formater.parse(_value);
+            ret = (BigDecimal) getFormatter().parse(_value);
         } catch (final ParseException e) {
             throw new EFapsException(Calculator.class, "ParseException", e);
         }
@@ -1199,8 +1187,9 @@ public abstract class Calculator_Base
      * @return value formated with {@link #formater}
      */
     public String format(final Object _value)
+        throws EFapsException
     {
-        return this.formater.format(_value);
+        return getFormatter().format(_value);
     }
 
     /**
@@ -1211,21 +1200,6 @@ public abstract class Calculator_Base
     public boolean isEmpty()
     {
         return this.empty;
-    }
-
-    /**
-     * Method to get a <code>DecimalFormat</code> instance with the
-     * <code>Locale</code> from the <code>Context</code>.
-     *
-     * @return DecimalFormat
-     * @throws EFapsException on erro
-     */
-    public static DecimalFormat getFormatInstance()
-        throws EFapsException
-    {
-        final DecimalFormat ret = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        ret.setParseBigDecimal(true);
-        return ret;
     }
 
     /**
@@ -1250,15 +1224,6 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @return true if the long decimal is activated
-     */
-    public int isLongDecimal()
-    {
-        return this.longDecimal;
-    }
-
-
-    /**
      * Setter method for instance variable {@link #oid}.
      *
      * @param _oid value for instance variable {@link #oid}
@@ -1276,5 +1241,16 @@ public abstract class Calculator_Base
     public void setEmpty(final boolean _empty)
     {
         this.empty = _empty;
+    }
+
+
+    /**
+     * Getter method for the instance variable {@link #typeName}.
+     *
+     * @return value of instance variable {@link #typeName}
+     */
+    public String getTypeName()
+    {
+        return this.typeName;
     }
 }

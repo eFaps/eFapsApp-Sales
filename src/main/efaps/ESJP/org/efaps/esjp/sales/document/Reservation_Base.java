@@ -47,7 +47,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
-import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -228,7 +228,7 @@ public abstract class Reservation_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
+        final DecimalFormat formater = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
 
@@ -252,12 +252,12 @@ public abstract class Reservation_Base
                 map.put(CITableSales.Sales_ReceiptPositionTable.quantity.name,
                                 BigDecimal.ONE.toString());
                 map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
-                                formaterSysConf.format(quantity));
+                                formater.format(quantity));
             } else {
                 map.put(CITableSales.Sales_ReservationPositionTable.quantity.name,
                                 BigDecimal.ONE.toString());
                 map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
-                                formaterSysConf.format(BigDecimal.ZERO));
+                                formater.format(BigDecimal.ZERO));
             }
 
             list.add(map);

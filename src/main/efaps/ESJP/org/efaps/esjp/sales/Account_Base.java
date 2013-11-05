@@ -66,6 +66,7 @@ import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -268,10 +269,10 @@ public abstract class Account_Base
                     .append(map.get(entry.getKey())).append("\"/>");
             }
             bldr.append("<table>");
-            final DecimalFormat formater = Calculator_Base.getFormatInstance();
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
             for (final Entry<String, BigDecimal> entry : map.entrySet()) {
                 bldr.append("<tr><td>").append(entry.getKey()).append("</td><td>")
-                    .append(formater.format(entry.getValue())).append("</td></tr>");
+                    .append(formatter.format(entry.getValue())).append("</td></tr>");
             }
             bldr.append("</table>");
         }

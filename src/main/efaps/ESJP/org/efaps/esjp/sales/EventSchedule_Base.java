@@ -24,6 +24,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -204,13 +205,13 @@ public class EventSchedule_Base
     protected String getNetPriceFmtStr(final BigDecimal netTotal)
         throws EFapsException
     {
-        return getTwoDigitsformater().format(netTotal);
+        return NumberFormatter.get().getTwoDigitsFormatter().format(netTotal);
     }
 
     protected String getTotalFmtStr(final BigDecimal netTotal)
         throws EFapsException
     {
-        return getTwoDigitsformater().format(netTotal);
+        return NumberFormatter.get().getTwoDigitsFormatter().format(netTotal);
     }
 
     public class CreateSchedule

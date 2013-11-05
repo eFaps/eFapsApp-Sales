@@ -21,6 +21,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
@@ -33,6 +34,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Calculator;
@@ -85,11 +87,13 @@ public abstract class PerceptionCertificate_Base
             final Object[] rateObj = (Object[]) _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name);
             final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                             BigDecimal.ROUND_HALF_UP);
+            final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+            final int scale = totalFrmt.getMaximumFractionDigits();
+
             insert.add(CISales.PerceptionCertificate.RateCrossTotal,
-                            perception.setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-            insert.add(CISales.DocumentSumAbstract.CrossTotal,
-                            perception.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(isLongDecimal(_parameter),
-                                            BigDecimal.ROUND_HALF_UP));
+                            perception.setScale(scale, BigDecimal.ROUND_HALF_UP));
+            insert.add(CISales.DocumentSumAbstract.CrossTotal, perception.divide(rate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP));
             insert.execute();
 
             final Insert relInsert = new Insert(CISales.PerceptionCertificate2Document);

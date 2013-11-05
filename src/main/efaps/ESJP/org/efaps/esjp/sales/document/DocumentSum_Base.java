@@ -59,7 +59,10 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
@@ -185,26 +188,25 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
         }
 
-        final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
-                        BigDecimal.ROUND_HALF_UP);
+        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final int scale = frmt.getMaximumFractionDigits();
+        final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
         insert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
 
-        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(isLongDecimal(_parameter),
-                        BigDecimal.ROUND_HALF_UP);
+        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
         insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
         insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
 
         final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                        .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP);
+                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
         insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
 
-        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP).setScale(
-                        isLongDecimal(_parameter),
-                        BigDecimal.ROUND_HALF_UP);
+        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
         insert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
         createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
 
@@ -282,14 +284,18 @@ public abstract class DocumentSum_Base
                                        final Calculator _cal)
         throws EFapsException
     {
-        //positions
+        // positions
         _map.put("quantity", _cal.getQuantityStr());
-        _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(_cal)));
-        _map.put("netPrice", _cal.getNetPriceFmtStr(getTwoDigitsformater()));
-        _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(_cal)));
-        _map.put("discount", _cal.getDiscountFmtStr(getDigitsFormater4Disount(_cal)));
+        _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
+                                        getTypeName4SysConf(_parameter))));
+        _map.put("netPrice", _cal.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
+                        getTypeName4SysConf(_parameter))));
+        _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
+                                        getTypeName4SysConf(_parameter))));
+        _map.put("discount", _cal.getDiscountFmtStr(NumberFormatter.get().getFrmt4Discount(
+                        getTypeName4SysConf(_parameter))));
 
-        //totals
+        // totals
         _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
         _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
 
@@ -343,13 +349,7 @@ public abstract class DocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
-            map.put("quantity", cal.getQuantityStr());
-            map.put("netUnitPrice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("netPrice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-            map.put("netTotal", getNetTotalFmtStr(_parameter, calcList));
-            map.put("crossTotal", getCrossTotalFmtStr(_parameter, calcList));
-            map.put("discountNetUnitPrice", cal.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("discount", cal.getDiscountFmtStr(getDigitsFormater4Disount(cal)));
+            add2Map4UpdateField(_parameter, map, calcList, cal);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -424,14 +424,9 @@ public abstract class DocumentSum_Base
             final UoM uom = Dimension.getUoM(uomID);
             final BigDecimal up = cal.getProductPrice().getCurrentPrice().multiply(new BigDecimal(uom.getNumerator()))
                             .divide(new BigDecimal(uom.getDenominator()));
-
             cal.setUnitPrice(up);
-            map.put("quantity", cal.getQuantityStr());
-            map.put("netunitprice", cal.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(cal)));
-            map.put("netprice", cal.getNetPriceFmtStr(getTwoDigitsformater()));
-            map.put("nettotal", getNetTotalFmtStr(_parameter, calcList));
+            add2Map4UpdateField(_parameter, map, calcList, cal);
             list.add(map);
-
             retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
@@ -470,8 +465,9 @@ public abstract class DocumentSum_Base
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
 
         if (!newInst.equals(currentInst)) {
-
-            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, currentInst);
+            final Currency currency = new Currency();
+            final RateInfo[] rateInfos = currency.evaluateRateInfos(_parameter,
+                            _parameter.getParameterValue("date_eFapsDate"), currentInst, newInst);
 
             final List<Calculator> calculators = analyseTable(_parameter, null);
 
@@ -481,13 +477,13 @@ public abstract class DocumentSum_Base
             for (final Calculator calculator : calculators) {
                 final Map<String, String> map2 = new HashMap<String, String>();
                 if (!calculator.isEmpty()) {
-                    calculator.applyRate(newInst, rates[2]);
-                    map2.put("netUnitPrice",
-                                    calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
-                    map2.put("netPrice",
-                                    calculator.getNetPriceFmtStr(getTwoDigitsformater()));
-                    map2.put("discountNetUnitPrice",
-                                    calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
+                    calculator.applyRate(newInst, rateInfos[2].getRate());
+                    map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
+                                                    getTypeName4SysConf(_parameter))));
+                    map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
+                                                    getTypeName4SysConf(_parameter))));
+                    map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
+                                    NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
                     values.put(i, map2);
                 }
                 i++;
@@ -509,10 +505,10 @@ public abstract class DocumentSum_Base
                                     getPerceptionTotalFmtStr(_parameter, calculators)));
                 }
             }
-            js.append(getSetFieldValue(0, "rateCurrencyData",
-                            getFormater(0, 3).format(rates[3].setScale(3, BigDecimal.ROUND_HALF_UP))))
-                .append(getSetFieldValue(0, "rate", getFormater(null, null).format(rates[3])))
-                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0)))
+            js.append(getSetFieldValue(0, "rateCurrencyData", rateInfos[1].getRateUIFrmt()))
+                .append(getSetFieldValue(0, "rate", rateInfos[1].getRateFrmt()))
+                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                                Boolean.toString(rateInfos[1].getCurrencyInst().isInvert())))
                 .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
 
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
@@ -589,8 +585,11 @@ public abstract class DocumentSum_Base
         final Map<String, String> map = new HashMap<String, String>();
         final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue("rateCurrencyId"));
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+        Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+        final Currency currency = new Currency();
+        final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, _parameter.getParameterValue("date_eFapsDate"),
+                        newInst);
 
         final List<Calculator> calculators = analyseTable(_parameter, null);
 
@@ -600,13 +599,13 @@ public abstract class DocumentSum_Base
         for (final Calculator calculator : calculators) {
             final Map<String, String> map2 = new HashMap<String, String>();
             if (!calculator.isEmpty()) {
-                calculator.applyRate(newInst, rates[2]);
-                map2.put("netUnitPrice",
-                                calculator.getNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
-                map2.put("netPrice",
-                                calculator.getNetPriceFmtStr(getTwoDigitsformater()));
-                map2.put("discountNetUnitPrice",
-                                calculator.getDiscountNetUnitPriceFmtStr(getDigitsformater4UnitPrice(calculator)));
+                calculator.applyRate(newInst, rateInfo.getRate());
+                map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
+                                getTypeName4SysConf(_parameter))));
+                map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
+                                getTypeName4SysConf(_parameter))));
+                map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
+                                NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
                 values.put(i, map2);
             }
             i++;
@@ -624,11 +623,11 @@ public abstract class DocumentSum_Base
                 js.append(getSetFieldValue(0, "openAmount", getBaseCrossTotalFmtStr(_parameter, calculators)));
             }
         }
-        js.append(getSetFieldValue(0, "rateCurrencyData",
-                        getFormater(0, 3).format(rates[3].setScale(3, BigDecimal.ROUND_HALF_UP))))
-            .append(getSetFieldValue(0, "rate", getFormater(null, null).format(rates[3])))
-            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0)))
-            .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
+        js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
+            .append(getSetFieldValue(0, "rate", rateInfo.getRateFrmt()))
+            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                        Boolean.toString(rateInfo.getCurrencyInst().isInvert())))
+                        .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
 
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
@@ -660,6 +659,12 @@ public abstract class DocumentSum_Base
         @SuppressWarnings("unchecked")
         final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
 
+        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final int scale = totalFrmt.getMaximumFractionDigits();
+
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final int uScale = unitFrmt.getMaximumFractionDigits();
+
         Integer idx = 0;
         for (final Calculator calc : calcList) {
             if (!calc.isEmpty()) {
@@ -689,43 +694,31 @@ public abstract class DocumentSum_Base
                 }
 
                 posIns.add(CISales.PositionSumAbstract.Quantity, calc.getQuantity());
-
-                posIns.add(CISales.PositionSumAbstract.CrossUnitPrice,
-                                calc.getCrossUnitPrice()
-                                                .divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.NetUnitPrice,
-                                calc.getNetUnitPrice()
-                                                .divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.CrossPrice,
-                                calc.getCrossPrice()
-                                                .divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.NetPrice,
-                                calc.getNetPrice()
-                                                .divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.Tax, (calc.getTaxId()).toString());
+                posIns.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.Tax, calc.getTaxId());
                 posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
-                posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice,
-                                calc.getDiscountNetUnitPrice()
-                                                .divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                .setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
                 posIns.add(CISales.PositionSumAbstract.Rate, rateObj);
                 posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
-                posIns.add(CISales.PositionSumAbstract.RateNetUnitPrice,
-                                calc.getNetUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice,
-                                calc.getCrossUnitPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
-                                calc.getDiscountNetUnitPrice().setScale(isLongDecimal(_parameter),
-                                                BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
+                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
+                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice,calc.getDiscountNetUnitPrice()
+                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateNetPrice,
-                                calc.getNetPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                                calc.getNetPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossPrice,
-                                calc.getCrossPrice().setScale(isLongDecimal(_parameter), BigDecimal.ROUND_HALF_UP));
+                                calc.getCrossPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
                 add2PositionInsert(_parameter, calc, posIns, idx);
                 posIns.execute();
                 _createdDoc.addPosition(posIns.getInstance());
@@ -967,7 +960,8 @@ public abstract class DocumentSum_Base
                                          final List<Calculator> _calcList)
         throws EFapsException
     {
-        return getTwoDigitsformater().format(getCrossTotal(_parameter, _calcList));
+        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                        .format(getCrossTotal(_parameter, _calcList));
     }
 
     /**
@@ -1015,7 +1009,8 @@ public abstract class DocumentSum_Base
                                        final List<Calculator> _calcList)
         throws EFapsException
     {
-        return getTwoDigitsformater().format(getNetTotal(_parameter, _calcList));
+        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                        .format(getNetTotal(_parameter, _calcList));
     }
 
     /**
@@ -1032,30 +1027,6 @@ public abstract class DocumentSum_Base
     {
         return getNetTotal(_parameter, _calcList).toString();
     }
-
-
-    /**
-     * @param _calc calculator the format is wanted for
-     * @return Decimal Format
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getDigitsFormater4Disount(final Calculator _calc)
-        throws EFapsException
-    {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (_calc.isLongDecimal() != 2) {
-            formater.setMaximumFractionDigits(_calc.isLongDecimal());
-            formater.setMinimumFractionDigits(_calc.isLongDecimal());
-        } else {
-            formater.setMaximumFractionDigits(2);
-            formater.setMinimumFractionDigits(2);
-        }
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setParseBigDecimal(true);
-        return formater;
-    }
-
-
 
     /**
      * Method to get the net total for a list of Calculators.
@@ -1104,10 +1075,11 @@ public abstract class DocumentSum_Base
      * @throws EFapsException on error
      */
     protected String getBaseCrossTotalFmtStr(final Parameter _parameter,
-                                           final List<Calculator> _calcList)
+                                             final List<Calculator> _calcList)
         throws EFapsException
     {
-        return getTwoDigitsformater().format(getBaseCrossTotal(_parameter, _calcList));
+        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                        .format(getBaseCrossTotal(_parameter, _calcList));
     }
 
     /**
@@ -1119,7 +1091,7 @@ public abstract class DocumentSum_Base
      * @throws EFapsException on error
      */
     protected String getBaseCrossTotalStr(final Parameter _parameter,
-                                           final List<Calculator> _calcList)
+                                          final List<Calculator> _calcList)
         throws EFapsException
     {
         return getBaseCrossTotal(_parameter, _calcList).toString();
@@ -1136,10 +1108,11 @@ public abstract class DocumentSum_Base
      * @throws EFapsException on error
      */
     protected String getPerceptionTotalFmtStr(final Parameter _parameter,
-                                         final List<Calculator> _calcList)
+                                              final List<Calculator> _calcList)
         throws EFapsException
     {
-        return getTwoDigitsformater().format(getPerceptionTotal(_parameter, _calcList));
+        return NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                        .format(getPerceptionTotal(_parameter, _calcList));
     }
 
     /**
@@ -1207,7 +1180,7 @@ public abstract class DocumentSum_Base
                 final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
                 final String typeStr = (String) properties.get("SelectType");
                 final Type type = Type.get(typeStr);
-                QueryBuilder query = new QueryBuilder(type);
+                final QueryBuilder query = new QueryBuilder(type);
                 final AttributeQuery attQueryType = query.getAttributeQuery(CIERP.DocumentTypeAbstract.ID);
 
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);

@@ -69,9 +69,10 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.Invoice;
@@ -438,7 +439,7 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
         final String amountStr = _parameter.getParameterValue("amount");
         try {
             if (amountStr != null && !amountStr.isEmpty()) {
@@ -493,7 +494,7 @@ public abstract class AbstractPaymentDocument_Base
         printAccount.execute();
         final Instance currencyAccount = printAccount.<Instance>getSelect(selCurInst);
 
-        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
         BigDecimal pay = BigDecimal.ZERO;
         BigDecimal amount4Pay = BigDecimal.ZERO;
         try {
@@ -590,7 +591,7 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
         final String[] paymentPosAmount = _parameter.getParameterValues("paymentAmount");
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
             BigDecimal paymentPos = BigDecimal.ZERO;
@@ -740,7 +741,7 @@ public abstract class AbstractPaymentDocument_Base
     {
         BigDecimal rate = BigDecimal.ONE;
         try {
-            rate = (BigDecimal) Calculator_Base.getFormatInstance().parse(_parameter.getParameterValue("rate"));
+            rate = (BigDecimal) RateFormatter.get().getFrmt4Rate().parse(_parameter.getParameterValue("rate"));
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
         }
@@ -1100,7 +1101,7 @@ public abstract class AbstractPaymentDocument_Base
                                           final boolean _lastPosition,
                                           final BigDecimal _restAmount,
                                     final Instance _currencyActual,
-                                    Map<String, String> _map)
+                                    final Map<String, String> _map)
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);

@@ -40,6 +40,6 @@ public interface ICalculatorConfig
 
     boolean isIncludeMinRetail(Parameter _parameter) throws EFapsException;
 
-    int isLongDecimal(Parameter _parameter) throws EFapsException;
+    String getTypeName4SysConf(final Parameter _parameter) throws EFapsException;
 
 }

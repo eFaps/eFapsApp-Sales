@@ -22,7 +22,6 @@ package org.efaps.esjp.sales;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -234,7 +234,8 @@ public abstract class Payment_Base
 
             Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
             final StringBuilder html = new StringBuilder();
-            html.append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
+            final DecimalFormat formater = NumberFormatter.get().getFormatter();
+            html.append(formater.format(openAmount.getCrossTotal())).append(" ")
                             .append(openAmount.getSymbol()).append("<hr/>")
                             .append("<span name=\"").append(fieldValue.getField().getName()).append("_table\">")
                             .append(getOpenAmountInnerHtml(_parameter, openAmount))
@@ -258,9 +259,8 @@ public abstract class Payment_Base
         final StringBuilder html = new StringBuilder();
 
         // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-        final DecimalFormat formater = Calculator_Base.getFormatInstance();
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
         final PriceUtil priceUtil = new PriceUtil();
 
         final QueryBuilder queryBldr = new QueryBuilder(CIERP.Currency);
@@ -440,10 +440,7 @@ public abstract class Payment_Base
         final String[] amounts = _parameter.getParameterValues("amount");
         final String[] currencies = _parameter.getParameterValues("currency");
 
-        final DecimalFormat formatter = Calculator_Base.getFormatInstance();
-        formatter.setMaximumFractionDigits(2);
-        formatter.setMinimumFractionDigits(2);
-        formatter.setRoundingMode(RoundingMode.HALF_UP);
+        final DecimalFormat formatter = NumberFormatter.get().getTwoDigitsFormatter();
 
         final Map<String, BigDecimal> curr2Rate = new HashMap<String, BigDecimal>();
         final Map<String, String> curr2Symb = new HashMap<String, String>();
@@ -542,13 +539,13 @@ public abstract class Payment_Base
             final OpenAmount openAmount = getOpenAmount(_parameter, instance);
 
             Context.getThreadContext().setSessionAttribute(Payment_Base.OPENAMOUNT_SESSIONKEY, openAmount);
-
+            final DecimalFormat formater = NumberFormatter.get().getFormatter();
             html.append("document.getElementsByName('openAmount')[0].innerHTML='")
-                            .append(Calculator_Base.getFormatInstance().format(openAmount.getCrossTotal())).append(" ")
-                            .append(openAmount.getSymbol()).append("<hr/>")
-                            .append("<span name=\"").append("openAmount").append("_table\">")
-                            .append(getOpenAmountInnerHtml(_parameter, openAmount))
-                            .append("</span>").append("';");
+                    .append(formater.format(openAmount.getCrossTotal())).append(" ")
+                    .append(openAmount.getSymbol()).append("<hr/>")
+                    .append("<span name=\"").append("openAmount").append("_table\">")
+                    .append(getOpenAmountInnerHtml(_parameter, openAmount))
+                    .append("</span>").append("';");
         }
         return html.toString();
     }

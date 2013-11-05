@@ -36,7 +36,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -45,8 +44,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.Classification;
-import org.efaps.admin.datamodel.Dimension;
-import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -78,11 +75,14 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.RateFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
-import org.efaps.esjp.sales.Calculator_Base;
 import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
@@ -92,7 +92,6 @@ import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
@@ -146,74 +145,6 @@ public abstract class AbstractDocument_Base
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CALCULATOR_KEY,
                         new ArrayList<Calculator>());
         return new Return();
-    }
-
-    /**
-     * Method to get a formater.
-     *
-     * @return a formater
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getTwoDigitsformater()
-        throws EFapsException
-    {
-        return getFormater(2, 2);
-    }
-
-    /**
-     * Method to get a formater.
-     *
-     * @return a formater
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getZeroDigitsformater()
-        throws EFapsException
-    {
-        return getFormater(0, 0);
-    }
-
-    /**
-     * @return a formater used to format bigdecimal for the user interface
-     * @param _maxFrac maximum Faction, null to deactivate
-     * @param _minFrac minimum Faction, null to activate
-     * @throws EFapsException on error
-     */
-    public DecimalFormat getFormater(final Integer _minFrac,
-                                     final Integer _maxFrac)
-        throws EFapsException
-    {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (_maxFrac != null) {
-            formater.setMaximumFractionDigits(_maxFrac);
-        }
-        if (_minFrac != null) {
-            formater.setMinimumFractionDigits(_minFrac);
-        }
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setParseBigDecimal(true);
-        return formater;
-    }
-
-    /**
-     * @param _calc calculator the format is wanted for
-     * @return Decimal Format
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getDigitsformater4UnitPrice(final Calculator _calc)
-        throws EFapsException
-    {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (_calc.isLongDecimal() != 2) {
-            formater.setMaximumFractionDigits(_calc.isLongDecimal());
-            formater.setMinimumFractionDigits(_calc.isLongDecimal());
-        } else {
-            formater.setMaximumFractionDigits(2);
-            formater.setMinimumFractionDigits(2);
-        }
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setGroupingUsed(true);
-        formater.setParseBigDecimal(true);
-        return formater;
     }
 
     /**
@@ -833,7 +764,7 @@ public abstract class AbstractDocument_Base
         if (currency4Invoice.equals(baseCurrency)) {
             rateStr = "1";
         } else {
-            rateStr = getRateCurrencyData(_parameter, currency4Invoice, baseCurrency);
+            rateStr = getRate4UI(_parameter, currency4Invoice);
         }
         js.append(getSetFieldValue(0, "rateCurrencyData", rateStr)).append("\n")
             .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
@@ -939,7 +870,7 @@ public abstract class AbstractDocument_Base
         final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
-        final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
 
         final StringBuilder currStrBldr = new StringBuilder();
         BigDecimal[] ratesCur = null;
@@ -1265,9 +1196,6 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        getZeroDigitsformater();
-        getDigitsformater4UnitPrice(new Calculator(_parameter, this));
-        getTwoDigitsformater();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instances.toArray());
         final MultiPrintQuery multi = queryBldr.getPrint();
@@ -1367,19 +1295,14 @@ public abstract class AbstractDocument_Base
     }
 
 
-    protected String getRateCurrencyData(final Parameter _parameter,
-                                         final Instance _instanceCurrency,
-                                         final Instance _baseCurrency)
+    protected String getRate4UI(final Parameter _parameter,
+                                final Instance _instanceCurrency)
         throws EFapsException
     {
-
-        final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _instanceCurrency, _baseCurrency);
-        final BigDecimal rateValue = rates[3].setScale(3, BigDecimal.ROUND_HALF_UP);
-        final DecimalFormat formatter = Calculator_Base.getFormatInstance();
-        formatter.setMaximumFractionDigits(3);
-        formatter.setMinimumFractionDigits(3);
-        formatter.setRoundingMode(RoundingMode.HALF_UP);
-        return formatter.format(rateValue);
+        final Currency currency = new Currency();
+        final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, _parameter.getParameterValue("date_eFapsDate"),
+                        _instanceCurrency);
+        return rateInfo.getRateUIFrmt();
     }
 
     /**
@@ -1621,38 +1544,7 @@ public abstract class AbstractDocument_Base
         }
     }
 
-    protected String getUoMFieldStr(final long _selected,
-                                    final long _dimId)
-        throws CacheReloadException
-    {
-        final Dimension dim = Dimension.get(_dimId);
-        final StringBuilder js = new StringBuilder();
 
-        js.append("new Array('").append(_selected).append("'");
-
-        for (final UoM uom : dim.getUoMs()) {
-            js.append(",'").append(uom.getId()).append("','").append(uom.getName()).append("'");
-        }
-        js.append(")");
-        return js.toString();
-    }
-
-    protected String getUoMFieldStr(final long _dimId)
-        throws CacheReloadException
-    {
-        final Dimension dim = Dimension.get(_dimId);
-        return getUoMFieldStr(dim.getBaseUoM().getId(), _dimId);
-    }
-
-    /**
-     * @param _uoMId id of the UoM
-     * @return Field String
-     */
-    protected String getUoMFieldStrByUoM(final long _uoMId)
-        throws CacheReloadException
-    {
-        return getUoMFieldStr(_uoMId, Dimension.getUoM(_uoMId).getDimId());
-    }
 
     /**
      * Method to evaluate the selected row.
@@ -1751,10 +1643,29 @@ public abstract class AbstractDocument_Base
 
     /**
      * @return the type name used in SystemConfiguration
+     * @throws EFapsException on error
      */
-    protected String getTypeName4SystemConfiguration()
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
     {
         return CISales.DocumentAbstract.getType().getName();
+    }
+
+    // new methods for abstraction
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return type used for creation of positions
+     * @throws EFapsException on error
+     */
+    protected Type getType4PositionCreate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        Type ret = null;
+        if (props.containsKey("PositionType")) {
+            ret = Type.get(String.valueOf(props.get("PositionType")));
+        }
+        return ret;
     }
 
     /**
@@ -1974,7 +1885,7 @@ public abstract class AbstractDocument_Base
         BigDecimal rate = BigDecimal.ONE;
         try {
             if (_parameter.getParameterValue("rate") != null) {
-                rate = (BigDecimal) Calculator_Base.getFormatInstance().parse(_parameter.getParameterValue("rate"));
+                rate = (BigDecimal) RateFormatter.get().getFrmt4Rate().parse(_parameter.getParameterValue("rate"));
             }
         } catch (final ParseException e) {
             throw new EFapsException(AbstractDocument_Base.class, "analyzeRate.ParseException", e);
@@ -2006,41 +1917,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _number number to format
-     * @return BigDecimal
-     * @throws EFapsException
-     */
-    protected BigDecimal getFormat4BigDecimal(final String _number)
-        throws EFapsException
-    {
-        BigDecimal number = BigDecimal.ZERO;
-        try {
-            number = (BigDecimal) Calculator_Base.getFormatInstance().parse(_number);
-        } catch (final ParseException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        return number;
-    }
-
-    // new methods for abstraction
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return type used for creation of positions
-     * @throws EFapsException on error
-     */
-    protected Type getType4PositionCreate(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        Type ret = null;
-        if (props.containsKey("PositionType")) {
-            ret = Type.get(String.valueOf(props.get("PositionType")));
-        }
-        return ret;
-    }
-
-    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return number of positions
      * @throws EFapsException on error
@@ -2064,20 +1940,6 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
-    }
-
-    @Override
-    public int isLongDecimal(final Parameter _parameter)
-        throws EFapsException
-    {
-        int ret = 2;
-        final Properties props =  Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.LONGDECIMAL);
-        final String type = getTypeName4SystemConfiguration();
-
-        if (props.containsKey(type) && Integer.valueOf(props.getProperty(type)) != ret) {
-            ret = Integer.valueOf(props.getProperty(type));
-        }
-        return ret;
     }
 
     public Return connectDocumentType2Catalog(final Parameter _parameter)
@@ -2176,7 +2038,7 @@ public abstract class AbstractDocument_Base
         if (currency4Invoice.equals(baseCurrency)) {
             js.append("1").append("'));");
         } else {
-            js.append(getRateCurrencyData(_parameter, currency4Invoice, baseCurrency)).append("'));");
+            js.append(getRate4UI(_parameter, currency4Invoice)).append("'));");
         }
         js.append("}}); ");
         js.append("var ele = document.createElement('input');")
@@ -2271,9 +2133,10 @@ public abstract class AbstractDocument_Base
         final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
-        final DecimalFormat formater = getTwoDigitsformater();
-        final DecimalFormat formaterZero = getZeroDigitsformater();
-        final DecimalFormat formaterSysConf = getDigitsformater4UnitPrice(new Calculator(_parameter, this));
+        final String typeName = getTypeName4SysConf(_parameter);
+        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(typeName);
+        final DecimalFormat quantityFrmt = NumberFormatter.get().getFrmt4Quantity(typeName);
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(typeName);
 
         final StringBuilder currency = new StringBuilder();
         BigDecimal rate = null;
@@ -2312,9 +2175,9 @@ public abstract class AbstractDocument_Base
             .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
             .append(getSetFieldValue(0, "contactData", contactData)).append("\n")
             .append(getSetFieldValue(0, "netTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
+                            ? BigDecimal.ZERO.toString() : totalFrmt.format(netTotal))).append("\n")
             .append(getSetFieldValue(0, "crossTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n")
+                            ? BigDecimal.ZERO.toString() : totalFrmt.format(crossTotal))).append("\n")
             .append(getSetFieldValue(0, "note", note)).append("\n")
             .append(addAdditionalFields(_parameter, _instance)).append("\n")
             .append("}\n");
@@ -2361,7 +2224,7 @@ public abstract class AbstractDocument_Base
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
 
             map.put("oid", multi.getCurrentInstance().getOid());
-            map.put("quantity", formaterZero
+            map.put("quantity", quantityFrmt
                             .format(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             map.put("productAutoComplete", multi.<String>getSelect(selProdName));
             map.put("product",  multi.<String>getSelect(selProdOID));
@@ -2372,30 +2235,30 @@ public abstract class AbstractDocument_Base
                             .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
                 map.put("netUnitPrice", rateNetUnitPrice == null || netUnitPrice == null
                                 ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? rateNetUnitPrice : netUnitPrice));
+                                : unitFrmt.format(rate != null ? rateNetUnitPrice : netUnitPrice));
                 map.put("discountNetUnitPrice", rateDiscountNetUnitPrice == null || discountNetUnitPrice == null
                                 ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
+                                : unitFrmt.format(rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice));
                 map.put("netPrice", rateNetPrice == null || netPrice == null
                                 ? BigDecimal.ZERO.toString()
-                                : formater.format(rate != null ? rateNetPrice : netPrice));
+                                : totalFrmt.format(rate != null ? rateNetPrice : netPrice));
             } else {
                 map.put("netUnitPrice", netUnitPrice == null
                                 ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? netUnitPrice.divide(rate,
+                                : unitFrmt.format(rate != null ? netUnitPrice.divide(rate,
                                                 BigDecimal.ROUND_HALF_UP) : netUnitPrice));
                 map.put("discountNetUnitPrice", discountNetUnitPrice == null
                                 ? BigDecimal.ZERO.toString()
-                                : formaterSysConf.format(rate != null ? discountNetUnitPrice.divide(rate,
+                                : unitFrmt.format(rate != null ? discountNetUnitPrice.divide(rate,
                                                 BigDecimal.ROUND_HALF_UP)
                                                 : discountNetUnitPrice));
                 map.put("netPrice", netPrice == null
                                 ? BigDecimal.ZERO.toString()
-                                : formater.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
+                                : totalFrmt.format(rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
                                                 : netPrice));
                 map.put("discount", discount == null
                                 ? BigDecimal.ZERO.toString()
-                                : formater.format(discount));
+                                : totalFrmt.format(discount));
             }
             values.put(multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber), map);
         }
