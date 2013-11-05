@@ -21,10 +21,6 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -36,9 +32,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -62,11 +56,11 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
-import org.efaps.db.transaction.ConnectionResource;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
@@ -84,22 +78,6 @@ public abstract class Account_Base
 {
 
     /**
-     * method to get a formater.
-     *
-     * @return formater with value.
-     * @throws EFapsException on error.
-     */
-    protected DecimalFormat getTwoDigitsformater()
-        throws EFapsException
-    {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        formater.setMaximumFractionDigits(2);
-        formater.setMinimumFractionDigits(2);
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setParseBigDecimal(true);
-        return formater;
-    }
-    /**
      * Method for create a new Cash Desk Balance.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -111,16 +89,13 @@ public abstract class Account_Base
     {
         final Instance cashDeskInstance = _parameter.getCallInstance();
 
-        //Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final DateTime date = new DateTime(_parameter.getParameterValue("date"));
         final Insert insert = new Insert(CISales.CashDeskBalance);
         insert.add(CISales.CashDeskBalance.Name, new DateTime().toLocalTime());
         insert.add(CISales.CashDeskBalance.Date, date);
-        insert.add(CISales.CashDeskBalance.Status, Status.find("Sales_CashDeskBalanceStatus", "Closed").getId());
+        insert.add(CISales.CashDeskBalance.Status, Status.find(CISales.CashDeskBalanceStatus.Closed).getId());
         insert.add(CISales.CashDeskBalance.CrossTotal, BigDecimal.ZERO);
         insert.add(CISales.CashDeskBalance.NetTotal, BigDecimal.ZERO);
         insert.add(CISales.CashDeskBalance.DiscountTotal, BigDecimal.ZERO);
@@ -353,10 +328,11 @@ public abstract class Account_Base
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-        final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
+
+        final boolean withDateConf = Sales.getSysConfig()
                         .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
         final AbstractCommand command = _parameter.get(ParameterValues.UIOBJECT) instanceof AbstractCommand
-                                    ? (AbstractCommand)_parameter.get(ParameterValues.UIOBJECT) : null;
+                        ? (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT) : null;
         final List<Instance> lstInst = new ArrayList<Instance>();
 
         String[] oids = _parameter.getParameterValues("selectedRow");
@@ -379,11 +355,12 @@ public abstract class Account_Base
             lstInst.addAll(getPayments(_parameter));
         }
 
-        final SelectBuilder selOut = new SelectBuilder().linkfrom(CISales.TransactionOutbound,
-                        CISales.TransactionOutbound.Payment).attribute(CISales.TransactionOutbound.Amount);
-        final SelectBuilder selIn = new SelectBuilder().linkfrom(CISales.TransactionInbound,
-                        CISales.TransactionInbound.Payment).attribute(CISales.TransactionInbound.Amount);
-
+        final SelectBuilder selOut = new SelectBuilder()
+                        .linkfrom(CISales.TransactionOutbound, CISales.TransactionOutbound.Payment)
+                        .attribute(CISales.TransactionOutbound.Amount);
+        final SelectBuilder selIn = new SelectBuilder()
+                        .linkfrom(CISales.TransactionInbound, CISales.TransactionInbound.Payment)
+                        .attribute(CISales.TransactionInbound.Amount);
 
         for (final Instance instance : lstInst) {
             final PrintQuery print = new PrintQuery(instance);
@@ -426,8 +403,8 @@ public abstract class Account_Base
         DateTime firstDate = null, lastDate = null;
         if (fValue.getTargetMode().equals(TargetMode.CREATE)) {
             if (fValue.getField().getName().equals("name4create")) {
-                firstDate = new DateTime().dayOfMonth().withMinimumValue();
-                lastDate = new DateTime().dayOfMonth().withMaximumValue();
+                firstDate = new DateTime().withDayOfMonth(1).withTimeAtStartOfDay();
+                lastDate = new DateTime().plusMonths(1).withDayOfMonth(1).withTimeAtStartOfDay();
             }
         }
         final Return retVal = new Return();
@@ -462,39 +439,26 @@ public abstract class Account_Base
      * @return ret Return for maximum value.
      * @throws EFapsException on error
      */
-    protected String getMaxNumber(final Type _type, final DateTime _firstDate, final DateTime _lastDate)
+    protected String getMaxNumber(final Type _type,
+                                  final DateTime _firstDate,
+                                  final DateTime _lastDate)
         throws EFapsException
     {
         String ret = null;
-        final StringBuilder cmd = new StringBuilder();
-        // Sales_AccountPettyCash
-        cmd.append("select max(name) ").append("from t_erpdoc where typeid='").append(_type.getId()).append("'")
-           .append(" and date between '").append(_firstDate.toDateMidnight()).append("' and '")
-           .append(_lastDate.toDateMidnight()).append("' and companyid='")
-           .append(Context.getThreadContext().getCompany().getId()).append("'");
-        final Context context = Context.getThreadContext();
-        ConnectionResource con = null;
-        try {
-            con = context.getConnectionResource();
-            PreparedStatement stmt = null;
-            try {
-                stmt = con.getConnection().prepareStatement(cmd.toString());
-                final ResultSet resultset = stmt.executeQuery();
-                if (resultset.next()) {
-                    ret = resultset.getString(1);
-                }
-                resultset.close();
-            } finally {
-                stmt.close();
-            }
-            con.commit();
-        } catch (final SQLException e) {
-            throw new EFapsException(Account_Base.class, "getMaxNumber.SQLException", e);
-        } finally {
-            if ((con != null) && con.isOpened()) {
-                con.abort();
-            }
+
+        final QueryBuilder queryBldr = new QueryBuilder(_type);
+        queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date, _firstDate.minusSeconds(1));
+        queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date, _lastDate);
+        queryBldr.addOrderByAttributeDesc(CIERP.DocumentAbstract.Name);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIERP.DocumentAbstract.Name);
+        multi.setEnforceSorted(true);
+        multi.execute();
+
+        if (multi.next()) {
+            ret = multi.<String>getAttribute(CIERP.DocumentAbstract.Name);
         }
+
         return ret;
     }
 
@@ -511,9 +475,9 @@ public abstract class Account_Base
         final Return retVal = new Return();
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final DateTime date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
-        final DateTime newDate = new DateTime(date);
-        final DateTime firstDate = newDate.dayOfMonth().withMinimumValue();
-        final DateTime lastDate = newDate.dayOfMonth().withMaximumValue();
+
+        final DateTime firstDate = new DateTime(date).withDayOfMonth(1).withTimeAtStartOfDay();
+        final DateTime lastDate = new DateTime(date).plusMonths(1).withDayOfMonth(1).withTimeAtStartOfDay();
 
         if (firstDate != null && lastDate != null) {
             final String type = (String) properties.get("Type");
@@ -570,7 +534,8 @@ public abstract class Account_Base
         if (amount == null){
             ret.put(ReturnValues.VALUES, "");
         } else{
-            ret.put(ReturnValues.VALUES, symbol + " " + getTwoDigitsformater().format(amount).toString());
+            ret.put(ReturnValues.VALUES,
+                            symbol + " " + NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
         }
         return ret;
     }
@@ -585,6 +550,7 @@ public abstract class Account_Base
         throws EFapsException
     {
         createPettyCashBalanceDoc(_parameter);
+
         return new Return();
     }
 
@@ -600,8 +566,7 @@ public abstract class Account_Base
     {
         Instance ret = null;
         final Instance inst = _parameter.getCallInstance();
-        final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
+        final boolean withDateConf = Sales.getSysConfig().getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
 
         final PrintQuery print = new PrintQuery(inst);
         print.addAttribute(CISales.AccountAbstract.CurrencyLink,
@@ -615,7 +580,7 @@ public abstract class Account_Base
         final String startAmountStr = _parameter.getParameterValue("startAmount");
         final BigDecimal amount = getAmountPayments(_parameter);
 
-        final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
         BigDecimal startAmount = BigDecimal.ZERO;
         try {
             startAmount = (BigDecimal) formater.parse(startAmountStr);
@@ -768,8 +733,7 @@ public abstract class Account_Base
         final Return ret = new Return();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean withDateComm = Boolean.parseBoolean((String) props.get("WithDate"));
-        final boolean withDateConf = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
+        final boolean withDateConf = Sales.getSysConfig().getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
         if (withDateConf && withDateComm) {
             ret.put(ReturnValues.TRUE, true);
         } else if (!withDateConf && !withDateComm) {
@@ -887,7 +851,7 @@ public abstract class Account_Base
     {
         final Return retVal = new Return();
         BigDecimal difference = BigDecimal.ZERO;
-        final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
         if (hasTransaction(_parameter)) {
             final BigDecimal amount = getAmountPayments(_parameter);
             final String startAmountStr = _parameter.getParameterValue("startAmount");
@@ -925,7 +889,7 @@ public abstract class Account_Base
         final Return retVal = new Return();
         final BigDecimal amount = getAmountPayments(_parameter);
 
-        final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
 
         retVal.put(ReturnValues.VALUES, formater.format(amount.negate()));
         return retVal;
@@ -942,7 +906,7 @@ public abstract class Account_Base
     public Return revenuesFieldValue4PettyCashUI(final Parameter _parameter)
         throws EFapsException
     {
-        final DecimalFormat formater = getTwoDigitsformater();
+        final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
         final StringBuilder bldr = new StringBuilder();
 
         final BigDecimal startAmount = getStartAmount(_parameter);
@@ -973,7 +937,7 @@ public abstract class Account_Base
                 final BigDecimal amount = getAmountPayments(_parameter);
                 final BigDecimal startAmount = getStartAmount(_parameter);
                 final String crossTotalStr = _parameter.getParameterValue("crossTotal");
-                final DecimalFormat formater = getTwoDigitsformater();
+                final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
                 BigDecimal crossTotal = BigDecimal.ZERO;
                 try {
                     crossTotal = (BigDecimal) formater.parse(crossTotalStr);
