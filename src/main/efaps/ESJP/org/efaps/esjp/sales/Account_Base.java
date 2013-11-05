@@ -153,13 +153,33 @@ public abstract class Account_Base
         BigDecimal crossTotal = BigDecimal.ZERO;
         final Map<Long, BigDecimal> curr2Rate = new HashMap<Long, BigDecimal>();
         for (int i = 0;  i < payIds.length; i++) {
-            final BigDecimal amount = new BigDecimal(amounts[i]);
+            BigDecimal amount = BigDecimal.ZERO;
+            if (amounts == null) {
+                final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext()
+                                .getLocale());
+                formater.setParseBigDecimal(true);
+                try {
+                    amount = (BigDecimal) formater.parse(_parameter.getParameterValue("startAmount"));
+                } catch (final ParseException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                amount = new BigDecimal(amounts[i]);
+            }
+
             final Long currId = Long.parseLong(currIds[i]);
+            final Object[] rates;
             final BigDecimal rate;
             if (curr2Rate.containsKey(currId)) {
                 rate = curr2Rate.get(currId);
             } else {
-                rate = getRate(date, currId);
+                rates = getRate(date, currId);
+                if (rates != null) {
+                    rate = (BigDecimal) rates[2];
+                } else {
+                    rate = BigDecimal.ONE;
+                }
                 curr2Rate.put(currId, rate);
             }
             crossTotal = crossTotal.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP));
@@ -188,11 +208,11 @@ public abstract class Account_Base
      * @return BigDecimal with ret.
      * @throws EFapsException on error.
      */
-    protected BigDecimal getRate(final DateTime _date,
+    protected Object[] getRate(final DateTime _date,
                                  final Long _currId)
         throws EFapsException
     {
-        final BigDecimal ret;
+        Object[] rates = null;
         final QueryBuilder queryBldr = new QueryBuilder(CIERP.CurrencyRateClient);
         queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateClient.CurrencyLink, _currId);
         queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateClient.ValidFrom, _date.plusMinutes(1));
@@ -202,11 +222,9 @@ public abstract class Account_Base
         multi.addAttribute(CIERP.CurrencyRateClient.Rate);
         multi.execute();
         if (multi.next()) {
-            ret = multi.<BigDecimal>getAttribute(CIERP.CurrencyRateClient.Rate);
-        } else {
-            ret = BigDecimal.ONE;
+            rates = multi.<Object[]>getAttribute(CIERP.CurrencyRateClient.Rate);
         }
-        return ret;
+        return rates;
     }
 
     public Return revenuesFieldValueUI(final Parameter _parameter)
@@ -275,6 +293,16 @@ public abstract class Account_Base
                     .append(formatter.format(entry.getValue())).append("</td></tr>");
             }
             bldr.append("</table>");
+        } else {
+            final PrintQuery printcashDesk = new PrintQuery(cashDeskInstance);
+            printcashDesk.addAttribute(CISales.AccountCashDesk.CurrencyLink);
+            printcashDesk.execute();
+            final Long currencyId = printcashDesk.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink);
+
+            bldr.append("<input type=\"hidden\" name=\"payId\" value=\"")
+                            .append(BigDecimal.ZERO).append("\"/>");
+            bldr.append("<input type=\"hidden\" name=\"currId\" value=\"")
+                            .append(currencyId).append("\"/>");
         }
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, bldr.toString());
