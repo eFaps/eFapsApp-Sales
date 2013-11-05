@@ -152,7 +152,7 @@ public abstract class TextModule_Base
         }
         final StringBuilder bldr = new StringBuilder();
         for (final String text : line2Text.values()) {
-            bldr.append(text).append("<br/>");
+            bldr.append(text.replaceAll("\n", "<br/>")).append("<br/>");
         }
 
         final Return retVal = new Return();
