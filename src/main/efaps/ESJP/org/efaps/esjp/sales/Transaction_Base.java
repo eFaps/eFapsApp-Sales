@@ -26,7 +26,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -272,14 +271,13 @@ public abstract class Transaction_Base
         final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, _parameter.getInstance().getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Type);
+        multi.addAttribute(CISales.TransactionAbstract.Amount);
         multi.execute();
 
         while (multi.next()) {
             final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-            final Type accType = multi.<Type>getAttribute(CISales.TransactionAbstract.Type);
 
-            if (accType.equals(CISales.TransactionInbound.getType())) {
+            if (multi.getCurrentInstance().getType().equals(CISales.TransactionInbound.getType())) {
                 sumTotal = sumTotal.add(amount);
             } else {
                 sumTotal = sumTotal.subtract(amount);
@@ -287,7 +285,7 @@ public abstract class Transaction_Base
         }
 
         final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Balance);
-        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, _parameter.getInstance().getId());
+        queryBldr2.addWhereAttrEqValue(CISales.Balance.Account, _parameter.getInstance().getId());
         final InstanceQuery accQuery = queryBldr2.getQuery();
         accQuery.execute();
         while (accQuery.next()) {
