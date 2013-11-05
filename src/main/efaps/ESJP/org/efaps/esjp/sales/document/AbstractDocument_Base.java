@@ -21,7 +21,6 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -991,6 +990,10 @@ public abstract class AbstractDocument_Base
         multi.execute();
 
         final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
+        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+        final DecimalFormat upFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(getTypeName4SysConf(_parameter));
 
         while (multi.next()) {
             final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
@@ -1007,7 +1010,7 @@ public abstract class AbstractDocument_Base
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
 
             map.put(new KeyDefStr("oid"), multi.getCurrentInstance().getOid());
-            map.put(new KeyDefZeroFrmt("quantity"),
+            map.put(new KeyDefFrmt("quantity", qtyFrmt),
                             multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
             map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
             map.put(new KeyDefStr("product"),  multi.<String>getSelect(selProdOID));
@@ -1016,28 +1019,28 @@ public abstract class AbstractDocument_Base
                                             multi.<Long>getSelect(selProdDim)));
             if (TargetMode.EDIT.equals(Context.getThreadContext()
                             .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                map.put(new KeyDefConfigFrmt("netUnitPrice"), rateNetUnitPrice == null || netUnitPrice == null
+                map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice == null || netUnitPrice == null
                                 ? BigDecimal.ZERO
                                 : rate != null ? rateNetUnitPrice : netUnitPrice);
-                map.put(new KeyDefConfigFrmt("discountNetUnitPrice"), rateDiscountNetUnitPrice == null
+                map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), rateDiscountNetUnitPrice == null
                                 || discountNetUnitPrice == null ? BigDecimal.ZERO
                                 : rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice);
-                map.put(new KeyDefTwoFrmt("netPrice"), rateNetPrice == null || netPrice == null
+                map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice == null || netPrice == null
                                 ? BigDecimal.ZERO
                                 : rate != null ? rateNetPrice : netPrice);
             } else {
-                map.put(new KeyDefConfigFrmt("netUnitPrice"), netUnitPrice == null
+                map.put(new KeyDefFrmt("netUnitPrice", upFrmt), netUnitPrice == null
                                 ? BigDecimal.ZERO
                                 : rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice);
-                map.put(new KeyDefConfigFrmt("discountNetUnitPrice"), discountNetUnitPrice == null
+                map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), discountNetUnitPrice == null
                                 ? BigDecimal.ZERO
                                 : rate != null
                                     ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
                                                     : discountNetUnitPrice);
-                map.put(new KeyDefTwoFrmt("netPrice"), netPrice == null
+                map.put(new KeyDefFrmt("netPrice", totFrmt), netPrice == null
                                 ? BigDecimal.ZERO
                                 : rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice);
-                map.put(new KeyDefTwoFrmt("discount"), discount == null ? BigDecimal.ZERO : discount);
+                map.put(new KeyDefFrmt("discount", disFrmt), discount == null ? BigDecimal.ZERO : discount);
             }
             values.add(map);
         }
@@ -1101,7 +1104,7 @@ public abstract class AbstractDocument_Base
         final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGrp");
         final Map<Integer, String> status = analyseProperty(_parameter, "Status");
         final Map<Integer, String> substracts = analyseProperty(_parameter, "RelSubstracts");
-
+        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         final List<Map<KeyDef, Object>> lstRemove = new ArrayList<Map<KeyDef, Object>>();
         for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
             final Integer key = relTypeEntry.getKey();
@@ -1144,20 +1147,20 @@ public abstract class AbstractDocument_Base
             }
 
             for (final Map<KeyDef, Object> map : _values) {
-                if (prodQuantMap.containsKey(map.get(new KeyDefFrmt("product")))) {
-                    final BigDecimal quantityTotal = (BigDecimal) map.get(new KeyDefFrmt("quantity"));
-                    final BigDecimal quantityPartial = prodQuantMap.get(map.get(new KeyDefFrmt("product")));
+                if (prodQuantMap.containsKey(map.get(new KeyDefStr("product")))) {
+                    final BigDecimal quantityTotal = (BigDecimal) map.get(new KeyDefFrmt("quantity", qtyFrmt));
+                    final BigDecimal quantityPartial = prodQuantMap.get(map.get(new KeyDefFrmt("product", qtyFrmt)));
 
                     if (substract) {
                         final BigDecimal quantityCurr = quantityTotal.subtract(quantityPartial);
                         if (quantityCurr.compareTo(BigDecimal.ZERO) > 0) {
-                            map.put(new KeyDefZeroFrmt("quantity"), quantityCurr);
+                            map.put(new KeyDefFrmt("quantity", qtyFrmt), quantityCurr);
                         } else {
                             lstRemove.add(map);
                         }
                     } else {
                         final BigDecimal quantityCurr = quantityTotal.add(quantityPartial);
-                        map.put(new KeyDefZeroFrmt("quantity"), quantityCurr);
+                        map.put(new KeyDefFrmt("quantity", qtyFrmt), quantityCurr);
                     }
                 }
             }
@@ -1212,14 +1215,14 @@ public abstract class AbstractDocument_Base
         multi.execute();
 
         final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
-
+        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         while (multi.next()) {
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);
             final Map<KeyDef, Object> map;
             if (valuesTmp.containsKey(prodInst)) {
                 map = valuesTmp.get(prodInst);
-                final BigDecimal quantity = (BigDecimal) map.get(new KeyDefZeroFrmt("quantity"));
-                map.put(new KeyDefZeroFrmt("quantity"),
+                final BigDecimal quantity = (BigDecimal) map.get(new KeyDefFrmt("quantity", qtyFrmt));
+                map.put(new KeyDefFrmt("quantity", qtyFrmt),
                                 quantity.add(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             } else {
                 map = new HashMap<KeyDef, Object>();
@@ -1230,7 +1233,7 @@ public abstract class AbstractDocument_Base
                                 CISales.PositionSumAbstract.ProductDesc));
                 map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                                 multi.<Long>getSelect(selProdDim)));
-                map.put(new KeyDefZeroFrmt("quantity"),
+                map.put(new KeyDefFrmt("quantity", qtyFrmt),
                                 multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
             }
         }
@@ -2341,96 +2344,16 @@ public abstract class AbstractDocument_Base
         extends KeyDef
     {
 
-        /**
-         * @param _name
-         */
-        public KeyDefFrmt(final String _name)
-        {
-            super(_name);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String convert2String(final Object _value) throws EFapsException
-        {
-            return getFrmt(2,0).format(_value);
-        }
-
-        protected DecimalFormat getFrmt(final Integer _minFrac,
-                                        final Integer _maxFrac)
-            throws EFapsException
-        {
-            final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext()
-                            .getLocale());
-            if (_maxFrac != null) {
-                formater.setMaximumFractionDigits(_maxFrac);
-            }
-            if (_minFrac != null) {
-                formater.setMinimumFractionDigits(_minFrac);
-            }
-            formater.setRoundingMode(RoundingMode.HALF_UP);
-            formater.setGroupingUsed(true);
-            formater.setParseBigDecimal(true);
-            return formater;
-        }
-    }
-
-    public static class KeyDefZeroFrmt
-        extends KeyDefFrmt
-    {
+        private final DecimalFormat format;
 
         /**
          * @param _name
          */
-        public KeyDefZeroFrmt(final String _name)
+        public KeyDefFrmt(final String _name,
+                          final DecimalFormat _format)
         {
             super(_name);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String convert2String(final Object _value) throws EFapsException
-        {
-            return getFrmt(0,0).format(_value);
-        }
-    }
-
-    public static class KeyDefTwoFrmt
-        extends KeyDefFrmt
-    {
-
-        /**
-         * @param _name
-         */
-        public KeyDefTwoFrmt(final String _name)
-        {
-            super(_name);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String convert2String(final Object _value) throws EFapsException
-        {
-            return getFrmt(2,2).format(_value);
-        }
-    }
-
-    public static class KeyDefConfigFrmt
-        extends KeyDefFrmt
-    {
-
-        /**
-         * @param _name
-         */
-        public KeyDefConfigFrmt(final String _name)
-        {
-            super(_name);
+            this.format = _format;
         }
 
         /**
@@ -2440,9 +2363,7 @@ public abstract class AbstractDocument_Base
         public String convert2String(final Object _value)
             throws EFapsException
         {
-            final DecimalFormat frmt = getFrmt(null, null);
-            frmt.applyPattern("###.00");
-            return frmt.format(_value);
+            return this.format.format(_value);
         }
     }
 
