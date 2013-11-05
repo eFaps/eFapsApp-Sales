@@ -57,7 +57,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
-import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -144,30 +143,6 @@ public abstract class AbstractDocument_Base
         Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CALCULATOR_KEY,
                         new ArrayList<Calculator>());
         return new Return();
-    }
-
-    /**
-     * @param _parameter Parameter as passed by the eFasp API
-     * @return Return containing the value formated
-     * @throws EFapsException on error
-     */
-    public Return formatQuantity(final Parameter _parameter)
-        throws EFapsException
-    {
-        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
-        final StringBuilder js = new StringBuilder();
-        final Return retVal = new Return();
-        if (mode.equals(TargetMode.VIEW) || mode.equals(TargetMode.PRINT)) {
-            final FieldValue value = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-            if (value.getDisplay().equals(Display.READONLY)) {
-                final BigDecimal dec = (BigDecimal) value.getValue();
-                js.append(dec.stripTrailingZeros().toPlainString());
-            } else {
-                js.append(value.getValue());
-            }
-            retVal.put(ReturnValues.VALUES, js.toString());
-        }
-        return retVal;
     }
 
     /**

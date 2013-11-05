@@ -41,10 +41,6 @@
                 method="updateFields4Quantity"
                 name="Sales_OrderOutboundPositionTable.product.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
-            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
-                method="formatQuantity"
-                name="Sales_OrderOutboundPositionTable.product.UI_FIELD_FORMAT"
-                event="UI_FIELD_FORMAT" />
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
