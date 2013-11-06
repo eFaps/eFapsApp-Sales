@@ -45,24 +45,6 @@
                 event="RANGE_VALUE">
             </trigger>
         </attribute>
-        <attribute>
-            <name>VoucherType</name>
-            <type>LinkWithRanges</type>
-            <typelink>Sales_AttributeDefinitionVoucherType</typelink>
-            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>INTEGER1</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Sales_AccountAbstract.RANGE_VALUE" event="RANGE_VALUE">
-                <property name="Value">Value</property>
-                <property name="Type">Sales_AttributeDefinitionVoucherType</property>
-            </trigger>
-        </attribute>
-        <attribute>
-            <name>VoucherNro</name>
-            <type>String</type>
-            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
-            <sqlcolumn>STRING1</sqlcolumn>
-        </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_PettyCashReceipt.ACCESSCHECK"
             event="ACCESSCHECK" />

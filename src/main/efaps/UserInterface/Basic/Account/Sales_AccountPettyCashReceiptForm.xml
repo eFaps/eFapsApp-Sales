@@ -34,7 +34,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashReceiptForm</name>
-            <field name="classification" character="Classification">
+        <field name="classification" character="Classification">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Classification">Sales_PettyCashReceipt_Class</property>
@@ -166,18 +166,6 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
             <property name="Required">true</property>
-        </field>
-        <field name="voucherType">
-            <property name="Columns">40</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">VoucherType</property>
-        </field>
-        <field name="voucherNro">
-            <property name="Columns">40</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Attribute">VoucherNro</property>
         </field>
     </definition>
 </ui-form>
