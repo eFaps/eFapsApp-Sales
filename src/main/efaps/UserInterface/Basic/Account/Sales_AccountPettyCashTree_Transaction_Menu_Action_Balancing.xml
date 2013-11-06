@@ -41,8 +41,10 @@
         <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingForm</form>
-            <execute program="org.efaps.esjp.sales.Account"
-                method="pettyCashBalance" />
+            <execute program="org.efaps.esjp.sales.Account" method="pettyCashBalance">
+                <property name="JasperReport">Sales_PettyCashBalance</property>
+                <property name="Mime">pdf</property>
+            </execute>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
@@ -56,5 +58,6 @@
         <property name="TargetCreateType">Sales_PettyCashBalance</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

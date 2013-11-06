@@ -58,6 +58,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.util.Sales;
@@ -128,7 +129,7 @@ public abstract class Account_Base
         final String[] currIds = _parameter.getParameterValues("currId");
         final String[] amounts = _parameter.getParameterValues("amount");
         BigDecimal crossTotal = BigDecimal.ZERO;
-        final Map<Long, BigDecimal> curr2Rate = new HashMap<Long, BigDecimal>();
+
         for (int i = 0;  i < payIds.length; i++) {
             BigDecimal amount = BigDecimal.ZERO;
             if (amounts == null) {
@@ -146,14 +147,9 @@ public abstract class Account_Base
             }
 
             final Long currId = Long.parseLong(currIds[i]);
-            final Object[] rates;
+
             final BigDecimal rate = BigDecimal.ONE;
-            /*
-             * if (curr2Rate.containsKey(currId)) { rate =
-             * curr2Rate.get(currId); } else { rates = getRate(date, currId); if
-             * (rates != null) { rate = (BigDecimal) rates[1]; } else { rate =
-             * BigDecimal.ONE; } curr2Rate.put(currId, rate); }
-             */
+
             crossTotal = crossTotal.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP));
             final Insert transInsert = new Insert(CISales.TransactionOutbound);
             transInsert.add(CISales.TransactionOutbound.Amount, amount);
@@ -544,9 +540,34 @@ public abstract class Account_Base
     public Return pettyCashBalance(final Parameter _parameter)
         throws EFapsException
     {
-        createPettyCashBalanceDoc(_parameter);
+        Return ret = new Return();
 
-        return new Return();
+        final PrintQuery printAmount = new PrintQuery(_parameter.getCallInstance());
+        printAmount.addAttribute(CISales.AccountPettyCash.AmountAbstract);
+        printAmount.execute();
+        BigDecimal amount = printAmount.<BigDecimal>getAttribute(CISales.AccountAbstract.AmountAbstract);
+        if (amount == null) {
+            amount = BigDecimal.ZERO;
+        }
+
+        final Instance balanceInst = createPettyCashBalanceDoc(_parameter);
+
+        final PrintQuery print2 = new PrintQuery(balanceInst);
+        print2.addAttribute(CISales.PettyCashBalance.Name);
+        print2.execute();
+        final String nameBalance = print2.<String>getAttribute(CISales.PettyCashBalance.Name);
+
+        _parameter.put(ParameterValues.INSTANCE, balanceInst);
+
+        final StandartReport report = new StandartReport();
+        report.getJrParameters().put("AccName", nameBalance);
+        report.getJrParameters().put("AmountPettyCash", amount);
+
+        final String fileName = DBProperties.getProperty("Sales_PettyCashBalance.Label") + "_" + nameBalance;
+        report.setFileName(fileName);
+        ret = report.execute(_parameter);
+
+        return ret;
     }
 
     /**

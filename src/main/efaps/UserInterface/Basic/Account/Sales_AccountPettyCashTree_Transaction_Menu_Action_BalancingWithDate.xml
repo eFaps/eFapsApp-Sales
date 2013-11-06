@@ -39,7 +39,10 @@
         <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingWithDateForm</form>
-            <execute method="pettyCashBalance" program="org.efaps.esjp.sales.Account"/>
+            <execute method="pettyCashBalance" program="org.efaps.esjp.sales.Account">
+                <property name="JasperReport">Sales_PettyCashBalance</property>
+                <property name="Mime">pdf</property>
+            </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
@@ -47,5 +50,6 @@
         <property name="TargetCreateType">Sales_PettyCashBalance</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

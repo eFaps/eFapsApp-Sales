@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="org.efaps.number2words.Converter"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="00995562-c85a-4f67-b9d5-d202baf41a60"/>
+		<property name="Instance" value="true"/>
+		<property name="hasSubReport" value="true"/>
+	</parameter>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<parameter name="AccName" class="java.lang.String"/>
+	<parameter name="AmountPettyCash" class="java.math.BigDecimal"/>
+	<field name="name" class="java.lang.String">
+		<property name="Select" value="attribute[Name]"/>
+	</field>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[Date]"/>
+	</field>
+	<pageHeader>
+		<band height="49" splitType="Stretch">
+			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+				<reportElement x="443" y="0" width="141" height="14"/>
+				<textElement textAlignment="Justified">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="390" y="0" width="53" height="14"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="0" width="164" height="14"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[LIQUIDACIÓN CAJA CHICA:]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="164" y="0" width="226" height="14"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$P{AccName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="702" y="0" width="100" height="14" isPrintWhenDetailOverflows="true"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}.replace($P{AccName} + "-", "")]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="60">
+			<subreport>
+				<reportElement positionType="Float" x="0" y="0" width="802" height="60"/>
+				<subreportParameter name="EFAPS_DEFINITION"/>
+				<subreportParameter name="AmountParameter">
+					<subreportParameterExpression><![CDATA[$P{AmountPettyCash}]]></subreportParameterExpression>
+				</subreportParameter>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_PettyCashBalancePayments")]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Sales_PettyCashBalancePayments"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>
