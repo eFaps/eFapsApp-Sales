@@ -30,7 +30,6 @@
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateOperationType</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateServiceType</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_Create_PaymentOrderType</child>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateVoucherType</child>
             <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_Create_PettyCashReceiptType</child>
         </childs>
     </definition>
