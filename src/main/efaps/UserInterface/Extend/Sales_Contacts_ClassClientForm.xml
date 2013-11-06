@@ -34,7 +34,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="ubicaciones" />
+            <profile name="eFaps" />
         </profiles>
         <name>Sales_Contacts_ClassClientForm</name>
         <type>Sales_Contacts_ClassClient</type>

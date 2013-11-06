@@ -32,6 +32,9 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
         <name>Sales_Contacts_ClassSupplier</name>
         
         <purpose classification="true">
@@ -58,39 +61,89 @@
             <sqlcolumn>CONTACTID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>BillingAdressStreet</name>
+            <name>BillingSupplierAdressStreet</name>
             <type>String</type>
             <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
             <sqlcolumn>STREET</sqlcolumn>
         </attribute>
         <attribute>
-            <name>BillingAdressCity</name>
+            <name>BillingSupplierAdressCity</name>
             <type>String</type>
             <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
             <sqlcolumn>CITY</sqlcolumn>
         </attribute>
         <attribute>
-            <name>BillingAdressZIP</name>
+            <name>BillingSupplierAdressZIP</name>
+            <type>String</type>
+            <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
+            <sqlcolumn>ZIP</sqlcolumn>
+        </attribute>
+    </definition>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="ubicaciones" />
+        </profiles>
+        <name>Sales_Contacts_ClassSupplier</name>
+        
+        <purpose classification="true">
+            <LinkColumn>ContactId</LinkColumn>
+            <parent>Contacts_Class</parent>
+        </purpose>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ContactId</name>
+            <type>Link</type>
+            <typelink>Contacts_Contact</typelink>
+            <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
+            <sqlcolumn>CONTACTID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>BillingSupplierAdressStreet</name>
+            <type>String</type>
+            <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
+            <sqlcolumn>STREET</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>BillingSupplierAdressCity</name>
+            <type>String</type>
+            <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
+            <sqlcolumn>CITY</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>BillingSupplierAdressZIP</name>
             <type>String</type>
             <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
             <sqlcolumn>ZIP</sqlcolumn>
         </attribute>
         <attribute>
-            <name>DepartmentLocationLink</name>
+            <name>DepartmentSupplierLocationLink</name>
             <type>Link</type>
             <typelink>Ubicaciones_UbicacionStandardRoot</typelink>
             <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
             <sqlcolumn>DEPARTMENTID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>ProvinceLocationLink</name>
+            <name>ProvinceSupplierLocationLink</name>
             <type>Link</type>
             <typelink>Ubicaciones_UbicacionStandardRoot</typelink>
             <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>
             <sqlcolumn>PROVINCEID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>DistrictLocationLink</name>
+            <name>DistrictSupplierLocationLink</name>
             <type>Link</type>
             <typelink>Ubicaciones_UbicacionStandardRoot</typelink>
             <sqltable>Sales_Contacts_ClassSupplierSQLTable</sqltable>

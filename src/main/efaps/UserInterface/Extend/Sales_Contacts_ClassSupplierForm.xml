@@ -33,6 +33,9 @@
 
   <definition>
     <version-expression>(version==latest)</version-expression>
+    <profiles>
+            <profile name="eFaps" />
+    </profiles>
     <name>Sales_Contacts_ClassSupplierForm</name>
     <type>Sales_Contacts_ClassSupplier</type>
         <field character="Heading" name="supplierHeading">
@@ -41,87 +44,124 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
         </field>
-        <field name="billingAdressStreet2">
+        <field name="billingSupplierAdressStreet">
             <property name="Columns">40</property>
-            <property name="Attribute">BillingAdressStreet</property>
+            <property name="Attribute">BillingSupplierAdressStreet</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="billingAdressCity2">
+        <field name="billingSupplierAdressCity">
             <property name="Columns">15</property>
-            <property name="Attribute">BillingAdressCity</property>
+            <property name="Attribute">BillingSupplierAdressCity</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="billingAdressZIP2">
+        <field name="billingSupplierAdressZIP">
             <property name="Columns">8</property>
-            <property name="Attribute">BillingAdressZIP</property>
+            <property name="Attribute">BillingSupplierAdressZIP</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Required">false</property>
         </field>
-        <field name="departmentLocation2">
-            <property name="Attribute">DepartmentLocationLink</property>
+  </definition>
+  
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <profiles>
+            <profile name="ubicaciones" />
+    </profiles>
+    <name>Sales_Contacts_ClassSupplierForm</name>
+    <type>Sales_Contacts_ClassSupplier</type>
+        <field character="Heading" name="supplierHeading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_Contacts_ClassSupplierForm.supplierHeading.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+        </field>
+        <field name="billingSupplierAdressStreet">
+            <property name="Columns">40</property>
+            <property name="Attribute">BillingSupplierAdressStreet</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="billingSupplierAdressCity">
+            <property name="Columns">15</property>
+            <property name="Attribute">BillingSupplierAdressCity</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="billingSupplierAdressZIP">
+            <property name="Columns">8</property>
+            <property name="Attribute">BillingSupplierAdressZIP</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Required">false</property>
+        </field>
+        <field name="departmentSupplierLocation">
+            <property name="Attribute">DepartmentSupplierLocationLink</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_Contacts_ClassClient.department.Label</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.department.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_Contacts_ClassClient.departmentLocation.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_Contacts_ClassSupplier.departmentSupplierLocation.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Ubicaciones_UbicacionStandardRoot</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="updateDropDown4Ubication"
-                name="Sales_Contacts_ClassClient.departmentLocation.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
-                <property name="targetField">provinceLocation2</property>
-                <property name="cleanFields">districtLocation2</property>
+                name="Sales_Contacts_ClassSupplier.departmentSupplierLocation.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                <property name="targetField">provinceSupplierLocation</property>
+                <property name="cleanFields">districtSupplierLocation</property>
             </trigger>
         </field>
-        <field name="provinceLocation2">
-            <property name="Attribute">ProvinceLocationLink</property>
+        <field name="provinceSupplierLocation">
+            <property name="Attribute">ProvinceSupplierLocationLink</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_Contacts_ClassClient.province.Label</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.province.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_Contacts_ClassClient.province.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_Contacts_ClassSupplier.provinceSupplierLocation.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Ubicaciones_UbicacionStandardRoot</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="WhereAttrEqValue">Name|-</property>
             </trigger>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="updateDropDown4Ubication"
-                name="Sales_Contacts_ClassClient.province.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
-                <property name="targetField">districtLocation2</property>
+                name="Sales_Contacts_ClassSupplier.provinceSupplierLocation.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                <property name="targetField">districtSupplierLocation</property>
             </trigger>
         </field>
-        <field name="districtLocation2">
-            <property name="Attribute">DistrictLocationLink</property>
+        <field name="districtSupplierLocation">
+            <property name="Attribute">DistrictSupplierLocationLink</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_Contacts_ClassClient.district.Label</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.district.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_Contacts_ClassClient.departmentLocation.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_Contacts_ClassSupplier.departmentSupplierLocation.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Ubicaciones_UbicacionStandardRoot</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="WhereAttrEqValue">Name|-</property>
             </trigger>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="updateDropDown4Ubication"
-                name="Sales_Contacts_ClassClient.district.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                name="Sales_Contacts_ClassSupplier.districtSupplierLocation.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
             </trigger>
         </field>
-        <field name="departmentLocation2Edit">
+        <field name="departmentSupplierLocationEdit">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">DepartmentLocationLink</property>
-            <property name="Label">Sales_Contacts_ClassClient.department.Label</property>
+            <property name="Attribute">DepartmentSupplierLocationLink</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.department.Label</property>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="getDropdown"
                 name="Ubicaciones_UbicacionExampleForm.locationUbicationEdit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Ubicaciones_UbicacionStandardRoot</property>
@@ -129,50 +169,50 @@
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="updateDropDown4Ubication"
-                name="Sales_Contacts_ClassClient.departmentLocationEdit.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
-                <property name="targetField">provinceLocation2Edit</property>
-                <property name="cleanFields">districtLocation2Edit</property>
+                name="Sales_Contacts_ClassSupplier.departmentSupplierLocationEdit.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                <property name="targetField">provinceSupplierLocationEdit</property>
+                <property name="cleanFields">districtSupplierLocationEdit</property>
             </trigger>
         </field>
-        <field name="provinceLocation2Edit">
+        <field name="provinceSupplierLocationEdit">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">ProvinceLocationLink</property>
-            <property name="Label">Sales_Contacts_ClassClient.province.Label</property>
+            <property name="Attribute">ProvinceSupplierLocationLink</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.province.Label</property>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="getDropdown"
-                name="Sales_Contacts_ClassClient.provinceEdit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_Contacts_ClassSupplier.provinceSupplierLocationEdit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Ubicaciones_UbicacionStandard</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="ParentAttribute">DepartmentLocationLink</property>
+                <property name="ParentAttribute">DepartmentSupplierLocationLink</property>
             </trigger>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="updateDropDown4Ubication"
-                name="Sales_Contacts_ClassClient.province.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
-                <property name="targetField">districtLocation2Edit</property>
+                name="Sales_Contacts_ClassSupplier.provinceSupplierLocationEdit.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                <property name="targetField">districtSupplierLocationEdit</property>
             </trigger>
         </field>
-        <field name="districtLocation2Edit">
+        <field name="districtSupplierLocationEdit">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">DistrictLocationLink</property>
-            <property name="Label">Sales_Contacts_ClassClient.district.Label</property>
+            <property name="Attribute">DistrictSupplierLocationLink</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.district.Label</property>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="getDropdown"
-                name="Sales_Contacts_ClassClient.districtEdit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_Contacts_ClassSupplier.districtSupplierLocationEdit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Ubicaciones_UbicacionStandard</property>
                 <property name="Select">attribute[Name]</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="ParentAttribute">ProvinceLocationLink</property>
+                <property name="ParentAttribute">ProvinceSupplierLocationLink</property>
             </trigger>
             <trigger program="org.efaps.esjp.ubicaciones.Ubicaciones" method="updateDropDown4Ubication"
-                name="Sales_Contacts_ClassClient.districtEdit.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                name="Sales_Contacts_ClassSupplier.districtSupplierLocationEdit.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
             </trigger>
         </field>
         <field name="ubication">
-            <property name="Phrase">$&lt;linkto[DepartmentLocationLink].attribute[Name]&gt; - $&lt;linkto[ProvinceLocationLink].attribute[Name]&gt; - $&lt;linkto[DistrictLocationLink].attribute[Name]&gt;</property>
+            <property name="Phrase">$&lt;linkto[DepartmentSupplierLocationLink].attribute[Name]&gt; - $&lt;linkto[ProvinceSupplierLocationLink].attribute[Name]&gt; - $&lt;linkto[DistrictSupplierLocationLink].attribute[Name]&gt;</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_Contacts_ClassClient.ubication.Label</property>
+            <property name="Label">Sales_Contacts_ClassSupplier.ubication.Label</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>

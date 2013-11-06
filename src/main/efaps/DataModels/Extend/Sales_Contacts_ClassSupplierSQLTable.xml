@@ -32,6 +32,26 @@
 
   <definition>
     <version-expression>(version==latest)</version-expression>
+    <profiles>
+        <profile name="eFaps"/>
+    </profiles>
+    <name>Sales_Contacts_ClassSupplierSQLTable</name>
+    <database>
+      <table-name>T_SALESCOCLASSSUP</table-name>
+            <column name="CONTACTID" type="INTEGER" not-null="true" />
+            <column name="STREET" type="STRING_SHORT"   length="255" />
+            <column name="CITY" type="STRING_SHORT" length="255" />
+            <column name="ZIP" type="STRING_SHORT" length="255" />
+            <unique name="T_SALESCOCLASSSUP_UK_CONTACTID"  columns="CONTACTID" />
+            <foreign name="T_SALESCOCLASSSUP_FK_CONTACTID" key="CONTACTID" reference="T_COCONTACT(ID)" />
+     </database>
+  </definition>
+
+  <definition>
+    <version-expression>(version==latest)</version-expression>
+    <profiles>
+        <profile name="ubicaciones"/>
+    </profiles>
     <name>Sales_Contacts_ClassSupplierSQLTable</name>
     <database>
       <table-name>T_SALESCOCLASSSUP</table-name>
@@ -49,5 +69,4 @@
             <foreign name="T_SALESCOCLASSCLIENT_FK_DISTRICTID"      key="DISTRICTID"    reference="T_UBICACION(ID)" />
      </database>
   </definition>
-
 </datamodel-sqltable>
