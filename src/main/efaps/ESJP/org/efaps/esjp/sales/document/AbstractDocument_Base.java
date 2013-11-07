@@ -697,12 +697,8 @@ public abstract class AbstractDocument_Base
     protected String getFieldValue4Contact(final Instance _instance)
         throws EFapsException
     {
-        String str="";
-        if (_instance.isValid()) {
-            final Contacts contacts = new Contacts();
-            str = contacts.getFieldValue4Contact(_instance);
-        }
-        return str;
+        final Contacts contacts = new Contacts();
+        return contacts.getFieldValue4Contact(_instance);
     }
 
     /**
