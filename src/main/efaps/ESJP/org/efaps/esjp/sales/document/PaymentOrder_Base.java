@@ -128,12 +128,12 @@ public abstract class PaymentOrder_Base
         }
 
         insert.add("SpendingLink", spendingLink);
-        insert.add(CISales.Invoice.RateCrossTotal, ratcross);
-        insert.add(CISales.Invoice.RateNetTotal, rateCrossTotal);
-        insert.add(CISales.Invoice.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.Invoice.CrossTotal, pay);
-        insert.add(CISales.Invoice.NetTotal, pay);
-        insert.add(CISales.Invoice.DiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.DocumentSumAbstract.RateCrossTotal, ratcross);
+        insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateCrossTotal);
+        insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.DocumentSumAbstract.CrossTotal, pay);
+        insert.add(CISales.DocumentSumAbstract.NetTotal, pay);
+        insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 
         insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
         insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
