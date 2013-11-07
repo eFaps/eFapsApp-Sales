@@ -43,7 +43,11 @@
         <target>
             <form>Sales_GoodsIssueSlipForm</form>
             <execute program="org.efaps.esjp.sales.document.GoodsIssueSlip"
-                method="create" />
+                method="create">
+                <property name="PositionType">Sales_GoodsIssueSlipPosition</property>
+                <property name="StatusGroup">Sales_GoodsIssueSlipStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
 
         <!-- properties -->
