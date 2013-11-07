@@ -156,7 +156,8 @@ public abstract class Account_Base
             transInsert.add(CISales.TransactionOutbound.CurrencyId, currId);
             transInsert.add(CISales.TransactionOutbound.Payment, payInst.getId());
             transInsert.add(CISales.TransactionOutbound.Account, cashDeskInstance.getId());
-            transInsert.add(CISales.TransactionOutbound.Description, "CashDeskBalance");
+            transInsert.add(CISales.TransactionOutbound.Description,
+                            DBProperties.getProperty("org.efaps.esjp.sales.TransactionOutBoundDescription.CashDeskBalance"));
             transInsert.add(CISales.TransactionOutbound.Date, new DateTime());
             transInsert.execute();
         }
