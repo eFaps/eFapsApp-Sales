@@ -21,8 +21,11 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -36,5 +39,17 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public abstract class IncomingExchange_Base
     extends AbstractSumOnlyDocument
 {
-
+    /**
+     * Method for create a new Quotation.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        createDoc(_parameter);
+        return new Return();
+    }
 }

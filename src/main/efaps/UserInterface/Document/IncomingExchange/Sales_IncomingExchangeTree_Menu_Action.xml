@@ -19,21 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>14d5b6f8-a8b0-4523-9ac0-d2f5291104e1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
+        <name>Sales_IncomingExchangeTree_Menu_Action</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
+            <child>Sales_IncomingExchangeTree_Menu_Action_Edit</child>
         </childs>
     </definition>
 </ui-menu>

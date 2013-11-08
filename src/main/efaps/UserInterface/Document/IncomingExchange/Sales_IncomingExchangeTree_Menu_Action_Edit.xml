@@ -19,21 +19,27 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>d2eff494-1b9c-4d1b-9e5d-627821309d2c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
-        <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
-        </childs>
+        <name>Sales_IncomingExchangeTree_Menu_Action_Edit</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_IncomingExchangeForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
-</ui-menu>
+</ui-command>
