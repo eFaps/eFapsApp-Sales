@@ -35,7 +35,7 @@
 
         <target>
             <menu>Sales_IncomingExchangeMyDesk_Menu</menu>
-            <table>Sales_DocumentSumTable</table>
+            <table>Sales_ExchangeTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingExchange</property>
             </evaluate>
