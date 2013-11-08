@@ -15,14 +15,14 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8190 $
- Last Changed:    $Date: 2012-11-09 19:10:29 -0500 (vie, 09 nov 2012) $
- Last Changed By: $Author: m.aranya@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dcf8370e-d61d-4e26-bdec-cc559944c94e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8190 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDetractionOutTree_Menu_Action_PayPayment</name>
@@ -32,10 +32,16 @@
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentDetractionOut4PayPaymentForm</form>
-            <execute method="updatePayableDocuments" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
+            <execute program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updatePayableDocuments"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="validatePayments"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_PaymentDetractionOutTree_Menu_Action_PayPayment.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                name="Sales_PaymentDetractionOutTree_Menu_Action_PayPayment.UI_ACCESSCHECK" event="UI_ACCESSCHECK" index="1">
                 <property name="Stati">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="check4DocLegalPayments" 
+                name="Sales_PaymentDetractionOutTree_Menu_Action_PayPayment.UI_ACCESSCHECK_2" event="UI_ACCESSCHECK" index="2">
+                <property name="ExcludeType01">Sales_IncomingInvoice</property>
+                <property name="ExcludeType02">Accounting_ExternalVoucher</property>
             </trigger>
         </target>
         <!-- properties -->

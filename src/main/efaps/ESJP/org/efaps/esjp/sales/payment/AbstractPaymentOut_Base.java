@@ -22,25 +22,29 @@
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.UUID;
 
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -54,12 +58,15 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
 
 
 /**
@@ -73,6 +80,16 @@ import org.joda.time.DateTime;
 public abstract class AbstractPaymentOut_Base
     extends AbstractPaymentDocument
 {
+
+    /**
+     * boolean (true/false) filtered into autoComplete.
+     */
+    public static final String DOCUMENT_FITERED_KEY = "org.efaps.esjp.sales.payment.AbstractPaymentOut.DocumentFilteredKey";
+
+    /**
+     * instance of the document to search into autoComplete.
+     */
+    public static final String INSTANCE_PAYMENT_DOC = "org.efaps.esjp.sales.payment.AbstractPaymentOut.InstancePaymentDoc";
 
     /**
      * Get the name for the document on creation.
@@ -167,9 +184,7 @@ public abstract class AbstractPaymentOut_Base
         final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
 
-        // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final PrintQuery print2 = new PrintQuery(_parameter.getInstance());
         print2.addAttribute(CISales.BulkPayment.Date);
@@ -252,52 +267,13 @@ public abstract class AbstractPaymentOut_Base
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
 
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+
+                final List<Long> excludes = excludeTypes4DropDownPaymentsRender(_parameter);
+                if (!excludes.isEmpty()) {
+                    _queryBldr.addWhereAttrNotEqValue(CISales.DocumentSumAbstract.Type, excludes.toArray());
+                }
             }
         }.dropDownFieldValue(_parameter);
-        return ret;
-    }
-
-    public Return updateField4PayableDocuments(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instDoc = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
-
-        final StringBuilder js = new StringBuilder();
-        js.append("var select = document.getElementsByName('")
-                        .append(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistRelatedDocument.name)
-                        .append("')[0];")
-                        .append(" select.options.length = 0; ");
-
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, instDoc.getId());
-        final AttributeQuery attrQuery = attrQueryBldr
-                        .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
-
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
-        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, getPayableDocuments(_parameter));
-
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.DocumentSumAbstract.Name);
-        multi.execute();
-        while (multi.next()) {
-            final String typeLabel = multi.getCurrentInstance().getType().getLabel();
-            final String name = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
-            final Instance inst = multi.getCurrentInstance();
-            js.append(" select.options[select.options.length] = new Option('")
-                .append(StringEscapeUtils.escapeEcmaScript(StringEscapeUtils.escapeHtml4(typeLabel + " - " + name)))
-                .append("','").append(inst.getOid()).append("'); ");
-
-        }
-
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
-        list.add(map);
-
-        final Return ret = new Return();
-        ret.put(ReturnValues.VALUES, list);
         return ret;
     }
 
@@ -305,59 +281,370 @@ public abstract class AbstractPaymentOut_Base
         throws EFapsException
     {
         final Return ret = new Return();
+
         final Instance instDoc = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
+
+        final String[] documents = _parameter.getParameterValues("createDocument");
+        boolean first = true;
+        if (documents != null && documents.length > 0) {
+            final Map<String, Object> infoDoc = new HashMap<String, Object>();
+            for (final String doc : documents) {
+                final Instance document = Instance.get(doc);
+                if (document.isValid()) {
+                    final PrintQuery print = new PrintQuery(document);
+                    print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    print.execute();
+                    final BigDecimal amount4Doc =
+                                    print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    if (first) {
+                        replacePaymentInfo(_parameter, instDoc, document, amount4Doc, infoDoc);
+                        first = false;
+                    } else {
+                        if (!infoDoc.isEmpty()) {
+                            final Insert payInsert = new Insert(CISales.Payment);
+                            payInsert.add(CISales.Payment.CreateDocument, document.getId());
+                            payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance().getId());
+                            payInsert.add(CISales.Payment.Amount, amount4Doc);
+                            payInsert.add(CISales.Payment.CurrencyLink, infoDoc.get("currency"));
+                            payInsert.add(CISales.Payment.Date, infoDoc.get("date"));
+                            payInsert.execute();
+
+                            final Insert transIns = new Insert(CISales.TransactionOutbound);
+                            transIns.add(CISales.TransactionOutbound.Amount, amount4Doc);
+                            transIns.add(CISales.TransactionOutbound.CurrencyId, infoDoc.get("currency"));
+                            transIns.add(CISales.TransactionOutbound.Payment, payInsert.getId());
+                            transIns.add(CISales.TransactionOutbound.Date, infoDoc.get("date"));
+                            transIns.add(CISales.TransactionOutbound.Account, infoDoc.get("account"));
+                            transIns.execute();
+
+                            final Insert insert = new Insert(CISales.PayableDocument2Document);
+                            insert.add(CISales.PayableDocument2Document.FromLink, document.getId());
+                            insert.add(CISales.PayableDocument2Document.ToLink, instDoc.getId());
+                            insert.add(CISales.PayableDocument2Document.PayDocLink, payInsert.getId());
+                            insert.execute();
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    protected void replacePaymentInfo(final Parameter _parameter,
+                                      final Instance _doc4Render,
+                                      final Instance _doc4Replaced,
+                                      final BigDecimal _amountDoc4Replaced,
+                                      final Map<String, Object> _infoDoc)
+        throws EFapsException
+    {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
         queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance().getId());
-        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, instDoc.getId());
+        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _doc4Render.getId());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.Payment.Amount);
+        multi.execute();
 
-        final InstanceQuery query = queryBldr.getQuery();
-        query.execute();
-        if (query.next()) {
-            Instance newInstDoc = null;
-            if (_parameter.getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm
-                            .createExistRelatedDocument.name) != null
-                            && !_parameter.getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm
-                                            .createExistRelatedDocument.name).isEmpty()) {
-                newInstDoc = Instance.get(_parameter.getParameterValue(CIFormSales.
-                                Sales_PaymentCheckOut4PayPaymentForm.createExistRelatedDocument.name));
-            } else {
-                newInstDoc = Instance.get(_parameter.getParameterValue("createDocument"));
-            }
-            if (newInstDoc != null && newInstDoc.isValid()) {
-                final Update updatePay = new Update(query.getCurrentValue());
-                updatePay.add(CISales.Payment.CreateDocument, newInstDoc.getId());
-                updatePay.execute();
+        if (multi.next()) {
+            final BigDecimal amountDoc4Render = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
 
-                final Insert insert = new Insert(CISales.PayableDocument2Document);
-                insert.add(CISales.PayableDocument2Document.FromLink, newInstDoc.getId());
-                insert.add(CISales.PayableDocument2Document.ToLink, instDoc.getId());
-                insert.add(CISales.PayableDocument2Document.PayDocLink, query.getCurrentValue().getId());
-                insert.execute();
+            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr2.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, multi.getCurrentInstance().getId());
+            final MultiPrintQuery multi2 = queryBldr2.getPrint();
+            multi2.addAttribute(CISales.TransactionAbstract.Account,
+                            CISales.TransactionAbstract.CurrencyId,
+                            CISales.TransactionAbstract.Date);
+            multi2.execute();
 
-                final PrintQuery printPay = new PrintQuery(query.getCurrentValue());
-                printPay.addAttribute(CISales.Payment.Amount);
-                printPay.execute();
-                final BigDecimal amountPay = printPay.<BigDecimal>getAttribute(CISales.Payment.Amount);
+            if (multi2.next()) {
+                final QueryBuilder queryBldr3 = new QueryBuilder(CISales.Balance);
+                queryBldr3.addWhereAttrEqValue(CISales.Balance.Account,
+                                multi2.<Long>getAttribute(CISales.TransactionAbstract.Account));
+                queryBldr3.addWhereAttrEqValue(CISales.Balance.Currency,
+                                multi2.<Long>getAttribute(CISales.TransactionAbstract.CurrencyId));
+                final MultiPrintQuery multi3 = queryBldr3.getPrint();
+                multi3.addAttribute(CISales.Balance.Amount);
+                multi3.execute();
 
-                final PrintQuery printDoc = new PrintQuery(newInstDoc);
-                printDoc.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                printDoc.execute();
-                final BigDecimal amountDoc = printDoc
-                                .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                if (multi3.next()) {
+                    final BigDecimal balanceAmount = multi3.<BigDecimal>getAttribute(CISales.Balance.Amount);
+                    if (multi2.getCurrentInstance().getType().equals(CISales.TransactionOutbound.getType())) {
+                        final BigDecimal different = amountDoc4Render.subtract(_amountDoc4Replaced);
+                        final Update update = new Update(multi3.getCurrentInstance());
+                        update.add(CISales.Balance.Amount, balanceAmount.add(different));
+                        update.execute();
 
-                if (amountDoc.compareTo(amountPay) == 0) {
-                    final Update updateDoc = new Update(newInstDoc);
-                    updateDoc.add(CISales.DocumentSumAbstract.StatusAbstract,
-                                    Status.find(newInstDoc.getType().getStatusAttribute().getLink().getUUID(), "Paid")
-                                                    .getId());
-                    updateDoc.execute();
+                        final Update update2 = new Update(multi2.getCurrentInstance());
+                        update2.add(CISales.TransactionAbstract.Amount, _amountDoc4Replaced);
+                        update2.execute();
+
+                        final Update update3 = new Update(multi.getCurrentInstance());
+                        update3.add(CISales.Payment.CreateDocument, _doc4Replaced.getId());
+                        update3.add(CISales.Payment.Amount, _amountDoc4Replaced);
+                        update3.execute();
+
+                        final Insert insert = new Insert(CISales.PayableDocument2Document);
+                        insert.add(CISales.PayableDocument2Document.FromLink, _doc4Replaced.getId());
+                        insert.add(CISales.PayableDocument2Document.ToLink, _doc4Render.getId());
+                        insert.add(CISales.PayableDocument2Document.PayDocLink, multi.getCurrentInstance().getId());
+                        insert.execute();
+
+                        _infoDoc.put("account", multi2.<Long>getAttribute(CISales.TransactionAbstract.Account));
+                        _infoDoc.put("currency", multi2.<Long>getAttribute(CISales.TransactionAbstract.CurrencyId));
+                        _infoDoc.put("date", multi2.<DateTime>getAttribute(CISales.TransactionAbstract.Date));
+                    }
                 }
-
             }
+        }
+    }
+
+    public Return activateFilteredDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final boolean filtered = "true".equalsIgnoreCase(_parameter.getParameterValue("filterDocuments"));
+        if (filtered) {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentOut_Base.DOCUMENT_FITERED_KEY, true);
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentOut_Base.DOCUMENT_FITERED_KEY, false);
+        }
+        return new Return();
+    }
+
+    public Return activateUpdateField4Document(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInstance = Instance.get(_parameter.getParameterValue("createExistDocument"));
+        if (docInstance.isValid()) {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentOut_Base.INSTANCE_PAYMENT_DOC, docInstance);
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentOut_Base.INSTANCE_PAYMENT_DOC, null);
+        }
+        return new Return();
+    }
+
+    public Return autoComplete4FilteredDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Object request = Context.getThreadContext().getSessionAttribute(AbstractPaymentOut_Base.DOCUMENT_FITERED_KEY);
+        final Instance document = (Instance) Context.getThreadContext().getSessionAttribute(
+                        AbstractPaymentOut_Base.INSTANCE_PAYMENT_DOC);
+
+        final DecimalFormat formater = NumberFormatter.get().getFormatter(2, 2);
+
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        if (!input.isEmpty()) {
+            boolean filtered = false;
+            if (request != null) {
+                if (request instanceof Boolean) {
+                    filtered = (Boolean) request;
+                }
+            }
+
+            List<Instance> lstDocs = new ArrayList<Instance>();
+            if (filtered) {
+                if (document != null && document.isValid()) {
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink,
+                                    document.getId());
+                    final AttributeQuery attrQuery = attrQueryBldr
+                                    .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+                    queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, getPayableDocuments(_parameter));
+                    queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name, input + "*").setIgnoreCase(true);
+
+                    lstDocs = queryBldr.getQuery().execute();
+                }
+            } else {
+                final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+                for (int i = 0; i < 100; i++) {
+                    if (props.containsKey("Type" + i)) {
+                        final Type type = Type.get(String.valueOf(props.get("Type" + i)));
+                        if (type != null) {
+                            final QueryBuilder queryBldr = new QueryBuilder(type);
+                            queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name, input + "*")
+                                            .setIgnoreCase(true);
+                            if (props.containsKey("StatusGroup" + i)) {
+                                final String statiStr = String.valueOf(props.get("Stati" + i));
+                                final String[] statiAr = statiStr.split(";");
+                                final List<Object> statusList = new ArrayList<Object>();
+                                for (final String stati : statiAr) {
+                                    final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
+                                    if (status != null) {
+                                        statusList.add(status.getId());
+                                    }
+                                }
+                                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
+                                                statusList.toArray());
+                            }
+                            lstDocs.addAll(queryBldr.getQuery().execute());
+                        }
+                    } else {
+                        break;
+                    }
+                }
+            }
+            if (!lstDocs.isEmpty()) {
+                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                final MultiPrintQuery multi = new MultiPrintQuery(lstDocs);
+                multi.addAttribute(CISales.DocumentAbstract.OID,
+                                CISales.DocumentAbstract.Name,
+                                CISales.DocumentAbstract.Date,
+                                CISales.DocumentSumAbstract.RateCrossTotal);
+                final SelectBuilder selCur = new SelectBuilder()
+                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                multi.addSelect(selCur);
+                multi.execute();
+                while (multi.next()) {
+                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                    final StringBuilder choice = new StringBuilder();
+                    choice.append(name).append(" - ").append(Instance.get(oid).getType().getLabel()).append(" - ")
+                        .append(date.toString(DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+
+                    String valueCrossTotal = "";
+                    if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                        final BigDecimal amount = multi
+                                        .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                        final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
+                        choice.append(" - ").append(curr.getSymbol()).append(" ").append(formater.format(amount));
+
+                        valueCrossTotal = curr.getSymbol() + " " + formater.format(amount);
+                    }
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                    map.put("crossTotal4Read", valueCrossTotal);
+                    tmpMap.put(oid, map);
+                }
+                list.addAll(tmpMap.values());
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    public Return validatePayments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance paymentInst = _parameter.getCallInstance();
+        final Return ret = new Return();
+        final StringBuilder error = new StringBuilder();
+        final Instance docInstance = Instance.get(_parameter.getParameterValue("createExistDocument"));
+        if (docInstance.isValid()) {
+            final Object[] typeIds = getPayableDocuments(_parameter);
+            boolean payment = true;
+            if (typeIds != null && typeIds.length > 0) {
+                for (final Object typeId : typeIds) {
+                    if (docInstance.getType().getId() == (Long) typeId) {
+                        payment = false;
+                        break;
+                    }
+                }
+            }
+            if (payment) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInstance.getId());
+                queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, paymentInst.getId());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.Payment.Amount);
+                multi.execute();
+
+                BigDecimal amountPay = BigDecimal.ZERO;
+                while (multi.next()) {
+                    amountPay = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
+                }
+                if (amountPay.compareTo(getAmounts4Render(_parameter)) == 0) {
+                    error.append(DBProperties
+                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
+                    ret.put(ReturnValues.SNIPLETT, error.toString());
+                    ret.put(ReturnValues.TRUE, true);
+                } else {
+                    error.append(DBProperties
+                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsInvalid"));
+                    ret.put(ReturnValues.SNIPLETT, error.toString());
+                }
+            } else {
+                error.append(DBProperties
+                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.DocumentInvalid"));
+                ret.put(ReturnValues.SNIPLETT, error.toString());
+            }
+        } else {
+            error.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.SelectedDocument"));
+            ret.put(ReturnValues.SNIPLETT, error.toString());
         }
 
         return ret;
+    }
+
+    protected BigDecimal getAmounts4Render(final Parameter _parameter)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        final String[] documents = _parameter.getParameterValues("createDocument");
+        if (documents != null && documents.length > 0) {
+            for (final String doc : documents) {
+                final Instance docInst = Instance.get(doc);
+                if (docInst.isValid()) {
+                    final PrintQuery print = new PrintQuery(docInst);
+                    print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                    print.execute();
+                    ret = ret.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                }
+            }
+        }
+        return ret;
+    }
+
+    public Return check4DocLegalPayments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final Instance paymentDoc = _parameter.getInstance();
+
+        if (paymentDoc.isValid()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, paymentDoc);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
+
+            final List<Long> excludes = excludeTypes4DropDownPaymentsRender(_parameter);
+            if (!excludes.isEmpty()) {
+                queryBldr.addWhereAttrNotEqValue(CISales.DocumentSumAbstract.Type, excludes.toArray());
+            }
+
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (!query.getValues().isEmpty()) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+        return ret;
+    }
+
+    protected List<Long> excludeTypes4DropDownPaymentsRender(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Long> excludes = new ArrayList<Long>();
+
+        final Map<Integer, String> excludeTypes = analyseProperty(_parameter, "ExcludeType");
+        for (final Entry<Integer, String> exclude : excludeTypes.entrySet()) {
+            final Type type = Type.get(exclude.getValue());
+            if (type != null) {
+                excludes.add(type.getId());
+            }
+        }
+
+        return excludes;
     }
 
 }

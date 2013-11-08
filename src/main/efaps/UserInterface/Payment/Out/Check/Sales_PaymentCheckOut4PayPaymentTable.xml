@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2012 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>098def6a-08fd-4a73-b761-8b1f0a4217c6</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentCheckOut4PayPaymentTable</name>
+        <!-- fields -->
+        <field name="createDocument">
+            <property name="Label">Sales_PaymentCheckOut4PayPaymentTable.createDocument.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="autoComplete4FilteredDocuments"
+                name="Sales_PaymentCashOut4PayPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type0">Sales_IncomingInvoice</property>
+                <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
+                <property name="Stati0">Open</property>
+            </trigger>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PaymentCheckOut4PayPaymentTable.crossTotal4Read.Label</property>
+        </field>
+    </definition>
+</ui-table>

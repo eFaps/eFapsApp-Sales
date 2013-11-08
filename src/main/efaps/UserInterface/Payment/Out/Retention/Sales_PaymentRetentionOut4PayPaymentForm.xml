@@ -15,52 +15,72 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 9159 $
-  Last Changed:    $Date: 2013-04-05 14:53:56 -0500 (vie, 05 abr 2013) $
-  Last Changed By: $Author: rosa.ordonez@efaps.org $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2c5bce9d-2f94-46cb-b781-82399d79beb7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9159 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentRetentionOut4PayPaymentForm</name>
         <!-- fields -->
+        <field name="deactivateFiltered4Documents">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="activateFilteredDocuments"
+                name="Sales_PaymentRetentionOut4PayPaymentForm.deactivateFiltered4Documents.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="deactivateFiltered4PaymentDocument">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="activateUpdateField4Document"
+                name="Sales_PaymentRetentionOut4PayPaymentForm.deactivateFiltered4PaymentDocument.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+        </field>
         <field name="createExistDocument">
             <property name="Label">Sales_PaymentRetentionOut4PayPaymentForm.createExistDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDown4CreateDocuments" name="Sales_PaymentRetentionOut4PayPaymentForm.createExistDocument.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="dropDown4CreateDocuments"
+                name="Sales_PaymentRetentionOut4PayPaymentForm.createExistDocument.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_DocumentSumAbstract</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;type.label&gt;, $&lt;attribute[Name]&gt;</property>
                 <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentCheckOut.EmptyValue</property>
+                <property name="ExcludeType01">Sales_IncomingInvoice</property>
+                <property name="ExcludeType02">Accounting_ExternalVoucher</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateField4PayableDocuments" name="Sales_PaymentRetentionOut4PayPaymentForm.createExistDocument.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="activateUpdateField4Document"
+                name="Sales_PaymentRetentionOut4PayPaymentForm.createExistDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
-        <field name="createExistRelatedDocument">
-            <property name="Label">Sales_PaymentRetentionOut4PayPaymentForm.createExistRelatedDocument.Label</property>
+        <field name="filterDocuments">
+            <property name="Label">Sales_PaymentRetentionOut4PayPaymentForm.filterDocuments.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_VALUE" method="emptyDropDownFieldValue" name="Sales_PaymentRetentionOut4PayPaymentForm.createExistRelatedDocument.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
+                name="Sales_PaymentRetentionOut4PayPaymentForm.filterDocuments.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="checked">false</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="activateFilteredDocuments"
+                name="Sales_PaymentRetentionOut4PayPaymentForm.filterDocuments.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
-        <field name="createDocument">
-            <property name="Label">Sales_PaymentRetentionOut4PayPaymentForm.createDocumentAutoComplete.Label</property>
+        <field character="Heading" name="headingDocuments">
+            <property name="Level">2</property>
+            <property name="Label">Sales_PaymentRetentionOut4PayPaymentForm.headingDocuments.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field character="Target" name="documentTable">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentRetentionOut4PayPaymentForm.createDocumentAutoComplete.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
-                <property name="Type0">Sales_IncomingInvoice</property>
-                <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
-                <property name="Stati0">Open</property>
-                <property name="Type1">Sales_IncomingReceipt</property>
-                <property name="StatusGroup1">Sales_IncomingReceiptStatus</property>
-                <property name="Stati1">Open</property>
-            </trigger>
+            <table>Sales_PaymentRetentionOut4PayPaymentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">ERP_DocumentAbstract</property>
+            </evaluate>
         </field>
     </definition>
 </ui-form>
