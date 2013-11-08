@@ -44,37 +44,39 @@
         <access-type>delete</access-type>
         <access-type>grant</access-type>
 
-        <type>Sales_CostSheet</type>
-        <type>Sales_Quotation</type>
-        <type>Sales_Invoice</type>
-        <type>Sales_Receipt</type>
-        <type>Sales_DeliveryNote</type>
         <type>Contacts_Contact</type>
-        <type>Sales_RecievingTicket</type>
+        <type>Sales_BulkPayment</type>
         <type>Sales_CashDeskBalance</type>
+        <type>Sales_CashReceipt</type>
+        <type>Sales_CostSheet</type>
         <type>Sales_CreditNote</type>
-        <type>Sales_Reminder</type>
+        <type>Sales_DeliveryNote</type>
+        <type>Sales_Exchange</type>
+        <type>Sales_GoodsIssueSlip</type>
+        <type>Sales_IncomingCreditNote</type>
+        <type>Sales_IncomingExchange</type>
         <type>Sales_IncomingInvoice</type>
-        <type>Sales_ReturnSlip</type>
+        <type>Sales_IncomingReceipt</type>
+        <type>Sales_IncomingReminder</type>
+        <type>Sales_Invoice</type>
         <type>Sales_OrderInbound</type>
         <type>Sales_OrderOutbound</type>
-        <type>Sales_Reservation</type>
-        <type>Sales_GoodsIssueSlip</type>
-        <type>Sales_PettyCashReceipt</type>
-        <type>Sales_PettyCashBalance</type>
-        <type>Sales_UsageReport</type>
-        <type>Sales_CashReceipt</type>
         <type>Sales_PaymentSchedule</type>
-        <type>Sales_ProductRequest</type>
-        <type>Sales_IncomingReceipt</type>
-        <type>Sales_RetentionCertificate</type>
-        <type>Sales_BulkPayment</type>
-        <type>Sales_QuoteRequest</type>
-        <type>Sales_IncomingCreditNote</type>
-        <type>Sales_IncomingReminder</type>
         <type>Sales_PerceptionCertificate</type>
-        <type>Sales_ReturnUsageReport</type>
+        <type>Sales_PettyCashBalance</type>
+        <type>Sales_PettyCashReceipt</type>
         <type>Sales_ProductionReport</type>
+        <type>Sales_ProductRequest</type>
+        <type>Sales_Quotation</type>
+        <type>Sales_QuoteRequest</type>
+        <type>Sales_Receipt</type>
+        <type>Sales_RecievingTicket</type>
+        <type>Sales_Reminder</type>
+        <type>Sales_Reservation</type>
+        <type>Sales_RetentionCertificate</type>
+        <type>Sales_ReturnSlip</type>
+        <type>Sales_ReturnUsageReport</type>
+        <type>Sales_UsageReport</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -259,6 +261,15 @@
             <key>Closed</key>
             <key>Canceled</key>
         </status>
+
+        <status group="Sales_ExchangeStatus">
+            <key>Open</key>
+        </status>
+
+        <status group="Sales_IncomingExchangeStatus">
+            <key>Open</key>
+        </status>
+        
 
         <role>Sales_Admin</role>
     </definition>

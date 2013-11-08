@@ -53,6 +53,7 @@
             <child>Sales_PerceptionCertificateMyDesk</child>
             <child>Sales_ProductionReportMyDesk</child>
             <child>Sales_ReturnUsageReportMyDesk</child>
+            <child>Sales_ExchangeMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
