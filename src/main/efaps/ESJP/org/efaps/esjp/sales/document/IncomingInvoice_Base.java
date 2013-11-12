@@ -83,35 +83,25 @@ public abstract class IncomingInvoice_Base
         createPositions(_parameter, createdDoc);
         new Costs().updateCosts(_parameter, createdDoc.getInstance());
         incomingInvoiceCreateTransaction(_parameter, createdDoc);
-        connect2DocumentType(_parameter, createdDoc.getInstance());
-        connect2ProductDocumentType(_parameter, createdDoc.getInstance());
+        connect2DocumentType(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
         return new Return();
     }
 
-    @Override
-    protected void connect2DocumentType(final Parameter _parameter,
-                                        final Instance _instance)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.documentType.name));
-        if (instDocType.isValid() && _instance.isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
-    }
-
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
     protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final Instance _instance)
+                                               final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final Instance instDocType = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.productDocumentType.name));
-        if (instDocType.isValid() && _instance.isValid()) {
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
             insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
             insert.execute();
         }

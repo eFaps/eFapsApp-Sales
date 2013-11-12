@@ -126,6 +126,11 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Regex4DefaultValue">02 - .*</property>
             </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck" 
+                name="Sales_IncomingReceiptForm.productDocumentType.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">IsProductDocument</property>
+            </trigger>
         </field>
         <field name="productDocumentType4View">
             <property name="Label">Sales_IncomingReceiptForm.productDocumentType.Label</property>
@@ -138,6 +143,11 @@
                 <!-- Sales_ProductDocumentType -->
                 <property name="Search4Type">42ec125b-46ee-4822-8de4-b4cd55072f74</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck" 
+                name="Sales_IncomingReceiptForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">IsProductDocument</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">

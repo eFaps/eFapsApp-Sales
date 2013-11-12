@@ -233,14 +233,21 @@ public abstract class DocumentSum_Base
     /**
      * Method to connect the document with the selected document type.
      *
-     * @param _parameter
-     * @param _instance
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc CreatedDoc
      * @throws EFapsException
      */
     protected void connect2DocumentType(final Parameter _parameter,
-                                        final Instance _instance)
+                                        final CreatedDoc _createdDoc)
         throws EFapsException
     {
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
+            final Insert insert = new Insert(CISales.Document2DocumentType);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
+            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            insert.execute();
+        }
     }
 
     /**

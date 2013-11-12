@@ -32,8 +32,6 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
-import org.efaps.db.Instance;
-import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -66,6 +64,7 @@ public abstract class IncomingReminder_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
+        connect2DocumentType(_parameter, createdDoc);
         return new Return();
     }
 
@@ -83,22 +82,6 @@ public abstract class IncomingReminder_Base
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingReminder_Base.REVISIONKEY, revision);
             _insert.add(CISales.IncomingReminder.Revision, revision);
-        }
-
-    }
-
-    @Override
-    protected void connect2DocumentType(final Parameter _parameter,
-                                        final Instance _instance)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingReminderForm.documentType.name));
-        if (instDocType.isValid() && _instance.isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
         }
     }
 }

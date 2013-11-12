@@ -123,6 +123,11 @@
                 <property name="Search4Type">90796449-0121-4fc1-9632-7d52f3adf85e</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
             </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck" 
+                name="Sales_IncomingInvoiceForm.productDocumentType.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">IsProductDocument</property>
+            </trigger>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -137,6 +142,11 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Regex4DefaultValue">02 - .*</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck" 
+                name="Sales_IncomingInvoiceForm.productDocumentType.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">IsProductDocument</property>
             </trigger>
         </field>
         <field name="productDocumentType4View">

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8342 $
- * Last Changed:    $Date: 2012-12-11 09:42:17 -0500 (Tue, 11 Dec 2012) $
- * Last Changed By: $Author: jan@moxter.net $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
 
 
@@ -31,8 +31,8 @@ import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -56,11 +56,10 @@ import org.joda.time.DateTime;
  * Base class for Type Incoming Invoice.
  *
  * @author The eFaps Team
- * @version $Id: IncomingInvoice_Base.java 8362 2012-12-12 18:41:35Z
- *          jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("e740fd7c-4601-4595-8a7e-0175522cbd74")
-@EFapsRevision("$Rev: 10 $")
+@EFapsRevision("$Rev$")
 public abstract class IncomingReceipt_Base
     extends DocumentSum
 {
@@ -83,35 +82,25 @@ public abstract class IncomingReceipt_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         incomingReceiptCreateTransaction(_parameter, createdDoc);
-        connect2DocumentType(_parameter, createdDoc.getInstance());
-        connect2ProductDocumentType(_parameter, createdDoc.getInstance());
+        connect2DocumentType(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
         return new Return();
     }
 
-    @Override
-    protected void connect2DocumentType(final Parameter _parameter,
-                                        final Instance _instance)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingReceiptForm.documentType.name));
-        if (instDocType.isValid() && _instance.isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
-    }
-
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
     protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final Instance _instance)
+                                               final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final Instance instDocType = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_IncomingReceiptForm.productDocumentType.name));
-        if (instDocType.isValid() && _instance.isValid()) {
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _instance);
+            insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
             insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
             insert.execute();
         }
