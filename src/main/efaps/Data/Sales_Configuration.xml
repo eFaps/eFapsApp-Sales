@@ -128,7 +128,7 @@
         </attribute>
         <attribute>
             <key>org.efaps.sales.IncomingReceiptSequence</key>
-            <value><![CDATA[UUID=58d89fbf-0c0a-4a27-b1df-90f34759011e]]></value>
+            <value><![CDATA[UUID=935a2a87-056d-4278-916b-388c53fa98e0]]></value>
             <description>Company should be setted.</description>
         </attribute>
     </definition>
