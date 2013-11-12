@@ -53,14 +53,4 @@ public abstract class Receipt_Base
         createPositions(_parameter, doc);
         return new Return();
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected String getJavaScript(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getJavaScript(_parameter, false);
-    }
 }
