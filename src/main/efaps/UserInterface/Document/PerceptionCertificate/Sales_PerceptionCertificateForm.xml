@@ -115,7 +115,7 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_PerceptionCertificateForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.PerceptionCertificate">
-                <property name="Type">Sales_Contacts_ClassSupplier</property>
+                <property name="Type">Contacts_ClassSupplier</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
                 name="Sales_PerceptionCertificateForm.contact.UI_FIELD_UPDATE"

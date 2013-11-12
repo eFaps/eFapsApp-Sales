@@ -132,7 +132,7 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_CashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.CashReceipt">
-                <property name="Type">Sales_Contacts_ClassClient</property>
+                <property name="Type">Contacts_ClassClient</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
                 name="Sales_CashReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.CashReceipt" />

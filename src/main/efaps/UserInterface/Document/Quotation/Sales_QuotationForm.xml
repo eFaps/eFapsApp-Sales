@@ -140,7 +140,7 @@
                 method="autoComplete4Contact"
                 name="Sales_QuotationForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Classifications">Sales_Contacts_ClassClient</property>
+                <property name="Classifications">Contacts_ClassClient</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="updateFields4Contact"

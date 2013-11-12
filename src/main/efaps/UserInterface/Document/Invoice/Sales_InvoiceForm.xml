@@ -152,7 +152,7 @@
                 method="autoComplete4Contact"
                 name="Sales_InvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Classifications">Sales_Contacts_ClassClient</property>
+                <property name="Classifications">Contacts_ClassClient</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Contact"
