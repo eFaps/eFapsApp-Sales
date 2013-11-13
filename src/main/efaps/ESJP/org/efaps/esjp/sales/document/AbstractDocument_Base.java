@@ -936,7 +936,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        final BigDecimal rate = BigDecimal.ONE;
+
         final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
         queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _instance);
         queryBldr.addOrderByAttributeAsc(CISales.PositionAbstract.PositionNumber);
@@ -945,11 +945,6 @@ public abstract class AbstractDocument_Base
                         CISales.PositionAbstract.ProductDesc,
                         CISales.PositionAbstract.Quantity,
                         CISales.PositionAbstract.UoM,
-                        CISales.PositionSumAbstract.CrossUnitPrice,
-                        CISales.PositionSumAbstract.NetUnitPrice,
-                        CISales.PositionSumAbstract.DiscountNetUnitPrice,
-                        CISales.PositionSumAbstract.CrossPrice,
-                        CISales.PositionSumAbstract.NetPrice,
                         CISales.PositionSumAbstract.RateNetUnitPrice,
                         CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
                         CISales.PositionSumAbstract.RateNetPrice,
@@ -973,10 +968,6 @@ public abstract class AbstractDocument_Base
         while (multi.next()) {
             final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
 
-            final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
-            final BigDecimal discountNetUnitPrice = multi.
-                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.DiscountNetUnitPrice);
-            final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
             final BigDecimal rateNetUnitPrice = multi.<BigDecimal>getAttribute(
                             CISales.PositionSumAbstract.RateNetUnitPrice);
             final BigDecimal rateDiscountNetUnitPrice = multi.
@@ -992,31 +983,14 @@ public abstract class AbstractDocument_Base
             map.put(new KeyDefStr("productDesc"),  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
             map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                             multi.<Long>getSelect(selProdDim)));
-            if (TargetMode.EDIT.equals(Context.getThreadContext()
-                            .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
-                map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice == null || netUnitPrice == null
-                                ? BigDecimal.ZERO
-                                : rate != null ? rateNetUnitPrice : netUnitPrice);
-                map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), rateDiscountNetUnitPrice == null
-                                || discountNetUnitPrice == null ? BigDecimal.ZERO
-                                : rate != null ? rateDiscountNetUnitPrice : discountNetUnitPrice);
-                map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice == null || netPrice == null
-                                ? BigDecimal.ZERO
-                                : rate != null ? rateNetPrice : netPrice);
-            } else {
-                map.put(new KeyDefFrmt("netUnitPrice", upFrmt), netUnitPrice == null
-                                ? BigDecimal.ZERO
-                                : rate != null ? netUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netUnitPrice);
-                map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), discountNetUnitPrice == null
-                                ? BigDecimal.ZERO
-                                : rate != null
-                                    ? discountNetUnitPrice.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                                    : discountNetUnitPrice);
-                map.put(new KeyDefFrmt("netPrice", totFrmt), netPrice == null
-                                ? BigDecimal.ZERO
-                                : rate != null ? netPrice.divide(rate, BigDecimal.ROUND_HALF_UP) : netPrice);
-                map.put(new KeyDefFrmt("discount", disFrmt), discount == null ? BigDecimal.ZERO : discount);
-            }
+
+            map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice == null ? BigDecimal.ZERO
+                            : rateNetUnitPrice);
+            map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), rateDiscountNetUnitPrice == null ? BigDecimal.ZERO
+                            : rateDiscountNetUnitPrice);
+            map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice == null ? BigDecimal.ZERO : rateNetPrice);
+            map.put(new KeyDefFrmt("discount", disFrmt), discount == null ? BigDecimal.ZERO : discount);
+
             values.add(map);
         }
 
