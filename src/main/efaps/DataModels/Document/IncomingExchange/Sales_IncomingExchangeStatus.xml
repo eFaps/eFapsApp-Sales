@@ -35,5 +35,23 @@
         <status key="Open">
             <description>Exchange is open</description>
         </status>
+        <status key="Annulled">
+            <description>Exchange is open</description>
+        </status>
+        <status key="Discount">
+            <description>Exchange is open</description>
+        </status>
+        <status key="Collection">
+            <description>Exchange is open</description>
+        </status>
+        <status key="Canceled">
+            <description>Exchange is open</description>
+        </status>
+        <status key="Protest">
+            <description>Exchange is open</description>
+        </status>
+        <status key="Renewed">
+            <description>Exchange is renewed</description>
+        </status>
     </definition>
 </datamodel-statusgroup>

@@ -274,9 +274,14 @@
 
         <status group="Sales_IncomingExchangeStatus">
             <key>Open</key>
+            <key>Annulled</key>
+            <key>Discount</key>
+            <key>Collection</key>
+            <key>Canceled</key>
+            <key>Protest</key>
+            <key>Renewed</key>
         </status>
         
-
         <role>Sales_Admin</role>
     </definition>
 </access-set>
