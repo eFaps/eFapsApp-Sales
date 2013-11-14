@@ -38,6 +38,9 @@
                 <property name="Type0">Sales_IncomingInvoice</property>
                 <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
                 <property name="Stati0">Open</property>
+                <property name="Type1">Accounting_ExternalVoucher</property>
+                <property name="StatusGroup1">Accounting_ExternalVoucherStatus</property>
+                <property name="Stati1">Open</property>
             </trigger>
         </field>
         <field name="crossTotal4Read">
