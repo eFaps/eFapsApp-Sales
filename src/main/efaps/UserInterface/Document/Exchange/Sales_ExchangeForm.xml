@@ -102,7 +102,12 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        
+        <field name="onlyNumber">
+            <property name="Attribute">OnlyNumber</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_ExchangeForm.headingContact.Heading</property>

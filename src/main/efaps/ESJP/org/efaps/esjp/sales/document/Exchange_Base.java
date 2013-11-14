@@ -25,6 +25,8 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 
@@ -51,5 +53,19 @@ public abstract class Exchange_Base
     {
         createDoc(_parameter);
         return new Return();
+    }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String onlynumber = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.Exchange.OnlyNumber.name));
+        if (onlynumber != null) {
+            _insert.add(CISales.Exchange.OnlyNumber, onlynumber);
+            _createdDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
+        }
     }
 }

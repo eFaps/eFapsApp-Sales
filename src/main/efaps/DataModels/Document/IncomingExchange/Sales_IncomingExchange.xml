@@ -40,6 +40,12 @@
                 program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
+        <attribute>
+            <name>OnlyNumber</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
         <trigger event="ACCESSCHECK" name="Sales_IncomingExchange.ACCESSCHECK"
             program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>

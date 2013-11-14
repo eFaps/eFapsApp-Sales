@@ -36,11 +36,15 @@
             <typelink>Sales_ExchangeStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_Exchange.Status.RANGE_VALUE"
-                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <trigger event="RANGE_VALUE" name="Sales_Exchange.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_Exchange.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+        <attribute>
+            <name>OnlyNumber</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <trigger event="ACCESSCHECK" name="Sales_Exchange.ACCESSCHECK" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
 </datamodel-type>
