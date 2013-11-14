@@ -264,6 +264,12 @@
 
         <status group="Sales_ExchangeStatus">
             <key>Open</key>
+            <key>Annulled</key>
+            <key>Discount</key>
+            <key>Collection</key>
+            <key>Canceled</key>
+            <key>Protest</key>
+            <key>Renewed</key>
         </status>
 
         <status group="Sales_IncomingExchangeStatus">
