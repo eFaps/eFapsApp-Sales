@@ -513,7 +513,7 @@ public abstract class DocumentSum_Base
                 }
             }
             js.append(getSetFieldValue(0, "rateCurrencyData", rateInfos[1].getRateUIFrmt()))
-                .append(getSetFieldValue(0, "rate", rateInfos[1].getRateFrmt()))
+                .append(getSetFieldValue(0, "rate", rateInfos[1].getRateUIFrmt()))
                 .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
                                 Boolean.toString(rateInfos[1].getCurrencyInst().isInvert())))
                 .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
