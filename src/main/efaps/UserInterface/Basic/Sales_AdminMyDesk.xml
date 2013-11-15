@@ -43,6 +43,7 @@
             <child>Sales_BalanceMyDesk</child>
             <child>Sales_CashDeskBalanceMyDesk</child>
             <child>Sales_TextModuleMyDesk</child>
+            <child>Sales_TransactionInternalMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

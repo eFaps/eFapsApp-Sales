@@ -21,12 +21,18 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -34,7 +40,9 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -46,7 +54,9 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -315,4 +325,180 @@ public abstract class Transaction_Base
         retVal.put(ReturnValues.VALUES, js.toString());
     return retVal;
     }
+
+    public Return getTable4TransactionFieldValueUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String amountName = (String) properties.get("AmountName");
+        final String currencyName = (String) properties.get("CurrencyName");
+        final String costName = (String) properties.get("CostName");
+        final String currencyId = (String) properties.get("CurrencyId");
+
+        html.append("<table>");
+        html.append("<tr>");
+        html.append("<td>").append(DBProperties.getProperty("org.efaps.esjp.sales.Transaction.Amount")).append("</td>");
+        html.append("<td>").append(DBProperties.getProperty("org.efaps.esjp.sales.Transaction.Currency"))
+                        .append("</td>");
+        html.append("<td>").append(DBProperties.getProperty("org.efaps.esjp.sales.Transaction.Cost")).append("</td>");
+        html.append("</tr>");
+
+        html.append("<tr>");
+        html.append("<td>").append("<input type=\"text\" size=\"6\" name=\"").append(amountName).append("\"/>")
+                        .append("</td>");
+        html.append("<td>").append("<input type=\"text\" size=\"6\" name=\"").append(currencyName)
+                        .append("\" value=\"\"").append(" readonly=\"readonly\" ").append("\"/>")
+                        .append("<input type=\"hidden\" name=\"").append(currencyId).append("\" value=\"\"")
+                        .append("\"/>").append("</td>");
+        html.append("<td>").append("<input type=\"text\" size=\"6\" name=\"").append(costName).append("\"/>")
+                        .append("</td>");
+        html.append("</table>");
+
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
+    }
+
+    public Return updateDropDownTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        Long currencyId = Long.valueOf(0);
+        final String currencyType = (String) properties.get("CurrencyType");
+        final String currId = (String) properties.get("CurrencyId");
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        html.append("document.getElementsByName('").append(currencyType).append("')[0].value='");
+
+        if (!_parameter.getParameterValue(field.getName()).isEmpty()) {
+            final Long id = Long.parseLong(_parameter.getParameterValue(field.getName()));
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.AccountAbstract.ID, id);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selCurrencylabel = new SelectBuilder().linkto(CISales.AccountAbstract.CurrencyLink)
+                            .attribute(CIERP.Currency.Name);
+            multi.addSelect(selCurrencylabel);
+            multi.addAttribute(CISales.AccountAbstract.CurrencyLink);
+            multi.execute();
+            if (multi.next()) {
+                final String currencyName = multi.<String>getSelect(selCurrencylabel);
+                currencyId = multi.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
+                if (currencyName != null) {
+                    html.append(currencyName);
+                }
+            }
+        }
+        html.append("';");
+
+        html.append("document.getElementsByName('").append(currId).append("')[0].value='").append(currencyId)
+                        .append("';");
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), html.toString());
+        list.add(map);
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    public Return createInternalTransfer(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String costOutStr = _parameter.getParameterValue("cost_outbound");
+        final String currIdOutStr = _parameter.getParameterValue("currencyId_outbound");
+        final String amountOutStr = _parameter.getParameterValue("amount_outbound");
+        final String costInStr = _parameter.getParameterValue("cost_inbound");
+        final String currIdInStr = _parameter.getParameterValue("currencyId_inbound");
+        final String amountInStr = _parameter.getParameterValue("amount_inbound");
+        final String charger = _parameter.getParameterValue("charger");
+        final String payment = _parameter.getParameterValue("payment");
+
+        // transaction outbound
+        createInternalTransaction(_parameter, CISales.TransactionOutbound.getType(), charger, costOutStr, currIdOutStr,
+                        amountOutStr);
+        // transaction inbound
+        createInternalTransaction(_parameter, CISales.TransactionInbound.getType(), payment, costInStr, currIdInStr,
+                        amountInStr);
+        return new Return();
+    }
+
+    /**
+     * Method for create internal transfers.
+     * 
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createInternalTransaction(final Parameter _parameter,
+                                            final Type _transactionType,
+                                            final String _account,
+                                            final String _cost,
+                                            final String _currencyId,
+                                            final String _amount)
+        throws EFapsException
+    {
+        final String note = _parameter.getParameterValue("note");
+
+        Instance instCharger = null;
+        if (!_account.isEmpty() && _account != null) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.AccountAbstract.ID, _account);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.AccountAbstract.OID);
+            multi.execute();
+            if (multi.next()) {
+                final String accountOid = multi.<String>getAttribute(CISales.AccountAbstract.OID);
+                instCharger = Instance.get(accountOid);
+            }
+        }
+
+        Long currId = Long.valueOf(0);
+        if (!_currencyId.isEmpty() && _currencyId != null) {
+            currId = Long.parseLong(_currencyId);
+        }
+        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
+        formater.setParseBigDecimal(true);
+        if (_cost != null && !_cost.isEmpty() && instCharger.isValid() && instCharger != null) {
+            BigDecimal cost = BigDecimal.ZERO;
+
+            try {
+                cost = (BigDecimal) formater.parse(_cost);
+            } catch (final ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+            if (cost.compareTo(BigDecimal.ZERO) != 0) {
+                final Insert transInsertCost = new Insert(_transactionType);
+                transInsertCost.add(CISales.TransactionAbstract.Amount, cost);
+                transInsertCost.add(CISales.TransactionAbstract.CurrencyId, currId);
+                transInsertCost.add(CISales.TransactionAbstract.Account, instCharger.getId());
+                transInsertCost.add(CISales.TransactionAbstract.Description, note);
+                transInsertCost.add(CISales.TransactionAbstract.Date, new DateTime());
+                transInsertCost.execute();
+            }
+        }
+
+        if (_amount != null && !_amount.isEmpty() && instCharger.isValid() && instCharger != null) {
+            BigDecimal amount = BigDecimal.ZERO;
+            try {
+                amount = (BigDecimal) formater.parse(_amount);
+            } catch (final ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            final Insert transInsertAmount = new Insert(_transactionType);
+            transInsertAmount.add(CISales.TransactionAbstract.Amount, amount);
+            transInsertAmount.add(CISales.TransactionAbstract.CurrencyId, currId);
+            transInsertAmount.add(CISales.TransactionAbstract.Account, instCharger.getId());
+            transInsertAmount.add(CISales.TransactionAbstract.Description, note);
+            transInsertAmount.add(CISales.TransactionAbstract.Date, new DateTime());
+            transInsertAmount.execute();
+        }
+
+        return new Return();
+    }
+
 }
