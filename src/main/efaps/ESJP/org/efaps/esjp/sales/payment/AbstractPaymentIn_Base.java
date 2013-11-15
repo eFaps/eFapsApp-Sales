@@ -22,6 +22,7 @@
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,6 +45,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -77,9 +79,8 @@ public abstract class AbstractPaymentIn_Base
 
             final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
 
-            map.put(CIFormSales.Sales_PaymentDepositWithOutDocForm.rate.name, getFormater(0, 2).format(rates[3]));
-            map.put(CIFormSales.Sales_PaymentDepositWithOutDocForm.rate.name + RateUI.INVERTEDSUFFIX,
-                            "" + "" + (rates[3].compareTo(rates[0]) != 0));
+            map.put("rate", NumberFormatter.get().getFormatter(0, 2).format(rates[3]));
+            map.put("rate" + RateUI.INVERTEDSUFFIX, "" + "" + (rates[3].compareTo(rates[0]) != 0));
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         } else {
@@ -118,6 +119,8 @@ public abstract class AbstractPaymentIn_Base
     public Return getJavaScript4AmountAddDoc(final Parameter _parameter)
         throws EFapsException
     {
+        final DecimalFormat fmtr = NumberFormatter.get().getFormatter(2, 2);
+
         final Instance instance = _parameter.getInstance();
         final Return ret = new Return();
         if (instance != null && instance.isValid()) {
@@ -137,8 +140,8 @@ public abstract class AbstractPaymentIn_Base
             }
             final StringBuilder js = new StringBuilder();
             js.append("<script type=\"text/javascript\">\n")
-                .append(getSetFieldValue(0, "amount", getTwoDigitsformater().format(amountTotal)))
-                .append(getSetFieldValue(0, "restAmount", getTwoDigitsformater().format(amountTotal)))
+                .append(getSetFieldValue(0, "amount", fmtr.format(amountTotal)))
+                .append(getSetFieldValue(0, "restAmount", fmtr.format(amountTotal)))
                 .append("</script>\n");
 
             ret.put(ReturnValues.SNIPLETT, js.toString());

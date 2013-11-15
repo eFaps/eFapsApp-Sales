@@ -25,9 +25,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -331,12 +329,6 @@ public abstract class AbstractPaymentDocument_Base
     public Return autoComplete4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        formater.setMaximumFractionDigits(2);
-        formater.setMinimumFractionDigits(2);
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setParseBigDecimal(true);
-
         final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
 
@@ -400,7 +392,7 @@ public abstract class AbstractPaymentDocument_Base
                             final BigDecimal amount = multi
                                             .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                             final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
-                            choice.append(" - ").append(curr.getSymbol()).append(" ").append(formater.format(amount));
+                            choice.append(" - ").append(curr.getSymbol()).append(" ").append(getTwoDigitsformater().format(amount));
                         }
                         final Map<String, String> map = new HashMap<String, String>();
                         map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
@@ -657,9 +649,8 @@ public abstract class AbstractPaymentDocument_Base
 
         final Map<String, String> map = new HashMap<String, String>();
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
-        map.put(CIFormSales.Sales_PaymentCheckWithOutDocForm.rate.name, getFormater(0, 2).format(rates[3]));
-        map.put(CIFormSales.Sales_PaymentCheckWithOutDocForm.rate.name + RateUI.INVERTEDSUFFIX,
-                        "" + (rates[3].compareTo(rates[0]) != 0));
+        map.put("rate", NumberFormatter.get().getFormatter(0, 2).format(rates[3]));
+        map.put("rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0));
         list.add(map);
 
         final Return retVal = new Return();
@@ -699,7 +690,7 @@ public abstract class AbstractPaymentDocument_Base
     protected DecimalFormat getTwoDigitsformater()
         throws EFapsException
     {
-        return getFormater(2, 2);
+        return NumberFormatter.get().getTwoDigitsFormatter();
     }
 
     /**
@@ -711,29 +702,7 @@ public abstract class AbstractPaymentDocument_Base
     protected DecimalFormat getZeroDigitsformater()
         throws EFapsException
     {
-        return getFormater(0, 0);
-    }
-
-    /**
-     * @return a formater used to format bigdecimal for the user interface
-     * @param _maxFrac maximum Faction, null to deactivate
-     * @param _minFrac minimum Faction, null to activate
-     * @throws EFapsException on error
-     */
-    public DecimalFormat getFormater(final Integer _minFrac,
-                                     final Integer _maxFrac)
-        throws EFapsException
-    {
-        final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(Context.getThreadContext().getLocale());
-        if (_maxFrac != null) {
-            formater.setMaximumFractionDigits(_maxFrac);
-        }
-        if (_minFrac != null) {
-            formater.setMinimumFractionDigits(_minFrac);
-        }
-        formater.setRoundingMode(RoundingMode.HALF_UP);
-        formater.setParseBigDecimal(true);
-        return formater;
+        return NumberFormatter.get().getZeroDigitsFormatter();
     }
 
     protected Object[] getRateObject(final Parameter _parameter)
@@ -1077,11 +1046,8 @@ public abstract class AbstractPaymentDocument_Base
         js.append(getTableAddNewRowsScript(_parameter, "paymentTable", values, null));
 
         final BigDecimal total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(_sumPayments);
-        js.append(getSetFieldValue(
-                        0,
-                        CIFormSales.Sales_PaymentCheckWithOutDocForm.total4DiscountPay.name,
-                        total4DiscountPay == null ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(
-                                        total4DiscountPay)));
+        js.append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckWithOutDocForm.total4DiscountPay.name,
+                        total4DiscountPay == null ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(total4DiscountPay)));
 
         return js;
     }
@@ -1124,9 +1090,8 @@ public abstract class AbstractPaymentDocument_Base
             final BigDecimal amountDue = amount2Pay.subtract(pay);
             final String symbol = getSymbol4Document(_instance.getOid(), CISales.DocumentSumAbstract.RateCurrencyId.name, CIERP.Currency.Symbol.name);
             final StringBuilder bldr = new StringBuilder();
-            bldr.append(getTwoDigitsformater().format(rateCrossTotal))
-                            .append(" / ").append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
-
+            bldr.append(getTwoDigitsformater().format(rateCrossTotal)).append(" / ")
+                .append(getTwoDigitsformater().format(payments4Doc)).append(" - ").append(symbol);
 
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocument.name, _instance.getOid());
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.createDocument.name + "AutoComplete", name);
