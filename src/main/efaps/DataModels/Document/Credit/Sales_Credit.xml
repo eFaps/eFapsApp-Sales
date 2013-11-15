@@ -19,7 +19,10 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>cffec132-7692-4d3a-9099-2c7ce780564d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -27,7 +30,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="eFaps" />
         </profiles>
         <name>Sales_Credit</name>
         <parent>Sales_DocumentSumAbstract</parent>
@@ -37,16 +40,18 @@
             <typelink>Sales_CreditStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_Credit.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <trigger event="RANGE_VALUE" name="Sales_Credit.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_Credit.ACCESSCHECK" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"/>
+        <trigger event="ACCESSCHECK" name="Sales_Credit.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
-    
+
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="humanresource"/>
+            <profile name="humanresource" />
         </profiles>
         <name>Sales_Credit</name>
         <parent>Sales_DocumentSumAbstract</parent>
@@ -56,17 +61,18 @@
             <typelink>Sales_CreditStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_Credit.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <trigger event="RANGE_VALUE" name="Sales_Credit.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
         <attribute>
-            <name>EmployeeAbstractLink</name>
+            <name>EmployeeLink</name>
             <type>Link</type>
             <typelink>HumanResource_Employee</typelink>
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>INTEGER1</sqlcolumn>
         </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_Credit.ACCESSCHECK" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"/>
+        <trigger event="ACCESSCHECK" name="Sales_Credit.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
-
 </datamodel-type>
