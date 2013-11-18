@@ -25,6 +25,192 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
+        <name>Sales_CreditForm</name>
+        <field character="Group" name="dateGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrencyFromDate" name="Sales_CreditForm.date.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+        </field>
+        <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
+            <property name="Required">true</property>
+        </field>
+        
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">TREE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+        </field>
+        <field character="Group" name="modifyGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">TREE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+         <field character="Group" name="nameGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+          <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+         <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        
+        <field character="Heading" name="headingContact">
+            <property name="Level">2</property>
+            <property name="Label">Sales_CreditForm.headingContact.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingCredit/Contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_IncomingCreditForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.IncomingCredit">
+                <property name="Classifications">Contacts_ClassSupplier</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_IncomingCreditForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingCredit"/>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_IncomingCreditForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field character="Heading" name="headingTotal">
+            <property name="Level">2</property>
+            <property name="Label">Sales_CreditForm.headingTotal.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        
+        <field character="Group" name="currencyGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rateCurrencyId">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_CreditForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Credit"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_CreditForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+        </field>
+        <field name="rateCurrencyData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_CreditForm.rateCurrencyData.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rateCrossTotal">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateCrossTotal</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_Credit/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field character="Heading" name="rate4ReadHeading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_CreditForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field character="Group" name="rateGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_Credit/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+       
+    </definition>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="payslip" />
+        </profiles>
         <name>Sales_CreditForm</name>
         <field character="Group" name="dateGroup">
             <property name="GroupCount">2</property>
@@ -214,4 +400,5 @@
         </field>
        
     </definition>
+
 </ui-form>
