@@ -26,33 +26,8 @@
     <uuid>cffec132-7692-4d3a-9099-2c7ce780564d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
-    <definition>
+        <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps" />
-        </profiles>
-        <name>Sales_Credit</name>
-        <parent>Sales_DocumentSumAbstract</parent>
-        <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Sales_CreditStatus</typelink>
-            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_Credit.Status.RANGE_VALUE"
-                program="org.efaps.esjp.admin.datamodel.StatusValue">
-            </trigger>
-        </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_Credit.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
-    </definition>
-
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="humanresource" />
-        </profiles>
         <name>Sales_Credit</name>
         <parent>Sales_DocumentSumAbstract</parent>
         <attribute>
