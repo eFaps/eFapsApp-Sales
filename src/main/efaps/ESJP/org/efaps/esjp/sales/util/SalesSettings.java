@@ -167,4 +167,14 @@ public interface SalesSettings
      *  OID default productDocumentType to return usage report.
      */
     String STORAGEGROUP4PRODUCTREQUESTREPORT = "org.efaps.sales.StorageGroup4ProductRequestReport";
+
+    /**
+     * OID default to insert spending into PaymentOrder.
+     */
+    String DEFAULTSPENDING = "org.efaps.sales.DefaultSpending";
+
+    /**
+     * Default amount to validate generated payment order or collection order.
+     */
+    String DEFAULTSAMOUNT4CREATEDDOC = "org.efaps.sales.DefaultAmount4CreatedDoc";
 }

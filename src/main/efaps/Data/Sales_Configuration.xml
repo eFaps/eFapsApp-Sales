@@ -131,5 +131,10 @@
             <value><![CDATA[UUID=935a2a87-056d-4278-916b-388c53fa98e0]]></value>
             <description>Company should be setted.</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.DefaultAmount4CreatedDoc</key>
+            <value><![CDATA[0.10]]></value>
+            <description>Company should be setted.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

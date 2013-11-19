@@ -23,6 +23,7 @@ package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -43,6 +45,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIStatus;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -54,7 +58,6 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
-import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uitable.MultiPrint;
@@ -282,8 +285,8 @@ public abstract class AbstractPaymentOut_Base
     {
         final Return ret = new Return();
 
-        final Instance instDoc = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.name));
+        final Instance instDoc = Instance.get(_parameter.getParameterValue("createExistDocument"));
+        final BigDecimal amount = getAmounts2Payment(_parameter, instDoc, _parameter.getCallInstance());
 
         final String[] documents = _parameter.getParameterValues("createDocument");
         boolean first = true;
@@ -303,8 +306,8 @@ public abstract class AbstractPaymentOut_Base
                     } else {
                         if (!infoDoc.isEmpty()) {
                             final Insert payInsert = new Insert(CISales.Payment);
-                            payInsert.add(CISales.Payment.CreateDocument, document.getId());
-                            payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance().getId());
+                            payInsert.add(CISales.Payment.CreateDocument, document);
+                            payInsert.add(CISales.Payment.TargetDocument, _parameter.getCallInstance());
                             payInsert.add(CISales.Payment.Amount, amount4Doc);
                             payInsert.add(CISales.Payment.CurrencyLink, infoDoc.get("currency"));
                             payInsert.add(CISales.Payment.Date, infoDoc.get("date"));
@@ -313,22 +316,105 @@ public abstract class AbstractPaymentOut_Base
                             final Insert transIns = new Insert(CISales.TransactionOutbound);
                             transIns.add(CISales.TransactionOutbound.Amount, amount4Doc);
                             transIns.add(CISales.TransactionOutbound.CurrencyId, infoDoc.get("currency"));
-                            transIns.add(CISales.TransactionOutbound.Payment, payInsert.getId());
+                            transIns.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
                             transIns.add(CISales.TransactionOutbound.Date, infoDoc.get("date"));
                             transIns.add(CISales.TransactionOutbound.Account, infoDoc.get("account"));
                             transIns.execute();
 
                             final Insert insert = new Insert(CISales.PayableDocument2Document);
-                            insert.add(CISales.PayableDocument2Document.FromLink, document.getId());
-                            insert.add(CISales.PayableDocument2Document.ToLink, instDoc.getId());
-                            insert.add(CISales.PayableDocument2Document.PayDocLink, payInsert.getId());
+                            insert.add(CISales.PayableDocument2Document.FromLink, document);
+                            insert.add(CISales.PayableDocument2Document.ToLink, instDoc);
+                            insert.add(CISales.PayableDocument2Document.PayDocLink, payInsert);
                             insert.execute();
                         }
                     }
                 }
             }
+            if (amount.compareTo(getAmounts4Render(_parameter)) != 0) {
+                final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
+                if (checkDifference(_parameter, difference)) {
+                    createDocument(_parameter, infoDoc, difference);
+                }
+            }
         }
         return ret;
+    }
+
+    protected boolean checkDifference(final Parameter _parameter,
+                                      final BigDecimal _difference)
+        throws EFapsException
+    {
+        boolean ret = false;
+
+        final String defaultAmount = Sales.getSysConfig().getAttributeValue(SalesSettings.DEFAULTSAMOUNT4CREATEDDOC);
+
+        if (defaultAmount != null && !defaultAmount.isEmpty()) {
+            final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal amount = (BigDecimal) fmtr.parse(defaultAmount);
+
+                if (_difference.abs().compareTo(amount) >= 0) {
+                    ret = true;
+                }
+            } catch (final ParseException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+
+        return ret;
+    }
+
+    protected void createDocument(final Parameter _parameter,
+                                  final Map<String, Object> _infoDoc,
+                                  final BigDecimal _difference)
+        throws EFapsException
+    {
+        final Instance currInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+        CIType type = null;
+        CIStatus status = null;
+        String name = null;
+        Instance spending = Instance.get(null);
+        if (_difference.signum() == 1) {
+            type = CISales.CollectionOrder;
+            status = CISales.CollectionOrderStatus.Open;
+            // Sales_CollectionOrderSequence
+            name = NumberGenerator.get(UUID.fromString("e89316af-42c6-4df1-ae7e-7c9f9c2bb73c")).getNextVal();
+        } else {
+            type = CISales.PaymentOrder;
+            status = CISales.PaymentOrderStatus.Open;
+            // Sales_PaymentOrderSequence
+            name = NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
+            spending = Sales.getSysConfig().getLink(SalesSettings.DEFAULTSPENDING);
+        }
+
+        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(), (Long) _infoDoc.get("currency"));
+        final PriceUtil util = new PriceUtil();
+        final BigDecimal[] rates = util.getExchangeRate((DateTime) _infoDoc.get("date"), rateCurrInst);
+        final CurrencyInst cur = new CurrencyInst(rateCurrInst);
+        final Object[] rate = new Object[] { cur.isInvert() ? BigDecimal.ONE : rates[1],
+                        cur.isInvert() ? rates[1] : BigDecimal.ONE };
+
+        final Insert insert = new Insert(type);
+        insert.add(CISales.DocumentSumAbstract.Name, name);
+        insert.add(CISales.DocumentSumAbstract.Date, _infoDoc.get("date"));
+        insert.add(CISales.DocumentSumAbstract.CurrencyId, currInst);
+        insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+        insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
+        insert.add(CISales.DocumentSumAbstract.RateCrossTotal, _difference.abs());
+        insert.add(CISales.DocumentSumAbstract.RateNetTotal, _difference.abs());
+        insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.DocumentSumAbstract.CrossTotal, _difference.abs());
+        insert.add(CISales.DocumentSumAbstract.NetTotal, _difference.abs());
+        insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+        insert.add(CISales.DocumentSumAbstract.StatusAbstract, Status.find(status));
+        insert.add(CISales.DocumentSumAbstract.Rate, rate);
+        if (spending != null && spending.isValid()) {
+            insert.add(CISales.PaymentOrder.SpendingLink, spending);
+        }
+        insert.execute();
+
     }
 
     protected void replacePaymentInfo(final Parameter _parameter,
@@ -339,8 +425,8 @@ public abstract class AbstractPaymentOut_Base
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance().getId());
-        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _doc4Render.getId());
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getCallInstance());
+        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _doc4Render);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.Payment.Amount);
         multi.execute();
@@ -349,7 +435,7 @@ public abstract class AbstractPaymentOut_Base
             final BigDecimal amountDoc4Render = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
 
             final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
-            queryBldr2.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, multi.getCurrentInstance().getId());
+            queryBldr2.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, multi.getCurrentInstance());
             final MultiPrintQuery multi2 = queryBldr2.getPrint();
             multi2.addAttribute(CISales.TransactionAbstract.Account,
                             CISales.TransactionAbstract.CurrencyId,
@@ -379,14 +465,14 @@ public abstract class AbstractPaymentOut_Base
                         update2.execute();
 
                         final Update update3 = new Update(multi.getCurrentInstance());
-                        update3.add(CISales.Payment.CreateDocument, _doc4Replaced.getId());
+                        update3.add(CISales.Payment.CreateDocument, _doc4Replaced);
                         update3.add(CISales.Payment.Amount, _amountDoc4Replaced);
                         update3.execute();
 
                         final Insert insert = new Insert(CISales.PayableDocument2Document);
-                        insert.add(CISales.PayableDocument2Document.FromLink, _doc4Replaced.getId());
-                        insert.add(CISales.PayableDocument2Document.ToLink, _doc4Render.getId());
-                        insert.add(CISales.PayableDocument2Document.PayDocLink, multi.getCurrentInstance().getId());
+                        insert.add(CISales.PayableDocument2Document.FromLink, _doc4Replaced);
+                        insert.add(CISales.PayableDocument2Document.ToLink, _doc4Render);
+                        insert.add(CISales.PayableDocument2Document.PayDocLink, multi.getCurrentInstance());
                         insert.execute();
 
                         _infoDoc.put("account", multi2.<Long>getAttribute(CISales.TransactionAbstract.Account));
@@ -549,25 +635,23 @@ public abstract class AbstractPaymentOut_Base
                 }
             }
             if (payment) {
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, docInstance.getId());
-                queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, paymentInst.getId());
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.Payment.Amount);
-                multi.execute();
-
-                BigDecimal amountPay = BigDecimal.ZERO;
-                while (multi.next()) {
-                    amountPay = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
-                }
-                if (amountPay.compareTo(getAmounts4Render(_parameter)) == 0) {
+                final BigDecimal amount = getAmounts2Payment(_parameter, docInstance, paymentInst);
+                if (amount.compareTo(getAmounts4Render(_parameter)) == 0) {
                     error.append(DBProperties
                                     .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
                     ret.put(ReturnValues.SNIPLETT, error.toString());
                     ret.put(ReturnValues.TRUE, true);
                 } else {
-                    error.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsInvalid"));
+                    final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
+                    if (difference.signum() == 1) {
+                        error.append(DBProperties
+                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
+                    } else {
+                        error.append(DBProperties
+                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountGreater"));
+                    }
+                    error.append(" ").append(difference.abs());
+                    ret.put(ReturnValues.TRUE, true);
                     ret.put(ReturnValues.SNIPLETT, error.toString());
                 }
             } else {
@@ -578,6 +662,27 @@ public abstract class AbstractPaymentOut_Base
         } else {
             error.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.SelectedDocument"));
             ret.put(ReturnValues.SNIPLETT, error.toString());
+        }
+
+        return ret;
+    }
+
+    protected BigDecimal getAmounts2Payment(final Parameter _parameter,
+                                            final Instance _docInst,
+                                            final Instance _payment)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _docInst);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _payment);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.Payment.Amount);
+        multi.execute();
+
+        while (multi.next()) {
+            ret = ret.add(multi.<BigDecimal>getAttribute(CISales.Payment.Amount));
         }
 
         return ret;
