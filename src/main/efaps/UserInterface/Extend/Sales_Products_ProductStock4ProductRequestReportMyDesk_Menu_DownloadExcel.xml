@@ -38,6 +38,9 @@
             <execute method="exportReport" program="org.efaps.esjp.sales.report.ProductStockReport">
                 <property name="Mime">xls</property>
                 <property name="ProductRow">true</property>
+                <property name="Type">Sales_ProductRequest</property>
+                <property name="StatusGrp">Sales_ProductRequestStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
 

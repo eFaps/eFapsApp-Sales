@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.Formatter;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -39,7 +40,6 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -54,7 +54,9 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -70,6 +72,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("361ad1b2-e734-4a50-b202-c20c19fb03e4")
 @EFapsRevision("$Rev: 8120 $")
 public abstract class ProductStockReport_Base
+    extends AbstractCommon
 {
     /**
      * Logging instance used in this class.
@@ -128,6 +131,26 @@ public abstract class ProductStockReport_Base
     }
 
     /**
+     * @param _parameter  Parameter as passed by the eFaps API
+     * @return AttributeQuery used for the DataSource
+     * @throws EFapsException on error
+     */
+    protected AttributeQuery getAttrQuery(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint();
+        final List<QueryBuilder> queryBldrs = multi.getQueryBuilders(_parameter);
+        AttributeQuery attrQuery = null;
+        if (queryBldrs.size() == 1) {
+            final QueryBuilder queryBldr = queryBldrs.get(0);
+            attrQuery = queryBldr.getAttributeQuery("ID");
+        } else {
+            ProductStockReport_Base.LOG.error("Wrong Properties for this esjp.");
+        }
+        return attrQuery;
+    }
+
+    /**
      * Report class.
      */
     public class ProdStockReport
@@ -142,33 +165,28 @@ public abstract class ProductStockReport_Base
             final DRDataSource dataSource = new DRDataSource("product", "document", "quantity");
             final Map<String, Map<String, BigDecimal>> rowMap = new LinkedHashMap<String, Map<String, BigDecimal>>();
 
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.ProductRequest);
-            attrQueryBldr.addWhereAttrEqValue(CISales.ProductRequest.Status,
-                            Status.find(CISales.ProductRequestStatus.Open));
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.ProductRequest.ID);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.ProductRequestPosition);
-            queryBldr.addWhereAttrInQuery(CISales.ProductRequestPosition.ProductRequestLink, attrQuery);
+                       final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, getAttrQuery(_parameter));
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.ProductRequestPosition.Quantity);
-            final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.ProductRequestPosition.Product)
+            multi.addAttribute(CISales.PositionAbstract.Quantity);
+            final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
                             .attribute(CIProducts.ProductAbstract.Name);
-            final SelectBuilder selProdDesc = new SelectBuilder().linkto(CISales.ProductRequestPosition.Product)
+            final SelectBuilder selProdDesc = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
                             .attribute(CIProducts.ProductAbstract.Description);
-            final SelectBuilder selProdInstance = new SelectBuilder().linkto(CISales.ProductRequestPosition.Product)
+            final SelectBuilder selProdInstance = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
                             .instance();
-            final SelectBuilder selProdReq = new SelectBuilder()
-                            .linkto(CISales.ProductRequestPosition.ProductRequestLink)
-                            .attribute(CISales.ProductRequest.Name);
-            multi.addSelect(selProdReq, selProdName, selProdInstance, selProdDesc);
+            final SelectBuilder selDocName = new SelectBuilder()
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink)
+                            .attribute(CISales.DocumentAbstract.Name);
+            multi.addSelect(selDocName, selProdName, selProdInstance, selProdDesc);
             multi.execute();
             while (multi.next()) {
-                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.ProductRequestPosition.Quantity);
+                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
                 String prodName = multi.<String>getSelect(selProdName);
                 final String prodDesc = multi.<String>getSelect(selProdDesc);
                 prodName = prodName + " " + prodDesc;
                 final Instance prodInst = multi.<Instance>getSelect(selProdInstance);
-                final String docName = multi.<String>getSelect(selProdReq);
+                final String docName = multi.<String>getSelect(selDocName);
                 if (rowMap.containsKey(docName)) {
                     if (rowMap.containsKey(colDefault)) {
                         final BigDecimal stock = getStock4Product(_parameter, prodInst);
