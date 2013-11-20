@@ -15,26 +15,26 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8215 $
- Last Changed:    $Date: 2012-11-12 13:36:45 -0500 (lun, 12 nov 2012) $
+ Revision:        $Rev: 8185 $
+ Last Changed:    $Date: 2012-11-09 13:28:32 -0500 (vie, 09 nov 2012) $
  Last Changed By: $Author: m.aranya@moxter.net $
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>777eca14-5f75-4e68-8690-ca5fea9e8788</uuid>
+    <uuid>ee5acaa0-5eaa-4b86-90ff-bd7d8d44b538</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8215 $</file-revision>
+    <file-revision>$Rev: 8185 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrder_MyDesk</name>
+        <name>Sales_CollectionOrderMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_PaymentOrderMyDesk_Menu</menu>
-            <table>Sales_PaymentOrderTable</table>
+            <menu>Sales_CollectionOrderMyDesk_Menu</menu>
+            <table>Sales_CollectionOrderTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_PaymentOrder</property>
+                <property name="Types">Sales_CollectionOrder</property>
             </evaluate>
         </target>
 

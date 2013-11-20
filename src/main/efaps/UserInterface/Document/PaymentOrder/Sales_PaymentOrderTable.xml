@@ -37,6 +37,10 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_PaymentOrder/Name.Label</property>
         </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_PaymentOrder/Status.Label</property>
+        </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="Label">Sales_PaymentOrder/Note.Label</property>

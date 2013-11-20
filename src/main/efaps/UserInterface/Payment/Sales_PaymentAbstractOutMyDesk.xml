@@ -30,7 +30,7 @@
         <childs>
             <child>Sales_PaymentDocumentOutMyDesk</child>
             <child>Sales_PaymentDocumentOut4PayPaymentMyDesk</child>
-            <child>Sales_PaymentOrder_MyDesk</child>
+            <child>Sales_PaymentOrderMyDesk</child>
             <child>Sales_BulkPaymentMyDesk</child>
             <child>Sales_BulkPaymentDefinitionMyDesk</child>
             <child>Sales_DatedCheckOutMyDesk</child>
