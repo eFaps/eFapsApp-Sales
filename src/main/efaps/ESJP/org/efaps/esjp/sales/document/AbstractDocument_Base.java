@@ -251,6 +251,28 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form for Exchange.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Exchange(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Status> statusList = new ArrayList<Status>();
+        final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
+        for (final String statusStr : statusMap.values()) {
+            final Status status = Status.find(CISales.ExchangeStatus, statusStr);
+            if (status != null) {
+                statusList.add(status);
+            }
+        }
+        return autoComplete4Doc(_parameter, CISales.Exchange.uuid,
+                        statusList.isEmpty() ? (Status[]) null : statusList.toArray(new Status[statusList.size()]));
+    }
+
+    /**
      * Used by the AutoCompleteField used in the select doc form for Receipts.
      *
      * @param _parameter Parameter as passed from the eFaps API.
