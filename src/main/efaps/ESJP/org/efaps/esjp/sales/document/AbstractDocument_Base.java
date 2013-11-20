@@ -260,16 +260,20 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Exchange(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Status> statusList = new ArrayList<Status>();
-        final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
-        for (final String statusStr : statusMap.values()) {
-            final Status status = Status.find(CISales.ExchangeStatus, statusStr);
-            if (status != null) {
-                statusList.add(status);
-            }
-        }
-        return autoComplete4Doc(_parameter, CISales.Exchange.uuid,
-                        statusList.isEmpty() ? (Status[]) null : statusList.toArray(new Status[statusList.size()]));
+        return autoComplete4Doc(_parameter, CISales.Exchange.uuid, (Status[]) null);
+    }
+
+    /**
+     * Used by the AutoCompleteField used in the select doc form for0 Incoming Exchange.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4IncomingExchange(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.IncomingExchange.uuid, (Status[]) null);
     }
 
     /**
@@ -378,10 +382,10 @@ public abstract class AbstractDocument_Base
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-        final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
+        final QueryBuilder queryBldr = new QueryBuilder(type);
         add2QueryBldr(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
-        if (_status != null) {
+        if (status != null) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) status);
         }
         final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
