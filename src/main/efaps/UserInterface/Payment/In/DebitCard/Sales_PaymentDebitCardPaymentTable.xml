@@ -58,7 +58,7 @@
                 <property name="Stati1">Open</property>
                 <property name="Type2">Sales_CollectionOrder</property>
                 <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
-                <property name="Stati2">Open</property>
+                <property name="Stati2">Approved</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentDebitCardPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDebitCard"/>
         </field>

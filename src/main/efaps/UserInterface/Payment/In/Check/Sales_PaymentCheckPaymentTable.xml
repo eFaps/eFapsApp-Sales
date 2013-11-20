@@ -62,7 +62,7 @@
                 <property name="Stati1">Open</property>
                 <property name="Type2">Sales_CollectionOrder</property>
                 <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
-                <property name="Stati2">Open</property>
+                <property name="Stati2">Approved</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheck"
                 method="updateFields4CreateDocument"
