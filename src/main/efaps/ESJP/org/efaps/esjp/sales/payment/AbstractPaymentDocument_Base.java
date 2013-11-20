@@ -31,9 +31,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
@@ -59,6 +61,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.admin.datamodel.StatusValue;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -723,8 +726,7 @@ public abstract class AbstractPaymentDocument_Base
     {
         String ret = "";
         // Sales-Configuration
-        final SystemConfiguration config = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        final SystemConfiguration config = Sales.getSysConfig();
         if (config != null) {
             if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())) {
                 final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENT);
@@ -776,6 +778,13 @@ public abstract class AbstractPaymentDocument_Base
         ret.put(ReturnValues.SNIPLETT, html.toString());
         ret.put(ReturnValues.TRUE, true);
         return ret;
+    }
+
+    protected void connectPaymentDocument2Document(final Parameter _parameter,
+                                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        // to be implemented
     }
 
     protected Return createReportDoc(final Parameter _parameter,
@@ -1185,4 +1194,55 @@ public abstract class AbstractPaymentDocument_Base
         return instances;
     }
 
+    /**
+     * Method to update fields with document selected is Exchange and IncomingExchange.
+     *
+     * @param _parameter Parameter from eFaps API.
+     * @return return with values.
+     * @throws EFapsException on error.
+     */
+    public Return updateFields4DocumentSelected(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final Instance selectDoc = Instance.get(_parameter.getParameterValue("name"));
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        if (selectDoc.isValid()) {
+            final SelectBuilder selContact = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact);
+            final SelectBuilder selContactOid = new SelectBuilder(selContact).oid();
+            final SelectBuilder selContactName = new SelectBuilder(selContact).attribute(CIContacts.Contact.Name);
+
+            final Map<Integer, String> fields = analyseProperty(_parameter, "Fields");
+            if (!fields.isEmpty()) {
+                final PrintQuery print = new PrintQuery(selectDoc);
+                print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                print.addSelect(selContactOid, selContactName);
+                print.execute();
+
+                for (final Entry<Integer, String> field : fields.entrySet()) {
+                    String value;
+                    if (field.getValue().equalsIgnoreCase("amount")) {
+                        value = getTwoDigitsformater().format(
+                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                    } else if (field.getValue().equalsIgnoreCase("contact")) {
+                        value = print.<String>getSelect(selContactOid);
+                    } else if (field.getValue().equalsIgnoreCase("contactAutoComplete")) {
+                        value = print.<String>getSelect(selContactName);
+                    } else {
+                        value = "";
+                    }
+                    if (value != null && !value.isEmpty()) {
+                        map.put(field.getValue(), StringEscapeUtils.escapeEcmaScript(value));
+                    }
+                }
+                list.add(map);
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+
+        return ret;
+    }
 }

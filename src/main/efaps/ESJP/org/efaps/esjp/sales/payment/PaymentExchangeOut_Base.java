@@ -24,6 +24,10 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -48,7 +52,32 @@ public abstract class PaymentExchangeOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
+        connectPaymentDocument2Document(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
+    }
+
+    @Override
+    protected String getDocName4Create(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getParameterValue("nameAutoComplete");
+    }
+
+    @Override
+    protected void connectPaymentDocument2Document(final Parameter _parameter,
+                                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Instance instDoc = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentExchangeOutForm.name.name));
+        if (instDoc.isValid() && _createdDoc.getInstance().isValid()) {
+            final Insert insert = new Insert(CISales.PaymentExchangeOut2IncomingExchange);
+            insert.add(CISales.PaymentExchangeOut2IncomingExchange.FromLink, _createdDoc.getInstance());
+            insert.add(CISales.PaymentExchangeOut2IncomingExchange.ToLink, instDoc);
+            insert.execute();
+
+            _createdDoc.getValues().put("connectDocument", insert.getInstance());
+        }
     }
 }

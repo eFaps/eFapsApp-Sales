@@ -39,6 +39,7 @@
         <type>Sales_Exchange</type>
         <childs>
             <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_DocumentAbstractTree_PaymentDocument</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
