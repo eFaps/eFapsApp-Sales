@@ -1062,23 +1062,31 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * JavaScript part for update positions according to derived documents.<br/>
+     * <ol>
+     * <li>Evaluate the relations of the selected instances with the <code>&lt;RelationType&gt;</code> property</li>
+     * <li>Evaluate the derived type with the <code>&lt;DerivedType&gt;</code> property</li>
+     * <li>Give the positions according to the document instances analyzed</li>
+     * <li>Update the quantities or delete positions from the _values Map</code></li>
+     * </ol>
+     *
      * @param _parameter as passed from eFaps API.
      * @param _values
      * @param _instances
-     * @throws EFapsException
+     * @throws EFapsException on error.
      */
     protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
                                                       final Collection<Map<KeyDef, Object>> _values,
                                                       final Instance... _instances)
         throws EFapsException
     {
-        final Map<Integer, String> relTypes = analyseProperty(_parameter, "RelType");
-        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "RelLinkFrom");
-        final Map<Integer, String> linkTos = analyseProperty(_parameter, "RelLinkTo");
-        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGrp");
-        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
-        final Map<Integer, String> substracts = analyseProperty(_parameter, "RelSubstracts");
+        final Map<Integer, String> relTypes = analyseProperty(_parameter, "RelationType");
+        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "RelationLinkFrom");
+        final Map<Integer, String> linkTos = analyseProperty(_parameter, "RelationLinkTo");
+        final Map<Integer, String> types = analyseProperty(_parameter, "DerivedType");
+        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "DerivedStatusGrp");
+        final Map<Integer, String> status = analyseProperty(_parameter, "DerivedStatus");
+        final Map<Integer, String> substracts = analyseProperty(_parameter, "RelationSubstracts");
         final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         final List<Map<KeyDef, Object>> lstRemove = new ArrayList<Map<KeyDef, Object>>();
         for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
@@ -1095,10 +1103,12 @@ public abstract class AbstractDocument_Base
             final Type type = Type.get(types.get(key));
             final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
             final String[] statusArr = status.get(key).split(";");
+            final List<Status> statusLst = new ArrayList<Status>();
             for (final String stat : statusArr) {
                 final Status st = Status.find(statusGrps.get(key), stat);
-                attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, st);
+                statusLst.add(st);
             }
+            attrQueryBldr2.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusLst.toArray());
             attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
             final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.DocumentAbstract.ID);
 
