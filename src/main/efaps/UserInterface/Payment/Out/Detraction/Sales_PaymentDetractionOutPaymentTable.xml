@@ -68,7 +68,7 @@
                 <property name="Stati3">Open</property>
                 <property name="Type4">Sales_PaymentOrder</property>
                 <property name="StatusGroup4">Sales_PaymentOrderStatus</property>
-                <property name="Stati4">Open</property>
+                <property name="Stati4">Approved</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4CreateDocument"
                 name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
