@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
-	<property name="ireport.zoom" value="1.0"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b130e51-4c5e-4653-af16-9ee7ebe3850d">
+	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
 	<import value="org.efaps.number2words.Converter"/>
@@ -12,6 +12,7 @@
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
 	<parameter name="AccName" class="java.lang.String"/>
 	<parameter name="AmountPettyCash" class="java.math.BigDecimal"/>
+    <parameter name="CompanyName" class="java.lang.String"/>
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
 	</field>
@@ -19,51 +20,93 @@
 		<property name="Select" value="attribute[Date]"/>
 	</field>
 	<pageHeader>
-		<band height="49" splitType="Stretch">
+		<band height="108" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement x="443" y="0" width="141" height="14"/>
+				<reportElement uuid="7d043355-4b0a-430c-b4b1-9acaf7869ea5" x="443" y="53" width="141" height="14"/>
 				<textElement textAlignment="Justified">
 					<font size="12"/>
 				</textElement>
-				<textFieldExpression class="java.util.Date"><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="390" y="0" width="53" height="14"/>
+				<reportElement uuid="61e4d7db-b898-4559-af08-e018371af498" x="390" y="53" width="53" height="14"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="164" height="14"/>
+				<reportElement uuid="d283214b-9348-4e6f-ba65-b161ca1791b2" x="0" y="53" width="164" height="14"/>
 				<textElement>
 					<font size="11" isBold="true"/>
 				</textElement>
 				<text><![CDATA[LIQUIDACIÓN CAJA CHICA:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="164" y="0" width="226" height="14"/>
-				<textElement/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$P{AccName}]]></textFieldExpression>
+				<reportElement uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb" x="91" y="14" width="226" height="14"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{AccName}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="a167b8a1-e5f2-41d0-a8f3-c1e4a7070ac0" x="0" y="0" width="91" height="14">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[EMPRESA:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="bc36a791-4902-4ca3-a214-80dce535afcc" x="0" y="14" width="91" height="14"/>
+				<textElement>
+					<font size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CAJA:]]></text>
+			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="702" y="0" width="100" height="14" isPrintWhenDetailOverflows="true"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle"/>
-				<textFieldExpression class="java.lang.String"><![CDATA[$F{name}.replace($P{AccName} + "-", "")]]></textFieldExpression>
+				<reportElement uuid="95de231f-f359-4b91-b319-8334960ede77" x="91" y="0" width="226" height="14"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font size="11" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageHeader>
 	<detail>
 		<band height="60">
 			<subreport>
-				<reportElement positionType="Float" x="0" y="0" width="802" height="60"/>
+				<reportElement uuid="0233034d-b54b-49d5-adaa-67e303dbd4d4" positionType="Float" x="0" y="0" width="802" height="60"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<subreportParameter name="AmountParameter">
 					<subreportParameterExpression><![CDATA[$P{AmountPettyCash}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_PettyCashBalancePayments")]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Sales_PettyCashBalancePayments"]]></subreportExpression>
+				<subreportExpression><![CDATA["JasperReport.Sales_PettyCashBalancePayments"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="89">
+			<staticText>
+				<reportElement uuid="c8e0a050-048a-466a-97c8-0cba849f750d" x="91" y="69" width="126" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA ENCARGADO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="5cb363cd-e820-4529-83a7-a4c8d6e807f5" x="554" y="69" width="137" height="20"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[FIRMA RESPONSABLE]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>

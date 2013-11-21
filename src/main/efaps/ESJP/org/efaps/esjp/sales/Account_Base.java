@@ -33,6 +33,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -61,6 +62,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -544,9 +547,10 @@ public abstract class Account_Base
         Return ret = new Return();
 
         final PrintQuery printAmount = new PrintQuery(_parameter.getCallInstance());
-        printAmount.addAttribute(CISales.AccountPettyCash.AmountAbstract);
+        printAmount.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
         printAmount.execute();
         BigDecimal amount = printAmount.<BigDecimal>getAttribute(CISales.AccountAbstract.AmountAbstract);
+        final String accName = printAmount.<String>getAttribute(CISales.AccountAbstract.Name);
         if (amount == null) {
             amount = BigDecimal.ZERO;
         }
@@ -561,8 +565,16 @@ public abstract class Account_Base
         _parameter.put(ParameterValues.INSTANCE, balanceInst);
 
         final StandartReport report = new StandartReport();
-        report.getJrParameters().put("AccName", nameBalance);
+        report.getJrParameters().put("AccName", accName);
         report.getJrParameters().put("AmountPettyCash", amount);
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            if (companyName != null && !companyName.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+            }
+        }
 
         final String fileName = DBProperties.getProperty("Sales_PettyCashBalance.Label") + "_" + nameBalance;
         report.setFileName(fileName);
