@@ -645,7 +645,7 @@ public abstract class Account_Base
                 insert.add(CISales.PettyCashBalance.Date, new DateTime());
             }
             insert.add(CISales.PettyCashBalance.Status,
-                            Status.find(CISales.PettyCashBalanceStatus.uuid, "Closed").getId());
+                            Status.find(CISales.PettyCashBalanceStatus.uuid, "Open").getId());
             insert.add(CISales.PettyCashBalance.CrossTotal, difference);
             insert.add(CISales.PettyCashBalance.NetTotal, BigDecimal.ZERO);
             insert.add(CISales.PettyCashBalance.DiscountTotal, BigDecimal.ZERO);
@@ -1037,6 +1037,61 @@ public abstract class Account_Base
                 }
             }
         }
+
+        return ret;
+    }
+
+    public Return downloadXlsLiquidation(final Parameter _parameter)
+        throws EFapsException
+    {
+        Return ret = new Return();
+
+        final SelectBuilder selPayId = new SelectBuilder().linkfrom(CISales.Payment, CISales.Payment.CreateDocument)
+                        .id();
+
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CISales.PettyCashBalance.Name, CISales.PettyCashBalance.CrossTotal);
+        print.addSelect(selPayId);
+        print.execute();
+
+        String nameAccount = null;
+        final QueryBuilder queryAcc = new QueryBuilder(CISales.TransactionAbstract);
+        queryAcc.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, print.<Long>getSelect(selPayId));
+        final InstanceQuery queryInst = queryAcc.getQuery();
+        queryInst.execute();
+        if (!queryInst.getValues().isEmpty()) {
+            final SelectBuilder selNameAcc = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
+                            .attribute(CISales.AccountAbstract.Name);
+            for (final Instance inst : queryInst.getValues()) {
+                if (nameAccount == null) {
+                    final PrintQuery print4Acc = new PrintQuery(inst);
+                    print4Acc.addSelect(selNameAcc);
+                    print4Acc.execute();
+                    nameAccount = print4Acc.<String>getSelect(selNameAcc);
+                }
+            }
+        }
+
+        final String nameBalance = print.<String>getAttribute(CISales.PettyCashBalance.Name);
+        final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PettyCashBalance.CrossTotal);
+
+        _parameter.put(ParameterValues.INSTANCE, _parameter.getInstance());
+
+        final StandartReport report = new StandartReport();
+        report.getJrParameters().put("AccName", nameAccount);
+        report.getJrParameters().put("AmountPettyCash", amount);
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            if (companyName != null && !companyName.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+            }
+        }
+
+        final String fileName = DBProperties.getProperty("Sales_PettyCashBalance.Label", "es") + "_" + nameBalance;
+        report.setFileName(fileName);
+        ret = report.execute(_parameter);
 
         return ret;
     }

@@ -179,7 +179,9 @@
         </status>
 
         <status group="Sales_PettyCashBalanceStatus">
+            <key>Open</key>
             <key>Closed</key>
+            <key>Verified</key>
         </status>
 
         <status group="Sales_UsageReportStatus">

@@ -49,7 +49,9 @@
         </status>
 
         <status group="Sales_PettyCashBalanceStatus">
+            <key>Open</key>
             <key>Closed</key>
+            <key>Verified</key>
         </status>
 
         <role>Sales_PettyCash</role>

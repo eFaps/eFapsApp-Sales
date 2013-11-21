@@ -81,6 +81,11 @@
             <property name="Required">true</property>
             <property name="Label">Sales_PettyCashBalance/Name.Label</property>
         </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_PettyCashBalance/Status.Label</property>
+        </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>

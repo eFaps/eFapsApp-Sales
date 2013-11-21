@@ -35,6 +35,12 @@
         <name>Sales_PettyCashBalanceStatus</name>
         <parent>Sales_DocumentStatus</parent>
 
+        <status key="Open">
+            <description>Open.</description>
+        </status>
+        <status key="Verified">
+            <description>Liquidated.</description>
+        </status>
         <status key="Closed">
             <description>Closed.</description>
         </status>
