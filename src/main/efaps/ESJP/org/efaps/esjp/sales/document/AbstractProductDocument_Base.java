@@ -219,11 +219,6 @@ public abstract class AbstractProductDocument_Base
     public Return autoComplete4Storage(final Parameter _parameter)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked")
-        final Map<Object, Object> properties = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
-        if (!properties.containsKey("key")) {
-            properties.put("Key", "ID");
-        }
         final Storage storage = new Storage();
         return storage.autoComplete4Storage(_parameter);
     }
