@@ -21,15 +21,26 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument_Base.CreatedDoc;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 
@@ -57,17 +68,49 @@ public abstract class Credit_Base
         createDoc(_parameter);
         return new Return();
     }
-    
+
+    @Override
     protected void add2DocCreate(final Parameter _parameter,
                                  final Insert _insert,
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String employee = _parameter.getParameterValue(CIFormSales.Sales_CreditForm.number.name);
+        final String employee = _parameter.getParameterValue(CIFormSales.Sales_CreditForm.employee.name);
         if (employee != null) {
-            final Instance inst = Instance.get(employee); 
+            final Instance inst = Instance.get(employee);
             _insert.add(CISales.Credit.EmployeeLink, inst.getId());
             _createdDoc.getValues().put(CISales.Credit.EmployeeLink.name, inst);
         }
     }
+
+    /**
+     * Method for update field contact or employee.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return updateField4Credit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder js = new StringBuilder();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> values = new TreeMap<String, String>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String val = (String) properties.get("ValidationType");
+        if (val != null && val.equals("Employee")) {
+            js.append(getSetFieldValue(0, "contactAutoComplete", "", true))
+                            .append(getSetFieldValue(0, "contact", "", true))
+                            .append(getSetFieldValue(0, "contactData", "", true));
+        } else if (val != null && val.equals("Contact")) {
+            js.append(getSetFieldValue(0, "employee", "", true))
+                            .append(getSetFieldValue(0, "employeeAutoComplete", "", true));
+        }
+        values.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        list.add(values);
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
 }
