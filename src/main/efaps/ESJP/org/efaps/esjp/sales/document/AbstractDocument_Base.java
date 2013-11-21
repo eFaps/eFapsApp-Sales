@@ -410,11 +410,11 @@ public abstract class AbstractDocument_Base
 
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(key);
-        multi.addAttribute(CISales.DocumentAbstract.OID, CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
+        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
+        addMulti4Autocomplete(_parameter, multi);
         multi.execute();
         while (multi.next()) {
             final String name = multi.<String> getAttribute(CISales.DocumentAbstract.Name);
-            final String oid = multi.<String> getAttribute(CISales.DocumentAbstract.OID);
             final DateTime date = multi.<DateTime> getAttribute(CISales.DocumentAbstract.Date);
 
             final Map<String, String> map = new HashMap<String, String>();
@@ -423,13 +423,29 @@ public abstract class AbstractDocument_Base
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
                             name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
                                                             Context.getThreadContext().getLocale())));
-            map.put(input, oid);
+            map.put(input, multi.getCurrentInstance().getOid());
+            addMap4Autocomplete(_parameter, multi, map);
             tmpMap.put(name, map);
         }
         list.addAll(tmpMap.values());
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected void addMap4Autocomplete(final Parameter _parameter,
+                                       final MultiPrintQuery multi,
+                                       final Map<String, String> map)
+        throws EFapsException
+    {
+        // to be implemented
+    }
+
+    protected void addMulti4Autocomplete(final Parameter _parameter,
+                                         final MultiPrintQuery multi)
+        throws EFapsException
+    {
+        // to be implemented
     }
 
     /**
