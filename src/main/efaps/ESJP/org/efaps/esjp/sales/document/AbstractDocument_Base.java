@@ -238,16 +238,7 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4ProductRequest(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Status> statusList = new ArrayList<Status>();
-        final Map<Integer, String> statusMap = analyseProperty(_parameter, "Status");
-        for (final String statusStr : statusMap.values()) {
-            final Status status = Status.find(CISales.ProductRequestStatus, statusStr);
-            if (status != null) {
-                statusList.add(status);
-            }
-        }
-        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid,
-                        statusList.isEmpty() ? (Status[]) null : statusList.toArray(new Status[statusList.size()]));
+        return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid, (Status[]) null);
     }
 
     /**
@@ -261,6 +252,19 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return autoComplete4Doc(_parameter, CISales.Exchange.uuid, (Status[]) null);
+    }
+
+    /**
+     * Used by the AutoCompleteField used in the select doc form for IncomingCredit.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4IncomingCredit(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.IncomingCredit.uuid, (Status[]) null);
     }
 
     /**
@@ -290,7 +294,7 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the AutoCompleteField used in the select doc form for Receipts.
+     * Used by the AutoCompleteField used in the select doc form for RecievingTicket.
      *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
@@ -303,7 +307,20 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the AutoCompleteField used in the select doc form for Receipts.
+     * Used by the AutoCompleteField used in the select doc form for Credit.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Credit(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.Credit.uuid, (Status[]) null);
+    }
+
+    /**
+     * Used by the AutoCompleteField used in the select doc form for CreditNote.
      *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
@@ -331,7 +348,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * Used by the AutoCompleteField used in the select doc form for
-     * OrderOutbound.
+     * Reservation.
      *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return map list for auto-complete.
