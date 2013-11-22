@@ -37,6 +37,8 @@
         <!-- childs -->
         <childs>
             <child>Sales_PettyCashReceiptTree_Menu_Action_Edit</child>
+            <child>Sales_PettyCashReceiptTree_Menu_Action_EditJustification</child>
+            <child>Sales_PettyCashReceiptTree_Menu_Action_EditAmount</child>
         </childs>
     </definition>
 </ui-menu>

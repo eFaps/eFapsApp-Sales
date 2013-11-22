@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2010 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev: 10436 $
+  Last Changed:    $Date: 2013-10-14 15:15:10 -0500 (lun, 14 oct 2013) $
+  Last Changed By: $Author: luis.moreyra@efaps.org $
+
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>aa95ac78-7d4b-40fd-b51f-983ecd994a53</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 10436 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PettyCashReceiptJustificationEditForm</name>
+        <!-- fields -->
+        <field name="contact" character="Picker">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_AccountPettyCashReceiptForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <picker name="Contacts_CreateContactPicker"/>
+            <trigger program="org.efaps.esjp.contacts.Contacts"
+                method="autoComplete4Contact"
+                name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.contacts.Contacts"
+                method="updateFields4Contact"
+                name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                <property name="fieldName">contactData</property>
+            </trigger>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_AccountPettyCashReceiptForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="receiptTypeLink">
+            <property name="Columns">15</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_PettyCashReceipt_Class/ReceiptTypeLink.Label</property>
+            <trigger program="org.efaps.esjp.sales.Account" method="dropDownFieldValueReceipt"
+                name="Sales_AccountPettyCashReceiptForm.receiptTypeLink.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+        </field>
+        <field name="name">
+            <property name="Columns">15</property>
+            <property name="Attribute">Name</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.name.Label</property>
+            <trigger event="UI_FIELD_UPDATE" method="updateField4PettyCash" name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.Account">
+                <property name="ValidationType">Contact</property>
+            </trigger>
+        </field>
+        <field name="employeeName">
+            <property name="Columns">15</property>
+            <property name="Attribute">EmployeeName</property>
+            <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.employeeName.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.Account"
+                    method="updateField4PettyCash"
+                    name="Sales_PettyCashReceipt_ClassForm.employeeName.UI_FIELD_UPDATE"
+                    event="UI_FIELD_UPDATE">
+                <property name="ValidationType">Employee</property>
+            </trigger>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.Account"
+                    method="getJavaScriptUIValue4EditJustification"
+                    name="Sales_AccountPettyCashReceiptForm.javaScript.UI_Field_Value"
+                    event="UI_FIELD_VALUE"/>
+        </field>
+    </definition>
+</ui-form>

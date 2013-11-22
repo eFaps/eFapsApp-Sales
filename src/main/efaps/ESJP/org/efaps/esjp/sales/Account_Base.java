@@ -25,6 +25,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -33,6 +34,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -57,16 +59,19 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -1093,6 +1098,269 @@ public abstract class Account_Base
         report.setFileName(fileName);
         ret = report.execute(_parameter);
 
+        return ret;
+    }
+
+    public Return updateField4PettyCash(final Parameter _parameter)
+    {
+        final Return ret = new Return();
+        final StringBuilder js = new StringBuilder();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> values = new TreeMap<String, String>();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String val = (String) properties.get("ValidationType");
+        if (val != null && val.equals("Employee")) {
+            js.append(getSetFieldValue(0, "contactAutoComplete", "", true))
+                            .append(getSetFieldValue(0, "contact", "", true))
+                            .append(getSetFieldValue(0, "contactData", "", true))
+                            .append(getSetFieldValue(0, "name", "", true));
+        } else if (val != null && val.equals("Contact")) {
+            js.append(getSetFieldValue(0, "employeeName", "", true))
+                            .append(getSetFieldValue(0, "employeeNameAutoComplete", "", true));
+        }
+        values.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        list.add(values);
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    protected StringBuilder getSetFieldValue(final int _idx,
+                                             final String _fieldName,
+                                             final String _value,
+                                             final boolean _escape)
+    {
+        final StringBuilder ret = new StringBuilder();
+        ret.append("eFapsSetFieldValue(").append(_idx).append(",'").append(_fieldName).append("',");
+        if (_escape) {
+            ret.append("'").append(StringEscapeUtils.escapeEcmaScript(_value)).append("'");
+        } else {
+            ret.append(_value);
+        }
+        ret.append(");");
+        return ret;
+    }
+
+    public Return getJavaScriptUIValue4EditJustification(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance inst = _parameter.getCallInstance();
+        final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">")
+                        .append("Wicket.Event.add(window, \"domready\", function(event) {");
+
+        if (inst.isValid()) {
+            final PrintQuery print = new PrintQuery(inst);
+            final SelectBuilder selContOid = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact).oid();
+            final SelectBuilder selContName = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact)
+                            .attribute(CIContacts.Contact.Name);
+            final SelectBuilder selDocName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                            .attribute(CISales.PettyCashReceipt_Class.Name);
+            final SelectBuilder selEmplName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                            .attribute(CISales.PettyCashReceipt_Class.EmployeeName);
+            print.addSelect(selContOid, selContName, selDocName, selEmplName);
+            if (print.execute()) {
+                final Instance contInst = Instance.get(print.<String>getSelect(selContOid));
+                final String contName = print.<String>getSelect(selContName);
+                final String docName = print.<String>getSelect(selDocName);
+                final String empName = print.<String>getSelect(selEmplName);
+                if (contInst.isValid() && docName != null) {
+                    js.append(getSetFieldValue(0, "contactAutoComplete", contName, true))
+                                    .append(getSetFieldValue(0, "contact", contInst.getOid(), true))
+                                    .append(getSetFieldValue(0, "name", docName, true));
+                } else if (!empName.isEmpty()) {
+                    js.append(getSetFieldValue(0, "employeeName", empName, true));
+                }
+            }
+            js.append(" });").append("</script>");
+        }
+        ret.put(ReturnValues.SNIPLETT, js.toString());
+        return ret;
+    }
+
+    public Return dropDownFieldValueReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final StringBuilder html = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+
+        final PrintQuery print = new PrintQuery(_parameter.getInstance() != null
+                        ? _parameter.getInstance() : _parameter.getCallInstance());
+        final SelectBuilder selDocType = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                        .attribute(CISales.PettyCashReceipt_Class.ReceiptTypeLink);
+        print.addSelect(selDocType);
+        print.execute();
+        final Long receiptId = print.<Long>getSelect(selDocType);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashReceiptTypeAttr.getType());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PettyCashReceiptTypeAttr.Value, CISales.PettyCashReceiptTypeAttr.Description);
+        multi.execute();
+        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\">");
+        while (multi.next()) {
+            final String value = multi.<String>getAttribute(CISales.PettyCashReceiptTypeAttr.Value);
+            final String description = multi.<String>getAttribute(CISales.PettyCashReceiptTypeAttr.Description);
+            final Long id = multi.getCurrentInstance().getId();
+            html.append("<option value=\"").append(id).append("\"");
+            if (receiptId != null && receiptId.equals(id)) {
+                html.append(" selected ");
+            }
+            html.append(">").append(value + " - " + description).append("</option>");
+        }
+        html.append("</select>");
+        retVal.put(ReturnValues.SNIPLETT, html.toString());
+
+        return retVal;
+    }
+
+    public Return editJustification4PettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String contact = _parameter.getParameterValue("contact");
+        final String docName = _parameter.getParameterValue("name");
+        final String emp = _parameter.getParameterValue("employeeName");
+        final String typeDoc = _parameter.getParameterValue("receiptTypeLink");
+        final Update update = new Update(_parameter.getCallInstance());
+        update.add(CISales.PettyCashReceipt.Contact, contact.length() > 0 ? Instance.get(contact).getId() : null);
+        update.execute();
+
+        final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
+        final SelectBuilder selClazz = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class).oid();
+        print.addSelect(selClazz);
+        if (print.execute()) {
+            final Instance instClazz = Instance.get(print.<String>getSelect(selClazz));
+            if (instClazz.isValid()) {
+                final Update update2 = new Update(instClazz);
+                update2.add(CISales.PettyCashReceipt_Class.Name, docName.length() > 0 ? docName : null);
+                update2.add(CISales.PettyCashReceipt_Class.EmployeeName, emp.length() > 0 ? emp : null);
+                update2.add(CISales.PettyCashReceipt_Class.ReceiptTypeLink, docName.length() > 0 ? typeDoc : null);
+                update2.execute();
+            }
+        }
+        return new Return();
+    }
+
+    public Return editAmount4PettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Revision rev = new Revision()
+        {
+
+            @Override
+            public Return revise(final Parameter _parameter)
+                throws EFapsException
+            {
+                final Instance newInst = copyDoc(_parameter);
+                final Map<Instance, Instance> map = copyRelations(_parameter, newInst);
+                setStati(_parameter, newInst);
+                createTransaction(_parameter, newInst, map);
+
+                return new Return();
+            }
+
+            protected Return createTransaction(final Parameter _parameter,
+                                               final Instance _newInst,
+                                               final Map<Instance, Instance> _mapRel)
+                throws EFapsException
+            {
+                final Return ret = new Return();
+                final Insert relInsert = new Insert(CIERP.Document2Class);
+                relInsert.add(CIERP.Document2Class.DocumentLink, _newInst.getId());
+                relInsert.add(CIERP.Document2Class.ClassTypeId, CISales.PettyCashReceipt_Class.getType().getId());
+                relInsert.execute();
+
+                Instance instPayment = null;
+                Instance instPaymentOld = null;
+                Instance instClass = null;
+                for (final Entry<Instance, Instance> entry : _mapRel.entrySet()) {
+                    if (entry.getValue().getType().isKindOf(CISales.Payment.getType())) {
+                        instPayment = entry.getValue();
+                        instPaymentOld = entry.getKey();
+                    }
+                    if (entry.getValue().getType().isKindOf(CISales.PettyCashReceipt_Class.getType())) {
+                        instClass = entry.getValue();
+                    }
+                }
+
+                if (instPayment != null) {
+                    final Update updatePay = new Update(instPayment);
+                    updatePay.add(CISales.Payment.TargetDocument, new Object[] { null });
+                    updatePay.execute();
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionOutbound);
+                    queryBldr.addWhereAttrEqValue(CISales.TransactionOutbound.Payment, instPaymentOld.getId());
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CISales.TransactionOutbound.Description);
+                    final SelectBuilder selAcc = new SelectBuilder().linkto(CISales.TransactionOutbound.Account).oid();
+                    multi.addSelect(selAcc);
+                    multi.execute();
+                    Instance accInst = null;
+                    if (multi.next()) {
+                        accInst = Instance.get(multi.<String>getSelect(selAcc));
+                        final String descTxn = multi.<String>getAttribute(CISales.TransactionOutbound.Description);
+                        if (accInst.isValid()) {
+                            final PrintQuery print = new PrintQuery(accInst);
+                            print.addAttribute(CISales.AccountAbstract.CurrencyLink);
+                            print.execute();
+                            final Long curId = print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
+
+                            final PrintQuery print2 = new PrintQuery(_parameter.getInstance());
+                            print2.addAttribute(CISales.PettyCashReceipt.CrossTotal,
+                                            CISales.PettyCashReceipt.Note);
+                            print2.execute();
+
+                            final String noteDoc = print2.<String>getAttribute(CISales.PettyCashReceipt.Note);
+                            final Update updateDoc = new Update(_parameter.getInstance());
+                            updateDoc.add(CISales.PettyCashReceipt.Note,
+                                            DBProperties.getProperty("org.efaps.esjp.sales.Account.CorrectionDocument")
+                                                            + " - " + noteDoc);
+                            updateDoc.execute();
+
+                            final BigDecimal oldAmount = print2
+                                            .<BigDecimal>getAttribute(CISales.PettyCashReceipt.CrossTotal);
+                            final BigDecimal newAmount = new BigDecimal(_parameter.getParameterValue("crossTotal"));
+
+                            final Insert transInsertIn = new Insert(CISales.TransactionInbound);
+                            transInsertIn.add(CISales.TransactionInbound.Amount, oldAmount);
+                            transInsertIn.add(CISales.TransactionInbound.CurrencyId, curId);
+                            transInsertIn.add(CISales.TransactionInbound.Payment, instPayment.getId());
+                            transInsertIn.add(CISales.TransactionInbound.Account, accInst.getId());
+                            transInsertIn.add(CISales.TransactionInbound.Description,
+                                            DBProperties.getProperty("org.efaps.esjp.sales.Account.CorrectionInbound")
+                                                            + ": " + descTxn);
+                            transInsertIn.add(CISales.TransactionInbound.Date, new Date());
+                            transInsertIn.execute();
+
+                            final Insert transInsertOut = new Insert(CISales.TransactionOutbound);
+                            transInsertOut.add(
+                                            CISales.TransactionOutbound.Amount,
+                                            (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
+                                                            .multiply(BigDecimal.valueOf(-1)) : newAmount);
+                            transInsertOut.add(CISales.TransactionOutbound.CurrencyId, curId);
+                            transInsertOut.add(CISales.TransactionOutbound.Payment, instPayment.getId());
+                            transInsertOut.add(CISales.TransactionOutbound.Account, accInst.getId());
+                            transInsertOut.add(CISales.TransactionOutbound.Description,
+                                            DBProperties.getProperty("org.efaps.esjp.sales.Account.CorrectionOutbound")
+                                                            + ": " + descTxn);
+                            transInsertOut.add(CISales.TransactionOutbound.Date, new Date());
+                            transInsertOut.execute();
+
+                            final Update update = new Update(_newInst);
+                            update.add(CISales.PettyCashReceipt.CrossTotal,
+                                            (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
+                                                            .multiply(BigDecimal.valueOf(-1)) : newAmount);
+                            update.add(CISales.PettyCashReceipt.RateCrossTotal,
+                                            (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
+                                                            .multiply(BigDecimal.valueOf(-1)) : newAmount);
+                            update.execute();
+                        }
+                    }
+
+                }
+                return ret;
+            }
+        };
+        final Return ret = rev.revise(_parameter);
         return ret;
     }
 }
