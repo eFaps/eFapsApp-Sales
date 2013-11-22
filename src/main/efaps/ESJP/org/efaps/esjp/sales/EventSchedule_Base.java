@@ -25,7 +25,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.DocumentSum;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -40,7 +40,7 @@ import org.joda.time.format.DateTimeFormat;
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsRevision("$Rev: 1$")
 public class EventSchedule_Base
-    extends AbstractDocument_Base
+    extends DocumentSum
 {
 
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
@@ -212,71 +212,6 @@ public class EventSchedule_Base
         throws EFapsException
     {
         return NumberFormatter.get().getTwoDigitsFormatter().format(netTotal);
-    }
-
-    public class CreateSchedule
-
-    {
-        /**
-         * Instance of the newly created schedule.
-         */
-        private final Instance instance;
-
-        /**
-         * Positions of the created Schedule.
-         */
-        private final List<Instance> positions = new ArrayList<Instance>();
-
-        /**
-         * Map can be used to pass values from one method to another.
-         */
-        private final Map<String, Object> values = new HashMap<String, Object>();
-
-        /**
-         * @param _instance Instance of the Schedule
-         */
-        public CreateSchedule(final Instance _instance)
-        {
-            this.instance = _instance;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #values}.
-         *
-         * @return value of instance variable {@link #values}
-         */
-        public Map<String, Object> getValues()
-        {
-            return this.values;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #instance}.
-         *
-         * @return value of instance variable {@link #instance}
-         */
-        public Instance getInstance()
-        {
-            return this.instance;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #positions}.
-         *
-         * @return value of instance variable {@link #positions}
-         */
-        public List<Instance> getPositions()
-        {
-            return this.positions;
-        }
-
-        /**
-         * @param _instance Instance to add
-         */
-        public void addPosition(final Instance _instance)
-        {
-            this.positions.add(_instance);
-        }
     }
 
 }

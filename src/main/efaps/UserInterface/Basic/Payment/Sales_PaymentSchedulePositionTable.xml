@@ -58,12 +58,12 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             program="org.efaps.esjp.sales.PaymentSchedule"/>
         </field>
         <field name="documentDesc">
-            <property name="Columns">90</property>
+            <property name="Columns">80</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DocumentDesc</property>
             <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
-            <property name="Width">10</property>
+            <property name="Width">8</property>
         </field>
         <field name="rateNetPrice">
             <property name="ModeCreate">READONLY</property>

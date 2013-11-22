@@ -15,18 +15,18 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 10262 $
+ Last Changed:    $Date: 2013-09-23 12:41:22 -0500 (lun, 23 sep 2013) $
+ Last Changed By: $Author: luis.moreyra@efaps.org $
 
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>ebc07340-b0d3-4161-8db8-e1a6725c420a</uuid>
+    <uuid>2eedc411-00d2-466c-871f-864a931aa042</uuid>
     <file-application>eFapsApp-Commons</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 10262 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentSchedulePayTable</name>
+        <name>Sales_PaymentScheduleScheduledTable</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
@@ -72,6 +72,12 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentSchedulePayTable.contact.Label</property>
+        </field>
+        <field name="paymentSchedule">
+            <property name="SelectAlternateOID">linkfrom[Sales_PaymentSchedulePosition#Document].linkto[PaymentSchedule].oid</property>
+            <property name="Select">linkfrom[Sales_PaymentSchedulePosition#Document].linkto[PaymentSchedule].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_PaymentSchedulePayTable.paymentSchedule.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

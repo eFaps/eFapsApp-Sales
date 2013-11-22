@@ -188,37 +188,40 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
         }
 
-        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
-        final int scale = frmt.getMaximumFractionDigits();
-        final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
-        insert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
+        if (getType4DocCreate(_parameter).isKindOf(CISales.DocumentSumAbstract.getType())) {
+            final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+            final int scale = frmt.getMaximumFractionDigits();
+            final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            insert.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
 
-        final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
-        insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
+            final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
+            insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
-        insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
 
-        final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
-        insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
+            final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
 
-        final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
-                        .setScale(scale, BigDecimal.ROUND_HALF_UP);
-        insert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
+            final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            insert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
 
-        insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 
-        insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
-        insert.add(CISales.DocumentSumAbstract.Rate, rateObj);
-        insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+            insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
+            insert.add(CISales.DocumentSumAbstract.Rate, rateObj);
+            insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
 
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, baseCurrInst);
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, rateCurrInst);
-        createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, rateObj);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, baseCurrInst);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, rateCurrInst);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, rateObj);
+        }
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
         add2DocCreate(_parameter, insert, createdDoc);

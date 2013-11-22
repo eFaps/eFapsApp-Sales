@@ -15,29 +15,24 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5313 $
+ Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (lun, 16 ago 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>c9590212-6192-41d7-b606-550338a0d431</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5ae6e63c-1696-4b1c-a5aa-19cda17ab418</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentSchedulePayMyDesk</name>
+        <name>Sales_PaymentScheduleScheduledMyDesk</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_PaymentSchedule</role>
         </access>
         <target>
-            <menu>Sales_PaymentSchedulePayMyDesk_Menu</menu>
-            <table>Sales_PaymentSchedulePayTable</table>
-            <evaluate program="org.efaps.esjp.sales.PaymentSchedule" method="getNotScheduledDocuments">
+            <table>Sales_PaymentScheduleScheduledTable</table>
+            <evaluate program="org.efaps.esjp.sales.PaymentSchedule" method="getScheduledDocuments">
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Open</property>

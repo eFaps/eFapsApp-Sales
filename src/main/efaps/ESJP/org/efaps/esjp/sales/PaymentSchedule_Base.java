@@ -3,24 +3,26 @@ package org.efaps.esjp.sales;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Map;
-import java.util.UUID;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -45,43 +47,32 @@ public class PaymentSchedule_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
 
-        createSchedule(_parameter);
         return new Return();
     }
 
-    protected CreateSchedule createSchedule(final Parameter _parameter)
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        // Sales-Configuration
-        final Instance baseCurrInst = SystemConfiguration.get(
-                        UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
-        final Insert insertPaySche = new Insert(CISales.PaymentSchedule);
-        insertPaySche.add(CISales.PaymentSchedule.Date, _parameter.getParameterValue("date"));
-        insertPaySche.add(CISales.PaymentSchedule.Name, _parameter.getParameterValue("name4create"));
-        insertPaySche.add(CISales.PaymentSchedule.Status,
-                        Status.find(CISales.PaymentScheduleStatus.uuid, "Open").getId());
-        insertPaySche.add(CISales.PaymentSchedule.Total, getTotalFmtStr(getTotal(_parameter)));
-        insertPaySche.add(CISales.PaymentSchedule.CurrencyId, baseCurrInst.getId());
-
-        insertPaySche.execute();
-
-        final CreateSchedule createSchedule = new CreateSchedule(insertPaySche.getInstance());
-        createPositions(_parameter, createSchedule);
-
-        return createSchedule;
-
+        _insert.add(CISales.PaymentSchedule.Total, getTotalFmtStr(getTotal(_parameter)));
+        _insert.add(CISales.PaymentSchedule.CurrencyId, baseCurrInst);
     }
 
+    @Override
     protected void createPositions(final Parameter _parameter,
-                                   final CreateSchedule createSchedule)
+                                   final CreatedDoc createSchedule)
         throws EFapsException
     {
         final String oids[] = _parameter.getParameterValues("document");
         Integer i = 0;
-        for (final String oid : oids)
-        {
+        for (final String oid : oids) {
             final Instance instDoc = Instance.get(oid);
             final PrintQuery printDoc = new PrintQuery(instDoc);
             printDoc.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
@@ -92,14 +83,15 @@ public class PaymentSchedule_Base
             insertPayShePos.add(CISales.PaymentSchedulePosition.PaymentSchedule, createSchedule.getInstance().getId());
             insertPayShePos.add(CISales.PaymentSchedulePosition.Document, instDoc.getId());
             insertPayShePos.add(CISales.PaymentSchedulePosition.PositionNumber, i);
-            if (_parameter.getParameterValues("documentDesc") != null) {
+            if (_parameter.getParameterValues(CISales.PaymentSchedulePosition.DocumentDesc.name) != null) {
                 insertPayShePos.add(CISales.PaymentSchedulePosition.DocumentDesc,
-                                _parameter.getParameterValues("documentDesc")[i]);
+                                _parameter.getParameterValues(CISales.PaymentSchedulePosition.DocumentDesc.name)[i]);
             } else {
                 insertPayShePos.add(CISales.PaymentSchedulePosition.DocumentDesc,
                                 DBProperties.getProperty("org.efaps.esjp.sales.PaymentSchedule.defaultDescription"));
             }
-            insertPayShePos.add(CISales.PaymentSchedulePosition.NetPrice, printDoc.getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+            insertPayShePos.add(CISales.PaymentSchedulePosition.NetPrice,
+                            printDoc.getAttribute(CISales.DocumentSumAbstract.CrossTotal));
             insertPayShePos.execute();
             i++;
         }
@@ -110,13 +102,12 @@ public class PaymentSchedule_Base
     {
         final String[] others = (String[]) Context.getThreadContext().getSessionAttribute("internalOIDs");
         if (others != null) {
-            final String name = (String) getNameFieldValueUI(_parameter).get(ReturnValues.VALUES);
-            @SuppressWarnings("unchecked") final Map<String, String[]> parameters = (Map<String, String[]>) _parameter
+            @SuppressWarnings("unchecked")
+            final Map<String, String[]> parameters = (Map<String, String[]>) _parameter
                             .get(ParameterValues.PARAMETERS);
-            parameters.put("name4create", new String[] { name });
             parameters.put("document", others);
             _parameter.put(ParameterValues.PARAMETERS, parameters);
-            createSchedule(_parameter);
+            createDoc(_parameter);
         }
         return new Return();
     }
@@ -125,7 +116,8 @@ public class PaymentSchedule_Base
         throws EFapsException
     {
         final Instance instPos = _parameter.getInstance();
-        final SelectBuilder selectPaySche = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.PaymentSchedule).oid();
+        final SelectBuilder selectPaySche = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.PaymentSchedule)
+                        .oid();
 
         final PrintQuery printPos = new PrintQuery(instPos);
         printPos.addAttribute(CISales.PaymentSchedulePosition.NetPrice);
@@ -141,10 +133,55 @@ public class PaymentSchedule_Base
             if (printPaySche.execute()) {
                 total = printPaySche.<BigDecimal>getAttribute(CISales.PaymentSchedule.Total);
                 final Update updatePaySche = new Update(printPaySche.getCurrentInstance());
-                updatePaySche.add(CISales.PaymentSchedule.Total, total.subtract(posNetPrice).setScale(2, RoundingMode.HALF_UP));
+                updatePaySche.add(CISales.PaymentSchedule.Total,
+                                total.subtract(posNetPrice).setScale(2, RoundingMode.HALF_UP));
                 updatePaySche.execute();
             }
         }
         return new Return();
+    }
+
+    public Return getNotScheduledDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentSchedulePosition);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(CISales.PaymentSchedulePosition.Document);
+
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery);
+            }
+        }.execute(_parameter);
+    }
+
+    public Return getScheduledDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new MultiPrint()
+        {
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentSchedule);
+                attrQueryBldr.addWhereAttrEqValue(CISales.PaymentSchedule.Status,
+                                Status.find(CISales.PaymentScheduleStatus.Open));
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentSchedule.ID);
+
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.PaymentSchedulePosition);
+                attrQueryBldr2.addWhereAttrInQuery(CISales.PaymentSchedulePosition.PaymentSchedule, attrQuery);
+                final AttributeQuery attrQuery2 = attrQueryBldr2
+                                .getAttributeQuery(CISales.PaymentSchedulePosition.Document);
+
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery2);
+            }
+        }.execute(_parameter);
     }
 }

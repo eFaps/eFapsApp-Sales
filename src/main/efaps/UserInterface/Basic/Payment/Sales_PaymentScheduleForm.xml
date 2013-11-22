@@ -35,10 +35,6 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentScheduleForm</name>
         <!-- fields -->
-        <field character="Group" name="dateGroup">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
         <field name="date">
             <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -46,20 +42,6 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-        </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger event="UI_FIELD_VALUE"
-            method="getNameFieldValueUI"
-            name="Sales_PaymentScheduleForm.name.UI_Field_Value"
-            program="org.efaps.esjp.sales.PaymentSchedule">
-            <property name="Type">Sales_PaymentSchedule</property>
-            </trigger>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>

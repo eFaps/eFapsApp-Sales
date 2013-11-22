@@ -41,14 +41,19 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentScheduleForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.PaymentSchedule"/>
+            <execute method="create" program="org.efaps.esjp.sales.PaymentSchedule">
+                <property name="PositionType">Sales_PaymentSchedulePosition</property>
+                <property name="StatusGroup">Sales_PaymentScheduleStatus</property>
+                <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
+            </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentSchedule</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">750</property>
+        <property name="WindowHeight">550</property>
+        <property name="WindowWidth">950</property>
         <property name="TargetDefaultMenu">none</property>
 
     </definition>
