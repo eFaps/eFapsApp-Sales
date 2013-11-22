@@ -70,9 +70,6 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.name.Label</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateField4PettyCash" name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.Account">
-                <property name="ValidationType">Contact</property>
-            </trigger>
         </field>
         <field name="employeeName">
             <property name="Columns">15</property>
