@@ -81,12 +81,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeSearch">EDITABLE</property>
-            <trigger program="org.efaps.esjp.sales.Account"
-                    method="updateField4PettyCash"
-                    name="Sales_PettyCashReceipt_ClassForm.employeeName.UI_FIELD_UPDATE"
-                    event="UI_FIELD_UPDATE">
-                <property name="ValidationType">Employee</property>
-            </trigger>
+            <property name="Required">TRUE</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>

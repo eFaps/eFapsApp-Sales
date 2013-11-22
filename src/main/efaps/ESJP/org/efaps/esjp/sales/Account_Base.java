@@ -71,7 +71,6 @@ import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -966,22 +965,25 @@ public abstract class Account_Base
     {
         final Return ret = new Return();
         final String addVal = additionalValidate4PettyCashReceipt(_parameter);
-        if (hasTransaction(_parameter)) {
+        if (hasTransaction(_parameter)
+                        || _parameter.getInstance().getType().isKindOf(CISales.PettyCashReceipt.getType())) {
             if (addVal == null || addVal != null && addVal.isEmpty()) {
-                final BigDecimal amount = getAmountPayments(_parameter);
-                final BigDecimal startAmount = getStartAmount(_parameter);
-                final String crossTotalStr = _parameter.getParameterValue("crossTotal");
-                final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
-                BigDecimal crossTotal = BigDecimal.ZERO;
-                try {
-                    crossTotal = (BigDecimal) formater.parse(crossTotalStr);
-                } catch (final ParseException e) {
-                    throw new EFapsException(Account_Base.class, "ParseException", e);
-                }
-                final BigDecimal difference = startAmount.add(amount).subtract(crossTotal);
-                if (difference.signum() == -1) {
-                    ret.put(ReturnValues.VALUES,
+                if (!_parameter.getInstance().getType().isKindOf(CISales.PettyCashReceipt.getType())) {
+                    final BigDecimal amount = getAmountPayments(_parameter);
+                    final BigDecimal startAmount = getStartAmount(_parameter);
+                    final String crossTotalStr = _parameter.getParameterValue("crossTotal");
+                    final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
+                    BigDecimal crossTotal = BigDecimal.ZERO;
+                    try {
+                        crossTotal = (BigDecimal) formater.parse(crossTotalStr);
+                    } catch (final ParseException e) {
+                        throw new EFapsException(Account_Base.class, "ParseException", e);
+                    }
+                    final BigDecimal difference = startAmount.add(amount).subtract(crossTotal);
+                    if (difference.signum() == -1) {
+                        ret.put(ReturnValues.VALUES,
                                         "org.efaps.esjp.sales.Account.validatePettyCashReceipt.NegativeAmount");
+                    }
                 }
                 ret.put(ReturnValues.TRUE, true);
             } else {
@@ -1101,29 +1103,6 @@ public abstract class Account_Base
         return ret;
     }
 
-    public Return updateField4PettyCash(final Parameter _parameter)
-    {
-        final Return ret = new Return();
-        final StringBuilder js = new StringBuilder();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> values = new TreeMap<String, String>();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String val = (String) properties.get("ValidationType");
-        if (val != null && val.equals("Employee")) {
-            js.append(getSetFieldValue(0, "contactAutoComplete", "", true))
-                            .append(getSetFieldValue(0, "contact", "", true))
-                            .append(getSetFieldValue(0, "contactData", "", true))
-                            .append(getSetFieldValue(0, "name", "", true));
-        } else if (val != null && val.equals("Contact")) {
-            js.append(getSetFieldValue(0, "employeeName", "", true))
-                            .append(getSetFieldValue(0, "employeeNameAutoComplete", "", true));
-        }
-        values.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
-        list.add(values);
-        ret.put(ReturnValues.VALUES, list);
-        return ret;
-    }
-
     protected StringBuilder getSetFieldValue(final int _idx,
                                              final String _fieldName,
                                              final String _value,
@@ -1164,11 +1143,14 @@ public abstract class Account_Base
                 final String contName = print.<String>getSelect(selContName);
                 final String docName = print.<String>getSelect(selDocName);
                 final String empName = print.<String>getSelect(selEmplName);
-                if (contInst.isValid() && docName != null) {
+                if (contInst.isValid()) {
                     js.append(getSetFieldValue(0, "contactAutoComplete", contName, true))
-                                    .append(getSetFieldValue(0, "contact", contInst.getOid(), true))
-                                    .append(getSetFieldValue(0, "name", docName, true));
-                } else if (!empName.isEmpty()) {
+                                    .append(getSetFieldValue(0, "contact", contInst.getOid(), true));
+                }
+                if (docName != null) {
+                    js.append(getSetFieldValue(0, "name", docName, true));
+                }
+                if (empName != null) {
                     js.append(getSetFieldValue(0, "employeeName", empName, true));
                 }
             }
@@ -1258,6 +1240,7 @@ public abstract class Account_Base
                 return new Return();
             }
 
+            @SuppressWarnings("unused")
             protected Return createTransaction(final Parameter _parameter,
                                                final Instance _newInst,
                                                final Map<Instance, Instance> _mapRel)
