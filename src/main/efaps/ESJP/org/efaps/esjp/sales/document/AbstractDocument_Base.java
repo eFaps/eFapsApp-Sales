@@ -1488,6 +1488,8 @@ public abstract class AbstractDocument_Base
                 map.put("productDesc", desc);
                 map.put("uoM", getUoMFieldStr(multi.<Long> getAttribute(CIProducts.ProductAbstract.Dimension)));
                 map.put("discount", "0");
+
+                add2JavaScript4ProductAutoComplete(_parameter, map);
                 sortMap.put(choice, map);
             }
             list.addAll(sortMap.values());
@@ -1496,6 +1498,13 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected void add2JavaScript4ProductAutoComplete(final Parameter _parameter,
+                                                      final Map<String, String> _map)
+        throws EFapsException
+    {
+
     }
 
     protected void catalogFilter4productAutoComplete(final Parameter _parameter,
