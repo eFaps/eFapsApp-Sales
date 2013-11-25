@@ -175,7 +175,7 @@ public abstract class SalesKardexReport_Base
             final SelectBuilder selTransDocName = new SelectBuilder(selTrans).attribute(CIERP.DocumentAbstract.Name);
 
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-            queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, product.getId());
+            queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, product);
             queryBldr.addWhereAttrLessValue(CIProducts.TransactionInOutAbstract.Date, dateTo.plusSeconds(1));
             queryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, dateFrom.minusSeconds(1));
             if (!listStorage.isEmpty()) {
@@ -208,7 +208,9 @@ public abstract class SalesKardexReport_Base
                 final String transDocName = multi.<String>getSelect(selTransDocName);
 
                 map.put(Field.TRANS_DATE.getKey(), dateTrans);
-                if (multi.getCurrentInstance().getType().isKindOf(CIProducts.TransactionInbound.getType())) {
+                if (multi.getCurrentInstance().getType().equals(CIProducts.TransactionInbound.getType())
+                                || multi.getCurrentInstance().getType()
+                                .equals(CIProducts.TransactionInbound4StaticStorage.getType())) {
                     map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), quantity);
                     addMap2DocumentTypeIn(_parameter, map, transDocInst, dateFrom, dateTo, product);
                 } else {
@@ -239,7 +241,7 @@ public abstract class SalesKardexReport_Base
             queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, 0);
             SalesKardexReport_Base.LOG.debug("Report not contains storage");
         }
-        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _product.getId());
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _product);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIProducts.Inventory.Quantity);
         multi.execute();
@@ -256,7 +258,7 @@ public abstract class SalesKardexReport_Base
             transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, 0);
             SalesKardexReport_Base.LOG.debug("Report not contains storage");
         }
-        transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, _product.getId());
+        transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, _product);
         transQueryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, _dateFrom.minusMinutes(1));
         final MultiPrintQuery transMulti = transQueryBldr.getPrint();
         transMulti.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
@@ -269,7 +271,8 @@ public abstract class SalesKardexReport_Base
             quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())
                                             .divide(new BigDecimal(uoM.getDenominator())));
             final Instance inst = transMulti.getCurrentInstance();
-            if (inst.getType().isKindOf(CIProducts.TransactionInbound.getType())) {
+            if (inst.getType().equals(CIProducts.TransactionInbound.getType())
+                            || inst.getType().equals(CIProducts.TransactionInbound4StaticStorage.getType())) {
                 quantity = quantity.negate();
             }
             actualInventory = actualInventory.add(quantity);
@@ -495,10 +498,30 @@ public abstract class SalesKardexReport_Base
 
     public class ProductKardex
     {
-        final Instance product;
+        private final Instance product;
 
-        public ProductKardex(final Instance _product) {
+        private String name;
+
+        private String description;
+
+        private String uoM;
+
+        public ProductKardex(final Instance _product)
+            throws EFapsException
+        {
             this.product = _product;
+            if (getInstance().isValid()) {
+                final PrintQuery print = new PrintQuery(getInstance());
+                print.addAttribute(CIProducts.ProductAbstract.Name,
+                                CIProducts.ProductAbstract.Description,
+                                CIProducts.ProductAbstract.Dimension);
+                print.execute();
+
+                this.name = print.<String>getAttribute(CIProducts.ProductAbstract.Name);
+                this.description = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
+                this.uoM = Dimension.get(print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension))
+                                .getBaseUoM().getName();
+            }
         }
 
         protected Instance getInstance() {
@@ -506,33 +529,18 @@ public abstract class SalesKardexReport_Base
         }
 
         protected String getProductName()
-            throws EFapsException
         {
-            final PrintQuery print = new PrintQuery(this.product);
-            print.addAttribute(CIProducts.ProductAbstract.Name);
-            print.execute();
-
-            return print.<String>getAttribute(CIProducts.ProductAbstract.Name);
+            return this.name;
         }
 
         protected String getProductDesc()
-            throws EFapsException
         {
-            final PrintQuery print = new PrintQuery(this.product);
-            print.addAttribute(CIProducts.ProductAbstract.Description);
-            print.execute();
-
-            return print.<String>getAttribute(CIProducts.ProductAbstract.Description);
+            return this.description;
         }
 
         protected String getProductUoM()
-            throws EFapsException
         {
-            final PrintQuery print = new PrintQuery(this.product);
-            print.addAttribute(CIProducts.ProductAbstract.Dimension);
-            print.execute();
-
-            return Dimension.get(print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension)).getBaseUoM().getName();
+            return this.uoM;
         }
 
         protected String getProductExistType()
@@ -567,6 +575,7 @@ public abstract class SalesKardexReport_Base
                                 final DateTime _dateStartTransaction,
                                 final DateTime _dateFinishTransaction,
                                 final Instance _product)
+            throws EFapsException
         {
             this.param = _parameter;
             this.instance = _docTransaction;
@@ -738,11 +747,54 @@ public abstract class SalesKardexReport_Base
                             ret = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice)
                                         .multiply(new BigDecimal(uoM.getNumerator())
                                         .divide(new BigDecimal(uoM.getDenominator()))).setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                            final BigDecimal other = getCost4IncomingCreditNote();
+                            if (other.compareTo(ret) < 1) {
+                                ret = ret.subtract(other);
+                            }
                             break;
                         }
                     }
                 }
             }
+            return ret;
+        }
+
+        protected BigDecimal getCost4IncomingCreditNote()
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+
+            if (this.doc2docInstance.getType().equals(CISales.IncomingInvoice.getType())) {
+                if (this.product.getInstance().isValid()) {
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink,
+                                    this.doc2docInstance);
+                    final AttributeQuery attrQuery = attrQueryBldr
+                                    .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+                    queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Type,
+                                    CISales.IncomingCreditNotePosition.getType().getId());
+                    queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
+                    queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, this.product.getInstance());
+                    queryBldr.addOrderByAttributeAsc(CISales.PositionSumAbstract.PositionNumber);
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
+                                    CISales.PositionSumAbstract.UoM);
+                    multi.setEnforceSorted(true);
+                    multi.execute();
+                    while (multi.next()) {
+                        final Long uoMId = multi.<Long>getAttribute(CISales.IncomingInvoicePosition.UoM);
+                        final UoM uoM = Dimension.getUoM(uoMId);
+                        ret = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice)
+                                    .multiply(new BigDecimal(uoM.getNumerator())
+                                    .divide(new BigDecimal(uoM.getDenominator()))).setScale(2, BigDecimal.ROUND_HALF_UP);
+                        break;
+                    }
+                }
+            }
+
             return ret;
         }
 
