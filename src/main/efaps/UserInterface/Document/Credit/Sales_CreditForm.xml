@@ -348,10 +348,6 @@
                 <property name="StatusGrp01">HumanResource_EmployeeStatus</property>
                 <property name="Status01">Worker</property>
             </trigger>
-            <trigger program="org.efaps.esjp.payroll.Payslip"
-                method="updateFields4Employee"
-                name="Sales_CreditForm.number.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
             <trigger program="org.efaps.esjp.sales.document.Credit"
                     method="updateField4Credit"
                     name="Sales_CreditForm.number.UI_FIELD_UPDATE2"
