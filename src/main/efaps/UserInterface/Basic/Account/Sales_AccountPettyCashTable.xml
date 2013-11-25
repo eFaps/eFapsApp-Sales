@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 8589 $
+ Last Changed:    $Date: 2013-01-22 14:07:32 -0500 (Tue, 22 Jan 2013) $
+ Last Changed By: $Author: jan@moxter.net $
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>d42b074d-8abc-438d-8e03-7d06e65c97d6</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 8589 $</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountPettyCashTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="Label">Sales_AccountAbstract/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="name">
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_AccountAbstract/Name.Label</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">AmountAbstract</property>
+            <property name="Label">Sales_AccountAbstract/Name.Label</property>
+        </field>
+        <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Label">Sales_AccountAbstract/CurrencyLink.Label</property>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="Label">Sales_AccountAbstract/Description.Label</property>
+        </field>
+        <field name="active">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">Active</property>
+            <property name="Label">Sales_AccountAbstract/Active.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+    </definition>
+</ui-table>

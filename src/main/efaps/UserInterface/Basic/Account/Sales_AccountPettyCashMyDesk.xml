@@ -32,7 +32,7 @@
         </access>
         <target>
             <menu>Sales_AccountPettyCashMyDesk_Menu</menu>
-            <table>Sales_AccountAbstractTable</table>
+            <table>Sales_AccountPettyCashTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_AccountPettyCash</property>
                 <property name="ExpandChildTypes">true</property>
