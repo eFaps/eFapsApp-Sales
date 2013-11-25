@@ -39,7 +39,7 @@
         </field>
         <field name="amount">
             <property name="Attribute">AmountAbstract</property>
-            <property name="Label">Sales_AccountAbstract/Name.Label</property>
+            <property name="Label">Sales_AccountAbstract/Amount.Label</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
