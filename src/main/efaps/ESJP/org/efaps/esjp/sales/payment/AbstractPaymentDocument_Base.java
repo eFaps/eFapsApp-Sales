@@ -830,6 +830,17 @@ public abstract class AbstractPaymentDocument_Base
                     report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
                 }
             }
+
+            if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
+                report.getJrParameters()
+                                .put("ClientOrSupplier",
+                                                DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractDocumentOutPaymentSupplier.Label"));
+            } else if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+                report.getJrParameters()
+                                .put("ClientOrSupplier",
+                                                DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractDocumentInPaymentClient.Label"));
+            }
+
             addParameter4Report(_parameter, _createdDoc, report);
             ret = report.execute(_parameter);
             ret.put(ReturnValues.TRUE, true);
