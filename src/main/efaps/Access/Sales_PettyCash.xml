@@ -43,6 +43,7 @@
         <type>Sales_PettyCashBalance</type>
         <type>Sales_TransactionOutbound</type>
         <type>Sales_TransactionInbound</type>
+        <type>Sales_AccountFundsToBeSettled</type>
 
         <status group="Sales_PettyCashReceiptStatus">
             <key>Closed</key>

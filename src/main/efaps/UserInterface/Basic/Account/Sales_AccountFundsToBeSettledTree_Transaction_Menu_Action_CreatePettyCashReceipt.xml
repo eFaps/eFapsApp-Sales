@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 10192 $
+ Last Changed:    $Date: 2013-09-12 18:25:20 -0500 (jue, 12 sep 2013) $
+ Last Changed By: $Author: m.aranya@moxter.net $
+
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>a805c01a-c00c-4f95-aac7-995a4f03b85c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 10192 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
+        <access>
+            <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_AccountPettyCashReceiptForm</form>
+            <execute method="createPettyCashReceipt" program="org.efaps.esjp.sales.Account"/>
+            <validate method="validatePettyCashReceipt" program="org.efaps.esjp.sales.Account"/>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Active" name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK" program="org.efaps.esjp.sales.Account"/>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_PettyCashReceipt</property>
+        <property name="WindowHeight">500</property>
+        <property name="WindowWidth">700</property>
+        <property name="TargetCreateClassifications">Sales_PettyCashReceipt_Class</property>
+    </definition>
+</ui-command>

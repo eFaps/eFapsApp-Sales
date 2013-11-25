@@ -38,6 +38,7 @@
         <childs>
             <child>Sales_AccountAbstractMyDesk_Menu_Action_AccountCashDesk</child>
             <child>Sales_AccountAbstractMyDesk_Menu_Action_AccountPettyCash</child>
+            <child>Sales_AccountAbstractMyDesk_Menu_Action_AccountFundsToBeSettled</child>
             <child>Sales_AccountAbstractMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
