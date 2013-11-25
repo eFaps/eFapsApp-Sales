@@ -1215,7 +1215,7 @@ public abstract class Account_Base
                 final Update update2 = new Update(instClazz);
                 update2.add(CISales.PettyCashReceipt_Class.Name, docName.length() > 0 ? docName : null);
                 update2.add(CISales.PettyCashReceipt_Class.EmployeeName, emp.length() > 0 ? emp : null);
-                update2.add(CISales.PettyCashReceipt_Class.ReceiptTypeLink, docName.length() > 0 ? typeDoc : null);
+                update2.add(CISales.PettyCashReceipt_Class.ReceiptTypeLink, typeDoc.length() > 0 ? typeDoc : null);
                 update2.execute();
             }
         }
