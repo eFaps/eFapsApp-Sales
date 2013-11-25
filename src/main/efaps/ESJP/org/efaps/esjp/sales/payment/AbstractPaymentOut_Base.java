@@ -503,7 +503,7 @@ public abstract class AbstractPaymentOut_Base
         if (docInstance.isValid()) {
             Context.getThreadContext().setSessionAttribute(AbstractPaymentOut_Base.INSTANCE_PAYMENT_DOC, docInstance);
         } else {
-            Context.getThreadContext().setSessionAttribute(AbstractPaymentOut_Base.INSTANCE_PAYMENT_DOC, null);
+            Context.getThreadContext().removeSessionAttribute(AbstractPaymentOut_Base.INSTANCE_PAYMENT_DOC);
         }
         return new Return();
     }
