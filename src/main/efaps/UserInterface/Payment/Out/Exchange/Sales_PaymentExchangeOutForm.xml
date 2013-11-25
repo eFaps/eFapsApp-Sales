@@ -55,7 +55,7 @@
                 name="Sales_PaymentExchangeOutForm.name.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Status">Open</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4PaymentExchange"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4DocumentSelected"
                 name="Sales_PaymentExchangeOutForm.name.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
                 <property name="Fields">amount</property>
                 <property name="Fields01">contact</property>
