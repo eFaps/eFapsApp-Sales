@@ -36,6 +36,7 @@
             <property name="Attribute">Perception</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" 
                 method="getRadioList4Enum" 
                 name="Sales_Contacts_ClassTaxinfoForm.perception.UI_FIELD_VALUE" 
