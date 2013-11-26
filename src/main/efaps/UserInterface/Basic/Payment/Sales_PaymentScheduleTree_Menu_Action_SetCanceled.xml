@@ -19,32 +19,34 @@
  Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (lun, 16 ago 2010) $
  Last Changed By: $Author: miguel.a.aranya $
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>530e8297-c0a5-4e1d-9519-9e22e2f7cf98</uuid>
+    <uuid>2dd78295-cfae-49b1-ab2b-57e0d91d80cb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5313 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentScheduleTree_Menu_Action_Edit</name>
+        <name>Sales_PaymentScheduleTree_Menu_Action_SetCanceled</name>
 
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_PaymentSchedule</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_PaymentScheduleForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+            <execute program="org.efaps.esjp.admin.datamodel.StatusValue" method="setStatus">
+                <property name="Status">Canceled</property>
+            </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="SD_Sales_OrderOutboundTree_Menu_Action_SetCanceled.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Stati">Open</property>
+            </trigger>
         </target>
         <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 
 </ui-command>

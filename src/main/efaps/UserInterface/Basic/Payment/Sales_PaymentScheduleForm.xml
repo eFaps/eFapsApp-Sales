@@ -46,7 +46,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
         </field>
         <field character="Group" name="createGroup">

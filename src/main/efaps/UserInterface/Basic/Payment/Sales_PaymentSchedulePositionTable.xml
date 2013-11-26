@@ -40,7 +40,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentSchedulePosition/Document.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4ScheduleDoc"
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type0">Sales_IncomingInvoice</property>
@@ -60,7 +60,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <field name="documentDesc">
             <property name="Columns">80</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Attribute">DocumentDesc</property>
             <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
             <property name="Width">8</property>

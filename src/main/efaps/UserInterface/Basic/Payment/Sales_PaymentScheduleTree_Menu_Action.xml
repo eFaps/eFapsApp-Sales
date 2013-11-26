@@ -35,6 +35,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <!-- childs -->
         <childs>
           <child>Sales_PaymentScheduleTree_Menu_Action_Edit</child>
+          <child>Sales_PaymentScheduleTree_Menu_Action_SetCanceled</child>
         </childs>
     </definition>
 </ui-menu>

@@ -151,11 +151,17 @@ public class PaymentSchedule_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentSchedulePosition);
-                final AttributeQuery attrQuery = attrQueryBldr
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentSchedule);
+                attrQueryBldr.addWhereAttrEqValue(CISales.PaymentSchedule.Status,
+                                Status.find(CISales.PaymentScheduleStatus.Canceled));
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentSchedule.ID);
+
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.PaymentSchedulePosition);
+                attrQueryBldr2.addWhereAttrNotInQuery(CISales.PaymentSchedulePosition.PaymentSchedule, attrQuery);
+                final AttributeQuery attrQuery2 = attrQueryBldr2
                                 .getAttributeQuery(CISales.PaymentSchedulePosition.Document);
 
-                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery);
+                _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery2);
             }
         }.execute(_parameter);
     }
