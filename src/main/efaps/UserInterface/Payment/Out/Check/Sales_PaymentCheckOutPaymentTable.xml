@@ -88,6 +88,11 @@
             <property name="Attribute">Amount</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount" name="Sales_PaymentCheckOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
         </field>
+         <field name="paymentDiscount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_Payment.paymentDiscount.Label</property>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentDiscount" name="Sales_PaymentCheckOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
+        </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
