@@ -460,6 +460,13 @@ public abstract class AbstractPaymentDocument_Base
             map.put("payment4Pay", getTwoDigitsformater().format(amount2Pay));
             map.put("paymentAmount", getTwoDigitsformater().format(amount2Pay));
             map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
+            map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
+            if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
+                final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
+                map.put("amount", getTwoDigitsformater().format(getSumsPositions(_parameter)
+                                    .subtract(update).add(amount2Pay)));
+                map.put("total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO));
+            }
             list.add(map);
         }
         final Return retVal = new Return();
@@ -475,13 +482,22 @@ public abstract class AbstractPaymentDocument_Base
         final int selected = getSelectedRow(_parameter);
         final String amountStr = _parameter.getParameterValues("payment4Pay")[selected];
         final String discountStr = _parameter.getParameterValues("paymentDiscount")[selected];
+        final String payAmountStr = _parameter.getParameterValues("paymentAmount")[selected];
 
         final BigDecimal amount = parseBigDecimal(amountStr);
+        final BigDecimal payAmount = parseBigDecimal(payAmountStr);
         final BigDecimal discount = parseBigDecimal(discountStr);
 
         final BigDecimal discAmount = amount.multiply(discount.divide(new BigDecimal(100)))
-                                            .setScale(2, BigDecimal.ROUND_HALF_UP);
+                                                .setScale(2, BigDecimal.ROUND_HALF_UP);
         map.put("paymentAmount", getTwoDigitsformater().format(amount.subtract(discAmount)));
+        BigDecimal total4DiscountPay = getSumsPositions(_parameter).subtract(payAmount).add(amount.subtract(discAmount));
+        if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
+            map.put("amount", getTwoDigitsformater().format(total4DiscountPay));
+        } else {
+            total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(total4DiscountPay);
+        }
+        map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
         list.add(map);
 
         final Return ret = new Return();
@@ -540,12 +556,17 @@ public abstract class AbstractPaymentDocument_Base
 
         final Return retVal = new Return();
         map.put("paymentAmount", getTwoDigitsformater().format(parseBigDecimal(payStr)));
-        map.put("paymentAmountDesc", getTwoDigitsformater().format(parseBigDecimal(amount4PayStr).subtract(payConverted)));
-        map.put("total4DiscountPay", getTwoDigitsformater()
-                        .format(getAmount4Pay(_parameter).abs().subtract(getSumsPositions(_parameter))));
-        if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) != null) {
+        map.put("paymentAmountDesc", getTwoDigitsformater()
+                        .format(parseBigDecimal(amount4PayStr).subtract(payConverted)));
+        map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
+        BigDecimal total4DiscountPay;
+        if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
             map.put("amount", getTwoDigitsformater().format(getSumsPositions(_parameter)));
+            total4DiscountPay = BigDecimal.ZERO;
+        } else {
+            total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(getSumsPositions(_parameter));
         }
+        map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
         list.add(map);
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
