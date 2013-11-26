@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -43,7 +42,7 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.db.Update;
+import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
@@ -162,16 +161,7 @@ public abstract class Reservation_Base
     public Return setStatus(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final Instance instance = _parameter.getInstance();
-        final Update update = new Update(instance);
-        if (properties.containsKey("ReservationStatus")) {
-            update.add(CISales.Reservation.Status, Status.find(CISales.ReservationStatus.uuid,
-                            (String) properties.get("ReservationStatus")).getId());
-        } else {
-            update.add(CISales.Reservation.Status, Status.find(CISales.ReservationStatus.uuid, "Canceled").getId());
-        }
-        update.execute();
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.ReservationPosition);
         queryBldr.addWhereAttrEqValue(CISales.ReservationPosition.Reservation, instance.getId());
@@ -199,7 +189,7 @@ public abstract class Reservation_Base
                 insert.execute();
             }
         }
-        return new Return();
+        return new StatusValue().setStatus(_parameter);
     }
 
     protected List<Instance> getStorageInstances4StatusClosed(final Parameter _parameter,
