@@ -258,13 +258,13 @@ public abstract class AbstractProductDocument_Base
     {
         long ret = 0;
         final Map<String, String[]> param = Context.getThreadContext().getParameters();
-        final String[] storageIds = param.get("storage");
+        final String[] storage = param.get("storage");
 
         final Map<?, ?> map = (Map<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
         final Instance instance = _parameter.getInstance();
 
         // first check for explicitly set warehouses
-        if (storageIds != null) {
+        if (storage != null) {
             final Object[] posObj = (Object[]) map.get(instance.getType().getAttribute(
                             CISales.PositionAbstract.PositionNumber.name));
             final int pos = (Integer) posObj[0];
@@ -277,7 +277,11 @@ public abstract class AbstractProductDocument_Base
                 }
                 i++;
             }
-            ret = Long.valueOf(storageIds[idx]);
+            if (Instance.get(storage[idx]).isValid()) {
+                ret = Instance.get(storage[idx]).getId();
+            } else {
+                ret = Long.valueOf(storage[idx]);
+            }
         } else {
             // check for a warehouse by the inventory
             final Object[] productID = (Object[]) map.get(instance.getType().getAttribute(
