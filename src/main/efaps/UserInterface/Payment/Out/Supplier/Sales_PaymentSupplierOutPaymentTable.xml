@@ -92,6 +92,8 @@
         </field>
         <field name="paymentDiscount">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut" method="updateFields4PaymentDiscount" 
             name="Sales_PaymentSupplierOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>

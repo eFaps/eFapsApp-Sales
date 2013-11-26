@@ -85,6 +85,8 @@
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4PaymentAmount"
