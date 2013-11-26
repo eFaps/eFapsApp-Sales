@@ -87,6 +87,14 @@
                 name="Sales_PaymentExchangePaymentTable.paymentAmount.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.payment.PaymentExchange"/>
         </field>
+        <field name="paymentDiscount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_Payment.paymentDiscount.Label</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchange" method="updateFields4PaymentDiscount" 
+            name="Sales_PaymentExchangePaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>

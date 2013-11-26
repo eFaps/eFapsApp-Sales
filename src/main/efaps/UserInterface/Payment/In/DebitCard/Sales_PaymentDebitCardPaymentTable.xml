@@ -81,6 +81,14 @@
             <property name="Attribute">Amount</property>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4PaymentAmount" name="Sales_PaymentDebitCardPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDebitCard"/>
         </field>
+        <field name="paymentDiscount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_Payment.paymentDiscount.Label</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4PaymentDiscount" 
+                name="Sales_PaymentDebitCardPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>

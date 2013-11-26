@@ -89,6 +89,14 @@
                 method="updateFields4PaymentAmount"
                 name="Sales_PaymentCreditCardPaymentTable.paymentAmount.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCreditCard"/>
         </field>
+        <field name="paymentDiscount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_Payment.paymentDiscount.Label</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="updateFields4PaymentDiscount" 
+                name="Sales_PaymentCreditCardPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
