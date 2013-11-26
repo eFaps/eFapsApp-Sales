@@ -85,12 +85,18 @@
         <!-- different name to prevent collision with parent formular -->
         <field name="paymentAmount">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4PaymentAmount"
                 name="Sales_PaymentCashOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="paymentDiscount">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_Payment.paymentDiscount.Label</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4PaymentDiscount" 
+            name="Sales_PaymentCashOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
