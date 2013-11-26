@@ -38,7 +38,7 @@
         </access>
         <target>
             <execute program="org.efaps.esjp.sales.document.Reservation" method="setStatus">
-                <property name="ReservationStatus">Canceled</property>
+                <property name="Status">Canceled</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
