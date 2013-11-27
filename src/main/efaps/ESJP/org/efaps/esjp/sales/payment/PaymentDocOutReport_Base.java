@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -47,6 +48,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.DateTimeUtil;
@@ -246,6 +249,18 @@ public abstract class PaymentDocOutReport_Base
         report.getJrParameters().put("FromDate", from.toDate());
         report.getJrParameters().put("ToDate", to.toDate());
         report.getJrParameters().put("Mime", mime);
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+                report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
+
         return report.execute(_parameter);
     }
 

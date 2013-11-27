@@ -37,6 +37,12 @@
             <execute program="org.efaps.esjp.sales.payment.PaymentDocReport" method="createDocReport">
                 <property name="JasperReport">Sales_PaymentDocReport</property>
                 <property name="DataSourceClass">org.efaps.esjp.sales.payment.PaymentDocReport</property>
+                <property name="Type">Sales_Invoice</property>
+                <property name="StatusGrp">Sales_InvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGrp01">Sales_ReceiptStatus</property>
+                <property name="Status01">Open</property>
             </execute>
         </target>
         <property name="Target">modal</property>

@@ -21,18 +21,18 @@
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperReport;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -40,18 +40,20 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 
@@ -82,137 +84,137 @@ public abstract class PaymentDocReport_Base
         final DateTime from = DateTimeUtil.normalize(new DateTime(dateFromStr));
         final DateTime to = DateTimeUtil.normalize(new DateTime(dateToStr));
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice.getType());
-        queryBldr.addWhereAttrGreaterValue(CISales.Invoice.Date, from.minusMinutes(1));
-        queryBldr.addWhereAttrLessValue(CISales.Invoice.Date, to.plusDays(1));
-        queryBldr.addWhereAttrEqValue(CISales.Invoice.Status,
-                Status.find(CISales.InvoiceStatus.uuid, "Open").getId());
-        if (contactOid != null && !contactOid.isEmpty() && contactName != null && !contactName.isEmpty()) {
-            queryBldr.addWhereAttrEqValue(CISales.Invoice.Contact, Instance.get(contactOid).getId());
-        }
-        queryBldr.addOrderByAttributeAsc(CISales.Invoice.Date);
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGrp");
+        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
 
-        final SelectBuilder selContactName = new SelectBuilder()
-                        .linkto(CISales.Invoice.Contact).attribute(CIContacts.Contact.Name);
-        final SelectBuilder statusName = new SelectBuilder()
-                        .linkto(CISales.Invoice.Status).attribute(CISales.InvoiceStatus.Key);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.Invoice.Date, CISales.Invoice.Name, CISales.Invoice.RateCurrencyId,
-                        CISales.Invoice.CrossTotal, CISales.Invoice.RateCrossTotal);
-        multi.addSelect(selContactName, statusName);
-        addAttribute4MultiPrintQuery(_parameter, multi);
-        multi.setEnforceSorted(true);
-        multi.execute();
-        while (multi.next()) {
-            final Long rateCurInv = multi.<Long>getAttribute(CISales.Invoice.RateCurrencyId);
-            final SelectBuilder selRatePay = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                            .attribute(CISales.PaymentDocumentAbstract.Rate);
-            final SelectBuilder selRateCurPay = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                            .attribute(CISales.PaymentDocumentAbstract.RateCurrencyLink);
-            final Map<String, Object> map = new HashMap<String, Object>();
-            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Payment);
-            queryBldr2.addWhereAttrEqValue(CISales.Payment.CreateDocument, multi.getCurrentInstance().getId());
-            final MultiPrintQuery multi2 = queryBldr2.getPrint();
-            multi2.addAttribute(CISales.Payment.Amount);
-            multi2.addSelect(selRatePay, selRateCurPay);
-            multi2.execute();
-            final Map<Long, ArrayList<Object[]>> map4Pay = new HashMap<Long, ArrayList<Object[]>>();
-            while (multi2.next()) {
-                final Long rateCurPay = multi2.<Long>getSelect(selRateCurPay);
-                final Object[] rate4Pay = multi2.<Object[]>getSelect(selRatePay);
-                final BigDecimal amount = multi2.<BigDecimal>getAttribute(CISales.Payment.Amount);
-                ArrayList<Object[]> list4Pay = new ArrayList<Object[]>();
-                if (map4Pay.containsKey(rateCurPay)) {
-                    list4Pay = map4Pay.get(rateCurPay);
-                }
-                list4Pay.add(new Object[] { rate4Pay, amount });
-                map4Pay.put(rateCurPay, list4Pay);
+        for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+            final Type type = Type.get(typeEntry.getValue());
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
+            queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
+
+            if (statusGrps.containsKey(typeEntry.getKey())) {
+                final Status stat = Status.find(statusGrps.get(typeEntry.getKey()), status.get(typeEntry.getKey()));
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract, stat);
             }
 
-            final QueryBuilder queryBldr3 = new QueryBuilder(CISales.InvoicePosition);
-            queryBldr3.addWhereAttrEqValue(CISales.InvoicePosition.Invoice, multi.getCurrentInstance().getId());
-            queryBldr3.addOrderByAttributeAsc(CISales.InvoicePosition.PositionNumber);
-            final InstanceQuery queryInst = queryBldr3.getQuery();
-            queryInst.setLimit(1);
-            queryInst.execute();
-            String getPositionStr = null;
-            while (queryInst.next()) {
-                final PrintQuery printPos = new PrintQuery(queryInst.getCurrentValue());
-                printPos.addAttribute(CISales.InvoicePosition.ProductDesc);
-                printPos.execute();
-                final String descPos = printPos.<String>getAttribute(CISales.InvoicePosition.ProductDesc);
-                final String[] arrays = descPos.split("\n");
-                if (arrays.length > 1) {
-                    getPositionStr = arrays[0] + " " + arrays[1];
-                } else {
-                    getPositionStr = descPos.substring(0, descPos.length() > 100 ? 100 : descPos.length());
-                }
+            if (contactOid != null && !contactOid.isEmpty() && contactName != null && !contactName.isEmpty()) {
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, Instance.get(contactOid));
             }
+            queryBldr.addOrderByAttributeAsc(CISales.DocumentSumAbstract.Date);
 
-            BigDecimal acumulatedPay = BigDecimal.ZERO;
-            final BigDecimal rateCrossInv = multi.<BigDecimal>getAttribute(CISales.Invoice.RateCrossTotal);
-            final BigDecimal crossInv = multi.<BigDecimal>getAttribute(CISales.Invoice.CrossTotal);
-            // Sales-Configuration
-            final Instance baseCurrInst = SystemConfiguration.get(
-                            UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
-            if (map4Pay.size() == 1) {
-                for (final Entry<Long, ArrayList<Object[]>> getPay : map4Pay.entrySet()) {
-                    if (!getPay.getKey().equals(baseCurrInst.getId())) {
-                        for (final Object[] iter : getPay.getValue()) {
-                            final BigDecimal amountPay = (BigDecimal) iter[1];
-                            acumulatedPay = acumulatedPay.add(amountPay);
-                        }
-                        map.put("RateCrossTotal", rateCrossInv);
-                        map.put("RatePayment", acumulatedPay);
-                        map.put("RateDiscountPayment", rateCrossInv.subtract(acumulatedPay));
-                    } else {
-                        for (final Object[] iter : getPay.getValue()) {
-                            final Object[] rates = (Object[]) iter[0];
-                            final BigDecimal amountPay = (BigDecimal) iter[1];
-                            final BigDecimal rate = ((BigDecimal) rates[0]).divide((BigDecimal) rates[1], 12,
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.DocumentSumAbstract.Date,
+                            CISales.DocumentSumAbstract.DueDate,
+                            CISales.DocumentSumAbstract.Created,
+                            CISales.DocumentSumAbstract.Name,
+                            CISales.DocumentSumAbstract.RateCurrencyId,
+                            CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.RateCrossTotal,
+                            CISales.DocumentSumAbstract.Rate);
+            final SelectBuilder selContactName = new SelectBuilder()
+                    .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
+            final SelectBuilder statusName = new SelectBuilder()
+                    .linkto(CISales.DocumentSumAbstract.StatusAbstract).attribute(CISales.InvoiceStatus.Key);
+            final SelectBuilder selRateCurInst = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder selDocType = new SelectBuilder()
+                            .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
+                            .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                            .attribute(CISales.ProductDocumentType.Name);
+            multi.addSelect(selContactName, statusName, selRateCurInst, selDocType);
+            addAttribute4MultiPrintQuery(_parameter, multi);
+            multi.setEnforceSorted(true);
+            multi.execute();
+            while (multi.next()) {
+                final Instance rateCurDocInst = multi.<Instance>getSelect(selRateCurInst);
+                final Object[] ratesDoc = multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
+                final Map<String, Object> map = new HashMap<String, Object>();
+
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Payment);
+                queryBldr2.addWhereAttrEqValue(CISales.Payment.CreateDocument, multi.getCurrentInstance());
+                final MultiPrintQuery multi2 = queryBldr2.getPrint();
+                multi2.addAttribute(CISales.Payment.Amount);
+                final SelectBuilder selRatePay = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+                                .attribute(CISales.PaymentDocumentAbstract.Rate);
+                final SelectBuilder selRateCurPayInst = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+                                .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink).instance();
+                multi2.addSelect(selRatePay, selRateCurPayInst);
+                multi2.execute();
+
+                final List<PaymentIn> lstPayDocs = new ArrayList<PaymentIn>();
+                while (multi2.next()) {
+                    final Instance rateCurPayInst = multi2.<Instance>getSelect(selRateCurPayInst);
+                    final Object[] rate4Pay = multi2.<Object[]>getSelect(selRatePay);
+                    final BigDecimal amount = multi2.<BigDecimal>getAttribute(CISales.Payment.Amount);
+
+                    lstPayDocs.add(new PaymentIn(amount, rateCurPayInst, rate4Pay));
+                }
+
+                BigDecimal acumulatedPay = BigDecimal.ZERO;
+                BigDecimal acumulatedRatePay = BigDecimal.ZERO;
+                final BigDecimal rateCrossInv = multi
+                                .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                final BigDecimal crossInv = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                for (final PaymentIn payOut : lstPayDocs) {
+                    if (!rateCurDocInst.equals(payOut.getRateCurrency())) {
+                        if (!rateCurDocInst.equals(baseCurrInst)) {
+                            final Object[] rates = payOut.getRate();
+                            final BigDecimal amountPay = payOut.getAmount();
+                            final BigDecimal rate = ((BigDecimal) rates[1]).divide((BigDecimal) rates[0], 12,
                                             BigDecimal.ROUND_HALF_UP);
-                            acumulatedPay = acumulatedPay.add(amountPay.divide(rate, RoundingMode.HALF_UP).setScale(2,
-                                            BigDecimal.ROUND_HALF_UP));
+                            final BigDecimal anountPayUpd = amountPay.multiply(rate);
+                            acumulatedPay = acumulatedPay.add(anountPayUpd);
+
+                            final BigDecimal rateDoc = ((BigDecimal) ratesDoc[0]).divide((BigDecimal) ratesDoc[1], 12,
+                                            BigDecimal.ROUND_HALF_UP);
+                            acumulatedRatePay.add(anountPayUpd.multiply(rateDoc));
+
+                        } else {
+                            final Object[] rates = payOut.getRate();
+                            final BigDecimal amountPay = payOut.getAmount();
+                            final BigDecimal rate = ((BigDecimal) rates[1]).divide((BigDecimal) rates[0], 12,
+                                            BigDecimal.ROUND_HALF_UP);
+                            acumulatedRatePay = acumulatedRatePay.add(amountPay.multiply(rate));
+                            acumulatedPay = acumulatedPay.add(amountPay.multiply(rate));
                         }
-                        map.put("CrossTotal", crossInv);
-                        map.put("Payment", acumulatedPay);
-                        map.put("DiscountPayment", crossInv.subtract(acumulatedPay));
+                    } else {
+                        if (!rateCurDocInst.equals(baseCurrInst)) {
+                            acumulatedRatePay = acumulatedRatePay.add(payOut.getAmount());
+
+                            final Object[] rates = payOut.getRate();
+                            final BigDecimal amountPay = payOut.getAmount();
+                            final BigDecimal rate = ((BigDecimal) rates[1]).divide((BigDecimal) rates[0], 12,
+                                            BigDecimal.ROUND_HALF_UP);
+                            acumulatedPay = acumulatedPay.add(amountPay.multiply(rate));
+                        } else {
+                            acumulatedPay = acumulatedPay.add(payOut.getAmount());
+                            acumulatedRatePay = acumulatedRatePay.add(payOut.getAmount());
+                        }
                     }
                 }
-            } else if (map4Pay.size() > 1) {
-                for (final Entry<Long, ArrayList<Object[]>> getPay : map4Pay.entrySet()) {
-                    for (final Object[] iter : getPay.getValue()) {
-                        final Object[] rates = (Object[]) iter[0];
-                        final BigDecimal amountPay = (BigDecimal) iter[1];
-                        final BigDecimal rate = ((BigDecimal) rates[0]).divide((BigDecimal) rates[1], 12,
-                                        BigDecimal.ROUND_HALF_UP);
-                        acumulatedPay = acumulatedPay.add(amountPay.divide(rate, RoundingMode.HALF_UP)
-                                        .setScale(2, BigDecimal.ROUND_HALF_UP));
-                    }
-                }
-                map.put("CrossTotal", crossInv);
+                final CurrencyInst curInst = new CurrencyInst(rateCurDocInst);
+                map.put("Currency", curInst.getName());
+                map.put("Rate", curInst.isInvert() ? ratesDoc[1] : ratesDoc[0]);
+                map.put("RateCrossTotal", rateCrossInv);
+                map.put("RatePayment", acumulatedRatePay);
+                map.put("RateDiscountPayment", rateCrossInv.subtract(acumulatedRatePay));
+                /*map.put("CrossTotal", crossInv);
                 map.put("Payment", acumulatedPay);
-                map.put("DiscountPayment", crossInv.subtract(acumulatedPay));
-            } else {
-                if (rateCurInv.equals(baseCurrInst.getId())) {
-                    map.put("CrossTotal", crossInv);
-                    map.put("Payment", acumulatedPay);
-                    map.put("DiscountPayment", crossInv.subtract(acumulatedPay));
-                } else {
-                    map.put("RateCrossTotal", rateCrossInv);
-                    map.put("RatePayment", acumulatedPay);
-                    map.put("RateDiscountPayment", rateCrossInv.subtract(acumulatedPay));
-                }
+                map.put("DiscountPayment", crossInv.subtract(acumulatedPay));*/
+
+                map.put("Id", multi.getCurrentInstance().getId());
+                map.put("DocumentType", multi.<String>getSelect(selDocType));
+                map.put("Date", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
+                map.put("CreateDate", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created));
+                map.put("DueDate", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate));
+                map.put("Name4Doc", multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
+                map.put("ContactName", multi.<String>getSelect(selContactName));
+                addMapDataSource4Report(_parameter, multi, map);
+                getValues().add(map);
             }
-            map.put("Id", multi.getCurrentInstance().getId());
-            map.put("Date", multi.<DateTime>getAttribute(CISales.Invoice.Date));
-            map.put("DueDate", multi.<DateTime>getAttribute(CISales.Invoice.Date));
-            map.put("Name4Doc", multi.<String>getAttribute(CISales.Invoice.Name));
-            map.put("Description", getPositionStr);
-            map.put("ContactName", multi.<String>getSelect(selContactName));
-            map.put("Condition", Status.find(CISales.InvoiceStatus.uuid, multi.<String>getSelect(statusName)).getLabel());
-            addMapDataSource4Report(_parameter, multi, map);
-            getValues().add(map);
         }
     }
 
@@ -247,6 +249,18 @@ public abstract class PaymentDocReport_Base
         report.getJrParameters().put("FromDate", from.toDate());
         report.getJrParameters().put("ToDate", to.toDate());
         report.getJrParameters().put("Mime", mime);
+
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+
+            if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
+                report.getJrParameters().put("CompanyName", companyName);
+                report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
+            }
+        }
+
         return report.execute(_parameter);
     }
 
@@ -258,5 +272,40 @@ public abstract class PaymentDocReport_Base
         return DBProperties.getProperty("Sales_PaymentDocReport.Label", "es")
                         + "-" + _from.toString(DateTimeFormat.shortDate())
                         + "-" + _to.toString(DateTimeFormat.shortDate());
+    }
+
+    public class PaymentIn {
+        private final BigDecimal amount;
+        private final Instance rateCurrency;
+        private final Object[] rate;
+
+        public PaymentIn(final BigDecimal _amount,
+                         final Instance _rateCurrency,
+                         final Object[] _rate) {
+            this.amount = _amount;
+            this.rateCurrency = _rateCurrency;
+            this.rate = _rate;
+        }
+        /**
+         * @return the amount
+         */
+        private BigDecimal getAmount()
+        {
+            return amount;
+        }
+        /**
+         * @return the rateCurrency
+         */
+        private Instance getRateCurrency()
+        {
+            return rateCurrency;
+        }
+        /**
+         * @return the rate
+         */
+        private Object[] getRate()
+        {
+            return rate;
+        }
     }
 }
