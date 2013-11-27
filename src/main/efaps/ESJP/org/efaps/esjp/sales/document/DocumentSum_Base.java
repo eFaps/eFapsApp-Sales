@@ -254,6 +254,26 @@ public abstract class DocumentSum_Base
     }
 
     /**
+     * Method to connect the document with the selected derived document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc CreatedDoc
+     * @throws EFapsException
+     */
+    protected void connect2DerivatedDocument(final Parameter _parameter,
+                                             final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Instance derived = Instance.get(_parameter.getParameterValue("derived"));
+        if (derived.isValid() && _createdDoc.getInstance().isValid()) {
+            final Insert relInsert = new Insert(CISales.Document2DerivativeDocument);
+            relInsert.add(CISales.Document2DerivativeDocument.From, derived);
+            relInsert.add(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance());
+            relInsert.execute();
+        }
+    }
+
+    /**
      * Method is executed as an update event of the field containing the
      * quantity of products to calculate the new totals.
      *

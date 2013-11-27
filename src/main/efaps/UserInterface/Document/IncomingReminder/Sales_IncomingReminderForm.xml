@@ -141,6 +141,15 @@
             <property name="Attribute">Revision</property>
             <property name="ModeEdit">NONE</property>
         </field>
+        <field name="derived">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_IncomingReminderForm.derived.Label</property>
+        </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingReminderForm.headingClient.Heading</property>

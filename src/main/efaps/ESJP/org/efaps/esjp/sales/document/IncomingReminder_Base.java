@@ -65,6 +65,7 @@ public abstract class IncomingReminder_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
+        connect2DerivatedDocument(_parameter, createdDoc);
         return new Return();
     }
 
