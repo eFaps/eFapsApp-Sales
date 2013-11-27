@@ -49,6 +49,9 @@
                 <property name="Type04">Sales_IncomingExchange</property>
                 <property name="StatusGrp04">Sales_IncomingExchangeStatus</property>
                 <property name="Status04">Open</property>
+                <property name="Type05">Sales_IncomingCredit</property>
+                <property name="StatusGrp05">Sales_IncomingCreditStatus</property>
+                <property name="Status05">Open</property>
             </execute>
         </target>
         <property name="Target">modal</property>

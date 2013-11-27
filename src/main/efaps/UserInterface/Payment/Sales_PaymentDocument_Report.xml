@@ -49,6 +49,9 @@
                 <property name="Type03">Sales_CollectionOrder</property>
                 <property name="StatusGrp03">Sales_CollectionOrderStatus</property>
                 <property name="Status03">Open</property>
+                <property name="Type04">Sales_Credit</property>
+                <property name="StatusGrp04">Sales_CreditStatus</property>
+                <property name="Status04">Open</property>
             </execute>
         </target>
         <property name="Target">modal</property>
