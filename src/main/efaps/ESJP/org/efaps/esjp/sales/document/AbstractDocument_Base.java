@@ -1447,9 +1447,9 @@ public abstract class AbstractDocument_Base
             }
 
             if (properties.containsKey("InStock")) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Inventory);
                 final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CISales.Products_VirtualInventoryStock.Product);
+                                .getAttributeQuery(CIProducts.Inventory.Product);
                 queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
             }
 

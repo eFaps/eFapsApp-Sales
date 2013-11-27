@@ -21,9 +21,6 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
@@ -31,16 +28,16 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
-import org.efaps.esjp.ci.CISales;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -85,80 +82,37 @@ public abstract class GoodsIssueSlip_Base
         return new Return();
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public Return autoComplete4Product(final Parameter _parameter)
+    protected void add2JavaScript4ProductAutoComplete(final Parameter _parameter,
+                                                      final Map<String, String> _map)
         throws EFapsException
     {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        if (input.length() > 0) {
-            final boolean nameSearch = Character.isDigit(input.charAt(0));
+        final Instance prodInst = Instance.get(_map.get(EFapsKey.AUTOCOMPLETE_KEY.getKey()));
+        final Map<String, Long> storagemap = new TreeMap<String, Long>();
+        if (prodInst.isValid()) {
+            final PrintQuery print = new PrintQuery(prodInst);
+            print.addAttribute(CIProducts.ProductAbstract.SalesUnit);
+            print.execute();
+            final BigDecimal salesUnit = print.<BigDecimal>getAttribute(CIProducts.ProductAbstract.SalesUnit);
 
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_VirtualInventoryStock);
-            if (nameSearch) {
-                queryBldr.addWhereAttrMatchValue(CISales.Products_VirtualInventoryStock.ProductName, input + "*");
-            } else {
-                queryBldr.addWhereAttrMatchValue(CISales.Products_VirtualInventoryStock.ProductDescription,
-                                input + "*").setIgnoreCase(true);
-            }
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, prodInst);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.Products_VirtualInventoryStock.OID);
+            final SelectBuilder selStorageInst = new SelectBuilder()
+                        .linkto(CIProducts.Inventory.Storage).instance();
+            final SelectBuilder selStorageName = new SelectBuilder()
+                        .linkto(CIProducts.Inventory.Storage).attribute(CIProducts.StorageAbstract.Name);
+            multi.addSelect(selStorageInst, selStorageName);
             multi.execute();
-            final List<Instance> instances = new ArrayList<Instance>();
             while (multi.next()) {
-                instances.add(Instance.get(multi.<String>getAttribute(CISales.Products_VirtualInventoryStock.OID)));
+                storagemap.put(print.<String>getSelect(selStorageName),
+                                print.<Instance>getSelect(selStorageInst).getId());
             }
-            if (instances.size() > 0) {
-                final MultiPrintQuery print = new MultiPrintQuery(instances);
-                print.addAttribute("ProductName", "ProductDescription");
-                print.addSelect("linkto[Product].oid");
-                print.addSelect("linkto[Product].attribute[SalesUnit]");
-                print.addSelect("linkto[Product].attribute[Dimension]");
-                print.addSelect("linkto[Storage].id");
-                print.addSelect("linkto[Storage].attribute[Name]");
-                print.execute();
-
-                final Map<String, Map<String, String>> oid2value = new HashMap<String, Map<String, String>>();
-                final Map<String, Map<String, Long>> oid2Storage = new HashMap<String, Map<String, Long>>();
-                while (print.next()) {
-                    final String name = print.<String>getAttribute("ProductName");
-                    final String desc = print.<String>getAttribute("ProductDescription");
-                    final String oid = print.<String>getSelect("linkto[Product].oid");
-                    final BigDecimal salesUnit = print.<BigDecimal>getSelect("linkto[Product].attribute[SalesUnit]");
-
-                    if (oid2value.containsKey(oid)) {
-                        final Map<String, Long> storagemap = oid2Storage.get(oid);
-                        storagemap.put(print.<String>getSelect("linkto[Storage].attribute[Name]"),
-                                        print.<Long>getSelect("linkto[Storage].id"));
-                        final Map<String, String> map = oid2value.get(oid);
-                        map.put("storage", getStorageFieldStr(storagemap));
-                    } else {
-                        final Map<String, String> map = new HashMap<String, String>();
-                        oid2value.put(oid, map);
-                        final Map<String, Long> storagemap = new TreeMap<String, Long>();
-                        storagemap.put(print.<String>getSelect("linkto[Storage].attribute[Name]"),
-                                        print.<Long>getSelect("linkto[Storage].id"));
-                        oid2Storage.put(oid, storagemap);
-                        map.put("eFapsAutoCompleteKEY", oid);
-                        map.put("eFapsAutoCompleteVALUE", name);
-                        map.put("eFapsAutoCompleteCHOICE", nameSearch ? name + " - " + desc : desc + " - " + name);
-                        map.put("salesUnit", salesUnit.toString());
-                        map.put("salesUnitRO", salesUnit.toString());
-                        map.put("salesUnitPagackes", "1");
-                        map.put("uoM", getUoMFieldStr(print.<Long>getSelect("linkto[Product].attribute[Dimension]")));
-                        map.put("productDesc", desc);
-                        map.put("storage", getStorageFieldStr(storagemap));
-                        list.add(map);
-                    }
-                }
-            }
+            _map.put("salesUnit", salesUnit.toString());
+            _map.put("salesUnitRO", salesUnit.toString());
+            _map.put("salesUnitPagackes", "1");
+            _map.put("storage", getStorageFieldStr(storagemap));
         }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
     }
 
     /**
