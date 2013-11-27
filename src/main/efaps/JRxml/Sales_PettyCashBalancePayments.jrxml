@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 5.0.4-->
+<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalancePayments" language="groovy" pageWidth="742" pageHeight="595" orientation="Landscape" columnWidth="699" leftMargin="7" rightMargin="36" topMargin="0" bottomMargin="20" uuid="ec1a5467-1e04-4edf-99fa-8337ee3277ea">
 	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
@@ -188,6 +188,7 @@ Documento]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="87f8a67e-8f57-4a20-beaa-06f581cee164" stretchType="RelativeToTallestObject" x="534" y="0" width="165" height="16"/>
+				<box leftPadding="2"/>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
 			</textField>

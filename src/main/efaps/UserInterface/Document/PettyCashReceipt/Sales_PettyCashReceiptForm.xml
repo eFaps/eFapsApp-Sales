@@ -106,7 +106,13 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeEdit">READONLY</property>
         </field>
-
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+            <property name="Required">true</property>
+        </field>
         <field name="targetPayments" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_CashDeskBalanceForm.targetPayments.Heading</property>

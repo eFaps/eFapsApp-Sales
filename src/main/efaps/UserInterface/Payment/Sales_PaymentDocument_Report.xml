@@ -43,6 +43,12 @@
                 <property name="Type01">Sales_Receipt</property>
                 <property name="StatusGrp01">Sales_ReceiptStatus</property>
                 <property name="Status01">Open</property>
+                <property name="Type02">Sales_Exchange</property>
+                <property name="StatusGrp02">Sales_ExchangeStatus</property>
+                <property name="Status02">Open</property>
+                <property name="Type03">Sales_CollectionOrder</property>
+                <property name="StatusGrp03">Sales_CollectionOrderStatus</property>
+                <property name="Status03">Open</property>
             </execute>
         </target>
         <property name="Target">modal</property>
