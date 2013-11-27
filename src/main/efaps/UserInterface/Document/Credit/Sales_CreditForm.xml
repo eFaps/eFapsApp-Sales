@@ -208,7 +208,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="payroll" />
+            <profile name="humanresource" />
         </profiles>
         <name>Sales_CreditForm</name>
         <field character="Group" name="dateGroup">
