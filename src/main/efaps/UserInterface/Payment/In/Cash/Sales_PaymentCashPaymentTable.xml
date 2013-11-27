@@ -69,6 +69,13 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentCashPaymentTable.createDocumentDesc.Label</property>
         </field>
+        <field name="paymentRate">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Attribute">Rate</property>
+            <property name="Label">Sales_Payment/Rate.Label</property>
+        </field>
         <field name="payment4Pay">
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
