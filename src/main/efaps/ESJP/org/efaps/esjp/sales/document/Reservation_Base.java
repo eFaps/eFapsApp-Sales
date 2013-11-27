@@ -47,6 +47,8 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -219,6 +221,7 @@ public abstract class Reservation_Base
     {
         final Return retVal = new Return();
         final DecimalFormat formater = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+        final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
 
@@ -227,13 +230,15 @@ public abstract class Reservation_Base
         final Instance instProd = Instance.get(oid);
         // validate that a product was selected
         if (instProd.isValid()) {
-
-            final QueryBuilder storeBldr = new QueryBuilder(CIProducts.Warehouse);
-            final AttributeQuery storequery = storeBldr.getAttributeQuery(CIProducts.Warehouse.ID);
-
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
             queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, instProd);
-            queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, storequery);
+            if (defaultStorageInst.isValid()) {
+                queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, defaultStorageInst);
+            } else {
+                final QueryBuilder storeBldr = new QueryBuilder(CIProducts.Warehouse);
+                final AttributeQuery storequery = storeBldr.getAttributeQuery(CIProducts.Warehouse.ID);
+                queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, storequery);
+            }
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.Inventory.Quantity);
             multi.execute();
