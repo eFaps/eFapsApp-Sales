@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version last-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalancePayments" language="groovy" pageWidth="742" pageHeight="595" orientation="Landscape" columnWidth="699" leftMargin="7" rightMargin="36" topMargin="0" bottomMargin="20" uuid="ec1a5467-1e04-4edf-99fa-8337ee3277ea">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalancePayments" language="groovy" pageWidth="802" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ec1a5467-1e04-4edf-99fa-8337ee3277ea">
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
 	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
 		<property name="UUID" value="509d1439-c981-4de4-821f-cd5a5fe8d170"/>
@@ -124,7 +125,9 @@ Documento]]></text>
 				<text><![CDATA[NUM.]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="e1557b03-00e5-433e-b40d-cb4e5e517d16" mode="Opaque" x="534" y="0" width="165" height="26" backcolor="#CCCCCC"/>
+				<reportElement uuid="e1557b03-00e5-433e-b40d-cb4e5e517d16" mode="Opaque" x="534" y="0" width="268" height="26" backcolor="#CCCCCC">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
 				<box>
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -187,8 +190,9 @@ Documento]]></text>
 				<textFieldExpression><![CDATA[$F{createDocument}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="87f8a67e-8f57-4a20-beaa-06f581cee164" stretchType="RelativeToTallestObject" x="534" y="0" width="165" height="16"/>
-				<box leftPadding="2"/>
+				<reportElement uuid="87f8a67e-8f57-4a20-beaa-06f581cee164" stretchType="RelativeToTallestObject" x="534" y="0" width="268" height="16">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
 				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
 			</textField>

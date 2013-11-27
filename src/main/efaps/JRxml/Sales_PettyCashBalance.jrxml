@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b130e51-4c5e-4653-af16-9ee7ebe3850d">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -12,7 +13,7 @@
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
 	<parameter name="AccName" class="java.lang.String"/>
 	<parameter name="AmountPettyCash" class="java.math.BigDecimal"/>
-    <parameter name="CompanyName" class="java.lang.String"/>
+	<parameter name="CompanyName" class="java.lang.String"/>
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
 	</field>
@@ -20,25 +21,28 @@
 		<property name="Select" value="attribute[Date]"/>
 	</field>
 	<pageHeader>
-		<band height="108" splitType="Stretch">
+		<band height="81" splitType="Stretch">
 			<textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="7d043355-4b0a-430c-b4b1-9acaf7869ea5" x="443" y="53" width="141" height="14"/>
-				<textElement textAlignment="Justified">
-					<font size="12"/>
+				<reportElement uuid="7d043355-4b0a-430c-b4b1-9acaf7869ea5" x="730" y="57" width="72" height="14"/>
+				<textElement textAlignment="Right">
+					<font size="10"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement uuid="61e4d7db-b898-4559-af08-e018371af498" x="390" y="53" width="53" height="14"/>
+				<reportElement uuid="61e4d7db-b898-4559-af08-e018371af498" x="690" y="57" width="40" height="14"/>
 				<textElement>
-					<font size="12" isBold="true"/>
+					<font size="10" isBold="false"/>
 				</textElement>
 				<text><![CDATA[Fecha:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d283214b-9348-4e6f-ba65-b161ca1791b2" x="0" y="53" width="164" height="14"/>
-				<textElement>
-					<font size="11" isBold="true"/>
+				<reportElement uuid="d283214b-9348-4e6f-ba65-b161ca1791b2" x="275" y="30" width="260" height="27">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="16" isBold="true"/>
 				</textElement>
 				<text><![CDATA[LIQUIDACIÓN CAJA CHICA]]></text>
 			</staticText>
@@ -51,7 +55,7 @@
 			</textField>
 			<staticText>
 				<reportElement uuid="a167b8a1-e5f2-41d0-a8f3-c1e4a7070ac0" x="0" y="0" width="91" height="14">
-                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
 				</reportElement>
 				<textElement>
 					<font size="11" isBold="true"/>
