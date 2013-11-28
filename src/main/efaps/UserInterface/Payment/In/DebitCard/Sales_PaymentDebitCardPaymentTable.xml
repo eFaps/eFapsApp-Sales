@@ -74,6 +74,8 @@
             <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4PaymentRate" 
+                name="Sales_PaymentDebitCardPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
             <property name="ModeEdit">NONE</property>
