@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2012 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev: 10128 $
+ Last Changed:    $Date: 2013-08-27 17:57:59 -0500 (mar, 27 ago 2013) $
+ Last Changed By: $Author: jorge.cueva@moxter.net $
+
+--><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>69cca6e4-7dfa-43ac-9856-2dddd4daba63</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 10128 $</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountPettyCashBalancingPaymentTable</name>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_Payment/Date.Label</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK:2:3</property>
+        </field>
+        <field name="createDocument">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Phrase">$&lt;linkto[CreateDocument].type.label&gt; - $&lt;linkto[CreateDocument].attribute[Name]&gt;</property>
+            <property name="Label">Sales_Payment/CreateDocument.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+         <field name="targetDocument">
+            <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
+            <property name="Phrase">$&lt;linkto[TargetDocument].type.label&gt; - $&lt;linkto[TargetDocument].attribute[Name]&gt;</property>
+            <property name="Label">Sales_Payment/TargetDocument.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="amount">
+            <property name="Phrase">$&lt;linkto[CreateDocument].attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_Payment/Amount.Label</property>
+        </field>
+        <field name="contact">
+            <property name="Select">linkto[CreateDocument].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_AccountPettyCashReceiptForm.contact.Label</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
+</ui-table>
