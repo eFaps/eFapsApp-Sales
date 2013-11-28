@@ -824,10 +824,10 @@ public abstract class Account_Base
         insert.add(CISales.PettyCashReceipt.Date, date);
         insert.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.uuid, "Closed").getId());
         insert.add(CISales.PettyCashReceipt.CrossTotal, crossTotalStr);
-        insert.add(CISales.PettyCashReceipt.NetTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.NetTotal, crossTotalStr);
         insert.add(CISales.PettyCashReceipt.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.RateCrossTotal, BigDecimal.ZERO);
-        insert.add(CISales.PettyCashReceipt.RateNetTotal, BigDecimal.ZERO);
+        insert.add(CISales.PettyCashReceipt.RateCrossTotal, crossTotalStr);
+        insert.add(CISales.PettyCashReceipt.RateNetTotal, crossTotalStr);
         insert.add(CISales.PettyCashReceipt.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.PettyCashReceipt.Rate, new Object[]{ 1, 1 });
         insert.add(CISales.PettyCashReceipt.RateCurrencyId, curId);
