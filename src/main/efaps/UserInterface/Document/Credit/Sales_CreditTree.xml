@@ -42,4 +42,26 @@
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
+    
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Archives"/>
+        </application-dependencies>
+        <name>Sales_CreditTree</name>
+        <!-- targets -->
+        <target>
+            <menu>Sales_CreditTree_Menu</menu>
+            <form>Sales_CreditForm</form>
+        </target>
+        <!-- type tree for -->
+        <type>Sales_Credit</type>
+        <childs>
+            <child>Sales_CreditTree_File</child>
+            <child>Sales_DocumentAbstractTree_Doc</child>
+        </childs>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
