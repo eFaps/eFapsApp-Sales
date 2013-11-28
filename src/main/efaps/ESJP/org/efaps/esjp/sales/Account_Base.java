@@ -833,6 +833,7 @@ public abstract class Account_Base
         insert.add(CISales.PettyCashReceipt.RateCurrencyId, curId);
         insert.add(CISales.PettyCashReceipt.CurrencyId, curId);
         insert.add(CISales.PettyCashReceipt.Contact, contact.length() > 0 ? Instance.get(contact).getId() : null);
+        insert.add(CISales.PettyCashReceipt.Note, note);
         insert.execute();
 
         final Instance receiptInst = insert.getInstance();
