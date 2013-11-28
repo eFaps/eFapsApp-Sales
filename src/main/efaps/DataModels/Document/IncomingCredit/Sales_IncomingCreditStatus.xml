@@ -35,5 +35,8 @@
         <status key="Closed">
             <description>IncomingCredit is closed</description>
         </status>
+        <status key="Canceled">
+            <description>IncomingCredit was canceled.</description>
+        </status>
     </definition>
 </datamodel-statusgroup>
