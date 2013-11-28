@@ -52,15 +52,18 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument"
                 name="Sales_PaymentExchangePaymentTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.payment.PaymentExchange">
-                <property name="Type0">Sales_Invoice</property>
-                <property name="StatusGroup0">Sales_InvoiceStatus</property>
-                <property name="Stati0">Open</property>
-                <property name="Type1">Sales_Receipt</property>
-                <property name="StatusGroup1">Sales_ReceiptStatus</property>
-                <property name="Stati1">Open</property>
-                <property name="Type2">Sales_CollectionOrder</property>
-                <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
-                <property name="Stati2">Approved</property>
+                <property name="Type">Sales_Invoice</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Sales_CollectionOrder</property>
+                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
+                <property name="Status02">Approved</property>
+                <property name="Type03">Sales_Credit</property>
+                <property name="StatusGroup03">Sales_CreditStatus</property>
+                <property name="Status03">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument"
                 name="Sales_PaymentExchangePaymentTable.product.UI_FIELD_UPDATE"
