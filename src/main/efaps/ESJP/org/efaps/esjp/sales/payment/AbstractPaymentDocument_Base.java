@@ -264,6 +264,7 @@ public abstract class AbstractPaymentDocument_Base
                 final Instance inst = Instance.get(createDocument[i]);
                 if (inst.isValid()) {
                     payInsert.add(CISales.Payment.CreateDocument, inst.getId());
+                    payInsert.add(CISales.Payment.RateCurrencyLink, new DocumentInfo(inst).getRateCurrency());
                 }
             }
             if (paymentAmount.length > i && paymentAmount[i] != null) {
@@ -271,12 +272,9 @@ public abstract class AbstractPaymentDocument_Base
                 transIns.add(CISales.TransactionAbstract.Amount, paymentAmount[i]);
             }
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
-            payInsert.add(CISales.Payment.RateCurrencyLink,
-                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
             payInsert.add(CISales.Payment.CurrencyLink,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.CurrencyLink.name)));
+                                            CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
             payInsert.add(CISales.Payment.Date,
                             _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
                                             CISales.PaymentDocumentAbstract.Date.name)));
@@ -473,8 +471,18 @@ public abstract class AbstractPaymentDocument_Base
             map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
             map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
             map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
-            map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getDocRate()[1]));
-
+            if (!docInfo.getRateCurrency().equals(accInfo.getCurrency())
+                            && docInfo.getRateCurrency().equals(docInfo.getCurrencyBase())) {
+                map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getOptionalRate()[1]));
+            } else {
+                if (!docInfo.getRateCurrency().equals(accInfo.getCurrency())) {
+                    map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getDocRate()[1]));
+                } else {
+                    map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(BigDecimal.ONE));
+                }
+            }
+            map.put("paymentRate" + RateUI.INVERTEDSUFFIX,
+                            "" + (docInfo.getCurrencyInst().isInvert()));
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
             final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
@@ -487,6 +495,55 @@ public abstract class AbstractPaymentDocument_Base
             list.add(map);
         }
 
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    public Return updateFields4PaymentRate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+        final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
+        final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
+                        _parameter.getParameterValue("account"));
+        if (docInstance.isValid() && accInstance.isValid()) {
+            final String amount4PayStr = _parameter.getParameterValues("payment4Pay")[selected];
+            final Object[] rateObj = getRateObject(_parameter, "paymentRate", selected);
+            final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                            BigDecimal.ROUND_HALF_UP);
+
+            final AccountInfo accInfo = new AccountInfo(accInstance);
+            final DocumentInfo docInfo = new DocumentInfo(docInstance);
+            docInfo.setAccountInfo(accInfo);
+            final BigDecimal total4Doc = docInfo.getRateCrossTotal();
+            final BigDecimal payments4Doc = docInfo.getRateTotalPayments();
+            final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
+
+            BigDecimal newAmount4PayDoc = amount4PayDoc;
+            if (!accInfo.getCurrency().equals(docInfo.getRateCurrency())
+                            && (docInfo.getCurrencyBase().equals(docInfo.getRateCurrency())
+                                            || !docInfo.getCurrencyBase().equals(docInfo.getRateCurrency()))) {
+                newAmount4PayDoc = amount4PayDoc.divide(rate, 2, BigDecimal.ROUND_HALF_UP);
+            }
+
+            map.put("payment4Pay", getTwoDigitsformater().format(newAmount4PayDoc));
+            map.put("paymentAmount", getTwoDigitsformater().format(newAmount4PayDoc));
+            map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
+            map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
+            BigDecimal total4DiscountPay = BigDecimal.ZERO;
+            final BigDecimal newAmount = getSumsPositions(_parameter).subtract(parseBigDecimal(amount4PayStr));
+            if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
+                map.put("amount", getTwoDigitsformater().format(newAmount.add(newAmount4PayDoc)));
+            } else {
+                total4DiscountPay = getAmount4Pay(_parameter).abs()
+                                                .subtract(getSumsPositions(_parameter)).add(newAmount4PayDoc);
+            }
+            map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
+            list.add(map);
+        }
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -509,11 +566,14 @@ public abstract class AbstractPaymentDocument_Base
         final BigDecimal discAmount = amount.multiply(discount.divide(new BigDecimal(100)))
                                                 .setScale(2, BigDecimal.ROUND_HALF_UP);
         map.put("paymentAmount", getTwoDigitsformater().format(amount.subtract(discAmount)));
-        BigDecimal total4DiscountPay = getSumsPositions(_parameter).subtract(payAmount).add(amount.subtract(discAmount));
+        map.put("paymentAmountDesc", getTwoDigitsformater().format(amount.subtract(amount.subtract(discAmount))));
+        final BigDecimal recalculatePos = getSumsPositions(_parameter)
+                                                    .subtract(payAmount).add(amount.subtract(discAmount));
+        BigDecimal total4DiscountPay = BigDecimal.ZERO;
         if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-            map.put("amount", getTwoDigitsformater().format(total4DiscountPay));
+            map.put("amount", getTwoDigitsformater().format(recalculatePos));
         } else {
-            total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(total4DiscountPay);
+            total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(recalculatePos);
         }
         map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
         list.add(map);
@@ -547,26 +607,15 @@ public abstract class AbstractPaymentDocument_Base
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
                                                         _parameter.getParameterValue("account"));
-
-        final Return retVal = new Return();
         if (docInstance.isValid() && accInstance.isValid()) {
-            final AccountInfo accInfo = new AccountInfo(accInstance);
-            final DocumentInfo docInfo = new DocumentInfo(docInstance);
-            docInfo.setAccountInfo(accInfo);
-            docInfo.setRateOptional(getRateObject(_parameter));
-
             final String payStr = _parameter.getParameterValues("paymentAmount")[selected];
             final String amount4PayStr = _parameter.getParameterValues("payment4Pay")[selected];
-            final String payRate = _parameter.getParameterValues("paymentRate")[selected];
 
-            BigDecimal payConverted = parseBigDecimal(payStr);
-            if (!accInfo.getCurrency().equals(docInfo.getRateCurrency())) {
-                payConverted = payConverted.multiply(parseBigDecimal(payRate));
-            }
+            final BigDecimal pay = parseBigDecimal(payStr);
+            final BigDecimal amount4PayTotal = parseBigDecimal(amount4PayStr);
 
-            map.put("paymentAmount", getTwoDigitsformater().format(parseBigDecimal(payStr)));
-            map.put("paymentAmountDesc", getTwoDigitsformater()
-                            .format(parseBigDecimal(amount4PayStr).subtract(payConverted)));
+            map.put("paymentAmount", getTwoDigitsformater().format(pay));
+            map.put("paymentAmountDesc", getTwoDigitsformater().format(amount4PayTotal.subtract(pay)));
             map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
             BigDecimal total4DiscountPay = BigDecimal.ZERO;
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
@@ -577,59 +626,7 @@ public abstract class AbstractPaymentDocument_Base
             map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
             list.add(map);
         }
-        retVal.put(ReturnValues.VALUES, list);
-
-        return retVal;
-    }
-
-    public Return updateFields4PaymentAmountBackup(final Parameter _parameter)
-        throws EFapsException
-    {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
-        final int selected = getSelectedRow(_parameter);
-        final String docStr = _parameter.getParameterValues("createDocument")[selected];
-        final String payStr = _parameter.getParameterValues("paymentAmount")[selected];
-        final String amount4PayStr = _parameter.getParameterValues("payment4Pay")[selected];
-        final String account = _parameter.getParameterValue("account");
-        final PrintQuery printAccount = new PrintQuery(Instance.get(CISales.AccountCashDesk.getType(), account));
-        final SelectBuilder selCurInst = new SelectBuilder().linkto(CISales.AccountAbstract.CurrencyLink).instance();
-        printAccount.addSelect(selCurInst);
-        printAccount.execute();
-        final Instance currencyAccount = printAccount.<Instance>getSelect(selCurInst);
-
-        BigDecimal payConverted = parseBigDecimal(payStr);
-        final Instance instanceDoc = Instance.get(docStr);
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, instanceDoc.getId());
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selCurrencyInst = new SelectBuilder()
-                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-        multi.addSelect(selCurrencyInst);
-        multi.execute();
-        if (multi.next()) {
-            final Instance currencyDocSelected = multi.<Instance>getSelect(selCurrencyInst);
-            if (!currencyDocSelected.equals(currencyAccount)) {
-                final Instance baseInstDoc = Instance.get(CIERP.Currency.getType(), currencyAccount.getId());
-                final BigDecimal[] rates = new PriceUtil().getRates(_parameter, currencyDocSelected, baseInstDoc);
-                payConverted = payConverted.multiply(rates[2]);
-            }
-        }
-
         final Return retVal = new Return();
-        map.put("paymentAmount", getTwoDigitsformater().format(parseBigDecimal(payStr)));
-        map.put("paymentAmountDesc", getTwoDigitsformater()
-                        .format(parseBigDecimal(amount4PayStr).subtract(payConverted)));
-        map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
-        BigDecimal total4DiscountPay;
-        if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-            map.put("amount", getTwoDigitsformater().format(getSumsPositions(_parameter)));
-            total4DiscountPay = BigDecimal.ZERO;
-        } else {
-            total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(getSumsPositions(_parameter));
-        }
-        map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
-        list.add(map);
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
@@ -1388,6 +1385,11 @@ public abstract class AbstractPaymentDocument_Base
         {
             return this.currency;
         }
+
+        protected CurrencyInst getCurrencyInst()
+        {
+            return new CurrencyInst(this.currency);
+        }
     }
 
     public class DocumentInfo
@@ -1462,6 +1464,11 @@ public abstract class AbstractPaymentDocument_Base
             return this.symbol;
         }
 
+        protected CurrencyInst getCurrencyInst()
+        {
+            return new CurrencyInst(this.rateCurrency);
+        }
+
         protected BigDecimal getCrossTotal()
         {
             BigDecimal ret = this.rateCrossTotal;
@@ -1513,28 +1520,20 @@ public abstract class AbstractPaymentDocument_Base
             if (this.instance.isValid()) {
                 final SelectBuilder selPayCurInst = new SelectBuilder()
                                 .linkto(CISales.Payment.CurrencyLink).instance();
-                final SelectBuilder selTargetRate = new SelectBuilder()
-                                .linkto(CISales.Payment.TargetDocument).attribute(
-                                                CISales.PaymentDocumentIOAbstract.Rate);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                 queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, this.instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.Payment.Amount, CISales.Payment.Date);
-                multi.addSelect(selPayCurInst, selTargetRate);
+                multi.addSelect(selPayCurInst);
+                multi.addAttribute(CISales.Payment.Rate);
                 multi.execute();
                 while (multi.next()) {
-                    final Object[] rate = multi.<Object[]>getSelect(selTargetRate);
-                    BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
-                    if (!this.rateCurrency.equals(multi.getSelect(selPayCurInst))) {
-                        if (this.curBase.equals(multi.getSelect(selPayCurInst))) {
-                            amount = amount.divide((BigDecimal) this.rate[1], BigDecimal.ROUND_HALF_UP)
-                                            .setScale(2, BigDecimal.ROUND_HALF_UP);
-                        } else {
-                            amount = amount.multiply((BigDecimal) rate[1]).setScale(2, BigDecimal.ROUND_HALF_UP);
-                        }
-                    }
-                    ret = ret.add(amount);
+                    final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
+                    final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
+                    final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                                    BigDecimal.ROUND_HALF_UP);
+                    ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
             }
             return ret;
@@ -1543,6 +1542,11 @@ public abstract class AbstractPaymentDocument_Base
         protected Object[] getDocRate()
         {
             return this.rate;
+        }
+
+        protected Object[] getOptionalRate()
+        {
+            return this.rateOptional;
         }
 
         protected String getInfoOriginal()
