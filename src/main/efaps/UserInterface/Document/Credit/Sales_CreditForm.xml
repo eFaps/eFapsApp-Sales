@@ -25,9 +25,6 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps" />
-        </profiles>
         <name>Sales_CreditForm</name>
         <field character="Group" name="dateGroup">
             <property name="GroupCount">2</property>
@@ -202,14 +199,13 @@
             <property name="Label">Sales_Credit/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-       
     </definition>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="humanresource" />
-        </profiles>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
         <name>Sales_CreditForm</name>
         <field character="Group" name="dateGroup">
             <property name="GroupCount">2</property>
