@@ -48,6 +48,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.ci.CIAttribute;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Checkin;
@@ -83,6 +84,8 @@ import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -96,6 +99,10 @@ import org.joda.time.format.DateTimeFormat;
 public abstract class AbstractPaymentDocument_Base
     extends CommonDocument
 {
+    /**
+     * Logger for this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(MultiPrint.class);
 
     public static final String INVOICE_SESSIONKEY = "eFaps_Selected_Sales_Invoice";
 
@@ -343,78 +350,94 @@ public abstract class AbstractPaymentDocument_Base
                         AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
 
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGroup");
+        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
 
-        for (int i = 0; i < 100; i++) {
-            if (props.containsKey("Type" + i)) {
-                final Map<Integer, Map<String, String>> tmpMap = new TreeMap<Integer, Map<String, String>>();
-                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
-                if (type != null) {
-                    final QueryBuilder queryBldr = new QueryBuilder(type);
-                    queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
-                    if (contactInst != null && contactInst.isValid() && contactSessionInst != null
-                                    && contactSessionInst.isValid()) {
-                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
-                        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
-                        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
-                    }
-                    add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
-
-                    if (props.containsKey("StatusGroup" + i)) {
-                        final String statiStr = String.valueOf(props.get("Stati" + i));
-                        final String[] statiAr = statiStr.split(";");
-                        final List<Object> statusList = new ArrayList<Object>();
-                        for (final String stati : statiAr) {
-                            final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
-                            if (status != null) {
-                                statusList.add(status.getId());
-                            }
-                        }
-                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
-                    }
-
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addAttribute(CISales.DocumentAbstract.Date,
-                                    CISales.DocumentAbstract.Name,
-                                    CISales.DocumentAbstract.OID,
-                                    CISales.DocumentSumAbstract.RateCrossTotal);
-                    final SelectBuilder selCur = new SelectBuilder()
-                                                    .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-                    multi.addSelect(selCur);
-                    multi.setEnforceSorted(true);
-                    multi.execute();
-                    int number=0;
-                    while (multi.next()) {
-                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                        final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-
-                        final StringBuilder choice = new StringBuilder()
-                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                        Context.getThreadContext().getLocale())));
-                        if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                            final BigDecimal amount = multi
-                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                            final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
-                            choice.append(" - ").append(curr.getSymbol()).append(" ").append(getTwoDigitsformater().format(amount));
-                        }
-                        final Map<String, String> map = new HashMap<String, String>();
-                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                        number++;
-                        tmpMap.put(number, map);
-                    }
-                    list.addAll(tmpMap.values());
-                }
-            } else {
-                break;
-            }
+        if (statusGrps.size() != status.size()) {
+            final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                            .get(ParameterValues.UIOBJECT);
+            AbstractPaymentDocument_Base.LOG.error("Map for StatusGrp and Status are of different size. Command: {}",
+                            command.getName());
+            throw new EFapsException(getClass(), "StatusSizes", statusGrps, status);
         }
 
+        final Map<Integer, Map<String, String>> tmpMap = new TreeMap<Integer, Map<String, String>>();
+        if (!types.isEmpty()) {
+            for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+                final Type type = Type.get(typeEntry.getValue());
+                if (type == null) {
+                    final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
+                                    .get(ParameterValues.UIOBJECT);
+                    AbstractPaymentDocument_Base.LOG.error("Type cannot be found for name: {}. Command: {}",
+                                    typeEntry.getValue(), command.getName());
+                    throw new EFapsException(getClass(), "type", typeEntry);
+                }
+                final QueryBuilder queryBldr = new QueryBuilder(type);
+                queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
+                if (contactInst != null && contactInst.isValid() && contactSessionInst != null
+                                && contactSessionInst.isValid()) {
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+                    queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
+                    queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
+                }
+                add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
+
+                if (statusGrps.containsKey(typeEntry.getKey())) {
+                    final String statiStr = status.get(typeEntry.getKey());
+                    final String[] statiAr = statiStr.split(";");
+                    final List<Object> statusList = new ArrayList<Object>();
+                    for (final String stati : statiAr) {
+                        final Status stat = Status.find(statusGrps.get(typeEntry.getKey()), stati);
+                        if (stat != null) {
+                            statusList.add(stat.getId());
+                        }
+                    }
+                    if (statusList.isEmpty()) {
+                        statusList.add(0);
+                    }
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
+                }
+
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.DocumentAbstract.Date,
+                                CISales.DocumentAbstract.Name,
+                                CISales.DocumentAbstract.OID,
+                                CISales.DocumentSumAbstract.RateCrossTotal);
+                final SelectBuilder selCur = new SelectBuilder()
+                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                multi.addSelect(selCur);
+                multi.setEnforceSorted(true);
+                multi.execute();
+                int number = 0;
+                while (multi.next()) {
+                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                    final StringBuilder choice = new StringBuilder()
+                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-")
+                                        .withLocale(Context.getThreadContext().getLocale())));
+                    if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                        final BigDecimal amount = multi
+                                        .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                        final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
+                        choice.append(" - ").append(curr.getSymbol()).append(" ")
+                                        .append(getTwoDigitsformater().format(amount));
+                    }
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                    number++;
+                    tmpMap.put(number, map);
+                }
+                list.addAll(tmpMap.values());
+            }
+        }
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -471,18 +494,8 @@ public abstract class AbstractPaymentDocument_Base
             map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
             map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
             map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
-            if (!docInfo.getRateCurrency().equals(accInfo.getCurrency())
-                            && docInfo.getRateCurrency().equals(docInfo.getCurrencyBase())) {
-                map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getOptionalRate()[1]));
-            } else {
-                if (!docInfo.getRateCurrency().equals(accInfo.getCurrency())) {
-                    map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getDocRate()[1]));
-                } else {
-                    map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(BigDecimal.ONE));
-                }
-            }
-            map.put("paymentRate" + RateUI.INVERTEDSUFFIX,
-                            "" + (docInfo.getCurrencyInst().isInvert()));
+            map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
+            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + (docInfo.getCurrencyInst().isInvert()));
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
             final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
@@ -1558,6 +1571,20 @@ public abstract class AbstractPaymentDocument_Base
                 .append(getTwoDigitsformater().format(getRateTotalPayments())).append(" - ").append(getRateSymbol());
 
             return strBldr.toString();
+        }
+
+        protected BigDecimal getObject4Rate()
+        {
+            BigDecimal ret = BigDecimal.ONE;
+            if (this.rateCurrency.equals(this.accountInfo.getCurrency())
+                            && this.rateCurrency.equals(this.curBase)) {
+                ret = (BigDecimal) this.rateOptional[1];
+            } else {
+                if (!(this.rateCurrency.equals(this.accountInfo.getCurrency()))) {
+                    ret = (BigDecimal) this.rate[1];
+                }
+            }
+            return ret;
         }
     }
 }
