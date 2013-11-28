@@ -119,11 +119,7 @@ public abstract class PaymentDocReport_Base
                     .linkto(CISales.DocumentSumAbstract.StatusAbstract).attribute(CISales.InvoiceStatus.Key);
             final SelectBuilder selRateCurInst = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-            final SelectBuilder selDocType = new SelectBuilder()
-                            .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
-                            .linkto(CISales.Document2DocumentType.DocumentTypeLink)
-                            .attribute(CISales.ProductDocumentType.Name);
-            multi.addSelect(selContactName, statusName, selRateCurInst, selDocType);
+            multi.addSelect(selContactName, statusName, selRateCurInst);
             addAttribute4MultiPrintQuery(_parameter, multi);
             multi.setEnforceSorted(true);
             multi.execute();
@@ -206,7 +202,7 @@ public abstract class PaymentDocReport_Base
                 map.put("DiscountPayment", crossInv.subtract(acumulatedPay));*/
 
                 map.put("Id", multi.getCurrentInstance().getId());
-                map.put("DocumentType", multi.<String>getSelect(selDocType));
+                map.put("DocumentType", type.getLabel());
                 map.put("Date", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
                 map.put("CreateDate", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created));
                 map.put("DueDate", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate));

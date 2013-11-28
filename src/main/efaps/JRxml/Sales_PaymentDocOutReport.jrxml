@@ -166,7 +166,7 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement uuid="1ae2eee2-4e25-4885-8e84-acea85ed9c77" x="134" y="0" width="66" height="40"/>
+				<reportElement uuid="1ae2eee2-4e25-4885-8e84-acea85ed9c77" x="164" y="0" width="66" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -180,7 +180,7 @@
 				<text><![CDATA[FECHA DE RECEPCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="cc4b30b7-7b8a-4ff3-a28d-6b13c02e29fd" x="200" y="0" width="90" height="40"/>
+				<reportElement uuid="cc4b30b7-7b8a-4ff3-a28d-6b13c02e29fd" x="230" y="0" width="80" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -194,7 +194,7 @@
 				<text><![CDATA[COMPROBANTE Nº]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="fffa520c-a252-4c8e-8ca6-b345a0dc510e" x="290" y="0" width="260" height="40"/>
+				<reportElement uuid="fffa520c-a252-4c8e-8ca6-b345a0dc510e" x="310" y="0" width="248" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -236,7 +236,7 @@
 				<text><![CDATA[IMPORTE FACTURADO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="a7acceb6-83dd-43ec-9920-3d064ea84bd7" x="68" y="0" width="66" height="40"/>
+				<reportElement uuid="a7acceb6-83dd-43ec-9920-3d064ea84bd7" x="98" y="0" width="66" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -296,7 +296,12 @@ EMISIÓN]]></text>
 				<text><![CDATA[TIPO DE CAMBIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="d942350f-301b-4874-8a34-21ff3434851d" x="550" y="0" width="80" height="40"/>
+				<reportElement uuid="d942350f-301b-4874-8a34-21ff3434851d" x="558" y="0" width="72" height="40">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -310,7 +315,7 @@ EMISIÓN]]></text>
 				<text><![CDATA[FECHA DE VENCIMIENTO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement uuid="2cdfd1dc-b4da-4feb-a856-44eb17852c4b" x="0" y="0" width="68" height="40"/>
+				<reportElement uuid="2cdfd1dc-b4da-4feb-a856-44eb17852c4b" x="0" y="0" width="98" height="40"/>
 				<box leftPadding="2" rightPadding="2">
 					<pen lineWidth="1.0"/>
 					<topPen lineWidth="1.0"/>
@@ -337,7 +342,7 @@ EMISIÓN]]></text>
 				</graphicElement>
 			</rectangle>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="79b76921-ee33-4e58-863a-b9335c03285d" stretchType="RelativeToTallestObject" x="68" y="0" width="66" height="14"/>
+				<reportElement uuid="79b76921-ee33-4e58-863a-b9335c03285d" stretchType="RelativeToTallestObject" x="98" y="0" width="66" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -348,7 +353,7 @@ EMISIÓN]]></text>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="531577ef-0dfa-4765-8dc6-3a4932f17940" stretchType="RelativeToTallestObject" x="134" y="0" width="66" height="14"/>
+				<reportElement uuid="531577ef-0dfa-4765-8dc6-3a4932f17940" stretchType="RelativeToTallestObject" x="164" y="0" width="66" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -359,7 +364,7 @@ EMISIÓN]]></text>
 				<textFieldExpression><![CDATA[$F{createDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="89091963-3bb2-4ce4-8acf-3dfe0c09ebf3" stretchType="RelativeToTallestObject" x="200" y="0" width="90" height="14"/>
+				<reportElement uuid="89091963-3bb2-4ce4-8acf-3dfe0c09ebf3" stretchType="RelativeToTallestObject" x="230" y="0" width="80" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -370,7 +375,7 @@ EMISIÓN]]></text>
 				<textFieldExpression><![CDATA[$F{name4Doc}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="1df1d2c5-2080-4881-976e-419ee3967a0a" stretchType="RelativeToTallestObject" x="290" y="0" width="260" height="14"/>
+				<reportElement uuid="1df1d2c5-2080-4881-976e-419ee3967a0a" stretchType="RelativeToTallestObject" x="310" y="0" width="248" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -436,7 +441,10 @@ EMISIÓN]]></text>
 				<textFieldExpression><![CDATA[$F{rate}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement uuid="5241a236-c1ba-41f3-a261-f1d185ea5524" stretchType="RelativeToTallestObject" x="550" y="0" width="80" height="14"/>
+				<reportElement uuid="5241a236-c1ba-41f3-a261-f1d185ea5524" stretchType="RelativeToTallestObject" x="558" y="0" width="72" height="14">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+				</reportElement>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -447,7 +455,7 @@ EMISIÓN]]></text>
 				<textFieldExpression><![CDATA[$F{dueDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="e15f0460-9c70-4581-a270-82ee6501d582" stretchType="RelativeToTallestObject" x="0" y="0" width="68" height="14"/>
+				<reportElement uuid="e15f0460-9c70-4581-a270-82ee6501d582" stretchType="RelativeToTallestObject" x="0" y="0" width="98" height="14"/>
 				<box leftPadding="2" rightPadding="2">
 					<leftPen lineWidth="1.0"/>
 					<rightPen lineWidth="1.0"/>
@@ -476,7 +484,7 @@ EMISIÓN]]></text>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sumCrossTotal}]]></textFieldExpression>
 			</textField>
@@ -487,7 +495,7 @@ EMISIÓN]]></text>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sumRatePayment}]]></textFieldExpression>
 			</textField>
@@ -498,10 +506,19 @@ EMISIÓN]]></text>
 					<rightPen lineWidth="0.0"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font size="9"/>
+					<font size="9" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$V{sumRateDiscountPayment}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement uuid="775e0b0f-6c54-4407-b24c-bc0f1ea5f6da" x="310" y="0" width="248" height="14">
+					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL GENERAL:]]></text>
+			</staticText>
 		</band>
 	</columnFooter>
 	<pageFooter>
