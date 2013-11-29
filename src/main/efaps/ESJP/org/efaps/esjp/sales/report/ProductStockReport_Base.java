@@ -22,6 +22,7 @@ package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Formatter;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,6 +41,8 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -165,7 +168,7 @@ public abstract class ProductStockReport_Base
             final DRDataSource dataSource = new DRDataSource("product", "document", "quantity");
             final Map<String, Map<String, BigDecimal>> rowMap = new LinkedHashMap<String, Map<String, BigDecimal>>();
 
-                       final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
             queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, getAttrQuery(_parameter));
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CISales.PositionAbstract.Quantity);
@@ -178,14 +181,19 @@ public abstract class ProductStockReport_Base
             final SelectBuilder selDocName = new SelectBuilder()
                             .linkto(CISales.PositionAbstract.DocumentAbstractLink)
                             .attribute(CISales.DocumentAbstract.Name);
-            multi.addSelect(selDocName, selProdName, selProdInstance, selProdDesc);
+            final SelectBuilder selDocInst = new SelectBuilder()
+                            .linkto(CISales.PositionAbstract.DocumentAbstractLink).instance();
+            multi.addSelect(selDocName, selDocInst, selProdName, selProdInstance, selProdDesc);
             multi.execute();
             while (multi.next()) {
+                final Instance prodInst = multi.<Instance>getSelect(selProdInstance);
+                final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
+                final BigDecimal quantity4Derived = getQuantity4Derived(_parameter, docInst, prodInst);
                 String prodName = multi.<String>getSelect(selProdName);
                 final String prodDesc = multi.<String>getSelect(selProdDesc);
                 prodName = prodName + " " + prodDesc;
-                final Instance prodInst = multi.<Instance>getSelect(selProdInstance);
+
                 final String docName = multi.<String>getSelect(selDocName);
                 if (rowMap.containsKey(docName)) {
                     if (rowMap.containsKey(colDefault)) {
@@ -198,9 +206,9 @@ public abstract class ProductStockReport_Base
                     }
                     final Map<String, BigDecimal> colMap = rowMap.get(docName);
                     if (colMap.containsKey(prodName)) {
-                        colMap.put(prodName, colMap.get(prodName).add(quantity.negate()));
+                        colMap.put(prodName, colMap.get(prodName).add(quantity.negate()).add(quantity4Derived));
                     } else {
-                        colMap.put(prodName, quantity.negate());
+                        colMap.put(prodName, quantity.negate().add(quantity4Derived));
                     }
                 } else {
                     final BigDecimal stock = getStock4Product(_parameter, prodInst);
@@ -216,7 +224,7 @@ public abstract class ProductStockReport_Base
                         }
                     }
                     final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
-                    colMap.put(prodName, quantity.negate());
+                    colMap.put(prodName, quantity.negate().add(quantity4Derived));
                     rowMap.put(docName, colMap);
                 }
             }
@@ -236,6 +244,50 @@ public abstract class ProductStockReport_Base
             }
 
             return dataSource;
+        }
+
+        private BigDecimal getQuantity4Derived(final Parameter _parameter,
+                                               final Instance _docInst,
+                                               final Instance _prodInst)
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            final Map<Integer, String> types = analyseProperty(_parameter, "DerivedType");
+            final Map<Integer, String> statusGrps = analyseProperty(_parameter, "DerivedStatusGrp");
+            final Map<Integer, String> status = analyseProperty(_parameter, "DerivedStatus");
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _docInst);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.To);
+
+            for (final Entry<Integer, String> entry : types.entrySet()) {
+                final Integer key = entry.getKey();
+                final Type type = Type.get(entry.getValue());
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
+                attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
+                if (statusGrps.containsKey(key)) {
+                    final String[] statusArr = status.get(key).split(";");
+                    final List<Status> statusLst = new ArrayList<Status>();
+                    for (final String stat : statusArr) {
+                        final Status st = Status.find(statusGrps.get(key), stat);
+                        statusLst.add(st);
+                    }
+                    attrQueryBldr2.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusLst.toArray());
+                }
+                final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.DocumentAbstract.ID);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+                queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, attrQuery2);
+                queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.Product, _prodInst);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.PositionAbstract.Quantity);
+                multi.executeWithoutAccessCheck();
+                while (multi.next()) {
+                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
+                    ret = ret.add(quantity);
+                }
+            }
+            return ret;
         }
 
         /**
