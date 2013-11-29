@@ -1999,9 +1999,7 @@ public abstract class AbstractDocument_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String[] deriveds = _parameter.getParameterValues("derived") == null
-                        ? _parameter.getParameterValues("copy")
-                        : _parameter.getParameterValues("derived");
+        final String[] deriveds = _parameter.getParameterValues("derived");
         if (deriveds != null) {
             for (final String derived : deriveds) {
                 final Instance derivedInst = Instance.get(derived);
@@ -2014,7 +2012,6 @@ public abstract class AbstractDocument_Base
             }
         }
     }
-
 
     /**
      * Method to get the javascript.
