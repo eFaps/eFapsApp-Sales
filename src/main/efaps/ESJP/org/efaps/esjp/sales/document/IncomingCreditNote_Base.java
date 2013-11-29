@@ -63,7 +63,7 @@ public abstract class IncomingCreditNote_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
-        connect2DerivatedDocument(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
         return new Return();
     }
 

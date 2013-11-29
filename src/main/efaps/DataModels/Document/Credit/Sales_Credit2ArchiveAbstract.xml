@@ -27,6 +27,20 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
+            <application name="eFapsApp-Sales"/>
+        </application-dependencies>
+        <name>Sales_Credit2ArchiveAbstract</name>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_Credit</typelink>
+            <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
             <application name="eFapsApp-Archives"/>
         </application-dependencies>
         <name>Sales_Credit2ArchiveAbstract</name>
