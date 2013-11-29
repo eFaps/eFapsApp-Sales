@@ -165,5 +165,13 @@
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="getJavaScriptUIValue"
+                name="Sales_QuoteRequestForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE"/>
+        </field>
     </definition>
 </ui-form>
