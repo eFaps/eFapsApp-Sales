@@ -24,9 +24,6 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
-import org.efaps.db.Instance;
-import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -53,21 +50,7 @@ public abstract class CreditNote_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        connectDocument2DerivatedDoc(_parameter, createdDoc);
+        connect2DerivatedDocument(_parameter, createdDoc);
         return new Return();
-    }
-
-    protected void connectDocument2DerivatedDoc(final Parameter _parameter,
-                                                final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Instance derived = Instance.get(_parameter.getParameterValue("derived"));
-
-        if (derived.isValid()) {
-            final Insert relInsert = new Insert(CISales.Document2DerivativeDocument);
-            relInsert.add(CISales.Document2DerivativeDocument.From, derived.getId());
-            relInsert.add(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance().getId());
-            relInsert.execute();
-        }
     }
 }

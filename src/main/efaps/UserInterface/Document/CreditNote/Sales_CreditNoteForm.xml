@@ -35,7 +35,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditNoteForm</name>
         <!-- fields -->
-        <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
@@ -184,6 +183,12 @@
             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="autoComplete4Invoice"
                 name="Sales_CreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">Sales_Invoice</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd" 
+                name="Sales_CreditNoteForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2 -->
+                <property name="CmdUUID">13f66c8e-67e5-42ac-b5f6-01133cf969b5</property>
+                <property name="Inverse">true</property>
             </trigger>
         </field>
         <field name="headingPositon" character="Heading">
