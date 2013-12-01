@@ -30,7 +30,7 @@
             <application name="eFapsApp-Archives"/>
         </application-dependencies>
         <name>Sales_Credit2ArchiveAbstract</name>
-        <parent>Archives_Object2ArchiveAbstract</parent>
+      <!--   <parent>Archives_Object2ArchiveAbstract</parent> -->
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
