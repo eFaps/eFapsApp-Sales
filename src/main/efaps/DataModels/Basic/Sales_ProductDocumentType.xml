@@ -30,5 +30,12 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductDocumentType</name>
         <parent>ERP_DocumentTypeAbstract</parent>
+        <attribute>
+            <name>Activation</name>
+            <type>BitEnum</type>
+            <className>org.efaps.esjp.sales.util.Sales$ProdDocActivation</className>
+            <sqltable>ERP_DocumentTypeSQLTable</sqltable>
+            <sqlcolumn>INTV</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

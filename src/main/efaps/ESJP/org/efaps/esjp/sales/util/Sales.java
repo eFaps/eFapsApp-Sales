@@ -23,6 +23,8 @@ package org.efaps.esjp.sales.util;
 import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.IBitEnum;
+import org.efaps.admin.datamodel.attributetype.BitEnumType;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.cache.CacheReloadException;
@@ -55,6 +57,36 @@ public final class Sales
 		/** Agente de Percepcion. */
 		AGENT;
 	}
+
+	/**
+     * Enum used for a multistate for Activation in Sales_ProductDocumentType.
+     */
+    public enum ProdDocActivation
+        implements IBitEnum
+    {
+        NONE,
+        /** Incoming */
+        INCOMING,
+        /** Outgoing. */
+        OUTGOING;
+
+        /**
+         * {@inheritDoc}
+         */
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
 
 	/**
 	 * @return the SystemConfigruation for Sales

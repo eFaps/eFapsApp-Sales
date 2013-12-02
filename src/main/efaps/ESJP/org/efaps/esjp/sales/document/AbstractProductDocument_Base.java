@@ -43,7 +43,10 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.products.Storage;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -373,5 +376,30 @@ public abstract class AbstractProductDocument_Base
             }
         }
         return ret;
+    }
+
+
+    public Return dropDown4ProdDocTypeFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+
+        final Field field = new Field()
+        {
+
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
+                final List<ProdDocActivation> pactivt = new ArrayList<ProdDocActivation>();
+                for (final String activation : activations.values()) {
+                    final ProdDocActivation pDAct = Sales.ProdDocActivation.valueOf(activation);
+                    pactivt.add(pDAct);
+                }
+                _queryBldr.addWhereAttrEqValue(CISales.ProductDocumentType.Activation, pactivt.toArray());
+            };
+        };
+        return field.dropDownFieldValue(_parameter);
     }
 }

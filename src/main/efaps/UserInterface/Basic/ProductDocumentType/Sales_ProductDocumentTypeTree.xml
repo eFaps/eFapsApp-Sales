@@ -31,7 +31,7 @@
         <!-- targets -->
         <target>
             <menu>Sales_ProductDocumentTypeTree_Menu</menu>
-            <form>ERP_DocumentTypeForm</form>
+            <form>Sales_ProductDocumentTypeForm</form>
         </target>
         <!-- type tree for -->
         <type>Sales_ProductDocumentType</type>
