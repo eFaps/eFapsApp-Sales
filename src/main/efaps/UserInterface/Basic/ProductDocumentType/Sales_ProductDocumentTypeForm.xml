@@ -78,10 +78,10 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        
         <field name="activation">
             <property name="Attribute">Activation</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
         </field>
     </definition>
 </ui-form>
