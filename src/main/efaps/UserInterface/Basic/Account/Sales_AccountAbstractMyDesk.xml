@@ -36,6 +36,7 @@
         <childs>
             <child>Sales_AccountCashDeskMyDesk</child>
             <child>Sales_AccountPettyCashMyDesk</child>
+            <child>Sales_AccountFundsToBeSettledMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
