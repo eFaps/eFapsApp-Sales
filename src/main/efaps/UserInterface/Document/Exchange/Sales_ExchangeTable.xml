@@ -62,9 +62,7 @@
         </field>
         <field name="status">
             <property name="FilterType">STATUS</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">Open</property>
+            <property name="FilterBase">DATABASE</property>          
             <property name="Attribute">Status</property>
             <property name="Label">Sales_Exchange/Status.Label</property>
         </field>
