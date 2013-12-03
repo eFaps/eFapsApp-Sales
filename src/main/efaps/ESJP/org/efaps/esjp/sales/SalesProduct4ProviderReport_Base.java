@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,6 +63,8 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -82,7 +83,7 @@ public abstract class SalesProduct4ProviderReport_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        _parameter.get(ParameterValues.PROPERTIES);
         final String mime = _parameter.getParameterValue("mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
         dyRp.setFileName("Product4ProviderReport");
@@ -102,7 +103,7 @@ public abstract class SalesProduct4ProviderReport_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        _parameter.get(ParameterValues.PROPERTIES);
         final String mime = _parameter.getParameterValue("mime");
         final AbstractDynamicReport dyRp = getReport2(_parameter);
         dyRp.setFileName("Product4ProviderReport2");
@@ -197,7 +198,7 @@ public abstract class SalesProduct4ProviderReport_Base
                     final String productDesc = multi.<String>getSelect(selProductDesc);
                     final String curSymbol = multi.<String>getSelect(selCurSymbol);
                     final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-                    final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                    multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
                     final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
                     final Instance contactInst = multi.<Instance>getSelect(selContactInst);
@@ -263,9 +264,8 @@ public abstract class SalesProduct4ProviderReport_Base
             throws EFapsException
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            // Sales-Configuration
-            final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                            .getLink("CurrencyBase");
+
+            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
@@ -280,7 +280,7 @@ public abstract class SalesProduct4ProviderReport_Base
             final TextColumnBuilder<String> productNameDescColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.ProductNameDesc"), "productNameDesc",
                             DynamicReports.type.stringType());
-            final TextColumnBuilder<Date> dateColumn = DynamicReports.col.column(DBProperties
+            DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.Date"), "date",
                             DynamicReports.type.dateType());
 
@@ -398,7 +398,7 @@ public abstract class SalesProduct4ProviderReport_Base
                     final String productDesc = multi.<String>getSelect(selProductDesc);
                     final String curSymbol = multi.<String>getSelect(selCurSymbol);
                     final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-                    final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                    multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
                     final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
                     final Instance contactInst = multi.<Instance>getSelect(selContactInst);
