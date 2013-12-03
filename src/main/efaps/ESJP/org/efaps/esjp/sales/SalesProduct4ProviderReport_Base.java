@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
@@ -41,7 +40,6 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -464,9 +462,7 @@ public abstract class SalesProduct4ProviderReport_Base
             throws EFapsException
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            // Sales-Configuration
-            final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                            .getLink("CurrencyBase");
+            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
