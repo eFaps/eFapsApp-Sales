@@ -28,7 +28,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -38,7 +37,6 @@ import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
@@ -59,6 +57,8 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -234,9 +234,7 @@ public abstract class SalesProductABCReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            // Sales-Configuration
-            final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                            .getLink("CurrencyBase");
+            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final TextColumnBuilder<String> productColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.report.ABC4ProductReport.ProductName"), "productName",
@@ -372,9 +370,7 @@ public abstract class SalesProductABCReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            // Sales-Configuration
-            final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                            .getLink("CurrencyBase");
+            final Instance baseInst =  Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.report.ABC4ProviderReport.Contact"), "contactName",
@@ -548,7 +544,7 @@ public abstract class SalesProductABCReport_Base
          */
         private BigDecimal getLines()
         {
-            return lines;
+            return this.lines;
         }
 
         /**
@@ -567,7 +563,7 @@ public abstract class SalesProductABCReport_Base
          */
         private String getLinesABC()
         {
-            return linesABC;
+            return this.linesABC;
         }
 
         /**
@@ -583,7 +579,7 @@ public abstract class SalesProductABCReport_Base
          */
         private BigDecimal getItems()
         {
-            return items;
+            return this.items;
         }
 
         /**
@@ -591,7 +587,7 @@ public abstract class SalesProductABCReport_Base
          */
         private String getItemsABC()
         {
-            return itemsABC;
+            return this.itemsABC;
         }
 
         /**
@@ -607,7 +603,7 @@ public abstract class SalesProductABCReport_Base
          */
         private BigDecimal getAmount()
         {
-            return amount;
+            return this.amount;
         }
 
         /**
@@ -615,7 +611,7 @@ public abstract class SalesProductABCReport_Base
          */
         private String getAmountABC()
         {
-            return amountABC;
+            return this.amountABC;
         }
 
         /**
@@ -631,7 +627,7 @@ public abstract class SalesProductABCReport_Base
          */
         private Instance getInstance()
         {
-            return instance;
+            return this.instance;
         }
 
         /**
@@ -639,7 +635,7 @@ public abstract class SalesProductABCReport_Base
          */
         private String getName()
         {
-            return name;
+            return this.name;
         }
 
         /**
@@ -647,7 +643,7 @@ public abstract class SalesProductABCReport_Base
          */
         private String getDesc()
         {
-            return desc;
+            return this.desc;
         }
     }
 }
