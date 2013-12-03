@@ -123,7 +123,7 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_IncomingExchangeForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.Exchange">
-                <property name="Classifications">Contacts_ClassClient</property>
+                <property name="Classifications">Contacts_ClassSupplier</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
                 name="Sales_IncomingExchangeForm.contact.UI_FIELD_UPDATE"
