@@ -15,23 +15,23 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 9125 $
- Last Changed:    $Date: 2013-03-26 19:17:56 -0500 (mar, 26 mar 2013) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4fec7f5c-d8b8-44fe-b25e-0b710b5b662c</uuid>
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>a3a57d33-f510-4746-ab3b-c7b4830f0074</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9125 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReportMyDesk</name>
+        <name>Sales_CashFlowReportMyDesk_Menu</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_Product4Provider_Report</child>
-            <child>Sales_Product4Provider_Report2</child>
-            <child>Sales_ProductABC4Product_Report</child>
-            <child>Sales_ProductABC4Provider_Report</child>
-            <child>Sales_CashFlowReportMyDesk</child>
+            <child>Sales_CashFlowReportMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_CashFlowReportMyDesk_Menu_DownloadPDF</child>
         </childs>
     </definition>
 </ui-menu>
