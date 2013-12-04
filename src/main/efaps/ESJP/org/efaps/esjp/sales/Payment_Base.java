@@ -117,9 +117,7 @@ public abstract class Payment_Base
                 Instance targetDocInst = null;
                 boolean out = false;
                 if (targetTypeId != null && !targetTypeId.isEmpty()) {
-                    // Sales-Configuration
-                    final Instance baseInst = SystemConfiguration.get(
-                                    UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f")).getLink("CurrencyBase");
+                    final Instance baseInst =  Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);;
                     final Instance newInst = Instance.get(CIERP.Currency.getType(), currencies[i]);
                     final CurrencyInst currency = new CurrencyInst(newInst);
                     final PriceUtil util = new PriceUtil();
