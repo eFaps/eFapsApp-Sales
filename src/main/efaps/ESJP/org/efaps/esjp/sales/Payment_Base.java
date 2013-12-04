@@ -117,7 +117,7 @@ public abstract class Payment_Base
                 Instance targetDocInst = null;
                 boolean out = false;
                 if (targetTypeId != null && !targetTypeId.isEmpty()) {
-                    final Instance baseInst =  Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);;
+                    final Instance baseInst =  Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
                     final Instance newInst = Instance.get(CIERP.Currency.getType(), currencies[i]);
                     final CurrencyInst currency = new CurrencyInst(newInst);
                     final PriceUtil util = new PriceUtil();
@@ -179,6 +179,9 @@ public abstract class Payment_Base
                 }
                 insert.add(CISales.Payment.CurrencyLink, currencies[i]);
                 insert.add(CISales.Payment.Amount, amounts[i]);
+                //TODO
+                insert.add(CISales.Payment.RateCurrencyLink, currencies[i]);
+                insert.add(CISales.Payment.Rate, new Object[]{1,1});
                 insert.execute();
                 final Instance paymentInst = insert.getInstance();
 
@@ -191,7 +194,7 @@ public abstract class Payment_Base
                 final Insert transIns = new Insert(transType);
                 transIns.add(CISales.TransactionAbstract.Amount, amounts[i]);
                 transIns.add(CISales.TransactionAbstract.CurrencyId, currencies[i]);
-                transIns.add(CISales.TransactionAbstract.Payment, ((Long) paymentInst.getId()).toString());
+                transIns.add(CISales.TransactionAbstract.Payment,  paymentInst);
                 transIns.add(CISales.TransactionAbstract.Description, descriptions[i].length() < 1
                                 ? DBProperties.getProperty("Sales_Payment.Label")
                                 : descriptions[i]);
