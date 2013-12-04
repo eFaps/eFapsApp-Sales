@@ -364,9 +364,9 @@ public abstract class AbstractPaymentDocument_Base
             throw new EFapsException(getClass(), "StatusSizes", statusGrps, status);
         }
 
-        final Map<Integer, Map<String, String>> tmpMap = new TreeMap<Integer, Map<String, String>>();
         if (!types.isEmpty()) {
             for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+                final Map<Integer, Map<String, String>> tmpMap = new TreeMap<Integer, Map<String, String>>();
                 final Type type = Type.get(typeEntry.getValue());
                 if (type == null) {
                     final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
