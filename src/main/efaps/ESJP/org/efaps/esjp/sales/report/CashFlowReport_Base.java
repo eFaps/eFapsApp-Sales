@@ -137,6 +137,9 @@ public abstract class CashFlowReport_Base
         extends AbstractDynamicReport
     {
 
+        /**
+         *
+         */
         private final Map<String,Group> groups = new HashMap<String,Group>();
 
 
@@ -202,8 +205,8 @@ public abstract class CashFlowReport_Base
             open.getCategories().put("OPEN", cat);
             BigDecimal currentAmount = BigDecimal.ZERO;
             for (final Entry<String, BigDecimal> saldo : saldos.entrySet()) {
-                    cat.add(_parameter, saldo.getKey(), currentAmount);
-                    currentAmount = currentAmount.add(saldo.getValue());
+                cat.add(_parameter, saldo.getKey(), currentAmount);
+                currentAmount = currentAmount.add(saldo.getValue());
             }
             final List<Group> grpList = new ArrayList<Group>(this.groups.values());
             Collections.sort(grpList, new Comparator<Group>()
@@ -286,7 +289,7 @@ public abstract class CashFlowReport_Base
             final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("group", String.class);
             final CrosstabRowGroupBuilder<String> rowCategory = DynamicReports.ctab.rowGroup("category", String.class);
             final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
-                            .columnGroup("date", String.class);
+                            .columnGroup("date", String.class).setShowTotal(false);
 
             crosstab.headerCell(DynamicReports.cmp.text(DBProperties
                             .getProperty(CashFlowReport.class.getName() + ".HeaderCell"))
@@ -486,11 +489,20 @@ public abstract class CashFlowReport_Base
         }
     }
 
+    /**
+     * Category.
+     */
     public static class Category
     {
 
+        /**
+         * Key for this Category.
+         */
         private final String key;
 
+        /**
+         * Date to amount mapping.
+         */
         private final Map<String, BigDecimal> amounts = new HashMap<String, BigDecimal>();
 
         private final Group group;
@@ -518,8 +530,13 @@ public abstract class CashFlowReport_Base
         public void add2DataSource(final Parameter _parameter,
                                    final DRDataSource _dataSource)
         {
+            BigDecimal total = BigDecimal.ZERO;
             for (final Entry<String, BigDecimal> entry : this.amounts.entrySet()) {
                 _dataSource.add(this.group.getName(), getName(), entry.getKey(), entry.getValue());
+                total = total.add(entry.getValue());
+            }
+            if (!"OPEN".equals(this.key)) {
+                _dataSource.add(this.group.getName(), getName(), "Total", total);
             }
         }
 
