@@ -71,11 +71,10 @@ public abstract class Credit_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String employee = _parameter.getParameterValue(CIFormSales.Sales_CreditForm.employee.name);
-        if (employee != null) {
-            final Instance inst = Instance.get(employee);
-            _insert.add(CISales.Credit.EmployeeLink, inst.getId());
-            _createdDoc.getValues().put(CISales.Credit.EmployeeLink.name, inst);
+        final Instance empInst = Instance.get(_parameter.getParameterValue(CIFormSales.Sales_CreditForm.employee.name));
+        if (empInst.isValid()) {
+            _insert.add(CISales.Credit.EmployeeLink, empInst);
+            _createdDoc.getValues().put(CISales.Credit.EmployeeLink.name, empInst);
         }
     }
 

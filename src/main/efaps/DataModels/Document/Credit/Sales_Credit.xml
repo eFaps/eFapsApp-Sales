@@ -28,9 +28,6 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="eFaps" />
-        </profiles>
         <name>Sales_Credit</name>
         <parent>Sales_DocumentSumAbstract</parent>
         <attribute>
@@ -49,9 +46,9 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <profiles>
-            <profile name="humanresource" />
-        </profiles>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
         <name>Sales_Credit</name>
         <parent>Sales_DocumentSumAbstract</parent>
         <attribute>
