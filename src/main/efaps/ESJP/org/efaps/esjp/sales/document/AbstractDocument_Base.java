@@ -899,7 +899,7 @@ public abstract class AbstractDocument_Base
         final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final String contactOid = print.<String> getSelect(selContOID);
         final String contactName = print.<String> getSelect(selContName);
-        final String contactData = getFieldValue4Contact(Instance.get(contactOid));
+        final String contactData = new Contacts().getFieldValue4Contact(Instance.get(contactOid),false);
         final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
