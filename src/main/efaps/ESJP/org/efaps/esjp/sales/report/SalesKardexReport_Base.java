@@ -184,6 +184,7 @@ public abstract class SalesKardexReport_Base
                 queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, 0);
                 SalesKardexReport_Base.LOG.debug("Report not contains storage");
             }
+            addAttrQuery2InitKardex(_parameter, queryBldr);
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -260,6 +261,7 @@ public abstract class SalesKardexReport_Base
         }
         transQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, _product);
         transQueryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, _dateFrom.minusMinutes(1));
+        addAttrQuery2InventoryValue(_parameter, transQueryBldr);
         final MultiPrintQuery transMulti = transQueryBldr.getPrint();
         transMulti.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
                                 CIProducts.TransactionInOutAbstract.UoM);
@@ -285,6 +287,20 @@ public abstract class SalesKardexReport_Base
         map.put(Field.TRANS_INBOUND_COST.getKey(), getCost(_parameter, _product, _dateFrom.minusDays(1)));
 
         return map;
+    }
+
+    protected void addAttrQuery2InventoryValue(final Parameter _parameter,
+                                               final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // to be implemented
+    }
+
+    protected void addAttrQuery2InitKardex(final Parameter _parameter,
+                                           final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // to be implemented
     }
 
     protected List<Long> getStorage4List(final Instance _storage)
@@ -424,8 +440,8 @@ public abstract class SalesKardexReport_Base
         _map.put(Field.TRANS_DOC_OPERATION.getKey(), ret);
     }
 
-    protected void addAdditionalParameters(final Parameter _parameter,
-                                           final StandartReport _report)
+    protected void addReport2Parameter(final Parameter _parameter,
+                                        final StandartReport _report)
         throws EFapsException
     {
         // TODO Auto-generated method stub
@@ -470,7 +486,7 @@ public abstract class SalesKardexReport_Base
 
             report.getJrParameters().put("StorageName", print.<String>getAttribute(CIProducts.StorageGroupAbstract.Name));
         }
-        addAdditionalParameters(_parameter, report);
+        addReport2Parameter(_parameter, report);
 
         return report.execute(_parameter);
     }
