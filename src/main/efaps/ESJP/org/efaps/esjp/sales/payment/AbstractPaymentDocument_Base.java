@@ -1140,6 +1140,7 @@ public abstract class AbstractPaymentDocument_Base
 
                 instances2Print.add(multi.getCurrentInstance());
                 if (amountDue.compareTo(restAmount) == 1 || amountDue.compareTo(restAmount) == 0) {
+                    sumPayments = sumPayments.add(restAmount);
                     break;
                 } else {
                     restAmount = restAmount.subtract(amountDue);
@@ -1148,7 +1149,7 @@ public abstract class AbstractPaymentDocument_Base
 
             }
         }
-        sumPayments = sumPayments.add(restAmount);
+
         js = buildHtml4ExecuteButton(_parameter, instances2Print, restAmount, sumPayments, currencyId);
         ret.put(ReturnValues.SNIPLETT, js.toString());
         return ret;
@@ -1249,9 +1250,19 @@ public abstract class AbstractPaymentDocument_Base
                                 ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(amountDueConverted));
                 pay = amountDue;
             } else {
-                _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name, _restAmount == null
-                                ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(_restAmount));
-                pay = restAmountConverted;
+                if (amount2Pay.compareTo(pay) != 0) {
+                    _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
+                                    _restAmount == null
+                                                    ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(
+                                                                    amountDueConverted));
+                    pay = amountDue;
+                } else {
+                    _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmount.name,
+                                    _restAmount == null
+                                                    ? BigDecimal.ZERO.toString() : getTwoDigitsformater().format(
+                                                                    _restAmount));
+                    pay = restAmountConverted;
+                }
             }
 
             _map.put(CITableSales.Sales_PaymentCheckWithOutDocPaymentTable.paymentAmountDesc.name,
