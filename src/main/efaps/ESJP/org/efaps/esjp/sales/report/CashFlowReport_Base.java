@@ -353,25 +353,35 @@ public abstract class CashFlowReport_Base
             if (_docInst == null) {
                 key = "NONE";
                 weight = 10;
-            } else if (_docInst.isValid() && _docInst.getType().isKindOf(CISales.Invoice.getType())) {
-                key = "SELL";
-                weight = 1;
-            } else if (_docInst.isValid() && _docInst.getType().isKindOf(CISales.IncomingInvoice.getType())) {
-                key = "BUY";
-                weight = 2;
-            } else if (_docInst.isValid() && _docInst.getType().isKindOf(CISales.IncomingCredit.getType())) {
-                key = "CREDIT";
-                weight = 3;
-                // Payroll_Payslip
-            } else if (_docInst.isValid() && _docInst.getType().getUUID().equals(
-                            UUID.fromString("a298d361-7530-4a24-b69f-ff3a1186a081"))) {
-                key = "PAYROLL";
-                weight = 4;
+            } else if (_docInst.isValid()) {
+                if (_docInst.getType().isKindOf(CISales.Invoice.getType())
+                                || _docInst.getType().isKindOf(CISales.Receipt.getType())
+                                || _docInst.getType().isKindOf(CISales.Reminder.getType())
+                                || _docInst.getType().isKindOf(CISales.CreditNote.getType())) {
+                    key = "SELL";
+                    weight = 1;
+                } else if (_docInst.getType().isKindOf(CISales.IncomingInvoice.getType())
+                               || _docInst.getType().isKindOf(CISales.IncomingReceipt.getType())
+                               || _docInst.getType().isKindOf(CISales.IncomingCreditNote.getType())) {
+                    key = "BUY";
+                    weight = 2;
+                } else if (_docInst.getType().isKindOf(CISales.IncomingCredit.getType())
+                                || _docInst.getType().isKindOf(CISales.Credit.getType())) {
+                    key = "CREDIT";
+                    weight = 3;
+                    // Payroll_Payslip
+                } else if (_docInst.isValid() && _docInst.getType().getUUID().equals(
+                                UUID.fromString("a298d361-7530-4a24-b69f-ff3a1186a081"))) {
+                    key = "PAYROLL";
+                    weight = 4;
+                } else {
+                    key = "OTHER";
+                    weight = 5;
+                }
             } else {
                 key = "OTHER";
                 weight = 5;
             }
-
             Category category;
             if (this.categories.containsKey(key)) {
                 category = this.categories.get(key);
