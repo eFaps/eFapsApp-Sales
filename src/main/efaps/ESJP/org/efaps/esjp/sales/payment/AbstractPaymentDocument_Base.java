@@ -271,7 +271,7 @@ public abstract class AbstractPaymentDocument_Base
                 final Instance inst = Instance.get(createDocument[i]);
                 if (inst.isValid()) {
                     payInsert.add(CISales.Payment.CreateDocument, inst.getId());
-                    payInsert.add(CISales.Payment.RateCurrencyLink, new DocumentInfo(inst).getRateCurrency());
+                    payInsert.add(CISales.Payment.RateCurrencyLink, getNewDocumentInfo(inst).getRateCurrency());
                 }
             }
             if (paymentAmount.length > i && paymentAmount[i] != null) {
@@ -481,7 +481,7 @@ public abstract class AbstractPaymentDocument_Base
                         _parameter.getParameterValue("account"));
         if (docInstance.isValid() && accInstance.isValid()) {
             final AccountInfo accInfo = new AccountInfo(accInstance);
-            final DocumentInfo docInfo = new DocumentInfo(docInstance);
+            final DocumentInfo docInfo = getNewDocumentInfo(docInstance);
             docInfo.setAccountInfo(accInfo);
             docInfo.setRateOptional(getRateObject(_parameter));
 
@@ -529,7 +529,7 @@ public abstract class AbstractPaymentDocument_Base
                             BigDecimal.ROUND_HALF_UP);
 
             final AccountInfo accInfo = new AccountInfo(accInstance);
-            final DocumentInfo docInfo = new DocumentInfo(docInstance);
+            final DocumentInfo docInfo = getNewDocumentInfo(docInstance);
             docInfo.setAccountInfo(accInfo);
             final BigDecimal total4Doc = docInfo.getRateCrossTotal();
             final BigDecimal payments4Doc = docInfo.getRateTotalPayments();
@@ -1416,6 +1416,12 @@ public abstract class AbstractPaymentDocument_Base
         }
     }
 
+    public DocumentInfo getNewDocumentInfo(final Instance _instance)
+        throws EFapsException
+    {
+        return new DocumentInfo(_instance);
+    }
+
     public class DocumentInfo
     {
         private final Instance instance;
@@ -1494,8 +1500,9 @@ public abstract class AbstractPaymentDocument_Base
         }
 
         protected BigDecimal getCrossTotal()
+            throws EFapsException
         {
-            BigDecimal ret = this.rateCrossTotal;
+            BigDecimal ret = this.rateCrossTotal.add(getRateCrossTotal4Query());
             if (!this.rateCurrency.equals(this.accountInfo.getCurrency())) {
                 ret = ret.multiply((BigDecimal) this.rate[1]).setScale(2, BigDecimal.ROUND_HALF_UP);
                 if (!this.accountInfo.getCurrency().equals(this.curBase)
@@ -1596,6 +1603,48 @@ public abstract class AbstractPaymentDocument_Base
                 }
             }
             return ret;
+        }
+
+        protected InstanceQuery getPaymentDerivedDocument()
+            throws EFapsException
+        {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDerivedDocument2Document);
+            attrQueryBldr.addWhereAttrEqValue(CISales.PaymentDerivedDocument2Document.FromLink, this.instance);
+            final AttributeQuery attrQuery =
+                            attrQueryBldr.getAttributeQuery(CISales.PaymentDerivedDocument2Document.ToLink);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+            queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+            return queryBldr.getQuery();
+        }
+
+        protected BigDecimal getTotals4PaymentDerivedDocument()
+            throws EFapsException
+        {
+            return this.instance.isValid() ? getRateCrossTotal4Query() : BigDecimal.ZERO;
+        }
+
+        protected BigDecimal getRateCrossTotal4Query()
+            throws EFapsException
+        {
+            return BigDecimal.ZERO;
+        }
+
+        protected BigDecimal compareDocs(final Instance _payDerivedDoc)
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            if (_payDerivedDoc.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                final PrintQuery print = new PrintQuery(_payDerivedDoc);
+                print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId,
+                                CISales.DocumentSumAbstract.RateCrossTotal);
+                print.executeWithoutAccessCheck();
+
+                if (print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId) == getRateCurrency().getId()) {
+                    ret = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                }
+            }
+            return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
         }
     }
 }

@@ -752,4 +752,42 @@ public abstract class AbstractPaymentOut_Base
         return excludes;
     }
 
+    @Override
+    public DocumentInfo getNewDocumentInfo(final Instance _instance)
+        throws EFapsException
+    {
+        return new DocumentInfoOut(_instance);
+    }
+
+    public class DocumentInfoOut
+        extends AbstractPaymentDocument.DocumentInfo
+    {
+
+        public DocumentInfoOut(final Instance _instance)
+            throws EFapsException
+        {
+            super(_instance);
+        }
+
+        @Override
+        protected BigDecimal getRateCrossTotal4Query()
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+
+            if (getInstance().isValid() && getInstance().getType().equals(CISales.IncomingInvoice.getType())) {
+                final InstanceQuery query = getPaymentDerivedDocument();
+                query.execute();
+                while (query.next()) {
+                    if (query.getCurrentValue().getType().equals(CISales.IncomingCreditNote.getType())) {
+                        ret = ret.add(compareDocs(query.getCurrentValue()).negate());
+                    } else if (query.getCurrentValue().getType().equals(CISales.IncomingReminder.getType())) {
+                        ret = ret.add(compareDocs(query.getCurrentValue()));
+                    }
+                }
+            }
+
+            return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
+    }
 }

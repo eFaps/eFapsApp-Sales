@@ -38,6 +38,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -156,5 +157,44 @@ public abstract class AbstractPaymentIn_Base
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, lst);
         return ret;
+    }
+
+    @Override
+    public DocumentInfo getNewDocumentInfo(final Instance _instance)
+        throws EFapsException
+    {
+        return new DocumentInfoIn(_instance);
+    }
+
+    public class DocumentInfoIn
+        extends AbstractPaymentDocument.DocumentInfo
+    {
+
+        public DocumentInfoIn(final Instance _instance)
+            throws EFapsException
+        {
+            super(_instance);
+        }
+
+        @Override
+        protected BigDecimal getRateCrossTotal4Query()
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+
+            if (getInstance().isValid() && getInstance().getType().equals(CISales.Invoice.getType())) {
+                final InstanceQuery query = getPaymentDerivedDocument();
+                query.execute();
+                while (query.next()) {
+                    if (query.getCurrentValue().getType().equals(CISales.CreditNote.getType())) {
+                        ret = ret.add(compareDocs(query.getCurrentValue()).negate());
+                    } else if (query.getCurrentValue().getType().equals(CISales.Reminder.getType())) {
+                        ret = ret.add(compareDocs(query.getCurrentValue()));
+                    }
+                }
+            }
+
+            return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
     }
 }
