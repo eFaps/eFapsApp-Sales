@@ -844,7 +844,10 @@ public abstract class AbstractDocument_Base
                     .append(addDomReadyScript(_parameter, instances));
             } else if (instCall != null && instCall.isValid()
                             && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
-                js.append(getJavaScript4Positions(_parameter, instCall));
+                final List<Instance> instCallLst = new ArrayList<Instance>();
+                instCallLst.add(instCall);
+                js.append(add2JavaScript4Document(_parameter, instCallLst))
+                    .append(getJavaScript4Positions(_parameter, instCall));
             }
         }
         js.append("});\n</script>\n");
