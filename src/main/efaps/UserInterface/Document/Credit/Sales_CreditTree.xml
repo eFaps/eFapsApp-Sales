@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>ccb345aa-3f74-4452-b720-1451b178ccea</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -37,16 +39,17 @@
         <type>Sales_Credit</type>
         <childs>
             <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_CreditTree_Payment</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
-    
+
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives"/>
+            <application name="eFapsApp-Archives" />
         </application-dependencies>
         <name>Sales_CreditTree</name>
         <!-- targets -->
@@ -59,6 +62,7 @@
         <childs>
             <child>Sales_CreditTree_File</child>
             <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_CreditTree_Payment</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
