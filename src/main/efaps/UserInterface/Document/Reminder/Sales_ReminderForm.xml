@@ -179,10 +179,14 @@
             <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_ReminderForm.derived.Label</property>
+            <property name="Label">Sales_CreditNoteForm.derived.Label</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="autoComplete4Invoice"
-                name="Sales_ReminderForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_Invoice</property>
+                name="Sales_ReminderForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd" 
+                name="Sales_ReminderForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales_ReminderMyDesk_Menu_Action_CreateFromDoc2 -->
+                <property name="CmdUUID">ef128d4f-e18f-49dd-98b2-0ddb39a4df85</property>
+                <property name="Inverse">true</property>
             </trigger>
         </field>
         <field name="headingPositon" character="Heading">
