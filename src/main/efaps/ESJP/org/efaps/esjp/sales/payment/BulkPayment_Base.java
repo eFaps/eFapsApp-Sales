@@ -29,7 +29,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -38,7 +37,6 @@ import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -61,6 +59,8 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.sales.document.AbstractDocument;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 
@@ -80,8 +80,7 @@ public abstract class BulkPayment_Base
         throws EFapsException
     {
         // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Insert insert = new Insert(CISales.BulkPayment);
         insert.add(CISales.BulkPayment.Date, _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.date.name));
         insert.add(CISales.BulkPayment.Name, _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.name.name));
