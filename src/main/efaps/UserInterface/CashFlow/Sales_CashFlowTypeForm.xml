@@ -31,6 +31,7 @@
             <property name="Attribute">Name</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
         </field>
         <field name="description">
             <property name="Attribute">Description</property>
@@ -41,6 +42,7 @@
             <property name="Attribute">Category</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>

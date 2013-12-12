@@ -20,26 +20,19 @@
  Last Changed By: $Author$
 
 -->
-<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1fc2f30f-eccb-4ffd-8d76-980c3e24aeb8</uuid>
+
+    <uuid>b0a840e3-19aa-4057-8a6a-681aa9b849ab</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CashFlowTypeTable</name>
-        <field name="name">
-            <property name="Attribute">Name</property>
-            <property name="Label">Sales_CashFlowType/Name.Label</property>
-            <property name="HRef">TREE</property>
-        </field>
-        <field name="description">
-            <property name="Attribute">Description</property>
-            <property name="Label">Sales_CashFlowType/Description.Label</property>
-        </field>
-        <field name="category">
-            <property name="Attribute">Category</property>
-            <property name="Label">Sales_CashFlowType/Category.Label</property>
-        </field>
+        <name>Sales_CashFlowTypeTree_Menu_Action</name>
+        <childs>
+            <child>Sales_CashFlowTypeTree_Menu_Action_Edit</child>
+        </childs>
     </definition>
-</ui-table>
+
+</ui-menu>
