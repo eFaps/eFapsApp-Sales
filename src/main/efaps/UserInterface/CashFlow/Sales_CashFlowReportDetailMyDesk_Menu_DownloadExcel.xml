@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,20 +20,30 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>b5d26ac5-25af-4daa-9b4c-3d888d77d4d9</uuid>
+    <uuid>abe8ad87-89b8-43fc-82e1-5f33fa18c11a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CashFlowMyDesk</name>
-        <childs>
-            <child>Sales_CashFlowTypeMyDesk</child>
-            <child>Sales_CashFlowProjectedMyDesk</child>
-            <child>Sales_CashFlowReportMyDesk</child>
-            <child>Sales_CashFlowReportDetailMyDesk</child>
-        </childs>
+        <name>Sales_CashFlowReportDetailMyDesk_Menu_DownloadExcel</name>
+        <icon>Document_Excel</icon>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+
+        <!-- target definitions -->
+        <target>
+            <execute method="exportReport"
+                program="org.efaps.esjp.sales.report.CashFlowReport">
+                <property name="Mime">xls</property>
+                <property name="Interval">WEEK</property>
+            </execute>
+        </target>
+
+        <!-- properties -->
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
-</ui-menu>
+</ui-command>

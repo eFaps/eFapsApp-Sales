@@ -37,7 +37,7 @@
             <property name="Label">Sales_CashFlowType/Description.Label</property>
         </field>
         <field name="category">
-            <property name="Attribute">Name</property>
+            <property name="Attribute">Category</property>
             <property name="Label">Sales_CashFlowType/Category.Label</property>
         </field>
     </definition>

@@ -20,20 +20,23 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>b5d26ac5-25af-4daa-9b4c-3d888d77d4d9</uuid>
+    <uuid>3cc316a3-9a86-4db6-841f-8bb02f955aa3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CashFlowMyDesk</name>
-        <childs>
-            <child>Sales_CashFlowTypeMyDesk</child>
-            <child>Sales_CashFlowProjectedMyDesk</child>
-            <child>Sales_CashFlowReportMyDesk</child>
-            <child>Sales_CashFlowReportDetailMyDesk</child>
-        </childs>
+        <name>Sales_CashFlowReportDetailMyDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_CashFlowReportDetailMyDesk_Menu</menu>
+            <form>Sales_CashFlowReportDetailMyDeskForm</form>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>

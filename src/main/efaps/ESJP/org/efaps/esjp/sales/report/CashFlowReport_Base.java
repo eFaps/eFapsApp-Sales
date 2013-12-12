@@ -56,6 +56,10 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.sales.cashflow.CashFlowCategory;
+import org.efaps.esjp.sales.cashflow.CashFlowGroup;
+import org.efaps.esjp.sales.cashflow.ICashFlowCategory;
+import org.efaps.esjp.sales.cashflow.ICashFlowGroup;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -67,13 +71,54 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: CashFlowReport_Base.java 11305 2013-12-04 16:16:47Z
- *          jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("67b5c710-4e36-4eb2-95c0-8f04b15500ec")
 @EFapsRevision("$Rev$")
 public abstract class CashFlowReport_Base
 {
+
+    public enum Interval
+    {
+        MONTH, WEEK;
+    }
+
+    public static ICashFlowCategory OPENCAT = new ICashFlowCategory()
+    {
+        @Override
+        public int getInt()
+        {
+            return -1;
+        }
+
+        @Override
+        public Integer getWeight()
+        {
+            return -1;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "OPEN";
+        }
+    };
+
+    public static ICashFlowGroup OPENGRP = new ICashFlowGroup()
+    {
+
+        @Override
+        public Integer getWeight()
+        {
+            return -1;
+        }
+
+        @Override
+        public String toString()
+        {
+            return "OPEN";
+        }
+    };
 
     /**
      * Logging instance used in this class.
@@ -127,7 +172,38 @@ public abstract class CashFlowReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new CFReport();
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Interval interval;
+        if (properties.containsKey("Interval")) {
+            interval = Interval.valueOf((String) properties.get("Interval"));
+        } else {
+            interval = Interval.MONTH;
+        }
+        int projection;
+        if (properties.containsKey("Projection")) {
+            projection = Integer.valueOf((String) properties.get("Projection"));
+        } else {
+            if (Interval.MONTH.equals(interval)) {
+                projection = 6;
+            } else {
+                projection = 8;
+            }
+        }
+        Integer start = 0;
+        if (properties.containsKey("Start")) {
+            start = Integer.valueOf((String) properties.get("Start"));
+        }
+        DateTime startDate;
+        if (start < 1) {
+            startDate = new DateTime().withTimeAtStartOfDay().withDayOfYear(1).plusYears(start).minusSeconds(1);
+        } else {
+            if (Interval.MONTH.equals(interval)) {
+                startDate = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).minusMonths(start).minusSeconds(1);
+            } else {
+                startDate = new DateTime().withTimeAtStartOfDay().withDayOfWeek(1).minusWeeks(start).minusSeconds(1);
+            }
+        }
+        return new CFReport(interval, startDate, projection);
     }
 
     /**
@@ -140,7 +216,22 @@ public abstract class CashFlowReport_Base
         /**
          *
          */
-        private final Map<String,Group> groups = new HashMap<String,Group>();
+        private final Map<ICashFlowGroup, Group> groups = new HashMap<ICashFlowGroup, Group>();
+
+        private final Interval interval;
+
+        private final int projection;
+
+        private final DateTime startDate;
+
+        public CFReport(final Interval _interval,
+                        final DateTime _startDate,
+                        final int _projection)
+        {
+            this.interval = _interval;
+            this.projection = _projection;
+            this.startDate = _startDate;
+        }
 
 
         @Override
@@ -162,9 +253,10 @@ public abstract class CashFlowReport_Base
             }
 
             final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
+            queryBldr.addWhereAttrGreaterValue(CISales.TransactionAbstract.Date, this.startDate);
+            final MultiPrintQuery multi2 = queryBldr2.getPrint();
             final SelectBuilder selPaymentInst = SelectBuilder.get()
                             .linkto(CISales.TransactionAbstract.Payment).instance();
-            final MultiPrintQuery multi2 = queryBldr2.getPrint();
             multi2.addSelect(selPaymentInst);
             multi2.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date);
             multi2.execute();
@@ -186,6 +278,8 @@ public abstract class CashFlowReport_Base
                 group.add(_parameter,  out, payInst, inst2inst.get(payInst) , dateStr, amount);
             }
 
+            addProjection(_parameter);
+
             final Map<String, BigDecimal> saldos = new TreeMap<String, BigDecimal>();
             for (final Group group : this.groups.values()) {
                 final Map<String, BigDecimal> saldo = group.getSaldo(_parameter);
@@ -199,10 +293,10 @@ public abstract class CashFlowReport_Base
                     saldos.put(entry.getKey(), amount.add(entry.getValue()));
                 }
             }
-            final Group open = new Group(0, "OPEN");
-            this.groups.put(open.getName(), open);
-            final Category cat = new Category(open, 0, "OPEN");
-            open.getCategories().put("OPEN", cat);
+            final Group open = new Group(CashFlowReport_Base.OPENGRP);
+            this.groups.put(CashFlowReport_Base.OPENGRP, open);
+            final Category cat = new Category(open, CashFlowReport_Base.OPENCAT);
+            open.getCategories().put(CashFlowReport_Base.OPENCAT, cat);
             BigDecimal currentAmount = BigDecimal.ZERO;
             for (final Entry<String, BigDecimal> saldo : saldos.entrySet()) {
                 cat.add(_parameter, saldo.getKey(), currentAmount);
@@ -215,7 +309,7 @@ public abstract class CashFlowReport_Base
                 public int compare(final Group _o1,
                                    final Group _o2)
                 {
-                    return _o1.getWeight().compareTo(_o1.getWeight());
+                    return _o1.getWeight().compareTo(_o2.getWeight());
                 }
             });
             int i = 1;
@@ -225,6 +319,47 @@ public abstract class CashFlowReport_Base
                 i++;
             }
             return dataSource;
+        }
+
+        protected void addProjection(final Parameter _parameter)
+            throws EFapsException
+        {
+            for (int i = 0; i < this.projection; i++) {
+                DateTime start = new DateTime();
+                DateTime end = new DateTime();
+                DateTime date = new DateTime();
+                switch (this.interval) {
+                    case MONTH:
+                        start = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 1)
+                                        .minusSeconds(1);
+                        end = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 2);
+                        date = new DateTime().withTimeAtStartOfDay().withDayOfMonth(1).plusMonths(i + 1);
+                        break;
+                    case WEEK:
+                        start = new DateTime().withTimeAtStartOfDay().withDayOfWeek(1).plusWeeks(i + 1)
+                                        .minusSeconds(1);
+                        end = new DateTime().withTimeAtStartOfDay().withDayOfWeek(1).plusWeeks(i + 2);
+                        date = end.minusHours(1);
+                    default:
+                        break;
+                }
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.CashFlowProjected);
+                queryBldr.addWhereAttrLessValue(CISales.CashFlowProjected.Date, end);
+                queryBldr.addWhereAttrGreaterValue(CISales.CashFlowProjected.Date, start);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.CashFlowProjected.CashFlowTypeLink)
+                                .attribute(CISales.CashFlowType.Category);
+                multi.addSelect(sel);
+                multi.addAttribute(CISales.CashFlowProjected.Amount);
+                multi.execute();
+                while (multi.next()) {
+                    final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.CashFlowProjected.Amount);
+                    final ICashFlowCategory cat = multi.<ICashFlowCategory>getSelect(sel);
+                    final Group group = getGroup(_parameter, amount.signum() < 0, null, multi.getCurrentInstance());
+                    final String dateStr = getDateStr(_parameter, date);
+                    group.add(_parameter, amount.signum() < 0, cat, dateStr, amount);
+                }
+            }
         }
 
         /**
@@ -240,16 +375,16 @@ public abstract class CashFlowReport_Base
                                  final Instance _payInst,
                                  final Instance _instance)
         {
-            String key;
+            ICashFlowGroup key;
             if (_out) {
-                key = "OUT";
+                key = CashFlowGroup.OUT;
                 if (!this.groups.containsKey(key)) {
-                    this.groups.put(key, new Group(2, key));
+                    this.groups.put(key, new Group(key));
                 }
             } else {
-                key = "IN";
+                key = CashFlowGroup.IN;
                 if (!this.groups.containsKey(key)) {
-                    this.groups.put(key, new Group(1, key));
+                    this.groups.put(key, new Group(key));
                 }
             }
             return this.groups.get(key);
@@ -265,17 +400,23 @@ public abstract class CashFlowReport_Base
                                     final DateTime _date)
             throws EFapsException
         {
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String pattern;
-            if (props.containsKey("Pattern4Date")) {
-                pattern = (String) props.get("Pattern4Date");
-            } else {
-                pattern = "MM - MMM - yyyy";
+            String ret;
+            switch (this.interval) {
+                case MONTH:
+                    final DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy/MM - MMM")
+                                    .withLocale(Context.getThreadContext().getLocale());
+                    ret = _date.toString(formatter);
+                    break;
+                case WEEK:
+                    final DateTimeFormatter wformatter = DateTimeFormat.forPattern("yyyy - ww")
+                        .withLocale(Context.getThreadContext().getLocale());
+                    ret = _date.toString(wformatter);
+                    break;
+                default:
+                    ret = _date.toString();
+                    break;
             }
-            final DateTimeFormatter formatter = DateTimeFormat.forPattern(pattern)
-                            .withLocale(Context.getThreadContext().getLocale());
-
-            return _date.toString(formatter);
+            return ret;
         }
 
         @Override
@@ -300,37 +441,42 @@ public abstract class CashFlowReport_Base
             _builder.summary(crosstab);
         }
 
-
         /**
          * Getter method for the instance variable {@link #groups}.
          *
          * @return value of instance variable {@link #groups}
          */
-        protected Map<String, Group> getGroups()
+        protected Map<ICashFlowGroup, Group> getGroups()
         {
             return this.groups;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #projection}.
+         *
+         * @return value of instance variable {@link #projection}
+         */
+        protected int getProjection()
+        {
+            return this.projection;
         }
     }
 
     public static class Group
     {
 
-        private final String key;
-
-        private final Map<String, Category> categories = new HashMap<String, Category>();
-
-        private final int weight;
+        private final Map<ICashFlowCategory, Category> categories = new HashMap<ICashFlowCategory, Category>();
 
         private Integer number = 0;
+
+        private final ICashFlowGroup cashFlowGroup;
 
         /**
          * @param _groupName
          */
-        public Group(final int _weight,
-                     final String _key)
+        public Group(final ICashFlowGroup _group)
         {
-            this.weight = _weight;
-            this.key = _key;
+            this.cashFlowGroup = _group;
         }
 
         /**
@@ -348,49 +494,51 @@ public abstract class CashFlowReport_Base
                         final String _dateStr,
                         final BigDecimal _amount)
         {
-            String key;
-            int weight = 1;
+            CashFlowCategory cat;
             if (_docInst == null) {
-                key = "NONE";
-                weight = 10;
+                cat = CashFlowCategory.NONE;
             } else if (_docInst.isValid()) {
                 if (_docInst.getType().isKindOf(CISales.Invoice.getType())
                                 || _docInst.getType().isKindOf(CISales.Receipt.getType())
                                 || _docInst.getType().isKindOf(CISales.Reminder.getType())
                                 || _docInst.getType().isKindOf(CISales.CreditNote.getType())) {
-                    key = "SELL";
-                    weight = 1;
+                    cat = CashFlowCategory.SELL;
                 } else if (_docInst.getType().isKindOf(CISales.IncomingInvoice.getType())
                                || _docInst.getType().isKindOf(CISales.IncomingReceipt.getType())
                                || _docInst.getType().isKindOf(CISales.IncomingCreditNote.getType())) {
-                    key = "BUY";
-                    weight = 2;
+                    cat = CashFlowCategory.BUY;
                 } else if (_docInst.getType().isKindOf(CISales.IncomingCredit.getType())
                                 || _docInst.getType().isKindOf(CISales.Credit.getType())) {
-                    key = "CREDIT";
-                    weight = 3;
+                    cat = CashFlowCategory.CREDIT;
                     // Payroll_Payslip
                 } else if (_docInst.isValid() && _docInst.getType().getUUID().equals(
                                 UUID.fromString("a298d361-7530-4a24-b69f-ff3a1186a081"))) {
-                    key = "PAYROLL";
-                    weight = 4;
+                    cat = CashFlowCategory.PAYROLL;
                 } else {
-                    key = "OTHER";
-                    weight = 5;
+                    cat = CashFlowCategory.OTHER;
                 }
             } else {
-                key = "OTHER";
-                weight = 5;
+                cat = CashFlowCategory.OTHER;
             }
+            add(_parameter, _out, cat, _dateStr, _amount);
+        }
+
+        public void add(final Parameter _parameter,
+                        final boolean _out,
+                        final ICashFlowCategory _cat,
+                        final String _dateStr,
+                        final BigDecimal _amount)
+        {
             Category category;
-            if (this.categories.containsKey(key)) {
-                category = this.categories.get(key);
+            if (this.categories.containsKey(_cat)) {
+                category = this.categories.get(_cat);
             } else {
-                category = new Category(this, weight,  key);
-                this.categories.put(category.getKey(), category);
+                category = new Category(this, _cat);
+                this.categories.put(_cat, category);
             }
             category.add(_parameter, _dateStr, _amount);
         }
+
 
         /**
          * @param _parameter
@@ -445,7 +593,8 @@ public abstract class CashFlowReport_Base
          */
         public String getName()
         {
-            return this.number + ". " + DBProperties.getProperty(CashFlowReport.class.getName() + ".Group." + getKey());
+            return this.number + ". "
+                            + DBProperties.getProperty(CashFlowReport.class.getName() + ".Group." + getCashFlowGroup());
         }
 
         /**
@@ -455,17 +604,7 @@ public abstract class CashFlowReport_Base
          */
         public Integer getWeight()
         {
-            return this.weight;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #key}.
-         *
-         * @return value of instance variable {@link #key}
-         */
-        public String getKey()
-        {
-            return this.key;
+            return this.cashFlowGroup.getWeight();
         }
 
         /**
@@ -473,7 +612,7 @@ public abstract class CashFlowReport_Base
          *
          * @return value of instance variable {@link #categories}
          */
-        public Map<String, Category> getCategories()
+        public Map<ICashFlowCategory, Category> getCategories()
         {
             return this.categories;
         }
@@ -497,6 +636,17 @@ public abstract class CashFlowReport_Base
         {
             this.number = _number;
         }
+
+
+        /**
+         * Getter method for the instance variable {@link #cashFlowGroup}.
+         *
+         * @return value of instance variable {@link #cashFlowGroup}
+         */
+        public ICashFlowGroup getCashFlowGroup()
+        {
+            return this.cashFlowGroup;
+        }
     }
 
     /**
@@ -506,31 +656,26 @@ public abstract class CashFlowReport_Base
     {
 
         /**
-         * Key for this Category.
-         */
-        private final String key;
-
-        /**
          * Date to amount mapping.
          */
         private final Map<String, BigDecimal> amounts = new HashMap<String, BigDecimal>();
 
         private final Group group;
 
-        private final int weight;
-
         private Integer number;
 
+        private final ICashFlowCategory cashFlowCategory;
+
+
         /**
-         * @param _categoryName
+         * @param _group
+         * @param _cat
          */
         public Category(final Group _group,
-                        final int _weight,
-                        final String _key)
+                        final ICashFlowCategory _cat)
         {
-            this.weight = _weight;
             this.group = _group;
-            this.key = _key;
+            this.cashFlowCategory = _cat;
         }
 
         /**
@@ -545,7 +690,7 @@ public abstract class CashFlowReport_Base
                 _dataSource.add(this.group.getName(), getName(), entry.getKey(), entry.getValue());
                 total = total.add(entry.getValue());
             }
-            if (!"OPEN".equals(this.key)) {
+            if (!CashFlowReport_Base.OPENCAT.equals(this.cashFlowCategory)) {
                 _dataSource.add(this.group.getName(), getName(), "Total", total);
             }
         }
@@ -577,7 +722,7 @@ public abstract class CashFlowReport_Base
         {
             return this.number + ". "
                             + DBProperties.getProperty(CashFlowReport.class.getName() + ".Category."
-                                            + this.group.getKey() + "." + this.key);
+                                            + this.group.getCashFlowGroup() + "." + getCashFlowCategory());
         }
 
         /**
@@ -591,23 +736,13 @@ public abstract class CashFlowReport_Base
         }
 
         /**
-         * Getter method for the instance variable {@link #key}.
-         *
-         * @return value of instance variable {@link #key}
-         */
-        public String getKey()
-        {
-            return this.key;
-        }
-
-        /**
          * Getter method for the instance variable {@link #weight}.
          *
          * @return value of instance variable {@link #weight}
          */
         public Integer getWeight()
         {
-            return this.weight;
+            return this.cashFlowCategory.getWeight();
         }
 
         /**
@@ -628,6 +763,17 @@ public abstract class CashFlowReport_Base
         public void setNumber(final Integer _number)
         {
             this.number = _number;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #cashFlowCategory}.
+         *
+         * @return value of instance variable {@link #cashFlowCategory}
+         */
+        public ICashFlowCategory getCashFlowCategory()
+        {
+            return this.cashFlowCategory;
         }
     }
 }

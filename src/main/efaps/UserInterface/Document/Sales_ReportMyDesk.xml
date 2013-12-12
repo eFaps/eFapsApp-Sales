@@ -31,7 +31,6 @@
             <child>Sales_Product4Provider_Report2</child>
             <child>Sales_ProductABC4Product_Report</child>
             <child>Sales_ProductABC4Provider_Report</child>
-            <child>Sales_CashFlowReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

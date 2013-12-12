@@ -68,7 +68,7 @@
         <attribute>
             <name>Category</name>
             <type>Enum</type>
-            <className>org.efaps.esjp.sales.cashflow.Category</className>
+            <className>org.efaps.esjp.sales.cashflow.CashFlowCategory</className>
             <sqltable>Sales_CashFlowTypeSQLTable</sqltable>
             <sqlcolumn>CATID</sqlcolumn>
         </attribute>

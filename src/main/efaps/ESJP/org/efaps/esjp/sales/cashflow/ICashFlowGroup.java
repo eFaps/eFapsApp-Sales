@@ -18,10 +18,9 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.sales.cashflow;
 
-import org.efaps.admin.datamodel.IEnum;
-import org.efaps.admin.datamodel.attributetype.BitEnumType;
 
 /**
  * TODO comment!
@@ -29,16 +28,10 @@ import org.efaps.admin.datamodel.attributetype.BitEnumType;
  * @author The eFaps Team
  * @version $Id$
  */
-public enum Category
-                implements IEnum
+public interface ICashFlowGroup
 {
-    SELL, BUY, CREDIT, PAYROLL, OTHER;
-
     /**
-     * {@inheritDoc}
+     * @return
      */
-    public int getInt()
-    {
-        return BitEnumType.getInt4Index(ordinal());
-    }
+    Integer getWeight();
 }
