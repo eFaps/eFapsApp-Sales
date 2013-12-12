@@ -17,16 +17,16 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 207 $
- Last Changed:    $Date: 2011-05-19 10:16:37 -0500 (jue, 19 may 2011) $
- Last Changed By: $Author: Luis Estrada $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>4ffcea17-7b5c-41c2-9d6e-87336cca5071</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 211 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -43,6 +43,7 @@
         <target>
             <form>Sales_CashReceiptForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.CashReceipt">
+                <property name="PositionType">Sales_CashReceiptPosition</property>
                 <property name="StatusGroup">Sales_CashReceiptStatus</property>
                 <property name="Status">Open</property>
             </execute>
