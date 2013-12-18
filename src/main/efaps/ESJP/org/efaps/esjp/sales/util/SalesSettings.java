@@ -57,13 +57,6 @@ public interface SalesSettings
     String CURRENCYBASE = "org.efaps.sales.CurrencyBase";
 
     /**
-     * Properties.<br/>
-     * Activate the possibility the unit price of the specified type
-     * will have until n decimal digits.
-     */
-    String LONGDECIMAL = "org.efaps.sales.ActivateLongDecimal";
-
-    /**
      * Boolean (true/false).<br/>
      * Activate the possibility to define a minimum retail
      * price.
