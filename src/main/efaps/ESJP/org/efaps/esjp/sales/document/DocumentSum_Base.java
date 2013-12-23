@@ -381,7 +381,9 @@ public abstract class DocumentSum_Base
         final Map<String, String> map = new HashMap<String, String>();
 
         final int selected = getSelectedRow(_parameter);
-        final String oid = _parameter.getParameterValues("product")[selected];
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        final String fieldName = field.getName();
+        final String oid = _parameter.getParameterValues(fieldName)[selected];
         String name;
         // validate that a product was selected
         if (oid.length() > 0) {
@@ -397,16 +399,17 @@ public abstract class DocumentSum_Base
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
                 add2Map4UpdateField(_parameter, map, calcList, cal);
-                map.put("productAutoComplete", name);
+                map.put(fieldName + "AutoComplete", name);
                 list.add(map);
                 retVal.put(ReturnValues.VALUES, list);
             }
         } else {
-            map.put("productAutoComplete", name);
+            map.put(fieldName + "AutoComplete", name);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
             final StringBuilder js = new StringBuilder();
-            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
+            js.append("document.getElementsByName('").append(fieldName).append("AutoComplete')[").append(selected)
+                .append("].focus()");
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
