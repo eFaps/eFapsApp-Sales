@@ -71,6 +71,11 @@ public interface SalesSettings
     String PRODPRICENET = "org.efaps.sales.ProductPriceIsNetPrice";
 
     /**
+     * Link to a default warehouse instance
+     */
+    String DEFAULTTAXCAT4PRODUCT = "org.efaps.sales.DefaultTaxCategory4Product";
+
+    /**
      * Boolean (true/false).<br/>
      * Activate the UserInterface for Sales Channel.
      */
