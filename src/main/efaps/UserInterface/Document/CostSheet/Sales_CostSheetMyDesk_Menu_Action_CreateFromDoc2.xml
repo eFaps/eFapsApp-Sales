@@ -41,6 +41,9 @@
             <form>Sales_CostSheetForm</form>
             <execute program="org.efaps.esjp.sales.document.CostSheet" method="create" >
                 <property name="UseNumberGenerator4Name">true</property>
+                <property name="PositionType">Sales_CostSheetPosition</property>
+                <property name="StatusGroup">Sales_CostSheetStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
         <!-- properties -->
