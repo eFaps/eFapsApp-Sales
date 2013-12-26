@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public class Calculator
      * @param _unitPrice            unit price
      * @param _discount             discount
      * @param _priceFromDB          must the price set from DB
-     * @param _includeMinRetail     must the minimum retail price be included
+     * @param _calculatorUse        config to be used
      * @throws EFapsException on error
      */
     //CHECKSTYLE:OFF
@@ -78,9 +78,9 @@ public class Calculator
     }
 
     /**
-     * @param _parameter
-     * @param _config
-     * @throws EFapsException
+     * @param _parameter  Parameter  parameter as passed from the eFaps API
+     * @param _config    config to be used
+     * @throws EFapsException on error
      */
     public Calculator(final Parameter _parameter,
                       final ICalculatorConfig _config)
