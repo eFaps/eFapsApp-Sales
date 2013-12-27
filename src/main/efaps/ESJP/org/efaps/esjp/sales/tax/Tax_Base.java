@@ -42,20 +42,48 @@ import org.efaps.util.EFapsException;
 public abstract class Tax_Base
 {
 
+    /**
+     * Instance of this tax.
+     */
     private Instance instance;
+
+    /**
+     * Name of this tax.
+     */
     private String name;
+
+    /**
+     * UUID of this tax.
+     */
     private UUID uuid;
+
+    /**
+     * NUmerator of this tax.
+     */
     private Integer numerator;
+
+    /**
+     * Denominator for this tax.
+     */
     private Integer denominator;
+
+    /**
+     * Was this tax initialized.
+     */
     private boolean initialized = false;
+
+    /**
+     * Tax category this tax belongs to.
+     */
     private TaxCat_Base taxCat;
 
     /**
-     * @param _currentInstance
-     * @param _nameTmp
-     * @param _uuidTmp
-     * @param _numerator
-     * @param _denominator
+     * @param _taxcat       Tax category this tax belongs to
+     * @param _instance     Instance of this tax
+     * @param _name         name of this tax
+     * @param _uuid         UUID of this tax
+     * @param _numerator    Numerator for this tax
+     * @param _denominator  Denominator for this tax
      */
     public Tax_Base(final TaxCat_Base _taxcat,
                     final Instance _instance,
@@ -143,7 +171,7 @@ public abstract class Tax_Base
      *
      * @return value of instance variable {@link #uuid}
      */
-    public UUID getUuid()
+    public UUID getUUID()
         throws EFapsException
     {
         if (!this.initialized) {
@@ -191,24 +219,11 @@ public abstract class Tax_Base
     }
 
     /**
-     * @param _uuid
-     */
-    public static Tax get(final UUID _catUUID,
-                          final UUID _uuid)
-        throws EFapsException
-    {
-        final Tax ret = new Tax();
-        ret.setUuid(_uuid);
-        ret.setTaxCat(TaxCat_Base.get(_catUUID));
-        return ret;
-    }
-
-    /**
      * Setter method for instance variable {@link #uuid}.
      *
      * @param _uuid value for instance variable {@link #uuid}
      */
-    protected void setUuid(final UUID _uuid)
+    protected void setUUID(final UUID _uuid)
     {
         this.uuid = _uuid;
     }
@@ -221,5 +236,41 @@ public abstract class Tax_Base
     protected void setTaxCat(final TaxCat_Base _taxCat)
     {
         this.taxCat = _taxCat;
+    }
+
+    /**
+     * @param _uuid
+     */
+    public static Tax get(final UUID _catUUID,
+                          final UUID _uuid)
+        throws EFapsException
+    {
+        final Tax ret = new Tax();
+        ret.setUUID(_uuid);
+        ret.setTaxCat(TaxCat_Base.get(_catUUID));
+        return ret;
+    }
+
+    @Override
+    public boolean equals(final Object _obj)
+    {
+        boolean ret = false;
+        if (_obj instanceof Tax_Base) {
+            try {
+                ret = this.uuid.equals(((Tax_Base) _obj).getUUID());
+            } catch (final EFapsException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        } else {
+            ret = super.equals(_obj);
+        }
+        return ret;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return this.uuid.hashCode();
     }
 }

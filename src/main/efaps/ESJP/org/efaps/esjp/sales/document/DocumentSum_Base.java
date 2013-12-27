@@ -987,7 +987,7 @@ public abstract class DocumentSum_Base
         for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
             final TaxEntry taxentry = new TaxEntry();
             taxentry.setAmount(entry.getValue());
-            taxentry.setUUID(entry.getKey().getUuid());
+            taxentry.setUUID(entry.getKey().getUUID());
             taxentry.setCatUUID(entry.getKey().getTaxCat().getUuid());
             ret.getEntries().add(taxentry);
         }
