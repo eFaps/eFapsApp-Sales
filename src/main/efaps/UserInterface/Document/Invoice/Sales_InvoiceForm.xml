@@ -234,6 +234,7 @@
         <field name="taxes">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
             <property name="Attribute">Taxes</property>
             <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
@@ -249,15 +250,15 @@
             <property name="Label">Sales_Invoice/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="taxes4Read">
-            <property name="Attribute">Taxes</property>
-            <property name="ModeEdit">NONE</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
             <property name="Level">2</property>
@@ -288,15 +289,15 @@
             <property name="Label">Sales_Invoice/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="rateTaxes">
-            <property name="Attribute">RateTaxes</property>
-            <property name="ModeEdit">NONE</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
