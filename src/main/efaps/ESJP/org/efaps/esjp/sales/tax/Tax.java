@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,14 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.sales;
+
+package org.efaps.esjp.sales.tax;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+
+
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,20 +35,30 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFasp Team
  * @version $Id$
  */
-@EFapsUUID("9d760033-3a06-4ef9-ac90-c67fa03c04a6")
+@EFapsUUID("b74fc4d7-aee7-4300-bd1a-7bf59486deca")
 @EFapsRevision("$Rev$")
-@Deprecated
-public class Tax extends Tax_Base
+public class Tax
+    extends Tax_Base
 {
 
     /**
-     * @param oidTmp
-     * @param idTmp
-     * @param nameTmp
+     * @param _currentInstance
+     * @param _nameTmp
+     * @param _uuidTmp
+     * @param _numerator
+     * @param _denominator
      */
-    protected Tax(final String _oidTmp, final long _idTmp, final String _nameTmp)
+    public Tax(final TaxCat_Base _taxcat,
+               final Instance _instance,
+               final String _nameTmp,
+               final String _uuidTmp,
+               final Integer _numerator,
+               final Integer _denominator)
     {
-        super(_oidTmp, _idTmp, _nameTmp);
+        super(_taxcat, _instance, _nameTmp, _uuidTmp, _numerator, _denominator);
     }
 
+    public Tax(){
+        super();
+    }
 }

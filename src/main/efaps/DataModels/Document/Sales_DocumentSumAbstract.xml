@@ -64,7 +64,14 @@
                 <property name="Type">ERP_Currency</property>
             </trigger>
         </attribute>
-         <attribute>
+        <attribute>
+            <name>Taxes</name>
+            <type>Jaxb</type>
+            <className>org.efaps.esjp.sales.tax.TaxesAttribute</className>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>TAXES</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Rate</name>
             <type>Rate</type>
             <sqltable>Sales_DocumentSumsSQLTable</sqltable>
@@ -105,6 +112,13 @@
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
+        </attribute>
+        <attribute>
+            <name>RateTaxes</name>
+            <type>Jaxb</type>
+            <className>org.efaps.esjp.sales.tax.TaxesAttribute</className>
+            <sqltable>Sales_DocumentSumsSQLTable</sqltable>
+            <sqlcolumn>RATETAXES</sqlcolumn>
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_Receipt.ACCESSCHECK" event="ACCESSCHECK" />

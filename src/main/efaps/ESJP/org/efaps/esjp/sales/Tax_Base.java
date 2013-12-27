@@ -47,6 +47,7 @@ import org.joda.time.LocalDate;
  */
 @EFapsUUID("0c3a91e2-1497-423f-ae60-a0ae94e95451")
 @EFapsRevision("$Rev$")
+@Deprecated
 public abstract class Tax_Base
     implements CacheObjectInterface
 {

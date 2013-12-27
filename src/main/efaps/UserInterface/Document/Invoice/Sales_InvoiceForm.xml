@@ -284,6 +284,10 @@
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>

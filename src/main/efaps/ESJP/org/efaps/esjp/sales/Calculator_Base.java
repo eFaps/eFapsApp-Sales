@@ -25,6 +25,10 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.Format;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
@@ -37,14 +41,15 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
-import org.efaps.esjp.sales.Tax_Base.TaxRate;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.TaxCat;
+import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
-import org.joda.time.LocalDate;
-
+import org.joda.time.DateTime;
 /**
  * TODO comment!
  *
@@ -96,7 +101,7 @@ public abstract class Calculator_Base
     /**
      * Is of the taxcategory belonging to this calculator.
      */
-    private final long taxcatId;
+    private final long taxCatId;
 
     /**
      * The Calculation must be done without tax.
@@ -116,7 +121,7 @@ public abstract class Calculator_Base
     /**
      * Date this Calculator is based on. Used for e.g. date of Taxes.
      */
-    private LocalDate localDate;
+    private DateTime date;
 
     /**
      * Must for this Product perception be applied.
@@ -133,6 +138,8 @@ public abstract class Calculator_Base
      */
     private final String typeName;
 
+    private final List<Tax> taxes = new ArrayList<Tax>();
+
     /**
      * Constructor used to instantiate an empty calculator.
      * @throws EFapsException on error
@@ -140,10 +147,10 @@ public abstract class Calculator_Base
     public Calculator_Base()
         throws EFapsException
     {
-        this.taxcatId = 0;
+        this.taxCatId = 0;
         this.empty = true;
         this.typeName = CISales.DocumentAbstract.getType().getName();
-        setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
+        setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
     /**
@@ -156,10 +163,10 @@ public abstract class Calculator_Base
                            final ICalculatorConfig _config)
         throws EFapsException
     {
-        this.taxcatId = 0;
+        this.taxCatId = 0;
         this.empty = true;
         this.typeName = _config.getTypeName4SysConf(_parameter);
-        setLocalDate(new LocalDate(Context.getThreadContext().getChronology()));
+        setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
     /**
@@ -190,12 +197,12 @@ public abstract class Calculator_Base
         this.typeName = _config.getTypeName4SysConf(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
-            setLocalDate(DateUtil.getDateFromParameter(dateStr).toLocalDate());
+            setDate(DateUtil.getDateFromParameter(dateStr));
         } else {
-            setLocalDate(new LocalDate());
+            setDate(new DateTime());
         }
         if (_calc != null && _oid.equals(_calc.getOid())) {
-            this.taxcatId = _calc.getTaxcatId();
+            this.taxCatId = _calc.getTaxCatId();
             this.oid = _calc.getOid();
             this.productPrice = _calc.getProductPrice();
             this.minProductPrice = _calc.getMinProductPrice();
@@ -225,12 +232,12 @@ public abstract class Calculator_Base
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
-                this.taxcatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
+                this.taxCatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && _config.isIncludeMinRetail(_parameter)) {
                     this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
-                this.taxcatId = 0;
+                this.taxCatId = 0;
             }
         }
         setDiscount(_discount);
@@ -411,21 +418,25 @@ public abstract class Calculator_Base
         this.productNetUnitPrice.setCurrentPrice(_netUnitPrice);
         this.productNetUnitPrice.setOrigPrice(_netUnitPrice);
         this.productNetUnitPrice.setBasePrice(_netUnitPrice.multiply(this.productPrice.getBaseRate()));
-        if (this.taxcatId > 0) {
-            final TaxRate rate = getTaxRate();
-            final BigDecimal denom = new BigDecimal(rate.getDenominator());
-            final BigDecimal num = new BigDecimal(rate.getNumerator());
-            final BigDecimal factor = num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
-            if (factor.compareTo(BigDecimal.ONE) == 0) {
+        if (this.taxCatId > 0) {
+            final List<Tax> taxesTmp = getTaxes();
+            BigDecimal targetPrice = _netUnitPrice;
+            for (final Tax tax: taxesTmp) {
+                final BigDecimal factor = tax.getFactor();
+                if (factor.compareTo(BigDecimal.ONE) != 0) {
+                    targetPrice = targetPrice.add(_netUnitPrice.multiply(factor));
+                }
+            }
+
+            if (targetPrice.compareTo(_netUnitPrice) == 0) {
                 this.productCrossUnitPrice = this.productNetUnitPrice;
             } else {
                 if (this.productCrossUnitPrice == null) {
                     this.productCrossUnitPrice = getNewPrice();
                 }
-                final BigDecimal cross = _netUnitPrice.multiply(BigDecimal.ONE.add(factor));
-                this.productCrossUnitPrice.setCurrentPrice(cross);
-                this.productCrossUnitPrice.setOrigPrice(cross);
-                this.productCrossUnitPrice.setBasePrice(cross.multiply(this.productPrice.getBaseRate()));
+                this.productCrossUnitPrice.setCurrentPrice(targetPrice);
+                this.productCrossUnitPrice.setOrigPrice(targetPrice);
+                this.productCrossUnitPrice.setBasePrice(targetPrice.multiply(this.productPrice.getBaseRate()));
             }
         }
     }
@@ -524,21 +535,25 @@ public abstract class Calculator_Base
         this.productCrossUnitPrice.setOrigPrice(_crossUnitPrice);
         this.productCrossUnitPrice.setBasePrice(_crossUnitPrice.multiply(this.productCrossUnitPrice.getBaseRate()));
 
-        if (this.taxcatId > 0) {
-            final TaxRate rate = getTaxRate();
-            final BigDecimal denom = new BigDecimal(rate.getDenominator());
-            final BigDecimal num = new BigDecimal(rate.getNumerator());
-            final BigDecimal factor = BigDecimal.ONE.add(num.divide(denom, 16, BigDecimal.ROUND_HALF_UP));
-            if (factor.compareTo(BigDecimal.ONE) == 0) {
+        if (this.taxCatId > 0) {
+            final List<Tax> taxesTmp = getTaxes();
+            BigDecimal targetPrice = _crossUnitPrice;
+            for (final Tax tax : taxesTmp) {
+                final BigDecimal factor = tax.getFactor();
+                if (factor.compareTo(BigDecimal.ONE) != 0) {
+                    targetPrice = targetPrice.subtract(_crossUnitPrice.subtract(_crossUnitPrice.divide(BigDecimal.ONE
+                                    .add(factor))));
+                }
+            }
+            if (targetPrice.compareTo(_crossUnitPrice) == 0) {
                 this.productNetUnitPrice = this.productCrossUnitPrice;
             } else {
                 if (this.productNetUnitPrice == null) {
                     this.productNetUnitPrice = getNewPrice();
                 }
-                final BigDecimal net = _crossUnitPrice.divide(factor, 16, BigDecimal.ROUND_HALF_UP);
-                this.productNetUnitPrice.setCurrentPrice(net);
-                this.productNetUnitPrice.setOrigPrice(net);
-                this.productNetUnitPrice.setBasePrice(net.multiply(this.productNetUnitPrice.getBaseRate()));
+                this.productNetUnitPrice.setCurrentPrice(targetPrice);
+                this.productNetUnitPrice.setOrigPrice(targetPrice);
+                this.productNetUnitPrice.setBasePrice(targetPrice.multiply(this.productNetUnitPrice.getBaseRate()));
             }
         }
     }
@@ -603,6 +618,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the discount.
+     * @throws EFapsException on error
      */
     public String getDiscountStr()
         throws EFapsException
@@ -752,6 +768,7 @@ public abstract class Calculator_Base
 
     /**
      * @return string representation of the quantity.
+     * @throws EFapsException on error
      */
     public String getQuantityStr()
         throws EFapsException
@@ -958,32 +975,33 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxcatId > 0) {
-                final TaxRate rate = getTaxRate();
-                final BigDecimal denom = new BigDecimal(rate.getDenominator());
-                final BigDecimal num = new BigDecimal(rate.getNumerator());
-                final BigDecimal factor = num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
-                if (factor.compareTo(BigDecimal.ONE) == 0) {
-                    ret.setCurrentPrice(_price.getCurrentPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : _price.getCurrentPrice());
-                    ret.setBasePrice(_price.getBasePrice() == null
-                                    ? BigDecimal.ZERO
-                                    : _price.getBasePrice());
-                    ret.setOrigPrice(_price.getOrigPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : _price.getOrigPrice());
-                } else {
-                    ret.setCurrentPrice(_price.getCurrentPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : _price.getCurrentPrice().multiply(BigDecimal.ONE.add(factor)));
-                    ret.setBasePrice(_price.getBasePrice() == null
-                                    ? BigDecimal.ZERO
-                                    : _price.getBasePrice().multiply(BigDecimal.ONE.add(factor)));
-                    ret.setOrigPrice(_price.getOrigPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : _price.getOrigPrice().multiply(BigDecimal.ONE.add(factor)));
+            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxCatId > 0) {
+                final List<Tax> taxesTmp = getTaxes();
+                final BigDecimal currentPrice = _price.getCurrentPrice() == null ? BigDecimal.ZERO : _price.getCurrentPrice();
+                final BigDecimal basePrice = _price.getBasePrice() == null ? BigDecimal.ZERO : _price.getBasePrice();
+                final BigDecimal origPrice = _price.getOrigPrice() == null ? BigDecimal.ZERO : _price.getOrigPrice();
+                BigDecimal tCurrentPrice = currentPrice;
+                BigDecimal tBasePrice = basePrice;
+                BigDecimal tOrigPrice = origPrice;
+
+                for (final Tax tax : taxesTmp) {
+                    final BigDecimal factor = tax.getFactor();
+                    if (factor.compareTo(BigDecimal.ONE) != 0) {
+                        if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tCurrentPrice = tCurrentPrice.add(currentPrice.multiply(factor));
+                        }
+                        if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tBasePrice = tBasePrice.add(basePrice.multiply(factor));
+                        }
+                        if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tOrigPrice = tOrigPrice.add(origPrice.multiply(factor));
+                        }
+                    }
                 }
+                ret.setCurrentPrice(tCurrentPrice);
+                ret.setBasePrice(tBasePrice);
+                ret.setOrigPrice(tOrigPrice);
+
             } else {
                 ret.setCurrentPrice(_price.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
@@ -1013,7 +1031,7 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxcatId > 0) {
+            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxCatId > 0) {
                 ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
                                 : this.productPrice.getCurrentPrice());
@@ -1024,34 +1042,37 @@ public abstract class Calculator_Base
                                 ? BigDecimal.ZERO
                                 : this.productPrice.getOrigPrice());
             } else {
-                final TaxRate rate = getTaxRate();
-                final BigDecimal denom = new BigDecimal(rate.getDenominator());
-                final BigDecimal num = new BigDecimal(rate.getNumerator());
-                final BigDecimal factor = num.divide(denom, 16, BigDecimal.ROUND_HALF_UP);
-                if (factor.compareTo(BigDecimal.ONE) == 0) {
-                    ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : this.productPrice.getCurrentPrice());
-                    ret.setBasePrice(this.productPrice.getBasePrice() == null
-                                    ? BigDecimal.ZERO
-                                    : this.productPrice.getBasePrice());
-                    ret.setOrigPrice(this.productPrice.getOrigPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : this.productPrice.getOrigPrice());
-                } else {
-                    ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : this.productPrice.getCurrentPrice().divide(BigDecimal.ONE.add(factor),
-                                                    BigDecimal.ROUND_HALF_UP));
-                    ret.setBasePrice(this.productPrice.getBasePrice() == null
-                                    ? BigDecimal.ZERO
-                                    : this.productPrice.getBasePrice().divide(BigDecimal.ONE.add(factor),
-                                                    BigDecimal.ROUND_HALF_UP));
-                    ret.setOrigPrice(this.productPrice.getOrigPrice() == null
-                                    ? BigDecimal.ZERO
-                                    : this.productPrice.getOrigPrice().divide(BigDecimal.ONE.add(factor),
-                                                    BigDecimal.ROUND_HALF_UP));
+                final List<Tax> taxesTmp = getTaxes();
+                final BigDecimal currentPrice = this.productPrice.getCurrentPrice() == null ? BigDecimal.ZERO
+                                : this.productPrice.getCurrentPrice();
+                final BigDecimal basePrice = this.productPrice.getBasePrice() == null
+                                ? BigDecimal.ZERO : this.productPrice.getBasePrice();
+                final BigDecimal origPrice = this.productPrice.getOrigPrice() == null
+                                ? BigDecimal.ZERO : this.productPrice.getOrigPrice();
+                BigDecimal tCurrentPrice = currentPrice;
+                BigDecimal tBasePrice = basePrice;
+                BigDecimal tOrigPrice = origPrice;
+
+                for (final Tax tax : taxesTmp) {
+                    final BigDecimal factor = tax.getFactor();
+                    if (factor.compareTo(BigDecimal.ONE) != 0) {
+                        if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
+                                            .divide(BigDecimal.ONE.add(factor))));
+                        }
+                        if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
+                                            .add(factor))));
+                        }
+                        if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
+                            tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
+                                            .add(factor))));
+                        }
+                    }
                 }
+                ret.setCurrentPrice(tCurrentPrice);
+                ret.setBasePrice(tBasePrice);
+                ret.setOrigPrice(tOrigPrice);
             }
         }
         return ret;
@@ -1109,25 +1130,32 @@ public abstract class Calculator_Base
         return _formater.format(getPerception());
     }
 
-    /**
-     * Get the if of the current tax.
-     *
-     * @return tax id
-     */
-    public Long getTaxId()
+    public List<Tax> getTaxes()
+        throws EFapsException
     {
-        return getTaxRate().getId();
+        if (this.taxes.isEmpty()) {
+            this.taxes.addAll(getTaxCat().getTaxes(getDate()));
+        }
+        return this.taxes;
     }
 
-    /**
-     * Get the rate.
-     *
-     * @return Rate
-     */
-    public TaxRate getTaxRate()
+    public Map<Tax, BigDecimal> getTaxesAmounts()
+        throws EFapsException
     {
-        final Tax taxcat = Tax_Base.get(this.taxcatId);
-        return taxcat == null ? TaxRate.getZeroTax() : taxcat.getTaxRate(getLocalDate());
+        final Map<Tax,BigDecimal> ret = new HashMap<Tax,BigDecimal>();
+        final List<Tax> taxestemp = getTaxes();
+        for (final Tax tax : taxestemp) {
+            final BigDecimal net = getNetPrice();
+            ret.put(tax, net.multiply(tax.getFactor()));
+        }
+        return ret;
+    }
+
+
+    public TaxCat getTaxCat()
+        throws EFapsException
+    {
+        return TaxCat_Base.get(getTaxCatId());
     }
 
     /**
@@ -1135,9 +1163,9 @@ public abstract class Calculator_Base
      *
      * @return value of instance variable {@link #taxcatId}
      */
-    public long getTaxcatId()
+    public long getTaxCatId()
     {
-        return this.taxcatId;
+        return this.taxCatId;
     }
 
     /**
@@ -1185,6 +1213,7 @@ public abstract class Calculator_Base
     /**
      * @param _value value to be formated
      * @return value formated with {@link #formater}
+     * @throws EFapsException on error
      */
     public String format(final Object _value)
         throws EFapsException
@@ -1208,9 +1237,9 @@ public abstract class Calculator_Base
      * @param _localDate value for instance variable {@link #localDate}
      */
 
-    public void setLocalDate(final LocalDate _localDate)
+    public void setDate(final DateTime _date)
     {
-        this.localDate = _localDate;
+        this.date = _date;
     }
 
     /**
@@ -1218,9 +1247,9 @@ public abstract class Calculator_Base
      *
      * @return value of instance variable {@link #localDate}
      */
-    public LocalDate getLocalDate()
+    public DateTime getDate()
     {
-        return this.localDate;
+        return this.date;
     }
 
     /**
@@ -1242,7 +1271,6 @@ public abstract class Calculator_Base
     {
         this.empty = _empty;
     }
-
 
     /**
      * Getter method for the instance variable {@link #typeName}.

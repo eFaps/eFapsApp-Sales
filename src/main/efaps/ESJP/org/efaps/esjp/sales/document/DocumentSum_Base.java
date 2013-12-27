@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -68,6 +69,9 @@ import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.xml.TaxEntry;
+import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -201,6 +205,8 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
             insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList));
+            insert.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate));
 
             final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
                             .setScale(scale, BigDecimal.ROUND_HALF_UP);
@@ -715,7 +721,7 @@ public abstract class DocumentSum_Base
                                 .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
                                 .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.Tax, calc.getTaxId());
+                posIns.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
                 posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
                 posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                 .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
@@ -956,6 +962,44 @@ public abstract class DocumentSum_Base
 
         if (props.containsKey(type) && Integer.valueOf(props.getProperty(type)) != ret) {
             ret = Integer.valueOf(props.getProperty(type));
+        }
+        return ret;
+    }
+
+    public Taxes getRateTaxes(final Parameter _parameter,
+                              final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        final Map<Tax, BigDecimal> values = new HashMap<Tax, BigDecimal>();
+        for (final Calculator calc : _calcList) {
+            final Map<Tax, BigDecimal> valMap = calc.getTaxesAmounts();
+            for (final Entry<Tax, BigDecimal> entry : valMap.entrySet()) {
+                if (!values.containsKey(entry.getKey())) {
+                    values.put(entry.getKey(), BigDecimal.ZERO);
+                }
+                values.put(entry.getKey(), values.get(entry.getKey()).add(entry.getValue()));
+            }
+        }
+        final Taxes ret = new Taxes();
+        for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
+            final TaxEntry taxentry = new TaxEntry();
+            taxentry.setAmount(entry.getValue());
+            taxentry.setUUID(entry.getKey().getUuid());
+            taxentry.setCatUUID(entry.getKey().getTaxCat().getUuid());
+            ret.getEntries().add(taxentry);
+        }
+        return ret;
+    }
+
+
+    public Taxes getTaxes(final Parameter _parameter,
+                          final List<Calculator> _calcList,
+                          final BigDecimal _rate)
+        throws EFapsException
+    {
+        final Taxes ret = getRateTaxes(_parameter, _calcList);
+        for (final TaxEntry entry  : ret.getEntries()) {
+            entry.setAmount(entry.getAmount().divide(_rate, BigDecimal.ROUND_HALF_UP));
         }
         return ret;
     }

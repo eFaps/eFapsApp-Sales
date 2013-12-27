@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2013 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.sales;
+
+package org.efaps.esjp.sales.tax;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,20 +33,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFasp Team
  * @version $Id$
  */
-@EFapsUUID("9d760033-3a06-4ef9-ac90-c67fa03c04a6")
+@EFapsUUID("73b17887-a9cc-4a8f-9fb3-2cfb7d73b500")
 @EFapsRevision("$Rev$")
-@Deprecated
-public class Tax extends Tax_Base
+public class TaxesAttribute
+    extends TaxesAttribute_Base
 {
-
-    /**
-     * @param oidTmp
-     * @param idTmp
-     * @param nameTmp
-     */
-    protected Tax(final String _oidTmp, final long _idTmp, final String _nameTmp)
-    {
-        super(_oidTmp, _idTmp, _nameTmp);
-    }
 
 }
