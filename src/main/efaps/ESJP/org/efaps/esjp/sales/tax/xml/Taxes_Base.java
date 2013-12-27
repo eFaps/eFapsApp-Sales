@@ -18,38 +18,54 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.sales.tax.xml;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
 /**
- * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_base</code>"
- * class.
+ * TODO comment!
  *
- * @author The eFasp Team
+ * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("4aaad5f0-40a7-4ac6-b26a-ea6495a499e6")
+@EFapsUUID("dcce8bff-2832-4bc8-ac69-8b72322d5d1d ")
 @EFapsRevision("$Rev$")
 @XmlAccessorType(XmlAccessType.NONE)
-@XmlRootElement(name = "taxes")
-public class Taxes
-    extends Taxes_Base
+public abstract class Taxes_Base
     implements Serializable
 {
 
     /**
-    *
-    */
+     *
+     */
     private static final long serialVersionUID = 1L;
 
+    /**
+     * Entries for this Taxes Collection.
+     */
+    @XmlElementWrapper(name = "entries")
+    @XmlElement(name = "entry")
+    private final List<TaxEntry> entries = new ArrayList<TaxEntry>();
+
+    /**
+     * Getter method for the instance variable {@link #entries}.
+     *
+     * @return value of instance variable {@link #entries}
+     */
+    public List<TaxEntry> getEntries()
+    {
+        return this.entries;
+    }
 }

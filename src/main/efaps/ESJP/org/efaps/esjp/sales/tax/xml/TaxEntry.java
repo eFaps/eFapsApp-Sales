@@ -21,20 +21,19 @@
 package org.efaps.esjp.sales.tax.xml;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
  *
- * @author The eFaps Team
+ * @author The eFasp Team
  * @version $Id$
  */
 @EFapsUUID("a7a87e68-54b2-48dc-a58f-8c1ce45e27d6")
@@ -43,88 +42,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class TaxEntry
     implements Serializable
 {
-
     /**
      *
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * Amount of the Tax.
-     */
-    @XmlAttribute(name = "amount")
-    private BigDecimal amount;
-
-    /**
-     * UUID of the Tax.
-     */
-    @XmlAttribute(name = "uuid")
-    private String uuid;
-
-    /**
-     * UUID of the related Category.
-     */
-    @XmlAttribute(name = "catUuid")
-    private String catUuid;
-
-    /**
-     * Getter method for the instance variable {@link #amount}.
-     *
-     * @return value of instance variable {@link #amount}
-     */
-    public BigDecimal getAmount()
-    {
-        return this.amount;
-    }
-
-    /**
-     * Setter method for instance variable {@link #amount}.
-     *
-     * @param _amount value for instance variable {@link #amount}
-     */
-    public void setAmount(final BigDecimal _amount)
-    {
-        this.amount = _amount;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #uuid}.
-     *
-     * @return value of instance variable {@link #uuid}
-     */
-    public UUID getUUID()
-    {
-        return UUID.fromString(this.uuid);
-    }
-
-    /**
-     * Setter method for instance variable {@link #uuid}.
-     *
-     * @param _uuid value for instance variable {@link #uuid}
-     */
-    public void setUUID(final UUID _uuid)
-    {
-        this.uuid = _uuid.toString();
-    }
-
-    /**
-     * Getter method for the instance variable {@link #catUuid}.
-     *
-     * @return value of instance variable {@link #catUuid}
-     */
-    public UUID getCatUUID()
-    {
-        return UUID.fromString(this.catUuid);
-    }
-
-    /**
-     * Setter method for instance variable {@link #uuid}.
-     *
-     * @param _uuid value for instance variable {@link #uuid}
-     */
-    public void setCatUUID(final UUID _uuid)
-    {
-        this.catUuid = _uuid.toString();
-    }
-
 }
