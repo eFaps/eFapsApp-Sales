@@ -42,6 +42,9 @@ import org.efaps.util.EFapsException;
 public abstract class Tax_Base
 {
 
+    private static final Tax ZEROTAX = new Tax(null, null, "ZERO", "e27a167c-a4e2-416f-9878-c785bfa33576",
+                    Integer.valueOf(1), Integer.valueOf(1));
+
     /**
      * Instance of this tax.
      */
@@ -250,6 +253,12 @@ public abstract class Tax_Base
         ret.setTaxCat(TaxCat_Base.get(_catUUID));
         return ret;
     }
+
+    public static Tax getZeroTax()
+    {
+        return Tax_Base.ZEROTAX;
+    }
+
 
     @Override
     public boolean equals(final Object _obj)
