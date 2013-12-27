@@ -128,4 +128,22 @@ public abstract class TaxEntry_Base
         this.catUuid = _uuid.toString();
     }
 
+
+    @Override
+    public boolean equals(final Object _obj)
+    {
+        boolean ret;
+        if (_obj instanceof TaxEntry_Base) {
+            ret = this.uuid.equals(((TaxEntry_Base) _obj).getUUID());
+        } else {
+            ret = super.equals(_obj);
+        }
+        return ret;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        return getUUID().hashCode();
+    }
 }
