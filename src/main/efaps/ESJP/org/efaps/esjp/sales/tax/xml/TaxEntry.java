@@ -40,6 +40,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsRevision("$Rev$")
 @XmlAccessorType(XmlAccessType.NONE)
 public class TaxEntry
+    extends TaxEntry_Base
     implements Serializable
 {
     /**
