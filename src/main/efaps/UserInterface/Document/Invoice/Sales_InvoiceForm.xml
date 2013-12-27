@@ -221,7 +221,7 @@
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="RowSpan">3</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -248,6 +248,10 @@
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+         <field name="taxes">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
             <property name="Level">2</property>
