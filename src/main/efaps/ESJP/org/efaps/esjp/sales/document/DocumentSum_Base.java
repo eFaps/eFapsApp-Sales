@@ -70,6 +70,7 @@ import org.efaps.esjp.sales.Payment_Base;
 import org.efaps.esjp.sales.Payment_Base.OpenAmount;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.tax.Tax;
+import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
@@ -314,6 +315,8 @@ public abstract class DocumentSum_Base
         // totals
         _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
         _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
+
+        _map.put("taxes",  new TaxesAttribute().getUIValue(getRateTaxes(_parameter, _calcList)));
 
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
             _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));

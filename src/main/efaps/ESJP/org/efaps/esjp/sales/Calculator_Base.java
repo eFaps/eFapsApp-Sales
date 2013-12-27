@@ -1133,7 +1133,7 @@ public abstract class Calculator_Base
     public List<Tax> getTaxes()
         throws EFapsException
     {
-        if (this.taxes.isEmpty()) {
+        if (this.taxes.isEmpty() && getTaxCatId() > 0) {
             this.taxes.addAll(getTaxCat().getTaxes(getDate()));
         }
         return this.taxes;
@@ -1142,7 +1142,7 @@ public abstract class Calculator_Base
     public Map<Tax, BigDecimal> getTaxesAmounts()
         throws EFapsException
     {
-        final Map<Tax,BigDecimal> ret = new HashMap<Tax,BigDecimal>();
+        final Map<Tax, BigDecimal> ret = new HashMap<Tax, BigDecimal>();
         final List<Tax> taxestemp = getTaxes();
         for (final Tax tax : taxestemp) {
             final BigDecimal net = getNetPrice();

@@ -231,6 +231,12 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">NetTotal</property>
         </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Attribute">Taxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
+        </field>
         <field name="crossTotal">
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
@@ -249,7 +255,7 @@
             <property name="Label">Sales_Invoice/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field name="taxes">
+        <field name="taxes4Read">
             <property name="Attribute">Taxes</property>
             <property name="ModeEdit">NONE</property>
         </field>
