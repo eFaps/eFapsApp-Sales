@@ -128,9 +128,7 @@ public abstract class Tax_Base
     public int getNumerator()
         throws EFapsException
     {
-        if (!this.initialized) {
-            initialize();
-        }
+        initialize();
         return this.numerator;
     }
 
@@ -140,20 +138,23 @@ public abstract class Tax_Base
     private void initialize()
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
-        queryBldr.addWhereAttrEqValue(CISales.Tax.UUID, this.uuid.toString());
-        queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, getTaxCat().getInstance());
-        queryBldr.addOrderByAttributeDesc(CISales.Tax.ValidFrom);
-        final CachedMultiPrintQuery multi = queryBldr.getCachedPrint(TaxCat_Base.CACHEKEY);
-        multi.setEnforceSorted(true);
-        multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
-                        CISales.Tax.UUID);
-        multi.execute();
-        if (multi.next()) {
-            this.instance = multi.getCurrentInstance();
-            this.name = multi.<String>getAttribute(CISales.Tax.Name);
-            this.numerator = multi.<Integer>getAttribute(CISales.Tax.Numerator);
-            this.denominator = multi.<Integer>getAttribute(CISales.Tax.Denominator);
+        if (!this.initialized) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
+            queryBldr.addWhereAttrEqValue(CISales.Tax.UUID, this.uuid.toString());
+            queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, getTaxCat().getInstance());
+            queryBldr.addOrderByAttributeDesc(CISales.Tax.ValidFrom);
+            final CachedMultiPrintQuery multi = queryBldr.getCachedPrint(TaxCat_Base.CACHEKEY);
+            multi.setEnforceSorted(true);
+            multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
+                            CISales.Tax.UUID);
+            multi.execute();
+            if (multi.next()) {
+                this.instance = multi.getCurrentInstance();
+                this.name = multi.<String>getAttribute(CISales.Tax.Name);
+                this.numerator = multi.<Integer>getAttribute(CISales.Tax.Numerator);
+                this.denominator = multi.<Integer>getAttribute(CISales.Tax.Denominator);
+                this.initialized = true;
+            }
         }
     }
 
@@ -163,9 +164,7 @@ public abstract class Tax_Base
     public int getDenominator()
         throws EFapsException
     {
-        if (!this.initialized) {
-            initialize();
-        }
+        initialize();
         return this.denominator;
     }
 
@@ -177,9 +176,7 @@ public abstract class Tax_Base
     public UUID getUUID()
         throws EFapsException
     {
-        if (!this.initialized) {
-            initialize();
-        }
+        initialize();
         return this.uuid;
     }
 
@@ -191,9 +188,7 @@ public abstract class Tax_Base
     public Instance getInstance()
         throws EFapsException
     {
-        if (!this.initialized) {
-            initialize();
-        }
+        initialize();
         return this.instance;
     }
 
@@ -205,9 +200,7 @@ public abstract class Tax_Base
     public String getName()
         throws EFapsException
     {
-        if (!this.initialized) {
-            initialize();
-        }
+        initialize();
         return this.name;
     }
 

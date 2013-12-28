@@ -62,6 +62,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Calculator;
@@ -206,8 +207,8 @@ public abstract class DocumentSum_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
 
             insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
-            insert.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList));
-            insert.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate));
+            insert.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList, rateCurrInst));
+            insert.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
 
             final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
                             .setScale(scale, BigDecimal.ROUND_HALF_UP);
@@ -316,7 +317,7 @@ public abstract class DocumentSum_Base
         _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
         _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
 
-        _map.put("taxes",  new TaxesAttribute().getUIValue(getRateTaxes(_parameter, _calcList)));
+        _map.put("taxes",  new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null)));
 
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
             _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
@@ -970,7 +971,8 @@ public abstract class DocumentSum_Base
     }
 
     public Taxes getRateTaxes(final Parameter _parameter,
-                              final List<Calculator> _calcList)
+                              final List<Calculator> _calcList,
+                              final Instance _currencyInst)
         throws EFapsException
     {
         final Map<Tax, BigDecimal> values = new HashMap<Tax, BigDecimal>();
@@ -984,11 +986,19 @@ public abstract class DocumentSum_Base
             }
         }
         final Taxes ret = new Taxes();
+        final Calculator calc = _calcList.iterator().next();
+        UUID currencyUUID = null;
+        if (_currencyInst != null) {
+            final CurrencyInst curInst = CurrencyInst_Base.get(_currencyInst);
+            currencyUUID = curInst.getUUID();
+        }
         for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
             final TaxEntry taxentry = new TaxEntry();
             taxentry.setAmount(entry.getValue());
             taxentry.setUUID(entry.getKey().getUUID());
             taxentry.setCatUUID(entry.getKey().getTaxCat().getUuid());
+            taxentry.setCurrencyUUID(currencyUUID);
+            taxentry.setDate(calc.getDate());
             ret.getEntries().add(taxentry);
         }
         return ret;
@@ -997,10 +1007,11 @@ public abstract class DocumentSum_Base
 
     public Taxes getTaxes(final Parameter _parameter,
                           final List<Calculator> _calcList,
-                          final BigDecimal _rate)
+                          final BigDecimal _rate,
+                          final Instance _baseCurrInst)
         throws EFapsException
     {
-        final Taxes ret = getRateTaxes(_parameter, _calcList);
+        final Taxes ret = getRateTaxes(_parameter, _calcList, _baseCurrInst);
         for (final TaxEntry entry  : ret.getEntries()) {
             entry.setAmount(entry.getAmount().divide(_rate, BigDecimal.ROUND_HALF_UP));
         }

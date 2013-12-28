@@ -22,14 +22,17 @@ package org.efaps.esjp.sales.tax.xml;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.UUID;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -67,6 +70,19 @@ public abstract class TaxEntry_Base
      */
     @XmlAttribute(name = "catUuid")
     private String catUuid;
+
+    /**
+     * UUID of the related Category.
+     */
+    @XmlAttribute(name = "currencyUuid")
+    private String currencyUuid;
+
+    /**
+     * Date of the tax calculation.
+     */
+    @XmlAttribute(name = "date")
+    @XmlSchemaType(name = "date")
+    private Date date;
 
     /**
      * Getter method for the instance variable {@link #amount}.
@@ -128,6 +144,34 @@ public abstract class TaxEntry_Base
         this.catUuid = _uuid.toString();
     }
 
+    /**
+     * Getter method for the instance variable {@link #currencyUuid}.
+     *
+     * @return value of instance variable {@link #currencyUuid}
+     */
+    public UUID getCurrencyUUID()
+    {
+        return UUID.fromString(this.currencyUuid);
+    }
+
+    /**
+     * Setter method for instance variable {@link #currencyUuid}.
+     *
+     * @param _currencyUuid value for instance variable {@link #currencyUuid}
+     */
+    public void setCurrencyUUID(final UUID _currencyUuid)
+    {
+        this.currencyUuid = _currencyUuid == null ? null : _currencyUuid.toString();
+    }
+
+    public DateTime getDateTime()
+    {
+        return new DateTime(this.date);
+    }
+
+    public void setDate(final DateTime _dateTime) {
+        this.date = _dateTime.toDate();
+    }
 
     @Override
     public boolean equals(final Object _obj)

@@ -21,8 +21,10 @@
 package org.efaps.esjp.sales.tax;
 
 import org.efaps.admin.datamodel.IJaxb;
+import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
@@ -53,14 +55,15 @@ public abstract class TaxesAttribute_Base
      * {@inheritDoc}
      */
     @Override
-    public String getUIValue(final Object _object)
+    public String getUISnipplet(final TargetMode _mode,
+                                final UIValue _value)
         throws EFapsException
     {
         String ret;
-        if (_object == null) {
+        if (_value.getDbValue() == null) {
             ret = "";
-        } else if (_object instanceof Taxes) {
-            final Taxes taxes = (Taxes) _object;
+        } else if (_value.getDbValue() instanceof Taxes) {
+            final Taxes taxes = (Taxes) _value.getDbValue();
             final StringBuilder html = new StringBuilder();
             for (final TaxEntry entry : taxes.getEntries()) {
                 final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
@@ -69,8 +72,21 @@ public abstract class TaxesAttribute_Base
             }
             ret = html.toString();
         } else {
-            ret = _object.toString();
+            ret = _value.getDbValue().toString();
         }
         return ret;
+    }
+
+
+    public String getUI4ReadOnly(final Taxes _taxes)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        for (final TaxEntry entry : _taxes.getEntries()) {
+            final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
+            html.append(tax.getName()).append(" ")
+                            .append(NumberFormatter.get().getTwoDigitsFormatter().format(entry.getAmount()));
+        }
+        return html.toString();
     }
 }
