@@ -62,7 +62,7 @@
                 <property name="Status01">Open</property>
                 <property name="Type02">Sales_CollectionOrder</property>
                 <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
-                <property name="Status">Approved</property>
+                <property name="Status02">Approved</property>
                 <property name="Type03">Sales_Credit</property>
                 <property name="StatusGroup03">Sales_CreditStatus</property>
                 <property name="Status03">Open</property>
