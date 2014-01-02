@@ -97,6 +97,8 @@ public abstract class DocReport_Base
      */
     public enum Field
     {
+        /** Date of the report (used only in accounting for ple). */
+        REPORT_DATE("report_date"),
         /** */
         DOC_DATE("date"),
         /** */
