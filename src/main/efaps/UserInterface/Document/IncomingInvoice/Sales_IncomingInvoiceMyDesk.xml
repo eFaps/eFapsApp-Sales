@@ -40,7 +40,7 @@
             <menu>Sales_IncomingInvoiceMyDesk_Menu</menu>
             <table>Sales_IncomingInvoiceTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingInvoice</property>
+                <property name="Type">Sales_IncomingInvoice</property>
             </evaluate>
         </target>
 

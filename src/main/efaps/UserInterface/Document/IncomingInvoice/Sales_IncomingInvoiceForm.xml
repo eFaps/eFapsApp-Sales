@@ -123,7 +123,7 @@
                 <property name="Search4Type">90796449-0121-4fc1-9632-7d52f3adf85e</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
             </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck" 
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingInvoiceForm.productDocumentType.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>
                 <property name="Property">IsProductDocument</property>
@@ -143,7 +143,7 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Regex4DefaultValue">02 - .*</property>
             </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck" 
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingInvoiceForm.productDocumentType.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>
                 <property name="Property">IsProductDocument</property>
@@ -302,7 +302,7 @@
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="RowSpan">3</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -311,6 +311,13 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">NetTotal</property>
+        </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">Taxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
         <field name="crossTotal">
             <property name="ModeEdit">EDITABLE</property>
@@ -364,6 +371,31 @@
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="headingPerception" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingInvoiceForm.headingPerception.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Collapsed">TRUE</property>
+        </field>
+        <field name="perceptionGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="perceptionPercent">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">2</property>
+            <property name="Label">Sales_IncomingInvoiceForm.perceptionPercent.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4PerceptionPercent"
+                name="Sales_IncomingInvoiceForm.perceptionPercent.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="perceptionValue">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.perceptionValue.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>

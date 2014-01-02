@@ -20,6 +20,10 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,12 +50,15 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Costs;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Base class for Type Incoming Invoice.
@@ -68,6 +75,11 @@ public abstract class IncomingInvoice_Base
      * Used to store the Revision in the Context.
      */
     public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingInvoice.RevisionKey";
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(IncomingInvoice.class);
 
     /**
      * Executed from a Command execute vent to create a new Incoming Invoice.
@@ -165,7 +177,55 @@ public abstract class IncomingInvoice_Base
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
             _insert.add(CISales.IncomingInvoice.Revision, revision);
         }
+    }
 
+    @Override
+    protected void add2Map4UpdateField(final Parameter _parameter,
+                                       final Map<String, String> _map,
+                                       final List<Calculator> _calcList,
+                                       final Calculator _cal)
+        throws EFapsException
+    {
+        super.add2Map4UpdateField(_parameter, _map, _calcList, _cal);
+        final String perceptionPercentStr = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionPercent.name);
+        if (perceptionPercentStr != null && !perceptionPercentStr.isEmpty()) {
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal perceptionPercent = (BigDecimal) formatter.parse(perceptionPercentStr);
+                final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
+                final BigDecimal perception = crossTotal.multiply(perceptionPercent
+                                .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                final String perceptionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                .format(perception);
+                _map.put(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name, perceptionStr);
+            } catch (final ParseException e) {
+                IncomingInvoice_Base.LOG.error("Catched parsing error", e);
+            }
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
+    public Return updateFields4PerceptionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        if (calcList.size() > 0) {
+            add2Map4UpdateField(_parameter, map, calcList, null);
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
     }
 
     /**

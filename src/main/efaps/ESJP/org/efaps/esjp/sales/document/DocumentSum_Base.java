@@ -303,16 +303,17 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         // positions
-        _map.put("quantity", _cal.getQuantityStr());
-        _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                        getTypeName4SysConf(_parameter))));
-        _map.put("netPrice", _cal.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                        getTypeName4SysConf(_parameter))));
-        _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                        getTypeName4SysConf(_parameter))));
-        _map.put("discount", _cal.getDiscountFmtStr(NumberFormatter.get().getFrmt4Discount(
-                        getTypeName4SysConf(_parameter))));
-
+        if (_cal != null) {
+            _map.put("quantity", _cal.getQuantityStr());
+            _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
+                                            getTypeName4SysConf(_parameter))));
+            _map.put("netPrice", _cal.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
+                            getTypeName4SysConf(_parameter))));
+            _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
+                                            getTypeName4SysConf(_parameter))));
+            _map.put("discount", _cal.getDiscountFmtStr(NumberFormatter.get().getFrmt4Discount(
+                            getTypeName4SysConf(_parameter))));
+        }
         // totals
         _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
         _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
