@@ -987,20 +987,23 @@ public abstract class DocumentSum_Base
             }
         }
         final Taxes ret = new Taxes();
-        final Calculator calc = _calcList.iterator().next();
-        UUID currencyUUID = null;
-        if (_currencyInst != null) {
-            final CurrencyInst curInst = CurrencyInst_Base.get(_currencyInst);
-            currencyUUID = curInst.getUUID();
-        }
-        for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
-            final TaxEntry taxentry = new TaxEntry();
-            taxentry.setAmount(entry.getValue());
-            taxentry.setUUID(entry.getKey().getUUID());
-            taxentry.setCatUUID(entry.getKey().getTaxCat().getUuid());
-            taxentry.setCurrencyUUID(currencyUUID);
-            taxentry.setDate(calc.getDate());
-            ret.getEntries().add(taxentry);
+
+        if (!_calcList.isEmpty()) {
+            final Calculator calc = _calcList.iterator().next();
+            UUID currencyUUID = null;
+            if (_currencyInst != null) {
+                final CurrencyInst curInst = CurrencyInst_Base.get(_currencyInst);
+                currencyUUID = curInst.getUUID();
+            }
+            for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
+                final TaxEntry taxentry = new TaxEntry();
+                taxentry.setAmount(entry.getValue());
+                taxentry.setUUID(entry.getKey().getUUID());
+                taxentry.setCatUUID(entry.getKey().getTaxCat().getUuid());
+                taxentry.setCurrencyUUID(currencyUUID);
+                taxentry.setDate(calc.getDate());
+                ret.getEntries().add(taxentry);
+            }
         }
         return ret;
     }
