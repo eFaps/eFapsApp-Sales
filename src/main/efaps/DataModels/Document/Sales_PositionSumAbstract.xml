@@ -69,7 +69,7 @@
         <attribute>
             <name>Tax</name>
             <type>Link</type>
-            <typelink>Sales_Tax</typelink>
+            <typelink>Sales_TaxCategory</typelink>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>TAXID</sqlcolumn>
         </attribute>
