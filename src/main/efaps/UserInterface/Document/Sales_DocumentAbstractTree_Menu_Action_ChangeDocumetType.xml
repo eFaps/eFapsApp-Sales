@@ -27,7 +27,7 @@
 
   <definition>
     <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingInvoiceTree_Menu_Action_ChangeDocumetType</name>
+    <name>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumetType</name>
     <access>
       <role>Sales_Admin</role>
       <role>Sales_Accounting</role>
@@ -35,8 +35,8 @@
 
     <!-- target definitions -->
     <target>
-      <form>Sales_IncomingInvoice_ChangeDocumentTypeForm</form>
-      <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="changeDocumentType" />
+      <form>Sales_DocumentAbstract_ChangeDocumentTypeForm</form>
+      <execute program="org.efaps.esjp.sales.document.DocumentSum" method="changeDocumentType" />
     </target>
 
     <!-- properties -->

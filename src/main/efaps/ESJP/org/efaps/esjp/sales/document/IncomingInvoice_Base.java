@@ -46,7 +46,6 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
@@ -306,22 +305,4 @@ public abstract class IncomingInvoice_Base
         };
     }
 
-    public Return changeDocumentType(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
-        if (instDocType.isValid() && _parameter.getInstance().isValid()) {
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _parameter.getInstance().getId());
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.execute();
-
-            if(!multi.getInstanceList().isEmpty()) {
-                final Update update = new Update(CISales.Document2DocumentType.getType(), multi.getInstanceList().get(0).getId());
-                update.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-                update.execute();
-            }
-        }
-        return new Return();
-    }
 }
