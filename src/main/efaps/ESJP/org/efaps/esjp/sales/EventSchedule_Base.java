@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Status;
@@ -46,60 +47,67 @@ public class EventSchedule_Base
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGrp");
+        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        for (int i = 0; i < 100; i++) {
-            if (props.containsKey("Type" + i)) {
-                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-                final Type type = Type.get(String.valueOf(props.get("Type" + i)));
-                if (type != null) {
-                    final QueryBuilder queryBldr = new QueryBuilder(type);
-                    queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
+        for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+            final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+            final Type type = Type.get(typeEntry.getValue());
+            if (type != null) {
+                final QueryBuilder queryBldr = new QueryBuilder(type);
+                add2QueryBldr4AutoCompleteScheduledDoc(_parameter, queryBldr);
+                queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
 
-                    if (props.containsKey("StatusGroup" + i)) {
-                        final String statiStr = String.valueOf(props.get("Stati" + i));
-                        final String[] statiAr = statiStr.split(";");
-                        final List<Object> statusList = new ArrayList<Object>();
-                        for (final String stati : statiAr) {
-                            final Status status = Status.find((String) props.get("StatusGroup" + i), stati);
-                            if (status != null) {
-                                statusList.add(status.getId());
-                            }
+                if (statusGrps.containsKey(typeEntry.getKey())) {
+                    final String statiStr = status.get(typeEntry.getKey());
+                    final String[] statiAr = statiStr.split(";");
+                    final List<Object> statusList = new ArrayList<Object>();
+                    for (final String stati : statiAr) {
+                        final Status stat = Status.find(statusGrps.get(typeEntry.getKey()), stati);
+                        if (status != null) {
+                            statusList.add(stat.getId());
                         }
-                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
                     }
-
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addAttribute(CISales.DocumentAbstract.OID,
-                                    CISales.DocumentAbstract.Name,
-                                    CISales.DocumentAbstract.Date);
-                    multi.execute();
-                    while (multi.next()) {
-                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                        final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-
-                        final StringBuilder choice = new StringBuilder()
-                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                        Context.getThreadContext().getLocale())));
-                        final Map<String, String> map = new HashMap<String, String>();
-                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                        tmpMap.put(name, map);
-                    }
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
                 }
-                list.addAll(tmpMap.values());
-            } else {
-                break;
+
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.DocumentAbstract.OID,
+                                CISales.DocumentAbstract.Name,
+                                CISales.DocumentAbstract.Date);
+                multi.execute();
+                while (multi.next()) {
+                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+
+                    final StringBuilder choice = new StringBuilder()
+                                    .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                                    .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                    Context.getThreadContext().getLocale())));
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                    tmpMap.put(name, map);
+                }
             }
+            list.addAll(tmpMap.values());
+
         }
 
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected void add2QueryBldr4AutoCompleteScheduledDoc(final Parameter _parameter,
+                                                          final QueryBuilder queryBldr)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
     }
 
     /**

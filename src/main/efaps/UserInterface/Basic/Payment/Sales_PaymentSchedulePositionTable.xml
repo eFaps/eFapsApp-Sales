@@ -43,18 +43,70 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="ModeEdit">READONLY</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4ScheduleDoc"
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type0">Sales_IncomingInvoice</property>
-                <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
-                <property name="Stati0">Open</property>
-                <property name="Type1">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup1">Accounting_ExternalVoucherStatus</property>
-                <property name="Stati1">Open</property>
-                <property name="Type2">Sales_OrderOutbound</property>
-                <property name="StatusGroup2">Sales_OrderOutboundStatus</property>
-                <property name="Stati2">Approved</property>
-                <property name="Type3">Sales_IncomingCredit</property>
-                <property name="StatusGroup3">Sales_IncomingCreditStatus</property>
-                <property name="Stati3">Open</property>
+                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Sales_OrderOutbound</property>
+                <property name="StatusGrp02">Sales_OrderOutboundStatus</property>
+                <property name="Status02">Approved</property>
+                <property name="Type03">Sales_IncomingCredit</property>
+                <property name="StatusGrp03">Sales_IncomingCreditStatus</property>
+                <property name="Status03">Open</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4ScheduleDoc"
+            name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE"
+            program="org.efaps.esjp.sales.PaymentSchedule"/>
+        </field>
+        <field name="documentDesc">
+            <property name="Columns">80</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">DocumentDesc</property>
+            <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
+            <property name="Width">8</property>
+        </field>
+        <field name="rateNetPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_PaymentSchedulePosition.RateNetPrice.Label</property>
+        </field>
+        <field name="netPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">NetPrice</property>
+            <property name="Label">Sales_PaymentSchedulePosition/NetPrice.Label</property>
+        </field>
+    </definition>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Accounting"/>
+        </application-dependencies>
+        <name>Sales_PaymentSchedulePositionTable</name>
+        <!-- fields -->
+        <field name="document">
+            <property name="SelectAlternateOID">linkto[Document].oid</property>
+            <property name="Select">linkto[Document].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_PaymentSchedulePosition/Document.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4ScheduleDoc"
+                name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Sales_OrderOutbound</property>
+                <property name="StatusGrp02">Sales_OrderOutboundStatus</property>
+                <property name="Status02">Approved</property>
+                <property name="Type03">Sales_IncomingCredit</property>
+                <property name="StatusGrp03">Sales_IncomingCreditStatus</property>
+                <property name="Status03">Open</property>
+                <property name="Type04">Accounting_ExternalVoucher</property>
+                <property name="StatusGrp04">Accounting_ExternalVoucherStatus</property>
+                <property name="Status04">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4ScheduleDoc"
             name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE"
