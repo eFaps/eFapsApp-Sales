@@ -19,24 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+--><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f0588274-1adc-4b1f-a18a-c18b8b93acf6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
-        <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
-            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
-            
-        </childs>
+        <name>Sales_IncomingPerceptionCertificateStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Open">
+            <description>The Certificate is waiting to be paid.</description>
+        </status>
+        <status key="Paid">
+            <description>The Certificate was paid</description>
+        </status>
+        <status key="Canceled">
+            <description>The Certificate was canceled.</description>
+        </status>
     </definition>
-</ui-menu>
+</datamodel-statusgroup>

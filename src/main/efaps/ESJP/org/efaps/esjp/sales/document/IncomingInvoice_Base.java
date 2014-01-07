@@ -97,6 +97,14 @@ public abstract class IncomingInvoice_Base
         incomingInvoiceCreateTransaction(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
+        final BigDecimal perception = new BigDecimal(_parameter.getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name));
+
+        if (!perception.equals(0)) {
+
+            IncomingPerceptionCertificate_Base doc = new IncomingPerceptionCertificate_Base();
+            doc.create4Doc(_parameter, createdDoc);
+        }
+
         return new Return();
     }
 
