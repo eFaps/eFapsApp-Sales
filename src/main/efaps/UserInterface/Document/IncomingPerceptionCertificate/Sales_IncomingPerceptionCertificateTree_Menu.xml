@@ -27,7 +27,7 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoicePerceptionCertificateTree_Menu</name>
+        <name>Sales_IncomingPerceptionCertificateTree_Menu</name>
         <!-- childs -->
         <childs>
             <child>Sales_IncomingPerceptionCertificateTree_Menu_Action</child>

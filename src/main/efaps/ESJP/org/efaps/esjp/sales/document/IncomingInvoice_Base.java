@@ -97,31 +97,19 @@ public abstract class IncomingInvoice_Base
         incomingInvoiceCreateTransaction(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
-        try {
-               final String perceptionValueStr = _parameter
-                               .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
-
-               if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
-                   final DecimalFormat formatter = NumberFormatter.get().getFormatter();
-                   try {
-                       final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
-                       System.out.println((perception));
-
-                       IncomingPerceptionCertificate_Base doc = new IncomingPerceptionCertificate();
-                       createdDoc.addValue(IncomingPerceptionCertificate_Base.PERCEPTIONVALUE, perception);
-                       doc.create4Doc(_parameter, createdDoc);
-                       System.out.println("great!");
-
-                   } catch (final ParseException e) {
-                       IncomingInvoice_Base.LOG.error("Catched parsing error", e);
-                   }
-
-               }
-
-            } catch (final Exception e1) {
-               // TODO Auto-generated catch block
-               e1.printStackTrace();
-                }
+        final String perceptionValueStr = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
+        if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
+                IncomingPerceptionCertificate_Base doc = new IncomingPerceptionCertificate();
+                createdDoc.addValue(IncomingPerceptionCertificate_Base.PERCEPTIONVALUE, perception);
+                doc.create4Doc(_parameter, createdDoc);
+            } catch (final ParseException p) {
+                throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
+            }
+        }
 
         return new Return();
     }
