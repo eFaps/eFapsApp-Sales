@@ -36,7 +36,8 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingPerceptionCertificate</property>
             </evaluate>
-           <!--  <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingInvoicePerceptionCertificateMyDesk.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField">
+           <!--  <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingPerceptionCertificateMyDesk.UI_ACCESSCHECK" 
+           program="org.efaps.esjp.admin.access.AccessOnField">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.PerceptionActivate</property>
             </trigger> -->

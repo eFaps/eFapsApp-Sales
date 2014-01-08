@@ -31,7 +31,7 @@
         </access>
         <target>
             <menu>Sales_IncomingPerceptionCertificateTree_Menu</menu>
-            <form>Sales_IncomingPerceptionCertificate</form>
+            <form>Sales_IncomingPerceptionCertificateForm</form>
         </target>
         <type>Sales_IncomingPerceptionCertificate</type>
         <!-- properties -->
