@@ -92,7 +92,7 @@
             <property name="HRef">TREE</property>
         </field>
         <field name="status">
-            <property name="Attribute">Status</property>
+            <property name="Attribute">StatusAbstract</property>
             <property name="ModeCreate">NONE</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -127,24 +127,18 @@
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingPerceptionCertificate/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>   
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
-        </field>
-        <field name="crossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
-            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="Label">Sales_IncomingPerceptionCertificate/CrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-         <field name="rateCrossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
-            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
-            <property name="Label">Sales_IncomingPerceptionCertificate/RateCrossTotal.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
+        </field>        
     </definition>
 </ui-form>
