@@ -23,7 +23,6 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -38,7 +37,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 /**
@@ -50,20 +48,20 @@ import org.efaps.util.EFapsException;
 
 @EFapsUUID("7a5f02e9-4e72-46a7-9334-48abca41d026")
 @EFapsRevision("$Rev$")
-public class IncomingPerceptionCertificate_Base
-    extends DocumentSum
+public abstract class IncomingPerceptionCertificate_Base
+    extends DocumentSum{
+
+    public static final String PERCEPTIONVALUE= IncomingPerceptionCertificate.class.getName() + ".PerceptionValue" ;
 
 
-{
     public void create4Doc(final Parameter _parameter,
                            final CreatedDoc _createdDoc)
         throws EFapsException
     {
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
-        final BigDecimal perception = getPerceptionTotal(_parameter, calcList);
 
-        if (perception.compareTo(BigDecimal.ZERO) > 0) {
+        final BigDecimal perception = (BigDecimal) _createdDoc.getValue(PERCEPTIONVALUE);
+
             final Insert insert = new Insert(CISales.IncomingPerceptionCertificate);
             insert.add(CISales.IncomingPerceptionCertificate.Date,
                             _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
@@ -77,6 +75,14 @@ public class IncomingPerceptionCertificate_Base
                             _createdDoc.getValue(CISales.DocumentSumAbstract.CurrencyId.name));
             insert.add(CISales.IncomingPerceptionCertificate.RateCurrencyId,
                             _createdDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
+            insert.add(CISales.IncomingPerceptionCertificate.Creator,
+                            _createdDoc.getValue(CISales.DocumentSumAbstract.Creator.name));
+            insert.add(CISales.IncomingPerceptionCertificate.Created,
+                            _createdDoc.getValue(CISales.DocumentSumAbstract.Created.name));
+            insert.add(CISales.IncomingPerceptionCertificate.Modifier,
+                            _createdDoc.getValue(CISales.DocumentSumAbstract.Modifier.name));
+            insert.add(CISales.IncomingPerceptionCertificate.Modified,
+                            _createdDoc.getValue(CISales.DocumentSumAbstract.Modified.name));
             insert.add(CISales.IncomingPerceptionCertificate.RateNetTotal, BigDecimal.ZERO);
             insert.add(CISales.IncomingPerceptionCertificate.RateDiscountTotal, BigDecimal.ZERO);
             insert.add(CISales.IncomingPerceptionCertificate.NetTotal, BigDecimal.ZERO);
@@ -91,17 +97,16 @@ public class IncomingPerceptionCertificate_Base
             final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
             final int scale = totalFrmt.getMaximumFractionDigits();
 
-            insert.add(CISales.IncomingPerceptionCertificate.RateCrossTotal,
-                            perception.setScale(scale, BigDecimal.ROUND_HALF_UP));
-            insert.add(CISales.DocumentSumAbstract.CrossTotal, perception.divide(rate, BigDecimal.ROUND_HALF_UP)
-                            .setScale(scale, BigDecimal.ROUND_HALF_UP));
+            insert.add(CISales.IncomingPerceptionCertificate.RateCrossTotal,  perception.setScale(scale, BigDecimal.ROUND_HALF_UP));
+            insert.add(CISales.DocumentSumAbstract.CrossTotal, perception.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+
             insert.execute();
+            System.out.println("congratulations");
 
             final Insert relInsert = new Insert(CISales.IncomingPerceptionCertificate2Document);
             relInsert.add(CISales.IncomingPerceptionCertificate2Document.FromLink, insert.getInstance());
             relInsert.add(CISales.IncomingPerceptionCertificate2Document.ToLink, _createdDoc.getInstance());
             relInsert.execute();
-        }
     }
 
     @Override

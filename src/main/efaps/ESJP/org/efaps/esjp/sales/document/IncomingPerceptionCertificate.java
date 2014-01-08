@@ -34,7 +34,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsUUID("247c3274-7b27-4e1e-b0cc-0b3a3b54261b")
 @EFapsRevision("$Rev$")
 public class IncomingPerceptionCertificate
-extends IncomingPerceptionCertificate_Base
+    extends IncomingPerceptionCertificate_Base
 {
 
 }
