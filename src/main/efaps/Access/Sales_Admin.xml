@@ -69,6 +69,7 @@
         <type>Sales_PettyCashReceipt</type>
         <type>Sales_ProductionReport</type>
         <type>Sales_ProductRequest</type>
+        <type>Sales_ProductionOrder</type>
         <type>Sales_Quotation</type>
         <type>Sales_QuoteRequest</type>
         <type>Sales_Receipt</type>
@@ -203,6 +204,12 @@
         </status>
 
         <status group="Sales_ProductRequestStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_ProductionOrderStatus">
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
