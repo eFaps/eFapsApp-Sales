@@ -153,6 +153,13 @@ public abstract class ProductStockReport_Base
         return attrQuery;
     }
 
+    public void addQuery2PositionReport(final Parameter _parameter,
+                                        final QueryBuilder _qlb)
+        throws EFapsException
+    {
+        // To Implement
+    }
+
     /**
      * Report class.
      */
@@ -170,6 +177,7 @@ public abstract class ProductStockReport_Base
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
             queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, getAttrQuery(_parameter));
+            addQuery2PositionReport(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CISales.PositionAbstract.Quantity);
             final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
@@ -213,7 +221,7 @@ public abstract class ProductStockReport_Base
                 } else {
                     final BigDecimal stock = getStock4Product(_parameter, prodInst);
                     if (!rowMap.containsKey(colDefault)) {
-                        final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
+                final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
                         colMap.put(prodName, stock);
                         rowMap.put(colDefault, colMap);
                     } else {
