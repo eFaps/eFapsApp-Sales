@@ -52,52 +52,66 @@ public class EventSchedule_Base
         final Map<Integer, String> status = analyseProperty(_parameter, "Status");
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        for (final Entry<Integer, String> typeEntry : types.entrySet()) {
-            final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-            final Type type = Type.get(typeEntry.getValue());
-            if (type != null) {
-                final QueryBuilder queryBldr = new QueryBuilder(type);
-                add2QueryBldr4AutoCompleteScheduledDoc(_parameter, queryBldr);
-                queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
+        final Instance instContact = Instance.get(Context.getThreadContext().getSessionAttribute("oidContact").toString());
+        if(instContact!=null && instContact.isValid()) {
+            for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+                final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
+                final Type type = Type.get(typeEntry.getValue());
+                if (type != null) {
+                    final QueryBuilder queryBldr = new QueryBuilder(type);
+                    add2QueryBldr4AutoCompleteScheduledDoc(_parameter, queryBldr);
+                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, instContact);
+                    queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*");
 
-                if (statusGrps.containsKey(typeEntry.getKey())) {
-                    final String statiStr = status.get(typeEntry.getKey());
-                    final String[] statiAr = statiStr.split(";");
-                    final List<Object> statusList = new ArrayList<Object>();
-                    for (final String stati : statiAr) {
-                        final Status stat = Status.find(statusGrps.get(typeEntry.getKey()), stati);
-                        if (status != null) {
-                            statusList.add(stat.getId());
+                    if (statusGrps.containsKey(typeEntry.getKey())) {
+                        final String statiStr = status.get(typeEntry.getKey());
+                        final String[] statiAr = statiStr.split(";");
+                        final List<Object> statusList = new ArrayList<Object>();
+                        for (final String stati : statiAr) {
+                            final Status stat = Status.find(statusGrps.get(typeEntry.getKey()), stati);
+                            if (status != null) {
+                                statusList.add(stat.getId());
+                            }
                         }
+                        queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
                     }
-                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
-                }
 
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.DocumentAbstract.OID,
-                                CISales.DocumentAbstract.Name,
-                                CISales.DocumentAbstract.Date);
-                multi.execute();
-                while (multi.next()) {
-                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    final SelectBuilder selrateCurrSymbol = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+                    multi.addAttribute(CISales.DocumentAbstract.OID,
+                                    CISales.DocumentAbstract.Name,
+                                    CISales.DocumentAbstract.Date,
+                                    CISales.DocumentAbstract.DueDate,
+                                    CISales.DocumentSumAbstract.RateCrossTotal);
+                    multi.addSelect(selrateCurrSymbol);
+                    multi.execute();
+                    while (multi.next()) {
+                        final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                        final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
+                        final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+                        final DateTime dueDate = multi.<DateTime>getAttribute(CISales.DocumentAbstract.DueDate);
+                        final BigDecimal total = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                        final String rateCurrSymbol = multi.<String>getSelect(selrateCurrSymbol);
 
-                    final StringBuilder choice = new StringBuilder()
-                                    .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                                    .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                    Context.getThreadContext().getLocale())));
-                    final Map<String, String> map = new HashMap<String, String>();
-                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                    tmpMap.put(name, map);
+                        final StringBuilder choice = new StringBuilder()
+                                        .append(name).append(" - ")
+                                        .append(Instance.get(oid).getType().getLabel()).append(" - ")
+                                        .append(date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                        Context.getThreadContext().getLocale()))).append(" - ")
+                                        .append(dueDate.toString(DateTimeFormat.forStyle("S-").withLocale(
+                                                        Context.getThreadContext().getLocale()))).append(" - ")
+                                        .append(rateCurrSymbol + total.toString());
+                        final Map<String, String> map = new HashMap<String, String>();
+                        map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+                        tmpMap.put(name, map);
+                    }
                 }
+                list.addAll(tmpMap.values());
+
             }
-            list.addAll(tmpMap.values());
-
         }
-
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;

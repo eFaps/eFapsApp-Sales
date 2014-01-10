@@ -208,4 +208,14 @@ public class PaymentSchedule_Base
 
         _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery2);
     }
+
+    @Override
+    public Return updateFields4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+
+        Context.getThreadContext().removeSessionAttribute("oidContact");
+        Context.getThreadContext().setSessionAttribute("oidContact", _parameter.getParameterValue("contact"));
+        return super.updateFields4Contact(_parameter);
+    }
 }

@@ -37,6 +37,7 @@
       <parent-table>T_ERPEVENTSCHEDULE</parent-table>
       <!-- columns -->
       <column name="TOTAL"                      type="DECIMAL"  length="10" scale="2"/>
+      <column name="CONTACTID"       type="INTEGER"/>
       <column name="CURRENCYID" not-null="true" type="INTEGER"/>
       <foreign key="CURRENCYID" name="T_SALESPAYSCHEDULE_FK_CURRENCYID" reference="T_ERPCUR(ID)"/>
      </database>
