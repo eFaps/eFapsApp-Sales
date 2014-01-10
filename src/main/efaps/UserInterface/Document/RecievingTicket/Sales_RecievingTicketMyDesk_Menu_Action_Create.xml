@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -45,7 +45,7 @@
             <execute program="org.efaps.esjp.sales.document.RecievingTicket" method="create">
                 <property name="PositionType">Sales_RecievingTicketPosition</property>
                 <property name="StatusGroup">Sales_RecievingTicketStatus</property>
-                <property name="Status">Open</property>
+                <property name="Status">Closed</property>
                 <property name="UseNumberGenerator4Name">true</property>
              </execute>
         </target>
