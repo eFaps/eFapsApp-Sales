@@ -25,12 +25,17 @@ import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
@@ -101,6 +106,54 @@ public abstract class RecievingTicket_Base
     {
         createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
                         evaluateStorage4PositionTrigger(_parameter));
+        return new Return();
+    }
+
+    public Return recievingTicketUpdatePostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        if (instance.isValid()) {
+            final PrintQuery print = new PrintQuery(instance);
+            print.addAttribute(CISales.RecievingTicket.Status);
+            print.executeWithoutAccessCheck();
+
+            if (Status.find(CISales.RecievingTicketStatus.Canceled).getId()
+                            == print.<Long>getAttribute(CISales.RecievingTicket.Status)) {
+                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+                queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document, instance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
+                                CIProducts.TransactionInOutAbstract.Storage,
+                                CIProducts.TransactionInOutAbstract.Product,
+                                CIProducts.TransactionInOutAbstract.Description,
+                                CIProducts.TransactionInOutAbstract.Date,
+                                CIProducts.TransactionInOutAbstract.UoM);
+                multi.execute();
+                while (multi.next()) {
+                    Insert insert;
+                    if (CIProducts.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
+                        insert = new Insert(CIProducts.TransactionOutbound);
+                    } else {
+                        insert = new Insert(CIProducts.TransactionInbound);
+                    }
+                    insert.add(CIProducts.TransactionInOutAbstract.Quantity,
+                                    multi.getAttribute(CIProducts.TransactionInOutAbstract.Quantity));
+                    insert.add(CIProducts.TransactionInOutAbstract.Storage,
+                                    multi.getAttribute(CIProducts.TransactionInOutAbstract.Storage));
+                    insert.add(CIProducts.TransactionInOutAbstract.Product,
+                                    multi.getAttribute(CIProducts.TransactionInOutAbstract.Product));
+                    insert.add(CIProducts.TransactionInOutAbstract.Description,
+                                    multi.getAttribute(CIProducts.TransactionInOutAbstract.Description));
+                    insert.add(CIProducts.TransactionInOutAbstract.Date,
+                                    multi.getAttribute(CIProducts.TransactionInOutAbstract.Date));
+                    insert.add(CIProducts.TransactionInOutAbstract.Document, instance);
+                    insert.add(CIProducts.TransactionInOutAbstract.UoM,
+                                    multi.getAttribute(CIProducts.TransactionInOutAbstract.UoM));
+                    insert.execute();
+                }
+            }
+        }
         return new Return();
     }
 }
