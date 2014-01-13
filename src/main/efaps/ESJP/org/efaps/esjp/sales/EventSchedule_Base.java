@@ -43,14 +43,15 @@ import org.joda.time.format.DateTimeFormatter;
 public class EventSchedule_Base
     extends DocumentSum
 {
+    public static final String CONTACT_SESSIONKEY = "eFaps_Selected_Contact";
 
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
         throws EFapsException
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final Instance instContact = Instance
-                        .get((String) Context.getThreadContext().getSessionAttribute("oidContact"));
+
+        final Instance instContact = (Instance) Context.getThreadContext().getSessionAttribute(EventSchedule.CONTACT_SESSIONKEY);
 
         final List<Instance> query = new MultiPrint()
         {
@@ -60,11 +61,13 @@ public class EventSchedule_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
+                add2QueryBldr4AutoCompleteScheduledDoc(_parameter, _queryBldr);
                 if (instContact != null && instContact.isValid()) {
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, instContact);
                 }
                 _queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
             }
+
         }.getInstances(_parameter);
 
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
@@ -102,9 +105,18 @@ public class EventSchedule_Base
             }
         }
 
+        list.addAll(tmpMap.values());
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected void add2QueryBldr4AutoCompleteScheduledDoc(final Parameter _parameter,
+                                                          final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
+
     }
 
     /**

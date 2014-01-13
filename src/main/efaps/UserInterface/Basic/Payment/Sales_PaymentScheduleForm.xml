@@ -35,6 +35,15 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentScheduleForm</name>
         <!-- fields -->
+        <field name="session">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.PaymentSchedule"
+                method="removeSession4Schedule"
+                name="Sales_PaymentScheduleForm.session.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
         <field name="date">
             <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -59,13 +68,13 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule"
                 method="autoComplete4Contact"
-                name="Sales_IncomingInvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_PaymentScheduleForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classifications">Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule"
                 method="updateFields4Contact"
-                name="Sales_IncomingInvoiceForm.contact.UI_FIELD_UPDATE"
+                name="Sales_PaymentScheduleForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
