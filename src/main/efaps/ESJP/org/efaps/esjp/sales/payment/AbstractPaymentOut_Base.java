@@ -236,6 +236,14 @@ public abstract class AbstractPaymentOut_Base
 
                 _queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentOutAbstract.ID, attrQuery2);
 
+                _queryBldr.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
+                                Status.find(CISales.PaymentCashOutStatus.Canceled).getId(),
+                                Status.find(CISales.PaymentCheckOutStatus.Canceled).getId(),
+                                Status.find(CISales.PaymentDepositOutStatus.Canceled).getId(),
+                                Status.find(CISales.PaymentDetractionOutStatus.Canceled).getId(),
+                                Status.find(CISales.PaymentExchangeOutStatus.Canceled).getId(),
+                                Status.find(CISales.PaymentRetentionOutStatus.Canceled).getId(),
+                                Status.find(CISales.PaymentSupplierOutStatus.Canceled).getId());
             }
         }.execute(_parameter);
         return ret;
