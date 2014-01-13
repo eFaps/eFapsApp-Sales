@@ -127,9 +127,6 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_VALUE" method="getNameFieldValueUI" name="Sales_IncomingReminderForm.name.UI_Field_Value" program="org.efaps.esjp.sales.document.IncomingReminder">
-                <property name="Type">Sales_IncomingReminder</property>
-            </trigger>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>

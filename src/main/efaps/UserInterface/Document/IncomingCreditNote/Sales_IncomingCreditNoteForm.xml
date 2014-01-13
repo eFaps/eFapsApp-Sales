@@ -129,10 +129,6 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getNameFieldValueUI"
-                name="Sales_IncomingCreditNoteForm.name.UI_Field_Value" event="UI_FIELD_VALUE">
-                <property name="Type">Sales_IncomingCreditNote</property>
-            </trigger>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
