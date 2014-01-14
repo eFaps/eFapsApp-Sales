@@ -233,24 +233,57 @@ public class PaymentSchedule_Base
     }
 
     @Override
-    protected BigDecimal getPaymentDetraction4Doc(final Instance _docInstance)
+    protected BigDecimal getPaymentDocumentOut4Doc(final Instance _docInstance)
         throws EFapsException
     {
+        final Instance baseCurLink = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final SelectBuilder selRateDoc = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
+                        .attribute(CISales.DocumentSumAbstract.Rate);
+
         BigDecimal ret = BigDecimal.ZERO;
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
-        attrQueryBldr.addWhereAttrNotEqValue(CISales.PaymentDetractionOut.Status,
-                        Status.find(CISales.PaymentDetractionOutStatus.Canceled).getId());
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentDetractionOut.ID);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDocumentOutAbstract);
+        attrQueryBldr.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
+                        Status.find(CISales.PaymentCashOutStatus.Canceled).getId(),
+                        Status.find(CISales.PaymentCheckOutStatus.Canceled).getId(),
+                        Status.find(CISales.PaymentDepositOutStatus.Canceled).getId(),
+                        Status.find(CISales.PaymentDetractionOutStatus.Canceled).getId(),
+                        Status.find(CISales.PaymentExchangeOutStatus.Canceled).getId(),
+                        Status.find(CISales.PaymentRetentionOutStatus.Canceled).getId(),
+                        Status.find(CISales.PaymentSupplierOutStatus.Canceled).getId());
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentDocumentOutAbstract.ID);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
         queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
         queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _docInstance);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.Payment.Amount);
+        multi.addAttribute(CISales.Payment.Amount,
+                        CISales.Payment.CurrencyLink,
+                        CISales.Payment.RateCurrencyLink,
+                        CISales.Payment.Rate);
+        multi.addSelect(selRateDoc);
         multi.execute();
         while (multi.next()) {
-            ret = ret.add(multi.<BigDecimal>getAttribute(CISales.Payment.Amount));
+            final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
+            final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
+            final Object[] rateObjDoc = multi.<Object[]>getSelect(selRateDoc);
+            if (baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
+                            && baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink)) {
+                ret = ret.add(amount);
+            } else if (baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink)
+                            && baseCurLink.getId() != multi.<Long>getAttribute(CISales.Payment.CurrencyLink)) {
+                final BigDecimal rate = ((BigDecimal) rateObj[0]);
+                ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+            } else if (baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
+                            && baseCurLink.getId() != multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink)) {
+                final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                                BigDecimal.ROUND_HALF_UP);
+                ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+            } else {
+                final BigDecimal rate = ((BigDecimal) rateObjDoc[0]).divide((BigDecimal) rateObjDoc[1], 12,
+                                BigDecimal.ROUND_HALF_UP);
+                ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+            }
         }
 
         return ret;

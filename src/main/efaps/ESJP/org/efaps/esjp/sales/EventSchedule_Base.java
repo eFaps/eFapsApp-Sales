@@ -113,7 +113,7 @@ public class EventSchedule_Base
         return retVal;
     }
 
-    protected BigDecimal getPaymentDetraction4Doc(final Instance currentInstance)
+    protected BigDecimal getPaymentDocumentOut4Doc(final Instance currentInstance)
         throws EFapsException
     {
         return BigDecimal.ZERO;
@@ -174,9 +174,10 @@ public class EventSchedule_Base
         }
 
         if (name.length() > 0) {
-            map.put("netPrice", symbol + getNetPriceFmtStr(netPrice));
+            map.put("netPrice", symbol + getNetPriceFmtStr(netPrice) + " / "
+                            + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)));
             map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
-            map.put("amount4Schedule", getNetPriceFmtStr(netPrice.subtract(getPaymentDetraction4Doc(docInst))));
+            map.put("amount4Schedule", getNetPriceFmtStr(netPrice.subtract(getPaymentDocumentOut4Doc(docInst))));
             map.put("total", getTotalFmtStr(getTotal(_parameter, docInst)));
             map.put("documentAutoComplete", name);
             list.add(map);
