@@ -220,6 +220,7 @@
             <property name="Columns">50</property>
         </field>
         <field name="javaScript">
+            <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
