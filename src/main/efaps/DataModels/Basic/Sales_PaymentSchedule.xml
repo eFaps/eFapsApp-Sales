@@ -44,7 +44,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <name>Contact</name>
             <type>Link</type>
             <typelink>Contacts_Contact</typelink>
-            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqltable>Sales_PaymentScheduleSQLTable</sqltable>
             <sqlcolumn>CONTACTID</sqlcolumn>
         </attribute>
         <attribute>

@@ -24,23 +24,23 @@
 -->
 
 <datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>d4d3caa3-d4ec-48f1-9989-bceb0140cd1c</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 5313 $</file-revision>
+    <uuid>d4d3caa3-d4ec-48f1-9989-bceb0140cd1c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 5313 $</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_PaymentScheduleSQLTable</name>
-    <parent>ERP_EventScheduleAbstractSQLTable</parent>
-    <database>
-      <table-name>T_SALESPAYSCHEDULE</table-name>
-      <parent-table>T_ERPEVENTSCHEDULE</parent-table>
-      <!-- columns -->
-      <column name="TOTAL"                      type="DECIMAL"  length="10" scale="2"/>
-      <column name="CONTACTID"       type="INTEGER"/>
-      <column name="CURRENCYID" not-null="true" type="INTEGER"/>
-      <foreign key="CURRENCYID" name="T_SALESPAYSCHEDULE_FK_CURRENCYID" reference="T_ERPCUR(ID)"/>
-     </database>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentScheduleSQLTable</name>
+        <parent>ERP_EventScheduleAbstractSQLTable</parent>
+        <database>
+            <table-name>T_SALESPAYSCHEDULE</table-name>
+            <parent-table>T_ERPEVENTSCHEDULE</parent-table>
+            <!-- columns -->
+            <column name="TOTAL"        type="DECIMAL"                  length="10" scale="2" />
+            <column name="CONTACTID"    type="INTEGER" />
+            <column name="CURRENCYID"   type="INTEGER"  not-null="true"  />
+            <foreign key="CURRENCYID" name="T_SALESPAYSCHEDULE_FK_CURRENCYID" reference="T_ERPCUR(ID)" />
+        </database>
+    </definition>
 
 </datamodel-sqltable>
