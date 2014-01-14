@@ -65,7 +65,6 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Label">Sales_PaymentScheduleForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule"
                 method="autoComplete4Contact"
                 name="Sales_PaymentScheduleForm.contact.UI_FIELD_AUTOCOMPLETE"
