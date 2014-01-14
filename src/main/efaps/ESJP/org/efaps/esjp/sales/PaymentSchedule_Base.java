@@ -15,6 +15,7 @@ import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -29,7 +30,7 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: PaymentSchedule_Base.java $
+ * @version $Id$
  */
 @EFapsUUID("806c701d-ca2a-4e71-b6b1-7777a77299e4")
 @EFapsRevision("$Rev: 1$")
@@ -61,7 +62,7 @@ public class PaymentSchedule_Base
     {
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
-        _insert.add(CISales.PaymentSchedule.Total, getTotalFmtStr(getTotal(_parameter)));
+        _insert.add(CISales.PaymentSchedule.Total, getTotalFmtStr(getTotal(_parameter, null)));
         _insert.add(CISales.PaymentSchedule.CurrencyId, baseCurrInst);
     }
 
@@ -71,6 +72,7 @@ public class PaymentSchedule_Base
         throws EFapsException
     {
         final String oids[] = _parameter.getParameterValues("document");
+        final String amounts[] = _parameter.getParameterValues("amount4Schedule");
         Integer i = 0;
         for (final String oid : oids) {
             final Instance instDoc = Instance.get(oid);
@@ -81,7 +83,7 @@ public class PaymentSchedule_Base
 
             final Insert insertPayShePos = new Insert(CISales.PaymentSchedulePosition);
             insertPayShePos.add(CISales.PaymentSchedulePosition.PaymentSchedule, createSchedule.getInstance().getId());
-            insertPayShePos.add(CISales.PaymentSchedulePosition.Document, instDoc.getId());
+            insertPayShePos.add(CISales.PaymentSchedulePosition.Document, instDoc);
             insertPayShePos.add(CISales.PaymentSchedulePosition.PositionNumber, i);
             if (_parameter.getParameterValues(CISales.PaymentSchedulePosition.DocumentDesc.name) != null) {
                 insertPayShePos.add(CISales.PaymentSchedulePosition.DocumentDesc,
@@ -90,8 +92,7 @@ public class PaymentSchedule_Base
                 insertPayShePos.add(CISales.PaymentSchedulePosition.DocumentDesc,
                                 DBProperties.getProperty("org.efaps.esjp.sales.PaymentSchedule.defaultDescription"));
             }
-            insertPayShePos.add(CISales.PaymentSchedulePosition.NetPrice,
-                            printDoc.getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+            insertPayShePos.add(CISales.PaymentSchedulePosition.NetPrice, amounts[i]);
             insertPayShePos.execute();
             i++;
         }
@@ -229,5 +230,29 @@ public class PaymentSchedule_Base
     {
         Context.getThreadContext().removeSessionAttribute(PaymentSchedule.CONTACT_SESSIONKEY);
         return new Return();
+    }
+
+    @Override
+    protected BigDecimal getPaymentDetraction4Doc(final Instance _docInstance)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
+        attrQueryBldr.addWhereAttrNotEqValue(CISales.PaymentDetractionOut.Status,
+                        Status.find(CISales.PaymentDetractionOutStatus.Canceled).getId());
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentDetractionOut.ID);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+        queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _docInstance);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.Payment.Amount);
+        multi.execute();
+        while (multi.next()) {
+            ret = ret.add(multi.<BigDecimal>getAttribute(CISales.Payment.Amount));
+        }
+
+        return ret;
     }
 }

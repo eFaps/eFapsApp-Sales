@@ -1,6 +1,8 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +38,7 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: EventSchedule_Base.java $
+ * @version $Id$
  */
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsRevision("$Rev: 1$")
@@ -96,7 +98,7 @@ public class EventSchedule_Base
                                 .append(Instance.get(oid).getType().getLabel()).append(" - ")
                                 .append(date.toString(locale)).append(" - ")
                                 .append(dueDate.toString(locale)).append(" - ")
-                                .append(rateCurrSymbol + total.toString());
+                                .append(rateCurrSymbol + getTotalFmtStr(total));
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
@@ -109,6 +111,12 @@ public class EventSchedule_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    protected BigDecimal getPaymentDetraction4Doc(final Instance currentInstance)
+        throws EFapsException
+    {
+        return BigDecimal.ZERO;
     }
 
     protected void add2QueryBldr4AutoCompleteScheduledDoc(final Parameter _parameter,
@@ -134,29 +142,31 @@ public class EventSchedule_Base
         final Map<String, String> map = new HashMap<String, String>();
 
         final int selected = getSelectedRow(_parameter);
-        final String oid = _parameter.getParameterValues("document")[selected];
+        final Instance docInst = Instance.get(_parameter.getParameterValues("document")[selected]);
         String name;
         BigDecimal netPrice = BigDecimal.ZERO;
         BigDecimal rateNetPrice = BigDecimal.ZERO;
         String symbol;
         String rateSymbol;
-        if (oid != null && oid.length() > 0) {
-            final SelectBuilder selSymbol = new SelectBuilder().linkto(CISales.DocumentSumAbstract.CurrencyId)
-                            .attribute(CIERP.Currency.Symbol);
-            final SelectBuilder selRateSymbol = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                            .attribute(CIERP.Currency.Symbol);
-            final PrintQuery print = new PrintQuery(oid);
-            print.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Note);
-            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
+        if (docInst.isValid()) {
+            final SelectBuilder selSymbol = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selRateSymbol = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentAbstract.Name,
+                            CISales.DocumentAbstract.Note,
+                            CISales.DocumentSumAbstract.CrossTotal,
                             CISales.DocumentSumAbstract.RateCrossTotal);
             print.addSelect(selSymbol, selRateSymbol);
             print.execute();
-            name = print.getAttribute(CISales.DocumentAbstract.Name);
-            netPrice = print.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-            rateNetPrice = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            symbol = print.getSelect(selSymbol);
-            rateSymbol = print.getSelect(selRateSymbol);
+
+            name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
+            netPrice = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+            rateNetPrice = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            symbol = print.<String>getSelect(selSymbol);
+            rateSymbol = print.<String>getSelect(selRateSymbol);
         } else {
             name = "";
             symbol = "";
@@ -166,33 +176,53 @@ public class EventSchedule_Base
         if (name.length() > 0) {
             map.put("netPrice", symbol + getNetPriceFmtStr(netPrice));
             map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
-            map.put("total", getTotalFmtStr(getTotal(_parameter)));
+            map.put("amount4Schedule", getNetPriceFmtStr(netPrice.subtract(getPaymentDetraction4Doc(docInst))));
+            map.put("total", getTotalFmtStr(getTotal(_parameter, docInst)));
             map.put("documentAutoComplete", name);
-
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         } else {
             map.put("documentAutocomplete", name);
+            map.put("amount4Schedule", "");
+            map.put("netPrice", "");
+            map.put("rateNetPrice", "");
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
             final StringBuilder js = new StringBuilder();
-            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
+            js.append("document.getElementsByName('documentAutoComplete')[").append(selected).append("].focus()");
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
     }
 
-    public BigDecimal getTotal(final Parameter _parameter)
+    public BigDecimal getTotal(final Parameter _parameter,
+                               final Instance _ignoreDoc)
         throws EFapsException
     {
+        final DecimalFormat formatter = NumberFormatter.get().getFormatter();
         BigDecimal total = BigDecimal.ZERO;
         final String[] oids = _parameter.getParameterValues("document");
+        final String[] amounts = _parameter.getParameterValues("amount4Schedule");
         for (int i = 0; i < oids.length; i++) {
-            if (oids[i] != null && oids[i].length() > 0) {
-                final PrintQuery print = new PrintQuery(oids[i]);
+            final Instance docInst = Instance.get(oids[i]);
+            if (docInst.isValid()) {
+                final PrintQuery print = new PrintQuery(docInst);
                 print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
                 print.execute();
-                total = total.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+
+                BigDecimal amount = BigDecimal.ZERO;
+                if (_ignoreDoc != null && _ignoreDoc.isValid() && docInst.equals(_ignoreDoc)) {
+                    amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                } else {
+                    try {
+                        if (!amounts[i].isEmpty()) {
+                            amount = (BigDecimal) formatter.parse(amounts[i]);
+                        }
+                    } catch (final ParseException e) {
+                        throw new EFapsException(EventSchedule.class, "Amount4Schedule.ParseException", e);
+                    }
+                }
+                total = total.add(amount);
             }
         }
         return total;

@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 7522 $
- Last Changed:    $Date: 2012-05-11 15:34:02 -0500 (vie 11 de may de 2012) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 
@@ -29,7 +29,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
 
     <uuid>f47d5962-3742-4736-82eb-6a772d6539bb</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 7522 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentSchedulePositionTable</name>
@@ -64,6 +64,12 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Attribute">DocumentDesc</property>
             <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
             <property name="Width">8</property>
+        </field>
+        <field name="amount4Schedule">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_PaymentSchedulePosition.Amount4Schedule.Label</property>
         </field>
         <field name="rateNetPrice">
             <property name="ModeCreate">READONLY</property>
@@ -119,6 +125,12 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Attribute">DocumentDesc</property>
             <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
             <property name="Width">8</property>
+        </field>
+        <field name="amount4Schedule">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_PaymentSchedulePosition.Amount4Schedule.Label</property>
         </field>
         <field name="rateNetPrice">
             <property name="ModeCreate">READONLY</property>
