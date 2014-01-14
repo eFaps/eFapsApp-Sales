@@ -21,20 +21,22 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>79ccab9d-797d-4d4f-9c8a-cfb323b23187</uuid>
-    <file-application>eFapsApp-Projects</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingPerceptionCertificateTree_Documents_Menu_Action_AddExisting</name>
         <!-- target definition -->
         <access>
-            <role>Projects_Admin</role>
-            <role>Projects_Modifier</role>
+            <role>Sales_Admin</role>
         </access>
         <target>
-            <search>Projects_ProjectTree_Documents_Menu_Action_AddExisting_Search</search>
-            <execute method="connectDocument" program="org.efaps.esjp.projects.Project"/>
-            <validate method="validateConnectDocument" program="org.efaps.esjp.projects.Project"/>
+            <search>Sales_IncomingPerceptionCertificateTree_Documents_Menu_Action_AddExisting_Search</search>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectChildAttribute">DocumentLink</property>
+                <property name="ConnectParentAttribute">DocumentTypeLink</property>
+                <property name="ConnectType">Sales_Document2DocumentType</property>
+            </execute>
         </target>
 
         <!-- properties -->

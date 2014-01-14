@@ -21,18 +21,18 @@
 
 --><ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2c1dee40-3926-4a3c-9a02-6aacb41a31b2</uuid>
-    <file-application>eFapsApp-Projects</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingPerceptionCertificateTree_Documents_Menu_Action_AddExisting_Search</name>
         <!-- defaults -->
         <default>
-            <command>Projects_DocumentSearch</command>
+            <command>Sales_DocumentSearch</command>
         </default>
         <!-- childs -->
         <childs>
-            <child>Projects_DocumentSearch</child>
+            <child>Sales_DocumentSearch</child>
         </childs>
     </definition>
 </ui-search>

@@ -21,19 +21,18 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>11cbec91-b725-4211-9927-3fa6d12a1388</uuid>
-    <file-application>eFapsApp-Projects</file-application>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingPerceptionCertificateTree_Documents</name>
         <target>
-            <menu>Projects_ProjectTree_Documents_Menu</menu>
-            <table>Projects_Project2DocumentTable</table>
+            <menu>Sales_IncomingPerceptionCertificateTree_Documents_Menu</menu>
+            <table>Sales_IncomingPerceptionCertificate_DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Projects_Project2DocumentAbstract</property>
                 <property name="LinkFroms">FromAbstract</property>
             </evaluate>
-            <help>org.efaps.wiki.projects.Showprojects.wiki</help>
         </target>
         <!-- properties -->
         <property name="Target">content</property>
