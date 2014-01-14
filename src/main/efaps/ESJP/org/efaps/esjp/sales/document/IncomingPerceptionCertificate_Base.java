@@ -23,20 +23,15 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.util.Properties;
-import java.util.UUID;
 
-import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -49,10 +44,17 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("7a5f02e9-4e72-46a7-9334-48abca41d026")
 @EFapsRevision("$Rev$")
 public abstract class IncomingPerceptionCertificate_Base
-    extends DocumentSum{
+    extends DocumentSum
+{
 
-    public static final String PERCEPTIONVALUE= IncomingPerceptionCertificate.class.getName() + ".PerceptionValue" ;
+    public static final String PERCEPTIONVALUE = IncomingPerceptionCertificate.class.getName() + ".PerceptionValue";
 
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        createDoc(_parameter);
+        return new Return();
+    }
 
     public void create4Doc(final Parameter _parameter,
                            final CreatedDoc _createdDoc)
@@ -107,17 +109,5 @@ public abstract class IncomingPerceptionCertificate_Base
         relInsert.add(CISales.IncomingPerceptionCertificate2Document.ToLink, _createdDoc.getInstance());
         relInsert.execute();
     }
-
-    @Override
-    protected String getDocName4Create(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Type type = CISales.IncomingPerceptionCertificate.getType();
-        final Properties props = ERP.getSysConfig().getAttributeValueAsProperties(ERPSettings.NUMBERGENERATOR, true);
-        final String uuid = props.getProperty(type.getName());
-        final NumberGenerator numGen = NumberGenerator.get(UUID.fromString(uuid));
-        return numGen.getNextVal();
-    }
-
 
 }
