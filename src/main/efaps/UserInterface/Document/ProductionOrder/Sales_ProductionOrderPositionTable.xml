@@ -33,10 +33,13 @@
         <property name="ModeCreate">EDITABLE</property>
     </field>
     <field name="product">
+        <property name="SelectAlternateOID">linkto[Product].oid</property>
         <property name="Select">linkto[Product].attribute[Name]</property>
+        <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         <property name="Label">Sales_ProductionOrderPosition/Product.Label</property>
         <property name="ModeCreate">EDITABLE</property>
-        <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product" name="Sales_ProductionOrderPositionTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.ProductionOrder"/>
+        <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product" name="Sales_ProductionOrderPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+            program="org.efaps.esjp.sales.document.ProductionOrder" />
     </field>
     <field name="productDesc">
         <property name="Columns">90</property>
