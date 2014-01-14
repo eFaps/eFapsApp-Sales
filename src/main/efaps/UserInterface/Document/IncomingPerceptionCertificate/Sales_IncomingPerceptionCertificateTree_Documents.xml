@@ -30,8 +30,8 @@
             <menu>Sales_IncomingPerceptionCertificateTree_Documents_Menu</menu>
             <table>Sales_IncomingPerceptionCertificate_DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Projects_Project2DocumentAbstract</property>
-                <property name="LinkFroms">FromAbstract</property>
+                <property name="Types">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFroms">FromAbstractLink</property>
             </evaluate>
         </target>
         <!-- properties -->

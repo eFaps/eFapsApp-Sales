@@ -372,6 +372,19 @@
             <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="PerceptionDocument">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="SelectAlternateOID">linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+           <!-- <property name="Phrase">$&lt;linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]&gt;</property>
+             <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
+            <property name="Phrase">$&lt;linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].type.label&gt; - $&lt;linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]&gt;</property>
+             -->
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_IncomingInvoice/Perception.Label</property>
+        </field>
         <field name="headingPerception" character="Heading">
             <property name="Level">3</property>
             <property name="Label">Sales_IncomingInvoiceForm.headingPerception.Label</property>
@@ -394,7 +407,7 @@
              <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="updateFields4PerceptionPercent"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="perceptionValue">
             <property name="ModeCreate">EDITABLE</property>
@@ -411,7 +424,7 @@
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingInvoiceForm.javaScript.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE"/>
         </field>
     </definition>
 </ui-form>
