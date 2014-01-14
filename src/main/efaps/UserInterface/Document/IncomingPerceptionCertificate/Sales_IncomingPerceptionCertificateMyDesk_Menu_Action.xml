@@ -30,6 +30,7 @@
         <name>Sales_IncomingPerceptionCertificateMyDesk_Menu_Action</name>
         <!-- childs -->
         <childs>
+            <child>Sales_IncomingPerceptionCertificateMyDesk_Menu_Action_Create</child>
             <child>Sales_IncomingPerceptionCertificateMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>

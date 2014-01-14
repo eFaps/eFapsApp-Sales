@@ -34,6 +34,9 @@
             <form>Sales_IncomingPerceptionCertificateForm</form>
         </target>
         <type>Sales_IncomingPerceptionCertificate</type>
+        <childs>
+        <child>Sales_DocumentAbstractTree_Doc</child>
+        </childs>
         <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
