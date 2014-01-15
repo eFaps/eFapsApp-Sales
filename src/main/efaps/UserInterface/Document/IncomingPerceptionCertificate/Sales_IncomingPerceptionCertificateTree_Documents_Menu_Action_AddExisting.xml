@@ -36,6 +36,7 @@
                 <property name="ConnectChildAttribute">To</property>
                 <property name="ConnectParentAttribute">From</property>
                 <property name="ConnectType">Sales_Document2DerivativeDocument</property>
+                <property name="AllowMultiple">false</property>
             </execute>
         </target>
         <!-- properties -->

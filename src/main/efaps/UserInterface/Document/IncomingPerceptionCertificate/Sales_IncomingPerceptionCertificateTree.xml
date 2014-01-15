@@ -35,7 +35,7 @@
         </target>
         <type>Sales_IncomingPerceptionCertificate</type>
         <childs>
-        <child>Sales_DocumentAbstractTree_Doc</child>
+        <child>Sales_IncomingPerceptionCertificateTree_Documents</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
