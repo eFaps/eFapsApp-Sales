@@ -372,15 +372,18 @@
             <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="headingPerceptionTitle" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_IncomingInvoiceForm.headingPerceptionTitle.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
         <field name="PerceptionDocument">
             <property name="ModeCreate">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="SelectAlternateOID">linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
             <property name="Select">linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
-           <!-- <property name="Phrase">$&lt;linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]&gt;</property>
-             <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
-            <property name="Phrase">$&lt;linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].type.label&gt; - $&lt;linkfrom[ERP_Document2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]&gt;</property>
-             -->
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_IncomingInvoice/Perception.Label</property>
