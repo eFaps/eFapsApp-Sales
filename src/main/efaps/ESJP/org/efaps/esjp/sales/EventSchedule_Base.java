@@ -1,3 +1,23 @@
+/*
+ * Copyright 2003 - 2014 The eFaps Team
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
+ */
+
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
@@ -42,7 +62,7 @@ import org.joda.time.format.DateTimeFormatter;
  */
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsRevision("$Rev: 1$")
-public class EventSchedule_Base
+public abstract class EventSchedule_Base
     extends DocumentSum
 {
     public static final String CONTACT_SESSIONKEY = "eFaps_Selected_Contact";
@@ -53,7 +73,8 @@ public class EventSchedule_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
-        final Instance instContact = (Instance) Context.getThreadContext().getSessionAttribute(EventSchedule.CONTACT_SESSIONKEY);
+        final Instance contact = (Instance) Context.getThreadContext()
+                        .getSessionAttribute(EventSchedule.CONTACT_SESSIONKEY);
 
         final List<Instance> query = new MultiPrint()
         {
@@ -64,8 +85,8 @@ public class EventSchedule_Base
                 throws EFapsException
             {
                 add2QueryBldr4AutoCompleteScheduledDoc(_parameter, _queryBldr);
-                if (instContact != null && instContact.isValid()) {
-                    _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, instContact);
+                if (contact != null && contact.isValid()) {
+                    _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contact);
                 }
                 _queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
             }
@@ -113,7 +134,14 @@ public class EventSchedule_Base
         return retVal;
     }
 
-    protected BigDecimal getPaymentDocumentOut4Doc(final Instance currentInstance)
+    /**
+     * method to obtains total payments document out at the document.
+     *
+     * @param _instance of the Document.
+     * @return new BigDecimal.
+     * @throws EFapsException on error.
+     */
+    protected BigDecimal getPaymentDocumentOut4Doc(final Instance _instance)
         throws EFapsException
     {
         return BigDecimal.ZERO;
@@ -175,7 +203,8 @@ public class EventSchedule_Base
 
         if (name.length() > 0) {
             map.put("netPrice", symbol + getNetPriceFmtStr(netPrice) + " / "
-                            + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)));
+                            + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)) + " / "
+                            + getNetPriceFmtStr(getEventSchedule4Doc(docInst)));
             map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
             map.put("amount4Schedule", getNetPriceFmtStr(netPrice.subtract(getPaymentDocumentOut4Doc(docInst))));
             map.put("total", getTotalFmtStr(getTotal(_parameter, docInst)));
@@ -194,6 +223,19 @@ public class EventSchedule_Base
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
+    }
+
+    /**
+     * Method to obtains total of the event schedule to document.
+     *
+     * @param _instance of the document.
+     * @return new BigDecimal.
+     * @throws EFapsException on error.
+     */
+    protected BigDecimal getEventSchedule4Doc(final Instance _instance)
+        throws EFapsException
+    {
+        return BigDecimal.ZERO;
     }
 
     public BigDecimal getTotal(final Parameter _parameter,
