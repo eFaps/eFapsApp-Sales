@@ -11,9 +11,6 @@
 		<property name="hasSubReport" value="true"/>
 	</parameter>
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
-	<field name="name" class="java.lang.String">
-		<property name="Select" value="attribute[Name]"/>
-	</field>
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="attribute[Date]"/>
 	</field>
@@ -75,12 +72,12 @@
 			<textField>
 				<reportElement uuid="3cf6f164-2c76-42c8-b2d0-dc59c1258592" x="436" y="30" width="119" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{derivateType} + " - " + $F{derivateName}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{derivateType}]]></textFieldExpression>
 			</textField>
 			<textField>
 				<reportElement uuid="b3f43be4-b0d7-4d6a-9bbf-8dbf4c512af2" x="436" y="50" width="119" height="20"/>
 				<textElement/>
-				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{derivateName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
 				<reportElement uuid="785cebdb-0d7b-43fd-9ea1-bcc5e2bc10f6" x="436" y="70" width="119" height="20"/>
