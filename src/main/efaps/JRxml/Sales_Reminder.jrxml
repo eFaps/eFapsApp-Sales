@@ -89,6 +89,8 @@
 		<band height="20">
 			<subreport>
 				<reportElement uuid="871f9c56-e215-414d-a11c-a1e99209b7a0" x="0" y="0" width="555" height="20"/>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_ReminderPosition")]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Sales_ReminderPosition"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
