@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,25 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>1cd37ed9-b793-4f1a-9102-59a953431ff8</uuid>
+    <uuid>f8a19780-12b9-4223-bcb6-139ed1f9dcce</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReminderTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_ReminderTree_Menu_Action_Edit</child>
-            <child>Sales_DocumentSumTree_Menu_Action_Recalculate</child>
-            <child>Sales_ReminderTree_Menu_Action_Checkout</child>
-        </childs>
+        <name>Sales_CreditNoteTree_Menu_Action_Checkout</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <execute program="org.efaps.esjp.common.file.FileCheckout"/>
+        </target>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
-
-</ui-menu>
+</ui-command>
