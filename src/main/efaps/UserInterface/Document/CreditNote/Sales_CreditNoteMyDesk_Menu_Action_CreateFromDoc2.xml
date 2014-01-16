@@ -43,6 +43,8 @@
         <target>
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
+                <property name="JasperReport">Sales_CreditNote</property>
+                <property name="Mime">pdf</property>
                 <property name="PositionType">Sales_CreditNotePosition</property>
                 <property name="StatusGroup">Sales_CreditNoteStatus</property>
                 <property name="Status">Open</property>
@@ -56,6 +58,7 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 
 </ui-command>

@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Reminder" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf56bcd7-aab5-41ec-8cd1-8f3733104f4d">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
+	<import value="org.efaps.number2words.Converter"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="35b05dff-69a4-4735-bcdc-21bf6c298898"/>
+		<property name="Instance" value="true"/>
+		<property name="hasSubReport" value="true"/>
+	</parameter>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[Date]"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].attribute[Name]"/>
+	</field>
+	<field name="contactTaxNumber" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="contactAdressStreet" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].class[Contacts_ClassLocation].attribute[LocationAdressStreet]"/>
+	</field>
+	<field name="rateCrossTotal" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[RateCrossTotal]"/>
+	</field>
+	<field name="rateNetTotal" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[RateNetTotal]"/>
+	</field>
+	<field name="rateCurrencySymbol" class="java.lang.String">
+		<property name="Select" value="linkto[RateCurrencyId].attribute[Symbol]"/>
+	</field>
+	<field name="rateCurrencyName" class="java.lang.String">
+		<property name="Select" value="linkto[RateCurrencyId].attribute[Name]"/>
+	</field>
+	<pageHeader>
+		<band height="120">
+			<textField>
+				<reportElement uuid="75c22ef5-96ca-4fa8-97a5-cce108db13a3" x="62" y="20" width="348" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="635c9ca1-b841-4225-97e9-cfdeacde2d26" x="62" y="50" width="137" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b57cbb43-41af-4d6d-97f4-096084073561" x="62" y="70" width="372" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactAdressStreet}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="dd" isBlankWhenNull="true">
+				<reportElement uuid="5925e2ce-2f51-49bf-84bd-b36937c43b48" x="62" y="0" width="15" height="20"/>
+				<textElement textAlignment="Left" verticalAlignment="Top">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="MMMMM" isBlankWhenNull="true">
+				<reportElement uuid="b51ec8b9-1257-4ee6-b046-86f842d2c62f" x="92" y="0" width="70" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField pattern="yyyy" isBlankWhenNull="true">
+				<reportElement uuid="63011dc4-a4ba-4fa4-8f90-3cca77c1a969" x="177" y="0" width="27" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Top">
+					<font fontName="SansSerif" size="10"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="d6a7b383-70dc-4fd5-9c8c-1968fb23f34c" x="77" y="0" width="15" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[de]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b64ae92e-a829-490b-be85-5c0abc745f30" x="162" y="0" width="15" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[de]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="20">
+			<subreport>
+				<reportElement uuid="871f9c56-e215-414d-a11c-a1e99209b7a0" x="0" y="0" width="555" height="20"/>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="114">
+			<textField>
+				<reportElement uuid="cad5e15d-b086-4f85-96db-9616133aab42" x="455" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI()
+    .format($F{rateNetTotal},"#,##0.00")).toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="e70909fd-4fec-4c7c-b569-f8f295241a5c" x="455" y="20" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI().format($F{rateCrossTotal}.subtract($F{rateNetTotal}),"#,##0.00")).toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="444f04e8-e6c1-4747-b706-488e04468e0d" x="0" y="10" width="379" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new StringBuilder().append(Converter.getMaleConverter(
+    new Locale("es")).convert($F{rateCrossTotal}.longValue())).append(" y ")
+    .append($F{rateCrossTotal}.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString().replaceAll("^.*\\.", ""))
+    .append("/100 ")
+.append($F{rateCurrencyName}).toString().toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="51ac9ea8-328f-40f4-a3cf-884fc425820b" x="455" y="40" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI().format($F{rateCrossTotal},"#,##0.00")).toString()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

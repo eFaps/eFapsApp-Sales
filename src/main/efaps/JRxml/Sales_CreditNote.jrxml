@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_CreditNote" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5f98e82a-9fbc-41d3-8029-703d5b6243f9">
+	<property name="ireport.zoom" value="1.1"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
+	<import value="org.efaps.number2words.Converter"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="6191646c-e16a-4888-ad56-9d61af346b96"/>
+		<property name="Instance" value="true"/>
+		<property name="hasSubReport" value="true"/>
+	</parameter>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[Date]"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].attribute[Name]"/>
+	</field>
+	<field name="contactTaxNumber" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="contactAdressStreet" class="java.lang.String">
+		<property name="Select" value="linkto[Contact].class[Contacts_ClassLocation].attribute[LocationAdressStreet]"/>
+	</field>
+	<field name="rateCrossTotal" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[RateCrossTotal]"/>
+	</field>
+	<field name="rateNetTotal" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[RateNetTotal]"/>
+	</field>
+	<field name="rateCurrencySymbol" class="java.lang.String">
+		<property name="Select" value="linkto[RateCurrencyId].attribute[Symbol]"/>
+	</field>
+	<field name="rateCurrencyName" class="java.lang.String">
+		<property name="Select" value="linkto[RateCurrencyId].attribute[Name]"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<columnHeader>
+		<band height="100">
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="87d11353-5914-4de3-a786-9e17bf3379dd" x="44" y="0" width="106" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="af94fff3-7b4b-4e91-acf7-e590df49fa9a" x="231" y="0" width="105" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="7b621804-2c1a-40c5-acd4-87539d01a59e" x="44" y="20" width="335" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="99fcedc8-8762-4a94-9ee7-c7d29bb0b123" x="44" y="50" width="335" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactAdressStreet}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="42">
+			<subreport>
+				<reportElement uuid="be49e49a-e376-44e8-8dec-da915b1fda4d" x="0" y="0" width="555" height="20"/>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_CreditNotePosition")]]></dataSourceExpression>
+				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Sales_CreditNotePosition"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="116">
+			<textField>
+				<reportElement uuid="f2bd557d-d6ab-4fff-a31e-71c2bc31e490" x="455" y="0" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI()
+    .format($F{rateNetTotal},"#,##0.00")).toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="3cef8868-9c4c-48dc-9eff-7cb69401a5fd" x="455" y="20" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI().format($F{rateCrossTotal}.subtract($F{rateNetTotal}),"#,##0.00")).toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="298cd7e4-0517-42e4-84c2-d9591e1ce60d" x="455" y="40" width="100" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI().format($F{rateCrossTotal},"#,##0.00")).toString()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="8ff416cd-7cb0-49b7-b400-9d5e2078491e" x="0" y="10" width="379" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new StringBuilder().append(Converter.getMaleConverter(
+    new Locale("es")).convert($F{rateCrossTotal}.longValue())).append(" y ")
+    .append($F{rateCrossTotal}.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString().replaceAll("^.*\\.", ""))
+    .append("/100 ")
+.append($F{rateCurrencyName}).toString().toUpperCase()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
