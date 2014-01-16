@@ -11,6 +11,9 @@
 		<property name="hasSubReport" value="true"/>
 	</parameter>
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<field name="name" class="java.lang.String">
+		<property name="Select" value="attribute[Name]"/>
+	</field>
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="attribute[Date]"/>
 	</field>
@@ -34,6 +37,15 @@
 	</field>
 	<field name="rateCurrencyName" class="java.lang.String">
 		<property name="Select" value="linkto[RateCurrencyId].attribute[Name]"/>
+	</field>
+	<field name="derivateType" class="java.lang.String">
+		<property name="Select" value="linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label"/>
+	</field>
+	<field name="derivateName" class="java.lang.String">
+		<property name="Select" value="linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]"/>
+	</field>
+	<field name="derivateDate" class="org.joda.time.DateTime">
+		<property name="Select" value="linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Date]"/>
 	</field>
 	<background>
 		<band splitType="Stretch"/>
@@ -60,6 +72,21 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{contactAdressStreet}]]></textFieldExpression>
 			</textField>
+			<textField>
+				<reportElement uuid="3cf6f164-2c76-42c8-b2d0-dc59c1258592" x="436" y="30" width="119" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{derivateType} + " - " + $F{derivateName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b3f43be4-b0d7-4d6a-9bbf-8dbf4c512af2" x="436" y="50" width="119" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="785cebdb-0d7b-43fd-9ea1-bcc5e2bc10f6" x="436" y="70" width="119" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{derivateDate}.toDate()]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
@@ -67,7 +94,7 @@
 			<subreport>
 				<reportElement uuid="be49e49a-e376-44e8-8dec-da915b1fda4d" x="0" y="0" width="555" height="20"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_CreditNotePosition")]]></dataSourceExpression>
-				<subreportExpression class="java.lang.String"><![CDATA["JasperReport.Sales_CreditNotePosition"]]></subreportExpression>
+				<subreportExpression><![CDATA["JasperReport.Sales_CreditNotePosition"]]></subreportExpression>
 			</subreport>
 		</band>
 	</detail>
