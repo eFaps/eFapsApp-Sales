@@ -84,7 +84,6 @@ public abstract class EventSchedule_Base
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                add2QueryBldr4AutoCompleteScheduledDoc(_parameter, _queryBldr);
                 if (contact != null && contact.isValid()) {
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contact);
                 }

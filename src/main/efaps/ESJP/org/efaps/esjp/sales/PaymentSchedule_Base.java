@@ -22,12 +22,9 @@ package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -213,37 +210,6 @@ public abstract class PaymentSchedule_Base
                 _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery2);
             }
         }.execute(_parameter);
-    }
-
-    @Override
-    protected void add2QueryBldr4AutoCompleteScheduledDoc(final Parameter _parameter,
-                                                          final QueryBuilder _queryBldr)
-        throws EFapsException
-    {
-        final SelectBuilder selDocType = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.Document).type();
-        final SelectBuilder selDoc = new SelectBuilder().linkto(CISales.PaymentSchedulePosition.Document).instance();
-
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentSchedule);
-        attrQueryBldr.addWhereAttrEqValue(CISales.PaymentSchedule.Status,
-                        Status.find(CISales.PaymentScheduleStatus.Open));
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentSchedule.ID);
-
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentSchedulePosition);
-        queryBldr.addWhereAttrInQuery(CISales.PaymentSchedulePosition.PaymentSchedule, attrQuery);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addSelect(selDocType, selDoc);
-        multi.execute();
-
-        final List<Long> ids = new ArrayList<Long>();
-        while (multi.next()) {
-            if (multi.<Type>getSelect(selDocType).getUUID().equals(_queryBldr.getTypeUUID())) {
-                ids.add(multi.<Instance>getSelect(selDoc).getId());
-            }
-        }
-
-        if (!ids.isEmpty()) {
-            _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, ids.toArray());
-        }
     }
 
     @Override
