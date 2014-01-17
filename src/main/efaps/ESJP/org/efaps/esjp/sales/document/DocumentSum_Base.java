@@ -247,7 +247,7 @@ public abstract class DocumentSum_Base
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _createdDoc CreatedDoc
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     protected void connect2DocumentType(final Parameter _parameter,
                                         final CreatedDoc _createdDoc)
@@ -570,7 +570,7 @@ public abstract class DocumentSum_Base
      * Method to set additional fields for the currency update method.
      *
      * @param _parameter Paramter as passed by the eFaps API
-     * @param _instance Instance of the document.
+     * @param _calculators list of calculators
      * @return new StringBuilder with the additional fields.
      * @throws EFapsException on error
      */
@@ -578,14 +578,16 @@ public abstract class DocumentSum_Base
                                                                final List<Calculator> _calculators)
         throws EFapsException
     {
+        // to be used by implementations
         return new StringBuilder();
     }
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
+     * @param _calculators list of calculators
      * @param _values values to be added to
      * @param _noEscape no escape fields
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     protected void add2SetValuesString4Postions4CurrencyUpdate(final Parameter _parameter,
                                                                final List<Calculator> _calculators,
@@ -738,7 +740,7 @@ public abstract class DocumentSum_Base
                                 .setScale(uScale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
                                 .setScale(uScale, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice,calc.getDiscountNetUnitPrice()
+                posIns.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                 .setScale(uScale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateNetPrice,
                                 calc.getNetPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
@@ -769,6 +771,11 @@ public abstract class DocumentSum_Base
         // to be implemented by subclasses
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing list
+     * @throws EFapsException on error
+     */
     public Return executeCalculatorOnScript(final Parameter _parameter)
         throws EFapsException
     {
@@ -972,6 +979,13 @@ public abstract class DocumentSum_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculators
+     * @param _currencyInst instancof the current currency
+     * @return Taxes object
+     * @throws EFapsException on error
+     */
     public Taxes getRateTaxes(final Parameter _parameter,
                               final List<Calculator> _calcList,
                               final Instance _currencyInst)
@@ -979,12 +993,14 @@ public abstract class DocumentSum_Base
     {
         final Map<Tax, BigDecimal> values = new HashMap<Tax, BigDecimal>();
         for (final Calculator calc : _calcList) {
-            final Map<Tax, BigDecimal> valMap = calc.getTaxesAmounts();
-            for (final Entry<Tax, BigDecimal> entry : valMap.entrySet()) {
-                if (!values.containsKey(entry.getKey())) {
-                    values.put(entry.getKey(), BigDecimal.ZERO);
+            if (!calc.isWithoutTax()) {
+                final Map<Tax, BigDecimal> valMap = calc.getTaxesAmounts();
+                for (final Entry<Tax, BigDecimal> entry : valMap.entrySet()) {
+                    if (!values.containsKey(entry.getKey())) {
+                        values.put(entry.getKey(), BigDecimal.ZERO);
+                    }
+                    values.put(entry.getKey(), values.get(entry.getKey()).add(entry.getValue()));
                 }
-                values.put(entry.getKey(), values.get(entry.getKey()).add(entry.getValue()));
             }
         }
         final Taxes ret = new Taxes();
@@ -1009,7 +1025,14 @@ public abstract class DocumentSum_Base
         return ret;
     }
 
-
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculators
+     * @param _rate rate amount
+     * @param _baseCurrInst instancof the base currency
+     * @return Taxes object
+     * @throws EFapsException on error
+     */
     public Taxes getTaxes(final Parameter _parameter,
                           final List<Calculator> _calcList,
                           final BigDecimal _rate,
@@ -1266,7 +1289,7 @@ public abstract class DocumentSum_Base
 
                 _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQuery);
             }
-        }.execute(_parameter);
+        } .execute(_parameter);
     }
 
     /**
