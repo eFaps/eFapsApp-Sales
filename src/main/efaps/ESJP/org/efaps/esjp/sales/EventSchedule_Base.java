@@ -146,14 +146,6 @@ public abstract class EventSchedule_Base
         return BigDecimal.ZERO;
     }
 
-    protected void add2QueryBldr4AutoCompleteScheduledDoc(final Parameter _parameter,
-                                                          final QueryBuilder _queryBldr)
-        throws EFapsException
-    {
-        // TODO Auto-generated method stub
-
-    }
-
     /**
      * Generic method to get the listmap for update event.
      *
