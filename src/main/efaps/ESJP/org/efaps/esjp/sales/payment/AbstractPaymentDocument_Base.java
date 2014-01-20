@@ -1366,7 +1366,7 @@ public abstract class AbstractPaymentDocument_Base
                     String value;
                     if (field.getValue().equalsIgnoreCase("amount")) {
                         final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                        if (amount.compareTo(BigDecimal.ZERO) == 0 && Context.getThreadContext()
+                        if (amount.compareTo(BigDecimal.ZERO) != 0 && Context.getThreadContext()
                                         .getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) != null) {
                             Context.getThreadContext()
                                         .setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
