@@ -79,9 +79,16 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         </field>
         <field name="netPrice">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Attribute">NetPrice</property>
             <property name="Label">Sales_PaymentSchedulePosition/NetPrice.Label</property>
+        </field>
+        <field name="netPrice4View">
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">NetPrice</property>
+            <property name="Label">Sales_PaymentSchedulePosition/NetPrice4View.Label</property>
         </field>
     </definition>
 
@@ -140,9 +147,16 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         </field>
         <field name="netPrice">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Attribute">NetPrice</property>
             <property name="Label">Sales_PaymentSchedulePosition/NetPrice.Label</property>
+        </field>
+        <field name="netPrice4View">
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">NetPrice</property>
+            <property name="Label">Sales_PaymentSchedulePosition/NetPrice4View.Label</property>
         </field>
     </definition>
 </ui-table>
