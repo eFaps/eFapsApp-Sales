@@ -1356,19 +1356,32 @@ public abstract class AbstractPaymentDocument_Base
             final Map<Integer, String> fields = analyseProperty(_parameter, "Fields");
             if (!fields.isEmpty()) {
                 final PrintQuery print = new PrintQuery(selectDoc);
-                print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                print.addAttribute(CISales.DocumentSumAbstract.Date,
+                                CISales.DocumentSumAbstract.DueDate,
+                                CISales.DocumentSumAbstract.RateCrossTotal);
                 print.addSelect(selContactOid, selContactName);
                 print.execute();
 
                 for (final Entry<Integer, String> field : fields.entrySet()) {
                     String value;
                     if (field.getValue().equalsIgnoreCase("amount")) {
-                        value = getTwoDigitsformater().format(
-                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                        final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                        if (amount.compareTo(BigDecimal.ZERO) == 0 && Context.getThreadContext()
+                                        .getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) != null) {
+                            Context.getThreadContext()
+                                        .setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
+                        }
+                        value = getTwoDigitsformater().format(amount);
                     } else if (field.getValue().equalsIgnoreCase("contact")) {
                         value = print.<String>getSelect(selContactOid);
                     } else if (field.getValue().equalsIgnoreCase("contactAutoComplete")) {
                         value = print.<String>getSelect(selContactName);
+                    } else if (field.getValue().equalsIgnoreCase("date_eFapsDate")) {
+                        final DateTime date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
+                        value = date.toString("dd/MM/YYYY");
+                    } else if (field.getValue().equalsIgnoreCase("dueDate_eFapsDate")) {
+                        final DateTime dueDate = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate);
+                        value = dueDate.toString("dd/MM/YYYY");
                     } else {
                         value = "";
                     }
