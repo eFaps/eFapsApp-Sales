@@ -269,23 +269,18 @@ public abstract class PaymentSchedule_Base
             final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
             final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
             final Object[] rateObjDoc = multi.<Object[]>getSelect(selRateDoc);
-            if (baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
-                            && baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink)) {
-                ret = ret.add(amount);
-            } else if (baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink)
-                            && baseCurLink.getId() != multi.<Long>getAttribute(CISales.Payment.CurrencyLink)) {
-                final BigDecimal rate = ((BigDecimal) rateObj[0]);
-                ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
-            } else if (baseCurLink.getId() == multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
-                            && baseCurLink.getId() != multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink)) {
-                final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                                BigDecimal.ROUND_HALF_UP);
-                ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+            BigDecimal rate;
+            if (multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
+                            .equals(multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink))) {
+                rate = ((BigDecimal) rateObjDoc[0]).divide((BigDecimal) rateObjDoc[1], 12, BigDecimal.ROUND_HALF_UP);
             } else {
-                final BigDecimal rate = ((BigDecimal) rateObjDoc[0]).divide((BigDecimal) rateObjDoc[1], 12,
-                                BigDecimal.ROUND_HALF_UP);
-                ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+                if (multi.<Long>getAttribute(CISales.Payment.CurrencyLink).equals(baseCurLink.getId())) {
+                    rate = BigDecimal.ONE;
+                } else {
+                    rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12, BigDecimal.ROUND_HALF_UP);
+                }
             }
+            ret = ret.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
         }
 
         return ret;
