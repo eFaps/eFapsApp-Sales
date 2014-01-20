@@ -1366,10 +1366,12 @@ public abstract class AbstractPaymentDocument_Base
                     String value;
                     if (field.getValue().equalsIgnoreCase("amount")) {
                         final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                        if (amount.compareTo(BigDecimal.ZERO) != 0 && Context.getThreadContext()
-                                        .getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) != null) {
+                        if (amount.compareTo(BigDecimal.ZERO) == 0) {
                             Context.getThreadContext()
-                                        .setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
+                                    .removeSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT);
+                        } else {
+                            Context.getThreadContext()
+                                    .setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
                         }
                         value = getTwoDigitsformater().format(amount);
                     } else if (field.getValue().equalsIgnoreCase("contact")) {
@@ -1378,10 +1380,10 @@ public abstract class AbstractPaymentDocument_Base
                         value = print.<String>getSelect(selContactName);
                     } else if (field.getValue().equalsIgnoreCase("date_eFapsDate")) {
                         final DateTime date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
-                        value = date.toString("dd/MM/YYYY");
+                        value = date.toString("dd/MM/YY");
                     } else if (field.getValue().equalsIgnoreCase("dueDate_eFapsDate")) {
                         final DateTime dueDate = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate);
-                        value = dueDate.toString("dd/MM/YYYY");
+                        value = dueDate.toString("dd/MM/YY");
                     } else {
                         value = "";
                     }
