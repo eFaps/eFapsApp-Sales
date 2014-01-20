@@ -451,6 +451,20 @@ Y/O PAGO]]></text>
                 </textElement>
                 <text><![CDATA[TIPO]]></text>
             </staticText>
+            <staticText>
+                <reportElement uuid="9dc928b4-7c61-4b88-a218-17f94354c78e" x="180" y="0" width="133" height="20"/>
+                <box leftPadding="2" rightPadding="2">
+                    <pen lineWidth="1.0"/>
+                    <topPen lineWidth="1.0"/>
+                    <leftPen lineWidth="1.0"/>
+                    <bottomPen lineWidth="1.0"/>
+                    <rightPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="9" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false"/>
+                </textElement>
+                <text><![CDATA[DOCUMENTO]]></text>
+            </staticText>
         </band>
     </columnHeader>
     <detail>
