@@ -433,6 +433,12 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter
+     * @param multi
+     * @param map
+     * @throws EFapsException
+     */
     protected void addMap4Autocomplete(final Parameter _parameter,
                                        final MultiPrintQuery multi,
                                        final Map<String, String> map)
@@ -441,6 +447,11 @@ public abstract class AbstractDocument_Base
         // to be implemented
     }
 
+    /**
+     * @param _parameter
+     * @param multi
+     * @throws EFapsException
+     */
     protected void addMulti4Autocomplete(final Parameter _parameter,
                                          final MultiPrintQuery multi)
         throws EFapsException
