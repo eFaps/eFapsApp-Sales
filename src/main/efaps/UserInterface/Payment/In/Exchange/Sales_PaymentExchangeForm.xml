@@ -60,6 +60,8 @@
                 <property name="Fields">amount</property>
                 <property name="Fields01">contact</property>
                 <property name="Fields02">contactAutoComplete</property>
+                <property name="Fields03">date_eFapsDate</property>
+                <property name="Fields04">dueDate_eFapsDate</property>
             </trigger>
         </field>
         <field name="name4View">
