@@ -269,15 +269,13 @@ public abstract class PaymentSchedule_Base
             final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
             final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
             final Object[] rateObjDoc = multi.<Object[]>getSelect(selRateDoc);
-            BigDecimal rate;
+            BigDecimal rate = BigDecimal.ONE;
             if (multi.<Long>getAttribute(CISales.Payment.CurrencyLink)
                             .equals(multi.<Long>getAttribute(CISales.Payment.RateCurrencyLink))) {
                 rate = ((BigDecimal) rateObjDoc[0]).divide((BigDecimal) rateObjDoc[1], 12, BigDecimal.ROUND_HALF_UP);
             } else {
-                if (multi.<Long>getAttribute(CISales.Payment.CurrencyLink).equals(baseCurLink.getId())) {
-                    rate = BigDecimal.ONE;
-                } else {
-                    rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12, BigDecimal.ROUND_HALF_UP);
+                if (!multi.<Long>getAttribute(CISales.Payment.CurrencyLink).equals(baseCurLink.getId())) {
+                    rate = ((BigDecimal) rateObj[1]).divide((BigDecimal) rateObj[0], 12, BigDecimal.ROUND_HALF_UP);
                 }
             }
             ret = ret.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
