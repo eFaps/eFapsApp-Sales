@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.report;
 
+import java.awt.Color;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -36,6 +37,8 @@ import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
@@ -80,7 +83,7 @@ public abstract class ProductStockReport_Base
     /**
      * Logging instance used in this class.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(ProductStockReport.class);
+    protected static final Logger LOG = LoggerFactory.getLogger(ProductStockReport.class);
 
     /**
      * @param _parameter    Parameter as passed by the eFasp API
@@ -356,7 +359,7 @@ public abstract class ProductStockReport_Base
             final boolean productRow = "true".equalsIgnoreCase((String) props.get("ProductRow"));
 
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
-            final CrosstabMeasureBuilder<BigDecimal> quantityMeasure  = DynamicReports.ctab.measure("quantity",
+            final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure("quantity",
                             BigDecimal.class, Calculation.SUM);
             if (productRow) {
                 final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("product", String.class)
@@ -369,24 +372,32 @@ public abstract class ProductStockReport_Base
                                 .columnGroup("document", String.class);
 
                 crosstab.headerCell(DynamicReports.cmp.text(DBProperties
-                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell1"))
-                                        .setStyle(DynamicReports.stl.style().setBold(true)))
-                        .rowGroups(rowGroup)
-                        .columnGroups(columnGroup)
-                        .measures(quantityMeasure);
+                        .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell1"))
+                        .setStyle(DynamicReports.stl.style().setBold(true))).rowGroups(rowGroup)
+                        .columnGroups(columnGroup).measures(quantityMeasure);
             } else {
                 final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("document", String.class);
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
-                                .columnGroup("product", String.class)
-                                .setShowTotal(false);
+                                .columnGroup("product", String.class).setShowTotal(false);
 
                 crosstab.headerCell(DynamicReports.cmp.text(DBProperties
-                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell2"))
-                                        .setStyle(DynamicReports.stl.style().setBold(true)))
-                        .rowGroups(rowGroup)
-                        .columnGroups(columnGroup)
-                        .measures(quantityMeasure);
+                        .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell2"))
+                        .setStyle(DynamicReports.stl.style().setBold(true))).rowGroups(rowGroup)
+                        .columnGroups(columnGroup).measures(quantityMeasure);
             }
+
+            final ConditionalStyleBuilder condition = DynamicReports.stl.conditionalStyle(
+                            DynamicReports.cnd.greater(quantityMeasure, 0)).setBold(true);
+
+            final ConditionalStyleBuilder condition2 = DynamicReports.stl.conditionalStyle(
+                            DynamicReports.cnd.smaller(quantityMeasure, 0))
+                            .setForegroundColor(Color.RED).setBold(true);
+
+            final StyleBuilder margin1Style = DynamicReports.stl.style().conditionalStyles(condition, condition2)
+                            .setBorder(DynamicReports.stl.pen1Point().setLineColor(Color.BLACK));
+
+            quantityMeasure.setStyle(margin1Style);
+
             _builder.summary(crosstab);
         }
     }
