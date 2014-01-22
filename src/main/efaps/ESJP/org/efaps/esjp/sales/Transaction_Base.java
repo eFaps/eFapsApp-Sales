@@ -26,7 +26,6 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,65 +67,6 @@ import org.joda.time.DateTime;
 @EFapsRevision("$Rev$")
 public abstract class Transaction_Base
 {
-    /**
-     * Method is called from within the form Sales_TransactionAbstractForm to
-     * retrieve the value for the Account on Edit or Create.
-     *
-     * @param _parameter Parameters as passed from eFaps
-     * @return Return
-     * @throws EFapsException on error
-     */
-    public Return value4Account(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final Map<Long, String> cashDeskMap = new LinkedHashMap<Long, String>();
-        final List<String> cashDeskDesc = new ArrayList<String>();
-        final List<String> cashDeskCurr = new ArrayList<String>();
-        final long actual = 0;
-        final StringBuilder ret = new StringBuilder();
-
-        final QueryBuilder cashDeskQuery = new QueryBuilder(CISales.AccountCashDesk);
-        cashDeskQuery.addOrderByAttributeAsc(CISales.AccountCashDesk.Name);
-        final MultiPrintQuery cashDeskMulti = cashDeskQuery.getPrint();
-        cashDeskMulti.addAttribute(CISales.AccountCashDesk.ID,
-                        CISales.AccountCashDesk.Name,
-                        CISales.AccountCashDesk.Description);
-        final SelectBuilder selCur = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink).attribute(
-                        CIERP.Currency.Name);
-        cashDeskMulti.addSelect(selCur);
-        cashDeskMulti.setEnforceSorted(true);
-        cashDeskMulti.execute();
-
-        while (cashDeskMulti.next()) {
-            cashDeskMap.put(cashDeskMulti.<Long>getAttribute(CISales.AccountCashDesk.ID),
-                            cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Name));
-            cashDeskDesc.add(cashDeskMulti.<String>getAttribute(CISales.AccountCashDesk.Description));
-            cashDeskCurr.add(cashDeskMulti.<String>getSelect(selCur));
-        }
-        int i = 0;
-
-        ret.append("<select size=\"1\" name=\"").append(fieldValue.getField().getName()).append("\">");
-        for (final Map.Entry<Long, String> entry : cashDeskMap.entrySet()) {
-
-            ret.append("<option");
-
-            if (entry.getValue().equals(actual)) {
-                ret.append(" selected=\"selected\" ");
-            }
-            ret.append(" value=\"").append(entry.getKey()).append("\">")
-                .append(entry.getValue()).append(" - ").append(cashDeskDesc.get(i)).append(" - ").append(cashDeskCurr.get(i))
-                .append("</option>");
-            i++;
-        }
-
-        ret.append("</select>");
-        retVal.put(ReturnValues.SNIPLETT, ret.toString());
-
-        return retVal;
-
-    }
 
     /**
      * Method is executed as trigger after the insert of an
@@ -426,7 +366,7 @@ public abstract class Transaction_Base
 
     /**
      * Method for create internal transfers.
-     * 
+     *
      * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
      * @throws EFapsException on error.

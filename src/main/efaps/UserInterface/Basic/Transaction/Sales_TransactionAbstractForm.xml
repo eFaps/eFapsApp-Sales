@@ -27,106 +27,102 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>4d7e65eb-5aef-46df-ac31-e545ffe6843d</uuid>
-  <file-application>eFaps-ERP-Products</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>4d7e65eb-5aef-46df-ac31-e545ffe6843d</uuid>
+    <file-application>eFaps-ERP-Products</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_TransactionAbstractForm</name>
-    <!-- fields -->
-    <field name="date">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="Attribute">Date</property>
-      <property name="Required">true</property>
-    </field>
-    <field name="amount">
-      <property name="Attribute">Amount</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="Required">true</property>
-    </field>
-    <field name="Currency">
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Attribute">CurrencyId</property>
-    </field>
-
-    <field name="account4edit">
-      <property name="Attribute">Account</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ModeView">NONE</property>
-      <property name="Required">true</property>
-      <trigger  program="org.efaps.esjp.sales.Transaction"
-                method="value4Account"
-                name="Sales_TransactionAbstractForm/account.UI_Field_Value"
-                event="UI_FIELD_VALUE"/>
-    </field>
-
-    <field name="account4View">
-      <property name="ModeEdit">NONE</property>
-      <property name="SelectAlternateOID">linkto[Account].oid</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Select">linkto[Account].attribute[Name]</property>
-      <property name="Label">Sales_TransactionAbstractForm.account4View.Label</property>
-    </field>
-
-    <field name="payment">
-      <property name="SelectAlternateOID">linkto[Payment].oid</property>
-      <property name="Phrase">$&lt;linkto[Payment].type.label&gt; - $&lt;linkto[Payment].attribute[Date]&gt;</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeCreate">NONE</property>
-      <property name="ModeEdit">NONE</property>
-      <property name="ModeSearch">NONE</property>
-      <property name="Label">Sales_TransactionAbstractForm.payment.Label</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-      <trigger program="org.efaps.esjp.sales.Transaction"
-               method="accessCheck4Payment"
-               name="Sales_TransactionAbstractForm/payment.UI_ACCESSCHECK"
-               event="UI_ACCESSCHECK"/>
-    </field>
-
-    <field name="description">
-      <property name="Columns">40</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="ModeEdit">EDITABLE</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="Attribute">Description</property>
-      <property name="Required">true</property>
-    </field>
-
-    <field name="createGroup" character="Group">
-      <property name="GroupCount">2</property>
-    </field>
-    <field name="creator">
-      <property name="SelectAlternateOID">linkto[Creator].oid</property>
-      <property name="Attribute">Creator</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="created">
-      <property name="Attribute">Created</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-    <field name="modifyGroup" character="Group">
-      <property name="GroupCount">2</property>
-    </field>
-    <field name="modifier">
-      <property name="SelectAlternateOID">linkto[Modifier].oid</property>
-      <property name="Attribute">Modifier</property>
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="ModeSearch">EDITABLE</property>
-      <property name="ShowTypeIcon">true</property>
-    </field>
-    <field name="modified">
-      <property name="Attribute">Modified</property>
-      <property name="ModeSearch">EDITABLE</property>
-    </field>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_TransactionAbstractForm</name>
+        <!-- fields -->
+        <field name="date">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="Currency">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">CurrencyId</property>
+        </field>
+        <field name="account4edit">
+            <property name="Attribute">Account</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+                    name="Sales_TransactionAbstractForm.account4edit.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_AccountAbstract</property>
+                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+        </field>
+        <field name="account4View">
+            <property name="ModeEdit">NONE</property>
+            <property name="SelectAlternateOID">linkto[Account].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Select">linkto[Account].attribute[Name]</property>
+            <property name="Label">Sales_TransactionAbstractForm.account4View.Label</property>
+        </field>
+        <field name="payment">
+            <property name="SelectAlternateOID">linkto[Payment].oid</property>
+            <property name="Phrase">$&lt;linkto[Payment].type.label&gt; - $&lt;linkto[Payment].attribute[Date]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeSearch">NONE</property>
+            <property name="Label">Sales_TransactionAbstractForm.payment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.Transaction" method="accessCheck4Payment"
+                name="Sales_TransactionAbstractForm/payment.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
+        </field>
+        <field name="description">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Description</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="createGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="modifyGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+    </definition>
 </ui-form>
