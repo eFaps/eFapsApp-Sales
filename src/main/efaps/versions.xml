@@ -65,7 +65,6 @@
         import org.efaps.db.InstanceQuery;
         import org.efaps.esjp.admin.ui.UIUpdate;
         import org.efaps.esjp.data.ObjectImport;
-        import org.efaps.esjp.admin.ui.UIUpdate;
         import org.efaps.esjp.admin.user.RoleUpdate;
 
 
@@ -153,6 +152,6 @@
         <!-- Sales_ContactTree_Documents -->
             rolUp.addUI("3ddf017e-92ae-4b7d-af82-9ca13299a967");
 
-    </script>3ddf017e-92ae-4b7d-af82-9ca13299a967
+    </script>
     </version>
 </install>
