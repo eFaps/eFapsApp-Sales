@@ -35,15 +35,15 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentCheck">
-                <property name="Type0">Sales_Invoice</property>
-                <property name="StatusGroup0">Sales_InvoiceStatus</property>
-                <property name="Stati0">Open</property>
-                <property name="Type1">Sales_Receipt</property>
-                <property name="StatusGroup1">Sales_ReceiptStatus</property>
-                <property name="Stati1">Open</property>
-                <property name="Type2">Sales_CollectionOrder</property>
-                <property name="StatusGroup2">Sales_CollectionOrderStatus</property>
-                <property name="Stati2">Open</property>
+                <property name="Type">Sales_Invoice</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Sales_CollectionOrder</property>
+                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
+                <property name="Status02">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentCheckPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheck"/>
         </field>
