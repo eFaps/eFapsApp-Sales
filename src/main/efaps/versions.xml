@@ -148,9 +148,9 @@
             rolUp.addUI("cc930e6c-4ed6-467e-a5d6-10f460c13118");
 
         <!-- add to role Contacs Reader -->
-            RoleUpdate rolUp = new RoleUpdate("26d860cc-5f0d-4b57-9e7e-e7685f840747");
+            RoleUpdate rolUp = new RoleUpdate("3ddf017e-92ae-4b7d-af82-9ca13299a967");
         <!-- Sales_ContactTree_Documents -->
-            rolUp.addUI("3ddf017e-92ae-4b7d-af82-9ca13299a967");
+            rolUp.addUI("cc930e6c-4ed6-467e-a5d6-10f460c13118");
 
     </script>
     </version>
