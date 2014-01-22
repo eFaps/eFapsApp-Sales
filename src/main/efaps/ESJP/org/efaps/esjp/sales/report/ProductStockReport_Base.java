@@ -224,7 +224,7 @@ public abstract class ProductStockReport_Base
                 } else {
                     final BigDecimal stock = getStock4Product(_parameter, prodInst);
                     if (!rowMap.containsKey(colDefault)) {
-                final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
+                        final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
                         colMap.put(prodName, stock);
                         rowMap.put(colDefault, colMap);
                     } else {
@@ -257,7 +257,7 @@ public abstract class ProductStockReport_Base
             return dataSource;
         }
 
-        private BigDecimal getQuantity4Derived(final Parameter _parameter,
+        protected BigDecimal getQuantity4Derived(final Parameter _parameter,
                                                final Instance _docInst,
                                                final Instance _prodInst)
             throws EFapsException
