@@ -42,6 +42,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -1952,9 +1953,13 @@ public abstract class AbstractDocument_Base
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean useNumGen = "true".equalsIgnoreCase((String) properties.get("UseNumberGenerator4Name"));
+        final String uuidStr = (String) properties.get("NumberGenerator4NameUUID");
         String ret;
         if (useNumGen) {
             ret = super.getDocName4Create(_parameter);
+        } else if (uuidStr != null && !uuidStr.isEmpty()) {
+            final NumberGenerator numGen = NumberGenerator.get(UUID.fromString(uuidStr));
+            ret = numGen.getNextVal();
         } else {
             ret = _parameter.getParameterValue("name4create");
         }
