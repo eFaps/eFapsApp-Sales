@@ -118,11 +118,17 @@
                     name="Sales_PaymentCheckForm.account.UI_FIELD_UPDATE"
                     event="UI_FIELD_UPDATE" />
         </field>
-        <field name="rate">
+        <field name="rate2create">
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="amountTotal">
             <property name="Attribute">Amount</property>
