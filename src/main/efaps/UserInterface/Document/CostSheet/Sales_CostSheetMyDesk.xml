@@ -40,7 +40,7 @@
             <menu>Sales_CostSheetMyDesk_Menu</menu>
             <table>Sales_DocumentSumTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_CostSheet</property>
+                <property name="Type">Sales_CostSheet</property>
             </evaluate>
         </target>
         <!-- properties -->
