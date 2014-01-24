@@ -135,23 +135,6 @@
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
         update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
-
-
-        <!-- add to role Contacts_Admin -->
-        RoleUpdate rolUp = new RoleUpdate("b12ddd96-bd64-458f-b731-b61118804aec");
-        <!-- Sales_ContactTree_Documents -->
-        rolUp.addUI("cc930e6c-4ed6-467e-a5d6-10f460c13118");
-
-        <!-- add to role Contacts_Modifier -->
-        rolUp = new RoleUpdate("26d860cc-5f0d-4b57-9e7e-e7685f840747");
-        <!-- Sales_ContactTree_Documents -->
-        rolUp.addUI("cc930e6c-4ed6-467e-a5d6-10f460c13118");
-
-        <!-- add to role Contacts_Reader -->
-        rolUp = new RoleUpdate("3ddf017e-92ae-4b7d-af82-9ca13299a967");
-        <!-- Sales_ContactTree_Documents -->
-        rolUp.addUI("cc930e6c-4ed6-467e-a5d6-10f460c13118");
-
     </script>
     </version>
 </install>

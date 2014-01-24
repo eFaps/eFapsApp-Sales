@@ -33,6 +33,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ContactTree_Documents</name>
         <access>
+            <role>Contacts_Admin</role>
+            <role>Contacts_Modifier</role>
+            <role>Contacts_Reader</role>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
             <role>Sales_Delivery</role>
