@@ -137,12 +137,35 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="entityFinancial">
+            <property name="Attribute">EntityFinancial</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingExchangeForm.entityFinancial.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+                name="Sales_IncomingExchangeForm.entityFinancial.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Contacts_AttributeDefinitionFinancialInstitution</property>
+                <property name="ValueSelect">id</property>
+                <property name="Phrase">$&lt;attribute[Value]&gt;</property>
+                <property name="OrderSelect">attribute[Value]</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+        </field>
+        <field name="entityFinancial4View">
+            <property name="SelectAlternateOID">linkto[EntityFinancial].oid</property>
+            <property name="Select">linkto[EntityFinancial].attribute[Value]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingExchangeForm.entityFinancial.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field character="Heading" name="headingTotal">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingExchangeForm.headingTotal.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>

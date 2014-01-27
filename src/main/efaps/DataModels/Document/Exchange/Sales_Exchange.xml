@@ -45,6 +45,13 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>STRING1</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>EntityFinancial</name>
+            <type>Link</type>
+            <typelink>Contacts_AttributeDefinitionFinancialInstitution</typelink>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER1</sqlcolumn>
+        </attribute>
         <trigger event="ACCESSCHECK" name="Sales_Exchange.ACCESSCHECK" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
 </datamodel-type>

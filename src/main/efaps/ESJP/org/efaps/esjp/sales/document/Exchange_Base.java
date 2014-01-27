@@ -67,5 +67,12 @@ public abstract class Exchange_Base
             _insert.add(CISales.Exchange.OnlyNumber, onlynumber);
             _createdDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
         }
+
+        final String entityFinancial = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.Exchange.EntityFinancial.name));
+        if (entityFinancial != null) {
+            _insert.add(CISales.Exchange.EntityFinancial, entityFinancial);
+            _createdDoc.getValues().put(CISales.Exchange.EntityFinancial.name, entityFinancial);
+        }
     }
 }
