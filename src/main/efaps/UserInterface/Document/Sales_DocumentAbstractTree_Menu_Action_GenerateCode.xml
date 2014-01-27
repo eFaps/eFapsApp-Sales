@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>29f4b525-f852-4770-8a79-58c6c2a5c553</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -27,15 +29,14 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentTree_Menu_Action_GenerateCode</name>
+        <name>Sales_DocumentAbstractTree_Menu_Action_GenerateCode</name>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.document.DocumentSum" method="generateCode4Doc"/>
+            <execute program="org.efaps.esjp.sales.document.DocumentSum" method="generateCode4Doc" />
         </target>
         <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
         <property name="SubmitSelectedRows">-1</property>
     </definition>
-
 </ui-command>
