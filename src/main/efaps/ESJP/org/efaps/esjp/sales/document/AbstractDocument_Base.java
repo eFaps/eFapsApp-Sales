@@ -2331,6 +2331,11 @@ public abstract class AbstractDocument_Base
         return js.toString();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return generateCode4Doc(final Parameter _parameter)
         throws EFapsException
     {
@@ -2349,13 +2354,19 @@ public abstract class AbstractDocument_Base
                 i++;
             }
         }
-
         return new Return();
     }
 
+    /**
+     * Recursive method to set the code for groups.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _parent instance the children will be searched for
+     * @param _current Array used for calculation
+     * @throws EFapsException on error
+     */
     protected void calculateCode(final Parameter _parameter,
-                                      final Instance _parent,
-                                      final Integer[] _current)
+                                 final Instance _parent,
+                                 final Integer[] _current)
         throws EFapsException
     {
         final Update update = new Update(_parent);
@@ -2375,8 +2386,16 @@ public abstract class AbstractDocument_Base
         }
     }
 
+    /**
+     * Recursive method to set the code for groups.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _current Array used for calculation
+     * @return new code as String
+     * @throws EFapsException on error
+     */
     private String getCode(final Parameter _parameter,
                            final Integer[] _current)
+        throws EFapsException
     {
         final StringBuilder code = new StringBuilder();
         for (int i = 0; i < _current.length; i++) {
