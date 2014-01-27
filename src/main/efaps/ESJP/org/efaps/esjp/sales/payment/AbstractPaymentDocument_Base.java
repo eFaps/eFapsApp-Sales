@@ -1564,14 +1564,10 @@ public abstract class AbstractPaymentDocument_Base
         {
             BigDecimal ret = BigDecimal.ZERO;
             if (this.instance.isValid()) {
-                final SelectBuilder selPayCurInst = new SelectBuilder()
-                                .linkto(CISales.Payment.CurrencyLink).instance();
-
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
                 queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, this.instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.Payment.Amount, CISales.Payment.Date);
-                multi.addSelect(selPayCurInst);
                 multi.addAttribute(CISales.Payment.Rate);
                 multi.execute();
                 while (multi.next()) {
