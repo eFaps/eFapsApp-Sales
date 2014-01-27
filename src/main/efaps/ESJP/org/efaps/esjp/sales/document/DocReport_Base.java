@@ -184,8 +184,7 @@ public abstract class DocReport_Base
         final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
 
-        final SystemConfiguration system = Sales.getSysConfig();
-        final Instance curBase = system.getLink(SalesSettings.CURRENCYBASE);
+        final Instance curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final DateTime from = DateTimeUtil.normalize(new DateTime(dateFromStr));
         final DateTime to = DateTimeUtil.normalize(new DateTime(dateToStr));
@@ -627,8 +626,7 @@ public abstract class DocReport_Base
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                                                             AbstractDocument_Base.CURRENCYINST_KEY);
         // Sales-Configuration
-        final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
-                        .getLink("CurrencyBase");
+        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         if (currentInst == null) {
             currentInst = baseInst;
         }
