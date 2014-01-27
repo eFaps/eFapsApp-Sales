@@ -41,6 +41,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Classification;
@@ -67,6 +68,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
@@ -2327,6 +2329,63 @@ public abstract class AbstractDocument_Base
         js.append(getDomReadyScript(_parameter, _instance))
             .append(" });\n");
         return js.toString();
+    }
+
+    public Return generateCode4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+
+        if (instance != null && instance.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionGroupRoot);
+            queryBldr.addWhereAttrEqValue(CISales.PositionGroupRoot.DocumentAbstractLink, instance);
+            queryBldr.addOrderByAttributeAsc(CISales.PositionGroupRoot.Order);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.setEnforceSorted(true);
+            multi.execute();
+            int i = 1;
+            while (multi.next()) {
+                calculateCode(_parameter, multi.getCurrentInstance(), new Integer[] { i });
+                i++;
+            }
+        }
+
+        return new Return();
+    }
+
+    protected void calculateCode(final Parameter _parameter,
+                                      final Instance _parent,
+                                      final Integer[] _current)
+        throws EFapsException
+    {
+        final Update update = new Update(_parent);
+        update.add(CISales.PositionGroupAbstract.Code, getCode(_parameter, _current));
+        update.execute();
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionGroupNode);
+        queryBldr.addWhereAttrEqValue(CISales.PositionGroupNode.ParentGroupLink, _parent);
+        queryBldr.addOrderByAttributeAsc(CISales.PositionGroupNode.Order);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.setEnforceSorted(true);
+        multi.execute();
+        int i = 1;
+        while (multi.next()) {
+            calculateCode(_parameter, multi.getCurrentInstance(), ArrayUtils.add(_current, i));
+            i++;
+        }
+    }
+
+    private String getCode(final Parameter _parameter,
+                           final Integer[] _current)
+    {
+        final StringBuilder code = new StringBuilder();
+        for (int i = 0; i < _current.length; i++) {
+            if (i > 0) {
+                code.append(".");
+            }
+            code.append(_current[i]);
+        }
+        return code.toString();
     }
 
     public abstract static class KeyDef

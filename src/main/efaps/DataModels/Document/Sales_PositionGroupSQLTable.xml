@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5840 $
- Last Changed:    $Date: 2010-11-15 12:26:00 -0500 (Mon, 15 Nov 2010) $
- Last Changed By: $Author: jan.moxter $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 
@@ -28,7 +28,7 @@
                      xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f8133c5d-79eb-4754-9184-8cae36e8b2ae</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5840 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -42,7 +42,8 @@
             <column name="ORDERSEQ"     type="INTEGER"         not-null="true" />
             <column name="PARENTID"     type="INTEGER"/>
             <column name="POSID"        type="INTEGER"/>
-            <column name="NAME"         type="STRING_SHORT"    not-null="true"   length="512" />
+            <column name="NAME"         type="STRING_SHORT"    not-null="true"  length="512" />
+            <column name="CODE"         type="STRING_SHORT"                     length="512"/>
         </database>
     </definition>
 </datamodel-sqltable>
