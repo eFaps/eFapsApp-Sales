@@ -50,6 +50,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.ci.CIAttribute;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
@@ -1453,6 +1454,8 @@ public abstract class AbstractPaymentDocument_Base
 
         private Instance curBase;
 
+        private List<Instance> lstPayments = new ArrayList<Instance>();
+
         private AccountInfo accountInfo;
 
         public DocumentInfo(final Instance _instance)
@@ -1476,6 +1479,7 @@ public abstract class AbstractPaymentDocument_Base
                 this.symbol = print.<String>getSelect(selDocRCurSymbol);
                 this.curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
                 this.rateOptional = null;
+                getPayments4Document();
             }
         }
 
@@ -1559,16 +1563,49 @@ public abstract class AbstractPaymentDocument_Base
             return ret;
         }
 
+        protected void getPayments4Document()
+            throws EFapsException
+        {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+            queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, this.instance);
+            this.lstPayments = queryBldr.getQuery().executeWithoutAccessCheck();
+        }
+
+        protected BigDecimal getRateTotal4PayDocType(final CIType _type)
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+            if (this.instance.isValid() && !this.lstPayments.isEmpty()) {
+                final SelectBuilder selPaymentDocumentType = new SelectBuilder()
+                                .linkto(CISales.Payment.TargetDocument).type();
+                final MultiPrintQuery multi = new MultiPrintQuery(this.lstPayments);
+                multi.addSelect(selPaymentDocumentType);
+                multi.addAttribute(CISales.Payment.Amount,
+                                CISales.Payment.Date,
+                                CISales.Payment.Rate);
+                multi.execute();
+                while (multi.next()) {
+                    if (multi.<Type>getSelect(selPaymentDocumentType).equals(_type.getType())) {
+                        final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
+                        final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
+                        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                                        BigDecimal.ROUND_HALF_UP);
+                        ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+                    }
+                }
+            }
+            return ret;
+        }
+
         protected BigDecimal getRateTotalPayments()
             throws EFapsException
         {
             BigDecimal ret = BigDecimal.ZERO;
-            if (this.instance.isValid()) {
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, this.instance);
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.Payment.Amount, CISales.Payment.Date);
-                multi.addAttribute(CISales.Payment.Rate);
+            if (this.instance.isValid() && !this.lstPayments.isEmpty()) {
+                final MultiPrintQuery multi = new MultiPrintQuery(this.lstPayments);
+                multi.addAttribute(CISales.Payment.Amount,
+                                CISales.Payment.Date,
+                                CISales.Payment.Rate);
                 multi.execute();
                 while (multi.next()) {
                     final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
@@ -1594,12 +1631,7 @@ public abstract class AbstractPaymentDocument_Base
         protected String getInfoOriginal()
             throws EFapsException
         {
-            final StringBuilder strBldr = new StringBuilder();
-
-            strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
-                .append(getTwoDigitsformater().format(getRateTotalPayments())).append(" - ").append(getRateSymbol());
-
-            return strBldr.toString();
+            return new StringBuilder().toString();
         }
 
         protected BigDecimal getObject4Rate()

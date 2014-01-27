@@ -797,5 +797,23 @@ public abstract class AbstractPaymentOut_Base
 
             return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
         }
+
+        @Override
+        protected String getInfoOriginal()
+            throws EFapsException
+        {
+            final BigDecimal totPay = getRateTotalPayments();
+            final BigDecimal ret = getRateTotal4PayDocType(CISales.PaymentRetentionOut);
+            final BigDecimal det = getRateTotal4PayDocType(CISales.PaymentDetractionOut);
+
+            final StringBuilder strBldr = new StringBuilder();
+
+            strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
+                            .append(getTwoDigitsformater().format(totPay.subtract(ret).subtract(det))).append(" / ")
+                            .append(getTwoDigitsformater().format(det)).append(" / ")
+                            .append(getTwoDigitsformater().format(ret)).append(" - ").append(getRateSymbol());
+
+            return strBldr.toString();
+        }
     }
 }
