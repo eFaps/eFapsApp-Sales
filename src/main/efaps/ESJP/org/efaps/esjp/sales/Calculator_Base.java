@@ -281,11 +281,14 @@ public abstract class Calculator_Base
         final BigDecimal unitPrice = parse(_unitPrice).setScale(format.getMaximumFractionDigits(),
                         BigDecimal.ROUND_HALF_UP);
 
-        final Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
+        Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
 
         final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
+        if (currInst == null) {
+            currInst = baseInst;
+        }
         if (this.productPrice == null) {
             this.productPrice = getNewPrice();
         }
