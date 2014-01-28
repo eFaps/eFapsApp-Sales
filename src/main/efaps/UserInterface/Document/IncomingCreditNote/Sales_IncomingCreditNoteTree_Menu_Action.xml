@@ -30,7 +30,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_IncomingCreditNoteTree_Menu_Action_Edit</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumetType</child>
+            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
             <child>Sales_DocumentSumTree_Menu_Action_Recalculate</child>
         </childs>
     </definition>
