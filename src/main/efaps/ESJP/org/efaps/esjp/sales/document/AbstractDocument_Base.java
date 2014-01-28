@@ -93,6 +93,7 @@ import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
@@ -799,21 +800,13 @@ public abstract class AbstractDocument_Base
     protected String getJavaScript4SelectDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+        final Instance currency4Invoice = evaluateCurrency4JavaScript(_parameter);
         final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">\n")
             .append("require([\"dojo/query\",\"dojo/dom-construct\",\"dojo/domReady!\"],")
-                .append(" function(query, domConstruct){\n");
-
-        String rateStr;
-        if (currency4Invoice.equals(baseCurrency)) {
-            rateStr = "1";
-        } else {
-            rateStr = getRate4UI(_parameter, currency4Invoice);
-        }
-        js.append(getSetFieldValue(0, "rateCurrencyData", rateStr)).append("\n")
+            .append(" function(query, domConstruct){\n")
             .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
             .append("var pN = dojo.query('.eFapsContentDiv')[0];\n");
 
@@ -868,6 +861,27 @@ public abstract class AbstractDocument_Base
         return js.toString();
     }
 
+    protected Instance evaluateCurrency4JavaScript(final Parameter _parameter)
+        throws CacheReloadException, EFapsException
+    {
+        Instance ret = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final Instance inst = _parameter.getInstance();
+            if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                final PrintQuery print = new PrintQuery(inst);
+                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                                .instance();
+                print.addSelect(sel);
+                print.executeWithoutAccessCheck();
+                final Instance instTmp = print.<Instance>getSelect(sel);
+                if (instTmp != null && instTmp.isValid()) {
+                    ret = instTmp;
+                }
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * Add additional on Dom Ready JavaScript for
@@ -916,7 +930,7 @@ public abstract class AbstractDocument_Base
         final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final String contactOid = print.<String> getSelect(selContOID);
         final String contactName = print.<String> getSelect(selContName);
-        final String contactData = new Contacts().getFieldValue4Contact(Instance.get(contactOid),false);
+        final String contactData = new Contacts().getFieldValue4Contact(Instance.get(contactOid), false);
         final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
@@ -1117,12 +1131,12 @@ public abstract class AbstractDocument_Base
      * <li>Evaluate the relations of the selected instances with the <code>&lt;RelationType&gt;</code> property</li>
      * <li>Evaluate the derived type with the <code>&lt;DerivedType&gt;</code> property</li>
      * <li>Give the positions according to the document instances analyzed</li>
-     * <li>Update the quantities or delete positions from the _values Map</code></li>
+     * <li>Update the quantities or delete positions from the _values Map</li>
      * </ol>
      *
      * @param _parameter as passed from eFaps API.
-     * @param _values
-     * @param _instances
+     * @param _values   values for positions
+     * @param _instances instances to be evaluated
      * @throws EFapsException on error.
      */
     protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
@@ -1332,7 +1346,7 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
-
+    @Deprecated
     protected String getRate4UI(final Parameter _parameter,
                                 final Instance _instanceCurrency)
         throws EFapsException
@@ -1356,17 +1370,41 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        if (!_newInst.equals(_currentInst)) {
-            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, _newInst, _currentInst);
-            js.append(getSetFieldValue(0, "rate", rates[3].toString()))
+
+        RateInfo rateInfo = null;
+        CurrencyInst currencyInst = null;
+        // in edit mode try to use the rate of the document
+        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final Instance inst = _parameter.getInstance();
+            if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                final PrintQuery print = new PrintQuery(inst);
+                print.addAttribute(CISales.DocumentSumAbstract.Rate);
+                print.executeWithoutAccessCheck();
+                final Object rate = print.getAttribute(CISales.DocumentSumAbstract.Rate);
+                if (rate != null && rate instanceof Object[]) {
+                    final Currency currency = new Currency();
+                    rateInfo  = currency.evaluateRateInfo(_parameter, (Object[]) rate);
+                    currencyInst = rateInfo.getCurrencyInst();
+                }
+            }
+        }
+        // if no rate yet try to set it
+        if (rateInfo == null) {
+            final Currency currency = new Currency();
+            final String date = _parameter.getParameterValue("date_eFapsDate");
+            final RateInfo[] rates = currency.evaluateRateInfos(_parameter, date, _currentInst, _newInst);
+            rateInfo = rates[2];
+            currencyInst = rates[1].getCurrencyInst();
+        }
+        if (rateInfo != null) {
+            js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
+                .append(getSetFieldValue(0, "rate", NumberFormatter.get().getFormatter().format(rateInfo.getRateUI())))
                 .append("\n")
-                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0)))
+                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + currencyInst.isInvert()))
                 .append("\n");
         }
         return js.toString();
     }
-
-
 
     /**
      * Method for acon complete script.
@@ -1717,6 +1755,18 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return type used for creation of positions
+     * @throws EFapsException on error
+     */
+    protected Type getType4PositionUpdate(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getType4PositionCreate(_parameter);
+    }
+
+
+    /**
      * Method to get the maximum for a value from the database.
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @param _type type to search for
@@ -1793,31 +1843,41 @@ public abstract class AbstractDocument_Base
     public Return rateCurrencyFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final QueryBuilder queryBldr = new QueryBuilder(CIERP.Currency);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIERP.Currency.Name);
-        multi.execute();
-        final Map<String, Long> values = new TreeMap<String, Long>();
-        while (multi.next()) {
-            values.put(multi.<String> getAttribute(CIERP.Currency.Name), multi.getCurrentInstance().getId());
+        @SuppressWarnings("unchecked")
+        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        if (!props.containsKey("Type")) {
+            props.put("Type", CIERP.Currency.getType().getName());
         }
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, baseInst);
-        final StringBuilder html = new StringBuilder();
-        html.append("<select ").append(UIInterface.EFAPSTMPTAG)
-                        .append(" name=\"").append(fieldValue.getField().getName()).append("\" size=\"1\">");
-        for (final Entry<String, Long> entry : values.entrySet()) {
-            html.append("<option value=\"").append(entry.getValue()).append("\"");
-            if (entry.getValue().equals(baseInst.getId())) {
-                html.append(" selected=\"selected\" ");
+        if (!props.containsKey("Select")) {
+            props.put("Select", "attribute[Name]");
+        }
+
+        final Instance currInst = evaluateCurrency4JavaScript(_parameter);
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, currInst);
+
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
+        {
+
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                for (final DropDownPosition pos : _values) {
+                    if (currInst.getId() == (Long) pos.getValue()) {
+                        pos.setSelected(true);
+                        break;
+                    }
+                }
             }
-            html.append(">").append(entry.getKey()).append("</option>");
-        }
-        html.append("</select>");
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, html.toString());
-        return retVal;
+        };
+        return field.dropDownFieldValue(_parameter);
+    }
+
+    protected Instance evaluateCurrencyInstance(final Parameter _parameter)
+        throws CacheReloadException, EFapsException
+    {
+        return evaluateCurrency4JavaScript(_parameter);
     }
 
     /**
@@ -1969,6 +2029,19 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Get the name for the document on edit.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Name
+     * @throws EFapsException on error
+     */
+    protected String getDocName4Edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getParameterValue("name4edit");
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return number of positions
      * @throws EFapsException on error
@@ -2012,8 +2085,8 @@ public abstract class AbstractDocument_Base
     /**
      * Method to connect the document with the selected document type.
      *
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _instance instance of the document to be connected
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _createdDoc   CreatedDoc  to be connected
      * @throws EFapsException on error
      */
     protected void connect2Derived(final Parameter _parameter,

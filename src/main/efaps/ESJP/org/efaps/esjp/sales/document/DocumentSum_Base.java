@@ -27,6 +27,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -50,6 +51,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -118,6 +120,113 @@ public abstract class DocumentSum_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    protected EditedDoc editDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return editDoc(_parameter, new EditedDoc(_parameter.getInstance()));
+    }
+
+    protected EditedDoc editDoc(final Parameter _parameter,
+                                 final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        _editDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
+                        ? baseCurrInst
+                        : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
+
+        final Update update = new Update(_editDoc.getInstance());
+        final String name = getDocName4Edit(_parameter);
+        if (name != null) {
+            update.add(CISales.DocumentSumAbstract.Name, name);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Name.name, name);
+        }
+
+        final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Date.name));
+        if (date != null) {
+            update.add(CISales.DocumentSumAbstract.Date, date);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, date);
+        }
+        final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.DueDate.name));
+        if (duedate != null) {
+            update.add(CISales.DocumentSumAbstract.DueDate, duedate);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.DueDate.name, duedate);
+        }
+
+        final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Note.name));
+        if (note != null) {
+            update.add(CISales.DocumentSumAbstract.Note, note);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Note.name, note);
+        }
+
+        final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Salesperson.name));
+        if (salesperson != null) {
+            update.add(CISales.DocumentSumAbstract.Salesperson, salesperson);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
+        }
+
+        final String groupId = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Group.name));
+        if (groupId != null) {
+            update.add(CISales.DocumentSumAbstract.Group, groupId);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
+        }
+
+        if (_editDoc.getInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+            final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+            final int scale = frmt.getMaximumFractionDigits();
+            final BigDecimal rateCrossTotal = getCrossTotal(_parameter, calcList)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            update.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
+
+            final BigDecimal rateNetTotal = getNetTotal(_parameter, calcList).setScale(scale, BigDecimal.ROUND_HALF_UP);
+            update.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
+
+            update.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+            update.add(CISales.DocumentSumAbstract.RateTaxes, getRateTaxes(_parameter, calcList, rateCurrInst));
+            update.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
+
+            final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
+
+            final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+            update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
+
+            update.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+
+            update.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
+            update.add(CISales.DocumentSumAbstract.Rate, rateObj);
+            update.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
+
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, baseCurrInst);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, rateCurrInst);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, rateObj);
+        }
+        addStatus2DocEdit(_parameter, update, _editDoc);
+        add2DocEdit(_parameter, update, _editDoc);
+        update.execute();
+
+        Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
+
+        return _editDoc;
     }
 
     /**
@@ -769,6 +878,143 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         // to be implemented by subclasses
+    }
+
+
+    /**
+     * @param _parameter
+     * @param _editDoc
+     */
+    protected void updatePositions(final Parameter _parameter,
+                                   final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+        Instance rateCurrInst = Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+        if (rateCurrInst == null) {
+            rateCurrInst = baseCurrInst;
+        }
+
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
+
+        @SuppressWarnings("unchecked")
+        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
+        @SuppressWarnings("unchecked")
+        final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+        final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());
+
+        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final int scale = totalFrmt.getMaximumFractionDigits();
+
+        final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+        final int uScale = unitFrmt.getMaximumFractionDigits();
+
+        final Iterator<Calculator> iter = calcList.iterator();
+        for (int i = 0; i < rowKeys.length; i++) {
+            final Calculator calc = iter.next();
+            final Instance inst = Instance.get(oidMap.get(rowKeys[i]));
+            if (!calc.isEmpty()) {
+                final Update update;
+                if (inst.isValid()) {
+                    update = new Update(inst);
+                } else {
+                    update = new Insert(getType4PositionUpdate(_parameter));
+                }
+                update.add(CISales.PositionAbstract.PositionNumber, i + 1);
+                update.add(CISales.PositionAbstract.DocumentAbstractLink, _editDoc.getInstance());
+
+                final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.Product.name));
+                if (product != null && product.length > i) {
+                    final Instance prodInst = Instance.get(product[i]);
+                    if (prodInst.isValid()) {
+                        update.add(CISales.PositionAbstract.Product, prodInst);
+                    }
+                }
+
+                final String[] productDesc = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.ProductDesc.name));
+                if (productDesc != null && productDesc.length > i) {
+                    update.add(CISales.PositionAbstract.ProductDesc, productDesc[i]);
+                }
+
+                final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.UoM.name));
+                if (uoM != null && uoM.length > i) {
+                    update.add(CISales.PositionAbstract.UoM, uoM[i]);
+                }
+
+                update.add(CISales.PositionSumAbstract.Quantity, calc.getQuantity());
+                update.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
+                update.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
+                update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                                .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
+                update.add(CISales.PositionSumAbstract.Rate, rateObj);
+                update.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
+                update.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
+                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
+                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.RateDiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                                .setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.RateNetPrice,
+                                calc.getNetPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
+                update.add(CISales.PositionSumAbstract.RateCrossPrice,
+                                calc.getCrossPrice().setScale(scale, BigDecimal.ROUND_HALF_UP));
+                add2PositionUpdate(_parameter, calc, update, i);
+                update.execute();
+                _editDoc.addPosition(update.getInstance());
+            }
+        }
+        deletePosition4Update(_parameter, _editDoc);
+    }
+
+    protected void deletePosition4Update(final Parameter _parameter,
+                                         final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(getType4PositionUpdate(_parameter));
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _editDoc.getInstance());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        final Set<Instance> delIns = new HashSet<Instance>();
+        while (query.next()) {
+            final Instance inst = query.getCurrentValue();
+            if (!_editDoc.getPositions().contains(inst)) {
+                delIns.add(inst);
+            }
+        }
+        for (final Instance inst : delIns) {
+            final Delete delete = new Delete(inst);
+            delete.execute();
+        }
+    }
+
+    /**
+     * @param _parameter
+     * @param _calc
+     * @param _update
+     * @param _i
+     */
+    protected void add2PositionUpdate(final Parameter _parameter,
+                                      final Calculator _calc,
+                                      final Update _update,
+                                      final int _i)
+    {
+        // TODO Auto-generated method stub
+
     }
 
     /**

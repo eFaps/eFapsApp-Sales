@@ -103,14 +103,21 @@ public abstract class IncomingInvoice_Base
             final DecimalFormat formatter = NumberFormatter.get().getFormatter();
             try {
                 final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
-                IncomingPerceptionCertificate_Base doc = new IncomingPerceptionCertificate();
+                final IncomingPerceptionCertificate_Base doc = new IncomingPerceptionCertificate();
                 createdDoc.addValue(IncomingPerceptionCertificate_Base.PERCEPTIONVALUE, perception);
                 doc.create4Doc(_parameter, createdDoc);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
             }
         }
+        return new Return();
+    }
 
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
         return new Return();
     }
 
