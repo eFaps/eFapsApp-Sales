@@ -75,7 +75,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getSalesPersonFieldValue"
                 name="Sales_InvoiceForm.salesperson.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
@@ -270,11 +270,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="rateCurrencyFieldValueUI"
                 name="Sales_IncomingInvoiceForm.currencyId.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="updateFields4RateCurrency"
                 name="Sales_IncomingInvoiceForm.currencyId.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
@@ -292,7 +292,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="withoutVATFieldValue" name="Sales_InvoiceForm.withoutVAT.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
