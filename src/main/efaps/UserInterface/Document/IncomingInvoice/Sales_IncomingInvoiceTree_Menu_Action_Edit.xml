@@ -45,6 +45,12 @@
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="edit" >
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
             </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_IncomingInvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
 
         <!-- properties -->
