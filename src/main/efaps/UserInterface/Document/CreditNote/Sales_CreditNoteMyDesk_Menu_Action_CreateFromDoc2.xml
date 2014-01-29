@@ -49,6 +49,7 @@
                 <property name="StatusGroup">Sales_CreditNoteStatus</property>
                 <property name="Status">Open</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
         </target>
 
         <!-- properties -->

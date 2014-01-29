@@ -49,6 +49,7 @@
                 <property name="StatusGroup">Sales_ReminderStatus</property>
                 <property name="Status">Open</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.Reminder" method="validateName"/>
         </target>
 
         <!-- properties -->

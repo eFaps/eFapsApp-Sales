@@ -41,6 +41,7 @@ import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -1576,4 +1577,26 @@ public abstract class DocumentSum_Base
         return new Return();
     }
 
+    public Return validateName(final Parameter _parameter)
+                    throws EFapsException
+    {
+        final Return ret = new Return();
+        final StringBuilder html = new StringBuilder();
+        final String name = _parameter.getParameterValue("name4create");
+        if(name!=null) {
+            if(name.contains("-")) {
+                final String[] numbers = name.split("-", 2);
+                if(numbers[0].length()<numbers[1].length() && numbers[0].matches("^[0-9]+$") && numbers[1].matches("^[0-9]+$")) {
+                    ret.put(ReturnValues.TRUE, true);
+                } else {
+                    html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
+                    ret.put(ReturnValues.SNIPLETT, html.toString());
+                }
+            } else {
+                html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
+                ret.put(ReturnValues.SNIPLETT, html.toString());
+            }
+        }
+        return ret;
+    }
 }
