@@ -48,8 +48,8 @@
       <column name="RATENETTOTAL"      type="DECIMAL"         not-null="true" length="10" scale="2"/>
       <column name="RATEDISCOUNTTOTAL" type="DECIMAL"         not-null="true" length="10" scale="2"/>
       <column name="RATECURRENCYID"    type="INTEGER"         not-null="true"/>
-      <column name="TAXES"             type="STRING_SHORT"                    length="512"/>
-      <column name="RATETAXES"         type="STRING_SHORT"                    length="512"/>
+      <column name="TAXES"             type="STRING_SHORT"                    length="2048"/>
+      <column name="RATETAXES"         type="STRING_SHORT"                    length="2048"/>
       <foreign name="T_SALESDOCSUMS_CURRENCYID"      key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
       <foreign name="T_SALESDOCSUMS_RATECURRENCYID"  key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
     </database>
