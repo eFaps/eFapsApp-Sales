@@ -49,35 +49,59 @@ import org.joda.time.DateTime;
 @EFapsRevision("$Rev$")
 public abstract class TaxCat_Base
 {
-
+    /**
+     * Key used for Caching the Query related to the TaxCategories.
+     */
     public static final String CACHEKEY = TaxCat.class.getName() + ".CacheKey";
+
+    /**
+     * Instance of the TaxCategory this <code>TaxCat</code> belongs to.
+     */
     private final Instance instance;
+
+    /**
+     * UUID of the TaxCategory this <code>TaxCat</code> belongs to.
+     */
     private final UUID uuid;
+
+    /**
+     * Name of the TaxCategory this <code>TaxCat</code> belongs to.
+     */
     private final String name;
 
-
+    /**
+     * @param _instance Instance of the TaxCategory
+     * @param _uuid     UUID of the TaxCategory
+     * @param _name     Name of the TaxCategory
+     */
     public TaxCat_Base(final Instance _instance,
                        final String _uuid,
                        final String _name)
     {
         this.instance = _instance;
         this.uuid = UUID.fromString(_uuid);
-        this.name =_name;
+        this.name = _name;
     }
 
     /**
-     * @return
+     * Get the list of taxes for now.
+     * @return List of taxes belonging to this TaxCategory
+     * @throws EFapsException on error
      */
-    public Collection<? extends Tax> getTaxes() throws EFapsException
+    public Collection<? extends Tax> getTaxes()
+        throws EFapsException
     {
         return getTaxes(new DateTime());
     }
 
     /**
-     * @param _localDate
-     * @return
+     * Get the list of taxes for a given date.
+     * @param _date date to be used as filter
+     * @return List of taxes belonging to this TaxCategory
+     * @throws EFapsException on error
      */
-    public Collection<? extends Tax> getTaxes(final DateTime _date) throws EFapsException
+    public Collection<? extends Tax> getTaxes(final DateTime _date)
+        throws EFapsException
     {
         final List<Tax> ret = new ArrayList<Tax>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Tax);
@@ -103,8 +127,6 @@ public abstract class TaxCat_Base
         return ret;
     }
 
-
-
     /**
      * Getter method for the instance variable {@link #instance}.
      *
@@ -115,7 +137,6 @@ public abstract class TaxCat_Base
         return this.instance;
     }
 
-
     /**
      * Getter method for the instance variable {@link #uuid}.
      *
@@ -125,7 +146,6 @@ public abstract class TaxCat_Base
     {
         return this.uuid;
     }
-
 
     /**
      * Getter method for the instance variable {@link #name}.
@@ -138,8 +158,10 @@ public abstract class TaxCat_Base
     }
 
     /**
-     * @param _taxCatId
-     * @return
+     * Get a TaxCat for an given id.
+     * @param _taxCatId id of the taxcat wanted
+     * @return taxcat for the id
+     * @throws EFapsException on error
      */
     public static TaxCat get(final long _taxCatId)
         throws EFapsException
@@ -157,6 +179,12 @@ public abstract class TaxCat_Base
         return ret;
     }
 
+    /**
+     * Get a TaxCat for an given UUID.
+     * @param _uuid uuid of the taxcat wanted
+     * @return taxcat for the id
+     * @throws EFapsException on error
+     */
     public static TaxCat get(final UUID _uuid)
         throws EFapsException
     {

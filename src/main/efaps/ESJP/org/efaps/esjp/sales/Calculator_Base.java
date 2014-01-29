@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,7 @@ import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
+import org.efaps.esjp.sales.tax.Tax_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -138,6 +139,9 @@ public abstract class Calculator_Base
      */
     private final String typeName;
 
+    /**
+     * List of taxes for the Calculator.
+     */
     private final List<Tax> taxes = new ArrayList<Tax>();
 
     /**
@@ -980,7 +984,8 @@ public abstract class Calculator_Base
         } else {
             if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxCatId > 0) {
                 final List<Tax> taxesTmp = getTaxes();
-                final BigDecimal currentPrice = _price.getCurrentPrice() == null ? BigDecimal.ZERO : _price.getCurrentPrice();
+                final BigDecimal currentPrice = _price.getCurrentPrice() == null
+                                ? BigDecimal.ZERO : _price.getCurrentPrice();
                 final BigDecimal basePrice = _price.getBasePrice() == null ? BigDecimal.ZERO : _price.getBasePrice();
                 final BigDecimal origPrice = _price.getOrigPrice() == null ? BigDecimal.ZERO : _price.getOrigPrice();
                 BigDecimal tCurrentPrice = currentPrice;
@@ -1133,6 +1138,10 @@ public abstract class Calculator_Base
         return _formater.format(getPerception());
     }
 
+    /**
+     * @return the list of taxes to be applied
+     * @throws EFapsException on error
+     */
     public List<Tax> getTaxes()
         throws EFapsException
     {
@@ -1142,6 +1151,10 @@ public abstract class Calculator_Base
         return this.taxes;
     }
 
+    /**
+     * @return mapping of tax to amount
+     * @throws EFapsException on error
+     */
     public Map<Tax, BigDecimal> getTaxesAmounts()
         throws EFapsException
     {
@@ -1149,12 +1162,19 @@ public abstract class Calculator_Base
         final List<Tax> taxestemp = getTaxes();
         for (final Tax tax : taxestemp) {
             final BigDecimal net = getNetPrice();
-            ret.put(tax, net.multiply(tax.getFactor()));
+            if (tax.equals(Tax_Base.getZeroTax())) {
+                ret.put(tax, BigDecimal.ZERO);
+            } else {
+                ret.put(tax, net.multiply(tax.getFactor()));
+            }
         }
         return ret;
     }
 
-
+    /**
+     * @return the taxcat applied
+     * @throws EFapsException on error
+     */
     public TaxCat getTaxCat()
         throws EFapsException
     {
@@ -1235,9 +1255,9 @@ public abstract class Calculator_Base
     }
 
     /**
-     * Setter method for instance variable {@link #localDate}.
+     * Setter method for instance variable {@link #date}.
      *
-     * @param _localDate value for instance variable {@link #localDate}
+     * @param _date value for instance variable {@link #date}
      */
 
     public void setDate(final DateTime _date)

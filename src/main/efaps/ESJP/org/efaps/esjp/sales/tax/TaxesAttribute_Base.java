@@ -65,7 +65,13 @@ public abstract class TaxesAttribute_Base
         } else if (_value.getDbValue() instanceof Taxes) {
             final Taxes taxes = (Taxes) _value.getDbValue();
             final StringBuilder html = new StringBuilder();
+            boolean first = true;
             for (final TaxEntry entry : taxes.getEntries()) {
+                if (first) {
+                    first = false;
+                } else {
+                    html.append("<br/>");
+                }
                 final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
                 html.append(tax.getName()).append(" ")
                                 .append(NumberFormatter.get().getTwoDigitsFormatter().format(entry.getAmount()));
@@ -78,11 +84,22 @@ public abstract class TaxesAttribute_Base
     }
 
 
+    /**
+     * @param _taxes taxes the html is wanted for
+     * @return html snipplet
+     * @throws EFapsException on error
+     */
     public String getUI4ReadOnly(final Taxes _taxes)
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
+        boolean first = true;
         for (final TaxEntry entry : _taxes.getEntries()) {
+            if (first) {
+                first = false;
+            } else {
+                html.append("<br/>");
+            }
             final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
             html.append(tax.getName()).append(" ")
                             .append(NumberFormatter.get().getTwoDigitsFormatter().format(entry.getAmount()));

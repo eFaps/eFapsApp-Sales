@@ -42,7 +42,10 @@ import org.efaps.util.EFapsException;
 public abstract class Tax_Base
 {
 
-    private static final Tax ZEROTAX = new Tax(null, null, "ZERO", "e27a167c-a4e2-416f-9878-c785bfa33576",
+    /**
+     * The TAXFREE Tax mining no Tax at all.
+     */
+    private static final Tax ZEROTAX = new Tax(null, null, "ZERO", "fb2c7c17-7e0b-4199-a616-7c8528b1730e",
                     Integer.valueOf(1), Integer.valueOf(1));
 
     /**
@@ -112,7 +115,8 @@ public abstract class Tax_Base
     }
 
     /**
-     *
+     * @return the factor, aka numerator/denominator
+     *  @throws EFapsException on error
      */
     public BigDecimal getFactor()
         throws EFapsException
@@ -123,7 +127,8 @@ public abstract class Tax_Base
     }
 
     /**
-     * @return
+     * @return the numerator
+     * @throws EFapsException on error
      */
     public int getNumerator()
         throws EFapsException
@@ -134,6 +139,7 @@ public abstract class Tax_Base
 
     /**
      *
+     * @throws EFapsException on error
      */
     private void initialize()
         throws EFapsException
@@ -159,7 +165,8 @@ public abstract class Tax_Base
     }
 
     /**
-     * @return
+     * @return the denominator
+     * @throws EFapsException on error
      */
     public int getDenominator()
         throws EFapsException
@@ -172,6 +179,7 @@ public abstract class Tax_Base
      * Getter method for the instance variable {@link #uuid}.
      *
      * @return value of instance variable {@link #uuid}
+     * @throws EFapsException on error
      */
     public UUID getUUID()
         throws EFapsException
@@ -184,6 +192,7 @@ public abstract class Tax_Base
      * Getter method for the instance variable {@link #instance}.
      *
      * @return value of instance variable {@link #instance}
+     * @throws EFapsException on error
      */
     public Instance getInstance()
         throws EFapsException
@@ -196,6 +205,7 @@ public abstract class Tax_Base
      * Getter method for the instance variable {@link #name}.
      *
      * @return value of instance variable {@link #name}
+     * @throws EFapsException on error
      */
     public String getName()
         throws EFapsException
@@ -235,7 +245,10 @@ public abstract class Tax_Base
     }
 
     /**
-     * @param _uuid
+     * @param _catUUID  uuid of the taxcategory
+     * @param _uuid     uuid of the tax
+     * @return   a tax instance
+     * @throws EFapsException on error
      */
     public static Tax get(final UUID _catUUID,
                           final UUID _uuid)
@@ -247,11 +260,13 @@ public abstract class Tax_Base
         return ret;
     }
 
+    /**
+     * @return the ZEROTAX
+     */
     public static Tax getZeroTax()
     {
         return Tax_Base.ZEROTAX;
     }
-
 
     @Override
     public boolean equals(final Object _obj)

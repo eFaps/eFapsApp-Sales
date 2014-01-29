@@ -428,7 +428,17 @@ public abstract class DocumentSum_Base
         _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
         _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
 
-        _map.put("taxes",  new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null)));
+        final StringBuilder js = new StringBuilder();
+        if (_map.containsKey(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey())) {
+            js.append(_map.get(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey())).append("\n");
+        }
+        js.append("require([\"dojo/query\", \"dojo/NodeList-manipulate\"], function(query){")
+            .append("query(\"[name='taxes']\").innerHTML(\"")
+            .append(new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null)))
+            .append("\");")
+            .append("});");
+
+        _map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
 
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
             _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
