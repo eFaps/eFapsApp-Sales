@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>7c7ab608-e852-43e3-aef5-ce8076542fc1</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -39,6 +41,10 @@
             <property name="Attribute">Revision</property>
             <property name="Label">Sales_IncomingInvoice/Revision.Label</property>
         </field>
+        <field name="documentType">
+            <property name="Select">linkfrom[ERP_Document2DocumentTypeAbstract#DocumentLinkAbstract].linkto[DocumentTypeLinkAbstract].attribute[Name]</property>
+            <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
@@ -57,7 +63,7 @@
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
-         <field name="dueDate">
+        <field name="dueDate">
             <property name="Attribute">DueDate</property>
             <property name="Label">Sales_DocumentAbstract/DueDate.Label</property>
         </field>
