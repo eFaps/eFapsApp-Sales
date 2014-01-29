@@ -127,7 +127,6 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
@@ -302,8 +301,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <table>Sales_IncomingInvoicePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingInvoicePosition</property>
-                <property name="LinkFroms">IncomingInvoice</property>
+                <property name="Type">Sales_IncomingInvoicePosition</property>
+                <property name="LinkFrom">IncomingInvoice</property>
             </evaluate>
         </field>
         <field name="note">
