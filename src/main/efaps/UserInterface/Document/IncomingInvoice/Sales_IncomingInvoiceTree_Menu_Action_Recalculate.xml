@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,15 +33,14 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentSumTree_Menu_Action_Recalculate</name>
+        <name>Sales_IncomingInvoiceTree_Menu_Action_Recalculate</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
             <form>Sales_DocumentSum_RecalculateForm</form>
-            <execute program="org.efaps.esjp.sales.document.DocumentSum"
-                method="recalculateRate" />
+            <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="recalculateRate" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
@@ -50,5 +49,4 @@
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">720</property>
     </definition>
-
 </ui-command>
