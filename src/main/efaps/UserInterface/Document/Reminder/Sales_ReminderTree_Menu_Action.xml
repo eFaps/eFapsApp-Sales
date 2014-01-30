@@ -37,7 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_ReminderTree_Menu_Action_Edit</child>
-            <child>Sales_DocumentSumTree_Menu_Action_Recalculate</child>
+            <child>Sales_ReminderTree_Menu_Action_Recalculate</child>
             <child>Sales_ReminderTree_Menu_Action_Checkout</child>
         </childs>
     </definition>
