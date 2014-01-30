@@ -1598,6 +1598,11 @@ public abstract class DocumentSum_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing TRUE and SNIPLETT if warning
+     * @throws EFapsException on error
+     */
     public Return validateName(final Parameter _parameter)
         throws EFapsException
     {
@@ -1605,20 +1610,16 @@ public abstract class DocumentSum_Base
         final StringBuilder html = new StringBuilder();
         final String name = _parameter.getParameterValue("name4create");
         if (name != null) {
-            if (name.contains("-")) {
-                final String[] numbers = name.split("-", 2);
-                if (numbers[0].length() < numbers[1].length() && numbers[0].matches("^[0-9]+$")
-                                && numbers[1].matches("^[0-9]+$")) {
-                    ret.put(ReturnValues.TRUE, true);
-                } else {
-                    html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
-                    ret.put(ReturnValues.SNIPLETT, html.toString());
-                }
-            } else {
+            final String[] numbers = name.split("-");
+            if (numbers.length == 2 && numbers[0].length() >= numbers[1].length()) {
+                html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
+                ret.put(ReturnValues.SNIPLETT, html.toString());
+            } else if (numbers.length != 2) {
                 html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
                 ret.put(ReturnValues.SNIPLETT, html.toString());
             }
         }
+        ret.put(ReturnValues.TRUE, true);
         return ret;
     }
 }
