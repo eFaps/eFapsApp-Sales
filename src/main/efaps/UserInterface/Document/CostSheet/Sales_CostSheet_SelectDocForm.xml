@@ -38,6 +38,7 @@
             <property name="Label">Sales_CostSheet/Name.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
                      method="autoComplete4CostSheet"
                      name="Sales_CostSheet_SelectDocForm.costSheet.UI_FIELD_AUTOCOMPLETE"

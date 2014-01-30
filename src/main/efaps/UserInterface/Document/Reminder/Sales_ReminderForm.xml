@@ -150,6 +150,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="Columns">101</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="autoComplete4Contact"
                 name="Sales_ReminderForm.contact.UI_FIELD_AUTOCOMPLETE"
@@ -182,7 +183,7 @@
             <property name="Label">Sales_CreditNoteForm.derived.Label</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="autoComplete4Invoice"
                 name="Sales_ReminderForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd" 
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd"
                 name="Sales_ReminderForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <!-- Sales_ReminderMyDesk_Menu_Action_CreateFromDoc2 -->
                 <property name="CmdUUID">ef128d4f-e18f-49dd-98b2-0ddb39a4df85</property>

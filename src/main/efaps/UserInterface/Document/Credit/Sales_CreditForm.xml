@@ -45,7 +45,7 @@
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
         </field>
-        
+
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
         </field>
@@ -99,7 +99,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        
+
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_CreditForm.headingContact.Heading</property>
@@ -112,6 +112,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="Columns">101</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_CreditForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.Credit">
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_CreditForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
@@ -129,7 +130,7 @@
             <property name="Label">Sales_CreditForm.headingTotal.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-        
+
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -226,7 +227,7 @@
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
         </field>
-        
+
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
         </field>
@@ -280,7 +281,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        
+
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_CreditForm.headingContact.Heading</property>
@@ -356,7 +357,7 @@
             <property name="Label">Sales_CreditForm.headingTotal.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-        
+
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>

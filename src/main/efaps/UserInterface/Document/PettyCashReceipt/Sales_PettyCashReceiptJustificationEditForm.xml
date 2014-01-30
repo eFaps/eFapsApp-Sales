@@ -36,6 +36,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <picker name="Contacts_CreateContactPicker"/>
+            <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.contacts.Contacts"
                 method="autoComplete4Contact"
                 name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
