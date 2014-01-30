@@ -19,20 +19,28 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>bf14e7de-aeff-45ea-9165-e8f787625454</uuid>
+    <uuid>4f121fd2-2765-4b5b-bf9c-dac6fdb43cd2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingReminderTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_IncomingReminderTree_Menu_Action_Edit</child>
-            <child>Sales_IncomingReminderTree_Menu_Action_Recalculate</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
-        </childs>
+        <name>Sales_IncomingReceiptTree_Menu_Action_Recalculate</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_DocumentSum_RecalculateForm</form>
+            <execute method="recalculateRate" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">ERP_DocumentAbstract</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">720</property>
     </definition>
-
-</ui-menu>
+</ui-command>
