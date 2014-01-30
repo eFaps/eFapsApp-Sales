@@ -34,7 +34,7 @@
         <!-- target definitions -->
         <target>
             <form>Sales_IncomingPerceptionCertificateForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+            <execute program="org.efaps.esjp.sales.document.IncomingPerceptionCertificate" method="edit"/>
         </target>
 
         <!-- properties -->

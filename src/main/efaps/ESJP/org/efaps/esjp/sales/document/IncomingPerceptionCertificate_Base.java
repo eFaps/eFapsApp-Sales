@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,9 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -40,8 +42,10 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 /**
@@ -57,8 +61,18 @@ public abstract class IncomingPerceptionCertificate_Base
     extends DocumentSum
 {
 
+    /**
+     * Used to store the PerceptionValue in the Context.
+     */
     public static final String PERCEPTIONVALUE = IncomingPerceptionCertificate.class.getName() + ".PerceptionValue";
 
+    /**
+     * Executed from a Command execute vent to create a new Incoming PerceptionCertificate.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -66,6 +80,28 @@ public abstract class IncomingPerceptionCertificate_Base
         return new Return();
     }
 
+
+    /**
+     * Executed from a Command execute event to edit.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        editDoc(_parameter);
+        return new Return();
+    }
+
+    /**
+     * Executed from a Command execute vent to create a new Incoming PerceptionCertificate.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _createdDoc as CreatedDoc with values.
+     * @throws EFapsException on error
+     */
     public void create4Doc(final Parameter _parameter,
                            final CreatedDoc _createdDoc)
         throws EFapsException
@@ -98,7 +134,7 @@ public abstract class IncomingPerceptionCertificate_Base
         insert.add(CISales.IncomingPerceptionCertificate.NetTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingPerceptionCertificate.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingPerceptionCertificate.StatusAbstract,
-                        Status.find(CISales.IncomingPerceptionCertificateStatus, "Open"));
+                        Status.find(CISales.IncomingPerceptionCertificateStatus.Open));
         insert.add(CISales.IncomingPerceptionCertificate.Name,
                         _createdDoc.getValue(CISales.DocumentSumAbstract.Name.name));
 
@@ -120,6 +156,13 @@ public abstract class IncomingPerceptionCertificate_Base
         relInsert.execute();
     }
 
+    /**
+     * Method to validate document connect.
+     *
+     * @param _parameter Parameter passed from the eFaps API.
+     * @return Return values.
+     * @throws EFapsException on error.
+     */
     public Return validateConnectDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -135,7 +178,8 @@ public abstract class IncomingPerceptionCertificate_Base
                 final Instance child = Instance.get(childOid);
                 if (callInstance.getType().isKindOf(CISales.IncomingPerceptionCertificate.getType())) {
                     if (child.getType().equals(CISales.IncomingInvoice.getType())
-                                    && check4Relation(CISales.IncomingPerceptionCertificate2IncomingInvoice.uuid, child).next()) {
+                                    && check4Relation(CISales.IncomingPerceptionCertificate2IncomingInvoice.uuid, child)
+                                                    .next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;
@@ -155,6 +199,13 @@ public abstract class IncomingPerceptionCertificate_Base
         return ret;
     }
 
+    /**
+     * Method to return name document invalidate.
+     *
+     * @param _child Instance.
+     * @return StringBuilder to String.
+     * @throws EFapsException on error.
+     */
     protected StringBuilder getString4ReturnInvalidate(final Instance _child)
         throws EFapsException
     {
@@ -181,7 +232,8 @@ public abstract class IncomingPerceptionCertificate_Base
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
-        queryBldr.addWhereAttrMatchValue(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink, _instance.getId());
+        queryBldr.addWhereAttrMatchValue(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink,
+                        _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.IncomingPerceptionCertificate2Document.OID);
         multi.execute();
@@ -189,6 +241,13 @@ public abstract class IncomingPerceptionCertificate_Base
         return multi;
     }
 
+    /**
+     * Connect Document.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return connectDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -225,4 +284,25 @@ public abstract class IncomingPerceptionCertificate_Base
         return new Return();
     }
 
+    @Override
+    protected BigDecimal getCrossTotal(final Parameter _parameter,
+                                       final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        if (_calcList.isEmpty()) {
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal rateCrossTotal = (BigDecimal) formatter.parse(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name));
+                ret = ret.add(rateCrossTotal);
+            } catch (final ParseException p) {
+                throw new EFapsException(IncomingPerceptionCertificate.class, "RateCrossTotal.ParseException", p);
+            }
+        } else {
+            ret = super.getCrossTotal(_parameter, _calcList);
+        }
+
+        return ret;
+    }
 }
