@@ -59,8 +59,10 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
@@ -123,14 +125,31 @@ public abstract class DocumentSum_Base
         return ret;
     }
 
+    /**
+     * Method to edit the basic Document. The method checks for the Type to be
+     * created for every attribute if a related field is in the parameters.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return the edited document
+     * @throws EFapsException on error.
+     */
     protected EditedDoc editDoc(final Parameter _parameter)
         throws EFapsException
     {
         return editDoc(_parameter, new EditedDoc(_parameter.getInstance()));
     }
 
+    /**
+     * Method to edit the basic Document. The method checks for the Type to be
+     * created for every attribute if a related field is in the parameters.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _editDoc edited document
+     * @return the edited document
+     * @throws EFapsException on error.
+     */
     protected EditedDoc editDoc(final Parameter _parameter,
-                                 final EditedDoc _editDoc)
+                                final EditedDoc _editDoc)
         throws EFapsException
     {
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -874,7 +893,6 @@ public abstract class DocumentSum_Base
         }
     }
 
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _calc Calculator
@@ -891,10 +909,11 @@ public abstract class DocumentSum_Base
         // to be implemented by subclasses
     }
 
-
     /**
-     * @param _parameter
-     * @param _editDoc
+     * Update the positions of a Document.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _editDoc  EditDoc the postions that will be updated belong to
+     * @throws EFapsException on error
      */
     protected void updatePositions(final Parameter _parameter,
                                    final EditedDoc _editDoc)
@@ -992,6 +1011,13 @@ public abstract class DocumentSum_Base
         deletePosition4Update(_parameter, _editDoc);
     }
 
+    /**
+     * Delete the positions of a Document that were removed in the UserInterface.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _editDoc  EditDoc the postions that will be updated belong to
+     * @throws EFapsException on error
+     */
     protected void deletePosition4Update(final Parameter _parameter,
                                          final EditedDoc _editDoc)
         throws EFapsException
@@ -1014,18 +1040,19 @@ public abstract class DocumentSum_Base
     }
 
     /**
-     * @param _parameter
-     * @param _calc
-     * @param _update
-     * @param _i
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calc Calculator
+     * @param _posUpdate Update
+     * @param _idx index
+     * @throws EFapsException on error
      */
     protected void add2PositionUpdate(final Parameter _parameter,
                                       final Calculator _calc,
-                                      final Update _update,
-                                      final int _i)
+                                      final Update _posUpdate,
+                                      final int _idx)
+        throws EFapsException
     {
-        // TODO Auto-generated method stub
-
+        // to be used by implenentation
     }
 
     /**
@@ -1051,9 +1078,9 @@ public abstract class DocumentSum_Base
         return retVal;
     }
 
-
     /**
-     * Used by the update event used in the select doc form for CostSheet.
+     * Recalculate the rate values by instantiating calculators
+     * and simulating the interaction with the form.
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @return map list for update event
@@ -1065,89 +1092,83 @@ public abstract class DocumentSum_Base
         final Instance docInst = _parameter.getInstance();
         if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
             final PrintQuery print = new PrintQuery(docInst);
-            print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
-                            CISales.DocumentSumAbstract.RateDiscountTotal,
-                            CISales.DocumentSumAbstract.RateNetTotal,
-                            CISales.DocumentSumAbstract.RateCurrencyId,
-                            CISales.DocumentSumAbstract.CurrencyId,
-                            CISales.DocumentSumAbstract.Date);
+            final SelectBuilder selRateCurInst = SelectBuilder.get()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+            print.addSelect(selRateCurInst);
             print.execute();
 
-            final BigDecimal rateCross = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            final BigDecimal rateDiscount = print.<BigDecimal> getAttribute(
-                            CISales.DocumentSumAbstract.RateDiscountTotal);
-            final BigDecimal rateNet = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
-            final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long> getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
-            final Instance currentInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long> getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance rateCurrInst = print.<Instance>getSelect(selRateCurInst);
+            if (!baseCurrInst.equals(rateCurrInst)) {
 
-            final PriceUtil priceUtil = new PriceUtil();
-            final BigDecimal[] rates = priceUtil.getRates(_parameter, targetCurrInst, currentInst);
-            final BigDecimal rate = rates[2];
+                final String dateStr = _parameter.getParameterValue(
+                                CIFormSales.Sales_DocumentSum_RecalculateForm.date.name + "_eFapsDate");
 
-            final BigDecimal[] rates2 = priceUtil.getExchangeRate(priceUtil.getDateFromParameter(_parameter),
-                            targetCurrInst);
-            final CurrencyInst currInst = new CurrencyInst(targetCurrInst);
+                final Currency currency = new Currency();
+                final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, dateStr, rateCurrInst);
+                final BigDecimal rate = rateInfo.getRate();
 
-            final Object[] rateObj = new Object[] { currInst.isInvert() ? BigDecimal.ONE : rates2[0],
-                            currInst.isInvert() ? rates2[1] : BigDecimal.ONE };
+                final DecimalFormat frmt = NumberFormatter.get().getFormatter();
 
-            final Update update = new Update(docInst);
-            update.add(CISales.DocumentSumAbstract.CrossTotal, rateCross.compareTo(BigDecimal.ZERO) == 0
-                            ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
-                            : rateCross.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                                .setScale(2, BigDecimal.ROUND_HALF_UP));
-            update.add(CISales.DocumentSumAbstract.NetTotal, rateNet.compareTo(BigDecimal.ZERO) == 0
-                            ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
-                            : rateNet.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                                .setScale(2, BigDecimal.ROUND_HALF_UP));
-            update.add(CISales.DocumentSumAbstract.DiscountTotal, rateDiscount.compareTo(BigDecimal.ZERO) == 0
-                            ? BigDecimal.ZERO.setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                                            .setScale(2, BigDecimal.ROUND_HALF_UP)
-                            : rateDiscount.divide(rate, BigDecimal.ROUND_HALF_UP)
-                                .setScale(isDecimal4Doc(docInst), BigDecimal.ROUND_HALF_UP)
-                                .setScale(2, BigDecimal.ROUND_HALF_UP));
-            update.add(CISales.DocumentSumAbstract.Rate, rateObj);
-            update.execute();
+                final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+                final int scale = totalFrmt.getMaximumFractionDigits();
 
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-            queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, docInst.getId());
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.PositionSumAbstract.RateCrossPrice,
-                            CISales.PositionSumAbstract.RateCrossUnitPrice,
-                            CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
-                            CISales.PositionSumAbstract.RateNetPrice,
-                            CISales.PositionSumAbstract.RateNetUnitPrice);
-            multi.execute();
-            while (multi.next()) {
-                final BigDecimal rateCrossPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.RateCrossPrice);
-                final BigDecimal rateDscNetUnitPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
-                final BigDecimal rateCrossUnitPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.RateCrossUnitPrice);
-                final BigDecimal rateNetPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.RateNetPrice);
-                final BigDecimal rateNetUnitPrice = multi.<BigDecimal> getAttribute(
-                                CISales.PositionSumAbstract.RateNetUnitPrice);
-                final BigDecimal newCrossPrice = getNewValue(docInst, rateCrossPrice, rates[2]);
-                final BigDecimal newDiscountNetUnitPrice = getNewValue(docInst, rateDscNetUnitPrice, rates[2]);
-                final BigDecimal newCrossUnitPrice = getNewValue(docInst, rateCrossUnitPrice, rates[2]);
-                final BigDecimal newCrossNetPrice = getNewValue(docInst, rateNetPrice, rates[2]);
-                final BigDecimal newCrossNetUnitPrice = getNewValue(docInst, rateNetUnitPrice, rates[2]);
-                final Update updatePos = new Update(multi.getCurrentInstance());
-                updatePos.add(CISales.PositionSumAbstract.CrossPrice, newCrossPrice);
-                updatePos.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, newDiscountNetUnitPrice);
-                updatePos.add(CISales.PositionSumAbstract.CrossUnitPrice, newCrossUnitPrice);
-                updatePos.add(CISales.PositionSumAbstract.NetPrice, newCrossNetPrice);
-                updatePos.add(CISales.PositionSumAbstract.NetUnitPrice, newCrossNetUnitPrice);
-                updatePos.add(CISales.PositionSumAbstract.Rate, rateObj);
-                updatePos.execute();
+                final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+                final int uScale = unitFrmt.getMaximumFractionDigits();
+
+                final List<Calculator> calcList = new ArrayList<Calculator>();
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+                queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, docInst);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selProdOid = SelectBuilder.get().linkto(CISales.PositionSumAbstract.Product).oid();
+                multi.addSelect(selProdOid);
+                multi.addAttribute(CISales.PositionSumAbstract.Quantity,
+                                CISales.PositionSumAbstract.RateNetUnitPrice,
+                                CISales.PositionSumAbstract.Discount);
+                multi.execute();
+                while (multi.next()) {
+                    //read the ratevalues
+                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
+                    final BigDecimal unitPrice = multi
+                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
+                    final BigDecimal discount = multi
+                                    .<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
+                    final String prodOid = multi.<String>getSelect(selProdOid);
+                    final Calculator calc = getCalculator(_parameter, null, prodOid, frmt.format(quantity),
+                                    unitFrmt.format(unitPrice), frmt.format(discount), false);
+                    calcList.add(calc);
+
+                    // update the base values for the position
+                    final Update update = new Update(multi.getCurrentInstance());
+                    update.add(CISales.PositionSumAbstract.CrossUnitPrice, calc.getCrossUnitPrice()
+                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                    update.add(CISales.PositionSumAbstract.NetUnitPrice, calc.getNetUnitPrice()
+                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                    update.add(CISales.PositionSumAbstract.CrossPrice, calc.getCrossPrice()
+                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                    update.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
+                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
+                    update.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
+                    update.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
+                    update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
+                                    .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
+                    update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
+                    update.add(CISales.PositionSumAbstract.Rate, rateInfo.getRateObject());
+                    update.execute();
+                }
+                // update the base values for the document
+                final Update update = new Update(docInst);
+                final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                                .setScale(scale, BigDecimal.ROUND_HALF_UP);
+                update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+
+                update.add(CISales.DocumentSumAbstract.Taxes, getTaxes(_parameter, calcList, rate, baseCurrInst));
+
+                final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
+                            .setScale(scale, BigDecimal.ROUND_HALF_UP);
+                update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+                update.add(CISales.DocumentSumAbstract.Rate, rateInfo.getRateObject());
+                update.execute();
             }
         }
         return new Return();
@@ -1578,15 +1599,16 @@ public abstract class DocumentSum_Base
     }
 
     public Return validateName(final Parameter _parameter)
-                    throws EFapsException
+        throws EFapsException
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         final String name = _parameter.getParameterValue("name4create");
-        if(name!=null) {
-            if(name.contains("-")) {
+        if (name != null) {
+            if (name.contains("-")) {
                 final String[] numbers = name.split("-", 2);
-                if(numbers[0].length()<numbers[1].length() && numbers[0].matches("^[0-9]+$") && numbers[1].matches("^[0-9]+$")) {
+                if (numbers[0].length() < numbers[1].length() && numbers[0].matches("^[0-9]+$")
+                                && numbers[1].matches("^[0-9]+$")) {
                     ret.put(ReturnValues.TRUE, true);
                 } else {
                     html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
