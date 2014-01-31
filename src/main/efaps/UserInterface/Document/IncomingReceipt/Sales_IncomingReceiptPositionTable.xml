@@ -36,7 +36,9 @@
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Quantity" name="Sales_IncomingReceiptPositionTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_IncomingReceiptPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product" name="Sales_IncomingReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
