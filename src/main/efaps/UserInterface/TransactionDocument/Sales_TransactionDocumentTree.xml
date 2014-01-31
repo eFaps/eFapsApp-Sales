@@ -30,6 +30,7 @@
         <name>Sales_TransactionDocumentTree</name>
         <!-- targets -->
         <target>
+            <menu>Sales_TransactionDocumentTree_Menu</menu>
             <form>Sales_TransactionDocumentForm</form>
         </target>
         <!-- type tree for -->

@@ -35,6 +35,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_ReturnSlipTree_Menu_Action_Edit</child>
+            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
         </childs>
     </definition>
 
