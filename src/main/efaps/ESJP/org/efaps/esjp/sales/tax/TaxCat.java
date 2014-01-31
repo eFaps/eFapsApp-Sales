@@ -20,9 +20,12 @@
 
 package org.efaps.esjp.sales.tax;
 
+import java.util.UUID;
+
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -50,4 +53,27 @@ public class TaxCat
         super(_instance, _uuid, _name);
     }
 
+    /**
+     * Get a TaxCat for an given id.
+     * @param _taxCatId id of the taxcat wanted
+     * @return taxcat for the id
+     * @throws EFapsException on error
+     */
+    public static TaxCat get(final long _taxCatId)
+        throws EFapsException
+    {
+        return TaxCat_Base.get(_taxCatId);
+    }
+
+    /**
+     * Get a TaxCat for an given UUID.
+     * @param _uuid uuid of the taxcat wanted
+     * @return taxcat for the id
+     * @throws EFapsException on error
+     */
+    public static TaxCat get(final UUID _uuid)
+        throws EFapsException
+    {
+        return TaxCat_Base.get(_uuid);
+    }
 }
