@@ -84,6 +84,7 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  * Class is the generic instance for all documents of type DocumentSum.
@@ -155,9 +156,7 @@ public abstract class DocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         _editDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-        final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
-                        ? baseCurrInst
-                        : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+        final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
@@ -250,6 +249,21 @@ public abstract class DocumentSum_Base
     }
 
     /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _createdDoc createdDoc
+     * @return Instance of the document.
+     * @throws EFapsException on error.
+     */
+    protected Instance getRateCurrencyInstance(final Parameter _parameter,
+                                               final CreatedDoc _createdDoc)
+        throws CacheReloadException, EFapsException
+    {
+        return _parameter.getParameterValue("rateCurrencyId") == null
+                        ? Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE)
+                        : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+    }
+
+    /**
      * Method to create the basic Document. The method checks for the Type to be
      * created for every attribute if a related field is in the parameters.
      *
@@ -265,9 +279,7 @@ public abstract class DocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         createdDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-        final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
-                        ? baseCurrInst
-                        : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+        final Instance rateCurrInst = getRateCurrencyInstance(_parameter, createdDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
@@ -617,8 +629,7 @@ public abstract class DocumentSum_Base
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
-        final Instance newInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
+        final Instance newInst = getRateCurrencyInstance(_parameter, null);
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
@@ -749,8 +760,7 @@ public abstract class DocumentSum_Base
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
-        final Instance newInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
+        final Instance newInst = getRateCurrencyInstance(_parameter, null);
         Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final Currency currency = new Currency();
@@ -816,8 +826,7 @@ public abstract class DocumentSum_Base
     {
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
-        final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                        _parameter.getParameterValue("rateCurrencyId"));
+        final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _createdDoc);
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
@@ -869,12 +878,12 @@ public abstract class DocumentSum_Base
                 posIns.add(CISales.PositionSumAbstract.NetPrice, calc.getNetPrice()
                                 .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.Tax, calc.getTaxCatId());
-                posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
+                posIns.add(CISales.PositionSumAbstract.Discount, calc.getDiscount());
                 posIns.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                 .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
-                posIns.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
+                posIns.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst);
                 posIns.add(CISales.PositionSumAbstract.Rate, rateObj);
-                posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
+                posIns.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst);
                 posIns.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
                                 .setScale(uScale, BigDecimal.ROUND_HALF_UP));
                 posIns.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
@@ -920,11 +929,7 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-
-        Instance rateCurrInst = Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
-        if (rateCurrInst == null) {
-            rateCurrInst = baseCurrInst;
-        }
+        final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
@@ -990,9 +995,9 @@ public abstract class DocumentSum_Base
                 update.add(CISales.PositionSumAbstract.Discount, calc.getDiscountStr());
                 update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                 .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
-                update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
+                update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst);
                 update.add(CISales.PositionSumAbstract.Rate, rateObj);
-                update.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst.getId());
+                update.add(CISales.PositionSumAbstract.RateCurrencyId, rateCurrInst);
                 update.add(CISales.PositionSumAbstract.RateNetUnitPrice, calc.getNetUnitPrice()
                                 .setScale(uScale, BigDecimal.ROUND_HALF_UP));
                 update.add(CISales.PositionSumAbstract.RateCrossUnitPrice, calc.getCrossUnitPrice()
