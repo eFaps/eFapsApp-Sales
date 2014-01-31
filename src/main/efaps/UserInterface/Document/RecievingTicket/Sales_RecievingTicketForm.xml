@@ -118,6 +118,10 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="status">
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
