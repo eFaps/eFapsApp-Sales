@@ -38,6 +38,8 @@
         <field name="product">
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_IncomingReminderPosition/Product.Label</property>
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
+            <property name="HRef">TREE</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product" name="Sales_IncomingReminderPositionTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Product" name="Sales_IncomingReminderPositionTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReminder"/>

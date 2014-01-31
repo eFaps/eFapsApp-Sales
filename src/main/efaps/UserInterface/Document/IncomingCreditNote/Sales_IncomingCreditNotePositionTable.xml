@@ -37,6 +37,8 @@
                 name="Sales_IncomingCreditNotePositionTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
+            <property name="HRef">TREE</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="Label">Sales_IncomingCreditNotePosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
