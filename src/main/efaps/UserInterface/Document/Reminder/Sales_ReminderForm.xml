@@ -150,7 +150,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
-            <property name="Columns">101</property>
+            <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="autoComplete4Contact"
                 name="Sales_ReminderForm.contact.UI_FIELD_AUTOCOMPLETE"
