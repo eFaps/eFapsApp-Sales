@@ -49,7 +49,6 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
-import org.efaps.admin.ui.Command;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -1614,11 +1613,17 @@ public abstract class DocumentSum_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-        String name = _parameter.getParameterValue("name4create");
-        final Command command = (Command) _parameter.get(ParameterValues.UIOBJECT);
-        if (TargetMode.EDIT.equals(command.getTargetMode())) {
-            name = _parameter.getParameterValue("name");
+        final String fieldName = getProperty(_parameter, "FieldName");
+        String name = null;
+        if (fieldName == null) {
+            name  = _parameter.getParameterValue("name4create");
+            if (name == null) {
+                name = _parameter.getParameterValue("name");
+            }
+        } else {
+            name = _parameter.getParameterValue(fieldName);
         }
+
         if (name != null) {
             final String[] numbers = name.split("-");
             if (numbers.length == 2 && numbers[0].length() >= numbers[1].length()) {
