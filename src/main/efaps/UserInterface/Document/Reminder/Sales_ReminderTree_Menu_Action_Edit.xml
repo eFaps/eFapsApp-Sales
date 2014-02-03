@@ -41,6 +41,7 @@
         <target>
             <form>Sales_ReminderForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
         </target>
 
         <!-- properties -->

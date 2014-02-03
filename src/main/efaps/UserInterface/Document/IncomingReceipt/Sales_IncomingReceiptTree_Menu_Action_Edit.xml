@@ -37,6 +37,7 @@
     <target>
       <form>Sales_IncomingReceiptForm</form>
       <execute program="org.efaps.esjp.common.uiform.Edit"/>
+      <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
     </target>
 
     <!-- properties -->

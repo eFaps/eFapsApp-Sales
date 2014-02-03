@@ -42,6 +42,7 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

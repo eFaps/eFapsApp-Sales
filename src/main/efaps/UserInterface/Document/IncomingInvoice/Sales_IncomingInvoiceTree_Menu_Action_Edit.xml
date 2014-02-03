@@ -51,6 +51,7 @@
                 event="UI_ACCESSCHECK">
                 <property name="Status">Open</property>
             </trigger>
+            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
         </target>
 
         <!-- properties -->

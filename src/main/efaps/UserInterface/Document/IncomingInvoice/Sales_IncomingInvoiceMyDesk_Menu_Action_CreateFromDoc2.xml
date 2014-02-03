@@ -49,6 +49,7 @@
                 <property name="Status">Open</property>
             </execute>
             <command>Sales_IncomingInvoice_ShowRevision</command>
+            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
         </target>
 
         <!-- properties -->

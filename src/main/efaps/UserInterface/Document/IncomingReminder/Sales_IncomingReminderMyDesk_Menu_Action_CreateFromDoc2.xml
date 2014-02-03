@@ -37,6 +37,7 @@
                 <property name="StatusGroup">Sales_IncomingReminderStatus</property>
                 <property name="Status">Open</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
         </target>
 
         <!-- properties -->
