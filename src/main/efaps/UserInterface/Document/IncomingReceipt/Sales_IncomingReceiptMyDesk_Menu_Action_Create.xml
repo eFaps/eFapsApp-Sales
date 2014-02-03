@@ -40,8 +40,8 @@
             <property name="StatusGroup">Sales_IncomingReceiptStatus</property>
             <property name="Status">Open</property>
       </execute>
-      <command>Sales_IncomingReceipt_ShowRevision</command>
       <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+      <command>Sales_IncomingReceipt_ShowRevision</command>
     </target>
 
     <!-- properties -->
