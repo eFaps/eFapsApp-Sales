@@ -34,7 +34,6 @@
         <childs>
             <child>Sales_IncomingReceiptMyDesk_Menu_Action_Create</child>
             <child>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
             <child>Sales_IncomingReceiptMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
