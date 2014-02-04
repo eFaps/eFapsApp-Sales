@@ -26,7 +26,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingPerceptionCertificate2IncomingInvoice</name>
-        <parent>ERP_Document2DocumentAbstract</parent>
+        <parent>Sales_IncomingPerceptionCertificate2Document</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>

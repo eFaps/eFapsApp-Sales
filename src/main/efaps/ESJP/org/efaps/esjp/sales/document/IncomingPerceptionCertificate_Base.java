@@ -150,9 +150,9 @@ public abstract class IncomingPerceptionCertificate_Base
                         perception.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
 
         insert.execute();
-        final Insert relInsert = new Insert(CISales.IncomingPerceptionCertificate2Document);
-        relInsert.add(CISales.IncomingPerceptionCertificate2Document.FromLink, insert.getInstance());
-        relInsert.add(CISales.IncomingPerceptionCertificate2Document.ToLink, _createdDoc.getInstance());
+        final Insert relInsert = new Insert(CISales.IncomingPerceptionCertificate2IncomingInvoice);
+        relInsert.add(CISales.IncomingPerceptionCertificate2Document.FromAbstractLink, insert.getInstance());
+        relInsert.add(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink, _createdDoc.getInstance());
         relInsert.execute();
     }
 
@@ -261,7 +261,7 @@ public abstract class IncomingPerceptionCertificate_Base
                 Insert insert = null;
                 if (callInstance.getType().isKindOf(CISales.IncomingPerceptionCertificate.getType())) {
                     // defaults
-                     if (child.getType().equals(CISales.IncomingInvoice.getType())) {
+                    if (child.getType().equals(CISales.IncomingInvoice.getType())) {
                         insert = new Insert(CISales.IncomingPerceptionCertificate2IncomingInvoice);
                     }
                     int i = 0;
@@ -275,8 +275,8 @@ public abstract class IncomingPerceptionCertificate_Base
                     }
                 }
                 if (insert != null) {
-                    insert.add(CISales.IncomingPerceptionCertificate2Document.FromLink, callInstance.getId());
-                    insert.add(CISales.IncomingPerceptionCertificate2Document.ToLink, child.getId());
+                    insert.add(CISales.IncomingPerceptionCertificate2Document.FromAbstractLink, callInstance.getId());
+                    insert.add(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink, child.getId());
                     insert.execute();
                 }
             }

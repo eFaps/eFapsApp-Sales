@@ -27,19 +27,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingPerceptionCertificate2Document</name>
         <parent>ERP_Document2DocumentAbstract</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_IncomingPerceptionCertificate</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_DocumentSumAbstract</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+        <purpose abstract="true" />
     </definition>
 </datamodel-type>
