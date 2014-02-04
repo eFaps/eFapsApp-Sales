@@ -35,7 +35,7 @@
             <execute program="org.efaps.esjp.common.uisearch.Connect">
                 <property name="ConnectChildAttribute">DocumentLink</property>
                 <property name="ConnectParentAttribute">DocumentTypeLink</property>
-                <property name="ConnectType">Sales_Document2DocumentType</property>
+                <property name="ConnectType">Sales_Document2ProductDocumentType</property>
             </execute>
         </target>
         <!-- properties -->

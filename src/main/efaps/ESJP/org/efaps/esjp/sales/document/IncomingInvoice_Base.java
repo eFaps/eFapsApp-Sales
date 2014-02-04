@@ -34,19 +34,14 @@ import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -113,6 +108,13 @@ public abstract class IncomingInvoice_Base
         return new Return();
     }
 
+    /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
@@ -133,9 +135,9 @@ public abstract class IncomingInvoice_Base
         final Instance instDocType = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.productDocumentType.name));
         if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            final Insert insert = new Insert(CISales.Document2ProductDocumentType);
+            insert.add(CISales.Document2ProductDocumentType.DocumentLink, _createdDoc.getInstance());
+            insert.add(CISales.Document2ProductDocumentType.DocumentTypeLink, instDocType);
             insert.execute();
         }
     }
@@ -265,40 +267,6 @@ public abstract class IncomingInvoice_Base
         html.append("<span style=\"text-align: center; display: block; width: 100%; font-size: 40px; height: 55px;\">")
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
-        return ret;
-    }
-
-    public Return getDocumentType4View(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> props = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        final Return ret = new Return();
-        if (_parameter.get(ParameterValues.INSTANCE) != null
-                        && _parameter.getInstance().isValid()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _parameter.getInstance()
-                            .getId());
-            final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CISales.Document2DocumentType.DocumentTypeLink);
-
-            QueryBuilder queryBldr;
-            if (props.containsKey("Search4Type")) {
-                queryBldr = new QueryBuilder(UUID.fromString((String) props.get("Search4Type")));
-            } else {
-                queryBldr = new QueryBuilder(CIERP.DocumentTypeAbstract);
-            }
-            queryBldr.addWhereAttrInQuery(CIERP.DocumentTypeAbstract.ID, attrQuery);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addPhrase("value", (String) props.get("Phrase"));
-            multi.execute();
-
-            String value = "-";
-            while (multi.next()) {
-                value = multi.getPhrase("value");
-            }
-            ret.put(ReturnValues.VALUES, value);
-        }
         return ret;
     }
 

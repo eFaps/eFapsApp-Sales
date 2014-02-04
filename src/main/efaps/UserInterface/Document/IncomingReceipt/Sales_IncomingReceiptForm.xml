@@ -15,15 +15,15 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 8332 $
-  Last Changed:    $Date: 2012-12-09 22:23:31 -0500 (Sun, 09 Dec 2012) $
-  Last Changed By: $Author: jan@moxter.net $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>57082417-5457-44f5-a178-a704c027417b</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8332 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -100,17 +100,13 @@
             </trigger>
         </field>
         <field name="documentType4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
             <property name="Label">Sales_IncomingReceiptForm.documentType.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getDocumentType4View"
-                name="Sales_IncomingReceiptForm.productDocumentType4View.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <!-- ERP_DocumentType -->
-                <property name="Search4Type">90796449-0121-4fc1-9632-7d52f3adf85e</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
-            </trigger>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -133,17 +129,13 @@
             </trigger>
         </field>
         <field name="productDocumentType4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
             <property name="Label">Sales_IncomingReceiptForm.productDocumentType.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getDocumentType4View"
-                name="Sales_IncomingReceiptForm.productDocumentType4View.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <!-- Sales_ProductDocumentType -->
-                <property name="Search4Type">42ec125b-46ee-4822-8de4-b4cd55072f74</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
-            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingReceiptForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>

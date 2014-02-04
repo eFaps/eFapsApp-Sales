@@ -562,12 +562,12 @@ public abstract class SalesKardexReport_Base
         protected String getProductExistType()
             throws EFapsException
         {
-            String ret = "";
+            final StringBuilder ret = new StringBuilder();
             if (SalesKardexReport_Base.EXISTTYPE_MAP.containsKey(this.product.getType().getId())) {
-                ret = SalesKardexReport_Base.EXISTTYPE_MAP.get(this.product.getType().getId());
+                ret.append(SalesKardexReport_Base.EXISTTYPE_MAP.get(this.product.getType().getId()));
             }
 
-            return ret;
+            return ret.toString();
         }
     }
 
@@ -615,11 +615,11 @@ public abstract class SalesKardexReport_Base
                                          final Instance _instance)
             throws EFapsException
         {
-            String ret = "";
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _instance.getId());
+            final StringBuilder ret = new StringBuilder();
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIERP.Document2DocumentTypeAbstract);
+            attrQueryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, _instance.getId());
             final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CISales.Document2DocumentType.DocumentTypeLink);
+                            .getAttributeQuery(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract);
 
             final QueryBuilder queryBldr = new QueryBuilder(_type);
             queryBldr.addWhereAttrInQuery(CIERP.DocumentTypeAbstract.ID, attrQuery);
@@ -628,48 +628,53 @@ public abstract class SalesKardexReport_Base
             multi.execute();
             while (multi.next()) {
                 if (multi.getCurrentInstance().getType().equals(_type)) {
-                    ret = multi.<String>getAttribute(CIERP.DocumentTypeAbstract.Name);
+                    ret.append(multi.<String>getAttribute(CIERP.DocumentTypeAbstract.Name));
                     if (_type.equals(CIERP.DocumentType.getType())) {
                         this.doc2docInstance = _instance;
                     }
                     break;
                 }
             }
-            return ret;
+            return ret.toString();
         }
 
         protected String getDocumentTypeName(final Instance _docInst)
             throws EFapsException
         {
-            String ret = "";
+            final StringBuilder ret = new StringBuilder();
 
             if (CISales.IncomingInvoice.getType().equals(_docInst.getType())
                             || CISales.IncomingReceipt.getType().equals(_docInst.getType())) {
-                ret = getDocumentName(CIERP.DocumentType.getType(), _docInst);
+                ret.append(getDocumentName(CIERP.DocumentType.getType(), _docInst));
             } else {
                 if (CISales.RecievingTicket.getType().equals(_docInst.getType())) {
-                    ret = getDoc2Doc4DocName(_docInst);
-                    if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_docInst.getType().getId()) && ret.isEmpty()) {
-                        ret = SalesKardexReport_Base.DOCTYPE_MAP.get(_docInst.getType().getId());
+                    ret.append(getDoc2Doc4DocName(_docInst));
+                    if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_docInst.getType().getId())
+                                    && ret.toString().isEmpty()) {
+                        ret.append(SalesKardexReport_Base.DOCTYPE_MAP.get(_docInst.getType().getId()));
                         this.doc2docInstance = _docInst;
                     }
                 } else if (CISales.ReturnSlip.getType().equals(_docInst.getType())
                                 || CISales.ReturnUsageReport.getType().equals(_docInst.getType())
                                 || CISales.TransactionDocument.getType().equals(_docInst.getType())) {
                     if (SalesKardexReport_Base.DOCTYPE_MAP.containsKey(_docInst.getType().getId())) {
-                        ret = SalesKardexReport_Base.DOCTYPE_MAP.get(_docInst.getType().getId());
+                        ret.append(SalesKardexReport_Base.DOCTYPE_MAP.get(_docInst.getType().getId()));
                         this.doc2docInstance = _docInst;
                     }
                 }
             }
 
-            return ret.isEmpty() ? "-" : ret;
+            if (ret.toString().isEmpty()) {
+                ret.append("-");
+            }
+
+            return ret.toString();
         }
 
         protected String getDoc2Doc4DocName(final Instance _instance)
             throws EFapsException
         {
-            String ret = "";
+            final StringBuilder ret = new StringBuilder();
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
             attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _instance.getId());
@@ -689,15 +694,15 @@ public abstract class SalesKardexReport_Base
                     if (multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).isAfter(this.dateTransactionInStart.minusSeconds(1)) &&
                                     multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).isBefore(this.dateTransactionInFinish.plusSeconds(1))) {
                         if (existsProduct4Document(multi.getCurrentInstance())) {
-                            ret = getDocumentName(CIERP.DocumentType.getType(), multi.getCurrentInstance());
+                            ret.append(getDocumentName(CIERP.DocumentType.getType(), multi.getCurrentInstance()));
                             break;
                         }
                     }
                 } else {
-                    ret = getExtendDoc2Doc4DocName(multi.getCurrentInstance());
+                    ret.append(getExtendDoc2Doc4DocName(multi.getCurrentInstance()));
                 }
             }
-            return ret;
+            return ret.toString();
         }
 
         protected boolean existsProduct4Document(final Instance _curInst)
@@ -718,13 +723,13 @@ public abstract class SalesKardexReport_Base
         public String getExtendDoc2Doc4DocName(final Instance _doc2doc)
             throws EFapsException
         {
-            return "";
+            return new StringBuilder().toString();
         }
 
         protected String getProductDocumentTypeName(final Instance _docInst)
             throws EFapsException
         {
-            String ret = "";
+            final StringBuilder ret = new StringBuilder();
 
             if (CISales.IncomingInvoice.getType().equals(_docInst.getType())
                             || CISales.IncomingReceipt.getType().equals(_docInst.getType())
@@ -732,10 +737,14 @@ public abstract class SalesKardexReport_Base
                             || CISales.ReturnSlip.getType().equals(_docInst.getType())
                             || CISales.ReturnUsageReport.getType().equals(_docInst.getType())
                             || CISales.TransactionDocument.getType().equals(_docInst.getType())) {
-                ret = getDocumentName(CISales.ProductDocumentType.getType(), _docInst);
+                ret.append(getDocumentName(CISales.ProductDocumentType.getType(), _docInst));
             }
 
-            return ret.isEmpty() ? "-" : ret;
+            if (ret.toString().isEmpty()) {
+                ret.append("-");
+            }
+
+            return ret.toString();
         }
 
         protected BigDecimal getCost4Doc()
@@ -817,17 +826,17 @@ public abstract class SalesKardexReport_Base
         protected String getDoc2DocName()
             throws EFapsException
         {
-            String ret = "";
+            final StringBuilder ret = new StringBuilder();
 
             if (this.doc2docInstance != null && this.doc2docInstance.isValid()) {
                 final PrintQuery print = new PrintQuery(this.doc2docInstance);
                 print.addAttribute(CIERP.DocumentAbstract.Name);
                 print.execute();
 
-                ret = print.<String>getAttribute(CIERP.DocumentAbstract.Name);
+                ret.append(print.<String>getAttribute(CIERP.DocumentAbstract.Name));
             }
 
-            return ret;
+            return ret.toString();
         }
     }
 }

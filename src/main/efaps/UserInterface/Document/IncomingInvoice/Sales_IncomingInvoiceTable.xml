@@ -42,7 +42,7 @@
             <property name="Label">Sales_IncomingInvoice/Revision.Label</property>
         </field>
         <field name="documentType">
-            <property name="Select">linkfrom[ERP_Document2DocumentTypeAbstract#DocumentLinkAbstract].linkto[DocumentTypeLinkAbstract].attribute[Name]</property>
+            <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
             <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
         </field>
         <field name="name">

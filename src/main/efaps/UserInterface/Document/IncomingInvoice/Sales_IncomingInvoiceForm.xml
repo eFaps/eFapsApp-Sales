@@ -206,17 +206,13 @@
             </trigger>
         </field>
         <field name="productDocumentType4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
             <property name="Label">Sales_IncomingInvoiceForm.productDocumentType.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="getDocumentType4View"
-                name="Sales_IncomingInvoiceForm.productDocumentType4View.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <!-- Sales_ProductDocumentType -->
-                <property name="Search4Type">42ec125b-46ee-4822-8de4-b4cd55072f74</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
-            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingInvoiceForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>
