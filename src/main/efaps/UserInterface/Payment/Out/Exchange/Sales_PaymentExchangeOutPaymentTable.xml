@@ -57,18 +57,6 @@
                 <property name="Type01">Accounting_ExternalVoucher</property>
                 <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
                 <property name="Status01">Open</property>
-                <property name="Type02">Sales_OrderOutbound</property>
-                <property name="StatusGroup02">Sales_OrderOutboundStatus</property>
-                <property name="Status02">Open</property>
-                <property name="Type03">Sales_Quotation</property>
-                <property name="StatusGroup03">Sales_QuotationStatus</property>
-                <property name="Status03">Open</property>
-                <property name="Type04">Sales_PaymentOrder</property>
-                <property name="StatusGroup04">Sales_PaymentOrderStatus</property>
-                <property name="Status04">Approved</property>
-                <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
-                <property name="Status05">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4CreateDocument"
                 name="Sales_PaymentExchangeOutPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
@@ -85,7 +73,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4PaymentRate" 
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4PaymentRate"
                 name="Sales_PaymentExchangeOutPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
@@ -107,7 +95,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4PaymentDiscount" 
+            <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4PaymentDiscount"
             name="Sales_PaymentExchangeOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">
