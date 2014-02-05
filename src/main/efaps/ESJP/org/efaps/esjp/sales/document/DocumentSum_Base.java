@@ -1585,8 +1585,9 @@ public abstract class DocumentSum_Base
     {
         final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
         if (instDocType.isValid() && _parameter.getInstance().isValid()) {
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentType);
-            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentLink, _parameter.getInstance());
+            final QueryBuilder queryBldr = new QueryBuilder(getType4DocCreate(_parameter));
+            queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, _parameter.getInstance());
+
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
 
@@ -1594,10 +1595,10 @@ public abstract class DocumentSum_Base
             if (query.next()) {
                 update = new Update(query.getCurrentValue());
             } else {
-                update = new Insert(CISales.Document2DocumentType);
-                update.add(CISales.Document2DocumentType.DocumentLink, _parameter.getInstance());
+                update = new Insert(getType4DocCreate(_parameter));
+                update.add(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, _parameter.getInstance());
             }
-            update.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
+            update.add(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract, instDocType);
             update.execute();
         }
         return new Return();

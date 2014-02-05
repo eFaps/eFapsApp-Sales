@@ -42,5 +42,6 @@
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
+        <property name="TargetCreateType">Sales_Document2ProductDocumentType</property>
     </definition>
 </ui-command>
