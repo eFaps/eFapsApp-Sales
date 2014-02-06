@@ -28,6 +28,7 @@
         <name>Sales_IncomingPerceptionCertificateTree</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
             <menu>Sales_IncomingPerceptionCertificateTree_Menu</menu>

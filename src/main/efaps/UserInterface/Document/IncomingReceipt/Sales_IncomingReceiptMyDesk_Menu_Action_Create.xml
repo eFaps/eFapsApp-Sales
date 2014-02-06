@@ -31,6 +31,7 @@
     <access>
       <role>Sales_Admin</role>
       <role>Sales_Accounting</role>
+      <role>Sales_IncomingDocument</role>
     </access>
     <!-- target definitions -->
     <target>

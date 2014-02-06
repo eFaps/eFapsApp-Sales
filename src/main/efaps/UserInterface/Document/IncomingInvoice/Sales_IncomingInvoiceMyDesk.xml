@@ -35,6 +35,7 @@
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
             <menu>Sales_IncomingInvoiceMyDesk_Menu</menu>

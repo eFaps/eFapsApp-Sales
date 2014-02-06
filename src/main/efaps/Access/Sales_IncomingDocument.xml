@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2012 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+--><access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>658ef549-d304-4e23-858c-cbe36248e9fb</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+
+        <name>Sales_IncomingDocument</name>
+
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
+        <access-type>statusModify</access-type>
+        <access-type>delete</access-type>
+
+        <type>Sales_IncomingInvoice</type>
+        <type>Sales_IncomingReceipt</type>
+        <type>Sales_IncomingCreditNote</type>
+        <type>Sales_IncomingReminder</type>
+        
+        <type>Contacts_Contact</type>
+        <type>Contacts_ContactGroup</type>
+        <type>Contacts_SubContact</type>
+        <type>Contacts_Contact2Class</type>
+        <type>Contacts_Organisation2Person</type>
+        <type>Contacts_Class</type>
+        <type>Contacts_ClassOrganisation</type>
+        <type>Contacts_ClassPerson</type>
+        <type>Contacts_ClassPointOfContact</type>
+        
+        <type>Products_ProductTools</type>
+        <type>Products_ProductOfficeSupplies</type>
+        <type>Products_ProductSupply</type>
+        <type>Products_ProductMaterial</type>
+        <type>Products_ProductStandart</type>
+        <type>Products_ProductUnique</type>
+        <type>Products_ProductUniqueComponent</type>
+        <type>Products_ProductComponent</type>
+        <type>Products_ProductService</type>
+        <type>Products_ProductCost</type>
+        <type>Products_ProductPricelistRetail</type>
+        <type>Products_ProductPricelistPurchase</type>
+        <type>Products_ProductPricelistPosition</type>
+        <type>Products_Inventory</type>
+        <type>Products_InventoryValue</type>
+        <type>Products_StaticStorage</type>
+        <type>Products_StaticInventory</type>
+        <type>Products_Snapshot</type>
+        <type>Products_Warehouse</type>
+        <type>Products_BinLocation</type>
+        <type>Products_TransactionInbound</type>
+        <type>Products_TransactionOutbound</type>
+        <type>Products_TransactionInbound4StaticStorage</type>
+        <type>Products_TransactionReservationInbound</type>
+        <type>Products_TransactionReservationOutbound</type>
+        <type>Products_ProductTextPosition</type>
+        <type>Products_ProductCostTextPosition</type>
+        <type>Products_ProductPricelistMinRetail</type>
+        <type>Products_ProductSalesPartList</type>
+        <type>Products_ProductGeneric</type>
+        <type>Products_StorageAbstract</type>
+        <type>Products_ProductBatch</type>
+        
+        <status group="Products_StorageAbstractStatus">
+            <key>Active</key>
+            <key>Inactive</key>
+        </status>
+
+        <status group="Sales_IncomingInvoiceStatus">
+          <key>Open</key>
+          <key>Paid</key>
+          <key>Booked</key>
+          <key>Replaced</key>
+        </status>
+        
+        <status group="Sales_IncomingReceiptStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+        
+        <status group="Sales_IncomingCreditNoteStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+        
+        <status group="Sales_IncomingReminderStatus">
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+
+        <role>Sales_IncomingDocument</role>
+    </definition>
+
+</access-set>

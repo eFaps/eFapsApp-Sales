@@ -29,6 +29,7 @@
         <name>Sales_IncomingPerceptionCertificateMyDesk</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
             <menu>Sales_IncomingPerceptionCertificateMyDesk_Menu</menu>
