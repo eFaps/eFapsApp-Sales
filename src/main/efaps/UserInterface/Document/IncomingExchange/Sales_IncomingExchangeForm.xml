@@ -137,11 +137,10 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="entityFinancial">
+        </field><field name="entityFinancial">
             <property name="Attribute">EntityFinancial</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingExchangeForm.entityFinancial.Label</property>
@@ -161,6 +160,8 @@
             <property name="Label">Sales_IncomingExchangeForm.entityFinancial.Label</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field character="Heading" name="headingTotal">
             <property name="Level">2</property>

@@ -140,8 +140,8 @@
         </field>
         <field name="entityFinancial">
             <property name="Attribute">EntityFinancial</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_ExchangeForm.entityFinancial.Label</property>
@@ -161,6 +161,8 @@
             <property name="Label">Sales_ExchangeForm.entityFinancial.Label</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field character="Heading" name="headingTotal">
             <property name="Level">2</property>
