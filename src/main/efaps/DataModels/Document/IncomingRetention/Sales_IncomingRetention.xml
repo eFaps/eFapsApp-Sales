@@ -20,26 +20,22 @@
  Last Changed By: $Author$
 
 --><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>36a42b52-25bd-490a-aaa9-d74051c5331b</uuid>
+    <uuid>fc1f4d24-2f46-4067-883f-21c17745c356</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingPerceptionCertificate2IncomingInvoice</name>
-        <parent>Sales_IncomingDocumentTax2Document</parent>
+        <name>Sales_IncomingRetention</name>
+        <parent>Sales_DocumentSumTaxAbstract</parent>
         <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_IncomingPerceptionCertificate</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_IncomingRetentionStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_IncomingRetention.Status.RANGE_VALUE" event="RANGE_VALUE"/>
         </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_IncomingInvoice</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
+
     </definition>
 </datamodel-type>

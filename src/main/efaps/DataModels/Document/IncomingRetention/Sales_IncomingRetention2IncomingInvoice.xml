@@ -20,17 +20,17 @@
  Last Changed By: $Author$
 
 --><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>36a42b52-25bd-490a-aaa9-d74051c5331b</uuid>
+    <uuid>53abbca3-569b-419d-a1d4-acb6bbe7e2d2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingPerceptionCertificate2IncomingInvoice</name>
+        <name>Sales_IncomingRetention2IncomingInvoice</name>
         <parent>Sales_IncomingDocumentTax2Document</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_IncomingPerceptionCertificate</typelink>
+            <typelink>Sales_IncomingRetention</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>

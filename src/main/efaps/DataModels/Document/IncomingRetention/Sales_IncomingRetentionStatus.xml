@@ -19,24 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>aa3898c2-0057-4187-a3d8-e3cfcc91efbf</uuid>
+--><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ccde5aa6-9fdc-49b3-a318-4d6132b35ceb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingPerceptionCertificate</name>
-        <parent>Sales_DocumentSumTaxAbstract</parent>
-        <attribute>
-            <name>Status</name>
-            <type>Status</type>
-            <typelink>Sales_IncomingPerceptionCertificateStatus</typelink>
-            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>STATUS</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-                name="Sales_IncomingPerceptionCertificate.Status.RANGE_VALUE" event="RANGE_VALUE">
-            </trigger>
-        </attribute>
-
+        <name>Sales_IncomingRetentionStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Open">
+            <description>The Retention is waiting to be open.</description>
+        </status>
+        <status key="Canceled">
+            <description>The Retention was canceled.</description>
+        </status>
     </definition>
-</datamodel-type>
+</datamodel-statusgroup>
