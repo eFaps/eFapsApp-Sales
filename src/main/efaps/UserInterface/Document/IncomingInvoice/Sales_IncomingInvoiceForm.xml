@@ -395,8 +395,8 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeEdit">NONE</property>
-            <property name="SelectAlternateOID">linkfrom[Sales_IncomingPerceptionCertificate2Document#ToAbstractLink].linkto[FromAbstractLink].oid</property>
-            <property name="Select">linkfrom[Sales_IncomingPerceptionCertificate2Document#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_IncomingDocumentTax2Document#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[Sales_IncomingDocumentTax2Document#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_IncomingInvoice/Perception.Label</property>
