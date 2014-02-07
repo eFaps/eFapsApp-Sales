@@ -151,8 +151,8 @@ public abstract class IncomingPerceptionCertificate_Base
 
         insert.execute();
         final Insert relInsert = new Insert(CISales.IncomingPerceptionCertificate2IncomingInvoice);
-        relInsert.add(CISales.IncomingPerceptionCertificate2Document.FromAbstractLink, insert.getInstance());
-        relInsert.add(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink, _createdDoc.getInstance());
+        relInsert.add(CISales.IncomingPerceptionCertificate2IncomingInvoice.FromLink, insert.getInstance());
+        relInsert.add(CISales.IncomingPerceptionCertificate2IncomingInvoice.ToLink, _createdDoc.getInstance());
         relInsert.execute();
     }
 
@@ -232,10 +232,10 @@ public abstract class IncomingPerceptionCertificate_Base
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
-        queryBldr.addWhereAttrMatchValue(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink,
+        queryBldr.addWhereAttrMatchValue(CISales.IncomingDocumentTax2Document.ToAbstractLink,
                         _instance.getId());
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.IncomingPerceptionCertificate2Document.OID);
+        multi.addAttribute(CISales.IncomingDocumentTax2Document.OID);
         multi.execute();
 
         return multi;
@@ -275,8 +275,8 @@ public abstract class IncomingPerceptionCertificate_Base
                     }
                 }
                 if (insert != null) {
-                    insert.add(CISales.IncomingPerceptionCertificate2Document.FromAbstractLink, callInstance.getId());
-                    insert.add(CISales.IncomingPerceptionCertificate2Document.ToAbstractLink, child.getId());
+                    insert.add(CISales.IncomingDocumentTax2Document.FromAbstractLink, callInstance.getId());
+                    insert.add(CISales.IncomingDocumentTax2Document.ToAbstractLink, child.getId());
                     insert.execute();
                 }
             }
