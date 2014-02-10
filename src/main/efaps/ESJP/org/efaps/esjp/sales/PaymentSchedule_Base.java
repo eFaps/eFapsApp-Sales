@@ -29,6 +29,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
@@ -42,6 +43,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -306,6 +308,40 @@ public abstract class PaymentSchedule_Base
             ret = ret.add(multi.<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice));
         }
 
+        return ret;
+    }
+
+    public Return getNetTotal(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String[] selectedDoc = _parameter.getParameterValues("selectedDoc") == null
+                        ? _parameter.getParameterValues("selectedRow") : _parameter.getParameterValues("selectedDoc");
+        if (selectedDoc != null) {
+            if (selectedDoc.length > 1) {
+                BigDecimal amount= BigDecimal.ZERO;
+                for (int i = 0; i < selectedDoc.length; i++) {
+                    final Instance instance = Instance.get(selectedDoc[i]);
+                    if (instance.isValid()) {
+                        PrintQuery print = new PrintQuery(instance);
+                        print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                        print.execute();
+                        amount = amount.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+
+                    }
+                }
+                ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
+            } else {
+                final Instance instance = Instance.get(selectedDoc[0]);
+                if (instance.isValid()) {
+                    PrintQuery print = new PrintQuery(instance);
+                    print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    print.execute();
+                    BigDecimal amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
+                }
+            }
+        }
         return ret;
     }
 }

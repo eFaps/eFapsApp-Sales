@@ -775,7 +775,14 @@ public abstract class DocumentSum_Base
         for (final Calculator calculator : calculators) {
             final Map<String, String> map2 = new HashMap<String, String>();
             if (!calculator.isEmpty()) {
-                calculator.applyRate(newInst, rateInfo.getRate());
+                final QueryBuilder qlb = new QueryBuilder(CISales.PositionAbstract);
+                qlb.addWhereAttrEqValue(CISales.PositionAbstract.Product, Instance.get(calculator.getOid()));
+                qlb.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _parameter.getInstance());
+                final InstanceQuery query = qlb.getQuery();
+                query.execute();
+                if (!query.next()) {
+                    calculator.applyRate(newInst, rateInfo.getRate());
+                }
                 map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
                                 getTypeName4SysConf(_parameter))));
                 map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
@@ -783,6 +790,7 @@ public abstract class DocumentSum_Base
                 map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
                                 NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
                 values.put(i, map2);
+
             }
             i++;
         }

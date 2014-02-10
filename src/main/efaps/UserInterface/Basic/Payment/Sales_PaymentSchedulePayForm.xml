@@ -38,6 +38,13 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
+        <field name="netTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PaymentSchedulePayForm.netTotal.Label</property>
+            <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="getNetTotal"
+                name="Sales_PaymentSchedulePayForm.netTotal.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+        </field>
         <field name="internalOIDs">
             <property name="ModeCreate">HIDDEN</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="getStoreOIDsFieldValue"
