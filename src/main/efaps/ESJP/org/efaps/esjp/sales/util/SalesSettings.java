@@ -175,4 +175,9 @@ public interface SalesSettings
      * Default amount to validate generated payment order or collection order.
      */
     String DEFAULTSAMOUNT4CREATEDDOC = "org.efaps.sales.DefaultAmount4CreatedDoc";
+
+    /**
+     * (true/false) to show options and created retention and detraction.
+     */
+    String ACTIVATEOPTIONS4DETANDRET = "org.efaps.sales.ActivateOptions4DetAndRet";
 }

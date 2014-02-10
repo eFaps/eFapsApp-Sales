@@ -130,5 +130,10 @@
             <value><![CDATA[0.10]]></value>
             <description>Company should be setted.</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateOptions4DetAndRet</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate options to generated document Detraction/Retention.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

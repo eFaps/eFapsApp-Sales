@@ -760,6 +760,39 @@ public abstract class AbstractPaymentOut_Base
         return excludes;
     }
 
+    public Return updateFields4PaymentAmountDesc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+
+        final String amountStr = _parameter.getParameterValues("payment4Pay")[selected];
+        final String payAmountStr = _parameter.getParameterValues("paymentAmount")[selected];
+        final String payAmountDescStr = _parameter.getParameterValues("paymentAmountDesc")[selected];
+
+        final BigDecimal amount = parseBigDecimal(amountStr);
+        final BigDecimal payAmount = parseBigDecimal(payAmountStr);
+        final BigDecimal payAmountDesc = parseBigDecimal(payAmountDescStr);
+
+        map.put("paymentAmount", getTwoDigitsformater().format(amount.subtract(payAmountDesc)));
+        map.put("paymentAmountDesc", getTwoDigitsformater().format(payAmountDesc));
+        final BigDecimal recalculatePos = getSumsPositions(_parameter)
+                        .subtract(payAmount).add(amount.subtract(payAmountDesc));
+        BigDecimal total4DiscountPay = BigDecimal.ZERO;
+        if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
+            map.put("amount", getTwoDigitsformater().format(recalculatePos));
+        } else {
+            total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(recalculatePos);
+        }
+        map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
+        list.add(map);
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
     @Override
     public DocumentInfo getNewDocumentInfo(final Instance _instance)
         throws EFapsException
