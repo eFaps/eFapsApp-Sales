@@ -114,7 +114,7 @@
         <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.CollectionOrder"
                 method="rateCurrencyFieldValueUI"
