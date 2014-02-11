@@ -1445,15 +1445,6 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
-    public Return updateFields4CheckboxFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-
-        final Return ret = new Return();
-
-        return ret;
-    }
-
     public class AccountInfo
     {
         private final Instance instance;
