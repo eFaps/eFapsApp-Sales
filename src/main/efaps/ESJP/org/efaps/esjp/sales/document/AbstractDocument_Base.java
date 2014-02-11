@@ -1690,7 +1690,7 @@ public abstract class AbstractDocument_Base
                     final boolean priceFromDB = _row4priceFromDB != null
                                     && (_row4priceFromDB.equals(i) || _row4priceFromDB.equals(-1));
                     final Calculator calc = getCalculator(_parameter, oldCalc, oids[i], quantities[i], unitPrices[i],
-                                    discounts[i], priceFromDB);
+                                    discounts[i], priceFromDB, i);
                     calc.setWithoutTax(withoutTax);
                     ret.add(calc);
                 } else {
@@ -1719,14 +1719,15 @@ public abstract class AbstractDocument_Base
                                     final String _quantity,
                                     final String _unitPrice,
                                     final String _discount,
-                                    final boolean _priceFromDB)
+                                    final boolean _priceFromDB,
+                                    final int _idx)
         throws EFapsException
     {
-
         return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this);
     }
 
     /**
+     * @param _parameter Parameter parameter as passed from the eFaps API
      * @return the type name used in SystemConfiguration
      * @throws EFapsException on error
      */

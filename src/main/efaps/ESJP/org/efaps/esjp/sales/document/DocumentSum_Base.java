@@ -1148,7 +1148,7 @@ public abstract class DocumentSum_Base
                                     .<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
                     final String prodOid = multi.<String>getSelect(selProdOid);
                     final Calculator calc = getCalculator(_parameter, null, prodOid, frmt.format(quantity),
-                                    unitFrmt.format(unitPrice), frmt.format(discount), false);
+                                    unitFrmt.format(unitPrice), frmt.format(discount), false, 0);
                     calcList.add(calc);
 
                     // update the base values for the position

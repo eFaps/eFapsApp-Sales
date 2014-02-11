@@ -96,7 +96,8 @@ public abstract class OrderOutbound_Base
                                     final String _quantity,
                                     final String _unitPrice,
                                     final String _discount,
-                                    final boolean _priceFromDB)
+                                    final boolean _priceFromDB,
+                                    final int _idx)
         throws EFapsException
     {
 
