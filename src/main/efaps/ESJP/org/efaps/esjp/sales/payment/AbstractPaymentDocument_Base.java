@@ -78,6 +78,8 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.IncomingDetraction;
+import org.efaps.esjp.sales.document.IncomingRetention;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -175,7 +177,7 @@ public abstract class AbstractPaymentDocument_Base
             insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink);
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
-                            currencyLink);
+                            Long.parseLong(currencyLink));
             final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(
@@ -188,7 +190,7 @@ public abstract class AbstractPaymentDocument_Base
             insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink4Account);
             createdDoc.getValues().put(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
-                            currencyLink4Account);
+                            Long.parseLong(currencyLink4Account));
             final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(
@@ -273,6 +275,8 @@ public abstract class AbstractPaymentDocument_Base
                 if (inst.isValid()) {
                     payInsert.add(CISales.Payment.CreateDocument, inst.getId());
                     payInsert.add(CISales.Payment.RateCurrencyLink, getNewDocumentInfo(inst).getRateCurrency());
+
+                    _createdDoc.addPosition(inst);
                 }
             }
             if (paymentAmount.length > i && paymentAmount[i] != null) {
@@ -303,6 +307,47 @@ public abstract class AbstractPaymentDocument_Base
 
             transIns.execute();
         }
+    }
+
+    protected void createDocumentTax(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String[] amount4Create = _parameter.getParameterValues("amount4DocCreate");
+        final String[] option4Create = _parameter.getParameterValues("option4DocCreate");
+
+        final Object rateCurId = _createdDoc.getValues().get(
+                        getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
+        final Object curId = _createdDoc.getValues().get(
+                        getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name));
+
+        for (int i = 0; i < getPaymentCount(_parameter); i++) {
+            if (option4Create != null && amount4Create != null) {
+                if (((Long) curId).equals(rateCurId) && isIncomingInvoiceValid(_parameter, _createdDoc, i)
+                            && parseBigDecimal(amount4Create[i]).compareTo(BigDecimal.ZERO) > 0) {
+                    final String valueDoc = option4Create[i];
+                    if ("IncomingRetention".equalsIgnoreCase(valueDoc)) {
+                        _createdDoc.addValue(IncomingRetention.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
+                        new IncomingRetention().create4Doc(_parameter, _createdDoc, i);
+                    } else if ("IncomingDetraction".equalsIgnoreCase(valueDoc)) {
+                        _createdDoc.addValue(IncomingDetraction.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
+                        new IncomingDetraction().create4Doc(_parameter, _createdDoc, i);
+                    }
+                }
+            }
+        }
+    }
+
+    protected boolean isIncomingInvoiceValid(final Parameter _parameter,
+                                             final CreatedDoc _createdDoc,
+                                             final int _index)
+    {
+        boolean ret = false;
+        if (!_createdDoc.getPositions().isEmpty() &&
+                        CISales.IncomingInvoice.getType().equals(_createdDoc.getPositions().get(_index).getType())) {
+            ret = true;
+        }
+        return ret;
     }
 
     protected Type getPaymentType(final Parameter _parameter,
@@ -1396,6 +1441,15 @@ public abstract class AbstractPaymentDocument_Base
             }
         }
         ret.put(ReturnValues.VALUES, list);
+
+        return ret;
+    }
+
+    public Return updateFields4CheckboxFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+
+        final Return ret = new Return();
 
         return ret;
     }

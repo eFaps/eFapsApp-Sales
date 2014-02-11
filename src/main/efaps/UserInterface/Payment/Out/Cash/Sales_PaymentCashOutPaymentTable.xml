@@ -126,10 +126,18 @@
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateOptions4DetAndRet</property>
             </trigger>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="radioFieldValue" 
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="multiCheckboxFieldValue" 
                 name="Sales_PaymentCashOutPaymentTable.option4DocCreate.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Horizontal">true</property>
-                <property name="values">IncomingRetention;IncomingDetraction</property>
+                <property name="Value">IncomingRetention</property>
+                <property name="Value01">IncomingDetraction</property>
+                <property name="Value02">None</property>
+                <property name="Comment">Sales_PaymentCashOutPaymentTable.option4DocCreate.IncomingRetention.Label</property>
+                <property name="Comment01">Sales_PaymentCashOutPaymentTable.option4DocCreate.IncomingDetraction.Label</property>
+                <property name="Comment02">Sales_PaymentCashOutPaymentTable.option4DocCreate.None.Label</property>
+                <property name="Checked">false</property>
+                <property name="Checked01">false</property>
+                <property name="Checked02">true</property>
+                <property name="JavaScript">true</property>
             </trigger>
         </field>
         <field name="amount4DocCreate">
