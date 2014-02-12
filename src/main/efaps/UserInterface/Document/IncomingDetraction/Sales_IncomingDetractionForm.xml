@@ -157,7 +157,7 @@
         <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="rateCurrencyFieldValueUI"
                 name="Sales_IncomingDetractionForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
@@ -196,7 +196,7 @@
         <field character="Target" name="positionTable">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <property name="ModeView">EDITABLE</property>
+            <property name="ModeView">READONLY</property>
             <table>Sales_IncomingDetraction_DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">ERP_Document2DocumentAbstract</property>

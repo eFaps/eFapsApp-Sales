@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -107,5 +108,19 @@ public abstract class IncomingDetraction_Base
         print.execute();
 
         return print.<String>getAttribute(CIERP.DocumentAbstract.Name);
+    }
+
+    /**
+     * Executed from a Command execute event to edit.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        editDoc(_parameter);
+        return new Return();
     }
 }
