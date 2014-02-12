@@ -115,6 +115,8 @@ public abstract class IncomingPerceptionCertificate_Base
                             _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
             insert.add(CISales.IncomingPerceptionCertificate.Contact,
                             _createdDoc.getValue(CISales.DocumentSumAbstract.Contact.name));
+            insert.add(CISales.IncomingPerceptionCertificate.Salesperson,
+                            _createdDoc.getValue(CISales.DocumentSumAbstract.Salesperson.name));
             insert.add(CISales.IncomingPerceptionCertificate.Group,
                             _createdDoc.getValue(CISales.DocumentSumAbstract.Group.name));
             insert.add(CISales.IncomingPerceptionCertificate.Rate,

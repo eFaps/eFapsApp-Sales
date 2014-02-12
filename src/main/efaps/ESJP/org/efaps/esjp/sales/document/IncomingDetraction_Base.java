@@ -28,6 +28,7 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -64,6 +65,7 @@ public abstract class IncomingDetraction_Base
                         .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Date.name)));
         insert.add(CISales.IncomingDetraction.Contact, _createdDoc.getValues()
                         .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Contact.name)));
+        insert.add(CISales.IncomingDetraction.Salesperson, Context.getThreadContext().getPersonId());
         insert.add(CISales.IncomingDetraction.Group, _createdDoc.getValues()
                         .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Group.name)));
         insert.add(CISales.IncomingDetraction.Rate, _createdDoc.getValues()
