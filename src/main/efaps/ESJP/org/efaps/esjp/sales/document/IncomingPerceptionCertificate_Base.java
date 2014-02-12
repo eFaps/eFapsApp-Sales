@@ -204,6 +204,30 @@ public abstract class IncomingPerceptionCertificate_Base
         return ret;
     }
 
+
+    public Return validateAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        // crossTotal
+        final Return ret = new Return();
+        String rateCrossTotal = null;
+        rateCrossTotal = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name);
+        boolean validate = true;
+
+        if (rateCrossTotal == null || rateCrossTotal.isEmpty() || rateCrossTotal.equals("0")) {
+                validate = false;
+        }
+        if (validate) {
+            ret.put(ReturnValues.TRUE, true);
+        } else {
+            final StringBuilder html = new StringBuilder();
+            html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidatePerception")
+                            + "<p>");
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
+        return ret;
+    }
     /**
      * Method to return name document invalidate.
      *

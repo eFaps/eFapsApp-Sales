@@ -120,18 +120,23 @@ public abstract class PaymentSchedule_Base
         }
     }
 
+    @SuppressWarnings("null")
     public Return createSchedule4SelectedDocs(final Parameter _parameter)
         throws EFapsException
     {
         final String[] others = (String[]) Context.getThreadContext().getSessionAttribute("internalOIDs");
+        final String[] other = (String[]) Context.getThreadContext().getSessionAttribute("internalAmounts");
         if (others != null) {
             @SuppressWarnings("unchecked")
             final Map<String, String[]> parameters = (Map<String, String[]>) _parameter
                             .get(ParameterValues.PARAMETERS);
             parameters.put("document", others);
+            parameters.put("amount4Schedule", other);
             _parameter.put(ParameterValues.PARAMETERS, parameters);
-            createDoc(_parameter);
+            final CreatedDoc createdDoc = createDoc(_parameter);
+            createPositions(_parameter, createdDoc);
         }
+       Context.getThreadContext().removeSessionAttribute("internalAmounts");
         return new Return();
     }
 
@@ -315,19 +320,25 @@ public abstract class PaymentSchedule_Base
         throws EFapsException
     {
         final Return ret = new Return();
+        Context.getThreadContext().removeSessionAttribute("internalAmounts");
         final String[] selectedDoc = _parameter.getParameterValues("selectedDoc") == null
                         ? _parameter.getParameterValues("selectedRow") : _parameter.getParameterValues("selectedDoc");
+        BigDecimal amount= BigDecimal.ZERO;
+
         if (selectedDoc != null) {
+            String[] other = new String[selectedDoc.length];
             if (selectedDoc.length > 1) {
-                BigDecimal amount= BigDecimal.ZERO;
-                for (int i = 0; i < selectedDoc.length; i++) {
-                    final Instance instance = Instance.get(selectedDoc[i]);
+                int i=0;
+                for (String element : selectedDoc) {
+                    final Instance instance = Instance.get(element);
                     if (instance.isValid()) {
                         PrintQuery print = new PrintQuery(instance);
                         print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
                         print.execute();
-                        amount = amount.add(print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
-
+                        BigDecimal amountAux=print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                        amount = amount.add(amountAux);
+                        other[i]= getTotalFmtStr(amountAux);
+                        i++;
                     }
                 }
                 ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
@@ -337,10 +348,11 @@ public abstract class PaymentSchedule_Base
                     PrintQuery print = new PrintQuery(instance);
                     print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
                     print.execute();
-                    BigDecimal amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                     ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
                 }
             }
+            Context.getThreadContext().setSessionAttribute("internalAmounts", other);
         }
         return ret;
     }

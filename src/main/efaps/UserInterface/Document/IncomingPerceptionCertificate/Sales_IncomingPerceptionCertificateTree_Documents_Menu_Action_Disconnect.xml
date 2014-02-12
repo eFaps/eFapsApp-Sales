@@ -28,6 +28,7 @@
         <name>Sales_IncomingPerceptionCertificateTree_Documents_Menu_Action_Disconnect</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <!-- target definitions -->
         <target>

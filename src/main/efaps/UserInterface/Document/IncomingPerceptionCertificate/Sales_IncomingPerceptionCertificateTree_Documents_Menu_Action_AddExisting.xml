@@ -29,6 +29,7 @@
         <!-- target definition -->
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
             <search>Sales_IncomingPerceptionCertificateTree_Documents_Menu_Action_AddExisting_Search</search>

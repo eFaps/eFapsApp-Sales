@@ -146,6 +146,8 @@
         rolUp.addUI("e1944ac8-4007-476c-a5c8-2bfbdb2b79f9");
         <!-- Contacts_ContactTree_Contact2SubContact -->
         rolUp.addUI("842b8168-4099-4072-b407-b067d028ecd2");
+        <!-- ERP_DocumentAbstractTree_Action_EditStatus -->
+        rolUp.addUI("2d18b6f3-50af-4d2b-b3fa-37920a8d5243");
         
             
     </script>
