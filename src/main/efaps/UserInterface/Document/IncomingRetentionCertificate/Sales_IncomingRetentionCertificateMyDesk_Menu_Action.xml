@@ -20,23 +20,18 @@
  Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+
+    <uuid>9db24348-f457-4e6c-9169-9d684621819d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
+        <name>Sales_IncomingRetentionCertificateMyDesk_Menu_Action</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingCreditMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
-            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
-            <child>Sales_IncomingRetentionCertificateMyDesk</child>
+            <child>Sales_IncomingRetentionCertificateMyDesk_Menu_Action_Create</child>
+            <child>Sales_IncomingRetentionCertificateMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
 </ui-menu>

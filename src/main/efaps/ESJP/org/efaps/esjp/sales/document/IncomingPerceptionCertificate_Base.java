@@ -76,7 +76,11 @@ public abstract class IncomingPerceptionCertificate_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final BigDecimal perception = parseBigDecimal(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name));
+        if (perception.compareTo(BigDecimal.ZERO) > 0) {
+            createDoc(_parameter);
+        }
         return new Return();
     }
 
@@ -91,7 +95,11 @@ public abstract class IncomingPerceptionCertificate_Base
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
-        editDoc(_parameter);
+        final BigDecimal perception = parseBigDecimal(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name));
+        if (perception.compareTo(BigDecimal.ZERO) > 0) {
+            editDoc(_parameter);
+        }
         return new Return();
     }
 
@@ -204,30 +212,6 @@ public abstract class IncomingPerceptionCertificate_Base
         return ret;
     }
 
-
-    public Return validateAmount(final Parameter _parameter)
-        throws EFapsException
-    {
-        // crossTotal
-        final Return ret = new Return();
-        String rateCrossTotal = null;
-        rateCrossTotal = _parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name);
-        boolean validate = true;
-
-        if (rateCrossTotal == null || rateCrossTotal.isEmpty() || rateCrossTotal.equals("0")) {
-                validate = false;
-        }
-        if (validate) {
-            ret.put(ReturnValues.TRUE, true);
-        } else {
-            final StringBuilder html = new StringBuilder();
-            html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidatePerception")
-                            + "<p>");
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        }
-        return ret;
-    }
     /**
      * Method to return name document invalidate.
      *
@@ -320,18 +304,27 @@ public abstract class IncomingPerceptionCertificate_Base
     {
         BigDecimal ret = BigDecimal.ZERO;
         if (_calcList.isEmpty()) {
-            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
-            try {
-                final BigDecimal rateCrossTotal = (BigDecimal) formatter.parse(_parameter
-                            .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name));
-                ret = ret.add(rateCrossTotal);
-            } catch (final ParseException p) {
-                throw new EFapsException(IncomingPerceptionCertificate.class, "RateCrossTotal.ParseException", p);
-            }
+            ret = ret.add(parseBigDecimal(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingPerceptionCertificateForm.crossTotal.name)));
         } else {
             ret = super.getCrossTotal(_parameter, _calcList);
         }
 
+        return ret;
+    }
+
+    protected BigDecimal parseBigDecimal(final String _value)
+        throws EFapsException
+    {
+        final DecimalFormat formater = NumberFormatter.get().getFormatter();
+        BigDecimal ret = BigDecimal.ZERO;
+        try {
+            if (_value != null && !_value.isEmpty()) {
+                ret = (BigDecimal) formater.parse(_value);
+            }
+        } catch (final ParseException p) {
+            throw new EFapsException(IncomingPerceptionCertificate.class, "RateCrossTotal.ParseException", p);
+        }
         return ret;
     }
 }
