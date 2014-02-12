@@ -21,37 +21,37 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>a9473f71-27bf-4760-90d6-797e32b1118b</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev: 8359 $</file-revision>
+    <uuid>a9473f71-27bf-4760-90d6-797e32b1118b</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev: 8359 $</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingReceiptMyDesk_Menu_Action_Create</name>
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Accounting</role>
-      <role>Sales_IncomingDocument</role>
-    </access>
-    <!-- target definitions -->
-    <target>
-      <form>Sales_IncomingReceiptForm</form>
-      <execute method="create" program="org.efaps.esjp.sales.document.IncomingReceipt">
-            <property name="PositionType">Sales_IncomingReceiptPosition</property>
-            <property name="StatusGroup">Sales_IncomingReceiptStatus</property>
-            <property name="Status">Open</property>
-      </execute>
-      <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
-      <command>Sales_IncomingReceipt_ShowRevision</command>
-    </target>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingReceiptMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_IncomingReceiptForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.document.IncomingReceipt">
+                <property name="PositionType">Sales_IncomingReceiptPosition</property>
+                <property name="StatusGroup">Sales_IncomingReceiptStatus</property>
+                <property name="Status">Open</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingReceipt" method="validateName" />
+            <command>Sales_IncomingReceipt_ShowRevision</command>
+        </target>
 
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_IncomingReceipt</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_IncomingReceipt</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 
 </ui-command>

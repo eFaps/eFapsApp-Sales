@@ -31,9 +31,10 @@
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_IncomingReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="activatePositionsCalculator"
+                name="Sales_IncomingReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
         <field character="Group" name="dategroup">
             <property name="GroupCount">3</property>
@@ -46,10 +47,8 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt"
-                method="updateFields4RateCurrencyFromDate"
-                name="Sales_CreditNoteForm.currencyId.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="updateFields4RateCurrencyFromDate"
+                name="Sales_IncomingReceiptForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="dueDate">
             <property name="Columns">12</property>
@@ -66,7 +65,8 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_VALUE" method="getSalesPersonFieldValue" name="Sales_ReceiptForm.salesperson.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Receipt">
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getSalesPersonFieldValue" 
+                name="Sales_IncomingReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -142,7 +142,7 @@
                 <property name="Property">IsProductDocument</property>
             </trigger>
         </field>
-        <field character="Group" name="createGroup">
+        <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
         <field name="creator">
@@ -156,7 +156,7 @@
             <property name="Attribute">Created</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field character="Group" name="modifyGroup">
+        <field name="modifyGroup" character="Group">
             <property name="GroupCount">2</property>
         </field>
         <field name="modifier">
@@ -172,7 +172,6 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
             <property name="Attribute">Name</property>
@@ -183,7 +182,15 @@
             <property name="Required">true</property>
             <property name="Label">Sales_IncomingReceipt/Name.Label</property>
         </field>
-        <field character="Group" name="nameGroup">
+        <field name="name4edit">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <property name="Label">Sales_IncomingReceipt/Name.Label</property>
+        </field>
+        <field name="nameGroup" character="Group">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="GroupCount">2</property>
@@ -191,7 +198,7 @@
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="revision">
@@ -211,10 +218,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_IncomingReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.IncomingReceipt">
-                <property name="Type">Contacts_ClassSupplier</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="autoComplete4Contact"
+                name="Sales_IncomingReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Classifications">Contacts_ClassSupplier</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_IncomingReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="updateFields4Contact"
+                name="Sales_IncomingReceiptForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -232,20 +241,22 @@
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
         </field>
         <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_IncomingReceiptForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Receipt"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_IncomingReceiptForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Receipt"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="rateCurrencyFieldValueUI" 
+                name="Sales_IncomingReceiptForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="updateFields4RateCurrency"
+                name="Sales_IncomingReceiptForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingReceiptForm.rateCurrencyData.Label</property>
@@ -254,45 +265,59 @@
         <field name="withoutVAT">
             <property name="Label">Sales_IncomingReceiptForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_ReceiptForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Receipt"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="withoutVATFieldValue"
+                name="Sales_ReceiptForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <table>Sales_IncomingReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_IncomingReceiptPosition</property>
-                <property name="LinkFroms">IncomingReceipt</property>
+                <property name="Type">Sales_IncomingReceiptPosition</property>
+                <property name="LinkFrom">IncomingReceipt</property>
             </evaluate>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="RowSpan">3</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">NetTotal</property>
+            <property name="Attribute">RateNetTotal</property>
+        </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateTaxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
         <field name="crossTotal">
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">CrossTotal</property>
+            <property name="Attribute">RateCrossTotal</property>
         </field>
         <field name="netTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingReceipt/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="crossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingReceipt/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -326,6 +351,10 @@
             <property name="Label">Sales_IncomingReceipt/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
@@ -337,7 +366,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_IncomingReceiptForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReceipt"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getJavaScriptUIValue"
+                name="Sales_IncomingReceiptForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
     </definition>
 </ui-form>

@@ -34,6 +34,7 @@
             <child>Sales_IncomingReceiptTree_Menu_Action_Edit</child>
             <child>Sales_IncomingReceiptTree_Menu_Action_Recalculate</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 

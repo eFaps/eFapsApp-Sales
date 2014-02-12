@@ -81,6 +81,21 @@ public abstract class IncomingReceipt_Base
     }
 
     /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        return new Return();
+    }
+
+    /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _createdDoc   created doc
      * @throws EFapsException on error
