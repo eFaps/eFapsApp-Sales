@@ -83,7 +83,7 @@ public abstract class IncomingDetraction_Base
         insert.add(CISales.IncomingDetraction.NetTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Open));
-        insert.add(CISales.IncomingDetraction.Name, getDocName4Document(_parameter, documentInst);
+        insert.add(CISales.IncomingDetraction.Name, getDocName4Document(_parameter, documentInst));
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
