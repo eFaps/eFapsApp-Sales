@@ -23,6 +23,8 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.util.List;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
@@ -34,8 +36,10 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 
@@ -127,5 +131,27 @@ public abstract class IncomingRetention_Base
     {
         editDoc(_parameter);
         return new Return();
+    }
+
+    @Override
+    protected BigDecimal getCrossTotal(final Parameter _parameter,
+                                       final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        if (_calcList.isEmpty()) {
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal rateCrossTotal = (BigDecimal) formatter.parse(_parameter
+                                .getParameterValue(CIFormSales.Sales_IncomingRetentionForm.crossTotal.name));
+                ret = ret.add(rateCrossTotal);
+            } catch (final ParseException p) {
+                throw new EFapsException(IncomingRetention.class, "RateCrossTotal.ParseException", p);
+            }
+        } else {
+            ret = super.getCrossTotal(_parameter, _calcList);
+        }
+
+        return ret;
     }
 }
