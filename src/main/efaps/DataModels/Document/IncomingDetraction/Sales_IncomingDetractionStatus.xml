@@ -31,6 +31,9 @@
         <status key="Open">
             <description>The Detraction is waiting to be open.</description>
         </status>
+        <status key="Paid">
+            <description>The Detraction is paid.</description>
+        </status>
         <status key="Canceled">
             <description>The Detraction was canceled.</description>
         </status>
