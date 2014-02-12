@@ -30,6 +30,9 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.util.EFapsException;
@@ -59,6 +62,7 @@ public abstract class IncomingDetraction_Base
         throws EFapsException
     {
         final BigDecimal amount = (BigDecimal) _createdDoc.getValue(AMOUNTVALUE);
+        final Instance documentInst = _createdDoc.getPositions().get(_index);
 
         final Insert insert = new Insert(CISales.IncomingDetraction);
         insert.add(CISales.IncomingDetraction.Date, _createdDoc.getValues()
@@ -79,8 +83,7 @@ public abstract class IncomingDetraction_Base
         insert.add(CISales.IncomingDetraction.NetTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Open));
-        insert.add(CISales.IncomingDetraction.Name, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name)));
+        insert.add(CISales.IncomingDetraction.Name, getDocName4Document(_parameter, documentInst);
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
@@ -91,7 +94,18 @@ public abstract class IncomingDetraction_Base
 
         final Insert relInsert = new Insert(CISales.IncomingDetraction2IncomingInvoice);
         relInsert.add(CISales.IncomingDetraction2IncomingInvoice.FromLink, insert.getInstance());
-        relInsert.add(CISales.IncomingDetraction2IncomingInvoice.ToLink, _createdDoc.getPositions().get(_index));
+        relInsert.add(CISales.IncomingDetraction2IncomingInvoice.ToLink, documentInst);
         relInsert.execute();
+    }
+
+    protected String getDocName4Document(final Parameter _parameter,
+                                         final Instance _instance)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_instance);
+        print.addAttribute(CIERP.DocumentAbstract.Name);
+        print.execute();
+
+        return print.<String>getAttribute(CIERP.DocumentAbstract.Name);
     }
 }
