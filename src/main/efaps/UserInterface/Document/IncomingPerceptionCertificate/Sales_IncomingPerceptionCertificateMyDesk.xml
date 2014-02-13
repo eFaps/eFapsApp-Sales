@@ -37,11 +37,11 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingPerceptionCertificate</property>
             </evaluate>
-           <!--  <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingPerceptionCertificateMyDesk.UI_ACCESSCHECK" 
-           program="org.efaps.esjp.admin.access.AccessOnField">
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck" 
+                name="Sales_IncomingPerceptionCertificateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.PerceptionActivate</property>
-            </trigger> -->
+                <property name="Attribute">org.efaps.sales.ActivateIncomingPerceptionCertificate</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

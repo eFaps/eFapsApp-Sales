@@ -37,6 +37,11 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_RetentionCertificate</property>
             </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+                name="Sales_RetentionCertificateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Sales-Configuration</property>
+                <property name="Attribute">org.efaps.sales.ActivateRetentionCertificate</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">content</property>

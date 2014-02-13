@@ -65,6 +65,9 @@
                 <property name="Type03">Sales_Credit</property>
                 <property name="StatusGroup03">Sales_CreditStatus</property>
                 <property name="Status03">Open</property>
+                <property name="Type04">Sales_PerceptionCertificate</property>
+                <property name="StatusGroup04">Sales_PerceptionCertificateStatus</property>
+                <property name="Status04">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4CreateDocument"

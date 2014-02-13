@@ -131,6 +131,26 @@
             <description>Company should be setted.</description>
         </attribute>
         <attribute>
+            <key>org.efaps.sales.ActivatePerceptionCertificate</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateIncomingPerceptionCertificate</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateRetentionCertificate</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateIncomingRetentionCertificate</key>
+            <value>false</value>
+            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
+        </attribute>
+        <attribute>
             <key>org.efaps.sales.ActivateOptions4DetAndRet</key>
             <value>false</value>
             <description>boolean (true/false). Activate options to generated document Detraction/Retention.</description>
