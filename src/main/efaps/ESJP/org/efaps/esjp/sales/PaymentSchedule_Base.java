@@ -349,6 +349,7 @@ public abstract class PaymentSchedule_Base
                     print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
                     print.execute();
                     amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    other[0]= getTotalFmtStr(amount);
                     ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
                 }
             }
