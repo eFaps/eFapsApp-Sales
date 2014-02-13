@@ -46,12 +46,9 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Open</property>
-                <property name="Type02">Sales_OrderOutbound</property>
-                <property name="StatusGrp02">Sales_OrderOutboundStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_IncomingCredit</property>
-                <property name="StatusGrp03">Sales_IncomingCreditStatus</property>
-                <property name="Status03">Open</property>
+                <property name="Type02">Sales_IncomingReminder</property>
+                <property name="StatusGrp02">Sales_IncomingReminderStatus</property>
+                <property name="Status02">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4ScheduleDoc"
             name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE"
@@ -111,15 +108,12 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Open</property>
-                <property name="Type02">Sales_OrderOutbound</property>
-                <property name="StatusGrp02">Sales_OrderOutboundStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_IncomingCredit</property>
-                <property name="StatusGrp03">Sales_IncomingCreditStatus</property>
+                <property name="Type02">Sales_IncomingReminder</property>
+                <property name="StatusGrp02">Sales_IncomingReminderStatus</property>
+                <property name="Status02">Open</property>
+                <property name="Type03">Accounting_ExternalVoucher</property>
+                <property name="StatusGrp03">Accounting_ExternalVoucherStatus</property>
                 <property name="Status03">Open</property>
-                <property name="Type04">Accounting_ExternalVoucher</property>
-                <property name="StatusGrp04">Accounting_ExternalVoucherStatus</property>
-                <property name="Status04">Open</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4ScheduleDoc"
             name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE"
