@@ -20,9 +20,12 @@
 
 package org.efaps.esjp.sales;
 
+import java.math.BigDecimal;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
 
 /**
@@ -51,7 +54,7 @@ public class Calculator
      * @param _unitPrice            unit price
      * @param _discount             discount
      * @param _priceFromDB          must the price set from DB
-     * @param _calculatorUse        config to be used
+     * @param _config               config to be used
      * @throws EFapsException on error
      */
     //CHECKSTYLE:OFF
@@ -62,10 +65,36 @@ public class Calculator
                       final String _unitPrice,
                       final String _discount,
                       final boolean _priceFromDB,
-                      final ICalculatorConfig _calculatorUse)
+                      final ICalculatorConfig _config)
         throws EFapsException
     { //CHECKSTYLE:ON
-        super(_parameter, _calc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _calculatorUse);
+        super(_parameter, _calc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _config);
+    }
+
+    /**
+     * @param _parameter            Parameter  parameter as passed from the eFaps API
+     * @param _calc                 calculator
+     * @param _prodInstance         Instance of the product
+     * @param _quantity             quantity
+     * @param _unitPrice            unit price
+     * @param _discount             discount
+     * @param _priceFromDB          must the price set from DB
+     * @param _config               config to be used
+     * @throws EFapsException on error
+     */
+    // CHECKSTYLE:OFF
+    public Calculator(final Parameter _parameter,
+                      final Calculator _calc,
+                      final Instance _prodInstance,
+                      final BigDecimal _quantity,
+                      final BigDecimal _unitPrice,
+                      final BigDecimal _discount,
+                      final boolean _priceFromDB,
+                      final ICalculatorConfig _config)
+        throws EFapsException
+    // CHECKSTYLE:ON
+    {
+        super(_parameter, _calc, _prodInstance, _quantity, _unitPrice, _discount, _priceFromDB, _config);
     }
 
     /**

@@ -102,7 +102,7 @@ public abstract class Calculator_Base
     /**
      * Is of the taxcategory belonging to this calculator.
      */
-    private final long taxCatId;
+    private long taxCatId;
 
     /**
      * The Calculation must be done without tax.
@@ -172,6 +172,80 @@ public abstract class Calculator_Base
         this.typeName = _config.getTypeName4SysConf(_parameter);
         setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
+
+    //CHECKSTYLE:OFF
+    public Calculator_Base(final Parameter _parameter,
+                           final Calculator _calc,
+                           final Instance _prodInstance,
+                           final BigDecimal _quantity,
+                           final BigDecimal _unitPrice,
+                           final BigDecimal _discount,
+                           final boolean _priceFromDB,
+                           final ICalculatorConfig _config)
+        throws EFapsException
+    //CHECKSTYLE:ON
+    {
+        this.parameter = _parameter;
+        this.empty = false;
+        this.typeName = _config.getTypeName4SysConf(_parameter);
+        final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
+        if (dateStr != null && dateStr != null) {
+            setDate(DateUtil.getDateFromParameter(dateStr));
+        } else {
+            setDate(new DateTime());
+        }
+        if (_calc != null && _calc.getProductInstance().equals(_prodInstance)) {
+            this.taxCatId = _calc.getTaxCatId();
+            this.oid = _calc.getOid();
+            this.productPrice = _calc.getProductPrice();
+            this.minProductPrice = _calc.getMinProductPrice();
+
+            // check if unitprice is set from UI
+            if (!_priceFromDB && _unitPrice != null) {
+                setPriceFromUI(_parameter, _unitPrice);
+            } else {
+                if (_priceFromDB) {
+                    final PriceUtil priceutil = new PriceUtil();
+                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
+                    if (_config != null && _config.isIncludeMinRetail(_parameter)) {
+                        this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    }
+                }
+            }
+        } else {
+            this.oid = (_prodInstance != null && _prodInstance.isValid()) ? _prodInstance.getOid() : null;
+            if (this.oid != null && this.oid.length() > 0) {
+                // check if unitprice is set from UI
+                if (!_priceFromDB && _unitPrice != null) {
+                    setPriceFromUI(_parameter, _unitPrice);
+                } else {
+                    final PriceUtil priceutil = new PriceUtil();
+                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
+                }
+                final PrintQuery print = new PrintQuery(this.oid);
+                print.addAttribute(CISales.ProductAbstract.TaxCategory);
+                print.execute();
+                this.taxCatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
+                if (_config != null && _config.isIncludeMinRetail(_parameter)) {
+                    this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                }
+            } else {
+                this.taxCatId = 0;
+            }
+        }
+        setDiscount(_discount);
+
+        if (_config != null && _config.isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
+            final BigDecimal discountPrice = getProductPrice().getBasePrice().subtract(getProductPrice().getBasePrice()
+                            .divide(new BigDecimal(100)).multiply(getDiscount()));
+            if (discountPrice.compareTo(getMinProductPrice().getBasePrice()) < 0) {
+                setDiscount(BigDecimal.ZERO);
+            }
+        }
+        setQuantity(_quantity);
+        this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
+    }
+
 
     /**
      * @param _parameter            Parameter  parameter as passed from the eFaps API
@@ -254,7 +328,6 @@ public abstract class Calculator_Base
             }
         }
         setQuantity(_quantity);
-
         this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
     }
 
@@ -277,14 +350,9 @@ public abstract class Calculator_Base
      * @throws EFapsException on error
      */
     protected void setPriceFromUI(final Parameter _parameter,
-                                  final String _unitPrice)
+                                  final BigDecimal _unitPrice)
         throws EFapsException
     {
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
-
-        final BigDecimal unitPrice = parse(_unitPrice).setScale(format.getMaximumFractionDigits(),
-                        BigDecimal.ROUND_HALF_UP);
-
         Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
 
@@ -296,16 +364,34 @@ public abstract class Calculator_Base
         if (this.productPrice == null) {
             this.productPrice = getNewPrice();
         }
-        this.productPrice.setCurrentPrice(unitPrice);
+        this.productPrice.setCurrentPrice(_unitPrice);
         if (currInst.equals(baseInst)) {
-            this.productPrice.setBasePrice(unitPrice);
+            this.productPrice.setBasePrice(_unitPrice);
         } else {
             final PriceUtil priceutil = new PriceUtil();
             final BigDecimal rate = priceutil.getExchangeRate(_parameter, currInst);
-            final BigDecimal newprice = unitPrice.divide(rate, 8, BigDecimal.ROUND_HALF_UP);
+            final BigDecimal newprice = _unitPrice.divide(rate, 8, BigDecimal.ROUND_HALF_UP);
             this.productPrice.setBasePrice(newprice);
             this.productPrice.setOrigPrice(newprice);
         }
+    }
+
+    /**
+     * Set the price given by the UI.
+     *
+     * @param _parameter Parmeter as passed by the eFaps API
+     * @param _unitPrice unit price
+     * @throws EFapsException on error
+     */
+    protected void setPriceFromUI(final Parameter _parameter,
+                                  final String _unitPrice)
+        throws EFapsException
+    {
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+
+        final BigDecimal unitPrice = parse(_unitPrice).setScale(format.getMaximumFractionDigits(),
+                        BigDecimal.ROUND_HALF_UP);
+        setPriceFromUI(_parameter, unitPrice);
     }
 
     /**
@@ -332,6 +418,14 @@ public abstract class Calculator_Base
     public String getOid()
     {
         return this.oid;
+    }
+
+    /**
+     * @return the productInstance
+     */
+    public Instance getProductInstance()
+    {
+        return Instance.get(getOid());
     }
 
     /**
@@ -424,7 +518,7 @@ public abstract class Calculator_Base
         }
         this.productNetUnitPrice.setCurrentPrice(_netUnitPrice);
         this.productNetUnitPrice.setOrigPrice(_netUnitPrice);
-        this.productNetUnitPrice.setBasePrice(_netUnitPrice.multiply(this.productPrice.getBaseRate()));
+        this.productNetUnitPrice.setBasePrice(_netUnitPrice.multiply(getProductPrice().getBaseRate()));
         if (this.taxCatId > 0) {
             final List<Tax> taxesTmp = getTaxes();
             BigDecimal targetPrice = _netUnitPrice;
@@ -443,7 +537,7 @@ public abstract class Calculator_Base
                 }
                 this.productCrossUnitPrice.setCurrentPrice(targetPrice);
                 this.productCrossUnitPrice.setOrigPrice(targetPrice);
-                this.productCrossUnitPrice.setBasePrice(targetPrice.multiply(this.productPrice.getBaseRate()));
+                this.productCrossUnitPrice.setBasePrice(targetPrice.multiply(getProductPrice().getBaseRate()));
             }
         }
     }
@@ -734,12 +828,14 @@ public abstract class Calculator_Base
 
     /**
      * @param _unitprice unit price to set
+     * @throws EFapsException on error
      */
     public void setUnitPrice(final BigDecimal _unitprice)
+        throws EFapsException
     {
         this.productPrice.setCurrentPrice(_unitprice);
         this.productPrice.setOrigPrice(_unitprice);
-        this.productPrice.setBasePrice(_unitprice.multiply(this.productPrice.getBaseRate()));
+        this.productPrice.setBasePrice(_unitprice.multiply(getProductPrice().getBaseRate()));
         this.productNetUnitPrice = null;
         this.productCrossUnitPrice = null;
     }
@@ -1189,6 +1285,16 @@ public abstract class Calculator_Base
     public long getTaxCatId()
     {
         return this.taxCatId;
+    }
+
+    /**
+     * Setter method for instance variable {@link #taxCatId}.
+     *
+     * @param _taxCatId value for instance variable {@link #taxCatId}
+     */
+    public void setTaxCatId(final long _taxCatId)
+    {
+        this.taxCatId = _taxCatId;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -84,17 +84,9 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 
 /**
  * Class is the generic instance for all documents of type DocumentSum.
- *
- * @author The eFaps Team
- * @version $Id: DocumentSum_Base.java 7915 2012-08-17 15:30:12Z
- *          m.aranya@moxter.net $
- */
-/**
- * TODO comment!
  *
  * @author The eFaps Team
  * @version $Id$
@@ -107,7 +99,7 @@ public abstract class DocumentSum_Base
     /**
      * Key to the Calculator.
      */
-    public static final String CALCULATORS_VALUE = "org.efaps.esjp.sales.document.DocumentSum.CalculatorValue";
+    public static final String CALCULATORS_VALUE = DocumentSum.class.getName() +  ".CalculatorValue";
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -256,7 +248,7 @@ public abstract class DocumentSum_Base
      */
     protected Instance getRateCurrencyInstance(final Parameter _parameter,
                                                final CreatedDoc _createdDoc)
-        throws CacheReloadException, EFapsException
+        throws EFapsException
     {
         return _parameter.getParameterValue("rateCurrencyId") == null
                         ? Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE)
@@ -1338,6 +1330,44 @@ public abstract class DocumentSum_Base
     }
 
     /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst  Instance of a Document the List of Calculator is wanted for
+     * @return List of Calculator
+     * @throws EFapsException on error
+     */
+    protected List<Calculator> getCalulators4Doc(final Parameter _parameter,
+                                                 final Instance _docInst)
+        throws EFapsException
+    {
+        final List<Calculator> ret = new ArrayList<Calculator>();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.DocumentAbstractLink, _docInst);
+        queryBldr.addOrderByAttributeAsc(CISales.PositionSumAbstract.PositionNumber);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.setEnforceSorted(true);
+        final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.Product).instance();
+        multi.addSelect(selProdInst);
+        multi.addAttribute(CISales.PositionSumAbstract.Quantity, CISales.PositionSumAbstract.Discount,
+                        CISales.PositionSumAbstract.NetUnitPrice, CISales.PositionSumAbstract.CrossUnitPrice,
+                        CISales.PositionSumAbstract.PositionNumber);
+        multi.execute();
+        while (multi.next()) {
+            final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
+            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
+            BigDecimal unitPrice;
+            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET)) {
+                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+            } else {
+                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossUnitPrice);
+            }
+            final Integer idx = multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber);
+            final Instance prodInst = multi.<Instance>getSelect(selProdInst);
+            ret.add(getCalculator(_parameter, null, prodInst, quantity, unitPrice, discount, false, idx));
+        }
+        return ret;
+    }
+
+    /**
      * Method to get formated String representation of the cross total for a
      * list of Calculators.
      *
@@ -1594,8 +1624,8 @@ public abstract class DocumentSum_Base
         final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
         if (instDocType.isValid() && _parameter.getInstance().isValid()) {
             final QueryBuilder queryBldr = new QueryBuilder(getType4DocCreate(_parameter));
-            queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, _parameter.getInstance());
-
+            queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract,
+                            _parameter.getInstance());
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
 

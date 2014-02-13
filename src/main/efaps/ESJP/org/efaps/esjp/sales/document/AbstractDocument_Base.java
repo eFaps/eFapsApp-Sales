@@ -1710,9 +1710,11 @@ public abstract class AbstractDocument_Base
      * @param _unitPrice unit price
      * @param _discount discount
      * @param _priceFromDB must the price set from DB
+     * @param _idx index
      * @throws EFapsException on error
      * @return new Calculator
      */
+    //CHECKSTYLE:OFF
     public Calculator getCalculator(final Parameter _parameter,
                                     final Calculator _oldCalc,
                                     final String _oid,
@@ -1725,6 +1727,35 @@ public abstract class AbstractDocument_Base
     {
         return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this);
     }
+    //CHECKSTYLE:ON
+
+
+    /**
+     * @param _parameter Parameter parameter as passe dfrom the eFaps API
+     * @param _oldCalc calculator
+     * @param _oid oid of the product
+     * @param _quantity quantity
+     * @param _unitPrice unit price
+     * @param _discount discount
+     * @param _priceFromDB must the price set from DB
+     * @param _idx index
+     * @throws EFapsException on error
+     * @return new Calculator
+     */
+    //CHECKSTYLE:OFF
+    public Calculator getCalculator(final Parameter _parameter,
+                                    final Calculator _oldCalc,
+                                    final Instance _prodInstance,
+                                    final BigDecimal _quantity,
+                                    final BigDecimal _unitPrice,
+                                    final BigDecimal _discount,
+                                    final boolean _priceFromDB,
+                                    final int _idx)
+        throws EFapsException
+    {
+        return new Calculator(_parameter, _oldCalc, _prodInstance, _quantity, _unitPrice, _discount, _priceFromDB, this);
+    }
+    //CHECKSTYLE:ON
 
     /**
      * @param _parameter Parameter parameter as passed from the eFaps API
