@@ -364,6 +364,18 @@ public abstract class AbstractDocument_Base
         return autoComplete4Doc(_parameter, CISales.Reservation.uuid, (Status[]) null);
     }
 
+    /**
+     * Used by the AutoCompleteField used in the select doc form for IncomingRetentionCertificate.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4IncomingRetentionCertificate(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.IncomingRetentionCertificate.uuid, (Status[]) null);
+    }
 
     /**
      * Generic method to get a list of documents.
