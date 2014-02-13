@@ -83,6 +83,7 @@ import org.efaps.esjp.sales.document.IncomingRetention;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -942,6 +943,72 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the EFaps API.
+     * @return new Return with SNIPPLET.
+     * @throws EFapsException
+     */
+    public Return validatePaymentDocument4Positions(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        if (!evaluateDocument4PositionDoc(_parameter).toString().isEmpty()) {
+            ret.put(ReturnValues.SNIPLETT, evaluateDocument4PositionDoc(_parameter).toString());
+        } else {
+            ret.put(ReturnValues.TRUE, true);
+        }
+
+        return ret;
+    }
+
+    /**
+     * Method to analyze positions and check is property validate Documents.
+     *
+     * @param _parameter Parameter as passed from the EFaps API.
+     * @return new HtmlTable.
+     * @throws EFapsException on error.
+     */
+    protected HtmlTable evaluateDocument4PositionDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final HtmlTable html = new HtmlTable();
+        final Map<Integer, String> map = analyseProperty(_parameter, "Document");
+
+        final String[] paymentDocs = _parameter.getParameterValues("createDocument");
+        final String[] paymentAutoDocs = _parameter.getParameterValues("createDocumentAutoComplete");
+        for (int i = 0; i < getPaymentCount(_parameter); i++) {
+            boolean exists = false;
+            final Instance document = Instance.get(paymentDocs[i]);
+            for (final Entry<Integer, String> entryMap : map.entrySet()) {
+                final Type type = Type.get(entryMap.getValue());
+                if (type != null && document.isValid()) {
+                    if (type.equals(document.getType())) {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            if (!exists) {
+                html.tr()
+                    .td(document.getType().getLabel())
+                    .td(paymentAutoDocs[i])
+                    .trC();
+            }
+        }
+
+        final HtmlTable html2 = new HtmlTable();
+        if (!html.toString().isEmpty()) {
+            html2.table()
+                .th(DBProperties.getProperty("Sales_DocumentAbstract/Type.Label"))
+                .th(DBProperties.getProperty("Sales_DocumentAbstract/Name.Label"))
+                .append(html.toString())
+                .tableC();
+        }
+
+        return html2;
+    }
+
     protected void connectPaymentDocument2Document(final Parameter _parameter,
                                                    final CreatedDoc _createdDoc)
         throws EFapsException
@@ -1379,7 +1446,7 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     /**
-     * Method to update fields with document selected is Exchange and IncomingExchange.
+     * Method to update fields with document selected.
      *
      * @param _parameter Parameter from eFaps API.
      * @return return with values.
@@ -1388,13 +1455,17 @@ public abstract class AbstractPaymentDocument_Base
     public Return updateFields4DocumentSelected(final Parameter _parameter)
         throws EFapsException
     {
+        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
+        Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
+
         final Return ret = new Return();
 
         final Instance selectDoc = Instance.get(_parameter.getParameterValue("name"));
+        final String selectDocAutoComplete = _parameter.getParameterValue("nameAutoComplete");
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
-        if (selectDoc.isValid()) {
+        if (selectDoc.isValid() && !selectDocAutoComplete.isEmpty()) {
             final SelectBuilder selContact = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact);
             final SelectBuilder selContactOid = new SelectBuilder(selContact).oid();
             final SelectBuilder selContactName = new SelectBuilder(selContact).attribute(CIContacts.Contact.Name);
@@ -1411,13 +1482,14 @@ public abstract class AbstractPaymentDocument_Base
                 for (final Entry<Integer, String> field : fields.entrySet()) {
                     String value;
                     if (field.getValue().equalsIgnoreCase("amount")) {
-                        final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                        final BigDecimal amount =
+                                        print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                         if (amount.compareTo(BigDecimal.ZERO) == 0) {
                             Context.getThreadContext()
-                                    .removeSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT);
+                                            .removeSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT);
                         } else {
                             Context.getThreadContext()
-                                    .setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
+                                            .setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
                         }
                         value = getTwoDigitsformater().format(amount);
                     } else if (field.getValue().equalsIgnoreCase("contact")) {
@@ -1435,6 +1507,15 @@ public abstract class AbstractPaymentDocument_Base
                     }
                     if (value != null && !value.isEmpty()) {
                         map.put(field.getValue(), StringEscapeUtils.escapeEcmaScript(value));
+                    }
+                }
+                if (map.containsKey("contact")) {
+                    final Instance contactInst = Instance.get(map.get("contact"));
+                    if (contactInst.isValid()) {
+                        Context.getThreadContext()
+                                .setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contactInst);
+                        Context.getThreadContext()
+                                .setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contactInst);
                     }
                 }
                 list.add(map);

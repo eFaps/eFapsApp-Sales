@@ -38,7 +38,10 @@
                 <property name="StatusGroup">Sales_PaymentRetentionStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentRetention"/>
+            <validate method="validatePaymentDocument4Positions" program="org.efaps.esjp.sales.payment.PaymentRetention" index="0">
+                <property name="Document">Sales_Invoice</property>
+            </validate>
+            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentRetention" index="1"/>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

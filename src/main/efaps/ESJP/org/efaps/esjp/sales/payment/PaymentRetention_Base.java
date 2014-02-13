@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.sales.document.IncomingRetentionCertificate;
 import org.efaps.util.EFapsException;
 
 /**
@@ -48,7 +51,22 @@ public abstract class PaymentRetention_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
+
+        final Instance instDoc = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentRetentionForm.name.name));
+        if (instDoc.isValid()) {
+            createdDoc.addValue(IncomingRetentionCertificate.RETENTIONDOC, instDoc);
+            new IncomingRetentionCertificate().update4Connect(_parameter, createdDoc);
+        }
         final Return ret = createReportDoc(_parameter, createdDoc);
+
         return ret;
+    }
+
+    @Override
+    protected String getDocName4Create(final Parameter _parameter)
+        throws EFapsException
+    {
+        return _parameter.getParameterValue("nameAutoComplete");
     }
 }

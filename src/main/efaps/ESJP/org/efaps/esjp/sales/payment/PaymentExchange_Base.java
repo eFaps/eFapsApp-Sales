@@ -52,6 +52,7 @@ public abstract class PaymentExchange_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
+        connectPaymentDocument2Document(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }
