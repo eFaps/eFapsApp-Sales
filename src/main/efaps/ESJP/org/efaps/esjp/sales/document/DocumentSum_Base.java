@@ -456,17 +456,41 @@ public abstract class DocumentSum_Base
         if (_map.containsKey(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey())) {
             js.append(_map.get(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey())).append("\n");
         }
-        js.append("require([\"dojo/query\", \"dojo/NodeList-manipulate\"], function(query){")
-            .append("query(\"[name='taxes']\").innerHTML(\"")
-            .append(new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null)))
-            .append("\");")
-            .append("});");
-
+        js.append(getTaxesScript(_parameter,
+                        new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null))));
         _map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
-
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
             _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
         }
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _innerHtml    innerHtml part of the taxfield
+     * @return StringBuilder with Javascript
+     */
+    protected StringBuilder getTaxesScript(final Parameter _parameter,
+                                           final String _innerHtml)
+    {
+        return getTaxesScript(_parameter, "taxes", _innerHtml);
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _fieldName    fieldName
+     * @param _innerHtml    innerHtml part of the taxfield
+     * @return StringBuilder with Javascript
+     */
+    protected StringBuilder getTaxesScript(final Parameter _parameter,
+                                           final String _fieldName,
+                                           final String _innerHtml)
+    {
+        return new StringBuilder()
+            .append("require([\"dojo/query\", \"dojo/NodeList-manipulate\"], function(query){")
+            .append("query(\"[name='").append(_fieldName).append("']\").innerHTML(\"")
+            .append(_innerHtml)
+            .append("\");")
+            .append("});");
     }
 
     /**
