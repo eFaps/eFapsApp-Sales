@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -38,7 +37,6 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -65,7 +63,10 @@ import org.joda.time.format.DateTimeFormatter;
 public abstract class EventSchedule_Base
     extends DocumentSum
 {
-    public static final String CONTACT_SESSIONKEY = "eFaps_Selected_Contact";
+    /**
+     * Instance to the Contact.
+     */
+    public static final String CONTACT_SESSIONKEY = EventSchedule.class.getName() +  ".ContactSessionKey";
 
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
         throws EFapsException
@@ -115,10 +116,15 @@ public abstract class EventSchedule_Base
                 final DateTimeFormatter locale = DateTimeFormat.forStyle("S-").withLocale(
                                 Context.getThreadContext().getLocale());
                 final StringBuilder choice = new StringBuilder().append(name).append(" - ")
-                                .append(Instance.get(oid).getType().getLabel()).append(" - ")
-                                .append(date.toString(locale)).append(" - ")
-                                .append(dueDate.toString(locale)).append(" - ")
-                                .append(rateCurrSymbol + getTotalFmtStr(total));
+                                .append(Instance.get(oid).getType().getLabel()).append(" - ");
+                if (date != null) {
+                    choice.append(date.toString(locale)).append(" - ");
+                }
+                if (dueDate != null) {
+                    choice.append(dueDate.toString(locale)).append(" - ");
+                }
+                choice.append(rateCurrSymbol + getTotalFmtStr(total));
+
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
@@ -229,6 +235,14 @@ public abstract class EventSchedule_Base
         return BigDecimal.ZERO;
     }
 
+    /**
+     * Obtains Total of the positions documents.
+     *
+     * @param _parameter Parameter as passed from the EFaps API.
+     * @param _ignoreDoc Instance to document.
+     * @return BigDecimal value.
+     * @throws EFapsException on error.
+     */
     public BigDecimal getTotal(final Parameter _parameter,
                                final Instance _ignoreDoc)
         throws EFapsException
@@ -237,62 +251,83 @@ public abstract class EventSchedule_Base
         BigDecimal total = BigDecimal.ZERO;
         final String[] oids = _parameter.getParameterValues("document");
         final String[] amounts = _parameter.getParameterValues("amount4Schedule");
-        for (int i = 0; i < oids.length; i++) {
-            final Instance docInst = Instance.get(oids[i]);
-            if (docInst.isValid()) {
-                final PrintQuery print = new PrintQuery(docInst);
-                print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                print.execute();
+        if (oids != null && oids.length > 0) {
+            for (int i = 0; i < oids.length; i++) {
+                final Instance docInst = Instance.get(oids[i]);
+                if (docInst.isValid()) {
+                    final PrintQuery print = new PrintQuery(docInst);
+                    print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    print.execute();
 
-                BigDecimal amount = BigDecimal.ZERO;
-                if (_ignoreDoc != null && _ignoreDoc.isValid() && docInst.equals(_ignoreDoc)) {
-                    amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                } else {
-                    try {
-                        if (!amounts[i].isEmpty()) {
-                            amount = (BigDecimal) formatter.parse(amounts[i]);
+                    BigDecimal amount = BigDecimal.ZERO;
+                    if (_ignoreDoc != null && _ignoreDoc.isValid() && docInst.equals(_ignoreDoc)) {
+                        amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    } else {
+                        try {
+                            if (!amounts[i].isEmpty()) {
+                                amount = (BigDecimal) formatter.parse(amounts[i]);
+                            }
+                        } catch (final ParseException e) {
+                            throw new EFapsException(EventSchedule.class, "Amount4Schedule.ParseException", e);
                         }
-                    } catch (final ParseException e) {
-                        throw new EFapsException(EventSchedule.class, "Amount4Schedule.ParseException", e);
                     }
+                    total = total.add(amount);
                 }
-                total = total.add(amount);
             }
         }
         return total;
     }
 
-    @Override
-    protected String getMaxNumber(final Parameter _parameter,
-                                  final Type _type,
-                                  final boolean _expandChild)
+    /**
+     * Format BigDecimal.
+     *
+     * @param _netTotal to format.
+     * @return NumberFormatter.
+     * @throws EFapsException on error.
+     */
+    protected String getNetPriceFmtStr(final BigDecimal _netTotal)
         throws EFapsException
     {
-        String ret = null;
-        final QueryBuilder queryBuilEventSche = new QueryBuilder(_type);
-        queryBuilEventSche.addOrderByAttributeDesc(CIERP.EventScheduleAbstract.Name);
-        final InstanceQuery queryEventSche = queryBuilEventSche.getQuery();
-        queryEventSche.setIncludeChildTypes(_expandChild);
-        queryEventSche.setLimit(1);
-        final MultiPrintQuery multiEventShe = new MultiPrintQuery(queryEventSche.execute());
-        multiEventShe.addAttribute(CIERP.EventScheduleAbstract.Name);
-        multiEventShe.execute();
-        if (multiEventShe.next()) {
-            ret = multiEventShe.getAttribute(CIERP.EventScheduleAbstract.Name);
+        return NumberFormatter.get().getTwoDigitsFormatter().format(_netTotal);
+    }
+
+    /**
+     * Format BigDecimal.
+     *
+     * @param _netTotal to format.
+     * @return NumberFormatter.
+     * @throws EFapsException on error.
+     */
+    protected String getTotalFmtStr(final BigDecimal _netTotal)
+        throws EFapsException
+    {
+        return NumberFormatter.get().getTwoDigitsFormatter().format(_netTotal);
+    }
+
+    /**
+     * Method to show command edit if case date is after day system.
+     *
+     * @param _parameter Parameter as passed from the EFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return validateSchedule4Date(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        if (_parameter.get(ParameterValues.INSTANCE) != null) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CIERP.DocumentAbstract.Date);
+            print.execute();
+
+            final DateTime date = print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date);
+            if (date.isAfter(new DateTime().withTime(0, 0, 0, 0))
+                            || date.equals(new DateTime().withTime(0, 0, 0, 0))) {
+                ret.put(ReturnValues.TRUE, true);
+            }
         }
+
         return ret;
     }
-
-    protected String getNetPriceFmtStr(final BigDecimal netTotal)
-        throws EFapsException
-    {
-        return NumberFormatter.get().getTwoDigitsFormatter().format(netTotal);
-    }
-
-    protected String getTotalFmtStr(final BigDecimal netTotal)
-        throws EFapsException
-    {
-        return NumberFormatter.get().getTwoDigitsFormatter().format(netTotal);
-    }
-
 }

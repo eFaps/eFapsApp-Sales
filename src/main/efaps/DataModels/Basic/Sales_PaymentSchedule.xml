@@ -17,9 +17,9 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5752 $
- Last Changed:    $Date: 2010-10-27 13:08:36 -0500 (mié, 27 oct 2010) $
- Last Changed By: $Author: jan.moxter $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 
@@ -29,7 +29,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
 
     <uuid>6a5b986f-c053-4640-8eed-81317131733e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5752 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentSchedule</name>
@@ -54,7 +54,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <sqltable>Sales_PaymentScheduleSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+                name="Sales_PaymentSchedule.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>

@@ -17,9 +17,9 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 7282 $
-  Last Changed:    $Date: 2011-11-18 15:11:04 -0500 (vie, 18 nov 2011) $
-  Last Changed By: $Author: m.aranya@moxter.net $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 
@@ -29,7 +29,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
 
     <uuid>757bb373-5063-4b73-b3ce-70f89c378ac8</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 7282 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -37,12 +37,10 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
         <!-- fields -->
         <field name="session">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.PaymentSchedule"
-                method="removeSession4Schedule"
-                name="Sales_PaymentScheduleForm.session.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="removeSession4Schedule" 
+                name="Sales_PaymentScheduleForm.session.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
         <field name="date">
             <property name="Columns">15</property>
@@ -52,10 +50,18 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
+        <field name="name4edit">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <property name="Label">Sales_PaymentSchedule/Name.Label</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="contact">
@@ -65,22 +71,19 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Label">Sales_PaymentScheduleForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Columns">98</property>
-            <trigger program="org.efaps.esjp.sales.PaymentSchedule"
-                method="autoComplete4Contact"
-                name="Sales_PaymentScheduleForm.contact.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4Contact" 
+                name="Sales_PaymentScheduleForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classifications">Contacts_ClassSupplier</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.PaymentSchedule"
-                method="updateFields4Contact"
-                name="Sales_PaymentScheduleForm.contact.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="updateFields4Contact" 
+                name="Sales_PaymentScheduleForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_PaymentScheduleForm.contactData.Label</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -114,11 +117,8 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="ModeSearch">EDITABLE</property>
         </field>
         <field name="status">
-          <property name="Attribute">Status</property>
-          <property name="Label">Sales_PaymentScheduleForm/Status.Label</property>
-          <property name="ModeEdit">EDITABLE</property>
-          <property name="ModePrint">READONLY</property>
-          <property name="ModeView">READONLY</property>
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_PaymentScheduleForm/Status.Label</property>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
@@ -130,18 +130,18 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="ModeEdit">EDITABLE</property>
             <table>Sales_PaymentSchedulePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_PaymentSchedulePosition</property>
-                <property name="LinkFroms">PaymentSchedule</property>
+                <property name="Type">Sales_PaymentSchedulePosition</property>
+                <property name="LinkFrom">PaymentSchedule</property>
             </evaluate>
         </field>
         <field name="total">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">Total</property>
         </field>
-       <field name="total4Read">
-            <property name="ModeEdit">READONLY</property>
+        <field name="total4Read">
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[Total]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_PaymentScheduleForm/Total.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
