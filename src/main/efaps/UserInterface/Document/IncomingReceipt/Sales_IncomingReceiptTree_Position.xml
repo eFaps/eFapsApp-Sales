@@ -29,6 +29,7 @@
         <name>Sales_IncomingReceiptTree_Position</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
             <menu>Sales_IncomingReceiptTree_Position_Menu</menu>
