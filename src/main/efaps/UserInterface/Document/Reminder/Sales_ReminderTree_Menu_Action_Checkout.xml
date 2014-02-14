@@ -28,9 +28,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReminderTree_Menu_Action_Checkout</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.common.file.FileCheckout"/>
