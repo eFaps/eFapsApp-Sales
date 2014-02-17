@@ -20,13 +20,37 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
+import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDefStr;
 import org.efaps.util.EFapsException;
 
 /**
@@ -75,6 +99,130 @@ public abstract class PaymentDetractionOut_Base
             insert.add(CISales.BulkPayment2PaymentDocument.OperationType, opTypeId);
             insert.add(CISales.BulkPayment2PaymentDocument.ServiceType, servTypeId);
             insert.execute();
+        }
+        return ret;
+    }
+
+    public Return getJavaScript4SelectableRowsValues(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> instances = new ArrayList<Instance>();
+        if (_parameter.get(ParameterValues.INSTANCE) == null) {
+            evaluateStatusDocs(_parameter, instances);
+        }
+        final Return ret = new Return();
+        if (!instances.isEmpty()) {
+            ret.put(ReturnValues.SNIPLETT, getJavaScript4Positions(_parameter, instances).toString());
+        }
+        return ret;
+    }
+
+    protected void evaluateStatusDocs(final Parameter _parameter,
+                                      final List<Instance> _instances)
+        throws EFapsException
+    {
+        final String[] oids = _parameter.getParameterValues("selectedRow");
+        if (oids != null && oids.length > 0) {
+            final Map<Integer, String> status = analyseProperty(_parameter, "Status");
+            for (final String oid : oids) {
+                final Instance instance = Instance.get(oid);
+                final Attribute attrStatus = instance.getType().getStatusAttribute();
+                final String attrStatusName = attrStatus.getLink().getName();
+                final PrintQuery print = new PrintQuery(instance);
+                print.addAttribute(attrStatus);
+                print.execute();
+
+                for (final Entry<Integer, String> statu : status.entrySet()) {
+                    final Status stat = Status.find(attrStatusName, statu.getValue());
+                    if (print.<Long>getAttribute(attrStatus).equals(stat.getId())) {
+                        _instances.add(instance);
+                    }
+                }
+            }
+        }
+    }
+
+    protected StringBuilder getJavaScript4Positions(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+
+        final MultiPrintQuery multi = new MultiPrintQuery(_instances);
+        multi.addAttribute(CISales.DocumentSumAbstract.Name,
+                        CISales.DocumentSumAbstract.Rate,
+                        CISales.DocumentSumAbstract.CurrencyId,
+                        CISales.DocumentSumAbstract.RateCurrencyId,
+                        CISales.DocumentSumAbstract.CrossTotal,
+                        CISales.DocumentSumAbstract.RateCrossTotal);
+        multi.execute();
+
+        final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
+        BigDecimal total = BigDecimal.ZERO;
+        while (multi.next()) {
+            final BigDecimal rCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final Map<KeyDef, Object> map;
+            if (valuesTmp.containsKey(multi.getCurrentInstance())) {
+                map = valuesTmp.get(valuesTmp);
+            } else {
+                map = new HashMap<KeyDef, Object>();
+                valuesTmp.put(multi.getCurrentInstance(), map);
+                map.put(new KeyDefStr("createDocument"), multi.getCurrentInstance().getOid());
+                map.put(new KeyDefStr("createDocumentAutoComplete"),
+                                multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
+                map.put(new KeyDefStr("createDocumentDesc"),
+                                getNewDocumentInfo(multi.getCurrentInstance()).getInfoOriginal());
+                map.put(new KeyDefStr("payment4Pay"), getTwoDigitsformater()
+                                .format(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)));
+                map.put(new KeyDefStr("paymentRate"), NumberFormatter.get().getFormatter(0, 3)
+                                .format(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)[1]));
+                map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), "" + (false));
+                map.put(new KeyDefStr("paymentAmount"), getTwoDigitsformater()
+                                .format(rCrossTotal));
+                map.put(new KeyDefStr("paymentDiscount"), getTwoDigitsformater().format(BigDecimal.ZERO));
+                map.put(new KeyDefStr("paymentAmountDesc"), getTwoDigitsformater().format(BigDecimal.ZERO));
+
+                total = total.add(rCrossTotal);
+            }
+        }
+        final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
+        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+
+        js.append("<script type=\"text/javascript\">\n");
+        if (total.compareTo(BigDecimal.ZERO) == 0) {
+            Context.getThreadContext().removeSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT);
+        } else {
+            Context.getThreadContext().setSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT, true);
+        }
+        if (!TargetMode.EDIT.equals(Context.getThreadContext()
+                        .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
+            js.append(getTableRemoveScript(_parameter, "paymentTable", false, false))
+                            .append(getTableAddNewRowsScript(_parameter, "paymentTable", strValues,
+                                            getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
+        }
+        js.append(getSetFieldValue(0, "amount", getTwoDigitsformater().format(total), true))
+            .append(getSetFieldValue(0, "total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO), true))
+            .append("</script>\n");
+        return js;
+    }
+
+    protected StringBuilder getOnCompleteScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new StringBuilder();
+    }
+
+    protected List<Map<String, String>> convertMap4Script(final Parameter _parameter,
+                                                          final Collection<Map<KeyDef, Object>> _values)
+        throws EFapsException
+    {
+        final List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
+        for (final Map<KeyDef, Object> valueMap : _values) {
+            final Map<String, String> map = new HashMap<String, String>();
+            for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
+                map.put(entry.getKey().getName(), entry.getKey().convert2String(entry.getValue()));
+            }
+            ret.add(map);
         }
         return ret;
     }

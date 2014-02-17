@@ -72,6 +72,9 @@
                 <property name="Type05">Sales_IncomingCredit</property>
                 <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
                 <property name="Status05">Open</property>
+                <property name="Type06">Sales_IncomingDetraction</property>
+                <property name="StatusGroup06">Sales_IncomingDetractionStatus</property>
+                <property name="Status06">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4CreateDocument"
                 name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>

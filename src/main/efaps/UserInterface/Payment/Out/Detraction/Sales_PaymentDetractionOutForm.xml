@@ -238,10 +238,17 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
-                method="getJavaScriptUIValue"
-                name="Sales_PaymentDetractionOutForm.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="getJavaScriptUIValue"
+                name="Sales_PaymentDetractionOutForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
+        </field>
+        <field name="javaScript2">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="getJavaScript4SelectableRowsValues"
+                name="Sales_PaymentDetractionOutForm.javaScript2.UI_Field_Value" event="UI_FIELD_VALUE">
+                <property name="Status">Open</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>
