@@ -31,6 +31,8 @@
         <!-- childs -->
         <childs>
             <child>Sales_IncomingDetractionTree_Menu_Action_Edit</child>
+            <child>Sales_IncomingDetractionTree_Menu_Action_SetPaid</child>
+            <child>Sales_IncomingDetractionTree_Menu_Action_SetCanceled</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
