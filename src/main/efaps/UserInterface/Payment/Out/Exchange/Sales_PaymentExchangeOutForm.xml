@@ -217,8 +217,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_PaymentExchangeOutPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">TargetDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">TargetDocument</property>
             </evaluate>
         </field>
         <field name="total4DiscountPay">

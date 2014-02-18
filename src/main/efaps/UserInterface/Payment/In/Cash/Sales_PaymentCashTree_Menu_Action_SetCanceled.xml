@@ -36,7 +36,7 @@
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_PaymentCashTree_Menu_Action_SetCanceled.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Stati">Open</property>
+                <property name="Status">Open</property>
             </trigger>
         </target>
         <!-- properties -->

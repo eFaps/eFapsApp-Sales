@@ -15,14 +15,14 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 9826 $
-  Last Changed:    $Date: 2013-07-16 11:42:49 -0500 (mar, 16 jul 2013) $
-  Last Changed By: $Author: jorge.cueva@moxter.net $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>15f00ec6-e675-4546-8fbc-ce1213c64cb9</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9826 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDepositWithOutDocForm</name>
@@ -219,8 +219,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <table>Sales_PaymentDepositWithOutDocPaymentTable</table>
             <evaluate program="org.efaps.esjp.sales.payment.PaymentDeposit" method="getEmptyTable4PaymentDocWithOutDoc">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">TargetDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">TargetDocument</property>
             </evaluate>
         </field>
         <field name="total4DiscountPay">

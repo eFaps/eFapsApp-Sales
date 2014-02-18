@@ -36,7 +36,7 @@
             <validate program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="validatePayments"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_PaymentRetentionOutTree_Menu_Action_PayPayment.UI_ACCESSCHECK" event="UI_ACCESSCHECK" index="1">
-                <property name="Stati">Open</property>
+                <property name="Status">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="check4DocLegalPayments" 
                 name="Sales_PaymentRetentionOutTree_Menu_Action_PayPayment.UI_ACCESSCHECK_2" event="UI_ACCESSCHECK" index="2">

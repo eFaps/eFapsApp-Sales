@@ -15,15 +15,15 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8215 $
- Last Changed:    $Date: 2012-11-12 13:36:45 -0500 (lun, 12 nov 2012) $
- Last Changed By: $Author: m.aranya@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>266b1441-304e-44ce-a194-e8297291d285</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8215 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DatedCheckOutMyDesk</name>
@@ -34,7 +34,7 @@
             <menu>Sales_PaymentDocumentOutMyDesk_Menu</menu>
             <table>Sales_PaymentCheckOutDiferedTable</table>
             <evaluate method="getPayment2CheckOutPositionInstances" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
-                <property name="Types">Sales_Payment</property>
+                <property name="Type">Sales_Payment</property>
                 <property name="AllCheckDifered">AllDifered</property>
             </evaluate>
         </target>

@@ -79,7 +79,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_PaymentExchangeOut4PayPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">ERP_DocumentAbstract</property>
+                <property name="Type">ERP_DocumentAbstract</property>
             </evaluate>
         </field>
     </definition>
