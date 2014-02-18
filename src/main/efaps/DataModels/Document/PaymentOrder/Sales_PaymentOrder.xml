@@ -44,8 +44,7 @@
             <sqltable>Sales_DocumentExtendSQLTable</sqltable>
             <sqlcolumn>INTEGER1</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                     name="Sales_PaymentOrder_Class.SpendingLink.RANGE_VALUE"
-                     event="RANGE_VALUE">
+                name="Sales_PaymentOrder.SpendingLink.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
                 <property name="Type">Sales_PaymentOrderTypeAttr</property>
             </trigger>

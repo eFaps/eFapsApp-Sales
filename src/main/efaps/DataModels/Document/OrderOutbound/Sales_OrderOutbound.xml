@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,33 +21,28 @@
  Last Changed By: $Author$
 
 -->
-
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>ae29490a-0751-413e-9c6f-f198eff849fa</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>ae29490a-0751-413e-9c6f-f198eff849fa</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderOutbound</name>
-    <parent>Sales_DocumentSumAbstract</parent>
-
-    <attribute>
-        <name>Status</name>
-        <type>Status</type>
-        <typelink>Sales_OrderOutboundStatus</typelink>
-        <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-        <sqlcolumn>STATUS</sqlcolumn>
-        <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-               name="Sales_Invoice.Status.RANGE_VALUE"
-               event="RANGE_VALUE">
-      </trigger>
-    </attribute>
-
-    <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
-             name="Sales_Invoice.ACCESSCHECK"
-             event="ACCESSCHECK"/>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderOutbound</name>
+        <parent>Sales_DocumentSumAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_OrderOutboundStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_OrderOutbound.Status.RANGE_VALUE" event="RANGE_VALUE">
+            </trigger>
+        </attribute>
+        <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            name="Sales_OrderOutbound.ACCESSCHECK" event="ACCESSCHECK" />
+    </definition>
 </datamodel-type>
