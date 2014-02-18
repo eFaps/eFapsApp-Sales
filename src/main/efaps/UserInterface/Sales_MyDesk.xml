@@ -32,6 +32,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_MyDesk</name>
         <childs>
+            <child>ERP_Common_SearchMyDesk</child>
             <child>Sales_DocumentsMyDesk</child>
             <child>Sales_DocumentsIncomingMyDesk</child>
             <child>Sales_ChannelMyDesk</child>
