@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2010 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>0634a95a-529b-464b-a6ae-5285b08934a0</uuid>
+        <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot</name>
+        <access>
+            <role>Archives_Admin</role>
+            <role>Archives_Modifier</role>
+        </access>
+
+        <!-- target definitions -->
+        <target>
+            <form>Archives_ArchiveRootForm</form>
+            <execute method="createRoot" program="org.efaps.esjp.archives.Archive">
+                <property name="ConnectType">Sales_IncomingInvoice2ArchiveAbstract</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="StatusGroup">Archives_ArchiveNodeStatus</property>
+                <property name="Status">Editable</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="checkAccess2ArchiveRoot" name="Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK" program="org.efaps.esjp.archives.Archive">
+                <property name="Type">Sales_IncomingInvoice2ArchiveAbstract</property>
+                <property name="AttributeLink">FromLink</property>
+                <property name="activeAccessCheck">true</property>
+            </trigger>
+        </target>
+
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Archives_ArchiveRoot</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
+    </definition>
+</ui-command>

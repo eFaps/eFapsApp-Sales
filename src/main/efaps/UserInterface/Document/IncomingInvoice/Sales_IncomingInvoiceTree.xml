@@ -49,4 +49,28 @@
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_IncomingInvoiceTree</name>
+        <!-- targets -->
+        <target>
+            <menu>Sales_IncomingInvoiceTree_Menu</menu>
+            <form>Sales_IncomingInvoiceForm</form>
+        </target>
+        <!-- type tree for -->
+        <type>Sales_IncomingInvoice</type>
+        <childs>
+            <child>Sales_IncomingInvoiceTree_Position</child>
+            <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_DocumentAbstractTree_PaymentDerivedDocument</child>
+            <child>Sales_IncomingInvoiceTree_File</child>
+        </childs>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
