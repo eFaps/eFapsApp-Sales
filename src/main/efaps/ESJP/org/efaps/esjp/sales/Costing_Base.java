@@ -48,6 +48,9 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 /**
  * TODO comment!
@@ -58,12 +61,49 @@ import org.joda.time.DateTime;
 @EFapsUUID("65041308-73a6-47de-bd1d-3dacc37dbc6c")
 @EFapsRevision("$Rev$")
 public abstract class Costing_Base
+    implements Job
 {
 
+    /**
+     * <p>
+     * Called by the <code>Scheduler</code> when a <code>Trigger</code>
+     * fires that is associated with the <code>Job</code>.
+     * </p>
+     * @param   _context JobExecutionContext for this job
+     * @throws JobExecutionException
+     *           if there is an exception while executing the job.
+     */
+    @Override
+    public void execute(final JobExecutionContext _context)
+        throws JobExecutionException
+    {
+        try {
+            update();
+        } catch (final EFapsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * To be able to execute the update from an UserInterface.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
+        update();
+        return new Return();
+    }
 
+    /**
+     * @throws EFapsException on error
+     */
+    protected void update()
+        throws EFapsException
+    {
         // check for new transactions and add the costing for them
         final SelectBuilder selDocInst = new SelectBuilder()
                         .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
@@ -84,7 +124,7 @@ public abstract class Costing_Base
 
         final Map<Instance, TransCosting> prod2Costing = new HashMap<Instance, TransCosting>();
         while (multi.next()) {
-            final TransCosting transCost = new TransCosting();
+            final TransCosting transCost = getTransCosting();
             transCost.setTransactionInstance(multi.getCurrentInstance());
             transCost.setDocInstance(multi.<Instance>getSelect(selDocInst));
             transCost.setProductInstance(multi.<Instance>getSelect(selProdInst));
@@ -119,7 +159,6 @@ public abstract class Costing_Base
         for (final Instance inst : updateCost) {
             updateCosting(inst);
         }
-        return new Return();
     }
 
     /**
@@ -132,7 +171,7 @@ public abstract class Costing_Base
     {
         final List<TransCosting> tcList = new ArrayList<TransCosting>();
 
-        final TransCosting transCosting = new TransCosting();
+        final TransCosting transCosting = getTransCosting();
         transCosting.setCostingInstance(_costingInstance);
 
         tcList.add(transCosting);
@@ -237,6 +276,11 @@ public abstract class Costing_Base
         }
     }
 
+    /**
+     * @param _instance instance the penultimate instance is wanted for
+     * @return penultimate instance
+     * @throws EFapsException on error
+     */
     protected Instance getPenultimate4Costing(final Instance _instance)
         throws EFapsException
     {
@@ -314,29 +358,75 @@ public abstract class Costing_Base
         return ret;
     }
 
+    /**
+     * @return new TransCosting instance
+     * @throws EFapsException on error
+     */
+    protected TransCosting getTransCosting()
+        throws EFapsException
+    {
+        return new TransCosting();
+    }
+
+    /**
+     * Class that represents an transaction and its related Costing.
+     */
     public static class TransCosting
     {
 
+        /**
+         * The Costing Instance.
+         */
         private Instance costingInstance;
 
+        /**
+         * The Transaction Instance.
+         */
         private Instance transactionInstance;
 
+        /**
+         * Instance of the document linked to the Transaction.
+         */
         private Instance docInstance;
 
+        /**
+         * Instance of the product linked to the Transaction.
+         */
         private Instance productInstance;
 
+        /**
+         * Date of the transaction.
+         */
         private DateTime date;
 
+        /**
+         * Quantity of the transaction.
+         */
         private BigDecimal transactionQuantity;
 
+        /**
+         * Quantity of the costing.
+         */
         private BigDecimal costingQuantity;
 
+        /**
+         * Cost defined by the Costing.
+         */
         private BigDecimal cost;
 
+        /**
+         * The calculated result of Costing.
+         */
         private BigDecimal result;
 
+        /**
+         * Is the Costing up to date.
+         */
         private Boolean upToDate;
 
+        /**
+         * @throws EFapsException on error
+         */
         protected void initTransaction()
             throws EFapsException
         {
@@ -365,6 +455,9 @@ public abstract class Costing_Base
             this.transactionQuantity = print.<BigDecimal>getSelect(selQuantity);
         }
 
+        /**
+         * @throws EFapsException on error
+         */
         protected void initCosting()
             throws EFapsException
         {
@@ -383,7 +476,8 @@ public abstract class Costing_Base
         }
 
         /**
-         *
+         * Update the Costing Instance.
+         * @throws EFapsException on error
          */
         public void updateCosting()
             throws EFapsException
@@ -397,6 +491,10 @@ public abstract class Costing_Base
             setUpToDate(true);
         }
 
+        /**
+         * Insert a new Costing Instance.
+         * @throws EFapsException on error
+         */
         public void insertCosting()
             throws EFapsException
         {
@@ -418,7 +516,7 @@ public abstract class Costing_Base
 
 
         /**
-         * @param _costingInstance
+         * @param _costingInstance instance to be set
          */
         public void setCostingInstance(final Instance _costingInstance)
         {
@@ -429,6 +527,7 @@ public abstract class Costing_Base
          * Getter method for the instance variable {@link #transactionInstance}.
          *
          * @return value of instance variable {@link #transactionInstance}
+         * @throws EFapsException on error
          */
         public Instance getTransactionInstance()
             throws EFapsException
@@ -454,6 +553,7 @@ public abstract class Costing_Base
          * Getter method for the instance variable {@link #costingInstance}.
          *
          * @return value of instance variable {@link #costingInstance}
+         * @throws EFapsException on error
          */
         public Instance getCostingInstance() throws EFapsException
         {
@@ -467,6 +567,7 @@ public abstract class Costing_Base
          * Getter method for the instance variable {@link #productInstance}.
          *
          * @return value of instance variable {@link #productInstance}
+         * @throws EFapsException on error
          */
         public Instance getProductInstance()
             throws EFapsException
@@ -492,6 +593,7 @@ public abstract class Costing_Base
          * Getter method for the instance variable {@link #date}.
          *
          * @return value of instance variable {@link #date}
+         * @throws EFapsException on error
          */
         public DateTime getDate()
             throws EFapsException
@@ -516,6 +618,7 @@ public abstract class Costing_Base
          * Getter method for the instance variable {@link #transactionQuantity}.
          *
          * @return value of instance variable {@link #transactionQuantity}
+         * @throws EFapsException on error
          */
         public BigDecimal getTransactionQuantity()
             throws EFapsException
@@ -537,19 +640,21 @@ public abstract class Costing_Base
          *
          * @param _transactionQuantity value for instance variable
          *            {@link #transactionQuantity}
+         *
          */
         public void setTransactionQuantity(final BigDecimal _transactionQuantity)
         {
             this.transactionQuantity = _transactionQuantity;
         }
 
-
         /**
          * Getter method for the instance variable {@link #costingQuantity}.
          *
          * @return value of instance variable {@link #costingQuantity}
+         * @throws EFapsException on error
          */
-        public BigDecimal getCostingQuantity() throws EFapsException
+        public BigDecimal getCostingQuantity()
+            throws EFapsException
         {
             if (this.costingQuantity == null) {
                 initCosting();
@@ -557,8 +662,12 @@ public abstract class Costing_Base
             return this.costingQuantity;
         }
 
-
-        public BigDecimal getQuantity() throws EFapsException
+        /**
+         * @return the Quantity of this instance = CostingQuantity + TransactionQuantity
+         * @throws EFapsException on error
+         */
+        public BigDecimal getQuantity()
+            throws EFapsException
         {
             return getCostingQuantity().add(getTransactionQuantity());
         }
@@ -573,11 +682,11 @@ public abstract class Costing_Base
             this.costingQuantity = _costingQuantity;
         }
 
-
         /**
          * Getter method for the instance variable {@link #cost}.
          *
          * @return value of instance variable {@link #cost}
+         * @throws EFapsException on error
          */
         public BigDecimal getCost() throws EFapsException
         {
@@ -587,25 +696,49 @@ public abstract class Costing_Base
             return this.cost;
         }
 
+        /**
+         * @return the Cost to be used for Costing retrieved by analyzing the related Documents
+         * @throws EFapsException on error
+         */
         public BigDecimal getCostFromDocument()
             throws EFapsException
         {
-            BigDecimal ret = BigDecimal.ZERO;
+            BigDecimal ret = null;
             final Instance docInstTmp = getDocInstance();
             if (docInstTmp != null && docInstTmp.isValid()) {
                 if (CISales.RecievingTicket.getType().equals(docInstTmp.getType())) {
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
-                    attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, getDocInstance());
-                    final AttributeQuery attrQuery = attrQueryBldr
-                                    .getAttributeQuery(CISales.Document2DerivativeDocument.To);
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                    queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink, attrQuery);
-                    queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInstance());
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                    multi.execute();
-                    if (multi.next()) {
-                        ret = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                    // first priority is the special relation for costing
+                    // "Sales_IncomingInvoice2RecievingTicket"
+                    final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
+                    relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
+                                    getDocInstance());
+                    final AttributeQuery relAttrQuery = relAttrQueryBldr
+                                    .getAttributeQuery(CISales.IncomingInvoice2RecievingTicket.FromLink);
+                    final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                    posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
+                                    relAttrQuery);
+                    posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInstance());
+                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                    posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                    posMulti.execute();
+                    if (posMulti.next()) {
+                        ret = posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                    }
+                    // if not found yet, try other relations
+                    if (ret == null) {
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+                        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, getDocInstance());
+                        final AttributeQuery attrQuery = attrQueryBldr
+                                        .getAttributeQuery(CISales.Document2DerivativeDocument.To);
+                        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                        queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink, attrQuery);
+                        queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInstance());
+                        final MultiPrintQuery multi = queryBldr.getPrint();
+                        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                        multi.execute();
+                        if (multi.next()) {
+                            ret = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                        }
                     }
                 } else if (CISales.IncomingInvoice.getType().equals(docInstTmp.getType())) {
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
@@ -619,7 +752,7 @@ public abstract class Costing_Base
                     }
                 }
             }
-            return ret;
+            return ret == null ? BigDecimal.ZERO : ret;
         }
 
         /**
@@ -631,7 +764,6 @@ public abstract class Costing_Base
         {
             this.cost = _cost;
         }
-
 
         /**
          * Getter method for the instance variable {@link #result}.
@@ -653,17 +785,11 @@ public abstract class Costing_Base
             this.result = _result;
         }
 
-        @Override
-        public String toString()
-        {
-            return ToStringBuilder.reflectionToString(this);
-        }
-
-
         /**
          * Getter method for the instance variable {@link #docInstance}.
          *
          * @return value of instance variable {@link #docInstance}
+         * @throws EFapsException on error
          */
         public Instance getDocInstance()
             throws EFapsException
@@ -688,6 +814,7 @@ public abstract class Costing_Base
          * Getter method for the instance variable {@link #upToDate}.
          *
          * @return value of instance variable {@link #upToDate}
+         * @throws EFapsException on error
          */
         public boolean isUpToDate()
             throws EFapsException
@@ -706,6 +833,12 @@ public abstract class Costing_Base
         public void setUpToDate(final boolean _upToDate)
         {
             this.upToDate = _upToDate;
+        }
+
+        @Override
+        public String toString()
+        {
+            return ToStringBuilder.reflectionToString(this);
         }
     }
 }
