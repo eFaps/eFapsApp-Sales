@@ -127,10 +127,6 @@ public abstract class Costing_Base
      *            correct value)
      * @throws EFapsException on error
      */
-    /**
-     * @param _costingInstance
-     * @throws EFapsException
-     */
     protected void updateCosting(final Instance _costingInstance)
         throws EFapsException
     {
@@ -231,10 +227,10 @@ public abstract class Costing_Base
                     if (current.getCost().compareTo(cost) != 0) {
                         current.setCost(cost);
                         current.setResult(cost);
-                        current.updateCosting();
                         // if the first has its cost from doc changed, the rest must be checked also
                         forceCostFromDoc = true;
                     }
+                    current.updateCosting();
                 }
             }
             prev = current;
