@@ -48,6 +48,8 @@ import org.joda.time.DateTime;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -60,6 +62,10 @@ import org.quartz.JobExecutionException;
 public abstract class Costing_Base
     implements Job
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Costing.class);
 
     /**
      * <p>
@@ -77,8 +83,7 @@ public abstract class Costing_Base
         try {
             update();
         } catch (final EFapsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            Costing_Base.LOG.error("Catched error", e);
         }
     }
 
@@ -198,6 +203,8 @@ public abstract class Costing_Base
     protected void updateCosting(final Instance _costingInstance)
         throws EFapsException
     {
+        Costing_Base.LOG.debug("Update Costing for: {}", _costingInstance);
+
         final List<TransCosting> tcList = new ArrayList<TransCosting>();
 
         final TransCosting transCosting = getTransCosting();
@@ -254,6 +261,7 @@ public abstract class Costing_Base
         boolean forceCostFromDoc = false;
         while (iter.hasNext()) {
             final TransCosting current = iter.next();
+            Costing_Base.LOG.debug("Verify TransactionCosting: {}", current);
             if (prev != null) {
                 boolean update = false;
                 if (!current.isUpToDate() || forceCostFromDoc) {
@@ -288,6 +296,7 @@ public abstract class Costing_Base
                 }
                 if (update) {
                     current.updateCosting();
+                    Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
                 }
             } else {
                 // if the current was marked for update (happens only if it also was the first ever)
@@ -300,6 +309,7 @@ public abstract class Costing_Base
                         forceCostFromDoc = true;
                     }
                     current.updateCosting();
+                    Costing_Base.LOG.debug("Update TransactionCosting: {}", current);
                 }
             }
             prev = current;
@@ -314,6 +324,7 @@ public abstract class Costing_Base
     protected Instance getPenultimate4Costing(final Instance _costingInstance)
         throws EFapsException
     {
+        Costing_Base.LOG.debug("Searching Penultimate for {}", _costingInstance);
         Instance ret = null;
         Instance transInstance = null;
 
@@ -325,6 +336,7 @@ public abstract class Costing_Base
         attrQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
+        Costing_Base.LOG.trace("Searching Penultimate in same date");
         // first check if for the same date exists one (partial update)
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, transCosting.getProductInstance());
@@ -345,6 +357,7 @@ public abstract class Costing_Base
         }
         // if not found yet check on all dates before, but still only "UpToDate" ones  (partial update)
         if (prev == null) {
+            Costing_Base.LOG.trace("Searching Penultimate in 'UpToDates'");
             final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.TransactionInOutAbstract);
             queryBldr2.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
             queryBldr2.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
@@ -361,6 +374,7 @@ public abstract class Costing_Base
         }
         // still not found yet check on all no matter of the "UpToDate" or date (update all)
         if (prev == null) {
+            Costing_Base.LOG.trace("Searching Penultimate over all");
             final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.TransactionInOutAbstract);
             queryBldr2.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
                             transCosting.getProductInstance());
@@ -384,6 +398,7 @@ public abstract class Costing_Base
                 ret = retTmp;
             }
         }
+        Costing_Base.LOG.debug("Found Penultimate: {}", ret);
         return ret;
     }
 
@@ -732,6 +747,8 @@ public abstract class Costing_Base
         public BigDecimal getCostFromDocument()
             throws EFapsException
         {
+            Costing_Base.LOG.debug("Analysing Cost From Document for: {}", this);
+
             BigDecimal ret = null;
             final Instance docInstTmp = getDocInstance();
             if (docInstTmp != null && docInstTmp.isValid()) {
@@ -781,6 +798,7 @@ public abstract class Costing_Base
                     }
                 }
             }
+            Costing_Base.LOG.debug("Result: {} for  Cost From Document for: {}", ret, this);
             return ret == null ? BigDecimal.ZERO : ret;
         }
 
