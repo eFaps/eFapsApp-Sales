@@ -97,7 +97,7 @@ public interface SalesSettings
      * Boolean (true/false).<br/>
      * Acvtivate the calculation of Perception.
      */
-    String PERCEPTION = "org.efaps.sales.PerceptionActivate";
+    String PERCEPTION = "org.efaps.sales.ActivatePerception";
 
     /**
      * Boolean (true/false).<br/>
