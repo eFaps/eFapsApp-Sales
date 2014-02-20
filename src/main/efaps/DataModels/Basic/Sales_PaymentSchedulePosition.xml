@@ -42,9 +42,5 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <sqltable>Sales_EventSchedulePositionAbstractSQLTable</sqltable>
             <sqlcolumn>EVENTSCHEID</sqlcolumn>
         </attribute>
-        <trigger program="org.efaps.esjp.sales.PaymentSchedule"
-                 method="deleteTrigger"
-                 name="Sales_PaymentSchedulePosition.DELETE_PRE"
-                 event="DELETE_PRE"/>
     </definition>
 </datamodel-type>

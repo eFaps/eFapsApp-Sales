@@ -24,17 +24,22 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -328,6 +333,86 @@ public abstract class EventSchedule_Base
             }
         }
 
+        return ret;
+    }
+
+    public Return getJavaScript4UIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        if (Display.HIDDEN.equals(fieldValue.getDisplay())) {
+            js.append("<script type=\"text/javascript\">\n");
+            final SelectBuilder selDoc = new SelectBuilder()
+                            .linkto(CISales.PaymentSchedulePosition.Document).instance();
+            final SelectBuilder selDocName = new SelectBuilder()
+                            .linkto(CISales.PaymentSchedulePosition.Document).attribute(CIERP.DocumentAbstract.Name);
+            final SelectBuilder selDocRateCrossTotal = new SelectBuilder()
+                            .linkto(CISales.PaymentSchedulePosition.Document)
+                            .attribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final SelectBuilder selDocCrossTotal = new SelectBuilder()
+                            .linkto(CISales.PaymentSchedulePosition.Document)
+                            .attribute(CISales.DocumentSumAbstract.CrossTotal);
+            final SelectBuilder selDocSymbol = new SelectBuilder()
+                            .linkto(CISales.PaymentSchedulePosition.Document)
+                            .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selDocRateSymbol = new SelectBuilder()
+                            .linkto(CISales.PaymentSchedulePosition.Document)
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+
+            final Instance instance = _parameter.getInstance();
+            final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
+            if (instance != null && instance.isValid()) {
+                final SelectBuilder selContact = new SelectBuilder().linkto(CISales.PaymentSchedule.Contact).instance();
+                final PrintQuery print = new PrintQuery(instance);
+                print.addSelect(selContact);
+                print.executeWithoutAccessCheck();
+
+                final Instance contact = print.<Instance>getSelect(selContact);
+                if (contact != null && contact.isValid()) {
+                    Context.getThreadContext().setSessionAttribute(EventSchedule.CONTACT_SESSIONKEY, contact);
+                }
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentSchedulePosition);
+                queryBldr.addWhereAttrEqValue(CISales.PaymentSchedulePosition.EventScheduleAbstractLink, instance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addSelect(selDoc, selDocName, selDocCrossTotal, selDocRateCrossTotal, selDocSymbol, selDocRateSymbol);
+                multi.addAttribute(CISales.PaymentSchedulePosition.DocumentDesc,
+                                CISales.PaymentSchedulePosition.NetPrice);
+                multi.executeWithoutAccessCheck();
+                while (multi.next()) {
+                    final Instance docInst = multi.<Instance>getSelect(selDoc);
+                    final BigDecimal rateNetPrice = multi.<BigDecimal>getSelect(selDocRateCrossTotal);
+                    final BigDecimal netPrice = multi.<BigDecimal>getSelect(selDocCrossTotal);
+                    final String symbol = multi.<String>getSelect(selDocSymbol);
+                    final String rateSymbol = multi.<String>getSelect(selDocRateSymbol);
+
+                    final Map<KeyDef, Object> map;
+                    if (!valuesTmp.containsKey(docInst)) {
+                        map = new HashMap<KeyDef, Object>();
+                        valuesTmp.put(docInst, map);
+                        map.put(new KeyDefStr("document"), docInst.getOid());
+                        map.put(new KeyDefStr("documentAutoComplete"), multi.<String>getSelect(selDocName));
+                        map.put(new KeyDefStr("documentDesc"),
+                                        multi.<String>getAttribute(CISales.PaymentSchedulePosition.DocumentDesc));
+                        map.put(new KeyDefStr("amount4Schedule"),
+                                        getNetPriceFmtStr(multi.<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice)));
+                        map.put(new KeyDefStr("rateNetPrice"), rateSymbol + getNetPriceFmtStr(rateNetPrice));
+                        map.put(new KeyDefStr("netPrice"), symbol + getNetPriceFmtStr(netPrice) + " / "
+                                        + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)) + " / "
+                                        + getNetPriceFmtStr(getEventSchedule4Doc(docInst)));
+                    }
+                }
+                final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
+                final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+                js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                                .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                                                getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
+            }
+            js.append("</script>\n");
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, js.toString());
         return ret;
     }
 }

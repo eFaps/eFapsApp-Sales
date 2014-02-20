@@ -21,7 +21,6 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -240,46 +239,6 @@ public abstract class PaymentSchedule_Base
         return new Return();
     }
 
-    /**
-     * Method to delete position into PaymentSchedule and recalculate total.
-     *
-     * @param _parameter Parameter as passed from the EFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
-     */
-    public Return deleteTrigger(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance posInstance = _parameter.getInstance();
-
-        final SelectBuilder selPayScheInst = new SelectBuilder()
-                        .linkto(CISales.PaymentSchedulePosition.PaymentSchedule).instance();
-
-        final PrintQuery print = new PrintQuery(posInstance);
-        print.addAttribute(CISales.PaymentSchedulePosition.NetPrice);
-        print.addSelect(selPayScheInst);
-
-        BigDecimal posNetPrice = BigDecimal.ZERO;
-        BigDecimal total = BigDecimal.ZERO;
-        if (print.execute()) {
-            posNetPrice = print.<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice);
-
-            final Instance payScheInst = print.<Instance>getSelect(selPayScheInst);
-
-            final PrintQuery print2 = new PrintQuery(payScheInst);
-            print2.addAttribute(CISales.PaymentSchedule.Total);
-            if (print2.execute()) {
-                total = print2.<BigDecimal>getAttribute(CISales.PaymentSchedule.Total);
-
-                final Update update = new Update(print2.getCurrentInstance());
-                update.add(CISales.PaymentSchedule.Total,
-                                total.subtract(posNetPrice).setScale(2, RoundingMode.HALF_UP));
-                update.execute();
-            }
-        }
-        return new Return();
-    }
-
     public Return getNotScheduledDocuments(final Parameter _parameter)
         throws EFapsException
     {
@@ -434,25 +393,26 @@ public abstract class PaymentSchedule_Base
         Context.getThreadContext().removeSessionAttribute("internalAmounts");
         final String[] selectedDoc = _parameter.getParameterValues("selectedDoc") == null
                         ? _parameter.getParameterValues("selectedRow") : _parameter.getParameterValues("selectedDoc");
-        BigDecimal amount= BigDecimal.ZERO;
+        BigDecimal amount = BigDecimal.ZERO;
 
         if (selectedDoc != null) {
             final String[] other = new String[selectedDoc.length];
             if (selectedDoc.length > 1) {
-                int i=0;
+                int i = 0;
                 for (final String element : selectedDoc) {
                     final Instance instance = Instance.get(element);
                     if (instance.isValid()) {
                         final PrintQuery print = new PrintQuery(instance);
                         print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
                         print.execute();
-                        final BigDecimal amountAux=print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                        final BigDecimal amountAux = print
+                                        .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                         amount = amount.add(amountAux);
-                        other[i]= getTotalFmtStr(amountAux);
+                        other[i] = getTotalFmtStr(amountAux);
                         i++;
                     }
                 }
-                ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
+                ret.put(ReturnValues.VALUES, NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
             } else {
                 final Instance instance = Instance.get(selectedDoc[0]);
                 if (instance.isValid()) {
@@ -460,8 +420,9 @@ public abstract class PaymentSchedule_Base
                     print.addAttribute(CISales.DocumentSumAbstract.CrossTotal);
                     print.execute();
                     amount = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                    other[0]= getTotalFmtStr(amount);
-                    ret.put(ReturnValues.VALUES,NumberFormatter.get().getTwoDigitsFormatter().format(amount).toString());
+                    other[0] = getTotalFmtStr(amount);
+                    ret.put(ReturnValues.VALUES, NumberFormatter.get().getTwoDigitsFormatter().format(amount)
+                                    .toString());
                 }
             }
             Context.getThreadContext().setSessionAttribute("internalAmounts", other);
