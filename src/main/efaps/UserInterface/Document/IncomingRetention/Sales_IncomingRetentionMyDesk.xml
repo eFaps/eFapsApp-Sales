@@ -32,7 +32,7 @@
             <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <table>Sales_DocumentAbstractTable</table>
+            <table>Sales_IncomingRetentionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingRetention</property>
             </evaluate>
