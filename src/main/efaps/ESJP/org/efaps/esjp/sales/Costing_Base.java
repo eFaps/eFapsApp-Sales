@@ -22,12 +22,9 @@ package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -86,6 +83,39 @@ public abstract class Costing_Base
     }
 
     /**
+     * Used to mark an Costing as not "UpToDate" on a trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return relationTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CISales.IncomingInvoice2RecievingTicket.ToLink);
+        print.executeWithoutAccessCheck();
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
+                        print.getAttribute(CISales.IncomingInvoice2RecievingTicket.ToLink));
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
+        queryBldr.addWhereAttrInQuery(CIProducts.CostingAbstract.TransactionAbstractLink, attrQuery);
+        queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, true);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.executeWithoutAccessCheck();
+        while (query.next()) {
+            final Update update = new Update(query.getCurrentValue());
+            update.add(CIProducts.CostingAbstract.UpToDate, false);
+            update.executeWithoutTrigger();
+        }
+        return new Return();
+    }
+
+
+    /**
      * To be able to execute the update from an UserInterface.
      * @param _parameter Parameter as passed by the eFaps API
      * @return new empty Return
@@ -104,6 +134,20 @@ public abstract class Costing_Base
     protected void update()
         throws EFapsException
     {
+        final Set<Instance> updateCost = new HashSet<Instance>();
+
+        // check for costing that must be updated
+        final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.Costing);
+        costQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
+        final InstanceQuery costQuery = costQueryBldr.getQuery();
+        costQuery.executeWithoutAccessCheck();
+        while (costQuery.next()) {
+            final Instance penultimate = getPenultimate4Costing(costQuery.getCurrentValue());
+            if (penultimate != null) {
+                updateCost.add(penultimate);
+            }
+        }
+
         // check for new transactions and add the costing for them
         final SelectBuilder selDocInst = new SelectBuilder()
                         .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
@@ -122,35 +166,20 @@ public abstract class Costing_Base
         multi.setEnforceSorted(true);
         multi.executeWithoutAccessCheck();
 
-        final Map<Instance, TransCosting> prod2Costing = new HashMap<Instance, TransCosting>();
+        final Set<TransCosting> costingTmp = new HashSet<TransCosting>();
         while (multi.next()) {
             final TransCosting transCost = getTransCosting();
             transCost.setTransactionInstance(multi.getCurrentInstance());
             transCost.setDocInstance(multi.<Instance>getSelect(selDocInst));
             transCost.setProductInstance(multi.<Instance>getSelect(selProdInst));
             transCost.setCostingQuantity(BigDecimal.ZERO);
+            transCost.setUpToDate(false);
             transCost.insertCosting();
-
-            if (!prod2Costing.containsKey(transCost.getProductInstance())) {
-                prod2Costing.put(transCost.getProductInstance(), transCost);
-            }
+            costingTmp.add(transCost);
         }
 
-        final Set<Instance> updateCost = new HashSet<Instance>();
-
-        for (final Entry<Instance, TransCosting> entry : prod2Costing.entrySet()) {
-            final Instance penultimate = getPenultimate4Costing(entry.getValue().getCostingInstance());
-            if (penultimate != null) {
-                updateCost.add(penultimate);
-            }
-        }
-
-        final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.Costing);
-        costQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
-        final InstanceQuery costQuery = costQueryBldr.getQuery();
-        costQuery.executeWithoutAccessCheck();
-        while (costQuery.next()) {
-            final Instance penultimate = getPenultimate4Costing(costQuery.getCurrentValue());
+        for (final TransCosting transCost : costingTmp) {
+            final Instance penultimate = getPenultimate4Costing(transCost.getCostingInstance());
             if (penultimate != null) {
                 updateCost.add(penultimate);
             }
@@ -196,6 +225,7 @@ public abstract class Costing_Base
                         selCostingUTD);
         multi.addAttribute(CIProducts.TransactionInOutAbstract.Date,
                         CIProducts.TransactionInOutAbstract.Quantity);
+        multi.setEnforceSorted(true);
         multi.executeWithoutAccessCheck();
         boolean start = false;
         while (multi.next()) {
@@ -277,82 +307,81 @@ public abstract class Costing_Base
     }
 
     /**
-     * @param _instance instance the penultimate instance is wanted for
+     * @param _costingInstance instance the penultimate instance is wanted for
      * @return penultimate instance
      * @throws EFapsException on error
      */
-    protected Instance getPenultimate4Costing(final Instance _instance)
+    protected Instance getPenultimate4Costing(final Instance _costingInstance)
         throws EFapsException
     {
         Instance ret = null;
-        Instance transRet = null;
+        Instance transInstance = null;
 
-        final SelectBuilder selTransInst = new SelectBuilder()
-                        .linkto(CIProducts.Costing.TransactionAbstractLink).instance();
+        final TransCosting transCosting = getTransCosting();
+        transCosting.setCostingInstance(_costingInstance);
 
-        final SelectBuilder selProdInst = new SelectBuilder()
-                        .linkto(CIProducts.Costing.TransactionAbstractLink)
-                        .attribute(CIProducts.TransactionInOutAbstract.Product).instance();
-
-        final SelectBuilder selDate = new SelectBuilder()
-                        .linkto(CIProducts.Costing.TransactionAbstractLink)
-                        .attribute(CIProducts.TransactionInOutAbstract.Date);
-
-        final PrintQuery print = new PrintQuery(_instance);
-        print.addSelect(selTransInst, selProdInst, selDate);
-        print.executeWithoutAccessCheck();
-
-        final Instance transInst = print.<Instance>getSelect(selTransInst);
-
+        // in general we do not want the one which are not "UpToDate"
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
         attrQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
-        // first check if for the same date exists one
+        // first check if for the same date exists one (partial update)
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-        queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
-                        print.<Instance>getSelect(selProdInst));
+        queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, transCosting.getProductInstance());
         queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
-        queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Date, print.<DateTime>getSelect(selDate));
+        queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Date, transCosting.getDate());
         queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
         final InstanceQuery query = queryBldr.getQuery();
         query.executeWithoutAccessCheck();
         Instance prev = null;
         while (query.next()) {
-            if (query.getCurrentValue().equals(transInst)) {
+            if (query.getCurrentValue().equals(transCosting.getTransactionInstance())) {
                 if (prev != null) {
-                    transRet = prev;
+                    transInstance = prev;
                 }
             } else {
                 prev = query.getCurrentValue();
             }
         }
-        // if not found yet check on all dates before
+        // if not found yet check on all dates before, but still only "UpToDate" ones  (partial update)
         if (prev == null) {
             final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.TransactionInOutAbstract);
             queryBldr2.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
             queryBldr2.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
-                            print.<Instance>getSelect(selProdInst));
-            queryBldr2.addWhereAttrLessValue(CIProducts.TransactionInOutAbstract.Date,
-                            print.<DateTime>getSelect(selDate));
+                            transCosting.getProductInstance());
+            queryBldr2.addWhereAttrLessValue(CIProducts.TransactionInOutAbstract.Date, transCosting.getDate());
             queryBldr2.addOrderByAttributeDesc(CIProducts.TransactionInOutAbstract.Date);
             queryBldr2.addOrderByAttributeDesc(CIProducts.TransactionInOutAbstract.Position);
             final InstanceQuery query2 = queryBldr2.getQuery();
             query2.setLimit(1);
             query2.executeWithoutAccessCheck();
             while (query2.next()) {
-                transRet = query2.getCurrentValue();
+                transInstance = query2.getCurrentValue();
             }
         }
-        if (transRet == null) {
-            ret = _instance;
+        // still not found yet check on all no matter of the "UpToDate" or date (update all)
+        if (prev == null) {
+            final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            queryBldr2.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
+                            transCosting.getProductInstance());
+            queryBldr2.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
+            queryBldr2.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
+            final InstanceQuery query2 = queryBldr2.getQuery();
+            query2.setLimit(1);
+            query2.executeWithoutAccessCheck();
+            while (query2.next()) {
+                transInstance = query2.getCurrentValue();
+            }
+        }
+
+        if (transInstance == null) {
+            ret = _costingInstance;
         } else {
-            final QueryBuilder queryBldrRes = new QueryBuilder(CIProducts.Costing);
-            queryBldrRes.addWhereAttrEqValue(CIProducts.Costing.TransactionAbstractLink, transRet);
-            final InstanceQuery queryRes = queryBldrRes.getQuery();
-            queryRes.executeWithoutAccessCheck();
-            if (queryRes.next()) {
-                ret = queryRes.getCurrentValue();
+            final TransCosting transCostingRet = getTransCosting();
+            transCostingRet.setTransactionInstance(transInstance);
+            final Instance retTmp = transCostingRet.getCostingInstance();
+            if (retTmp != null) {
+                ret = retTmp;
             }
         }
         return ret;
@@ -467,12 +496,13 @@ public abstract class Costing_Base
             multi.addAttribute(CIProducts.Costing.Cost, CIProducts.Costing.Quantity, CIProducts.Costing.Result,
                             CIProducts.Costing.UpToDate);
             multi.executeWithoutAccessCheck();
-            multi.next();
-            this.upToDate = multi.<Boolean>getAttribute(CIProducts.Costing.UpToDate);
-            this.cost = multi.<BigDecimal>getAttribute(CIProducts.Costing.Cost);
-            this.costingQuantity = multi.<BigDecimal>getAttribute(CIProducts.Costing.Quantity);
-            this.result = multi.<BigDecimal>getAttribute(CIProducts.Costing.Result);
-            this.costingInstance = multi.getCurrentInstance();
+            if (multi.next()) {
+                this.upToDate = multi.<Boolean>getAttribute(CIProducts.Costing.UpToDate);
+                this.cost = multi.<BigDecimal>getAttribute(CIProducts.Costing.Cost);
+                this.costingQuantity = multi.<BigDecimal>getAttribute(CIProducts.Costing.Quantity);
+                this.result = multi.<BigDecimal>getAttribute(CIProducts.Costing.Result);
+                this.costingInstance = multi.getCurrentInstance();
+            }
         }
 
         /**
@@ -505,13 +535,12 @@ public abstract class Costing_Base
             insert.add(CIProducts.Costing.TransactionAbstractLink, getTransactionInstance());
             insert.add(CIProducts.Costing.Cost, costTmp);
             insert.add(CIProducts.Costing.Result, costTmp);
-            insert.add(CIProducts.Costing.UpToDate, true);
+            insert.add(CIProducts.Costing.UpToDate, isUpToDate());
             insert.executeWithoutTrigger();
 
             setCost(costTmp);
             setResult(costTmp);
             setCostingInstance(insert.getInstance());
-            setUpToDate(true);
         }
 
 
