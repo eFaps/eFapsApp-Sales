@@ -22,9 +22,11 @@ package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
@@ -43,6 +45,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.quartz.Job;
@@ -190,19 +194,58 @@ public abstract class Costing_Base
             }
         }
 
+        final Map<Instance,TransCosting> prod2cost = new HashMap<Instance,TransCosting>();
         for (final Instance inst : updateCost) {
-            updateCosting(inst);
+            final TransCosting transCost = updateCosting(inst);
+            prod2cost.put(transCost.getProductInstance(), transCost);
+        }
+
+        for (final TransCosting transCost : prod2cost.values()) {
+            updateCost(transCost);
         }
     }
 
     /**
-     * @param _costingInstance start instance (the instance with the last
-     *            correct value)
-     * @throws EFapsException on error
+     * @param _transCost TransCosting containing the information to register the cost
+     * @throws EFapsException
      */
-    protected void updateCosting(final Instance _costingInstance)
+    protected void updateCost(final TransCosting _transCost)
         throws EFapsException
     {
+        BigDecimal currPrice = BigDecimal.ZERO;
+        final DateTime date = new DateTime();
+        final QueryBuilder costBldr = new QueryBuilder(CIProducts.ProductCost);
+        costBldr.addWhereAttrEqValue(CIProducts.ProductCost.ProductLink, _transCost.getProductInstance());
+        costBldr.addWhereAttrGreaterValue(CIProducts.ProductCost.ValidUntil, date.minusMinutes(1));
+        costBldr.addWhereAttrLessValue(CIProducts.ProductCost.ValidFrom, date.plusMinutes(1));
+        final MultiPrintQuery costMulti = costBldr.getPrint();
+        costMulti.addAttribute(CIProducts.ProductCost.Price);
+        costMulti.executeWithoutAccessCheck();
+        if (costMulti.next()) {
+            currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
+        }
+        if (currPrice.compareTo(_transCost.getResult()) != 0) {
+            final Insert insert = new Insert(CIProducts.ProductCost);
+            insert.add(CIProducts.ProductCost.ProductLink, _transCost.getProductInstance());
+            insert.add(CIProducts.ProductCost.Price, _transCost.getResult());
+            insert.add(CIProducts.ProductCost.ValidFrom, date);
+            insert.add(CIProducts.ProductCost.ValidUntil, date.plusYears(10));
+            insert.add(CIProducts.ProductCost.CurrencyLink, Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE));
+            insert.executeWithoutAccessCheck();
+        }
+    }
+
+
+    /**
+     * @param _costingInstance start instance (the instance with the last
+     *            correct value)
+     * @return last TransCosting containing the final result for the product
+     * @throws EFapsException on error
+     */
+    protected TransCosting updateCosting(final Instance _costingInstance)
+        throws EFapsException
+    {
+        TransCosting ret = null;
         Costing_Base.LOG.debug("Update Costing for: {}", _costingInstance);
 
         final List<TransCosting> tcList = new ArrayList<TransCosting>();
@@ -313,7 +356,9 @@ public abstract class Costing_Base
                 }
             }
             prev = current;
+            ret = current;
         }
+        return ret;
     }
 
     /**
