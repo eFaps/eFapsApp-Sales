@@ -110,6 +110,7 @@
         <field name="name4create">
             <property name="Attribute">Name</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="name">
@@ -288,6 +289,7 @@
             <property name="Label">Sales_CashDeskBalanceForm.targetPayments.Heading</property>
         </field>
         <field name="paymentTable" character="Target">
+            <property name="ModeEdit">NONE</property>
             <table>Sales_PaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_Payment</property>

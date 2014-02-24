@@ -90,6 +90,21 @@ public abstract class PettyCashReceipt_Base
         return ret;
     }
 
+    /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        return new Return();
+    }
+
 
 
     @Override

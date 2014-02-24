@@ -28,7 +28,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashRecieptPosition</name>
+        <name>Sales_PettyCashReceiptPosition</name>
         <parent>Sales_PositionSumAbstract</parent>
         <attribute>
             <name>PettyCashReceiptLink</name>

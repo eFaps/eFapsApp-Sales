@@ -38,15 +38,22 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
+
         <target>
             <form>Sales_PettyCashReceiptForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="edit" >
+                <property name="PositionType">Sales_PettyCashReceiptPosition</property>
+            </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_PettyCashReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
     </definition>
 </ui-command>

@@ -176,6 +176,7 @@
         </status>
 
         <status group="Sales_PettyCashReceiptStatus">
+            <key>Open</key>
             <key>Closed</key>
         </status>
 
@@ -292,7 +293,7 @@
             <key>Protest</key>
             <key>Renewed</key>
         </status>
-        
+
         <status group="Sales_CreditStatus">
             <key>Open</key>
             <key>Closed</key>
