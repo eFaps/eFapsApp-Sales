@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,31 +19,18 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>feff8e73-a7f7-4717-8cd9-104f57b678a5</uuid>
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c1d45b2d-f369-4215-a725-a9936b397892</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ExchangeTree</name>
-        <!-- targets -->
-        <target>
-            <menu>Sales_ExchangeTree_Menu</menu>
-            <form>Sales_ExchangeForm</form>
-        </target>
-        <!-- type tree for -->
-        <type>Sales_Exchange</type>
-        <childs>
-            <child>Sales_DocumentAbstractTree_Doc</child>
-            <child>Sales_DocumentAbstractTree_PaymentDocument</child>
-            <child>Sales_ExchangeTree_Invoice</child>
-        </childs>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_IncomingExchangeSearchForm</name>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_DocumentSearchForm.name.Label</property>
+        </field>
     </definition>
-</ui-menu>
+</ui-form>
