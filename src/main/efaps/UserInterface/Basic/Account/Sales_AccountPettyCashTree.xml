@@ -47,6 +47,7 @@
         <type>Sales_AccountPettyCash</type>
         <childs>
             <child>Sales_AccountPettyCashTree_Transaction</child>
+            <child>Sales_AccountPettyCashTree_Documents</child>
         </childs>
 
         <!-- properties -->

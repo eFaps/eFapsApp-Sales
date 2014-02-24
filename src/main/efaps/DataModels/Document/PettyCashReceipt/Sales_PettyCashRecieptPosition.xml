@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,26 +21,21 @@
  Last Changed By: $Author$
 
 -->
-
-<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0fb4062b-29a2-4c43-aa20-840dc0fafab3</uuid>
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>dadc81fe-ddf6-454a-be5f-8854d7a6d6e3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashReceiptStatus</name>
-        <parent>Sales_DocumentStatus</parent>
-        <status key="Open">
-            <description>Invoice was printed, but needs to be payed for.</description>
-        </status>
-        <status key="Closed">
-            <description>Closed.</description>
-        </status>
-        <status key="Booked">
-            <description>Invoice was booked.</description>
-        </status>
+        <name>Sales_PettyCashRecieptPosition</name>
+        <parent>Sales_PositionSumAbstract</parent>
+        <attribute>
+            <name>PettyCashReceiptLink</name>
+            <type>Link</type>
+            <typelink>Sales_PettyCashReceipt</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
     </definition>
-</datamodel-statusgroup>
+</datamodel-type>

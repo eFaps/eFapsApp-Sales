@@ -792,7 +792,7 @@ public abstract class Account_Base
     public Return createPettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
-        createPettyCashReceiptDoc( _parameter);
+
         return new Return();
     }
 
@@ -1255,14 +1255,13 @@ public abstract class Account_Base
 
                 Instance instPayment = null;
                 Instance instPaymentOld = null;
-                Instance instClass = null;
                 for (final Entry<Instance, Instance> entry : _mapRel.entrySet()) {
                     if (entry.getValue().getType().isKindOf(CISales.Payment.getType())) {
                         instPayment = entry.getValue();
                         instPaymentOld = entry.getKey();
                     }
                     if (entry.getValue().getType().isKindOf(CISales.PettyCashReceipt_Class.getType())) {
-                        instClass = entry.getValue();
+                        entry.getValue();
                     }
                 }
 

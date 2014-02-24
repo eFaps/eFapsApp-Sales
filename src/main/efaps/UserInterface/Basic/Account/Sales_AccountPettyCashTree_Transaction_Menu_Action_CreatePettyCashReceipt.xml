@@ -40,9 +40,12 @@
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountPettyCashReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.Account" method="createPettyCashReceipt" />
-            <validate program="org.efaps.esjp.sales.Account" method="validatePettyCashReceipt"/>
+            <form>Sales_PettyCashReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create" >
+                <property name="PositionType">Sales_PettyCashRecieptPosition</property>
+                <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
+                <property name="Status">Open</property></execute>
+            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate"/>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
@@ -51,8 +54,8 @@
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_PettyCashReceipt</property>
-        <property name="WindowHeight">500</property>
-        <property name="WindowWidth">700</property>
-        <property name="TargetCreateClassifications">Sales_PettyCashReceipt_Class</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
     </definition>
 </ui-command>
