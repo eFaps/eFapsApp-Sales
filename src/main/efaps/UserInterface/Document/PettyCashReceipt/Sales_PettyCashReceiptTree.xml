@@ -39,6 +39,9 @@
             <form>Sales_PettyCashReceiptForm</form>
         </target>
         <type>Sales_PettyCashReceipt</type>
+        <childs>
+            <child>Sales_PettyCashReceiptTree_Position</child>
+        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
