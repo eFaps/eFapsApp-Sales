@@ -55,19 +55,6 @@
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
         <attribute>
-            <name>ReceiptTypeLink</name>
-            <type>LinkWithRanges</type>
-            <typelink>Sales_PettyCashReceiptTypeAttr</typelink>
-            <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>
-            <sqlcolumn>RECEIPTTYPEID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                     name="Sales_PettyCashReceipt_Class.ReceiptTypeLink.RANGE_VALUE"
-                     event="RANGE_VALUE">
-                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
-                <property name="Type">Sales_PettyCashReceiptTypeAttr</property>
-            </trigger>
-        </attribute>
-        <attribute>
             <name>Name</name>
             <type>String</type>
             <sqltable>Sales_PettyCashReceipt_ClassSQLTable</sqltable>

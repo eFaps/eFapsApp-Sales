@@ -36,7 +36,6 @@
             <table-name>T_SALESPCRCLASS</table-name>
             <!-- columns -->
             <column name="DOCID"         type="INTEGER"      not-null="true" />
-            <column name="RECEIPTTYPEID" type="INTEGER" />
             <column name="NAME"          type="STRING_SHORT"                 length="128" />
             <column name="EMPLOYEENAME"  type="STRING_SHORT"                 length="128" />
             <foreign name="T_SALESPCRCLASS_FK_DOCID" key="DOCID" reference="T_ERPDOC(ID)" />
