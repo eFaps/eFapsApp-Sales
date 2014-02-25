@@ -121,6 +121,12 @@
             <property name="Attribute">Revision</property>
             <property name="Required">true</property>
         </field>
+        <field name="accountPettyCash">
+            <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashReceipt#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_AccountPettyCash2PettyCashReceipt#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
+        </field>
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>

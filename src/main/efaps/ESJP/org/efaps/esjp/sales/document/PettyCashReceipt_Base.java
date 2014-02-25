@@ -58,6 +58,7 @@ public abstract class PettyCashReceipt_Base
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2Account(_parameter, createdDoc);
+        createTransaction(_parameter, createdDoc);
         return new Return();
     }
 
@@ -70,6 +71,30 @@ public abstract class PettyCashReceipt_Base
         insert.add(CISales.AccountPettyCash2PettyCashReciept.ToLink, _createdDoc.getInstance());
         insert.execute();
     }
+
+    protected void createTransaction(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Insert payInsert = new Insert(CISales.Payment);
+        payInsert.add(CISales.Payment.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
+        payInsert.add(CISales.Payment.CreateDocument, _createdDoc.getInstance());
+        payInsert.execute();
+
+        final Insert transInsert = new Insert(CISales.TransactionOutbound);
+        transInsert.add(CISales.TransactionOutbound.Amount,
+                        _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name));
+        transInsert.add(CISales.TransactionOutbound.CurrencyId,
+                        _createdDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
+        transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
+        transInsert.add(CISales.TransactionOutbound.Account, _parameter.getInstance());
+        transInsert.add(CISales.TransactionOutbound.Description,
+                        _createdDoc.getValue(CISales.DocumentSumAbstract.Note.name));
+        transInsert.add(CISales.TransactionOutbound.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
+        transInsert.execute();
+    }
+
+
 
     @Override
     protected String getDocName4Create(final Parameter _parameter)

@@ -23,12 +23,12 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b56c018e-f6f9-4ca6-895a-77d9e9b115f4</uuid>
+    <uuid>da317303-6ef6-4ea3-9e25-65c31a627ae8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountPettyCash2PettyCashReciept</name>
+        <name>Sales_AccountPettyCash2PettyCashBalance</name>
         <parent>Sales_Account2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
@@ -40,7 +40,7 @@
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_PettyCashReceipt</typelink>
+            <typelink>Sales_PettyCashBalance</typelink>
             <sqltable>Sales_Account2DocumentSQLTable</sqltable>
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>

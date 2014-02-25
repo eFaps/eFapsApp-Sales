@@ -41,7 +41,7 @@
         <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingForm</form>
-            <execute program="org.efaps.esjp.sales.Account" method="pettyCashBalance">
+            <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="create">
                 <property name="JasperReport">Sales_PettyCashBalance</property>
                 <property name="Mime">pdf</property>
             </execute>

@@ -42,7 +42,7 @@
         <target>
             <form>Sales_PettyCashReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create" >
-                <property name="PositionType">Sales_PettyCashRecieptPosition</property>
+                <property name="PositionType">Sales_PettyCashReceiptPosition</property>
                 <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
                 <property name="Status">Open</property></execute>
             <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate"/>

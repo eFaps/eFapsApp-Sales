@@ -74,12 +74,21 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
+        <field name="nameGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_PettyCashBalance/Name.Label</property>
+        </field>
+        <field name="accountPettyCash">
+            <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">>linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
