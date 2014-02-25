@@ -69,6 +69,12 @@
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Position</name>
+            <type>Integer</type>
+            <sqltable>Sales_Account2DocumentSQLTable</sqltable>
+            <sqlcolumn>POS</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
             <sqltable>Sales_Account2DocumentSQLTable</sqltable>

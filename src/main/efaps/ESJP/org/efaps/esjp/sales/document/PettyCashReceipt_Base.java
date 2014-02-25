@@ -20,7 +20,11 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -29,7 +33,12 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.Account;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 /**
@@ -66,9 +75,9 @@ public abstract class PettyCashReceipt_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Insert insert = new Insert(CISales.AccountPettyCash2PettyCashReciept);
-        insert.add(CISales.AccountPettyCash2PettyCashReciept.FromLink, _parameter.getInstance());
-        insert.add(CISales.AccountPettyCash2PettyCashReciept.ToLink, _createdDoc.getInstance());
+        final Insert insert = new Insert(CISales.AccountPettyCash2PettyCashReceipt);
+        insert.add(CISales.AccountPettyCash2PettyCashReceipt.FromLink, _parameter.getInstance());
+        insert.add(CISales.AccountPettyCash2PettyCashReceipt.ToLink, _createdDoc.getInstance());
         insert.execute();
     }
 
@@ -102,7 +111,11 @@ public abstract class PettyCashReceipt_Base
     {
         String ret = _parameter.getParameterValue("name4create");
         if (ret == null || (ret != null && ret.isEmpty())) {
-            ret = "todo";
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CISales.AccountPettyCash.Name);
+            print.execute();
+            final String accName = print.<String>getAttribute(CISales.AccountPettyCash.Name);
+            ret =  accName + " " + (new Account().getMaxPosition(_parameter, _parameter.getInstance()) + 1);
         }
         return ret;
     }
@@ -111,9 +124,65 @@ public abstract class PettyCashReceipt_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.TRUE, true);
+        final StringBuilder html = new StringBuilder();
+
+        // first check the positions
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        if (calcList.isEmpty() || getNetTotal(_parameter, calcList).compareTo(BigDecimal.ZERO) ==0) {
+            html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Positions"));
+        } else {
+            if (evalDeducible(_parameter)) {
+                final Return tmp = validateName(_parameter);
+                final String snipplet = (String) tmp.get(ReturnValues.SNIPLETT);
+                if (snipplet != null) {
+                    html.append(snipplet);
+                }
+                final String name = _parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
+                final Instance contactInst = Instance.get(_parameter
+                                .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name));
+                if (name != null && !name.isEmpty() && contactInst.isValid()) {
+                    ret.put(ReturnValues.TRUE, true);
+                } else {
+                    html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Deducible"));
+                }
+            } else {
+                final String name = _parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
+                final String contact = _parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name);
+                if ((name == null || name.isEmpty()) && (contact == null || contact.isEmpty())) {
+                    ret.put(ReturnValues.TRUE, true);
+                } else {
+                    html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4NotDeducible"));
+                }
+            }
+        }
+        if (html.length() > 0) {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        }
         return ret;
     }
+
+    public Return update4DocumentType(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        if (!evalDeducible(_parameter)) {
+            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final Map<String, String> map = new HashMap<String, String>();
+            list.add(map);
+            map.put(CIFormSales.Sales_PettyCashReceiptForm.name4create.name, "");
+            map.put(CIFormSales.Sales_PettyCashReceiptForm.contactData.name, "");
+            map.put(CIFormSales.Sales_PettyCashReceiptForm.contact.name, "");
+            map.put(CIFormSales.Sales_PettyCashReceiptForm.contact.name + "AutoComplete", "");
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    protected boolean evalDeducible(final Parameter _parameter)
+    {
+        return !"NONE".equals(_parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.documentType.name));
+    }
+
 
     /**
      * Edit.

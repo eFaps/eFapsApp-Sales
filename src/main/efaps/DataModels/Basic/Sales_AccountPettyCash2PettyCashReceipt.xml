@@ -44,5 +44,7 @@
             <sqltable>Sales_Account2DocumentSQLTable</sqltable>
             <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
+        <trigger program="org.efaps.esjp.sales.Account" method="insertPostTrigger4Acc2Doc"
+            name="Sales_AccountPettyCash2PettyCashReceipt.INSERT_POST" event="INSERT_POST"></trigger>
     </definition>
 </datamodel-type>

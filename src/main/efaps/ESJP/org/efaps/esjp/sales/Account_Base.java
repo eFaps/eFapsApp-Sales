@@ -83,6 +83,46 @@ import org.joda.time.DateTime;
 public abstract class Account_Base
 {
 
+    public Return insertPostTrigger4Acc2Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.AccountPettyCash2PettyCashReceipt.FromLink)
+                        .instance();
+        print.addSelect(selInst);
+        print.executeWithoutAccessCheck();
+        final Integer pos = getMaxPosition(_parameter, print.<Instance>getSelect(selInst));
+
+        final Update update = new Update(_parameter.getInstance());
+        update.add(CISales.AccountPettyCash2PettyCashReceipt.Position, pos + 1);
+        update.executeWithoutTrigger();
+        return new Return();
+    }
+
+
+
+    public Integer getMaxPosition(final Parameter _parameter,
+                                  final Instance _accInstance)
+        throws EFapsException
+    {
+        Integer ret = 0;
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountPettyCash2PettyCashReceipt);
+        queryBldr.addWhereAttrEqValue(CISales.AccountPettyCash2PettyCashReceipt.FromLink, _accInstance);
+        queryBldr.addWhereAttrNotIsNull(CISales.AccountPettyCash2PettyCashReceipt.Position);
+        queryBldr.addOrderByAttributeDesc(CISales.AccountPettyCash2PettyCashReceipt.Position);
+        final InstanceQuery query = queryBldr.getQuery();
+        query.setLimit(1);
+        final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
+        multi.addAttribute(CISales.AccountPettyCash2PettyCashReceipt.Position);
+        multi.execute();
+        if (multi.next()) {
+            final Integer tmp = multi.<Integer>getAttribute(CISales.AccountPettyCash2PettyCashReceipt.Position);
+            ret = tmp == null ? 0 : tmp;
+        }
+        return ret;
+    }
+
+
     /**
      * Method for create a new Cash Desk Balance.
      *

@@ -140,6 +140,8 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="update4DocumentType"
+                    name="Sales_PettyCashReceiptForm.documentType.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="documentType4View">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
