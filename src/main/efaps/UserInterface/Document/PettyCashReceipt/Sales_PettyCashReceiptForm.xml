@@ -187,7 +187,7 @@
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_PettyCashReceiptForm.headingPositon.Label</property>
+            <property name="Label">Sales_PettyCashReceiptForm.headingPositon.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="currencyGroup" character="Group">
