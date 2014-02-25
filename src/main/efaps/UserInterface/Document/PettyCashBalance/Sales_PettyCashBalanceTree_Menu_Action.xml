@@ -30,7 +30,6 @@
         <name>Sales_PettyCashBalanceTree_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Sales_PettyCashBalanceTree_Menu_Action_SetVerified</child>
             <child>Sales_PettyCashBalanceTree_Menu_Action_Checkout4Liquidation</child>
         </childs>
     </definition>
