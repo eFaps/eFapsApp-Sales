@@ -38,6 +38,7 @@
     <childs>
       <child>Sales_OrderOutboundMyDesk_Menu_Action_Create</child>
       <child>Sales_OrderOutboundMyDesk_Menu_Action_CreateFromDoc</child>
+      <child>Sales_OrderOutboundMyDesk_Menu_Action_Copy</child>
       <child>Sales_OrderOutboundMyDesk_Menu_Action_Delete</child>
     </childs>
   </definition>
