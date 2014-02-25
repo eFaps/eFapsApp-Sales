@@ -947,40 +947,6 @@ public abstract class Account_Base
         return ret;
     }
 
-    public Return dropDownFieldValueReceipt(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return retVal = new Return();
-        final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-
-        final PrintQuery print = new PrintQuery(_parameter.getInstance() != null
-                        ? _parameter.getInstance() : _parameter.getCallInstance());
-        final SelectBuilder selDocType = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
-                        .attribute(CISales.PettyCashReceipt_Class.ReceiptTypeLink);
-        print.addSelect(selDocType);
-        print.execute();
-        final Long receiptId = print.<Long>getSelect(selDocType);
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashReceiptTypeAttr.getType());
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.PettyCashReceiptTypeAttr.Value, CISales.PettyCashReceiptTypeAttr.Description);
-        multi.execute();
-        html.append("<select name=\"").append(fieldValue.getField().getName()).append("\">");
-        while (multi.next()) {
-            final String value = multi.<String>getAttribute(CISales.PettyCashReceiptTypeAttr.Value);
-            final String description = multi.<String>getAttribute(CISales.PettyCashReceiptTypeAttr.Description);
-            final Long id = multi.getCurrentInstance().getId();
-            html.append("<option value=\"").append(id).append("\"");
-            if (receiptId != null && receiptId.equals(id)) {
-                html.append(" selected ");
-            }
-            html.append(">").append(value + " - " + description).append("</option>");
-        }
-        html.append("</select>");
-        retVal.put(ReturnValues.SNIPLETT, html.toString());
-
-        return retVal;
-    }
 
     public Return editJustification4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
@@ -988,7 +954,7 @@ public abstract class Account_Base
         final String contact = _parameter.getParameterValue("contact");
         final String docName = _parameter.getParameterValue("name");
         final String emp = _parameter.getParameterValue("employeeName");
-        final String typeDoc = _parameter.getParameterValue("receiptTypeLink");
+        _parameter.getParameterValue("receiptTypeLink");
         final Update update = new Update(_parameter.getCallInstance());
         update.add(CISales.PettyCashReceipt.Contact, contact.length() > 0 ? Instance.get(contact).getId() : null);
         update.execute();
@@ -1002,7 +968,7 @@ public abstract class Account_Base
                 final Update update2 = new Update(instClazz);
                 update2.add(CISales.PettyCashReceipt_Class.Name, docName.length() > 0 ? docName : null);
                 update2.add(CISales.PettyCashReceipt_Class.EmployeeName, emp.length() > 0 ? emp : null);
-                update2.add(CISales.PettyCashReceipt_Class.ReceiptTypeLink, typeDoc.length() > 0 ? typeDoc : null);
+                //update2.add(CISales.PettyCashReceipt_Class.ReceiptTypeLink, typeDoc.length() > 0 ? typeDoc : null);
                 update2.execute();
             }
         }
