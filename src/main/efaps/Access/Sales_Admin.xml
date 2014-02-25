@@ -80,6 +80,7 @@
         <type>Sales_ReturnSlip</type>
         <type>Sales_ReturnUsageReport</type>
         <type>Sales_UsageReport</type>
+        <type>Sales_ServiceOrderOutbound</type>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -303,6 +304,12 @@
         <status group="Sales_IncomingCreditStatus">
             <key>Open</key>
             <key>Closed</key>
+        </status>
+        
+        <status group="Sales_ServiceOrderOutboundStatus">
+            <key>Open</key>
+            <key>Received</key>
+            <key>Canceled</key>
         </status>
 
         <role>Sales_Admin</role>
