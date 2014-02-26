@@ -186,7 +186,7 @@
             <table>Sales_ServiceOrderOutboundPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Types">Sales_ServiceOrderOutboundPosition</property>
-                <property name="LinkFroms">Order</property>
+                <property name="LinkFroms">ServiceOrder</property>
             </evaluate>
         </field>
         <field character="Group" name="noteGroup">
