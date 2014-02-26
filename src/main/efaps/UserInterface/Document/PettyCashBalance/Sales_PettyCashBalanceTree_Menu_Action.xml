@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2010 The eFaps Team
 
@@ -19,18 +20,18 @@
  Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
  Last Changed By: $Author: miguel.a.aranya $
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d0723571-42e8-4ce4-ab89-4f29cf0d043a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5313 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashBalanceTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_PettyCashBalanceTree_Menu_Action_Checkout4Liquidation</child>
+            <child>Sales_PettyCashBalanceTree_Menu_Action_SetVerified</child>
         </childs>
     </definition>
 </ui-menu>

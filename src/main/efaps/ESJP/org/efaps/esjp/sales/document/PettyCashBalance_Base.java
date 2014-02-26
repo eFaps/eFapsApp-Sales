@@ -26,7 +26,10 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -36,11 +39,13 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
@@ -51,6 +56,7 @@ import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -267,12 +273,47 @@ public abstract class PettyCashBalance_Base
         return ret;
     }
 
-
     @Override
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
         return new DateTime().toLocalTime().toString();
+    }
+
+    public Return verify(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+        attrQueryBldr.addWhereAttrEqValue(CISales.PettyCashBalance2PettyCashReceipt.FromLink, instance);
+        final AttributeQuery attrQuery = attrQueryBldr
+                        .getAttributeQuery(CISales.PettyCashBalance2PettyCashReceipt.ToLink);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashReceipt);
+        queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PettyCashReceipt.Contact);
+        multi.execute();
+        while (multi.next()) {
+            final Object contactObj = multi.getAttribute(CISales.PettyCashReceipt.Contact);
+            final Update recUpdate = new Update(multi.getCurrentInstance());
+            recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
+            if (contactObj != null) {
+                final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
+                                SalesSettings.INCOMINGINVOICESEQUENCE);
+                final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                if (numgen != null) {
+                    final String revision = numgen.getNextVal();
+                    recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
+                }
+            }
+            recUpdate.execute();
+        }
+
+        final Update update = new Update(instance);
+        update.add(CISales.PettyCashBalance.Status, Status.find(CISales.PettyCashBalanceStatus.Verified));
+        update.execute();
+        return new Return();
     }
 
 }
