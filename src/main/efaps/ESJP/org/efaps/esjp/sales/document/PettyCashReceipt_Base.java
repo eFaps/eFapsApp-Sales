@@ -47,6 +47,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Transaction;
 import org.efaps.util.EFapsException;
 
 /**
@@ -123,6 +124,53 @@ public abstract class PettyCashReceipt_Base
                         _createdDoc.getValue(CISales.DocumentSumAbstract.Note.name));
         transInsert.add(CISales.TransactionOutbound.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
         transInsert.execute();
+    }
+
+    /**
+     * Update the transaction for the PettyCash.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _editedDoc doc the transaction is connected to
+     * @param _prevAmount previous amount
+     * @throws EFapsException on error
+     */
+    protected void updateTransaction(final Parameter _parameter,
+                                     final EditedDoc _editedDoc)
+        throws EFapsException
+    {
+        // get the payment
+        final QueryBuilder payQueryBldr = new QueryBuilder(CISales.Payment);
+        payQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _editedDoc.getInstance());
+        final InstanceQuery payQuery = payQueryBldr.getQuery();
+        payQuery.executeWithoutAccessCheck();
+        if (payQuery.next()) {
+            final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionOutbound);
+            transQueryBldr.addWhereAttrEqValue(CISales.TransactionOutbound.Payment, payQuery.getCurrentValue());
+            final MultiPrintQuery multi = transQueryBldr.getPrint();
+            final SelectBuilder accSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
+            final SelectBuilder curSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
+            multi.addSelect(accSel, curSel);
+            multi.addAttribute(CISales.TransactionOutbound.Amount);
+            multi.executeWithoutAccessCheck();
+            if (multi.next()) {
+                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+                final Instance accountInst = multi.<Instance>getSelect(accSel);
+                final Instance currencyInst = multi.<Instance>getSelect(curSel);
+                final BigDecimal newAmount = (BigDecimal) _editedDoc
+                                .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
+                if (newAmount.compareTo(amount) != 0) {
+                    final Update update = new Update(multi.getCurrentInstance());
+                    update.add(CISales.TransactionOutbound.Amount,
+                                    _editedDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name));
+                    update.add(CISales.TransactionOutbound.CurrencyId,
+                                    _editedDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
+                    update.add(CISales.TransactionOutbound.Description,
+                                    _editedDoc.getValue(CISales.DocumentSumAbstract.Note.name));
+                    update.execute();
+                    new Transaction().updateBalance(_parameter, accountInst, currencyInst, newAmount.subtract(amount));
+                }
+            }
+        }
     }
 
     /**
@@ -236,6 +284,7 @@ public abstract class PettyCashReceipt_Base
     {
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
+        updateTransaction(_parameter, editDoc);
         return new Return();
     }
     /**

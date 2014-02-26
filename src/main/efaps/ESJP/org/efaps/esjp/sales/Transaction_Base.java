@@ -113,45 +113,52 @@ public abstract class Transaction_Base
     {
         final Instance instance = _parameter.getInstance();
         // get the transaction
-        final PrintQuery query = new PrintQuery(instance);
-        query.addAttribute(CISales.TransactionAbstract.Account, CISales.TransactionAbstract.Amount,
-                        CISales.TransactionAbstract.CurrencyId);
-        BigDecimal amount = null;
-        Long account = null;
-        Long currency = null;
-        if (query.execute()) {
-            amount = (BigDecimal) query.getAttribute(CISales.TransactionAbstract.Amount);
-            account = (Long) query.getAttribute(CISales.TransactionAbstract.Account);
-            currency = (Long) query.getAttribute(CISales.TransactionAbstract.CurrencyId);
+        final PrintQuery print = new PrintQuery(instance);
+        final SelectBuilder accSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
+        final SelectBuilder curSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
+        print.addSelect(accSel, curSel);
+        print.addAttribute(CISales.TransactionAbstract.Amount);
+        BigDecimal amount = BigDecimal.ZERO;
+        Instance accountInst = null;
+        Instance currencyInst = null;
+        if (print.execute()) {
+            amount = print.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            accountInst =  print.<Instance>getSelect(accSel);
+            currencyInst = print.<Instance>getSelect(curSel);
         }
+        if (!_add) {
+            amount = amount.negate();
+        }
+        updateBalance(_parameter, accountInst, currencyInst, amount);
+    }
 
+    public void updateBalance(final Parameter _parameter,
+                              final Instance _accInst,
+                              final Instance _currInst,
+                              final BigDecimal _amount)
+        throws EFapsException
+    {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
-        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, account);
-        queryBldr.addWhereAttrEqValue(CISales.Balance.Currency, currency);
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, _accInst);
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Currency, _currInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.Balance.Amount);
         multi.execute();
-
+        BigDecimal amount = _amount;
         Update update;
         if (multi.next()) {
             update = new Update(multi.getCurrentInstance());
             final BigDecimal current = multi.<BigDecimal>getAttribute(CISales.Balance.Amount);
-            if (_add) {
-                amount = current.add(amount);
-            } else {
-                amount = current.subtract(amount);
-            }
+            amount = current.add(_amount);
         } else {
             update = new Insert(CISales.Balance);
-            update.add(CISales.Balance.Currency, currency);
-            update.add(CISales.Balance.Account, account);
-            if (!_add) {
-                amount = amount.negate();
-            }
+            update.add(CISales.Balance.Currency, _currInst);
+            update.add(CISales.Balance.Account, _accInst);
         }
         update.add(CISales.Balance.Amount, amount);
         update.execute();
     }
+
 
     protected void updateDocument(final Parameter _parameter)
         throws EFapsException
