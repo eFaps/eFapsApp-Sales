@@ -219,6 +219,20 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form for
+     * OrderOutbound.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4ServiceOrderOutbound(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.ServiceOrderOutbound.uuid, (Status[]) null);
+    }
+
+    /**
      * Used by the AutoCompleteField used in the select doc form for Quotations.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -594,6 +608,18 @@ public abstract class AbstractDocument_Base
         return updateFields4Doc(_parameter);
     }
 
+    /**
+     * Used by the update event used in the select doc form for OrderOutbound.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4ServiceOrderOutbound(final Parameter _parameter)
+        throws EFapsException
+    {
+        return updateFields4Doc(_parameter);
+    }
 
     /**
      * Used by the update event used in the select doc form for OrderOutbound.
