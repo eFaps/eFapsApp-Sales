@@ -180,4 +180,9 @@ public interface SalesSettings
      * (true/false) to show options and created retention and detraction.
      */
     String ACTIVATEOPTIONS4DETANDRET = "org.efaps.sales.ActivateOptions4DetAndRet";
+
+    /**
+     * (true/false) to get purchse price
+     */
+    String ACTIVATEOPTIONS4PURCHASEPRICE = "org.efaps.sales.ActivateOptions4PurchasePrice";
 }
