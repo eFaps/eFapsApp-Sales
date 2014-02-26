@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,12 +20,12 @@
   Last Changed:    $Date: 2013-10-14 15:15:10 -0500 (lun, 14 oct 2013) $
   Last Changed By: $Author: luis.moreyra@efaps.org $
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>aa95ac78-7d4b-40fd-b51f-983ecd994a53</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 10436 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashReceiptJustificationEditForm</name>
@@ -36,15 +37,11 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
-            <picker name="Contacts_CreateContactPicker"/>
-            <trigger program="org.efaps.esjp.contacts.Contacts"
-                method="autoComplete4Contact"
-                name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.contacts.Contacts"
-                method="updateFields4Contact"
-                name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" >
+            <picker name="Contacts_CreateContactPicker" />
+            <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
+                name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.contacts.Contacts" method="updateFields4Contact"
+                name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
                 <property name="fieldName">contactData</property>
             </trigger>
         </field>
@@ -56,15 +53,23 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="receiptTypeLink">
-            <property name="Columns">15</property>
+        <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Label">Sales_PettyCashReceipt_Class/ReceiptTypeLink.Label</property>
-            <trigger program="org.efaps.esjp.sales.Account" method="dropDownFieldValueReceipt"
-                name="Sales_AccountPettyCashReceiptForm.receiptTypeLink.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
+                    name="Sales_PettyCashReceiptJustificationEditForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">ERP_DocumentType</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="update4DocumentType"
+                    name="Sales_PettyCashReceiptJustificationEditForm.documentType.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
-        <field name="name">
+        <field name="name4create">
             <property name="Columns">15</property>
             <property name="Attribute">Name</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -72,24 +77,14 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.name.Label</property>
         </field>
-        <field name="employeeName">
-            <property name="Columns">15</property>
-            <property name="Attribute">EmployeeName</property>
-            <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.employeeName.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="Required">TRUE</property>
-        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.Account"
-                    method="getJavaScriptUIValue4EditJustification"
-                    name="Sales_AccountPettyCashReceiptForm.javaScript.UI_Field_Value"
-                    event="UI_FIELD_VALUE"/>
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="getJavaScriptUIValue4EditJustification"
+                name="Sales_AccountPettyCashReceiptForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

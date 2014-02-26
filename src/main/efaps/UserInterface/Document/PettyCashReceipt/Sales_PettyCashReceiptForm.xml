@@ -115,10 +115,11 @@
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">READONLY</property>
         </field>
         <field name="revision">
             <property name="Attribute">Revision</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="accountPettyCash">
@@ -126,6 +127,7 @@
             <property name="Select">linkfrom[Sales_AccountPettyCash2PettyCashReceipt#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -157,7 +159,8 @@
         <field name="headingSupplier" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_PettyCashReceiptForm.headingSupplier.Label</property>
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
@@ -165,6 +168,7 @@
             <property name="Label">Sales_PettyCashReceiptForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="autoComplete4Contact"
@@ -280,19 +284,16 @@
             <property name="Label">Sales_PettyCashReceipt/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-
-
-
         <field name="payment">
             <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Payment#CreateDocument].type.label&gt; - $&lt;linkfrom[Sales_Payment#CreateDocument].attribute[Date]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_CashDeskBalanceForm.payment.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeEdit">NONE</property>
         </field>
-
-
         <field name="targetPayments" character="Heading">
+            <property name="ModeEdit">NONE</property>
             <property name="Level">2</property>
             <property name="Label">Sales_CashDeskBalanceForm.targetPayments.Heading</property>
         </field>
@@ -304,8 +305,6 @@
                 <property name="LinkFroms">CreateDocument</property>
             </evaluate>
         </field>
-
-
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
@@ -316,6 +315,5 @@
                 name="Sales_PettyCashReceiptForm.javaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"/>
         </field>
-
     </definition>
 </ui-form>

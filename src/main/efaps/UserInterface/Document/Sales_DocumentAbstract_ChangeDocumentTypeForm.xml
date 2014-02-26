@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
   Copyright 2003 - 2010 The eFaps Team
 
@@ -19,12 +20,12 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>71378e95-da98-40a2-a178-25a5e398493a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentAbstract_ChangeDocumentTypeForm</name>
@@ -34,7 +35,9 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_DocumentAbstractForm.documentType.Label</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType" name="Sales_DocumentAbstractForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.DocumentSum">
+            <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
+                name="Sales_DocumentAbstractForm.documentType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.DocumentSum">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>

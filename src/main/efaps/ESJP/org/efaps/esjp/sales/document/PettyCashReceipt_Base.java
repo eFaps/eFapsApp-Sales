@@ -35,6 +35,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Account;
@@ -125,10 +128,10 @@ public abstract class PettyCashReceipt_Base
     {
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
-
+        final boolean evaluatePostions = !"false".equalsIgnoreCase(getProperty(_parameter, "EvaluatePostions"));
         // first check the positions
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        if (calcList.isEmpty() || getNetTotal(_parameter, calcList).compareTo(BigDecimal.ZERO) ==0) {
+        if (evaluatePostions && calcList.isEmpty() || getNetTotal(_parameter, calcList).compareTo(BigDecimal.ZERO) == 0) {
             html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Positions"));
         } else {
             if (evalDeducible(_parameter)) {
@@ -137,7 +140,8 @@ public abstract class PettyCashReceipt_Base
                 if (snipplet != null) {
                     html.append(snipplet);
                 }
-                final String name = _parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
+                final String name = _parameter
+                                .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
                 final Instance contactInst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name));
                 if (name != null && !name.isEmpty() && contactInst.isValid()) {
@@ -146,8 +150,10 @@ public abstract class PettyCashReceipt_Base
                     html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Deducible"));
                 }
             } else {
-                final String name = _parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
-                final String contact = _parameter.getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name);
+                final String name = _parameter
+                                .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
+                final String contact = _parameter
+                                .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name);
                 if ((name == null || name.isEmpty()) && (contact == null || contact.isEmpty())) {
                     ret.put(ReturnValues.TRUE, true);
                 } else {
@@ -199,6 +205,75 @@ public abstract class PettyCashReceipt_Base
         return new Return();
     }
 
+    public Return getJavaScriptUIValue4EditJustification(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance inst = _parameter.getCallInstance();
+        final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">")
+                        .append("Wicket.Event.add(window, \"domready\", function(event) {");
+
+        if (inst.isValid()) {
+            final PrintQuery print = new PrintQuery(inst);
+            final SelectBuilder selContOid = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact).oid();
+            final SelectBuilder selContName = new SelectBuilder().linkto(CISales.PettyCashReceipt.Contact)
+                            .attribute(CIContacts.Contact.Name);
+            final SelectBuilder selDocName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                            .attribute(CISales.PettyCashReceipt_Class.Name);
+            final SelectBuilder selEmplName = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class)
+                            .attribute(CISales.PettyCashReceipt_Class.EmployeeName);
+            print.addSelect(selContOid, selContName, selDocName, selEmplName);
+            if (print.execute()) {
+                final Instance contInst = Instance.get(print.<String>getSelect(selContOid));
+                final String contName = print.<String>getSelect(selContName);
+                final String docName = print.<String>getSelect(selDocName);
+                final String empName = print.<String>getSelect(selEmplName);
+                if (contInst.isValid()) {
+                    js.append(getSetFieldValue(0, "contactAutoComplete", contName, true))
+                                    .append(getSetFieldValue(0, "contact", contInst.getOid(), true));
+                }
+                if (docName != null) {
+                    js.append(getSetFieldValue(0, "name", docName, true));
+                }
+                if (empName != null) {
+                    js.append(getSetFieldValue(0, "employeeName", empName, true));
+                }
+            }
+            js.append(" });").append("</script>");
+        }
+        ret.put(ReturnValues.SNIPLETT, js.toString());
+        return ret;
+    }
+
+
+    public Return editJustification4PettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String contact = _parameter.getParameterValue("contact");
+        final String docName = _parameter.getParameterValue("name");
+        final String emp = _parameter.getParameterValue("employeeName");
+        _parameter.getParameterValue("receiptTypeLink");
+        final Update update = new Update(_parameter.getCallInstance());
+        update.add(CISales.PettyCashReceipt.Contact, contact.length() > 0 ? Instance.get(contact).getId() : null);
+        update.execute();
+
+        final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
+        final SelectBuilder selClazz = new SelectBuilder().clazz(CISales.PettyCashReceipt_Class).oid();
+        print.addSelect(selClazz);
+        if (print.execute()) {
+            final Instance instClazz = Instance.get(print.<String>getSelect(selClazz));
+            if (instClazz.isValid()) {
+                final Update update2 = new Update(instClazz);
+                update2.add(CISales.PettyCashReceipt_Class.Name, docName.length() > 0 ? docName : null);
+                update2.add(CISales.PettyCashReceipt_Class.EmployeeName, emp.length() > 0 ? emp : null);
+                // update2.add(CISales.PettyCashReceipt_Class.ReceiptTypeLink,
+                // typeDoc.length() > 0 ? typeDoc : null);
+                update2.execute();
+            }
+        }
+        return new Return();
+    }
 
 
     @Override
