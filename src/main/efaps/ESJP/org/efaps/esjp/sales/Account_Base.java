@@ -86,7 +86,7 @@ public abstract class Account_Base
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.AccountPettyCash2PettyCashReceipt.FromLink)
+        final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.Account2DocumentAbstract.FromLinkAbstract)
                         .instance();
         print.addSelect(selInst);
         print.executeWithoutAccessCheck();

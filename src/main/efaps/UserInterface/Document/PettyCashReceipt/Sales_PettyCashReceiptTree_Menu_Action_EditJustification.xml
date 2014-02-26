@@ -36,7 +36,7 @@
         <target>
             <form>Sales_PettyCashReceiptJustificationEditForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt"
-                method="editJustification4PettyCashReceipt" />
+                method="editJustification" />
             <validate program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="validate" >
                 <property name="EvaluatePostions">false</property>
