@@ -94,5 +94,13 @@
             <property name="Attribute">NetPrice</property>
             <property name="Label">Sales_IncomingReceiptPosition/NetPrice.Label</property>
         </field>
+        <field name="crossPrice">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingReceiptPosition.crossPrice.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="updateFields4CrossPrice"
+                name="Sales_IncomingReceiptPositionTable.crossPrice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
     </definition>
 </ui-table>

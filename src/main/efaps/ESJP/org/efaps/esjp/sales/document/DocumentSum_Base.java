@@ -423,6 +423,27 @@ public abstract class DocumentSum_Base
         return retVal;
     }
 
+    public Return updateFields4CrossPrice(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        final Calculator cal = calcList.get(selected);
+        cal.setCrossPrice(_parameter.getParameterValues("crossPrice")[selected]);
+        if (calcList.size() > 0) {
+            add2Map4UpdateField(_parameter, map, calcList, cal);
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _map          Map the values will be added to
@@ -446,6 +467,8 @@ public abstract class DocumentSum_Base
             _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
                                             getTypeName4SysConf(_parameter))));
             _map.put("discount", _cal.getDiscountFmtStr(NumberFormatter.get().getFrmt4Discount(
+                            getTypeName4SysConf(_parameter))));
+            _map.put("crossPrice", _cal.getCrossPriceFmtStr(NumberFormatter.get().getFrmt4Total(
                             getTypeName4SysConf(_parameter))));
         }
         // totals
@@ -670,11 +693,13 @@ public abstract class DocumentSum_Base
                 if (!calculator.isEmpty()) {
                     calculator.applyRate(newInst, rateInfos[2].getRate());
                     map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                                    getTypeName4SysConf(_parameter))));
+                                    getTypeName4SysConf(_parameter))));
                     map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                                                    getTypeName4SysConf(_parameter))));
+                                    getTypeName4SysConf(_parameter))));
                     map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
                                     NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
+                    map2.put("crossPrice", calculator.getCrossPriceFmtStr(NumberFormatter.get().getFrmt4Total(
+                                    getTypeName4SysConf(_parameter))));
                     values.put(i, map2);
                 }
                 i++;
@@ -805,6 +830,8 @@ public abstract class DocumentSum_Base
                                 getTypeName4SysConf(_parameter))));
                 map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
                                 NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
+                map2.put("crossPrice", calculator.getCrossPriceFmtStr(NumberFormatter.get().getFrmt4Total(
+                                getTypeName4SysConf(_parameter))));
                 values.put(i, map2);
 
             }

@@ -543,6 +543,58 @@ public abstract class Calculator_Base
     }
 
     /**
+     * Setter method for instance variable {@link #setCrossUnitPrice}.
+     *
+     * @param _crossPrice crossPrice.
+     * @throws EFapsException on error.
+     */
+    public void setCrossPrice(final BigDecimal _crossPrice)
+        throws EFapsException
+    {
+        setCrossUnitPrice(_crossPrice.setScale(12, BigDecimal.ROUND_HALF_UP)
+                        .divide(getQuantity(), BigDecimal.ROUND_HALF_UP));
+    }
+
+    /**
+     * Setter method for instance variable {@link #setCrossPrice}.
+     *
+     * @param _crossPrice crossPrice string.
+     * @throws EFapsException on error.
+     */
+    public void setCrossPrice(final String _crossPrice)
+        throws EFapsException
+    {
+        setCrossPrice(_crossPrice != null && _crossPrice.length() > 0
+                        ? parse(_crossPrice) : BigDecimal.ZERO);
+    }
+
+    /**
+     * Setter method for instance variable {@link #setNetUnitPrice}.
+     *
+     * @param _crossPrice crossPrice string.
+     * @throws EFapsException on error.
+     */
+    public void setNetPrice(final BigDecimal _netPrice)
+        throws EFapsException
+    {
+        setNetUnitPrice(_netPrice.setScale(12, BigDecimal.ROUND_HALF_UP)
+                        .divide(getQuantity(), BigDecimal.ROUND_HALF_UP));
+    }
+
+    /**
+     * Setter method for instance variable {@link #setNetPrice}.
+     *
+     * @param _crossPrice crossPrice string.
+     * @throws EFapsException on error.
+     */
+    public void setNetPrice(final String _netPrice)
+        throws EFapsException
+    {
+        setNetPrice(_netPrice != null && _netPrice.length() > 0
+                        ? parse(_netPrice) : BigDecimal.ZERO);
+    }
+
+    /**
      * @return get the new Price
      * @throws EFapsException on error
      */
@@ -642,8 +694,8 @@ public abstract class Calculator_Base
             for (final Tax tax : taxesTmp) {
                 final BigDecimal factor = tax.getFactor();
                 if (factor.compareTo(BigDecimal.ONE) != 0) {
-                    targetPrice = targetPrice.subtract(_crossUnitPrice.subtract(_crossUnitPrice.divide(BigDecimal.ONE
-                                    .add(factor))));
+                    targetPrice = targetPrice.subtract(_crossUnitPrice.subtract(_crossUnitPrice
+                                    .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
                 }
             }
             if (targetPrice.compareTo(_crossUnitPrice) == 0) {

@@ -1076,6 +1076,7 @@ public abstract class AbstractDocument_Base
                         CISales.PositionSumAbstract.RateNetUnitPrice,
                         CISales.PositionSumAbstract.RateDiscountNetUnitPrice,
                         CISales.PositionSumAbstract.RateNetPrice,
+                        CISales.PositionSumAbstract.RateCrossPrice,
                         CISales.PositionSumAbstract.Tax,
                         CISales.PositionSumAbstract.Discount);
         final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
@@ -1101,6 +1102,7 @@ public abstract class AbstractDocument_Base
             final BigDecimal rateDiscountNetUnitPrice = multi.
                             <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
             final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+            final BigDecimal rateCrossPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
 
             map.put(new KeyDefStr("oid"), multi.getCurrentInstance().getOid());
@@ -1118,7 +1120,7 @@ public abstract class AbstractDocument_Base
                             : rateDiscountNetUnitPrice);
             map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice == null ? BigDecimal.ZERO : rateNetPrice);
             map.put(new KeyDefFrmt("discount", disFrmt), discount == null ? BigDecimal.ZERO : discount);
-
+            map.put(new KeyDefFrmt("crossPrice", totFrmt), rateCrossPrice == null ? BigDecimal.ZERO : rateCrossPrice);
             values.add(map);
         }
 
