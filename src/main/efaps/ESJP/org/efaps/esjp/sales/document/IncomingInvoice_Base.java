@@ -92,6 +92,7 @@ public abstract class IncomingInvoice_Base
         incomingInvoiceCreateTransaction(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
         final String perceptionValueStr = _parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
         if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
