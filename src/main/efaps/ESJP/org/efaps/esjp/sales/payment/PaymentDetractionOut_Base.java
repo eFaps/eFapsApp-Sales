@@ -45,6 +45,8 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -146,30 +148,37 @@ public abstract class PaymentDetractionOut_Base
                                                     final List<Instance> _instances)
         throws EFapsException
     {
+        final SelectBuilder selIncInv = new SelectBuilder()
+                        .linkfrom(CIERP.Document2DocumentAbstract, CIERP.Document2DocumentAbstract.FromAbstractLink)
+                        .linkto(CIERP.Document2DocumentAbstract.ToAbstractLink);
+        final SelectBuilder selIncInvInstance = new SelectBuilder(selIncInv).instance();
+        final SelectBuilder selIncInvName = new SelectBuilder(selIncInv).attribute(CIERP.DocumentAbstract.Name);
+
         final StringBuilder js = new StringBuilder();
 
         final MultiPrintQuery multi = new MultiPrintQuery(_instances);
-        multi.addAttribute(CISales.DocumentSumAbstract.Name,
-                        CISales.DocumentSumAbstract.Rate,
+        multi.addAttribute(CISales.DocumentSumAbstract.Rate,
                         CISales.DocumentSumAbstract.CurrencyId,
                         CISales.DocumentSumAbstract.RateCurrencyId,
                         CISales.DocumentSumAbstract.CrossTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal);
+        multi.addSelect(selIncInvInstance, selIncInvName);
         multi.execute();
 
         final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
         BigDecimal total = BigDecimal.ZERO;
         while (multi.next()) {
             final BigDecimal rCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final Instance docInstance = multi.<Instance>getSelect(selIncInvInstance);
+            final String docName = multi.<String>getSelect(selIncInvName);
             final Map<KeyDef, Object> map;
             if (valuesTmp.containsKey(multi.getCurrentInstance())) {
                 map = valuesTmp.get(valuesTmp);
             } else {
                 map = new HashMap<KeyDef, Object>();
                 valuesTmp.put(multi.getCurrentInstance(), map);
-                map.put(new KeyDefStr("createDocument"), multi.getCurrentInstance().getOid());
-                map.put(new KeyDefStr("createDocumentAutoComplete"),
-                                multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
+                map.put(new KeyDefStr("createDocument"), docInstance.getOid());
+                map.put(new KeyDefStr("createDocumentAutoComplete"), docName);
                 map.put(new KeyDefStr("createDocumentDesc"),
                                 getNewDocumentInfo(multi.getCurrentInstance()).getInfoOriginal());
                 map.put(new KeyDefStr("payment4Pay"), getTwoDigitsformater()

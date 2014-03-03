@@ -34,18 +34,18 @@
         <!-- target definitions -->
         <target>
             <form>Sales_PaymentDetractionOutForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDetraction">
+            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentDetractionStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetraction"/>
+            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetractionOut"/>
         </target>
 
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_PaymentDetraction</property>
+        <property name="TargetCreateType">Sales_PaymentDetractionOut</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
