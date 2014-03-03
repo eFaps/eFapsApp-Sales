@@ -46,6 +46,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -78,31 +79,52 @@ public abstract class PaymentDetractionOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
+        connectBulkPayment2PaymentDocumentOut(_parameter, createdDoc);
+        updateDetractions(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }
 
-    @Override
-    protected CreatedDoc createDoc(final Parameter _parameter)
+    protected void connectBulkPayment2PaymentDocumentOut(final Parameter _parameter,
+                                                         final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final CreatedDoc ret = super.createDoc(_parameter);
+        final String opTypeId = _parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
+        final String servTypeId = _parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.serviceType.name);
+        final String bulkPayId = _parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.bulkPaymentDoc.name);
 
-        // in case of bulkpayment connect the paymentdoc to the bulkpayment
-        if (_parameter.getInstance() != null
-                        && _parameter.getInstance().getType().isKindOf(CISales.BulkPayment.getType())) {
+        if (_createdDoc.getInstance().isValid()
+                        && (bulkPayId != null && !bulkPayId.isEmpty())) {
             final Insert insert = new Insert(CISales.BulkPayment2PaymentDocument);
-            insert.add(CISales.BulkPayment2PaymentDocument.FromLink, _parameter.getInstance().getId());
-            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, ret.getInstance().getId());
-            final String opTypeId = _parameter
-                            .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
-            final String servTypeId = _parameter
-                            .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.serviceType.name);
+            insert.add(CISales.BulkPayment2PaymentDocument.FromLink, bulkPayId);
+            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, _createdDoc.getInstance());
             insert.add(CISales.BulkPayment2PaymentDocument.OperationType, opTypeId);
             insert.add(CISales.BulkPayment2PaymentDocument.ServiceType, servTypeId);
             insert.execute();
         }
-        return ret;
+    }
+
+    protected void updateDetractions(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        if (!_createdDoc.getPositions().isEmpty()) {
+            final String[] detractionDocs = _parameter.getParameterValues("detractionDoc");
+            if (detractionDocs != null && detractionDocs.length > 0) {
+                for (final String detractionDoc : detractionDocs) {
+                    final Instance detractionInst = Instance.get(detractionDoc);
+                    if (detractionInst.isValid()) {
+                        final Update update = new Update(detractionInst);
+                        update.add(CISales.IncomingDetraction.Status,
+                                        Status.find(CISales.IncomingDetractionStatus.Paid));
+                        update.executeWithoutAccessCheck();
+                    }
+                }
+            }
+        }
     }
 
     public Return getJavaScript4SelectableRowsValues(final Parameter _parameter)
@@ -190,7 +212,7 @@ public abstract class PaymentDetractionOut_Base
                                 .format(rCrossTotal));
                 map.put(new KeyDefStr("paymentDiscount"), getTwoDigitsformater().format(BigDecimal.ZERO));
                 map.put(new KeyDefStr("paymentAmountDesc"), getTwoDigitsformater().format(BigDecimal.ZERO));
-
+                map.put(new KeyDefStr("detractionDoc"), multi.getCurrentInstance().getOid());
                 total = total.add(rCrossTotal);
             }
         }
