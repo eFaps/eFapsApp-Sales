@@ -30,6 +30,10 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DocumentAbstractTree_Menu_Action_GenerateCode</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Modifier</role>
+        </access>
         <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.sales.document.DocumentSum" method="generateCode4Doc" />
