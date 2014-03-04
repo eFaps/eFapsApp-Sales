@@ -37,6 +37,7 @@
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectType">Sales_Exchange2Invoice</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.Exchange" method="validateConnectDocument" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
