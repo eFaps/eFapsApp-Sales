@@ -32,7 +32,6 @@
         <name>Sales_DocumentAbstractTree_Menu_Action_GenerateCode</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Modifier</role>
         </access>
         <!-- target definitions -->
         <target>
