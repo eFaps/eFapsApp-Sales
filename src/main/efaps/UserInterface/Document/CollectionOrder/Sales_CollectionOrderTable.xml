@@ -15,14 +15,14 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8261 $
- Last Changed:    $Date: 2012-11-28 18:49:08 -0500 (mié, 28 nov 2012) $
- Last Changed By: $Author: m.aranya@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>38364c81-0b9e-4dde-917c-64d4cf640d97</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8261 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CollectionOrderTable</name>
@@ -36,6 +36,14 @@
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_CollectionOrder/Name.Label</property>
+        </field>
+        <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_CollectionOrder/Date.Label</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>

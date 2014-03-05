@@ -407,6 +407,7 @@ public abstract class AbstractPaymentOut_Base
         final Insert insert = new Insert(type);
         insert.add(CISales.DocumentSumAbstract.Name, name);
         insert.add(CISales.DocumentSumAbstract.Date, _infoDoc.get("date"));
+        insert.add(CISales.DocumentSumAbstract.Contact, getContact4PaymentOut(_parameter));
         insert.add(CISales.DocumentSumAbstract.CurrencyId, currInst);
         insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
         insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
@@ -418,11 +419,46 @@ public abstract class AbstractPaymentOut_Base
         insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.DocumentSumAbstract.StatusAbstract, Status.find(status));
         insert.add(CISales.DocumentSumAbstract.Rate, rate);
+        insert.add(CISales.DocumentSumAbstract.Note, generateNote4PaymentOut(_parameter));
         if (spending != null && spending.isValid()) {
             insert.add(CISales.PaymentOrder.SpendingLink, spending);
         }
         insert.execute();
 
+    }
+
+    protected String generateNote4PaymentOut(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+
+        if (_parameter.getCallInstance() != null && _parameter.getCallInstance().isValid()) {
+            final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
+            print.addAttribute(CISales.PaymentDocumentIOAbstract.Name);
+            print.execute();
+
+            ret.append(DBProperties.getProperty(AbstractPaymentOut.class.getName() + ".generateDoc4Note.Label"))
+                .append(": ").append(_parameter.getCallInstance().getType().getLabel()).append(" - ")
+                .append(print.<String>getAttribute(CISales.PaymentDocumentIOAbstract.Name));
+        }
+
+        return ret.toString();
+    }
+
+    protected Long getContact4PaymentOut(final Parameter _parameter)
+        throws EFapsException
+    {
+        Long contactId = null;
+
+        if (_parameter.getCallInstance() != null && _parameter.getCallInstance().isValid()) {
+            final PrintQuery print = new PrintQuery(_parameter.getCallInstance());
+            print.addAttribute(CISales.PaymentDocumentIOAbstract.Contact);
+            print.execute();
+
+            contactId = print.<Long>getAttribute(CISales.PaymentDocumentIOAbstract.Contact);
+        }
+
+        return contactId;
     }
 
     protected void replacePaymentInfo(final Parameter _parameter,

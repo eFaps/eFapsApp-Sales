@@ -15,14 +15,14 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 8474 $
-  Last Changed:    $Date: 2013-01-04 12:40:26 -0500 (vie, 04 ene 2013) $
-  Last Changed By: $Author: sara.landa@efaps.org $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>3f53ac3d-5197-439c-b2ed-633a41d82e45</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8474 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CollectionOrderForm</name>
@@ -69,6 +69,26 @@
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_CollectionOrderForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">100</property>
+            <trigger program="org.efaps.esjp.sales.document.CollectionOrder" method="autoComplete4Contact"
+                name="Sales_CollectionOrderForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.CollectionOrder" method="updateFields4Contact"
+                name="Sales_CollectionOrderForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_CollectionOrderForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
