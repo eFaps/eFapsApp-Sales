@@ -35,6 +35,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -70,6 +71,11 @@ public abstract class Costing_Base
      * Logging instance used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(Costing.class);
+
+    /**
+     * Max transaction default value.
+     */
+    private static int MAXTRANSACTION = 100;
 
     /**
      * <p>
@@ -138,76 +144,109 @@ public abstract class Costing_Base
     }
 
     /**
+     * @return the max value of transactions to be read before saving the context.
+     */
+    protected int getMaxTransaction()
+    {
+        return Costing_Base.MAXTRANSACTION;
+    }
+
+    /**
      * @throws EFapsException on error
      */
     protected void update()
         throws EFapsException
     {
-        final Set<Instance> updateCost = new HashSet<Instance>();
+        boolean repeat = true;
+        int runs = 0;
+        // loop to be able to save the transactions before timeout
+        while (repeat) {
+            runs++;
+            Costing_Base.LOG.debug("Executing run Number: {}", runs);
+            repeat = false;
+            final Set<Instance> updateCost = new HashSet<Instance>();
 
-        // check for costing that must be updated
-        final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.Costing);
-        costQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
-        final InstanceQuery costQuery = costQueryBldr.getQuery();
-        costQuery.executeWithoutAccessCheck();
-        while (costQuery.next()) {
-            final Instance penultimate = getPenultimate4Costing(costQuery.getCurrentValue());
-            if (penultimate != null) {
-                updateCost.add(penultimate);
+            // check for costing that must be updated
+            final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.Costing);
+            costQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
+            final InstanceQuery costQuery = costQueryBldr.getQuery();
+            costQuery.executeWithoutAccessCheck();
+            while (costQuery.next()) {
+                final Instance penultimate = getPenultimate4Costing(costQuery.getCurrentValue());
+                if (penultimate != null) {
+                    updateCost.add(penultimate);
+                    Costing_Base.LOG.debug("Adding Instance for Update: {}", penultimate);
+                }
             }
-        }
 
-        // check for new transactions and add the costing for them
-        final SelectBuilder selDocInst = new SelectBuilder()
-                        .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
-        final SelectBuilder selProdInst = new SelectBuilder()
-                        .linkto(CIProducts.TransactionInOutAbstract.Product).instance();
+            // check for new transactions and add the costing for them
+            final SelectBuilder selDocInst = new SelectBuilder()
+                            .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
+            final SelectBuilder selProdInst = new SelectBuilder()
+                            .linkto(CIProducts.TransactionInOutAbstract.Product).instance();
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-        queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
-        queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
-        queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addSelect(selDocInst, selProdInst);
-        multi.setEnforceSorted(true);
-        multi.executeWithoutAccessCheck();
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
+            queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
+            queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addSelect(selDocInst, selProdInst);
+            multi.setEnforceSorted(true);
+            multi.executeWithoutAccessCheck();
 
-        final Set<TransCosting> costingTmp = new HashSet<TransCosting>();
-        while (multi.next()) {
-            final TransCosting transCost = getTransCosting();
-            transCost.setTransactionInstance(multi.getCurrentInstance());
-            transCost.setDocInstance(multi.<Instance>getSelect(selDocInst));
-            transCost.setProductInstance(multi.<Instance>getSelect(selProdInst));
-            transCost.setCostingQuantity(BigDecimal.ZERO);
-            transCost.setUpToDate(false);
-            transCost.insertCosting();
-            costingTmp.add(transCost);
-        }
-
-        for (final TransCosting transCost : costingTmp) {
-            final Instance penultimate = getPenultimate4Costing(transCost.getCostingInstance());
-            if (penultimate != null) {
-                updateCost.add(penultimate);
+            final Set<TransCosting> costingTmp = new HashSet<TransCosting>();
+            final int maxTrans = getMaxTransaction();
+            int count = 0;
+            while (multi.next()) {
+                final TransCosting transCost = getTransCosting();
+                transCost.setTransactionInstance(multi.getCurrentInstance());
+                transCost.setDocInstance(multi.<Instance>getSelect(selDocInst));
+                transCost.setProductInstance(multi.<Instance>getSelect(selProdInst));
+                transCost.setCostingQuantity(BigDecimal.ZERO);
+                transCost.setUpToDate(false);
+                transCost.insertCosting();
+                costingTmp.add(transCost);
+                Costing_Base.LOG.debug("Adding Number: {} for TransCosting: {}", count, transCost);
+                count++;
+                if (count > maxTrans) {
+                    repeat = true;
+                    break;
+                }
             }
-        }
 
-        final Map<Instance,TransCosting> prod2cost = new HashMap<Instance,TransCosting>();
-        for (final Instance inst : updateCost) {
-            final TransCosting transCost = updateCosting(inst);
-            prod2cost.put(transCost.getProductInstance(), transCost);
-        }
+            for (final TransCosting transCost : costingTmp) {
+                final Instance penultimate = getPenultimate4Costing(transCost.getCostingInstance());
+                if (penultimate != null) {
+                    updateCost.add(penultimate);
+                    Costing_Base.LOG.debug("Adding TransCost for Update: {}", penultimate);
+                }
+            }
 
-        for (final TransCosting transCost : prod2cost.values()) {
-            updateCost(transCost);
+            final Map<Instance, TransCosting> prod2cost = new HashMap<Instance, TransCosting>();
+            for (final Instance inst : updateCost) {
+                final TransCosting transCost = updateCosting(inst);
+                prod2cost.put(transCost.getProductInstance(), transCost);
+                Costing_Base.LOG.debug(" Updated TransCosting: {}", transCost);
+            }
+
+            for (final TransCosting transCost : prod2cost.values()) {
+                updateCost(transCost);
+                Costing_Base.LOG.debug(" Updating Cost for: {}", transCost);
+            }
+
+            if (repeat) {
+                Context.save();
+            }
         }
     }
 
     /**
      * @param _transCost TransCosting containing the information to register the cost
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     protected void updateCost(final TransCosting _transCost)
         throws EFapsException
