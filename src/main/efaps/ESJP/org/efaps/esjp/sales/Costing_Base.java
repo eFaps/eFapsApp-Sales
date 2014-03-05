@@ -235,7 +235,6 @@ public abstract class Costing_Base
 
             for (final TransCosting transCost : prod2cost.values()) {
                 updateCost(transCost);
-                Costing_Base.LOG.debug(" Updating Cost for: {}", transCost);
             }
 
             if (repeat) {
@@ -263,7 +262,9 @@ public abstract class Costing_Base
         if (costMulti.next()) {
             currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
         }
-        if (currPrice.compareTo(_transCost.getResult()) != 0) {
+        if (_transCost.getResult().compareTo(BigDecimal.ZERO) != 0
+                        && currPrice.compareTo(_transCost.getResult()) != 0) {
+            Costing_Base.LOG.debug(" Updating Cost for: {}", _transCost);
             final Insert insert = new Insert(CIProducts.ProductCost);
             insert.add(CIProducts.ProductCost.ProductLink, _transCost.getProductInstance());
             insert.add(CIProducts.ProductCost.Price, _transCost.getResult());
@@ -294,7 +295,11 @@ public abstract class Costing_Base
 
         tcList.add(transCosting);
 
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
+
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        queryBldr.addWhereAttrInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, transCosting.getProductInstance());
         queryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date,
                         transCosting.getDate().withTimeAtStartOfDay().minusSeconds(1));
@@ -326,7 +331,7 @@ public abstract class Costing_Base
                 transCostingTmp.setTransactionQuantity(
                                 multi.<BigDecimal>getAttribute(CIProducts.TransactionInOutAbstract.Quantity));
                 transCostingTmp.setProductInstance(multi.<Instance>getSelect(selProdInst));
-                transCostingTmp.setCostingInstance(multi.<Instance>getSelect(selCostingInst));
+                transCostingTmp.setCostingInstance( multi.<Instance>getSelect(selCostingInst));
                 transCostingTmp.setCost(multi.<BigDecimal>getSelect(selCostingCost));
                 transCostingTmp.setCostingQuantity(multi.<BigDecimal>getSelect(selCostingQuantity));
                 transCostingTmp.setResult(multi.<BigDecimal>getSelect(selCostingResult));
@@ -362,10 +367,16 @@ public abstract class Costing_Base
                 }
 
                 final BigDecimal newCostQuantity = prev.getQuantity();
-                final BigDecimal result = prev.getResult().multiply(newCostQuantity)
-                                .add(current.getCost().multiply(current.getTransactionQuantity()))
-                                .setScale(12)
-                                .divide(newCostQuantity.add(current.getTransactionQuantity()), BigDecimal.ROUND_UP);
+                final BigDecimal divisor = newCostQuantity.add(current.getTransactionQuantity());
+                final BigDecimal result;
+                if (divisor.compareTo(BigDecimal.ZERO) != 0) {
+                    result = prev.getResult().multiply(newCostQuantity)
+                                    .add(current.getCost().multiply(current.getTransactionQuantity()))
+                                    .setScale(12)
+                                    .divide(divisor, BigDecimal.ROUND_UP);
+                } else {
+                    result = BigDecimal.ZERO;
+                }
 
                 if (result.compareTo(current.getResult()) != 0) {
                     current.setResult(result);
