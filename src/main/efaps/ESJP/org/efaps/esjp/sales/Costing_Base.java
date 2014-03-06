@@ -34,6 +34,8 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.user.Company;
+import org.efaps.ci.CIAdminUser;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -91,7 +93,18 @@ public abstract class Costing_Base
         throws JobExecutionException
     {
         try {
-            update();
+            final QueryBuilder queryBldr = new QueryBuilder(CIAdminUser.Company);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.executeWithoutAccessCheck();
+            while (query.next()) {
+                final Company company = Company.get(query.getCurrentValue().getId());
+                Context.getThreadContext().setCompany(company);
+                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATECOSTING)) {
+                    update();
+                }
+            }
+            // remove the company to be sure
+            Context.getThreadContext().setCompany(null);
         } catch (final EFapsException e) {
             Costing_Base.LOG.error("Catched error", e);
         }

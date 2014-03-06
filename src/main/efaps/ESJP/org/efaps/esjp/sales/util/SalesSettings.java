@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,6 +55,12 @@ public interface SalesSettings
      * max number of transaction that will be analyzed at once before committing.
      */
     String COSTINGMAXTRANSACTION = "org.efaps.sales.CostingMaxTransaction";
+
+    /**
+     * Boolean.
+     * Allows to activate/deactivate the costing mechanisms.
+     */
+    String ACTIVATECOSTING = "org.efaps.sales.ActivateCosting";
 
     /**
      * Link.
