@@ -330,6 +330,7 @@ public abstract class Costing_Base
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        add2QueryBldr4Transaction(queryBldr);
         queryBldr.addWhereAttrInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, transCosting.getProductInstance());
         queryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date,
@@ -465,6 +466,7 @@ public abstract class Costing_Base
         Costing_Base.LOG.trace("Searching Penultimate in same date");
         // first check if for the same date exists one (partial update)
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        add2QueryBldr4Transaction(queryBldr);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, transCosting.getProductInstance());
         queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Date, transCosting.getDate());
@@ -485,6 +487,7 @@ public abstract class Costing_Base
         if (prev == null) {
             Costing_Base.LOG.trace("Searching Penultimate in 'UpToDates'");
             final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            add2QueryBldr4Transaction(queryBldr2);
             queryBldr2.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
             queryBldr2.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
                             transCosting.getProductInstance());
@@ -502,6 +505,7 @@ public abstract class Costing_Base
         if (prev == null) {
             Costing_Base.LOG.trace("Searching Penultimate over all");
             final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            add2QueryBldr4Transaction(queryBldr2);
             queryBldr2.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product,
                             transCosting.getProductInstance());
             queryBldr2.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
