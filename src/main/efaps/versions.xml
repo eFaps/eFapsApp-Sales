@@ -143,8 +143,6 @@
         RoleUpdate rolUp = new RoleUpdate("b9a41c56-25aa-4ca9-a15c-0c5b54fa325a");
         <!-- Products_ProductTree_PricelistPurchase -->
         rolUp.addUI("ed6138a9-3b59-4c52-a690-6607ca566d79");
-        <!-- Products_ProductTree -->
-        rolUp.addUI("6de24737-8943-4258-9ef4-cc768136e266");
         <!-- Contacts_ContactTree -->
         rolUp.addUI("e1944ac8-4007-476c-a5c8-2bfbdb2b79f9");
         <!-- Contacts_ContactTree_Contact2SubContact -->
