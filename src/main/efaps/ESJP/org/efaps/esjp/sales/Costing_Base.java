@@ -75,7 +75,7 @@ public abstract class Costing_Base
     /**
      * Max transaction default value.
      */
-    private static int MAXTRANSACTION = 500;
+    private static int MAXTRANSACTION = 100;
 
     /**
      * <p>
@@ -148,7 +148,17 @@ public abstract class Costing_Base
      */
     protected int getMaxTransaction()
     {
-        return Costing_Base.MAXTRANSACTION;
+        int ret = Costing_Base.MAXTRANSACTION;
+        try {
+            final int tmp = Sales.getSysConfig().getAttributeValueAsInteger(SalesSettings.COSTINGMAXTRANSACTION);
+            if (tmp > 0) {
+                ret = tmp;
+            }
+        } catch (final EFapsException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return ret;
     }
 
     /**
@@ -178,6 +188,7 @@ public abstract class Costing_Base
                     Costing_Base.LOG.debug("Adding Instance for Update: {}", penultimate);
                 }
             }
+            final int maxTrans = getMaxTransaction();
 
             // check for new transactions and add the costing for them
             final SelectBuilder selDocInst = new SelectBuilder()
@@ -193,13 +204,15 @@ public abstract class Costing_Base
             queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
-            final MultiPrintQuery multi = queryBldr.getPrint();
+            final InstanceQuery query = queryBldr.getQuery();
+            query.setLimit(maxTrans + 5);
+            final MultiPrintQuery multi = new MultiPrintQuery(query.executeWithoutAccessCheck());
             multi.addSelect(selDocInst, selProdInst);
             multi.setEnforceSorted(true);
             multi.executeWithoutAccessCheck();
 
             final Set<TransCosting> costingTmp = new HashSet<TransCosting>();
-            final int maxTrans = getMaxTransaction();
+
             int count = 0;
             while (multi.next()) {
                 final TransCosting transCost = getTransCosting();

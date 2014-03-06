@@ -51,6 +51,12 @@ public interface SalesSettings
     String CURRENCY4INVOICE = "org.efaps.sales.Currency4Invoice";
 
     /**
+     * Integer.
+     * max number of transaction that will be analyzed at once before committing.
+     */
+    String COSTINGMAXTRANSACTION = "org.efaps.sales.CostinngMaxTransaction";
+
+    /**
      * OID for a Link.<br/>
      * Base Currency for the System.
      */
@@ -71,7 +77,7 @@ public interface SalesSettings
     String PRODPRICENET = "org.efaps.sales.ProductPriceIsNetPrice";
 
     /**
-     * Link to a default warehouse instance
+     * Link to a default warehouse instance.
      */
     String DEFAULTTAXCAT4PRODUCT = "org.efaps.sales.DefaultTaxCategory4Product";
 
@@ -182,7 +188,7 @@ public interface SalesSettings
     String ACTIVATEOPTIONS4DETANDRET = "org.efaps.sales.ActivateOptions4DetAndRet";
 
     /**
-     * (true/false) to get purchse price
+     * (true/false) to get purchse price.
      */
     String ACTIVATEOPTIONS4PURCHASEPRICE = "org.efaps.sales.ActivateOptions4PurchasePrice";
 }
