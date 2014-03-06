@@ -75,7 +75,7 @@ public abstract class Costing_Base
     /**
      * Max transaction default value.
      */
-    private static int MAXTRANSACTION = 100;
+    private static int MAXTRANSACTION = 500;
 
     /**
      * <p>
