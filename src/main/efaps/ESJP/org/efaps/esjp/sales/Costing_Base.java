@@ -23,8 +23,8 @@ package org.efaps.esjp.sales;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -187,11 +187,12 @@ public abstract class Costing_Base
             runs++;
             Costing_Base.LOG.debug("Executing run Number: {}", runs);
             repeat = false;
-            final Set<Instance> updateCost = new HashSet<Instance>();
+            final Set<Instance> updateCost = new LinkedHashSet<Instance>();
 
             // check for costing that must be updated
             final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.Costing);
             costQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
+            costQueryBldr.addOrderByAttributeAsc(CIProducts.Costing.Created);
             final InstanceQuery costQuery = costQueryBldr.getQuery();
             costQuery.executeWithoutAccessCheck();
             while (costQuery.next()) {
@@ -225,7 +226,7 @@ public abstract class Costing_Base
             multi.setEnforceSorted(true);
             multi.executeWithoutAccessCheck();
 
-            final Set<TransCosting> costingTmp = new HashSet<TransCosting>();
+            final Set<TransCosting> costingTmp = new LinkedHashSet<TransCosting>();
 
             int count = 0;
             while (multi.next()) {
@@ -477,23 +478,33 @@ public abstract class Costing_Base
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
         Costing_Base.LOG.trace("Searching Penultimate in same date");
-        // first check if for the same date exists one (partial update)
+        // first check if for the same date exists one (partial update), also must verify the position
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
         add2QueryBldr4Transaction(queryBldr);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, transCosting.getProductInstance());
         queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
         queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Date, transCosting.getDate());
         queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
-        final InstanceQuery query = queryBldr.getQuery();
-        query.executeWithoutAccessCheck();
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.setEnforceSorted(true);
+        multi.addAttribute(CIProducts.TransactionInOutAbstract.Position);
+        multi.executeWithoutAccessCheck();
         Instance prev = null;
-        while (query.next()) {
-            if (query.getCurrentValue().equals(transCosting.getTransactionInstance())) {
+        while (multi.next()) {
+            final Integer position = multi.getAttribute(CIProducts.TransactionInOutAbstract.Position);
+            final Integer curPos = transCosting.getPosition();
+            // if the position is higher than the one given stop to iterate
+            if (position != null && curPos != null && position > curPos) {
+                break;
+            }
+
+            if (multi.getCurrentInstance().equals(transCosting.getTransactionInstance())) {
                 if (prev != null) {
                     transInstance = prev;
+                    break;
                 }
             } else {
-                prev = query.getCurrentValue();
+                prev = multi.getCurrentInstance();
             }
         }
         // if not found yet check on all dates before, but still only "UpToDate" ones  (partial update)
@@ -513,6 +524,8 @@ public abstract class Costing_Base
             while (query2.next()) {
                 transInstance = query2.getCurrentValue();
             }
+        } else if (transInstance == null) {
+            transInstance = prev;
         }
         // still not found yet check on all no matter of the "UpToDate" or date (update all)
         if (prev == null) {
@@ -612,6 +625,11 @@ public abstract class Costing_Base
         private Boolean upToDate;
 
         /**
+         * Position Number of the transaction.
+         */
+        private Integer position;
+
+        /**
          * @throws EFapsException on error
          */
         protected void initTransaction()
@@ -631,15 +649,19 @@ public abstract class Costing_Base
             final SelectBuilder selQuantity = new SelectBuilder()
                             .linkto(CIProducts.Costing.TransactionAbstractLink)
                             .attribute(CIProducts.TransactionInOutAbstract.Quantity);
+            final SelectBuilder selPos = new SelectBuilder()
+                            .linkto(CIProducts.Costing.TransactionAbstractLink)
+                            .attribute(CIProducts.TransactionInOutAbstract.Position);
 
             final PrintQuery print = new PrintQuery(getCostingInstance());
-            print.addSelect(selTransInst, selProdInst, selDate, selQuantity, selDocInst);
+            print.addSelect(selTransInst, selProdInst, selDate, selQuantity, selDocInst, selPos);
             print.executeWithoutAccessCheck();
             this.productInstance = print.<Instance>getSelect(selProdInst);
             this.docInstance = print.<Instance>getSelect(selDocInst);
             this.date = print.<DateTime>getSelect(selDate);
             this.transactionInstance = print.<Instance>getSelect(selTransInst);
             this.transactionQuantity = print.<BigDecimal>getSelect(selQuantity);
+            this.position = print.<Integer>getSelect(selPos);
         }
 
         /**
@@ -1023,6 +1045,31 @@ public abstract class Costing_Base
         public void setUpToDate(final boolean _upToDate)
         {
             this.upToDate = _upToDate;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #position}.
+         *
+         * @return value of instance variable {@link #position}
+         * @throws EFapsException on error
+         */
+        public Integer getPosition()
+            throws EFapsException
+        {
+            if (this.position == null) {
+                initTransaction();
+            }
+            return this.position;
+        }
+
+        /**
+         * Setter method for instance variable {@link #position}.
+         *
+         * @param _position value for instance variable {@link #position}
+         */
+        public void setPosition(final Integer _position)
+        {
+            this.position = _position;
         }
 
         @Override
