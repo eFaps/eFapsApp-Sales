@@ -201,6 +201,7 @@ public abstract class Costing_Base
                             .getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            add2QueryBldr4Transaction(queryBldr);
             queryBldr.addWhereAttrNotInQuery(CIProducts.TransactionInOutAbstract.ID, attrQuery);
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Date);
             queryBldr.addOrderByAttributeAsc(CIProducts.TransactionInOutAbstract.Position);
@@ -253,6 +254,23 @@ public abstract class Costing_Base
             if (repeat) {
                 Context.save();
             }
+        }
+    }
+
+    /**
+     * @param _queryBldr queryBuilder to add to
+     * @throws EFapsException on error
+     */
+    protected void add2QueryBldr4Transaction(final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final Instance strGrpInst = Sales.getSysConfig().getLink(SalesSettings.COSTINGSTORAGEGROUP);
+        if (strGrpInst != null && strGrpInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StorageGroupAbstract2StorageAbstract);
+            queryBldr.addWhereAttrEqValue(CIProducts.StorageGroupAbstract2StorageAbstract.FromAbstractLink, strGrpInst);
+            final AttributeQuery attrQuery = queryBldr
+                            .getAttributeQuery(CIProducts.StorageGroupAbstract2StorageAbstract.ToAbstractLink);
+            _queryBldr.addWhereAttrInQuery(CIProducts.TransactionAbstract.Storage, attrQuery);
         }
     }
 
@@ -344,7 +362,7 @@ public abstract class Costing_Base
                 transCostingTmp.setTransactionQuantity(
                                 multi.<BigDecimal>getAttribute(CIProducts.TransactionInOutAbstract.Quantity));
                 transCostingTmp.setProductInstance(multi.<Instance>getSelect(selProdInst));
-                transCostingTmp.setCostingInstance( multi.<Instance>getSelect(selCostingInst));
+                transCostingTmp.setCostingInstance(multi.<Instance>getSelect(selCostingInst));
                 transCostingTmp.setCost(multi.<BigDecimal>getSelect(selCostingCost));
                 transCostingTmp.setCostingQuantity(multi.<BigDecimal>getSelect(selCostingQuantity));
                 transCostingTmp.setResult(multi.<BigDecimal>getSelect(selCostingResult));

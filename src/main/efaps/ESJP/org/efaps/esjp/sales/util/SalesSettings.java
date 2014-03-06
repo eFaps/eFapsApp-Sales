@@ -54,7 +54,14 @@ public interface SalesSettings
      * Integer.
      * max number of transaction that will be analyzed at once before committing.
      */
-    String COSTINGMAXTRANSACTION = "org.efaps.sales.CostinngMaxTransaction";
+    String COSTINGMAXTRANSACTION = "org.efaps.sales.CostingMaxTransaction";
+
+    /**
+     * Link.
+     * Storage Group that is used as a filter for using only the transactions
+     * that belong to the given StorageGroup, if not present the calculation is over all Storages.
+     */
+    String COSTINGSTORAGEGROUP = "org.efaps.sales.CostingStorageGroup";
 
     /**
      * OID for a Link.<br/>
