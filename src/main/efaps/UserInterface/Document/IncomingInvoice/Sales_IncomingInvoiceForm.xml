@@ -173,7 +173,7 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Regex4DefaultValue">01 - .*</property>
-                <property name="Activation">INCOMING</property>
+                <property name="Activation">TAX</property>
             </trigger>
         </field>
         <field name="documentType4View">
