@@ -71,6 +71,8 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERP.DocTypeActivation;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
@@ -1629,7 +1631,23 @@ public abstract class DocumentSum_Base
     public Return dropDown4DocumentType(final Parameter _parameter)
         throws EFapsException
     {
-        return new org.efaps.esjp.common.uiform.Field().dropDownFieldValue(_parameter);
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
+        {
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
+                final List<DocTypeActivation> pactivt = new ArrayList<DocTypeActivation>();
+                for (final String activation : activations.values()) {
+                    final DocTypeActivation pDAct = ERP.DocTypeActivation.valueOf(activation);
+                    pactivt.add(pDAct);
+                }
+                _queryBldr.addWhereAttrEqValue(CISales.ProductDocumentType.Activation, pactivt.toArray());
+            };
+        };
+        return field.dropDownFieldValue(_parameter);
     }
 
     /**
