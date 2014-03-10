@@ -37,7 +37,7 @@
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
-                <property name="StatusGroup">Sales_PaymentDetractionStatus</property>
+                <property name="StatusGroup">Sales_PaymentDetractionOutStatus</property>
                 <property name="Status">Open</property>
             </execute>
             <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetractionOut"/>
