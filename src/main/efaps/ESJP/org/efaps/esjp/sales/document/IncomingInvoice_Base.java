@@ -271,29 +271,4 @@ public abstract class IncomingInvoice_Base
         return ret;
     }
 
-    @Override
-    public Calculator getCalculator(final Parameter _parameter,
-                                    final Calculator _oldCalc,
-                                    final String _oid,
-                                    final String _quantity,
-                                    final String _unitPrice,
-                                    final String _discount,
-                                    final boolean _priceFromDB,
-                                    final int _idx)
-        throws EFapsException
-    {
-
-        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this)
-        {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected UUID getPriceListUUID()
-            {
-                return CIProducts.ProductPricelistPurchase.uuid;
-            }
-        };
-    }
-
 }

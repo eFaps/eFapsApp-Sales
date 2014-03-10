@@ -201,7 +201,9 @@ public interface SalesSettings
     String ACTIVATEOPTIONS4DETANDRET = "org.efaps.sales.ActivateOptions4DetAndRet";
 
     /**
-     * (true/false) to get purchse price.
+     * Properties.<br/>
+     * Can be concatenated.<br/>
+     * Set a Price List for a Type used to Calculator. Used for Sales Documents.
      */
-    String ACTIVATEOPTIONS4PURCHASEPRICE = "org.efaps.sales.ActivateOptions4PurchasePrice";
+    String PRICELIST4CALCULATOR = "org.efaps.sales.PriceList4Calculator";
 }

@@ -21,7 +21,6 @@
 package org.efaps.esjp.sales.document;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -29,11 +28,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.sales.Calculator;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -91,41 +86,4 @@ public abstract class OrderOutbound_Base
         return ret;
     }
 
-    @Override
-    public Calculator getCalculator(final Parameter _parameter,
-                                    final Calculator _oldCalc,
-                                    final String _oid,
-                                    final String _quantity,
-                                    final String _unitPrice,
-                                    final String _discount,
-                                    final boolean _priceFromDB,
-                                    final int _idx)
-        throws EFapsException
-    {
-
-        return new Calculator(_parameter, _oldCalc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, this)
-        {
-
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            protected UUID getPriceListUUID()
-            {
-                boolean purchasePriceIsActive = false;
-                try {
-                    purchasePriceIsActive = Sales.getSysConfig().getAttributeValueAsBoolean(
-                                    SalesSettings.ACTIVATEOPTIONS4PURCHASEPRICE);
-                } catch (EFapsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                if (purchasePriceIsActive) {
-                    return CIProducts.ProductPricelistPurchase.uuid;
-                } else {
-                    return CIProducts.ProductPricelistRetail.uuid;
-                }
-
-            }
-        };
-    }
 }

@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
@@ -50,6 +51,7 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 /**
  * TODO comment!
@@ -396,10 +398,21 @@ public abstract class Calculator_Base
 
     /**
      * @return the UUID of the type used for the pricelist
+     * @throws EFapsException
+     * @throws CacheReloadException
      */
     protected UUID getPriceListUUID()
+        throws EFapsException
     {
-        return CIProducts.ProductPricelistRetail.uuid;
+        final Properties props = Sales.getSysConfig()
+                        .getAttributeValueAsProperties(SalesSettings.PRICELIST4CALCULATOR, true);
+
+        String ret = null;
+        if (props.getProperty(this.typeName) != null) {
+            ret = props.getProperty(this.typeName);
+        }
+
+        return ret == null ? CIProducts.ProductPricelistRetail.uuid : UUID.fromString(ret);
     }
 
     /**
