@@ -429,8 +429,8 @@ public abstract class Costing_Base
                     if (divisor.compareTo(BigDecimal.ZERO) != 0) {
                         result = prev.getResult().multiply(newCostQuantity)
                                         .add(current.getCost().multiply(current.getTransactionQuantity()))
-                                        .setScale(12)
-                                        .divide(divisor, BigDecimal.ROUND_UP);
+                                        .setScale(12, BigDecimal.ROUND_HALF_UP)
+                                        .divide(divisor, BigDecimal.ROUND_HALF_UP);
                     } else {
                         result = BigDecimal.ZERO;
                     }
