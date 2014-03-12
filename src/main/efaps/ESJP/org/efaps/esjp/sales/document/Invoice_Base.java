@@ -24,6 +24,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -56,5 +57,12 @@ public abstract class Invoice_Base
             new PerceptionCertificate().create4Doc(_parameter, createdDoc);
         }
         return new Return();
+    }
+
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.Invoice.getType().getName();
     }
 }

@@ -24,6 +24,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -52,5 +53,12 @@ public abstract class Receipt_Base
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
         return new Return();
+    }
+
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.Receipt.getType().getName();
     }
 }

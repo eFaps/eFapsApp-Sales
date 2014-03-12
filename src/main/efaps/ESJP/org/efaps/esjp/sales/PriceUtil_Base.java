@@ -58,7 +58,6 @@ import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
-import org.joda.time.DateMidnight;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -146,65 +145,67 @@ public abstract class PriceUtil_Base
     {
         final ProductPrice ret = getProductPrice(_parameter);
 
-        final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
-        queryBldr.addWhereAttrEqValue(CIProducts.ProductPricelistAbstract.ProductAbstractLink, _instance.getId());
-        queryBldr.addWhereAttrLessValue(CIProducts.ProductPricelistAbstract.ValidFrom,
-                                new DateMidnight(_date).toDateTime().plusSeconds(1));
-        queryBldr.addWhereAttrGreaterValue(CIProducts.ProductPricelistAbstract.ValidUntil,
-                                new DateMidnight(_date).toDateTime().minusSeconds(1));
-        add2QueryBldr4PriceList(_parameter, queryBldr);
-        final InstanceQuery query;
-        if (_cache) {
-            query = queryBldr.getCachedQuery(PriceUtil_Base.CACHE_KEY).setLifespan(12)
-                            .setLifespanUnit(TimeUnit.HOURS);
-        } else {
-            query = queryBldr.getQuery();
-        }
-        query.execute();
-        if (query.next()) {
-            final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.ProductPricelistPosition);
-            queryBldr2.addWhereAttrEqValue(CIProducts.ProductPricelistPosition.ProductPricelist,
-                            query.getCurrentValue().getId());
-            final MultiPrintQuery multi;
+        if (_typeUUID != null) {
+            final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
+            queryBldr.addWhereAttrEqValue(CIProducts.ProductPricelistAbstract.ProductAbstractLink, _instance.getId());
+            queryBldr.addWhereAttrLessValue(CIProducts.ProductPricelistAbstract.ValidFrom,
+                                    new DateTime(_date).withTime(0, 0, 0, 0).toDateTime().plusSeconds(1));
+            queryBldr.addWhereAttrGreaterValue(CIProducts.ProductPricelistAbstract.ValidUntil,
+                                    new DateTime(_date).withTime(0, 0, 0, 0).toDateTime().minusSeconds(1));
+            add2QueryBldr4PriceList(_parameter, queryBldr);
+            final InstanceQuery query;
             if (_cache) {
-                multi = queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(12)
-                                .setLifespanUnit(TimeUnit.DAYS);
+                query = queryBldr.getCachedQuery(PriceUtil_Base.CACHE_KEY).setLifespan(12)
+                                .setLifespanUnit(TimeUnit.HOURS);
             } else {
-                multi = queryBldr2.getPrint();
+                query = queryBldr.getQuery();
             }
-            multi.addAttribute(CIProducts.ProductPricelistPosition.Price,
-                            CIProducts.ProductPricelistPosition.CurrencyId);
-            multi.execute();
-            if (multi.next()) {
-                final Instance priceInst = Instance.get(CIERP.Currency.getType(),
-                                multi.<Long>getAttribute(CIProducts.ProductPricelistPosition.CurrencyId));
-                final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                                AbstractDocument_Base.CURRENCYINST_KEY);
-
-                final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-
-                final BigDecimal price = multi.<BigDecimal>getAttribute(CIProducts.ProductPricelistPosition.Price);
-
-                ret.setCurrentCurrencyInstance(currentInst);
-                ret.setOrigCurrencyInstance(priceInst);
-                ret.setOrigPrice(price);
-                if (priceInst.equals(currentInst)) {
-                    ret.setCurrentPrice(price);
+            query.execute();
+            if (query.next()) {
+                final QueryBuilder queryBldr2 = new QueryBuilder(CIProducts.ProductPricelistPosition);
+                queryBldr2.addWhereAttrEqValue(CIProducts.ProductPricelistPosition.ProductPricelist,
+                                query.getCurrentValue().getId());
+                final MultiPrintQuery multi;
+                if (_cache) {
+                    multi = queryBldr2.getCachedPrint(PriceUtil_Base.CACHE_KEY).setLifespan(12)
+                                    .setLifespanUnit(TimeUnit.DAYS);
                 } else {
-                    if (currentInst != null) {
-                        final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
-                        ret.setCurrentPrice(price.multiply(rates[2]));
-                    } else {
-                        ret.setCurrentPrice(price);
-                    }
+                    multi = queryBldr2.getPrint();
                 }
-                if (priceInst.equals(baseInst)) {
-                    ret.setBasePrice(price);
-                    ret.setBaseRate(BigDecimal.ONE);
-                } else {
-                    final BigDecimal[] rates = getRates(_parameter, currentInst, baseInst);
-                    ret.setBasePrice(price.multiply(rates[2]));
-                    ret.setBaseRate(rates[2]);
+                multi.addAttribute(CIProducts.ProductPricelistPosition.Price,
+                                CIProducts.ProductPricelistPosition.CurrencyId);
+                multi.execute();
+                if (multi.next()) {
+                    final Instance priceInst = Instance.get(CIERP.Currency.getType(),
+                                    multi.<Long>getAttribute(CIProducts.ProductPricelistPosition.CurrencyId));
+                    final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                                    AbstractDocument_Base.CURRENCYINST_KEY);
+
+                    final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+                    final BigDecimal price = multi.<BigDecimal>getAttribute(CIProducts.ProductPricelistPosition.Price);
+
+                    ret.setCurrentCurrencyInstance(currentInst);
+                    ret.setOrigCurrencyInstance(priceInst);
+                    ret.setOrigPrice(price);
+                    if (priceInst.equals(currentInst)) {
+                        ret.setCurrentPrice(price);
+                    } else {
+                        if (currentInst != null) {
+                            final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
+                            ret.setCurrentPrice(price.multiply(rates[2]));
+                        } else {
+                            ret.setCurrentPrice(price);
+                        }
+                    }
+                    if (priceInst.equals(baseInst)) {
+                        ret.setBasePrice(price);
+                        ret.setBaseRate(BigDecimal.ONE);
+                    } else {
+                        final BigDecimal[] rates = getRates(_parameter, currentInst, baseInst);
+                        ret.setBasePrice(price.multiply(rates[2]));
+                        ret.setBaseRate(rates[2]);
+                    }
                 }
             }
         }

@@ -41,6 +41,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -62,6 +63,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("a9ce907c-0e76-44f9-8dbe-2fdfe2893ae0")
 @EFapsRevision("$Rev$")
 public abstract class Calculator_Base
+    extends AbstractCommon
     implements Serializable
 {
     /**
@@ -406,13 +408,17 @@ public abstract class Calculator_Base
     {
         final Properties props = Sales.getSysConfig()
                         .getAttributeValueAsProperties(SalesSettings.PRICELIST4CALCULATOR, true);
-
-        String ret = null;
-        if (props.getProperty(this.typeName) != null) {
-            ret = props.getProperty(this.typeName);
+        final String type = props.getProperty(this.typeName);
+        UUID ret = null;
+        if (type != null) {
+            if (isUUID(type)) {
+                ret = UUID.fromString(type);
+            }
+        } else {
+            ret = CIProducts.ProductPricelistRetail.uuid;
         }
 
-        return ret == null ? CIProducts.ProductPricelistRetail.uuid : UUID.fromString(ret);
+        return ret;
     }
 
     /**

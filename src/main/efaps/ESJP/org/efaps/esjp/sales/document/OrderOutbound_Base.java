@@ -86,4 +86,10 @@ public abstract class OrderOutbound_Base
         return ret;
     }
 
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.OrderOutbound.getType().getName();
+    }
 }
