@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -51,7 +52,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 /**
  * TODO comment!
@@ -398,8 +398,8 @@ public abstract class Calculator_Base
 
     /**
      * @return the UUID of the type used for the pricelist
-     * @throws EFapsException
-     * @throws CacheReloadException
+     * @throws EFapsException on error
+     *
      */
     protected UUID getPriceListUUID()
         throws EFapsException
@@ -414,6 +414,17 @@ public abstract class Calculator_Base
 
         return ret == null ? CIProducts.ProductPricelistRetail.uuid : UUID.fromString(ret);
     }
+
+    /**
+     * @return the Type of the pricelist applied
+     * @throws EFapsException on error
+     */
+    public Type getPriceListType()
+        throws EFapsException
+    {
+        return Type.get(getPriceListUUID());
+    }
+
 
     /**
      * @return the UUID of the type used for the minimum pricelist
@@ -584,7 +595,7 @@ public abstract class Calculator_Base
     /**
      * Setter method for instance variable {@link #setNetUnitPrice}.
      *
-     * @param _crossPrice crossPrice string.
+     * @param _netPrice netPrice
      * @throws EFapsException on error.
      */
     public void setNetPrice(final BigDecimal _netPrice)
@@ -597,7 +608,7 @@ public abstract class Calculator_Base
     /**
      * Setter method for instance variable {@link #setNetPrice}.
      *
-     * @param _crossPrice crossPrice string.
+     * @param _netPrice netPrice as string.
      * @throws EFapsException on error.
      */
     public void setNetPrice(final String _netPrice)
