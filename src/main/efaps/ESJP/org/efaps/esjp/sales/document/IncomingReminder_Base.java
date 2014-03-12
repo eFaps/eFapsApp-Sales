@@ -85,4 +85,11 @@ public abstract class IncomingReminder_Base
             _insert.add(CISales.IncomingReminder.Revision, revision);
         }
     }
+
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingReminder.getType().getName();
+    }
 }
