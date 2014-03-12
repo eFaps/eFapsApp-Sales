@@ -1644,7 +1644,9 @@ public abstract class DocumentSum_Base
                     final DocTypeActivation pDAct = ERP.DocTypeActivation.valueOf(activation);
                     pactivt.add(pDAct);
                 }
-                _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Activation, pactivt.toArray());
+                if(!pactivt.isEmpty()) {
+                    _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Activation, pactivt.toArray());
+                }
             };
         };
         return field.dropDownFieldValue(_parameter);
