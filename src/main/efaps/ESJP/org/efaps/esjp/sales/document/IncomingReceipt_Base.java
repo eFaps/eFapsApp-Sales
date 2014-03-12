@@ -192,4 +192,11 @@ public abstract class IncomingReceipt_Base
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }
+
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingReceipt.getType().getName();
+    }
 }

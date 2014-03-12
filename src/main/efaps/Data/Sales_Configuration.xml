@@ -165,7 +165,12 @@
             <value>Sales_Invoice=0eefc758-0be6-4c40-8cf9-a4f88986f76e
 Sales_Receipt=0eefc758-0be6-4c40-8cf9-a4f88986f76e
 Sales_IncomingInvoice=d0aec333-157e-4f6a-bb8c-ea31f2706d40
-Sales_OrderOutbound=d0aec333-157e-4f6a-bb8c-ea31f2706d40</value>
+Sales_OrderOutbound=d0aec333-157e-4f6a-bb8c-ea31f2706d40
+Sales_IncomingReceipt=0eefc758-0be6-4c40-8cf9-a4f88986f76e
+Sales_IncomingCreditNote=
+Sales_IncomingReminder=
+Sales_CreditNote=
+Sales_Reminder=</value>
             <description>Properties.
 can be concatenated
 Set a Price List for a Type to Calculator. Used for Sales Documents.</description>
