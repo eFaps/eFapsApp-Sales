@@ -56,8 +56,8 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
-                method="updateFields4RateCurrencyFromDate"
-                name="Sales_InvoiceForm.date.UI_FIELD_UPDATE"
+                method="updateFields4Date"
+                name="Sales_ReminderForm.date.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="salesperson">
@@ -238,8 +238,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_ReminderPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReminderPosition</property>
-                <property name="LinkFroms">Reminder</property>
+                <property name="Type">Sales_ReminderPosition</property>
+                <property name="LinkFrom">Reminder</property>
             </evaluate>
         </field>
         <field name="note">
@@ -315,7 +315,7 @@
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="getJavaScriptUIValue"
-                name="Sales_ReminderPositionTable.javaScript.UI_Field_Value"
+                name="Sales_ReminderForm.javaScript.UI_Field_Value"
                 event="UI_FIELD_VALUE" />
         </field>
     </definition>

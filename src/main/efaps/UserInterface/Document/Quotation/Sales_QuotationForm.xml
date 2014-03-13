@@ -55,8 +55,8 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
-                method="updateFields4RateCurrencyFromDate"
-                name="Sales_InvoiceForm.date.UI_FIELD_UPDATE"
+                method="updateFields4Date"
+                name="Sales_QuotationForm.date.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="salesperson">
@@ -193,8 +193,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_QuotationPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_QuotationPosition</property>
-                <property name="LinkFroms">Quotation</property>
+                <property name="Type">Sales_QuotationPosition</property>
+                <property name="LinkFrom">Quotation</property>
             </evaluate>
         </field>
         <field name="note">
