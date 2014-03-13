@@ -26,29 +26,26 @@
 <datamodel-type  xmlns="http://www.efaps.org/xsd"
                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                  xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>77b5c009-0b45-40d4-8417-a79c30568904</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>77b5c009-0b45-40d4-8417-a79c30568904</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_Reminder</name>
-    <parent>Sales_DocumentSumAbstract</parent>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Reminder</name>
+        <parent>Sales_DocumentSumAbstract</parent>
 
-    <attribute>
-        <name>Status</name>
-        <type>Status</type>
-        <typelink>Sales_ReminderStatus</typelink>
-        <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
-        <sqlcolumn>STATUS</sqlcolumn>
-        <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
-               name="Sales_DeliveryNote.Status.RANGE_VALUE"
-               event="RANGE_VALUE">
-      </trigger>
-    </attribute>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_ReminderStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_Reminder.Status.RANGE_VALUE" event="RANGE_VALUE" />
+        </attribute>
 
-    <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
-             name="Sales_DeliveryNote.ACCESSCHECK"
-             event="ACCESSCHECK"/>
-  </definition>
+        <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
+            name="Sales_Reminder.ACCESSCHECK" event="ACCESSCHECK" />
+    </definition>
 </datamodel-type>
