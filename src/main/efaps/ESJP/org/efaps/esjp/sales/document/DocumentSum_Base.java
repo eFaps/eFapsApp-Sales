@@ -794,6 +794,36 @@ public abstract class DocumentSum_Base
     /**
      * Update the form after change of date.
      *
+     * @param _parameter Parameter as passed by the eFaps API.
+     * @return JavaScript for update.
+     * @throws EFapsException on error.
+     */
+    public Return updateFields4Date(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final Instance newCurrInst = getRateCurrencyInstance(_parameter, null);
+        final String date = _parameter.getParameterValue("date_eFapsDate");
+
+        final StringBuilder js = new StringBuilder();
+        final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, newCurrInst);
+
+        js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
+            .append(getSetFieldValue(0, "rate", rateInfo.getRateUIFrmt()))
+            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                            Boolean.toString(rateInfo.getCurrencyInst().isInvert())));
+
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        list.add(map);
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    /**
+     * Update the form after change of date.
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @return javascript for update
      * @throws EFapsException on error
@@ -804,7 +834,6 @@ public abstract class DocumentSum_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
         final Instance newInst = getRateCurrencyInstance(_parameter, null);
-        Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final Currency currency = new Currency();
         final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, _parameter.getParameterValue("date_eFapsDate"),

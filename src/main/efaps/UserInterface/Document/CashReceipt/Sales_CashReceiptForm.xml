@@ -1,20 +1,32 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Copyright 2003 - 2010 The eFaps Team Licensed under the Apache License,
-    Version 2.0 (the "License"); you may not use this file except in compliance
-    with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
-    Unless required by applicable law or agreed to in writing, software distributed
-    under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
-    OR CONDITIONS OF ANY KIND, either express or implied. See the License for
-    the specific language governing permissions and limitations under the License.
-    Author: The eFaps Team Revision: $Rev: 214 $ Last Changed: $Date: 2010-08-16
-    11:22:53 -0500 (lun, 16 ago 2010) $ Last Changed By: $Author: miguel.a.aranya
-    $ -->
-    <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<!--
+
+ Copyright 2003 - 2013 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>063650ad-9655-447e-bdd3-69c5cbe144ab</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 214 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CashReceiptForm</name>
@@ -22,7 +34,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_CashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.CashReceipt"/>
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="activatePositionsCalculator"
+                name="Sales_CashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
         <field character="Group" name="dateGroup">
             <property name="GroupCount">2</property>
@@ -35,10 +48,8 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.CashReceipt"
-                method="updateFields4RateCurrencyFromDate"
-                name="Sales_CashReceiptForm.date.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="updateFields4Date"
+                name="Sales_CashReceiptForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
@@ -47,7 +58,8 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_VALUE" method="getSalesPersonFieldValue" name="Sales_CashReceiptForm.salesperson.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.CashReceipt">
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="getSalesPersonFieldValue"
+                name="Sales_CashReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -103,10 +115,8 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.CashReceipt"
-                method="getNameFieldValueUI"
-                name="Sales_CashReceiptForm.name.UI_Field_Value"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="getNameFieldValueUI"
+                name="Sales_CashReceiptForm.name.UI_Field_Value" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_CashReceipt</property>
                 <property name="IncludeChildTypes">false</property>
             </trigger>
@@ -130,13 +140,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">100</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_CashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.CashReceipt">
-                <property name="Type">Contacts_ClassClient</property>
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="autoComplete4Contact"
+                name="Sales_CashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Classifications">Contacts_ClassClient</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
-                name="Sales_CashReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.CashReceipt" />
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="updateFields4Contact"
+                name="Sales_CashReceiptForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -163,8 +172,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_CashReceipt.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.CashReceipt"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_CashReceipt.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.CashReceipt"/>
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="rateCurrencyFieldValueUI"
+                name="Sales_CashReceiptForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="updateFields4RateCurrency"
+                name="Sales_CashReceiptForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -174,23 +185,21 @@
             <property name="Label">Sales_CashReceiptForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field name="withoutVAT">
+        <field name="withoutVAT">
             <property name="Label">Sales_CashReceiptForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.CashReceipt"
-                method="withoutVATFieldValue"
-                name="Sales_CashReceiptForm.withoutVAT.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="withoutVATFieldValue"
+                name="Sales_CashReceiptForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <table>Sales_CashReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_CashReceiptPosition</property>
-                <property name="LinkFroms">CashReceiptLink</property>
+                <property name="Type">Sales_CashReceiptPosition</property>
+                <property name="LinkFrom">CashReceiptLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -263,9 +272,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
-            name="Sales_CashReceiptPositionTable.javaScript.UI_Field_Value"
-             program="org.efaps.esjp.sales.document.CashReceipt"/>
+            <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="getJavaScriptUIValue"
+                name="Sales_CashReceiptForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

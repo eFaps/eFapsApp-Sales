@@ -36,7 +36,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrencyFromDate" name="Sales_CreditForm.date.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Date"
+                name="Sales_CreditForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="dueDate">
             <property name="Columns">12</property>
@@ -113,9 +114,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_CreditForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.Credit">
-            </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_CreditForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="autoComplete4Contact"
+                name="Sales_CreditForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Contact"
+                name="Sales_CreditForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -142,8 +144,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_CreditForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Credit"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_CreditForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="rateCurrencyFieldValueUI"
+                name="Sales_CreditForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4RateCurrency"
+                name="Sales_CreditForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -218,7 +222,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrencyFromDate" name="Sales_CreditForm.date.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Date"
+                name="Sales_CreditForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="dueDate">
             <property name="Columns">12</property>
@@ -227,7 +232,6 @@
             <property name="Attribute">DueDate</property>
             <property name="Required">true</property>
         </field>
-
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
         </field>
@@ -281,7 +285,6 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_CreditForm.headingContact.Heading</property>
@@ -292,18 +295,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Credit"
-                method="autoComplete4Contact"
-                name="Sales_CreditForm.contact.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.Credit"
-                method="updateFields4Contact"
-                name="Sales_CreditForm.contact.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
-            <trigger program="org.efaps.esjp.sales.document.Credit"
-                    method="updateField4Credit"
-                    name="Sales_CreditForm.contact.UI_FIELD_UPDATE2"
-                    event="UI_FIELD_UPDATE">
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="autoComplete4Contact"
+                name="Sales_CreditForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Contact"
+                name="Sales_CreditForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Credit"
+                name="Sales_CreditForm.contact.UI_FIELD_UPDATE.2" event="UI_FIELD_UPDATE" index="2">
                 <property name="ValidationType">Contact</property>
             </trigger>
         </field>
@@ -337,18 +334,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
-            <trigger program="org.efaps.esjp.humanresource.Employee"
-                method="autoComplete4Employee"
-                name="Sales_CreditForm.number.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.humanresource.Employee" method="autoComplete4Employee"
+                name="Sales_CreditForm.number.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">HumanResource_Employee</property>
                 <property name="StatusGrp01">HumanResource_EmployeeStatus</property>
                 <property name="Status01">Worker</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.Credit"
-                    method="updateField4Credit"
-                    name="Sales_CreditForm.number.UI_FIELD_UPDATE2"
-                    event="UI_FIELD_UPDATE">
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Credit"
+                name="Sales_CreditForm.number.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
                 <property name="ValidationType">Employee</property>
             </trigger>
         </field>
@@ -357,7 +350,6 @@
             <property name="Label">Sales_CreditForm.headingTotal.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-
         <field character="Group" name="currencyGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -369,8 +361,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_CreditForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Credit"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_CreditForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Credit"/>
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="rateCurrencyFieldValueUI"
+                name="Sales_CreditForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4RateCurrency"
+                name="Sales_CreditForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -428,5 +422,4 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
-
 </ui-form>

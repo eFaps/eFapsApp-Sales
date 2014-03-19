@@ -36,10 +36,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="activatePositionsCalculator"
-                name="Sales_ReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="activatePositionsCalculator"
+                name="Sales_ReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
         <field name="dateGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -52,10 +50,8 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="updateFields4RateCurrencyFromDate"
-                name="Sales_InvoiceForm.date.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Date"
+                name="Sales_ReceiptForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
@@ -64,10 +60,8 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
-                method="getSalesPersonFieldValue"
-                name="Sales_DeliveryNoteForm.salesperson.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getSalesPersonFieldValue"
+                name="Sales_ReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -122,10 +116,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="getNameFieldValueUI"
-                name="Sales_ReceiptForm.name.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getNameFieldValueUI"
+                name="Sales_ReceiptForm.name.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_Receipt</property>
             </trigger>
         </field>
@@ -148,16 +140,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="autoComplete4Contact"
-                name="Sales_InvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Type">Contacts_ClassClient</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="autoComplete4Contact"
+                name="Sales_ReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Classifications">Contacts_ClassClient</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="updateFields4Contact"
-                name="Sales_InvoiceForm.contact.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Contact"
+                name="Sales_ReceiptForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -183,14 +171,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="rateCurrencyFieldValueUI"
-                name="Sales_InvoiceForm.currencyId.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="updateFields4RateCurrency"
-                name="Sales_InvoiceForm.currencyId.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="rateCurrencyFieldValueUI"
+                name="Sales_ReceiptForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4RateCurrency"
+                name="Sales_ReceiptForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -200,22 +184,20 @@
             <property name="Label">Sales_ReceiptForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field name="withoutVAT">
+        <field name="withoutVAT">
             <property name="Label">Sales_ReceiptForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="withoutVATFieldValue"
-                name="Sales_ReceiptForm.withoutVAT.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="withoutVATFieldValue"
+                name="Sales_ReceiptForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
         <field name="positionTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_ReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReceiptPosition</property>
-                <property name="LinkFroms">Receipt</property>
+                <property name="Type">Sales_ReceiptPosition</property>
+                <property name="LinkFrom">Receipt</property>
             </evaluate>
         </field>
         <field name="note">
@@ -237,7 +219,7 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
         </field>
-       <field name="netTotal4Read">
+        <field name="netTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Receipt/NetTotal.Label</property>
@@ -289,11 +271,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt"
-                method="getJavaScriptUIValue"
-                name="Sales_InvoicePositionTable.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getJavaScriptUIValue"
+                name="Sales_ReceiptForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
-
     </definition>
 </ui-form>

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 10815 $
- * Last Changed:    $Date: 2013-11-07 22:05:35 -0500 (jue, 07 nov 2013) $
- * Last Changed By: $Author: jan@moxter.net $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
 
 
@@ -44,10 +44,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Exchange_Base.java 10815 2013-11-08 03:05:35Z jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("fefeba99-3218-4d05-b03b-db0b02445d38")
-@EFapsRevision("$Rev: 10815 $")
+@EFapsRevision("$Rev$")
 public abstract class Credit_Base
     extends AbstractSumOnlyDocument
 {
@@ -85,7 +85,7 @@ public abstract class Credit_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return updateField4Credit(final Parameter _parameter)
+    public Return updateFields4Credit(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
