@@ -34,22 +34,31 @@ import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
+import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Costs;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -93,6 +102,7 @@ public abstract class IncomingInvoice_Base
         connect2DocumentType(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
+        connect2RecievingTicket(_parameter, createdDoc);
         final String perceptionValueStr = _parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
         if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
@@ -142,6 +152,104 @@ public abstract class IncomingInvoice_Base
             insert.execute();
         }
     }
+
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public Return updateFields4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Return tmps = super.updateFields4Contact(_parameter);
+
+        final List<Map<String, String>> list = (List<Map<String, String>>) tmps.get(ReturnValues.VALUES);
+
+        final String value = _parameter.getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.contact.name);
+        final Instance instance = value.contains(".") ? Instance.get(value)
+                        : Instance.get(CIContacts.Contact.getType(), value);
+
+        final Map<String, String> map = new HashMap<String, String>();
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getJS4RecievingTicket(_parameter, instance).toString());
+        list.add(map);
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    protected StringBuilder getJS4RecievingTicket(final Parameter _parameter,
+                                                  final Instance _instance)
+        throws EFapsException
+    {
+        @SuppressWarnings("unchecked")
+        final Map<Object,Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        props.put("FieldName", CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
+
+        final StringBuilder ret = new StringBuilder();
+        final Field field = new Field();
+        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicket);
+
+        if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
+            queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Contact, _instance);
+        } else if (_instance.getType().isKindOf(CISales.OrderOutbound.getType())) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _instance);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.To);
+            queryBldr.addWhereAttrInQuery(CISales.RecievingTicket.ID, attrQuery);
+        }
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.RecievingTicket.Name, CISales.RecievingTicket.Date);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CISales.RecievingTicket.Name);
+            final DateTime date = multi.<DateTime>getAttribute(CISales.RecievingTicket.Date);
+            final String option = name + " "
+                            + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
+            final DropDownPosition dropDown = field
+                            .getDropDownPosition(_parameter, multi.getCurrentInstance().getOid(), option);
+            values.add(dropDown);
+        }
+        final StringBuilder html = field.getInputField(_parameter, values, ListType.CHECKBOX);
+
+        ret.append("document.getElementsByName('").append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name)
+                        .append("')[0].innerHTML='").append(html).append("';");
+        return ret;
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4Document(_parameter, _instances);
+        ret.append(getJS4RecievingTicket(_parameter, _instances.get(0)));
+        return ret;
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
+    protected void connect2RecievingTicket(final Parameter _parameter,
+                                          final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String[] tickets = _parameter.getParameterValues(
+                        CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
+        if (tickets != null) {
+            for (final String oid : tickets) {
+                final Instance ticketInst = Instance.get(oid);
+                if (ticketInst.isValid()) {
+                    final Insert insert = new Insert(CISales.IncomingInvoice2RecievingTicket);
+                    insert.add(CISales.IncomingInvoice2RecievingTicket.FromLink, _createdDoc.getInstance());
+                    insert.add(CISales.IncomingInvoice2RecievingTicket.ToLink, ticketInst);
+                    insert.execute();
+                }
+            }
+        }
+    }
+
 
     /**
      * Method to do a transaction of all the products of a Incoming Invoice when

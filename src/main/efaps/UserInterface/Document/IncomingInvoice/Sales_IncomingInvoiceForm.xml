@@ -238,6 +238,7 @@
                 name="Sales_IncomingInvoiceForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classifications">Contacts_ClassSupplier</property>
+
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="updateFields4Contact"
@@ -384,6 +385,13 @@
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="recievingTickets">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.recievingTickets.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPerceptionTitle" character="Heading">
