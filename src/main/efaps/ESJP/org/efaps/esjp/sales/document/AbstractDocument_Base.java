@@ -86,6 +86,8 @@ import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.tax.TaxesAttribute;
+import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.jaas.AppAccessHandler;
@@ -956,6 +958,7 @@ public abstract class AbstractDocument_Base
         print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal,
                         CISales.DocumentSumAbstract.Rate,
+                        CISales.DocumentSumAbstract.RateTaxes,
                         CIERP.DocumentAbstract.Name,
                         CIERP.DocumentAbstract.Note);
         final SelectBuilder selContOID = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).oid();
@@ -966,6 +969,8 @@ public abstract class AbstractDocument_Base
 
         final BigDecimal netTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
         final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final Taxes rateTaxes = print.<Taxes> getAttribute(CISales.DocumentSumAbstract.RateTaxes);
+
         final String contactOid = print.<String> getSelect(selContOID);
         final String contactName = print.<String> getSelect(selContName);
         final String contactData = new Contacts().getFieldValue4Contact(Instance.get(contactOid), false);
@@ -1008,8 +1013,12 @@ public abstract class AbstractDocument_Base
         js.append(getSetFieldValue(0, "netTotal", netTotal == null
                             ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
             .append(getSetFieldValue(0, "crossTotal", netTotal == null
-                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n")
-            .append(getSetFieldValue(0, "note", note)).append("\n")
+                            ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n");
+        if (rateTaxes != null) {
+            js.append("document.getElementsByName('taxes')[0].innerHTML='")
+            .append(new TaxesAttribute().getUI4ReadOnly(rateTaxes)).append("';\n");
+        }
+        js.append(getSetFieldValue(0, "note", note)).append("\n")
             .append(add2JavaScript4Document(_parameter, _instances)).append("\n")
             .append("\n");
         return js;
