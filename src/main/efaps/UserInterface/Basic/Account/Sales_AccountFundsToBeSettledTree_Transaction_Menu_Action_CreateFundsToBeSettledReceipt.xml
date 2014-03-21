@@ -15,41 +15,41 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 10798 $
- Last Changed:    $Date: 2013-11-06 16:56:27 -0500 (mié, 06 nov 2013) $
+ Revision:        $Rev: 10192 $
+ Last Changed:    $Date: 2013-09-12 18:25:20 -0500 (jue, 12 sep 2013) $
  Last Changed By: $Author: m.aranya@moxter.net $
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>174ca9d1-3632-4d30-abad-ce557c504b8a</uuid>
+    <uuid>a805c01a-c00c-4f95-aac7-995a4f03b85c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10798 $</file-revision>
+    <file-revision>$Rev: 10192 $</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_Balancing</name>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</name>
         <access>
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountFundsToBeSettledBalancingForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.document.FundsToBeSettledBalance">
-                <property name="JasperReport">Sales_FundsToBeSettledBalance</property>
-                <property name="Mime">pdf</property>
+            <form>Sales_FundsToBeSettledReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="create" >
+                <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
+                <property name="Status">Open</property>
             </execute>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4Active" name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK" program="org.efaps.esjp.sales.Account">
-                <property name="AccessCheck4SystemConfiguration">true</property>
-                <property name="WithDate">false</property>
-            </trigger>
+            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate"/>
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
+                name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_FundsToBeSettledBalance</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
-        <property name="TargetShowFile">true</property>
+        <property name="TargetCreateType">Sales_FundsToBeSettledReceipt</property>
+        <property name="WindowHeight">500</property>
+        <property name="WindowWidth">700</property>
     </definition>
 </ui-command>

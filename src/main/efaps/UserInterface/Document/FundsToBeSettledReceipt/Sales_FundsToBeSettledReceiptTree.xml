@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2010 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,35 +15,27 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 5742 $
-  Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (Tue, 26 Oct 2010) $
-  Last Changed By: $Author: jorge.m.cueva $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>b66e9e54-19d2-4e33-b987-3fa70de2e0f7</uuid>
+    <uuid>4cf1e2e4-d744-4ce5-be8f-9bb784bd37a4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5742 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree</name>
-        <access>
-            <role>Sales_PettyCash</role>
-            <role>Sales_Admin</role>
-        </access>
-        <!-- targets -->
+        <name>Sales_FundsToBeSettledReceiptTree</name>
         <target>
-            <menu>Sales_AccountFundsToBeSettledTree_Menu</menu>
-            <form>Sales_AccountFundsToBeSettledForm</form>
+            <menu>Sales_FundsToBeSettledReceiptTree_Menu</menu>
+            <form>Sales_FundsToBeSettledReceiptForm</form>
         </target>
-        <!-- type tree for -->
-        <type>Sales_AccountFundsToBeSettled</type>
+        <type>Sales_FundsToBeSettledReceipt</type>
         <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction</child>
+            <child>Sales_FundsToBeSettledReceiptTree_Position</child>
         </childs>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -20,29 +19,28 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ed1a9917-6a6d-4a5c-8bc7-aba73dbdfa9c</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e40cd2d9-b602-4ed2-8740-6041bdd157bc</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashBalance2PettyCashReceipt</name>
-        <parent>Sales_Document2DocumentAbstract</parent>
+        <name>Sales_AccountFundsToBeSettled2FundsToBeSettledBalance</name>
+        <parent>Sales_Account2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_PettyCashBalance</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
+            <typelink>Sales_AccountFundsToBeSettled</typelink>
+            <sqltable>Sales_Account2DocumentSQLTable</sqltable>
+            <sqlcolumn>ACCID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_PettyCashReceipt</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <typelink>Sales_FundsToBeSettledBalance</typelink>
+            <sqltable>Sales_Account2DocumentSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
+        <trigger event="INSERT_POST" method="insertPostTrigger4Acc2Doc" name="Sales_AccountFundsToBeSettled2FundsToBeSettledBalance.INSERT_POST" program="org.efaps.esjp.sales.Account"/>
     </definition>
 </datamodel-type>

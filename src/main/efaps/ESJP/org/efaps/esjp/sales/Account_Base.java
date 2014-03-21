@@ -93,7 +93,7 @@ public abstract class Account_Base
         final Integer pos = getMaxPosition(_parameter, print.<Instance>getSelect(selInst));
 
         final Update update = new Update(_parameter.getInstance());
-        update.add(CISales.AccountPettyCash2PettyCashReceipt.Position, pos + 1);
+        update.add(CISales.Account2DocumentAbstract.Position, pos + 1);
         update.executeWithoutTrigger();
         return new Return();
     }
@@ -843,7 +843,7 @@ public abstract class Account_Base
                         .id();
 
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CISales.PettyCashBalance.Name, CISales.PettyCashBalance.CrossTotal);
+        print.addAttribute(CISales.AccountBalance.Name, CISales.AccountBalance.CrossTotal);
         print.addSelect(selPayId);
         print.execute();
 
@@ -865,26 +865,31 @@ public abstract class Account_Base
             }
         }
 
-        final String nameBalance = print.<String>getAttribute(CISales.PettyCashBalance.Name);
-        final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PettyCashBalance.CrossTotal);
+        final String nameBalance = print.<String>getAttribute(CISales.AccountBalance.Name);
+        final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.AccountBalance.CrossTotal);
 
-        _parameter.put(ParameterValues.INSTANCE, _parameter.getInstance());
+        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        if(properties.containsKey("JasperReport")) {
+            final String jrName = (String) properties.get("JasperReport");
+            _parameter.put(ParameterValues.INSTANCE, _parameter.getInstance());
 
-        final StandartReport report = new StandartReport();
-        report.getJrParameters().put("AccName", nameAccount);
-        report.getJrParameters().put("AmountPettyCash", amount);
+            final StandartReport report = new StandartReport();
+            report.getJrParameters().put("AccName", nameAccount);
+            report.getJrParameters().put("AmountPettyCash", amount);
 
-        final SystemConfiguration config = ERP.getSysConfig();
-        if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            if (companyName != null && !companyName.isEmpty()) {
-                report.getJrParameters().put("CompanyName", companyName);
+            final SystemConfiguration config = ERP.getSysConfig();
+            if (config != null) {
+                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+                if (companyName != null && !companyName.isEmpty()) {
+                    report.getJrParameters().put("CompanyName", companyName);
+                }
             }
+
+            final String fileName = DBProperties.getProperty(jrName+".Label", "es") + "_" + nameBalance;
+            report.setFileName(fileName);
+            ret = report.execute(_parameter);
         }
 
-        final String fileName = DBProperties.getProperty("Sales_PettyCashBalance.Label", "es") + "_" + nameBalance;
-        report.setFileName(fileName);
-        ret = report.execute(_parameter);
 
         return ret;
     }
@@ -930,10 +935,6 @@ public abstract class Account_Base
                 throws EFapsException
             {
                 final Return ret = new Return();
-                final Insert relInsert = new Insert(CIERP.Document2Class);
-                relInsert.add(CIERP.Document2Class.DocumentLink, _newInst.getId());
-                relInsert.add(CIERP.Document2Class.ClassTypeId, CISales.PettyCashReceipt_Class.getType().getId());
-                relInsert.execute();
 
                 Instance instPayment = null;
                 Instance instPaymentOld = null;
@@ -941,9 +942,6 @@ public abstract class Account_Base
                     if (entry.getValue().getType().isKindOf(CISales.Payment.getType())) {
                         instPayment = entry.getValue();
                         instPaymentOld = entry.getKey();
-                    }
-                    if (entry.getValue().getType().isKindOf(CISales.PettyCashReceipt_Class.getType())) {
-                        entry.getValue();
                     }
                 }
 
@@ -970,19 +968,19 @@ public abstract class Account_Base
                             final Long curId = print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink);
 
                             final PrintQuery print2 = new PrintQuery(_parameter.getInstance());
-                            print2.addAttribute(CISales.PettyCashReceipt.CrossTotal,
-                                            CISales.PettyCashReceipt.Note);
+                            print2.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
+                                            CISales.DocumentSumAbstract.Note);
                             print2.execute();
 
-                            final String noteDoc = print2.<String>getAttribute(CISales.PettyCashReceipt.Note);
+                            final String noteDoc = print2.<String>getAttribute(CISales.DocumentSumAbstract.Note);
                             final Update updateDoc = new Update(_parameter.getInstance());
-                            updateDoc.add(CISales.PettyCashReceipt.Note,
+                            updateDoc.add(CISales.DocumentSumAbstract.Note,
                                             DBProperties.getProperty("org.efaps.esjp.sales.Account.CorrectionDocument")
                                                             + " - " + noteDoc);
                             updateDoc.execute();
 
                             final BigDecimal oldAmount = print2
-                                            .<BigDecimal>getAttribute(CISales.PettyCashReceipt.CrossTotal);
+                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                             final BigDecimal newAmount = new BigDecimal(_parameter.getParameterValue("crossTotal"));
 
                             final Insert transInsertIn = new Insert(CISales.TransactionInbound);
@@ -1011,10 +1009,10 @@ public abstract class Account_Base
                             transInsertOut.execute();
 
                             final Update update = new Update(_newInst);
-                            update.add(CISales.PettyCashReceipt.CrossTotal,
+                            update.add(CISales.DocumentSumAbstract.CrossTotal,
                                             (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
                                                             .multiply(BigDecimal.valueOf(-1)) : newAmount);
-                            update.add(CISales.PettyCashReceipt.RateCrossTotal,
+                            update.add(CISales.DocumentSumAbstract.RateCrossTotal,
                                             (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
                                                             .multiply(BigDecimal.valueOf(-1)) : newAmount);
                             update.execute();

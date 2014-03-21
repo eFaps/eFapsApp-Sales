@@ -67,6 +67,8 @@
         <type>Sales_PerceptionCertificate</type>
         <type>Sales_PettyCashBalance</type>
         <type>Sales_PettyCashReceipt</type>
+        <type>Sales_FundsToBeSettledBalance</type>
+        <type>Sales_FundsToBeSettledReceipt</type>
         <type>Sales_ProductionReport</type>
         <type>Sales_ProductRequest</type>
         <type>Sales_ProductionOrder</type>
@@ -182,6 +184,17 @@
         </status>
 
         <status group="Sales_PettyCashBalanceStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Verified</key>
+        </status>
+
+        <status group="Sales_FundsToBeSettledReceiptStatus">
+            <key>Open</key>
+            <key>Closed</key>
+        </status>
+
+        <status group="Sales_FundsToBeSettledBalanceStatus">
             <key>Open</key>
             <key>Closed</key>
             <key>Verified</key>
@@ -305,7 +318,7 @@
             <key>Open</key>
             <key>Closed</key>
         </status>
-        
+
         <status group="Sales_ServiceOrderOutboundStatus">
             <key>Open</key>
             <key>Received</key>

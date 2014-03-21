@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -20,29 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ed1a9917-6a6d-4a5c-8bc7-aba73dbdfa9c</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b4cbe053-b8aa-4f3d-8c0b-5e12d62e31e5</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashBalance2PettyCashReceipt</name>
-        <parent>Sales_Document2DocumentAbstract</parent>
+        <name>Sales_FundsToBeSettledReceiptPosition</name>
+        <parent>Sales_PositionSumAbstract</parent>
         <attribute>
-            <name>FromLink</name>
+            <name>FundsToBeSettledReceiptLink</name>
             <type>Link</type>
-            <typelink>Sales_PettyCashBalance</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_PettyCashReceipt</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <typelink>Sales_FundsToBeSettledReceipt</typelink>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

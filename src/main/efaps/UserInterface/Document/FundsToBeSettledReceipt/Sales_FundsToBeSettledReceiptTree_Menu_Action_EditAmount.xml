@@ -15,36 +15,37 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 10192 $
- Last Changed:    $Date: 2013-09-12 18:25:20 -0500 (jue, 12 sep 2013) $
- Last Changed By: $Author: m.aranya@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>a805c01a-c00c-4f95-aac7-995a4f03b85c</uuid>
+    <uuid>08ab86d4-a9e8-4154-abb3-f111da7be18d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10192 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
+        <name>Sales_FundsToBeSettledReceiptTree_Menu_Action_EditAmount</name>
+
         <access>
             <role>Sales_PettyCash</role>
-            <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountPettyCashReceiptForm</form>
-            <execute method="createPettyCashReceipt" program="org.efaps.esjp.sales.Account"/>
-            <validate method="validatePettyCashReceipt" program="org.efaps.esjp.sales.Account"/>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4Active" name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK" program="org.efaps.esjp.sales.Account"/>
+            <form>Sales_FundsToBeSettledReceiptAmountEditForm</form>
+            <execute method="editAmount4PettyCashReceipt" program="org.efaps.esjp.sales.Account">
+                <property name="ReviseRelations">Sales_PettyCashReceipt_Class;Sales_Payment</property>
+                <property name="ReviseRelationsAttribute">DocumentLink;CreateDocument</property>
+                <property name="RevisionStatus">Open</property>
+            </execute>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_FundsToBeSettledReceipt</property>
         <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_PettyCashReceipt</property>
-        <property name="WindowHeight">500</property>
-        <property name="WindowWidth">700</property>
-        <property name="TargetCreateClassifications">Sales_PettyCashReceipt_Class</property>
+        <property name="WindowHeight">550</property>
+        <property name="WindowWidth">600</property>
     </definition>
 </ui-command>

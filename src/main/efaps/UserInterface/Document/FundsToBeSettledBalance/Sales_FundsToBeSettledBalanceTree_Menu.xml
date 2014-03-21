@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,24 +15,22 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 7230 $
- Last Changed:    $Date: 2011-11-02 16:21:00 -0500 (Wed, 02 Nov 2011) $
- Last Changed By: $Author: jorge.cueva@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>1c1682b9-0d9f-4a3c-bbf7-830785e13414</uuid>
+    <uuid>5451a41c-0baf-486d-a5e8-210816d4deda</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 7230 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action</name>
+        <name>Sales_FundsToBeSettledBalanceTree_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_BalancingWithDateSelect</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_Balancing</child>
+            <child>Sales_FundsToBeSettledBalanceTree_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_FundsToBeSettledBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="894f2042-5535-423c-a82c-9db436dda51f">
+    <property name="com.jaspersoft.studio.unit." value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+    <property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+    <import value="org.efaps.number2words.Converter"/>
+    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+        <property name="UUID" value="be57d555-ab23-4693-a4b4-d9322474e50b"/>
+        <property name="Instance" value="true"/>
+        <property name="hasSubReport" value="true"/>
+    </parameter>
+    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+    <parameter name="AccName" class="java.lang.String"/>
+    <parameter name="AmountFundsToBeSettled" class="java.math.BigDecimal"/>
+    <parameter name="CompanyName" class="java.lang.String"/>
+    <field name="name" class="java.lang.String">
+        <property name="Select" value="attribute[Name]"/>
+    </field>
+    <field name="date" class="org.joda.time.DateTime">
+        <property name="Select" value="attribute[Date]"/>
+    </field>
+    <pageHeader>
+        <band height="81" splitType="Stretch">
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
+                <reportElement x="730" y="57" width="72" height="14" uuid="7d043355-4b0a-430c-b4b1-9acaf7869ea5"/>
+                <textElement textAlignment="Right">
+                    <font size="10"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="690" y="57" width="40" height="14" uuid="61e4d7db-b898-4559-af08-e018371af498"/>
+                <textElement>
+                    <font size="10" isBold="false"/>
+                </textElement>
+                <text><![CDATA[Fecha:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="275" y="30" width="260" height="27" uuid="d283214b-9348-4e6f-ba65-b161ca1791b2">
+                    <property name="local_mesure_unitx" value="pixel"/>
+                    <property name="com.jaspersoft.studio.unit.x" value="px"/>
+                </reportElement>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font size="16" isBold="true"/>
+                </textElement>
+                <text><![CDATA[LIQUIDACIÓN]]></text>
+            </staticText>
+            <textField>
+                <reportElement x="91" y="14" width="226" height="14" uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{AccName}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="0" y="0" width="91" height="14" uuid="a167b8a1-e5f2-41d0-a8f3-c1e4a7070ac0">
+                    <printWhenExpression><![CDATA[$P{CompanyName} != null]]></printWhenExpression>
+                </reportElement>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[EMPRESA:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="0" y="14" width="91" height="14" uuid="bc36a791-4902-4ca3-a214-80dce535afcc"/>
+                <textElement>
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[CAJA:]]></text>
+            </staticText>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement x="91" y="0" width="226" height="14" uuid="95de231f-f359-4b91-b319-8334960ede77"/>
+                <textElement textAlignment="Left" verticalAlignment="Top">
+                    <font size="11" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <detail>
+        <band height="60">
+            <subreport>
+                <reportElement positionType="Float" x="0" y="0" width="802" height="60" uuid="0233034d-b54b-49d5-adaa-67e303dbd4d4"/>
+                <subreportParameter name="EFAPS_DEFINITION"/>
+                <subreportParameter name="AmountParameter">
+                    <subreportParameterExpression><![CDATA[$P{AmountFundsToBeSettled}]]></subreportParameterExpression>
+                </subreportParameter>
+                <dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_FundsToBeSettledBalancePayments")]]></dataSourceExpression>
+                <subreportExpression><![CDATA["JasperReport.Sales_FundsToBeSettledBalancePayments"]]></subreportExpression>
+            </subreport>
+        </band>
+        <band height="89">
+            <staticText>
+                <reportElement x="91" y="69" width="126" height="20" uuid="c8e0a050-048a-466a-97c8-0cba849f750d"/>
+                <box>
+                    <topPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[FIRMA ENCARGADO]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="554" y="69" width="137" height="20" uuid="5cb363cd-e820-4529-83a7-a4c8d6e807f5"/>
+                <box>
+                    <topPen lineWidth="1.0"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font isBold="true"/>
+                </textElement>
+                <text><![CDATA[FIRMA RESPONSABLE]]></text>
+            </staticText>
+        </band>
+    </detail>
+</jasperReport>

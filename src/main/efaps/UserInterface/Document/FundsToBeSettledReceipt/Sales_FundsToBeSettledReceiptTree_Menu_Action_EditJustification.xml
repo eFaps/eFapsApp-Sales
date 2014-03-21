@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2011 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,39 +15,32 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5742 $
- Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (mar, 26 oct 2010) $
- Last Changed By: $Author: jorge.m.cueva $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>af324699-4e54-4955-a384-6fe819a1c546</uuid>
+    <uuid>02d8f11c-8458-484d-9e48-6cda1ba0551c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5742 $</file-revision>
-
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_BalancingWithDateSelect</name>
+        <name>Sales_FundsToBeSettledReceiptTree_Menu_Action_EditJustification</name>
         <access>
             <role>Sales_PettyCash</role>
-            <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountFundsToBeSettledBalancingWithDateSelectForm</form>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4Active" name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_BalancingWithDateSelect.UI_ACCESSCHECK" program="org.efaps.esjp.sales.Account">
-                <property name="AccessCheck4SystemConfiguration">true</property>
-                <property name="WithDate">true</property>
-            </trigger>
-            <command>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_BalancingWithDate</command>
+            <form>Sales_FundsToBeSettledReceiptJustificationEditForm</form>
+            <execute method="editJustification" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"/>
+            <validate method="validate" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                <property name="EvaluatePostions">false</property>
+            </validate>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="TargetCreateType">Sales_FundsToBeSettledBalance</property>
+        <property name="TargetMode">create</property>
         <property name="WindowHeight">550</property>
         <property name="WindowWidth">800</property>
-        <property name="TargetShowCheckBoxes">true</property>
-        <property name="TargetCmdRevise">true</property>
     </definition>
 </ui-command>
