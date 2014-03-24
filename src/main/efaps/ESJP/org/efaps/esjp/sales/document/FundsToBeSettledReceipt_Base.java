@@ -91,9 +91,9 @@ public abstract class FundsToBeSettledReceipt_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Insert insert = new Insert(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
-        insert.add(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.FromLink, _parameter.getInstance());
-        insert.add(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.ToLink, _createdDoc.getInstance());
+        final Insert insert = new Insert(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt);
+        insert.add(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.FromLink, _parameter.getInstance());
+        insert.add(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.ToLink, _createdDoc.getInstance());
         insert.execute();
     }
 
