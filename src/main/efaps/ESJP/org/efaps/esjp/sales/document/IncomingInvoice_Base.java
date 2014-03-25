@@ -53,6 +53,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uiform.Field_Base.ListType;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Costs;
@@ -384,5 +385,27 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         return CISales.IncomingInvoice.getType().getName();
+    }
+
+
+    public Return recievingTicketMultiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                super.add2QueryBldr(_parameter, _queryBldr);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
+                attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, _parameter.getInstance());
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.Contact);
+                _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.Contact, attrQuery);
+            }
+        };
+        return multi.execute(_parameter);
     }
 }

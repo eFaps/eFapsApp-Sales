@@ -42,7 +42,7 @@
         <type>Sales_IncomingInvoice</type>
         <childs>
             <child>Sales_IncomingInvoiceTree_Position</child>
-            <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_IncomingInvoiceTree_Doc</child>
             <child>Sales_DocumentAbstractTree_PaymentDerivedDocument</child>
         </childs>
         <!-- properties -->
@@ -65,7 +65,7 @@
         <type>Sales_IncomingInvoice</type>
         <childs>
             <child>Sales_IncomingInvoiceTree_Position</child>
-            <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_IncomingInvoiceTree_Doc</child>
             <child>Sales_DocumentAbstractTree_PaymentDerivedDocument</child>
             <child>Sales_IncomingInvoiceTree_File</child>
         </childs>
