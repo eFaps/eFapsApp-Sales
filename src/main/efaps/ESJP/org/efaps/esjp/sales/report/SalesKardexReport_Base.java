@@ -220,11 +220,22 @@ public abstract class SalesKardexReport_Base
                     map.put(Field.TRANS_DOC_NUMBER.getKey(), getSeriesOrNumberDocOut(_parameter, transDocName, false));
                     addMap2DocumentTypeOut(_parameter, map, transDocInst, transDocType);
                 }
-
+                addMap2TransactionInfo(_parameter, map, multi.getCurrentInstance());
                 values.add(map);
             }
         }
         getValues().addAll(values);
+    }
+
+    /**
+     * @param _parameter
+     * @param _currentInstance
+     */
+    protected void addMap2TransactionInfo(final Parameter _parameter,
+                                          final Map<String, Object> _map,
+                                          final Instance _transaction)
+    {
+        // to be implemented
     }
 
     protected Map<String, Object> getInventoryValue(final Parameter _parameter,
