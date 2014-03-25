@@ -51,7 +51,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_RecievingTicketTree_Position</child>
-            <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_RecievingTicketTree_Doc</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>

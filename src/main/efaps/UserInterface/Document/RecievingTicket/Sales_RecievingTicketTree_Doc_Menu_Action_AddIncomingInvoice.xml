@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -23,25 +22,21 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>3e05ec08-de81-47b9-9f76-ad6616a014fe</uuid>
+    <uuid>1189170b-a7ec-41ee-95f4-1ce81568e247</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoiceTree_Doc</name>
+        <name>Sales_RecievingTicketTree_Doc_Menu_Action_AddIncomingInvoice</name>
         <target>
-            <menu>Sales_IncomingInvoiceTree_Doc_Menu</menu>
-            <table>Sales_Document2DocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom01">FromAbstractLink</property>
-                <property name="Type02">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom02">ToAbstractLink</property>
-            </evaluate>
+            <form>Sales_RecievingTicketSelectIncomingInvoiceForm</form>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectParentAttribute">ToLink</property>
+                <property name="ConnectChildAttribute">FromLink</property>
+                <property name="ConnectType">Sales_IncomingInvoice2RecievingTicket</property>
+            </execute>
         </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Sales_DocumentAbstractTree_Doc.Label</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
     </definition>
 </ui-command>
