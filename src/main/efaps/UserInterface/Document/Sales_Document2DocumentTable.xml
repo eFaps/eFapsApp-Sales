@@ -39,36 +39,79 @@
             <property name="ShowTypeIcon">true</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="name">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        <field name="toLink">
+            <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+            <property name="Label">Sales_Document2DocumentTable.toLink.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getEmptyFieldValue"
+                name="Sales_Document2DocumentTable.toLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="check4InstanceNotCallInstance">true</property>
+             </trigger>
         </field>
-        <field name="date">
+        <field name="toDate">
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Select">linkto[ToAbstractLink].attribute[Date]</property>
-            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+            <property name="Label">Sales_Document2DocumentTable.toDate.Label</property>
             <property name="ModeSearch">READONLY</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getEmptyFieldValue"
+                name="Sales_Document2DocumentTable.toLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="check4InstanceNotCallInstance">true</property>
+             </trigger>
         </field>
-        <field name="vendorLink">
-            <property name="Select">linkto[ToAbstractLink].linkto[Salesperson].attribute[Name]</property>
-            <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
-            <property name="ModeSearch">READONLY</property>
-        </field>
-        <field name="status">
+        <field name="toStatus">
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
-            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+            <property name="Label">Sales_Document2DocumentTable.toStatus.Label</property>
             <property name="ModeSearch">READONLY</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getEmptyFieldValue"
+                name="Sales_Document2DocumentTable.toStatus.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="check4InstanceNotCallInstance">true</property>
+             </trigger>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="fromLink">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
+            <property name="Label">Sales_Document2DocumentTable.fromLink.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getEmptyFieldValue"
+                name="Sales_Document2DocumentTable.fromLink.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="check4InstanceNotCallInstance">true</property>
+             </trigger>
+        </field>
+         <field name="fromDate">
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkto[FromAbstractLink].attribute[Date]</property>
+            <property name="Label">Sales_Document2DocumentTable.fromDate.Label</property>
+            <property name="ModeSearch">READONLY</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getEmptyFieldValue"
+                name="Sales_Document2DocumentTable.fromDate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="check4InstanceNotCallInstance">true</property>
+             </trigger>
+        </field>
+        <field name="fromStatus">
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
+            <property name="Label">Sales_Document2DocumentTable.fromStatus.Label</property>
+            <property name="ModeSearch">READONLY</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getEmptyFieldValue"
+                name="Sales_Document2DocumentTable.fromStatus.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="check4InstanceNotCallInstance">true</property>
+             </trigger>
         </field>
     </definition>
 </ui-table>
