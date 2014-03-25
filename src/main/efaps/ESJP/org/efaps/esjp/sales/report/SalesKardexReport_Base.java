@@ -234,6 +234,7 @@ public abstract class SalesKardexReport_Base
     protected void addMap2TransactionInfo(final Parameter _parameter,
                                           final Map<String, Object> _map,
                                           final Instance _transaction)
+        throws EFapsException
     {
         // to be implemented
     }
