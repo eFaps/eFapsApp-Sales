@@ -31,7 +31,7 @@
         <!-- fields -->
         <field name="productRequest">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_ProductRequest/Name.Label</property>
+            <property name="Label">Sales_QuoteRequest_SelectDocForm.productRequest.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="autoComplete4ProductRequest" 
@@ -43,7 +43,7 @@
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
-            <property name="Label">Sales_ProductRequest_SelectDocForm.info.Label</property>
+            <property name="Label">Sales_QuoteRequest_SelectDocForm.info.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
