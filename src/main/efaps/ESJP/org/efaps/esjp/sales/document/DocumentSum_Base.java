@@ -176,6 +176,14 @@ public abstract class DocumentSum_Base
             _editDoc.getValues().put(CISales.DocumentSumAbstract.DueDate.name, duedate);
         }
 
+        final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Contact.name));
+        final Instance contactIns = Instance.get(contact);
+        if (contactIns != null && contactIns.isValid()) {
+            update.add(CISales.DocumentSumAbstract.Contact, contactIns.getId());
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, contactIns);
+        }
+
         final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentSumAbstract.Note.name));
         if (note != null) {
