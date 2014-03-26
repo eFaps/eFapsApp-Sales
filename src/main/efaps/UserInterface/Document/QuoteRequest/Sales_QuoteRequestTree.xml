@@ -38,6 +38,7 @@
         <!-- type tree for -->
         <type>Sales_QuoteRequest</type>
         <childs>
+            <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_QuoteRequestTree_Position</child>
         </childs>
         <!-- properties -->
