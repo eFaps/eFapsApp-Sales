@@ -87,6 +87,7 @@
                 <property name="ValueSelect">attribute[OID]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">OUTGOING</property>
             </trigger>
         </field>
         <field name="createGroup" character="Group">
