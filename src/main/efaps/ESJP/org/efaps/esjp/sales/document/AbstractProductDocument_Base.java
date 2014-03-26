@@ -180,24 +180,6 @@ public abstract class AbstractProductDocument_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _createdDoc   created doc
-     * @throws EFapsException on error
-     */
-    protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
-        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
-            final Insert insert = new Insert(CISales.Document2DocumentType);
-            insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
-            insert.add(CISales.Document2DocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
-    }
-
-    /**
      * Method is called in the process of creation.
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _posInsert    insert to add to

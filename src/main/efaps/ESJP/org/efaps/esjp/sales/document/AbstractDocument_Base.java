@@ -59,6 +59,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -2146,6 +2147,55 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
+    protected void connect2DocumentType(final Parameter _parameter,
+                                        final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
+            insert2DocumenTypeAbstract(CISales.Document2DocumentType, _createdDoc, instDocType);
+        }
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
+    protected void connect2ProductDocumentType(final Parameter _parameter,
+                                               final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("productDocumentType"));
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
+            insert2DocumenTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, instDocType);
+        }
+    }
+
+    /**
+     * Method to add relation document and document type.
+     *
+     * @param _type CIType to create relation document and document type.
+     * @param _createdDoc created doc.
+     * @param _docTypeAbs instance the document type.
+     * @throws EFapsException on error.
+     */
+    protected void insert2DocumenTypeAbstract(final CIType _type,
+                                              final CreatedDoc _createdDoc,
+                                              final Instance _docTypeAbs)
+        throws EFapsException
+    {
+        final Insert insert = new Insert(_type);
+        insert.add(CIERP.Document2DocumentTypeAbstract.DocumentLinkAbstract, _createdDoc.getInstance());
+        insert.add(CIERP.Document2DocumentTypeAbstract.DocumentTypeLinkAbstract, _docTypeAbs);
+        insert.execute();
     }
 
     public Return connectDocumentType2Catalog(final Parameter _parameter)
