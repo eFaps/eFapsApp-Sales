@@ -37,7 +37,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
-import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
@@ -93,25 +92,6 @@ public abstract class IncomingReceipt_Base
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
         return new Return();
-    }
-
-    /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _createdDoc   created doc
-     * @throws EFapsException on error
-     */
-    protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingReceiptForm.productDocumentType.name));
-        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
-            final Insert insert = new Insert(CISales.Document2ProductDocumentType);
-            insert.add(CISales.Document2ProductDocumentType.DocumentLink, _createdDoc.getInstance());
-            insert.add(CISales.Document2ProductDocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
     }
 
     /**

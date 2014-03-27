@@ -135,26 +135,6 @@ public abstract class IncomingInvoice_Base
         return new Return();
     }
 
-    /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _createdDoc   created doc
-     * @throws EFapsException on error
-     */
-    protected void connect2ProductDocumentType(final Parameter _parameter,
-                                               final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Instance instDocType = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.productDocumentType.name));
-        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
-            final Insert insert = new Insert(CISales.Document2ProductDocumentType);
-            insert.add(CISales.Document2ProductDocumentType.DocumentLink, _createdDoc.getInstance());
-            insert.add(CISales.Document2ProductDocumentType.DocumentTypeLink, instDocType);
-            insert.execute();
-        }
-    }
-
-
     @Override
     @SuppressWarnings("unchecked")
     public Return updateFields4Contact(final Parameter _parameter)

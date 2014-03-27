@@ -25,7 +25,6 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -67,10 +66,7 @@ public abstract class UsageReport_Base
         if (salesConfig != null) {
             final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4USAGEREPORT);
             if (productDocType != null && productDocType.isValid()) {
-                final Insert insert = new Insert(CISales.Document2DocumentType);
-                insert.add(CISales.Document2DocumentType.DocumentLink, _createdDoc.getInstance());
-                insert.add(CISales.Document2DocumentType.DocumentTypeLink, productDocType);
-                insert.execute();
+                insert2DocumenTypeAbstract(CISales.Document2DocumentType, _createdDoc, productDocType);
             }
         }
     }
