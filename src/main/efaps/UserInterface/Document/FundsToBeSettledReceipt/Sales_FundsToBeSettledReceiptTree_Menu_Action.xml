@@ -33,7 +33,6 @@
             <child>Sales_FundsToBeSettledReceiptTree_Menu_Action_Edit</child>
             <child>Sales_FundsToBeSettledReceiptTree_Menu_Action_EditJustification</child>
             <child>Sales_FundsToBeSettledReceiptTree_Menu_Action_EditAmount</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
         </childs>
     </definition>
 </ui-menu>
