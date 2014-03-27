@@ -37,6 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_UsageReportTree_Menu_Action_Edit</child>
+            <child>Sales_UsageReportTree_Menu_Action_SetCanceled</child>
         </childs>
     </definition>
 </ui-menu>

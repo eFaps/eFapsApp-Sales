@@ -20,11 +20,16 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -66,5 +71,19 @@ public abstract class ReturnUsageReport_Base
         createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
                         evaluateStorage4PositionTrigger(_parameter));
         return new Return();
+    }
+
+    @Override
+    protected void connect2ProductDocumentType(final Parameter _parameter,
+                                               final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final SystemConfiguration salesConfig = Sales.getSysConfig();
+        if (salesConfig != null) {
+            final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT);
+            if (productDocType != null && productDocType.isValid()) {
+                insert2DocumenTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
+            }
+        }
     }
 }

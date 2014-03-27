@@ -21,25 +21,25 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>773fedc7-cfaf-4a6a-9f62-55659860b65b</uuid>
+    <uuid>ec241eb6-ca41-44d6-9b79-be6d58115e7d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RecievingTicketTree_Menu_Action_SetCanceled</name>
+        <name>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</name>
 
         <access>
             <role>Sales_Delivery</role>
         </access>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.document.RecievingTicket" method="changeStatusWithInverseTransaction" >
+            <execute program="org.efaps.esjp.sales.document.DeliveryNote" method="changeStatusWithInverseTransaction">
                 <property name="Status">Canceled</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status" 
-                name="Sales_RecievingTicketTree_Menu_Action_SetCanceled.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Status">Closed</property>
+                name="Sales_DeliveryNoteTree_Menu_Action_SetCanceled.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
             </trigger>
         </target>
         <!-- properties -->

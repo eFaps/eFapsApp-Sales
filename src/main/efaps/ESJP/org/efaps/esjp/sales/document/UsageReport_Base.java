@@ -66,7 +66,7 @@ public abstract class UsageReport_Base
         if (salesConfig != null) {
             final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4USAGEREPORT);
             if (productDocType != null && productDocType.isValid()) {
-                insert2DocumenTypeAbstract(CISales.Document2DocumentType, _createdDoc, productDocType);
+                insert2DocumenTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
             }
         }
     }

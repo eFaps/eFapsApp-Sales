@@ -41,6 +41,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
@@ -360,6 +361,55 @@ public abstract class AbstractProductDocument_Base
         return ret;
     }
 
+    public Return changeStatusWithInverseTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        new StatusValue().execute(_parameter);
+        inverseTransaction(_parameter);
+        return new Return();
+    }
+
+    public Return inverseTransaction(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        if (instance.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+            queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document, instance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
+                            CIProducts.TransactionInOutAbstract.Storage,
+                            CIProducts.TransactionInOutAbstract.Product,
+                            CIProducts.TransactionInOutAbstract.Description,
+                            CIProducts.TransactionInOutAbstract.Date,
+                            CIProducts.TransactionInOutAbstract.UoM);
+            multi.execute();
+            while (multi.next()) {
+                Insert insert;
+                if (CIProducts.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
+                    insert = new Insert(CIProducts.TransactionOutbound);
+                } else {
+                    insert = new Insert(CIProducts.TransactionInbound);
+                }
+                insert.add(CIProducts.TransactionInOutAbstract.Quantity,
+                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Quantity));
+                insert.add(CIProducts.TransactionInOutAbstract.Storage,
+                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Storage));
+                insert.add(CIProducts.TransactionInOutAbstract.Product,
+                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Product));
+                insert.add(CIProducts.TransactionInOutAbstract.Description,
+                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Description));
+                insert.add(CIProducts.TransactionInOutAbstract.Date,
+                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Date));
+                insert.add(CIProducts.TransactionInOutAbstract.Document, instance);
+                insert.add(CIProducts.TransactionInOutAbstract.UoM,
+                                multi.getAttribute(CIProducts.TransactionInOutAbstract.UoM));
+                insert.execute();
+            }
+        }
+
+        return new Return();
+    }
 
     public Return dropDown4ProdDocTypeFieldValue(final Parameter _parameter)
         throws EFapsException

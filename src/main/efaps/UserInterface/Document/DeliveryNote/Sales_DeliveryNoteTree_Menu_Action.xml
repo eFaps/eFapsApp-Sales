@@ -37,6 +37,7 @@
         <!-- childs -->
         <childs>
             <child>Sales_DeliveryNoteTree_Menu_Action_Edit</child>
+            <child>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
         </childs>
     </definition>
