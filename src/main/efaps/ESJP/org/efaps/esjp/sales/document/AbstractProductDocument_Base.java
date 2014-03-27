@@ -364,7 +364,7 @@ public abstract class AbstractProductDocument_Base
     public Return changeStatusWithInverseTransaction(final Parameter _parameter)
         throws EFapsException
     {
-        new StatusValue().execute(_parameter);
+        new StatusValue().setStatus(_parameter);
         inverseTransaction(_parameter);
         return new Return();
     }
