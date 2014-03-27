@@ -219,7 +219,6 @@
             <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
-            <property name="Required">true</property>
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>
