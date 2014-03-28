@@ -30,7 +30,7 @@
         <name>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</name>
 
         <access>
-            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
