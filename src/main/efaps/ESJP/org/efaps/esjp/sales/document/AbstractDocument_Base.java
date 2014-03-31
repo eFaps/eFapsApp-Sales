@@ -45,6 +45,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Classification;
+import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -1574,7 +1575,8 @@ public abstract class AbstractDocument_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.ProductAbstract.Name,
                             CIProducts.ProductAbstract.Description,
-                            CIProducts.ProductAbstract.Dimension);
+                            CIProducts.ProductAbstract.Dimension,
+                            CIProducts.ProductAbstract.DefaultUoM);
             multi.execute();
             while (multi.next()) {
                 final String name = multi.<String> getAttribute(CIProducts.ProductAbstract.Name);
@@ -1586,12 +1588,24 @@ public abstract class AbstractDocument_Base
                 } else {
                     choice = desc + " - " + name;
                 }
+                final Long dimId = multi.<Long> getAttribute(CIProducts.ProductAbstract.Dimension);
+                final Long dUoMId = multi.<Long> getAttribute(CIProducts.ProductAbstract.DefaultUoM);
+                long selected;
+                if (dUoMId == null) {
+                    selected = Dimension.get(dimId).getBaseUoM().getId();
+                } else {
+                    if (Dimension.getUoM(dUoMId).getDimension().equals( Dimension.get(dimId))) {
+                        selected = dUoMId;
+                    } else {
+                        selected = Dimension.get(dimId).getBaseUoM().getId();
+                    }
+                }
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
                 map.put("productDesc", desc);
-                map.put("uoM", getUoMFieldStr(multi.<Long> getAttribute(CIProducts.ProductAbstract.Dimension)));
+                map.put("uoM", getUoMFieldStr(selected, dimId));
                 map.put("discount", "0");
 
                 add2JavaScript4ProductAutoComplete(_parameter, map);
