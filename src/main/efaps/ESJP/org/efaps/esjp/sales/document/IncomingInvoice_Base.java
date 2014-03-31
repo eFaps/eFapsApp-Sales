@@ -153,6 +153,9 @@ public abstract class IncomingInvoice_Base
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getJS4RecievingTicket(_parameter, instance).toString());
         list.add(map);
         ret.put(ReturnValues.VALUES, list);
+
+        final Map<Object,Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        props.remove("FieldName");
         return ret;
     }
 
