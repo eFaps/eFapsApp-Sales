@@ -35,18 +35,6 @@
     <version-expression>(version==latest)</version-expression>
     <name>Sales_CreditNote_SelectDocForm</name>
     <!-- fields -->
-    <field name="invoice">
-      <property name="Label">Sales_Invoice.Label</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <trigger program="org.efaps.esjp.sales.document.CreditNote"
-               method="autoComplete4Invoice"
-               name="Sales_CreditNote_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE"
-               event="UI_FIELD_AUTOCOMPLETE"/>
-      <trigger program="org.efaps.esjp.sales.document.CreditNote"
-               method="updateFields4Invoice"
-               name="Sales_CreditNote_SelectDocForm.invoice.UI_FIELD_UPDATE"
-               event="UI_FIELD_UPDATE"/>
-    </field>
    <field name="receipt">
       <property name="Label">Sales_Receipt.Label</property>
       <property name="ModeCreate">EDITABLE</property>
