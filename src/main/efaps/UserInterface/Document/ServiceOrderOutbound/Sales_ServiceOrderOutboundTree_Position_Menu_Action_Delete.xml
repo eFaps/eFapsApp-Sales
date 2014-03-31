@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -21,27 +21,23 @@
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>3b20798b-e761-4d0d-890d-8c79207f5c7f</uuid>
+    <uuid>2313ab54-9308-4ac7-ab12-2b14d2273db0</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
+
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ServiceOrderOutboundMyDesk</name>
+        <name>Sales_ServiceOrderOutboundTree_Position_Menu_Action_Delete</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
         </access>
-
+        <!-- target definitions -->
         <target>
-            <menu>Sales_ServiceOrderOutboundMyDesk_Menu</menu>
-            <table>Sales_ServiceOrderOutboundTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_ServiceOrderOutbound</property>
-            </evaluate>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
+
 </ui-command>

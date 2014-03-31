@@ -36,6 +36,7 @@
         <!-- type tree for -->
         <type>Sales_ServiceOrderOutbound</type>
         <childs>
+            <child>Sales_ServiceOrderOutboundTree_Position</child>
             <child>Sales_DocumentAbstractTree_Doc</child>
         </childs>
         <!-- properties -->
