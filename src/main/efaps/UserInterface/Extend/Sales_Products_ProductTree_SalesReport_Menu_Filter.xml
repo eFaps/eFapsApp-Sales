@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -16,36 +15,33 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8079 $
- Last Changed:    $Date: 2012-10-23 19:02:32 -0500 (mar, 23 oct 2012) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>dcaf8feb-f9cc-4d86-8dc1-9da09137cbc6</uuid>
+    <uuid>49b857ab-906d-4aca-ba7a-feda6fd8d33c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8079 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_ProductTree_SalesReport_Menu_DownloadPdf</name>
-        <icon>Document_PDF</icon>
+        <name>Sales_Products_ProductTree_SalesReport_Menu_Filter</name>
+        <icon>Filter</icon>
         <access>
             <role>Sales_Admin</role>
             <role>Products_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.SalesProductReport">
-                <property name="Mime">pdf</property>
-                <property name="Template">Sales_Products_SalesReportTemplate</property>
-                <property name="ShowDetails">true</property>
-                <property name="OppositeFilter">true</property>
-                <property name="DateFilter">month</property>
-                <property name="Type">Sales_Invoice</property>
+            <form>ERP_ReportFilterForm4DateFromTo</form>
+            <execute program="org.efaps.esjp.sales.SalesProductReport" method="setFilter">
+                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </execute>
         </target>
-        <property name="Target">hidden</property>
-        <property name="TargetShowFile">true</property>
-        <property name="Label">report.DownloadPDF</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="Label">report.Filter</property>
+        <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
     </definition>
 </ui-command>

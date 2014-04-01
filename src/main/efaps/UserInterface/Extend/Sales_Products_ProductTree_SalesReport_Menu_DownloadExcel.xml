@@ -42,8 +42,7 @@
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
-                <property name="Types">Sales_OrderOutbound</property>
-                <property name="YearsAgo">1</property>
+                <property name="Type">Sales_Invoice</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

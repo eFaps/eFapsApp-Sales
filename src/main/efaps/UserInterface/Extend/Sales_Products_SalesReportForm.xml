@@ -29,7 +29,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_SalesReportForm</name>
-        <!-- fields -->
         <field name="description">
             <property name="HideLabel">true</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
@@ -37,6 +36,34 @@
                 name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="DBProperty">org.efaps.esjp.sales.SalesProductReport.Title</property>
+            </trigger>
+        </field>
+        <field name="filter">
+            <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <trigger program="org.efaps.esjp.sales.SalesProductReport"
+                method="setDefaultFilter"
+                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.1"
+                event="UI_FIELD_VALUE"
+                index="1">
+                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="FilterType01">DateTime</property>
+                <property name="FilterType02">DateTime</property>
+                <property name="FilterDefault01">YEAR:-1</property>
+                <property name="FilterDefault02">TODAY</property>
+             </trigger>
+            <trigger program="org.efaps.esjp.sales.SalesProductReport"
+                method="getFilterFieldValue"
+                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.2"
+                event="UI_FIELD_VALUE"
+                index="2">
+                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.SalesProductReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.SalesProductReport.dateTo</property>
             </trigger>
         </field>
         <field name="salesReport">
@@ -48,8 +75,8 @@
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
-                <property name="Types">Sales_Invoice;Sales_Receipt</property>
-                <property name="YearsAgo">1</property>
+                <property name="Type">Sales_Invoice</property>
+                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </trigger>
         </field>
     </definition>

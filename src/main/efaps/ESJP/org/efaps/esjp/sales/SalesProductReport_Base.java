@@ -29,6 +29,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
@@ -41,7 +43,6 @@ import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.CustomSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
@@ -69,6 +70,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -82,6 +84,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("81ca4010-b4ef-40e5-ad0a-55b99db6b617")
 @EFapsRevision("$Rev: 8120 $")
 public abstract class SalesProductReport_Base
+    extends FilteredReport
 {
     /**
      * @param _parameter    Parameter as passed by the eFasp API
@@ -122,125 +125,166 @@ public abstract class SalesProductReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new BuySellReport();
+        return new BuySellReport(this);
     }
 
-    public class BuySellReport
+    public static class BuySellReport
         extends AbstractDynamicReport
     {
         protected VariableBuilder<BigDecimal> quantitySum;
         protected VariableBuilder<BigDecimal> netPriceSum;
+
+        private final SalesProductReport_Base filteredReport;
+
+        /**
+         * @param _salesProductReport_Base
+         */
+        public BuySellReport(final SalesProductReport_Base _salesProductReport_Base)
+        {
+            this.filteredReport = _salesProductReport_Base;
+        }
+
+        protected QueryBuilder getQueryBuilder(final Parameter _parameter)
+            throws EFapsException
+        {
+            QueryBuilder ret = null;
+            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+            final Map<Integer, String> status = analyseProperty(_parameter, "Status");
+            final List<Long> statusList = new ArrayList<Long>();
+            for (final Entry<Integer, String> typeEntry : types.entrySet()) {
+                final String typeStr = typeEntry.getValue();
+                final Type type = isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr);
+                if (ret == null) {
+                    ret = new QueryBuilder(type);
+                } else {
+                    ret.addType(type);
+                }
+
+                if (!status.isEmpty()) {
+                    final String statusStr = status.get(typeEntry.getKey());
+                    final String[] statusArr = statusStr.split(";");
+
+                    for (final String statusS : statusArr) {
+
+                        final Status statusTmp = Status.find(type.getStatusAttribute().getLink().getUUID(), statusS);
+                        if (statusTmp != null) {
+                            statusList.add(statusTmp.getId());
+                        }
+
+                    }
+                }
+            }
+            if (!statusList.isEmpty()) {
+                ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
+                                statusList.toArray(new Object[statusList.size()]));
+            }
+            return ret;
+        }
+
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
             final Instance instance = _parameter.getInstance();
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String typesStr = (String) props.get("Types");
-            final String[] types = typesStr.split(";");
-            final Integer yearsAgo = Integer.parseInt((String) props.get("YearsAgo"));
 
-            final DateTime date2Filter = new DateTime().minusYears(yearsAgo);
 
             final DRDataSource dataSource = new DRDataSource("docOID", "document", "currency", "contact", "date",
                             "quantity", "netUnitPrice", "netPrice", "contactInst", "productInst", "productName",
                             "statusDoc", "productUoM", "productDiscount");
 
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
-            for (final String type : types) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
-                add2QueryBuilder(_parameter, attrQueryBldr);
-                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, date2Filter);
-                if (instance.getType().isKindOf(CIContacts.Contact.getType())) {
-                    attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, instance.getId());
-                }
-                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
-                if (instance.getType().isKindOf(CIProducts.ProductAbstract.getType())) {
-                    queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, instance.getId());
-                }
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.PositionSumAbstract.Quantity,
-                                CISales.PositionSumAbstract.NetUnitPrice,
-                                CISales.PositionSumAbstract.NetPrice,
-                                CISales.PositionSumAbstract.Discount,
-                                CISales.PositionSumAbstract.UoM);
-                final SelectBuilder selCurSymbol = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.CurrencyId)
-                                        .attribute(CIERP.Currency.Symbol);
-                final SelectBuilder selContactInst = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                        .linkto(CISales.DocumentSumAbstract.Contact).instance();
-                final SelectBuilder selProductInst = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.Product).instance();
-                final SelectBuilder selProductName = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.Product)
-                                        .attribute(CIProducts.ProductAbstract.Name);
-                final SelectBuilder selProductDesc = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.Product)
-                                        .attribute(CIProducts.ProductAbstract.Description);
-                final SelectBuilder selContactName = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                        .linkto(CISales.DocumentSumAbstract.Contact)
-                                        .attribute(CIContacts.Contact.Name);
-                final SelectBuilder selDocDate = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                        .attribute(CISales.DocumentSumAbstract.Date);
-                final SelectBuilder selDocType = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink).type().label();
-                final SelectBuilder selDocName = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                        .attribute(CISales.DocumentSumAbstract.Name);
-                final SelectBuilder selDocInst = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                        .instance();
-                final SelectBuilder selDocStatus = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
-                                        .attribute(CISales.DocumentSumAbstract.StatusAbstract);
+            final QueryBuilder attrQueryBldr = getQueryBuilder(_parameter);
+            add2QueryBuilder(_parameter, attrQueryBldr);
+            if (instance.getType().isKindOf(CIContacts.Contact.getType())) {
+                attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, instance.getId());
+            }
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
-                multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName,
-                                selCurSymbol, selProductInst, selProductName, selProductDesc, selDocInst, selDocStatus);
-                multi.execute();
-                while (multi.next()) {
-                    final Map<String, Object> map = new HashMap<String, Object>();
-                    final Instance productInst = multi.<Instance>getSelect(selProductInst);
-                    final String productName = multi.<String>getSelect(selProductName);
-                    final String productDesc = multi.<String>getSelect(selProductDesc);
-                    final String curSymbol = multi.<String>getSelect(selCurSymbol);
-                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-                    final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(
-                                    CISales.PositionSumAbstract.NetUnitPrice);
-                    final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
-                    final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
-                    final Instance contactInst = multi.<Instance>getSelect(selContactInst);
-                    final String contactName = multi.<String>getSelect(selContactName);
-                    final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
-                    final String docName = multi.<String>getSelect(selDocName);
-                    final Instance docInst = multi.<Instance>getSelect(selDocInst);
-                    final String docType = multi.<String>getSelect(selDocType);
-                    final String statusName = Status.get(multi.<Long>getSelect(selDocStatus)).getLabel();
-                    final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
-                    map.put("docOID", docInst.getOid());
-                    map.put("document", docType + ": " + docName);
-                    map.put("currency", curSymbol);
-                    map.put("contact", contactName);
-                    map.put("date", docDate.toDate());
-                    map.put("quantity", quantity.multiply(new BigDecimal(uoM.getNumerator()))
-                                        .divide(new BigDecimal(uoM.getDenominator()), 4, BigDecimal.ROUND_HALF_UP));
-                    map.put("netUnitPrice", netUnitPrice.multiply(new BigDecimal(uoM.getDenominator()))
-                                        .divide(new BigDecimal(uoM.getNumerator()), 4, BigDecimal.ROUND_HALF_UP));
-                    map.put("netPrice", netPrice);
-                    map.put("contactInst", contactInst);
-                    map.put("productInst", productInst);
-                    map.put("productName", productName + ": " + productDesc);
-                    map.put("statusDoc", statusName);
-                    map.put("productUoM", uoM.getDimension().getBaseUoM().getName());
-                    map.put("productDiscount", discount);
-                    lst.add(map);
-                }
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
+            if (instance.getType().isKindOf(CIProducts.ProductAbstract.getType())) {
+                queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, instance.getId());
+            }
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CISales.PositionSumAbstract.Quantity,
+                            CISales.PositionSumAbstract.NetUnitPrice,
+                            CISales.PositionSumAbstract.NetPrice,
+                            CISales.PositionSumAbstract.Discount,
+                            CISales.PositionSumAbstract.UoM);
+            final SelectBuilder selCurSymbol = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.CurrencyId)
+                                    .attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selContactInst = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                    .linkto(CISales.DocumentSumAbstract.Contact).instance();
+            final SelectBuilder selProductInst = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.Product).instance();
+            final SelectBuilder selProductName = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.Product)
+                                    .attribute(CIProducts.ProductAbstract.Name);
+            final SelectBuilder selProductDesc = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.Product)
+                                    .attribute(CIProducts.ProductAbstract.Description);
+            final SelectBuilder selContactName = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                    .linkto(CISales.DocumentSumAbstract.Contact)
+                                    .attribute(CIContacts.Contact.Name);
+            final SelectBuilder selDocDate = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                    .attribute(CISales.DocumentSumAbstract.Date);
+            final SelectBuilder selDocType = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink).type().label();
+            final SelectBuilder selDocName = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                    .attribute(CISales.DocumentSumAbstract.Name);
+            final SelectBuilder selDocInst = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                    .instance();
+            final SelectBuilder selDocStatus = new SelectBuilder()
+                                    .linkto(CISales.PositionSumAbstract.DocumentAbstractLink)
+                                    .attribute(CISales.DocumentSumAbstract.StatusAbstract);
+
+            multi.addSelect(selContactInst, selContactName, selDocDate, selDocType, selDocName,
+                            selCurSymbol, selProductInst, selProductName, selProductDesc, selDocInst, selDocStatus);
+            multi.execute();
+            while (multi.next()) {
+                final Map<String, Object> map = new HashMap<String, Object>();
+                final Instance productInst = multi.<Instance>getSelect(selProductInst);
+                final String productName = multi.<String>getSelect(selProductName);
+                final String productDesc = multi.<String>getSelect(selProductDesc);
+                final String curSymbol = multi.<String>getSelect(selCurSymbol);
+                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
+                final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(
+                                CISales.PositionSumAbstract.NetUnitPrice);
+                final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
+                final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
+                final Instance contactInst = multi.<Instance>getSelect(selContactInst);
+                final String contactName = multi.<String>getSelect(selContactName);
+                final DateTime docDate = multi.<DateTime>getSelect(selDocDate);
+                final String docName = multi.<String>getSelect(selDocName);
+                final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                final String docType = multi.<String>getSelect(selDocType);
+                final String statusName = Status.get(multi.<Long>getSelect(selDocStatus)).getLabel();
+                final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
+                map.put("docOID", docInst.getOid());
+                map.put("document", docType + ": " + docName);
+                map.put("currency", curSymbol);
+                map.put("contact", contactName);
+                map.put("date", docDate.toDate());
+                map.put("quantity", quantity.multiply(new BigDecimal(uoM.getNumerator()))
+                                    .divide(new BigDecimal(uoM.getDenominator()), 4, BigDecimal.ROUND_HALF_UP));
+                map.put("netUnitPrice", netUnitPrice.multiply(new BigDecimal(uoM.getDenominator()))
+                                    .divide(new BigDecimal(uoM.getNumerator()), 4, BigDecimal.ROUND_HALF_UP));
+                map.put("netPrice", netPrice);
+                map.put("contactInst", contactInst);
+                map.put("productInst", productInst);
+                map.put("productName", productName + ": " + productDesc);
+                map.put("statusDoc", statusName);
+                map.put("productUoM", uoM.getDimension().getBaseUoM().getName());
+                map.put("productDiscount", discount);
+                lst.add(map);
             }
 
             Collections.sort(lst, new Comparator<Map<String, Object>>()
@@ -298,7 +342,23 @@ public abstract class SalesProductReport_Base
                                         final QueryBuilder _queryBldr)
             throws EFapsException
         {
-            // to be implemented by subclasses
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final DateTime dateFrom;
+            if (filter.containsKey("dateFrom")) {
+                dateFrom = (DateTime) filter.get("dateFrom");
+            } else {
+                dateFrom = new DateTime().minusYears(1);
+            }
+            final DateTime dateTo;
+            if (filter.containsKey("dateTo")) {
+                dateTo = (DateTime) filter.get("dateTo");
+            } else {
+                dateTo = new DateTime();
+            }
+
+            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
+            _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
+                            .withTimeAtStartOfDay());
         }
 
         @Override
@@ -358,7 +418,7 @@ public abstract class SalesProductReport_Base
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
             final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn).groupByDataType();
 
-            final CustomSubtotalBuilder<BigDecimal> unitPriceSbt = DynamicReports.sbt
+            DynamicReports.sbt
                             .customValue(new UnitPriceSubtotal(), netUnitPriceColumn)
                                       .setDataType(DynamicReports.type.bigDecimalType());
 
