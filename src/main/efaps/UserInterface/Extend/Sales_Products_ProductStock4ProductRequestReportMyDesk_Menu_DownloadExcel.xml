@@ -19,7 +19,9 @@
  Last Changed:    $Date: 2013-09-19 18:12:02 -0500 (jue, 19 sep 2013) $
  Last Changed By: $Author: Jan Moxter $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8c5ea7ef-4279-4dcd-80b2-983e75620589</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 261 $</file-revision>
@@ -32,8 +34,6 @@
             <role>Products_Admin</role>
             <role>Products_Modifier</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <execute method="exportReport" program="org.efaps.esjp.sales.report.ProductStockReport">
                 <property name="Mime">xls</property>
@@ -43,9 +43,8 @@
                 <property name="Status">Open</property>
             </execute>
         </target>
-
-        <!-- properties -->
         <property name="Target">hidden</property>
         <property name="TargetShowFile">true</property>
+        <property name="Label">report.DownloadExcel</property>
     </definition>
 </ui-command>

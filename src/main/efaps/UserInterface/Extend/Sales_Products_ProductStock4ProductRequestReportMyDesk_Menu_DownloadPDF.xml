@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,7 +20,8 @@
  Last Changed:    $Date: 2013-09-19 18:12:02 -0500 (jue, 19 sep 2013) $
  Last Changed By: $Author: Jan Moxter $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>70d4910e-35ca-4636-95e8-8ff90f4d27af</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 261 $</file-revision>
@@ -43,8 +45,8 @@
             </execute>
         </target>
 
-        <!-- properties -->
         <property name="Target">hidden</property>
         <property name="TargetShowFile">true</property>
+        <property name="Label">report.DownloadPDF</property>
     </definition>
 </ui-command>
