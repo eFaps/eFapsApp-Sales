@@ -94,6 +94,13 @@
             </trigger>
         </attribute>
         <attribute>
+            <name>DefaultUoM</name>
+            <type>Link</type>
+            <typelink>Admin_DataModel_UoM</typelink>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>UOMID</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>SalesUnit</name>
             <type>Decimal</type>
             <sqltable>Products_ProductSQLTable</sqltable>
@@ -202,6 +209,13 @@
                 <property name="Value">$&lt;attribute[Name]&gt; - $&lt;linkto[BaseUoM].attribute[Name]&gt;</property>
                 <property name="Type">Admin_DataModel_Dimension</property>
             </trigger>
+        </attribute>
+        <attribute>
+            <name>DefaultUoM</name>
+            <type>Link</type>
+            <typelink>Admin_DataModel_UoM</typelink>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>UOMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>SalesUnit</name>
