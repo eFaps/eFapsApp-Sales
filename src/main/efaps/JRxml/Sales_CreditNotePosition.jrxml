@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_CreditNotePosition" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="7dc85c63-039b-44f4-9a5c-33cde018d3db">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
@@ -21,14 +22,13 @@
 	<detail>
 		<band height="20">
 			<textField>
-				<reportElement uuid="ae523bfa-67ee-450f-b619-6a7d5e577fd8" x="0" y="0" width="430" height="20"/>
-				<textElement/>
+				<reportElement x="0" y="0" width="430" height="20" uuid="ae523bfa-67ee-450f-b619-6a7d5e577fd8"/>
 				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement uuid="fe6fce5b-5697-4907-94ef-abadc2760391" x="430" y="0" width="125" height="20"/>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="430" y="0" width="125" height="20" uuid="fe6fce5b-5697-4907-94ef-abadc2760391"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[$F{NetPrice}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{NetPrice}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

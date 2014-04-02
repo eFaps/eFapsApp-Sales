@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_CreditNote" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="5f98e82a-9fbc-41d3-8029-703d5b6243f9">
 	<property name="ireport.zoom" value="1.1"/>
 	<property name="ireport.x" value="0"/>
@@ -50,38 +51,31 @@
 	<columnHeader>
 		<band height="100">
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="87d11353-5914-4de3-a786-9e17bf3379dd" x="44" y="0" width="106" height="20"/>
-				<textElement/>
+				<reportElement x="44" y="0" width="106" height="20" uuid="87d11353-5914-4de3-a786-9e17bf3379dd"/>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="af94fff3-7b4b-4e91-acf7-e590df49fa9a" x="231" y="0" width="105" height="20"/>
-				<textElement/>
+				<reportElement x="231" y="0" width="105" height="20" uuid="af94fff3-7b4b-4e91-acf7-e590df49fa9a"/>
 				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="7b621804-2c1a-40c5-acd4-87539d01a59e" x="44" y="20" width="335" height="20"/>
-				<textElement/>
+				<reportElement x="44" y="20" width="335" height="20" uuid="7b621804-2c1a-40c5-acd4-87539d01a59e"/>
 				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="99fcedc8-8762-4a94-9ee7-c7d29bb0b123" x="44" y="50" width="335" height="20"/>
-				<textElement/>
+				<reportElement x="44" y="50" width="335" height="20" uuid="99fcedc8-8762-4a94-9ee7-c7d29bb0b123"/>
 				<textFieldExpression><![CDATA[$F{contactAdressStreet}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="3cf6f164-2c76-42c8-b2d0-dc59c1258592" x="436" y="30" width="119" height="20"/>
-				<textElement/>
+				<reportElement x="436" y="30" width="119" height="20" uuid="3cf6f164-2c76-42c8-b2d0-dc59c1258592"/>
 				<textFieldExpression><![CDATA[$F{derivateType}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="b3f43be4-b0d7-4d6a-9bbf-8dbf4c512af2" x="436" y="50" width="119" height="20"/>
-				<textElement/>
+				<reportElement x="436" y="50" width="119" height="20" uuid="b3f43be4-b0d7-4d6a-9bbf-8dbf4c512af2"/>
 				<textFieldExpression><![CDATA[$F{derivateName}]]></textFieldExpression>
 			</textField>
 			<textField pattern="dd/MM/yyyy">
-				<reportElement uuid="785cebdb-0d7b-43fd-9ea1-bcc5e2bc10f6" x="436" y="70" width="119" height="20"/>
-				<textElement/>
+				<reportElement x="436" y="70" width="119" height="20" uuid="785cebdb-0d7b-43fd-9ea1-bcc5e2bc10f6"/>
 				<textFieldExpression><![CDATA[$F{derivateDate}.toDate()]]></textFieldExpression>
 			</textField>
 		</band>
@@ -89,7 +83,7 @@
 	<detail>
 		<band height="42">
 			<subreport>
-				<reportElement uuid="be49e49a-e376-44e8-8dec-da915b1fda4d" x="0" y="0" width="555" height="20"/>
+				<reportElement x="0" y="0" width="555" height="20" uuid="be49e49a-e376-44e8-8dec-da915b1fda4d"/>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_CreditNotePosition")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["JasperReport.Sales_CreditNotePosition"]]></subreportExpression>
 			</subreport>
@@ -97,30 +91,55 @@
 	</detail>
 	<pageFooter>
 		<band height="116">
-			<textField>
-				<reportElement uuid="f2bd557d-d6ab-4fff-a31e-71c2bc31e490" x="455" y="0" width="100" height="20"/>
+			<textField pattern="#,##0.00">
+				<reportElement x="470" y="0" width="85" height="20" uuid="f2bd557d-d6ab-4fff-a31e-71c2bc31e490"/>
 				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI()
-    .format($F{rateNetTotal},"#,##0.00")).toString()]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{rateNetTotal}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="470" y="20" width="85" height="20" uuid="3cef8868-9c4c-48dc-9eff-7cb69401a5fd"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{rateCrossTotal}.subtract($F{rateNetTotal}).setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="470" y="40" width="85" height="20" uuid="298cd7e4-0517-42e4-84c2-d9591e1ce60d"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{rateCrossTotal}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement uuid="3cef8868-9c4c-48dc-9eff-7cb69401a5fd" x="455" y="20" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI().format($F{rateCrossTotal}.subtract($F{rateNetTotal}),"#,##0.00")).toString()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="298cd7e4-0517-42e4-84c2-d9591e1ce60d" x="455" y="40" width="100" height="20"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA[new StringBuilder().append($F{rateCurrencySymbol}).append(" ").append(new DecimalUI().format($F{rateCrossTotal},"#,##0.00")).toString()]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="8ff416cd-7cb0-49b7-b400-9d5e2078491e" x="0" y="10" width="379" height="20"/>
-				<textElement/>
+				<reportElement x="0" y="10" width="379" height="20" uuid="8ff416cd-7cb0-49b7-b400-9d5e2078491e"/>
 				<textFieldExpression><![CDATA[new StringBuilder().append(Converter.getMaleConverter(
     new Locale("es")).convert($F{rateCrossTotal}.longValue())).append(" y ")
     .append($F{rateCrossTotal}.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString().replaceAll("^.*\\.", ""))
     .append("/100 ")
 .append($F{rateCurrencyName}).toString().toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="0" width="15" height="20" uuid="3d889e4e-6f34-42bd-814d-dce72b52c91d">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{rateCurrencySymbol}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="20" width="15" height="20" uuid="f4b1a39c-04df-4357-b511-9b87a2a7a746">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{rateCurrencySymbol}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="455" y="40" width="15" height="20" uuid="304e2869-2cf9-4c38-9546-99c42ec9bb7a">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{rateCurrencySymbol}]]></textFieldExpression>
 			</textField>
 		</band>
 	</pageFooter>
