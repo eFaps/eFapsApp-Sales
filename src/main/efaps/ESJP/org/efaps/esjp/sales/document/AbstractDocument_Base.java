@@ -303,6 +303,19 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form for0 Incoming Exchange.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4QuoteRequest(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.QuoteRequest.uuid, (Status[]) null);
+    }
+
+    /**
      * Used by the AutoCompleteField used in the select doc form for Receipts.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -660,6 +673,20 @@ public abstract class AbstractDocument_Base
      */
 
     public Return updateFields4ProductRequest(final Parameter _parameter)
+        throws EFapsException
+    {
+        return updateFields4Doc(_parameter);
+    }
+
+    /**
+     * Used by the update event used in the select doc form for ProductRequest.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+
+    public Return updateFields4QuoteRequest(final Parameter _parameter)
         throws EFapsException
     {
         return updateFields4Doc(_parameter);
