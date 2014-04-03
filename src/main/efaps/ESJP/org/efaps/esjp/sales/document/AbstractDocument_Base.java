@@ -1017,8 +1017,10 @@ public abstract class AbstractDocument_Base
             .append(getSetFieldValue(0, "crossTotal", netTotal == null
                             ? BigDecimal.ZERO.toString() : formater.format(crossTotal))).append("\n");
         if (rateTaxes != null) {
-            js.append("document.getElementsByName('taxes')[0].innerHTML='")
-                .append(new TaxesAttribute().getUI4ReadOnly(rateTaxes)).append("';\n");
+            js.append("if (document.getElementsByName('taxes')[0]) {\n")
+                .append("document.getElementsByName('taxes')[0].innerHTML='")
+                .append(new TaxesAttribute().getUI4ReadOnly(rateTaxes)).append("';\n")
+                .append("}\n");
         }
         js.append(getSetFieldValue(0, "note", note)).append("\n")
             .append(add2JavaScript4Document(_parameter, _instances)).append("\n")
