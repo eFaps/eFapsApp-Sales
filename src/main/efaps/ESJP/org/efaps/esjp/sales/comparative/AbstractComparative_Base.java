@@ -22,12 +22,20 @@ package org.efaps.esjp.sales.comparative;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
@@ -46,6 +54,10 @@ import org.joda.time.DateTime;
 public abstract class AbstractComparative_Base
     extends CommonDocument
 {
+    /**
+     * Key during request.
+     */
+    private final static String REQKEY = AbstractComparative.class.getName() +  ".RequestKey";
 
     /**
      * Method to create the basic Document. The method checks for the Type to be
@@ -136,6 +148,7 @@ public abstract class AbstractComparative_Base
      * @return
      */
     public String getValue(final Parameter _parameter,
+                           final Instance _detailInst,
                            final DateTime _dateValue,
                            final BigDecimal _decimalValue,
                            final Integer _integerValue,
@@ -162,6 +175,41 @@ public abstract class AbstractComparative_Base
         return formatter.format(_decimalValue);
     }
 
+    @SuppressWarnings("unchecked")
+    public Return getValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        Map<Instance, String> values;
+        if (Context.getThreadContext().containsRequestAttribute(AbstractComparative_Base.REQKEY)) {
+            values = (Map<Instance, String>) Context.getThreadContext().getRequestAttribute(
+                            AbstractComparative_Base.REQKEY);
+        } else {
+            values = new HashMap<Instance, String>();
+            Context.getThreadContext().setRequestAttribute(AbstractComparative_Base.REQKEY, values);
+
+            final List<Instance> detailInst = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            final MultiPrintQuery multi = new MultiPrintQuery(detailInst);
+            multi.addAttribute(CISales.ComparativeDetailAbstract.Comment,
+                            CISales.ComparativeDetailAbstract.AbstractLink,
+                            CISales.ComparativeDetailAbstract.AbstractDateValue,
+                            CISales.ComparativeDetailAbstract.AbstractDecimalValue,
+                            CISales.ComparativeDetailAbstract.AbstractIntegerValue,
+                            CISales.ComparativeDetailAbstract.AbstractStringValue);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                final String value = getValue(_parameter,
+                                multi.getCurrentInstance(),
+                                multi.<DateTime>getAttribute(CISales.ComparativeDetailAbstract.AbstractDateValue),
+                                multi.<BigDecimal>getAttribute(CISales.ComparativeDetailAbstract.AbstractDecimalValue),
+                                multi.<Integer>getAttribute(CISales.ComparativeDetailAbstract.AbstractIntegerValue),
+                                multi.<String>getAttribute(CISales.ComparativeDetailAbstract.AbstractStringValue));
+                values.put(multi.getCurrentInstance(), value);
+            }
+        }
+        ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
+        return ret;
+    }
 
 
 }

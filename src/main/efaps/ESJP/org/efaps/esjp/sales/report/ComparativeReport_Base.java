@@ -124,6 +124,7 @@ public abstract class ComparativeReport_Base
                 final String link = comp.getValue4Link(_parameter,
                                 multi.<Long>getAttribute(CISales.ComparativeDetailAbstract.AbstractLink));
                 final String value = comp.getValue(_parameter,
+                                multi.getCurrentInstance(),
                                 multi.<DateTime>getAttribute(CISales.ComparativeDetailAbstract.AbstractDateValue),
                                 multi.<BigDecimal>getAttribute(CISales.ComparativeDetailAbstract.AbstractDecimalValue),
                                 multi.<Integer>getAttribute(CISales.ComparativeDetailAbstract.AbstractIntegerValue),

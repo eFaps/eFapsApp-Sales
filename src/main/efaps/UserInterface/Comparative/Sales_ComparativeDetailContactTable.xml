@@ -34,6 +34,12 @@
             <property name="Attribute">Type</property>
             <property name="Label">Sales_ComparativeDetailAbstract/Type.Label</property>
         </field>
+        <field name="value">
+            <property name="Label">Sales_ComparativeDetailContactTable.value.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.comparative.ComparativeProvider" method="getValue"
+                name="Sales_ComparativeDetailContactTable.value.UI_FIELD_VALUE" event="UI_FIELD_VALUE"></trigger>
+        </field>
         <field name="commment">
             <property name="Attribute">Comment</property>
             <property name="Label">Sales_ComparativeDetailAbstract/Comment.Label</property>
