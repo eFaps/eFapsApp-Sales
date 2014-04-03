@@ -83,6 +83,8 @@
         <type>Sales_ReturnUsageReport</type>
         <type>Sales_UsageReport</type>
         <type>Sales_ServiceOrderOutbound</type>
+        <type>Sales_ComparativeProvider</type>
+
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>
@@ -322,6 +324,12 @@
         <status group="Sales_ServiceOrderOutboundStatus">
             <key>Open</key>
             <key>Received</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_ComparativeProviderStatus">
+            <key>Open</key>
+            <key>Closed</key>
             <key>Canceled</key>
         </status>
 
