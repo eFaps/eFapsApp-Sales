@@ -87,5 +87,11 @@
             <property name="Columns">80</property>
             <property name="Rows">5</property>
         </field>
+        <field name="comparativeReport">
+            <property name="HideLabel">true</property>
+            <trigger event="UI_FIELD_VALUE" method="generateReport"
+                name="Sales_ComparativeProviderForm.comparativeReport.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ComparativeReport" />
+        </field>
     </definition>
 </ui-form>

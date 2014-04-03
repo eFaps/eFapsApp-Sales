@@ -63,7 +63,7 @@
         </attribute>
         <attribute>
             <name>AbstractLink</name>
-            <type>Integer</type>
+            <type>Long</type>
             <sqltable>Sales_ComparativeDetailSQLTable</sqltable>
             <sqlcolumn>LINK</sqlcolumn>
         </attribute>

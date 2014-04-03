@@ -18,8 +18,10 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.comparative;
+
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -29,8 +31,9 @@ import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.util.EFapsException;
-
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -43,6 +46,7 @@ import org.efaps.util.EFapsException;
 public abstract class AbstractComparative_Base
     extends CommonDocument
 {
+
     /**
      * Method to create the basic Document. The method checks for the Type to be
      * created for every attribute if a related field is in the parameters.
@@ -51,7 +55,8 @@ public abstract class AbstractComparative_Base
      * @return Instance of the document.
      * @throws EFapsException on error.
      */
-    protected CreatedDoc createDoc(final Parameter _parameter) throws EFapsException
+    protected CreatedDoc createDoc(final Parameter _parameter)
+        throws EFapsException
     {
         final CreatedDoc ret = new CreatedDoc();
         final Insert insert = new Insert(getType4DocCreate(_parameter));
@@ -93,7 +98,9 @@ public abstract class AbstractComparative_Base
     public Return createDetail(final Parameter _parameter)
         throws EFapsException
     {
-        final Create create = new Create() {
+        final Create create = new Create()
+        {
+
             @Override
             protected void add2basicInsert(final Parameter _parameter,
                                            final Insert _insert)
@@ -111,4 +118,50 @@ public abstract class AbstractComparative_Base
     {
 
     }
+
+    /**
+     * @param _parameter
+     * @param _attribute
+     */
+    public abstract String getValue4Link(final Parameter _parameter,
+                                         final Long _linkValue)
+        throws EFapsException;
+
+    /**
+     * @param _parameter
+     * @param _attribute
+     * @param _attribute2
+     * @param _attribute3
+     * @param _attribute4
+     * @return
+     */
+    public String getValue(final Parameter _parameter,
+                           final DateTime _dateValue,
+                           final BigDecimal _decimalValue,
+                           final Integer _integerValue,
+                           final String _stringValue)
+        throws EFapsException
+    {
+        String ret = "";
+        if (_decimalValue != null) {
+            ret = getValue4Decimal(_parameter, _decimalValue);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _decimalValue
+     * @return
+     */
+    protected String getValue4Decimal(final Parameter _parameter,
+                                      final BigDecimal _decimalValue)
+        throws EFapsException
+    {
+        final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+        return formatter.format(_decimalValue);
+    }
+
+
+
 }

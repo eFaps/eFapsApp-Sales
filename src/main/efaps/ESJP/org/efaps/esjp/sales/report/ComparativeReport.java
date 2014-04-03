@@ -19,7 +19,7 @@
  */
 
 
-package org.efaps.esjp.sales.comparative;
+package org.efaps.esjp.sales.report;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -27,18 +27,16 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
- * Functional description can be found in the related "<code>_base</code>"
+ * Functional description can be found in the related "<code>_Base</code>"
  * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("1bd8cd9b-61dc-4ae9-8f1c-072362743992")
+@EFapsUUID("facbae66-c23b-496a-81cb-71a41d045716")
 @EFapsRevision("$Rev$")
-public class ComparativeProvider
-    extends  ComparativeProvider_Base
+public class ComparativeReport
+    extends ComparativeReport_Base
 {
-
-
 
 }

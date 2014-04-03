@@ -26,6 +26,8 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -64,5 +66,20 @@ public abstract class ComparativeProvider_Base
         if (contactInst.isValid()) {
             _insert.add(CISales.ComparativeDetailProvider.ProviderLink, contactInst);
         }
+    }
+
+    /**
+     * @param _parameter
+     * @param _attribute
+     */
+    @Override
+    public String getValue4Link(final Parameter _parameter,
+                                final Long _linkValue)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(Instance.get(CIContacts.Contact.getType(), _linkValue));
+        print.addAttribute(CIContacts.Contact.Name);
+        print.execute();
+        return print.getAttribute(CIContacts.Contact.Name);
     }
 }
