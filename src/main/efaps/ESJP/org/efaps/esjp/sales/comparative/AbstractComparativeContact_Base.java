@@ -21,8 +21,13 @@
 
 package org.efaps.esjp.sales.comparative;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.esjp.contacts.Contacts;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -34,7 +39,55 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsUUID("89ddbbe5-0446-4122-abbb-3e9ca68fb85d")
 @EFapsRevision("$Rev$")
 public abstract class AbstractComparativeContact_Base
-extends AbstractComparative
+    extends AbstractComparative
 {
 
+    /**
+     * Used by the AutoCompleteField used in the select contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Contacts contacts = new Contacts();
+        return contacts.autoComplete4Contact(_parameter);
+    }
+
+    /**
+     * @param _parameter Parameter as passeb by the eFaps API
+     * @return update map
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Contact(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Contacts contacts = new Contacts()
+        {
+
+            @Override
+            public String getFieldValue4Contact(final Instance _instance)
+                throws EFapsException
+            {
+                return AbstractComparativeContact_Base.this.getFieldValue4Contact(_instance);
+            }
+        };
+        return contacts.updateFields4Contact(_parameter);
+    }
+
+    /**
+     * Method to get the value for the field directly under the Contact.
+     *
+     * @param _instance Instacne of the contact
+     * @return String for the field
+     * @throws EFapsException on error
+     */
+    protected String getFieldValue4Contact(final Instance _instance)
+        throws EFapsException
+    {
+        final Contacts contacts = new Contacts();
+        return contacts.getFieldValue4Contact(_instance);
+    }
 }

@@ -24,6 +24,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -50,4 +53,16 @@ public abstract class ComparativeProvider_Base
         return new Return();
     }
 
+    @Override
+    protected void add2DetailCreate(final Parameter _parameter,
+                                    final Insert _insert)
+        throws EFapsException
+    {
+        super.add2DetailCreate(_parameter, _insert);
+        final Instance contactInst = Instance.get(_parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.ComparativeDetailProvider.ProviderLink.name)));
+        if (contactInst.isValid()) {
+            _insert.add(CISales.ComparativeDetailProvider.ProviderLink, contactInst);
+        }
+    }
 }

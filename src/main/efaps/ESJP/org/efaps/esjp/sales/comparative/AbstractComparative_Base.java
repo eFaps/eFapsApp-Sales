@@ -22,10 +22,12 @@
 package org.efaps.esjp.sales.comparative;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.util.EFapsException;
 
@@ -81,5 +83,32 @@ public abstract class AbstractComparative_Base
 
         ret.setInstance(insert.getInstance());
         return ret;
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return createDetail(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Create create = new Create() {
+            @Override
+            protected void add2basicInsert(final Parameter _parameter,
+                                           final Insert _insert)
+                throws EFapsException
+            {
+                add2DetailCreate(_parameter, _insert);
+            }
+        };
+        return create.execute(_parameter);
+    }
+
+    protected void add2DetailCreate(final Parameter _parameter,
+                                    final Insert _insert)
+        throws EFapsException
+    {
+
     }
 }
