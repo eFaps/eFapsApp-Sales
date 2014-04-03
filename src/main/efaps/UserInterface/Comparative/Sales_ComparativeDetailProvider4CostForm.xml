@@ -33,9 +33,11 @@
             <property name="Level">2</property>
             <property name="Label">Sales_ComparativeDetailProvider4CostForm.headingContact.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="providerLink">
-            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="SelectAlternateOID">linkto[ProviderLink].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_ComparativeDetailProvider/ProviderLink.Label</property>
             <property name="Select">linkto[ProviderLink].attribute[Name]</property>
@@ -56,7 +58,7 @@
         <field name="contactData">
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_ComparativeDetailProvider4CostForm.contactData.Label</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
