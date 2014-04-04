@@ -174,7 +174,8 @@ public abstract class IncomingInvoice_Base
 
         if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
             queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Contact, _instance);
-        } else if (_instance.getType().isKindOf(CISales.OrderOutbound.getType())) {
+        } else if (_instance.getType().isKindOf(CISales.OrderOutbound.getType())
+                        || _instance.getType().isKindOf(CISales.ServiceOrderOutbound.getType())) {
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
             attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _instance);
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.To);
