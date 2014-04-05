@@ -43,6 +43,43 @@
                 name="Sales_DeliveryNote.Status.RANGE_VALUE" event="RANGE_VALUE">
             </trigger>
         </attribute>
+        <attribute>
+            <name>CarrierLink</name>
+            <type>Link</type>
+            <typelink>Contacts_Contact</typelink>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DeparturePoint</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ArrivalPoint</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING2</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>VehicleBrand</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING3</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>VehicleLicencePlate</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING4</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>VehicleDriverInfo</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING5</sqlcolumn>
+        </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_DeliveryNote.ACCESSCHECK" event="ACCESSCHECK" />
     </definition>

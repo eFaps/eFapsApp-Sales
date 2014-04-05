@@ -46,6 +46,7 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
+                <property name="JasperReport">Sales_DeliveryNote</property>
              </execute>
         </target>
 

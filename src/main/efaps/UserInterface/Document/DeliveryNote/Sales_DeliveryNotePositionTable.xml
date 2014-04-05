@@ -38,18 +38,32 @@
             <property name="Label">Sales_DeliveryNotePosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
+        <field name="quantityInStock">
+            <property name="Label">Sales_DeliveryNotePositionTable.quantityInStock.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Width">1</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_DeliveryNotePositionTable.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_DeliveryNotePosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
-                method="autoComplete4Product"
-                name="Sales_DeliveryNotePositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" >
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="autoComplete4Product"
+                name="Sales_DeliveryNotePositionTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="InStock">true</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="updateFields4Product"
+                name="Sales_DeliveryNotePositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>
@@ -78,7 +92,13 @@
              <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                    method="getStorageFieldValueUI"
                    name="Sales_DeliveryNotePositionTable.storage.UI_FIELD_VALUE"
-                   event="UI_FIELD_VALUE"/>
+                   event="UI_FIELD_VALUE">
+                   <property name="ValueSelect">oid</property>
+             </trigger>
+             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                     method="updateFields4Product"
+                     name="Sales_DeliveryNotePositionTable.product.UI_FIELD_UPDATE"
+                     event="UI_FIELD_UPDATE" />
              <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="propertyCheck"
                 name="Sales_DeliveryNotePositionTable.storage.UI_ACCESSCHECK"

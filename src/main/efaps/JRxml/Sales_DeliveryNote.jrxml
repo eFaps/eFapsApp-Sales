@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DeliveryNote" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="16dc069f-9ed0-4544-be3d-d6ef24799ff3">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="UUID" value="954c33bb-f43d-4b3e-83b4-f0c427ec71c3"/>
+		<property name="Instance" value="true"/>
+		<property name="hasSubReport" value="true"/>
+	</parameter>
+	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+	<field name="date" class="org.joda.time.DateTime">
+		<property name="Select" value="attribute[Date]"/>
+	</field>
+	<field name="contactName" class="java.lang.String">
+		<property name="Select" value="linkfrom[Projects_ProjectService2DeliveryNote#ToLink].linkto[FromLink].linkto[Contact].attribute[Name]"/>
+	</field>
+	<field name="contactTaxNumber" class="java.lang.String">
+		<property name="Select" value="linkfrom[Projects_ProjectService2DeliveryNote#ToLink].linkto[FromLink].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
+	</field>
+	<field name="destinationAddress" class="java.lang.String">
+		<property name="Select" value="linkfrom[Projects_ProjectService2DeliveryNote#ToLink].linkto[FromLink].attribute[AddressWork]"/>
+	</field>
+	<detail>
+		<band height="185">
+			<staticText>
+				<reportElement uuid="32911192-1b34-4c52-ae2f-7df6a7f9301b" x="0" y="46" width="277" height="20"/>
+				<textElement/>
+				<text><![CDATA[Av. Industrial Oeste Centinela Nº 218 Ch. Baja]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="544973b0-143f-456f-b056-5f376db2eca0" x="277" y="46" width="278" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{destinationAddress}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="5ea50bae-aa38-4a49-8eb9-987797c0815c" x="0" y="66" width="277" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="ad5b22a7-d3b2-4122-918a-d3357c9cebdb" x="0" y="86" width="277" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{contactTaxNumber}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="b0a8a765-0598-4f8e-8dd3-96ebd71eae3e" x="0" y="131" width="555" height="21"/>
+				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_DeliveryNotePosition")]]></dataSourceExpression>
+				<subreportExpression><![CDATA["JasperReport.Sales_DeliveryNotePosition"]]></subreportExpression>
+			</subreport>
+			<textField  pattern="dd/MM/yyyy">
+				<reportElement uuid="6b2896ef-abd4-4779-98d9-c6e3d5ef20e5" x="203" y="26" width="116" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

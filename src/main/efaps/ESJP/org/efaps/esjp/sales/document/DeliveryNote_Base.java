@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,8 +45,10 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
@@ -72,11 +75,84 @@ public abstract class DeliveryNote_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
         connect2ProductDocumentType(_parameter, doc);
-        return new Return();
+        final File file = createReport(_parameter, doc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+
+        final String arrivalPoint = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name);
+        if (arrivalPoint != null) {
+            _insert.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
+            _createdDoc.getValues().put(CISales.DeliveryNote.ArrivalPoint.name, arrivalPoint);
+        }
+
+        final String departurePoint = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.departurePoint.name);
+        if (departurePoint != null) {
+            _insert.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
+            _createdDoc.getValues().put(CISales.DeliveryNote.DeparturePoint.name, departurePoint);
+        }
+
+        final String vehicleBrand = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleBrand.name);
+        if (vehicleBrand != null) {
+            _insert.add(CISales.DeliveryNote.VehicleBrand, vehicleBrand);
+            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleBrand.name, vehicleBrand);
+        }
+
+        final String vehicleDriverInfo = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name);
+        if (vehicleDriverInfo != null) {
+            _insert.add(CISales.DeliveryNote.VehicleDriverInfo, vehicleDriverInfo);
+            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleDriverInfo.name, vehicleDriverInfo);
+        }
+
+        final String vehicleLicencePlate = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleLicencePlate.name);
+        if (vehicleLicencePlate != null) {
+            _insert.add(CISales.DeliveryNote.VehicleLicencePlate, vehicleLicencePlate);
+            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleLicencePlate.name, vehicleLicencePlate);
+        }
+
+        final Instance carrierInst = Instance.get(_parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            _insert.add(CISales.DeliveryNote.CarrierLink, carrierInst);
+            _createdDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
+
+        }
+    }
+
+    /**
+     * Used by the AutoCompleteField used in the select contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Carrier(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Contacts contacts = new Contacts();
+        return contacts.autoComplete4Contact(_parameter);
+    }
+
 
     public Return getJS4SelectInvoiceForm(final Parameter _parameter)
         throws EFapsException

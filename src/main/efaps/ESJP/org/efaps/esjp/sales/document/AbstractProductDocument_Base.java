@@ -21,10 +21,14 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Type;
@@ -44,13 +48,19 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.products.Storage;
+import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -64,6 +74,10 @@ import org.joda.time.DateTime;
 public abstract class AbstractProductDocument_Base
     extends AbstractDocument
 {
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractProductDocument.class);
 
     /**
      * Method to create the basic Document. The method checks for the Type to be
@@ -220,7 +234,22 @@ public abstract class AbstractProductDocument_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
         list.add(map);
-        final StringBuilder js = new StringBuilder()
+
+        final StringBuilder js = new StringBuilder();
+        final String[] rows = _parameter.getParameterValues("product");
+        final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
+        final Instance storage = Instance.get(_parameter.getParameterValue("storageSetter"));
+        for (final String row : rows) {
+            final Map<KeyDef, Object> map2 = new HashMap<KeyDef, Object>();
+            final Instance prod = Instance.get(row);
+            if (prod != null && prod.isValid()) {
+                map2.put(new KeyDefStr("quantityInStock"), getStock4ProductInStorage(_parameter, prod, storage));
+                map2.put(new KeyDefStr("storage"), storage.getOid());
+            }
+            values.add(map2);
+        }
+        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+        js.append(getSetFieldValuesScript(_parameter, strValues, null))
             .append("require([\"dojo/query\"], function(query){")
             .append("query(\"select[name=storage]\").forEach(function(node){")
             .append("node.value=\"").append(_parameter.getParameterValue("storageSetter")).append("\";")
@@ -232,6 +261,81 @@ public abstract class AbstractProductDocument_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
+
+    public Return updateFields4Product(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+
+        final int selected = getSelectedRow(_parameter);
+        final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
+        final Instance storInst = Instance.get(_parameter.getParameterValues("storage")[selected]);
+
+        if (prodInst.isValid() && storInst.isValid()) {
+            map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
+                            getStock4ProductInStorage(_parameter, prodInst, storInst));
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        } else {
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+            final StringBuilder js = new StringBuilder();
+            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        }
+        return retVal;
+    }
+
+    @Override
+    protected void add2JavaScript4Postions(final Parameter _parameter,
+                                           final Collection<Map<KeyDef, Object>> _values,
+                                           final Set<String> _noEscape)
+        throws EFapsException
+    {
+        super.add2JavaScript4Postions(_parameter, _values, _noEscape);
+        final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+        if (defaultStorageInst.isValid()) {
+            for (final Map<KeyDef, Object> map : _values) {
+                final Instance prodInst = Instance.get((String) map.get(new KeyDefStr("product")));
+                if (prodInst.isValid()) {
+                    final String quantityInStock = getStock4ProductInStorage(_parameter, prodInst, defaultStorageInst);
+                    map.put(new KeyDefStr("quantityInStock"), quantityInStock);
+                }
+            }
+        } else {
+            AbstractProductDocument_Base.LOG.warn("A storage default should be configurated");
+        }
+    }
+
+
+
+    protected String getStock4ProductInStorage(final Parameter _parameter,
+                                               final Instance productinst,
+                                               final Instance storageInst)
+        throws EFapsException
+    {
+        String ret = "";
+        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, storageInst);
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, productinst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIProducts.Inventory.Quantity, CIProducts.Inventory.Reserved);
+        multi.execute();
+        if (multi.next()) {
+            final BigDecimal quantity = multi.getAttribute(CIProducts.Inventory.Quantity);
+            final BigDecimal quantityReserved = multi.getAttribute(CIProducts.Inventory.Reserved);
+
+            ret = qtyFrmt.format(quantity) + " / " + qtyFrmt.format(quantityReserved);
+        } else {
+            ret = "0 / 0";
+        }
+        return ret;
+    }
+
 
 
     /**
