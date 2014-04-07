@@ -139,13 +139,25 @@
             <property name="ModeEdit">NONE</property>
         </field>
         <field name="derived">
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
+            <property name="Required">true</property>
             <property name="SelectAlternateOID">linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_IncomingReminderForm.derived.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="autoComplete4IncomingInvoice"
+                name="Sales_IncomingReminderForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Accounting_ExternalVoucher</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd"
+                name="Sales_IncomingReminderForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales_IncomingReminderMyDesk_Menu_Action_CreateFromDoc2 -->
+                <property name="CmdUUID">38ba6ccf-9c69-4046-9cf7-0dde3cccca6a</property>
+                <property name="Inverse">true</property>
+            </trigger>
         </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>

@@ -20,17 +20,22 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -83,6 +88,31 @@ public abstract class IncomingCreditNote_Base
             _insert.add(CISales.IncomingCreditNote.Revision, revision);
         }
 
+    }
+
+    @Override
+    public Return autoComplete4IncomingInvoice(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new IncomingCreditNote()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Map<Integer, String> types = analyseProperty(_parameter, "Type");
+                if (!types.isEmpty()) {
+                    for (final Entry<Integer, String> entry : types.entrySet()) {
+                        final Type type = Type.get(entry.getValue());
+                        if (type != null) {
+                            _queryBldr.addType(type);
+                        }
+                    }
+                }
+            };
+        }.autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, (Status[]) null);
     }
 
     @Override
