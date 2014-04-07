@@ -206,4 +206,10 @@ public interface SalesSettings
      * Set a Price List for a Type used to Calculator. Used for Sales Documents.
      */
     String PRICELIST4CALCULATOR = "org.efaps.sales.PriceList4Calculator";
+
+    /**
+     * Default address used as the departure point in delivery note.
+     */
+    String DEFAULTDEPARTUREPOINT = "org.efaps.sales.DefaultDeparturePoint";
+
 }

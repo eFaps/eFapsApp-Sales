@@ -175,5 +175,10 @@ Sales_Reminder=</value>
 can be concatenated
 Set a Price List for a Type to Calculator. Used for Sales Documents.</description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.DefaultDeparturePoint</key>
+            <value>To be set by implementation</value>
+            <description>Default address used as the departure point in delivery note.</description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

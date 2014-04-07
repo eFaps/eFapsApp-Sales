@@ -29,6 +29,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -36,6 +37,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -51,6 +53,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -86,6 +89,24 @@ public abstract class DeliveryNote_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return return containing default value for create mode
+     * @throws EFapsException on error
+     */
+    public Return departurePointFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            final String depPoint = Sales.getSysConfig().getAttributeValue(SalesSettings.DEFAULTDEPARTUREPOINT);
+            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+            fieldValue.setValue(depPoint);
+        }
+        return ret;
+    }
+
 
     /**
      * {@inheritDoc}
