@@ -38,17 +38,15 @@
             <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- targets -->
         <target>
             <menu>Sales_UsageReportTree_Menu</menu>
             <form>Sales_UsageReportForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_UsageReport</type>
         <childs>
             <child>Sales_UsageReportTree_Position</child>
+            <child>Sales_TransactionDocumentTree_Transaction</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

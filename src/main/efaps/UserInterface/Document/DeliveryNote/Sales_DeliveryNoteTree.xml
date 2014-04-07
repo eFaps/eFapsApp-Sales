@@ -47,6 +47,7 @@
         <type>Sales_DeliveryNote</type>
         <childs>
             <child>Sales_DeliveryNoteTree_Position</child>
+            <child>Sales_TransactionDocumentTree_Transaction</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
