@@ -20,12 +20,18 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.contacts.Contacts;
 import org.efaps.util.EFapsException;
+
 
 /**
  * TODO comment!
@@ -48,10 +54,43 @@ public abstract class ReturnSlip_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
         connect2ProductDocumentType(_parameter, doc);
-        return new Return();
+        final File file = createReport(_parameter, doc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Used by the AutoCompleteField used in the select contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Carrier(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Contacts contacts = new Contacts();
+        return contacts.autoComplete4Contact(_parameter);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+        new DeliveryNote().add2DocCreate(_parameter, _insert, _createdDoc);
     }
 
     /**

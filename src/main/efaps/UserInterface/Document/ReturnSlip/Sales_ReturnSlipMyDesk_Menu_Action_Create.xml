@@ -43,6 +43,7 @@
                 <property name="PositionType">Sales_ReturnSlipPosition</property>
                 <property name="StatusGroup">Sales_ReturnSlipStatus</property>
                 <property name="Status">Open</property>
+                <property name="JasperReport">Sales_DeliveryNote</property>
             </execute>
         </target>
 

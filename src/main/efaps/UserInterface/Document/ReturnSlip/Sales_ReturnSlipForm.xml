@@ -32,7 +32,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipForm</name>
-        <!-- fields -->
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -52,14 +51,16 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_ReturnSlipForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Admin_User_Person</property>
-                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-                <property name="OrderSelect">attribute[LastName]</property>
-                <property name="WhereAttrEqValue">Status|true</property>
-                <property name="SelectCurrent">true</property>
-            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+               method="getSalesPersonFieldValue"
+               name="Sales_ReturnSlipForm.salesperson.UI_FIELD_VALUE"
+               event="UI_FIELD_VALUE">
+               <property name="Type">Admin_User_Person</property>
+               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+               <property name="OrderSelect">attribute[LastName]</property>
+               <property name="WhereAttrEqValue">Status|true</property>
+               <property name="SelectCurrent">true</property>
+           </trigger>
         </field>
         <field name="salespersonLink">
             <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
@@ -70,6 +71,29 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="namegroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+                method="getNameFieldValueUI"
+                name="Sales_ReturnSlipForm.name4create.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ReturnSlip</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
         <field name="productDocumentType">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
@@ -79,13 +103,17 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ReturnSlipForm.productDocumentType.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ReturnSlipForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
                 <property name="ValueSelect">attribute[OID]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">OUTGOING</property>
             </trigger>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -115,42 +143,10 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-        <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
-                method="getNameFieldValueUI"
-                name="Sales_ReturnSlipForm.name4create.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Sales_ReturnSlip</property>
-            </trigger>
-        </field>
-        <field name="name">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Required">true</property>
-        </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_ReturnSlipForm.headingClient.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
-        </field>
-        <field name="storageGroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="propertyCheck"
-                name="Sales_ReturnSlipForm.headingGroup.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" >
-                <property name="CheckCallingCommand">true</property>
-                <property name="Property">ShowStorage</property>
-             </trigger>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
@@ -168,6 +164,100 @@
                 method="updateFields4Contact"
                 name="Sales_ReturnSlipForm.contact.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_ReturnSlip/ContactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="headingInfo" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_ReturnSlipForm.headingInfo.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="departureGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="departurePoint">
+            <property name="Attribute">DeparturePoint</property>
+            <property name="Label">Sales_ReturnSlip/DeparturePoint.Label</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">80</property>
+        </field>
+        <field name="vehicleBrand">
+            <property name="Attribute">VehicleBrand</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="arrivalGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="arrivalPoint">
+            <property name="Attribute">ArrivalPoint</property>
+            <property name="Label">Sales_ReturnSlip/ArrivalPoint.Label</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">80</property>
+        </field>
+        <field name="vehicleLicencePlate">
+            <property name="Attribute">VehicleLicencePlate</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="carrierGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="carrierLink">
+            <property name="SelectAlternateOID">linkto[CarrierLink].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ReturnSlip/CarrierLink.Label</property>
+            <property name="Select">linkto[CarrierLink].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">98</property>
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+                method="autoComplete4Carrier"
+                name="Sales_ReturnSlipForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+                method="updateFields4Contact"
+                name="Sales_ReturnSlipForm.carrierLink.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                <property name="FieldName">carrierData</property>
+            </trigger>
+        </field>
+        <field name="vehicleDriverInfo">
+            <property name="Attribute">VehicleDriverInfo</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="storageGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_ReturnSlipForm.headingGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
+        <field name="carrierData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_ReturnSlipForm.carrierData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="storageSetter">
              <property name="ModeCreate">EDITABLE</property>
@@ -192,39 +282,35 @@
                 <property name="Property">ShowStorage</property>
              </trigger>
         </field>
-        <field name="contactData">
-            <property name="ModePrint">NONE</property>
-            <property name="Label">Sales_ReturnSlipForm.contactData.Label</property>
-            <property name="ModeEdit">READONLY</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeView">NONE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
-            <property name="Label">Sales_ReturnSlipForm.headingPosition.Heading</property>
+            <property name="Label">Sales_ReturnSlip/Position.Heading</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
         </field>
         <field name="positionTable" character="Target">
-            <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_ReturnSlipPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ReturnSlipPosition</property>
-                <property name="LinkFroms">ReturnSlip</property>
+                <property name="Type">Sales_ReturnSlipPosition</property>
+                <property name="LinkFrom">ReturnSlip</property>
             </evaluate>
         </field>
-         <field name="javaScript">
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
-            <property name="ModeEdit">HIDDEN</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getJavaScriptUIValue"
                 name="Sales_ReturnSlipForm.javaScript.UI_Field_Value"
                 event="UI_FIELD_VALUE" />
         </field>
     </definition>
-
 </ui-form>
