@@ -38,6 +38,7 @@
         <target>
             <form>Sales_PaymentSchedulePayForm</form>
             <execute method="createSchedule4SelectedDocs" program="org.efaps.esjp.sales.PaymentSchedule">
+                <property name="PositionType">Sales_PaymentSchedulePosition</property>
                 <property name="StatusGroup">Sales_PaymentScheduleStatus</property>
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
