@@ -2282,6 +2282,30 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Method to connect the document with terms.
+     *
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _createdDoc   CreatedDoc  to be connected
+     * @throws EFapsException on error
+     */
+    protected void connect2Terms(final Parameter _parameter,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String[] terms = _parameter.getParameterValues("terms");
+        if (terms != null) {
+            for (final String term : terms) {
+                if (!term.isEmpty() && _createdDoc.getInstance().isValid()) {
+                    final Insert insert = new Insert(CISales.Document2TextElement);
+                    insert.add(CISales.Document2TextElement.Document, _createdDoc.getInstance());
+                    insert.add(CISales.Document2TextElement.TextElement, term);
+                    insert.execute();
+                }
+            }
+        }
+    }
+
+    /**
      * Method to get the javascript.
      *
      * @param _parameter Parameter as passed from the eFaps API
