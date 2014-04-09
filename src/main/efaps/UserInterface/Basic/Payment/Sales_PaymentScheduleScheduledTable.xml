@@ -73,18 +73,6 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_PaymentSchedulePayTable.contact.Label</property>
         </field>
-        <field name="paymentSchedule">
-            <property name="SelectAlternateOID">linkfrom[Sales_PaymentSchedulePosition#Document].linkto[PaymentSchedule].oid</property>
-            <property name="Select">linkfrom[Sales_PaymentSchedulePosition#Document].linkto[PaymentSchedule].attribute[Name]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentSchedulePayTable.paymentSchedule.Label</property>
-        </field>
-        <field name="paymentScheduleDate">
-            <property name="SelectAlternateOID">linkfrom[Sales_PaymentSchedulePosition#Document].linkto[PaymentSchedule].oid</property>
-            <property name="Select">linkfrom[Sales_PaymentSchedulePosition#Document].linkto[PaymentSchedule].attribute[Date]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_PaymentSchedulePayTable.paymentScheduleDate.Label</property>
-        </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
