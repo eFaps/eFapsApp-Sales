@@ -40,4 +40,22 @@
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_ComparativeProviderTree</name>
+        <target>
+            <menu>Sales_ComparativeProviderTree_Menu</menu>
+            <form>Sales_ComparativeProviderForm</form>
+        </target>
+        <type>Sales_ComparativeProvider</type>
+        <childs>
+            <child>Sales_ComparativeProviderTree_Details</child>
+            <child>Sales_ComparativeTree_File</child>
+        </childs>
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-menu>
