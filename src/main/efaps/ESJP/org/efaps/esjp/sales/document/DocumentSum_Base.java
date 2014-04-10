@@ -1788,7 +1788,7 @@ public abstract class DocumentSum_Base
     }
 
     protected StringBuilder getHtml4Contact(final Parameter _parameter,
-                                                  final String _search4Name)
+                                            final String _search4Name)
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
@@ -1824,10 +1824,10 @@ public abstract class DocumentSum_Base
                     final HtmlTable html = new HtmlTable();
                     while (multi.next()) {
                         html.tr()
-                        .td(multi.getCurrentInstance().getType().getLabel())
-                        .td(multi.<String>getAttribute(CIERP.DocumentAbstract.Name))
-                        .td(multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).toString("dd/MM/YYYY"))
-                        .trC();
+                            .td(multi.getCurrentInstance().getType().getLabel())
+                            .td(multi.<String>getAttribute(CIERP.DocumentAbstract.Name))
+                            .td(multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).toString("dd/MM/YYYY"))
+                            .trC();
                     }
 
                     final HtmlTable html2 = new HtmlTable();
@@ -1861,7 +1861,7 @@ public abstract class DocumentSum_Base
 
         if (instance != null && !contactInst.isValid()) {
             final SelectBuilder selContactInst = new SelectBuilder()
-                                        .linkto(CISales.DocumentAbstract.Contact).instance();
+                            .linkto(CISales.DocumentAbstract.Contact).instance();
 
             final PrintQuery print = new PrintQuery(instance);
             print.addSelect(selContactInst);
