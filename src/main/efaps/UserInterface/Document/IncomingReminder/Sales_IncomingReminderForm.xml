@@ -15,15 +15,15 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 10250 $
-  Last Changed:    $Date: 2013-09-20 06:31:38 -0500 (vie, 20 sep 2013) $
-  Last Changed By: $Author: m.aranya@moxter.net $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>7d46ccbf-74d6-4734-8ce5-3cefaab5c0a0</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10250 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -125,6 +125,7 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
         </field>

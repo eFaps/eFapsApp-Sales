@@ -39,6 +39,7 @@
             <child>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt</child>
             <child>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDateSelect</child>
             <child>Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing</child>
+            <child>Sales_IncomingCreditNoteMyDesk_Menu_Action_Create</child>
         </childs>
     </definition>
 </ui-menu>
