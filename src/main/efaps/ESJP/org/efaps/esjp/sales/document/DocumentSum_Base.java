@@ -84,8 +84,10 @@ import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * Class is the generic instance for all documents of type DocumentSum.
@@ -1757,17 +1759,119 @@ public abstract class DocumentSum_Base
             name = _parameter.getParameterValue(fieldName);
         }
 
+        boolean props = false;
         if (name != null) {
             final String[] numbers = name.split("-");
             if (numbers.length == 2 && numbers[0].length() >= numbers[1].length()) {
-                html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
-                ret.put(ReturnValues.SNIPLETT, html.toString());
+                props = true;
             } else if (numbers.length != 2) {
-                html.insert(0, DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
+                props = true;
+            }
+
+            final StringBuilder search4Contact = getHtml4Contact(_parameter, name);
+            if (props) {
+                html.append(DBProperties.getProperty("org.efaps.esjp.sales.document.InvalidateName"));
+                if (!search4Contact.toString().isEmpty()) {
+                    html.append("<br>").append(search4Contact);
+                }
                 ret.put(ReturnValues.SNIPLETT, html.toString());
+            } else {
+                if (!search4Contact.toString().isEmpty()) {
+                    html.insert(0, search4Contact);
+                    ret.put(ReturnValues.SNIPLETT, html.toString());
+                }
             }
         }
         ret.put(ReturnValues.TRUE, true);
+
+        return ret;
+    }
+
+    protected StringBuilder getHtml4Contact(final Parameter _parameter,
+                                                  final String _search4Name)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        final Instance instance = _parameter.getInstance();
+
+        final boolean contactValid = "true".equalsIgnoreCase(getProperty(_parameter, "ValidateContact"));
+        if (contactValid) {
+            final Instance contactInst = getContactInstance(_parameter);
+            if (contactInst != null && contactInst.isValid()) {
+                QueryBuilder queryBldr = null;
+                final Map<Integer, String> types = analyseProperty(_parameter, "QueryType");
+                for (final Entry<Integer, String> entryType : types.entrySet()) {
+                    final Type type = Type.get(entryType.getValue());
+                    if (type != null) {
+                        if (queryBldr == null) {
+                            queryBldr = new QueryBuilder(type);
+                        } else {
+                            queryBldr.addType(type);
+                        }
+                    }
+                }
+                if (queryBldr != null) {
+                    queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInst);
+                    queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, _search4Name).setIgnoreCase(true);
+                    if (instance != null && instance.isValid()) {
+                        queryBldr.addWhereAttrNotEqValue(CIERP.DocumentAbstract.ID, instance);
+                    }
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addAttribute(CIERP.DocumentAbstract.Name,
+                                    CIERP.DocumentAbstract.Date);
+                    multi.execute();
+
+                    final HtmlTable html = new HtmlTable();
+                    while (multi.next()) {
+                        html.tr()
+                        .td(multi.getCurrentInstance().getType().getLabel())
+                        .td(multi.<String>getAttribute(CIERP.DocumentAbstract.Name))
+                        .td(multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).toString("dd/MM/YYYY"))
+                        .trC();
+                    }
+
+                    final HtmlTable html2 = new HtmlTable();
+                    if (!html.toString().isEmpty()) {
+                        html2.table()
+                            .th(DBProperties.getProperty("Sales_DocumentAbstract/Type.Label"))
+                            .th(DBProperties.getProperty("Sales_DocumentAbstract/Name.Label"))
+                            .th(DBProperties.getProperty("Sales_DocumentAbstract/Date.Label"))
+                            .append(html)
+                            .tableC();
+                        ret.append(html2);
+                    }
+                }
+            }
+        }
+
+        return ret;
+    }
+
+    /**
+     * @param _instance
+     * @return
+     */
+    protected Instance getContactInstance(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance ret;
+
+        final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        final Instance instance = _parameter.getInstance();
+
+        if (instance != null && !contactInst.isValid()) {
+            final SelectBuilder selContactInst = new SelectBuilder()
+                                        .linkto(CISales.DocumentAbstract.Contact).instance();
+
+            final PrintQuery print = new PrintQuery(instance);
+            print.addSelect(selContactInst);
+            print.execute();
+
+            ret = print.<Instance>getSelect(selContactInst);
+        } else {
+            ret = contactInst;
+        }
+
         return ret;
     }
 }

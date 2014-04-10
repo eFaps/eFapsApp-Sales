@@ -27,37 +27,42 @@
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>afaf3916-ef05-4ae0-b3d1-3ee571e5a92c</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>afaf3916-ef05-4ae0-b3d1-3ee571e5a92c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</name>
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Accounting</role>
-      <role>Sales_IncomingDocument</role>
-    </access>
-    <!-- target definitions -->
-    <target>
-      <form>Sales_IncomingInvoiceForm</form>
-      <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
-            <property name="PositionType">Sales_IncomingInvoicePosition</property>
-            <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-            <property name="Status">Open</property>
-      </execute>
-      <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
-      <command>Sales_IncomingInvoice_ShowRevision</command>
-    </target>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
+        </access>
+        <!-- target definitions -->
+        <target>
+            <form>Sales_IncomingInvoiceForm</form>
+            <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
+                <property name="PositionType">Sales_IncomingInvoicePosition</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Status">Open</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validateName">
+                <property name="ValidateContact">true</property>
+                <property name="QueryType">Sales_IncomingInvoice</property>
+                <property name="QueryType01">Sales_IncomingReceipt</property>
+                <property name="QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
+            <command>Sales_IncomingInvoice_ShowRevision</command>
+        </target>
 
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_IncomingInvoice</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-  </definition>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_IncomingInvoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 
 </ui-command>

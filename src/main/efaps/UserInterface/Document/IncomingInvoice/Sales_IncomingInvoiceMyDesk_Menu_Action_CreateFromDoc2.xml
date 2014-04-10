@@ -48,7 +48,12 @@
                 <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validateName">
+                <property name="ValidateContact">true</property>
+                <property name="QueryType">Sales_IncomingInvoice</property>
+                <property name="QueryType01">Sales_IncomingReceipt</property>
+                <property name="QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
             <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
 

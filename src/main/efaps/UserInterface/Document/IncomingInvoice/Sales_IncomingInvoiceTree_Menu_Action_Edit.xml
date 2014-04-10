@@ -46,7 +46,13 @@
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="edit" >
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validateName">
+                <property name="FieldName">name4edit</property>
+                <property name="ValidateContact">true</property>
+                <property name="QueryType">Sales_IncomingInvoice</property>
+                <property name="QueryType01">Sales_IncomingReceipt</property>
+                <property name="QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
                 name="Sales_IncomingInvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
