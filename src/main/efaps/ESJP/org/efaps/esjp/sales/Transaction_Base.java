@@ -168,11 +168,13 @@ public abstract class Transaction_Base
         final PrintQuery print = new PrintQuery(instance);
         final SelectBuilder sel = new SelectBuilder().linkto(CISales.TransactionAbstract.Payment)
                         .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).oid();
-        print.addSelect(sel);
+        final SelectBuilder selAcc = new SelectBuilder().linkto(CISales.TransactionAbstract.Account).instance();
+        print.addSelect(sel, selAcc);
         print.executeWithoutAccessCheck();
 
         final Instance docInst = Instance.get(print.<String>getSelect(sel));
-        if (docInst.isValid()) {
+        final Instance accInst = print.<Instance>getSelect(selAcc);
+        if (docInst.isValid() && (accInst != null && !accInst.getType().equals(CISales.AccountPettyCash.getType()))) {
             _parameter.put(ParameterValues.INSTANCE, docInst);
             final DocumentUpdate docUpdate = new DocumentUpdate() {
                 @Override
