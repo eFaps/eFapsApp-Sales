@@ -409,6 +409,19 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form for PettyCashReceipt.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4PettyCashReceipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.PettyCashReceipt.uuid, (Status[]) null);
+    }
+
+    /**
      * Generic method to get a list of documents.
      *
      * @param _parameter Parameter as passed from the eFaps API.
