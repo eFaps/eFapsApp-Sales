@@ -48,6 +48,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.sales.comparative.AbstractComparative;
@@ -101,12 +102,15 @@ public abstract class ComparativeReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final DRDataSource dataSource = new DRDataSource("type", "link", "value", "comment");
+            final DRDataSource dataSource = new DRDataSource("type", "dimension", "link", "value", "comment");
             final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
             final QueryBuilder queryBldr = new QueryBuilder(CISales.ComparativeDetailAbstract);
             queryBldr.addWhereAttrEqValue(CISales.ComparativeDetailAbstract.ComparativeAbstractLink,
                             _parameter.getInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDim = SelectBuilder.get().linkto(CISales.ComparativeDetailAbstract.DimensionLink)
+                            .attribute(CISales.ComparativeDimensionAbstract.Name);
+            multi.addSelect(selDim);
             multi.addAttribute(CISales.ComparativeDetailAbstract.Comment,
                             CISales.ComparativeDetailAbstract.AbstractLink,
                             CISales.ComparativeDetailAbstract.AbstractDateValue,
@@ -131,9 +135,11 @@ public abstract class ComparativeReport_Base
                                 multi.<String>getAttribute(CISales.ComparativeDetailAbstract.AbstractStringValue));
                 map.put("link", link);
                 map.put("value", value);
+                map.put("dimension", multi.<String>getSelect(selDim));
             }
             for (final Map<String, String> map : values) {
-                dataSource.add(map.get("type"), map.get("link"), map.get("value"), map.get("comment"));
+                dataSource.add(map.get("type"), map.get("dimension"), map.get("link"),
+                                map.get("value"), map.get("comment"));
             }
             return dataSource;
         }
@@ -153,6 +159,8 @@ public abstract class ComparativeReport_Base
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
             final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("type", String.class)
                             .setShowTotal(false);
+            final CrosstabRowGroupBuilder<String> dimGroup = DynamicReports.ctab.rowGroup("dimension", String.class)
+                            .setShowTotal(false);
 
             final CrosstabMeasureBuilder<String> valueMeasure = DynamicReports.ctab.measure("value",
                             String.class, Calculation.NOTHING);
@@ -167,7 +175,7 @@ public abstract class ComparativeReport_Base
             crosstab.headerCell(DynamicReports.cmp.text(DBProperties
                             .getProperty(ComparativeReport.class.getName() + ".HeaderCell"))
                             .setStyle(DynamicReports.stl.style().setBold(true)))
-                            .rowGroups(rowGroup)
+                            .rowGroups(rowGroup, dimGroup)
                             .columnGroups(columnGroup)
                             .measures(valueMeasure, commentMeasure);
             _builder.summary(crosstab);

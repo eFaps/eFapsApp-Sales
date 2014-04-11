@@ -35,7 +35,7 @@
             <child>ERP_Common_SearchMyDesk</child>
             <child>Sales_DocumentsMyDesk</child>
             <child>Sales_DocumentsIncomingMyDesk</child>
-            <child>Sales_ComparativeMyDesk</child>
+            <child>Sales_ComparativeDocMyDesk</child>
             <child>Sales_ChannelMyDesk</child>
             <child>Sales_AdminMyDesk</child>
             <child>Sales_PaymentAbstractMyDesk</child>

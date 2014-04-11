@@ -36,8 +36,11 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.util.EFapsException;
@@ -57,7 +60,7 @@ public abstract class AbstractComparative_Base
     /**
      * Key during request.
      */
-    private final static String REQKEY = AbstractComparative.class.getName() +  ".RequestKey";
+    private static final String REQKEY = AbstractComparative.class.getName() +  ".RequestKey";
 
     /**
      * Method to create the basic Document. The method checks for the Type to be
@@ -73,26 +76,26 @@ public abstract class AbstractComparative_Base
         final CreatedDoc ret = new CreatedDoc();
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         final String name = getDocName4Create(_parameter);
-        insert.add(CISales.ComparativeAbstract.Name, name);
-        ret.getValues().put(CISales.ComparativeAbstract.Name.name, name);
+        insert.add(CISales.ComparativeDocAbstract.Name, name);
+        ret.getValues().put(CISales.ComparativeDocAbstract.Name.name, name);
 
         final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.ComparativeAbstract.Date.name));
+                        CISales.ComparativeDocAbstract.Date.name));
         if (date != null) {
-            insert.add(CISales.ComparativeAbstract.Date, date);
-            ret.getValues().put(CISales.ComparativeAbstract.Date.name, date);
+            insert.add(CISales.ComparativeDocAbstract.Date, date);
+            ret.getValues().put(CISales.ComparativeDocAbstract.Date.name, date);
         }
         final String description = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.ComparativeAbstract.Description.name));
+                        CISales.ComparativeDocAbstract.Description.name));
         if (description != null) {
-            insert.add(CISales.ComparativeAbstract.Description, description);
-            ret.getValues().put(CISales.ComparativeAbstract.Description.name, description);
+            insert.add(CISales.ComparativeDocAbstract.Description, description);
+            ret.getValues().put(CISales.ComparativeDocAbstract.Description.name, description);
         }
         final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.ComparativeAbstract.Note.name));
+                        CISales.ComparativeDocAbstract.Note.name));
         if (note != null) {
-            insert.add(CISales.ComparativeAbstract.Note, note);
-            ret.getValues().put(CISales.ComparativeAbstract.Note.name, note);
+            insert.add(CISales.ComparativeDocAbstract.Note, note);
+            ret.getValues().put(CISales.ComparativeDocAbstract.Note.name, note);
         }
         addStatus2DocCreate(_parameter, insert, ret);
         add2DocCreate(_parameter, insert, ret);
@@ -209,6 +212,34 @@ public abstract class AbstractComparative_Base
         }
         ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
         return ret;
+    }
+
+
+    public Return dimensionDropDownFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field()
+        {
+
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance instance = _parameter.getInstance();
+                if (_parameter.getInstance().getType().isKindOf(CISales.ComparativeDetailAbstract.getType())) {
+                    final PrintQuery print = new PrintQuery(instance);
+                    print.addAttribute(CISales.ComparativeDetailAbstract.ComparativeAbstractLink);
+                    print.execute();
+                    _queryBldr.addWhereAttrEqValue(CISales.ComparativeDimensionAbstract.ComparativeAbstractLink,
+                                    print.getAttribute(CISales.ComparativeDetailAbstract.ComparativeAbstractLink));
+                } else {
+                    _queryBldr.addWhereAttrEqValue(CISales.ComparativeDimensionAbstract.ComparativeAbstractLink,
+                                    instance);
+                }
+            }
+        };
+        return field.dropDownFieldValue(_parameter);
     }
 
 
