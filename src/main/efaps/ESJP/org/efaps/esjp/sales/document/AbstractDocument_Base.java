@@ -495,13 +495,13 @@ public abstract class AbstractDocument_Base
 
     /**
      * @param _parameter
-     * @param multi
-     * @param map
-     * @throws EFapsException
+     * @param _multi
+     * @param -map
+     * @throws EFapsException on error.
      */
     protected void addMap4Autocomplete(final Parameter _parameter,
-                                       final MultiPrintQuery multi,
-                                       final Map<String, String> map)
+                                       final MultiPrintQuery _multi,
+                                       final Map<String, String> _map)
         throws EFapsException
     {
         // to be implemented
@@ -509,11 +509,11 @@ public abstract class AbstractDocument_Base
 
     /**
      * @param _parameter
-     * @param multi
-     * @throws EFapsException
+     * @param _multi
+     * @throws EFapsException on error.
      */
     protected void addMulti4Autocomplete(final Parameter _parameter,
-                                         final MultiPrintQuery multi)
+                                         final MultiPrintQuery _multi)
         throws EFapsException
     {
         // to be implemented
