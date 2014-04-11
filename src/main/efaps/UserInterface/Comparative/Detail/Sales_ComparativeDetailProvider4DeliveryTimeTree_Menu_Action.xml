@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -23,18 +22,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>48a337b1-0423-4185-8650-01250a70c70d</uuid>
+    <uuid>2a823889-5f78-4722-8a37-b86a2c7ab8b2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ComparativeDocProviderTree_Details_Menu_Action</name>
+        <name>Sales_ComparativeDetailProvider4DeliveryTimeTree_Menu_Action</name>
         <childs>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateCost</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateDeliveryTime</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreatePaymentTime</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateCost</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_Delete</child>
+            <child>Sales_ComparativeDetailProvider4DeliveryTimeTree_Menu_Action_Edit</child>
         </childs>
     </definition>
 </ui-menu>

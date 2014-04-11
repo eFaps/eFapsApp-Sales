@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -21,20 +20,23 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>48a337b1-0423-4185-8650-01250a70c70d</uuid>
+    <uuid>0c73fa9c-967b-4394-bb7a-fa6e453713f2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ComparativeDocProviderTree_Details_Menu_Action</name>
-        <childs>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateCost</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateDeliveryTime</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreatePaymentTime</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateCost</child>
-            <child>Sales_ComparativeDocProviderTree_Details_Menu_Action_Delete</child>
-        </childs>
+        <name>Sales_ComparativeDocProviderTree_Details_Menu_Action_CreateDeliveryTime</name>
+        <target>
+            <form>Sales_ComparativeDetailProvider4DeliveryTimeForm</form>
+            <execute method="createDetail" program="org.efaps.esjp.sales.comparative.ComparativeProvider" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_ComparativeDetailProvider4DeliveryTime</property>
+        <property name="TargetConnectAttribute">Sales_ComparativeDetailProvider/ComparativeProviderLink</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">720</property>
     </definition>
-</ui-menu>
+</ui-command>

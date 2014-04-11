@@ -33,10 +33,12 @@
             <property name="HRef">TREE</property>
             <property name="Attribute">Type</property>
             <property name="Label">Sales_ComparativeDetailAbstract/Type.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="dimensionLink">
             <property name="Select">linkto[DimensionLink].attribute[Name]</property>
             <property name="Label">Sales_ComparativeDetailAbstract/DimensionLink.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="value">
             <property name="Label">Sales_ComparativeDetailContactTable.value.Label</property>
@@ -51,6 +53,7 @@
         <field name="abstractContactLink">
             <property name="Select">linkto[AbstractContactLink].attribute[Name]</property>
             <property name="Label">Sales_ComparativeDetailContact/AbstractContactLink.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
     </definition>
 </ui-table>

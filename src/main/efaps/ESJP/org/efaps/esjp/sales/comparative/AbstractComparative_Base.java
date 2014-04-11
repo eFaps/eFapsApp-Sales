@@ -161,7 +161,10 @@ public abstract class AbstractComparative_Base
         String ret = "";
         if (_decimalValue != null) {
             ret = getValue4Decimal(_parameter, _decimalValue);
+        } else if (_integerValue != null) {
+            ret = getValue4Integer(_parameter, _integerValue);
         }
+
         return ret;
     }
 
@@ -176,6 +179,18 @@ public abstract class AbstractComparative_Base
     {
         final DecimalFormat formatter = NumberFormatter.get().getFormatter();
         return formatter.format(_decimalValue);
+    }
+
+    /**
+     * @param _parameter
+     * @param _integerValue
+     * @return
+     */
+    protected String getValue4Integer(final Parameter _parameter,
+                                      final Integer _integerValue)
+        throws EFapsException
+    {
+        return _integerValue == null ? "" : _integerValue.toString();
     }
 
     @SuppressWarnings("unchecked")
