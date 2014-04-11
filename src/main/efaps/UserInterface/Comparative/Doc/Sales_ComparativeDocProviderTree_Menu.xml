@@ -31,6 +31,8 @@
         <name>Sales_ComparativeDocProviderTree_Menu</name>
         <childs>
             <child>Sales_ComparativeDocProviderTree_Menu_Action</child>
+            <child>Sales_ComparativeDocTree_Menu_DownloadExcel</child>
+            <child>Sales_ComparativeDocTree_Menu_DownloadPDF</child>
         </childs>
     </definition>
 </ui-menu>

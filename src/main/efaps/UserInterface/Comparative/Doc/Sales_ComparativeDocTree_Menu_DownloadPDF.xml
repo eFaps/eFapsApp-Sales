@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2010 - 2014 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ec8ecd16-5777-4d7a-a2a8-286385b37e13</uuid>
+    <file-application>Innobierto-Construction</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ComparativeDocTree_Menu_DownloadPDF</name>
+        <icon>Document_PDF</icon>
+        <target>
+            <execute method="exportReport"
+                program="org.efaps.esjp.sales.report.ComparativeReport">
+                <property name="Mime">pdf</property>
+            </execute>
+        </target>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
+        <property name="Label">report.DownloadPDF</property>
+    </definition>
+</ui-command>

@@ -21,6 +21,7 @@
 
 package org.efaps.esjp.sales.report;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,6 +42,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -67,6 +69,30 @@ import org.joda.time.DateTime;
 @EFapsRevision("$Rev$")
 public abstract class ComparativeReport_Base
 {
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the file
+     * @throws EFapsException on error
+     */
+    public Return exportReport(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final String mime = (String) props.get("Mime");
+        final AbstractDynamicReport dyRp = getReport(_parameter);
+        dyRp.setFileName(DBProperties.getProperty(ComparativeReport.class.getName() + ".FileName"));
+        File file = null;
+        if ("xls".equalsIgnoreCase(mime)) {
+            file = dyRp.getExcel(_parameter);
+        } else if ("pdf".equalsIgnoreCase(mime)) {
+            file = dyRp.getPDF(_parameter);
+        }
+        ret.put(ReturnValues.VALUES, file);
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
     /**
      * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing html snipplet
