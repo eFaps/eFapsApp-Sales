@@ -82,6 +82,8 @@ public abstract class Calculator_Base
      */
     private ProductPrice productPrice;
 
+    private boolean priceIsNet;
+
     /**
      * The minimum product price as retrieved from the constructor. It is
      * determined from configuration if it is a net or cross value.
@@ -207,6 +209,7 @@ public abstract class Calculator_Base
             // check if unitprice is set from UI
             if (!_priceFromDB && _unitPrice != null) {
                 setPriceFromUI(_parameter, _unitPrice);
+                this.priceIsNet = _config.priceFromUIisNet(_parameter);
             } else {
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
@@ -215,6 +218,7 @@ public abstract class Calculator_Base
                         this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
+                this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
             }
         } else {
             this.oid = (_prodInstance != null && _prodInstance.isValid()) ? _prodInstance.getOid() : null;
@@ -222,9 +226,11 @@ public abstract class Calculator_Base
                 // check if unitprice is set from UI
                 if (!_priceFromDB && _unitPrice != null) {
                     setPriceFromUI(_parameter, _unitPrice);
+                    this.priceIsNet =_config.priceFromUIisNet(_parameter);
                 } else {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
+                    this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
@@ -292,6 +298,7 @@ public abstract class Calculator_Base
             // check if unitprice is set from UI
             if (!_priceFromDB && _unitPrice != null && _unitPrice.length() > 0) {
                 setPriceFromUI(_parameter, _unitPrice);
+                this.priceIsNet =_config.priceFromUIisNet(_parameter);
             } else {
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
@@ -300,6 +307,7 @@ public abstract class Calculator_Base
                         this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
+                this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
             }
         } else {
             this.oid = _oid;
@@ -307,9 +315,11 @@ public abstract class Calculator_Base
                 // check if unitprice is set from UI
                 if (!_priceFromDB && _unitPrice != null && _unitPrice.length() > 0) {
                     setPriceFromUI(_parameter, _unitPrice);
+                    this.priceIsNet =_config.priceFromUIisNet(_parameter);
                 } else {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
+                    this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
@@ -1064,15 +1074,14 @@ public abstract class Calculator_Base
         final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
         final int decDigCant = format.getMaximumFractionDigits();
 
-        ProductPrice ret = getNewPrice();
-        final ProductPrice unit = getProductNetUnitPrice();
+        final ProductPrice ret = getNewPrice();
+        final ProductPrice unit = getProductCrossUnitPrice();
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setOrigPrice(unit.getOrigPrice().subtract(unit.getOrigPrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
         ret.setCurrentPrice(unit.getCurrentPrice().subtract(unit.getCurrentPrice().divide(new BigDecimal(100))
                         .multiply(getDiscount())).setScale(decDigCant, BigDecimal.ROUND_HALF_UP));
-        ret = evalProductCrossUnitPrice(ret);
         return ret;
 
     }
@@ -1160,7 +1169,7 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxCatId > 0) {
+            if (this.priceIsNet && this.taxCatId > 0) {
                 final List<Tax> taxesTmp = getTaxes();
                 final BigDecimal currentPrice = _price.getCurrentPrice() == null
                                 ? BigDecimal.ZERO : _price.getCurrentPrice();
@@ -1217,7 +1226,7 @@ public abstract class Calculator_Base
             ret.setCurrentPrice(BigDecimal.ZERO);
             ret.setOrigPrice(BigDecimal.ZERO);
         } else {
-            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET) && this.taxCatId > 0) {
+            if (this.priceIsNet && this.taxCatId > 0) {
                 ret.setCurrentPrice(this.productPrice.getCurrentPrice() == null
                                 ? BigDecimal.ZERO
                                 : this.productPrice.getCurrentPrice());

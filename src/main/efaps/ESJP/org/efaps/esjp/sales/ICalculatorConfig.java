@@ -42,4 +42,5 @@ public interface ICalculatorConfig
 
     String getTypeName4SysConf(final Parameter _parameter) throws EFapsException;
 
+    boolean priceFromUIisNet(Parameter _parameter) throws EFapsException;
 }

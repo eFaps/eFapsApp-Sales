@@ -117,5 +117,10 @@
             <property name="Attribute">NetPrice</property>
             <property name="Label">Sales_ReceiptPosition/NetPrice.Label</property>
         </field>
+         <field name="crossPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Attribute">CrossPrice</property>
+            <property name="Label">Sales_ReceiptPosition/CrossPrice.Label</property>
+        </field>
     </definition>
 </ui-table>

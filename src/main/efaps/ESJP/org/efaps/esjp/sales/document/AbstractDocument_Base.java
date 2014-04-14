@@ -1770,7 +1770,7 @@ public abstract class AbstractDocument_Base
         final List<Calculator> ret = new ArrayList<Calculator>();
         final String[] quantities = _parameter.getParameterValues("quantity");
         String[] discounts = _parameter.getParameterValues("discount");
-        String[] unitPrices = _parameter.getParameterValues("netUnitPrice");
+        String[] unitPrices = getUnitPricesFromUI(_parameter);
         if (unitPrices == null && quantities != null) {
             unitPrices = new String[quantities.length];
             Arrays.fill(unitPrices, "");
@@ -2203,6 +2203,21 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
+    }
+
+    public boolean priceFromUIisNet(final Parameter _parameter)
+        throws EFapsException
+    {
+        return true;
+    }
+
+    /**
+     * @param _parameter
+     * @return
+     */
+    protected String[] getUnitPricesFromUI(final Parameter _parameter)
+    {
+        return _parameter.getParameterValues("netUnitPrice");
     }
 
     /**
