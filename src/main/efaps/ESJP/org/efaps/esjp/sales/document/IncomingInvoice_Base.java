@@ -195,9 +195,11 @@ public abstract class IncomingInvoice_Base
             values.add(dropDown);
         }
         final StringBuilder html = field.getInputField(_parameter, values, ListType.CHECKBOX);
-
-        ret.append("document.getElementsByName('").append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name)
-                        .append("')[0].innerHTML='").append(html).append("';");
+        ret.append("if (document.getElementsByName('")
+            .append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name).append("')[0]) {\n")
+            .append("document.getElementsByName('").append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name)
+            .append("')[0].innerHTML='").append(html).append("';")
+            .append("}\n");
         return ret;
     }
 
