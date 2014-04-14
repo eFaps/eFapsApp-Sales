@@ -1244,15 +1244,15 @@ public abstract class Calculator_Base
                     if (factor.compareTo(BigDecimal.ONE) != 0) {
                         if (currentPrice.compareTo(BigDecimal.ZERO) != 0) {
                             tCurrentPrice = tCurrentPrice.subtract(currentPrice.subtract(currentPrice
-                                            .divide(BigDecimal.ONE.add(factor))));
+                                            .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
                         }
                         if (basePrice.compareTo(BigDecimal.ZERO) != 0) {
                             tBasePrice = tBasePrice.subtract(basePrice.subtract(basePrice.divide(BigDecimal.ONE
-                                            .add(factor))));
+                                            .add(factor), BigDecimal.ROUND_HALF_UP)));
                         }
                         if (origPrice.compareTo(BigDecimal.ZERO) != 0) {
                             tOrigPrice = tOrigPrice.subtract(origPrice.subtract(origPrice.divide(BigDecimal.ONE
-                                            .add(factor))));
+                                            .add(factor), BigDecimal.ROUND_HALF_UP)));
                         }
                     }
                 }
