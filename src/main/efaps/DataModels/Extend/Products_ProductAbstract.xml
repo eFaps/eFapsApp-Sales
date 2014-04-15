@@ -86,7 +86,8 @@
             <typelink>Admin_DataModel_Dimension</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>DIMID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+            <trigger program="org.efaps.esjp.products.Product"
+                method="dimensionRangeValue"
                 name="Products_ProductAbstract.Dimension.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">$&lt;attribute[Name]&gt; - $&lt;linkto[BaseUoM].attribute[Name]&gt;</property>
@@ -197,13 +198,14 @@
             <sqlcolumn>ACTIVE</sqlcolumn>
             <defaultvalue>true</defaultvalue>
         </attribute>
-        <attribute>
+       <attribute>
             <name>Dimension</name>
             <type>LinkWithRanges</type>
             <typelink>Admin_DataModel_Dimension</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>DIMID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+            <trigger program="org.efaps.esjp.products.Product"
+                method="dimensionRangeValue"
                 name="Products_ProductAbstract.Dimension.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">$&lt;attribute[Name]&gt; - $&lt;linkto[BaseUoM].attribute[Name]&gt;</property>
