@@ -114,6 +114,7 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.Receipt" method="getNameFieldValueUI"
@@ -124,7 +125,6 @@
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
         <field name="headingClient" character="Heading">
