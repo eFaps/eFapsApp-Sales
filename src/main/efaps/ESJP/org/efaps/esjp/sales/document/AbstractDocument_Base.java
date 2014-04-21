@@ -93,6 +93,7 @@ import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.jaas.AppAccessHandler;
+import org.efaps.ui.wicket.behaviors.SetSelectedRowBehavior;
 import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -1746,7 +1747,7 @@ public abstract class AbstractDocument_Base
     protected int getSelectedRow(final Parameter _parameter)
     {
         int ret = 0;
-        final String value = _parameter.getParameterValue("eFapsRowSelectedRow");
+        final String value = _parameter.getParameterValue(SetSelectedRowBehavior.INPUT_ROW);
         if (value != null && value.length() > 0) {
             ret = Integer.parseInt(value);
         }
