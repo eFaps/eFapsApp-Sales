@@ -37,7 +37,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
@@ -83,20 +82,21 @@ public abstract class GoodsIssueSlip_Base
     }
 
     @Override
-    protected void add2JavaScript4ProductAutoComplete(final Parameter _parameter,
-                                                      final Map<String, String> _map)
+    protected void add2UpdateField4Product(final Parameter _parameter,
+                                           final Map<String, Object> _map,
+                                           final Instance _prodInst)
         throws EFapsException
     {
-        final Instance prodInst = Instance.get(_map.get(EFapsKey.AUTOCOMPLETE_KEY.getKey()));
+
         final Map<String, Long> storagemap = new TreeMap<String, Long>();
-        if (prodInst.isValid()) {
-            final PrintQuery print = new PrintQuery(prodInst);
+        if (_prodInst.isValid()) {
+            final PrintQuery print = new PrintQuery(_prodInst);
             print.addAttribute(CIProducts.ProductAbstract.SalesUnit);
             print.execute();
             final BigDecimal salesUnit = print.<BigDecimal>getAttribute(CIProducts.ProductAbstract.SalesUnit);
 
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, prodInst);
+            queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _prodInst);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selStorageInst = new SelectBuilder()
                         .linkto(CIProducts.Inventory.Storage).instance();

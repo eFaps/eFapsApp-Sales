@@ -1538,7 +1538,7 @@ public abstract class AbstractDocument_Base
      * @param _instance
      */
     protected void add2UpdateField4Product(final Parameter _parameter,
-                                           final Map<String, String> _map,
+                                           final Map<String, Object> _map,
                                            final Instance _prodInst)
         throws EFapsException
     {
@@ -1658,23 +1658,13 @@ public abstract class AbstractDocument_Base
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
-
-                add2JavaScript4ProductAutoComplete(_parameter, map);
                 sortMap.put(choice, map);
             }
             list.addAll(sortMap.values());
         }
-
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
-    }
-
-    protected void add2JavaScript4ProductAutoComplete(final Parameter _parameter,
-                                                      final Map<String, String> _map)
-        throws EFapsException
-    {
-
     }
 
     protected void catalogFilter4productAutoComplete(final Parameter _parameter,

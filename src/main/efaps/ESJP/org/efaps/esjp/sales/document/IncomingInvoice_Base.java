@@ -300,7 +300,7 @@ public abstract class IncomingInvoice_Base
 
     @Override
     protected void add2Map4UpdateField(final Parameter _parameter,
-                                       final Map<String, String> _map,
+                                       final Map<String, Object> _map,
                                        final List<Calculator> _calcList,
                                        final Calculator _cal)
         throws EFapsException
@@ -334,8 +334,8 @@ public abstract class IncomingInvoice_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
 

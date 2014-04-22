@@ -398,8 +398,8 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
 
@@ -418,8 +418,8 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
 
@@ -443,7 +443,7 @@ public abstract class DocumentSum_Base
      * @throws EFapsException on error
      */
     protected void add2Map4UpdateField(final Parameter _parameter,
-                                       final Map<String, String> _map,
+                                       final Map<String, Object> _map,
                                        final List<Calculator> _calcList,
                                        final Calculator _cal)
         throws EFapsException
@@ -519,8 +519,8 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -545,8 +545,8 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         final int selected = getSelectedRow(_parameter);
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -570,8 +570,8 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
@@ -581,7 +581,7 @@ public abstract class DocumentSum_Base
         // validate that a product was selected
         if (oid.length() > 0) {
             add2UpdateField4Product(_parameter, map, Instance.get(oid));
-            name = map.get(fieldName + "AutoComplete");
+            name = (String) map.get(fieldName + "AutoComplete");
         } else {
             name = "";
         }
@@ -614,8 +614,8 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
         final List<Calculator> calcList = analyseTable(_parameter, null);
@@ -1136,11 +1136,11 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         final List<Calculator> calcList = analyseTable(_parameter, null);
         int i = 0;
         for (final Calculator cal : calcList) {
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, Object> map = new HashMap<String, Object>();
             _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
             add2Map4UpdateField(_parameter, map, calcList, cal);
             list.add(map);

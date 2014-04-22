@@ -266,8 +266,8 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
         final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
