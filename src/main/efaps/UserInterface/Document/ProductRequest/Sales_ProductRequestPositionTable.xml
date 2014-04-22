@@ -39,6 +39,10 @@
         <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
             name="Sales_ProductRequestPositionTable.product.UI_FIELD_AUTOCOMPLETE"
             program="org.efaps.esjp.sales.document.ProductRequest" />
+        <trigger program="org.efaps.esjp.sales.document.ProductRequest"
+            method="updateFields4Product"
+            name="Sales_ProductRequestPositionTable.product.UI_FIELD_UPDATE"
+            event="UI_FIELD_UPDATE" />
     </field>
     <field name="productDesc">
         <property name="Columns">90</property>
