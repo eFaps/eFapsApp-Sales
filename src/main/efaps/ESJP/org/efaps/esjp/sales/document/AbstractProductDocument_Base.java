@@ -271,11 +271,17 @@ public abstract class AbstractProductDocument_Base
 
         final int selected = getSelectedRow(_parameter);
         final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
-        final Instance storInst = Instance.get(_parameter.getParameterValues("storage")[selected]);
 
-        if (prodInst.isValid() && storInst.isValid()) {
-            map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
-                            getStock4ProductInStorage(_parameter, prodInst, storInst));
+        Instance storInst = null;
+        if (_parameter.getParameterValues("storage")!= null) {
+            storInst  = Instance.get(_parameter.getParameterValues("storage")[selected]);
+        }
+
+        if (prodInst.isValid()) {
+            if (storInst != null && storInst.isValid()) {
+                map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
+                                getStock4ProductInStorage(_parameter, prodInst, storInst));
+            }
             add2UpdateField4Product(_parameter, map, prodInst);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);

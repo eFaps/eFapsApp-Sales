@@ -26,26 +26,23 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>a1c0e6c5-13dc-4a2d-a3e2-ca1fb96313a5</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_RecievingTicketMyDesk</name>
-    <access>
-      <role>Sales_Admin</role>
-    </access>
-    <target>
-      <menu>Sales_RecievingTicketMyDesk_Menu</menu>
-      <table>Sales_RecievingTicketTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Sales_RecievingTicket</property>
-      </evaluate>
-    </target>
-
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetShowCheckBoxes">true</property>
-  </definition>
+    <uuid>a1c0e6c5-13dc-4a2d-a3e2-ca1fb96313a5</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_RecievingTicketMyDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_RecievingTicketMyDesk_Menu</menu>
+            <table>Sales_RecievingTicketTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_RecievingTicket</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
 </ui-command>
