@@ -674,9 +674,9 @@ public abstract class DocumentSum_Base
 
             final StringBuilder js = new StringBuilder();
             int i = 0;
-            final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
+            final Map<Integer, Map<String, Object>> values = new TreeMap<Integer, Map<String, Object>>();
             for (final Calculator calculator : calculators) {
-                final Map<String, String> map2 = new HashMap<String, String>();
+                final Map<String, Object> map2 = new HashMap<String, Object>();
                 if (!calculator.isEmpty()) {
                     calculator.applyRate(newInst, rateInfos[2].getRate());
                     map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
@@ -769,7 +769,7 @@ public abstract class DocumentSum_Base
      */
     protected void add2SetValuesString4Postions4CurrencyUpdate(final Parameter _parameter,
                                                                final List<Calculator> _calculators,
-                                                               final Map<Integer, Map<String, String>> _values,
+                                                               final Map<Integer, Map<String, Object>> _values,
                                                                final Set<String> _noEscape)
         throws EFapsException
     {
@@ -828,9 +828,9 @@ public abstract class DocumentSum_Base
 
         final StringBuilder js = new StringBuilder();
         int i = 0;
-        final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
+        final Map<Integer, Map<String, Object>> values = new TreeMap<Integer, Map<String, Object>>();
         for (final Calculator calculator : calculators) {
-            final Map<String, String> map2 = new HashMap<String, String>();
+            final Map<String, Object> map2 = new HashMap<String, Object>();
             if (!calculator.isEmpty()) {
                 final QueryBuilder qlb = new QueryBuilder(CISales.PositionAbstract);
                 qlb.addWhereAttrEqValue(CISales.PositionAbstract.Product, Instance.get(calculator.getOid()));

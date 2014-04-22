@@ -80,7 +80,7 @@ public abstract class EventSchedule_Base
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
         final Instance contact = (Instance) Context.getThreadContext()
-                        .getSessionAttribute(EventSchedule.CONTACT_SESSIONKEY);
+                        .getSessionAttribute(EventSchedule_Base.CONTACT_SESSIONKEY);
 
         final List<Instance> query = new MultiPrint()
         {
@@ -370,7 +370,7 @@ public abstract class EventSchedule_Base
 
                 final Instance contact = print.<Instance>getSelect(selContact);
                 if (contact != null && contact.isValid()) {
-                    Context.getThreadContext().setSessionAttribute(EventSchedule.CONTACT_SESSIONKEY, contact);
+                    Context.getThreadContext().setSessionAttribute(EventSchedule_Base.CONTACT_SESSIONKEY, contact);
                 }
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentSchedulePosition);
@@ -404,7 +404,7 @@ public abstract class EventSchedule_Base
                     }
                 }
                 final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
-                final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+                final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
                                 .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
                                                 getOnCompleteScript(_parameter), false, false, new HashSet<String>()));

@@ -248,7 +248,7 @@ public abstract class AbstractProductDocument_Base
             }
             values.add(map2);
         }
-        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
         js.append(getSetFieldValuesScript(_parameter, strValues, null))
             .append("require([\"dojo/query\"], function(query){")
             .append("query(\"select[name=storage]\").forEach(function(node){")

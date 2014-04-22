@@ -1185,7 +1185,7 @@ public abstract class AbstractDocument_Base
 
         add2JavaScript4Postions(_parameter, values, noEscape);
 
-        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
         if (TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
@@ -1204,13 +1204,13 @@ public abstract class AbstractDocument_Base
      * @param _values
      * @return
      */
-    protected List<Map<String, String>> convertMap4Script(final Parameter _parameter,
+    protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
                                                           final Collection<Map<KeyDef, Object>> _values)
         throws EFapsException
     {
-        final List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
+        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (final Map<KeyDef, Object> valueMap :_values) {
-            final Map<String, String> map  = new HashMap<String, String>();
+            final Map<String, Object> map  = new HashMap<String, Object>();
             for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
                 map.put(entry.getKey().getName(), entry.getKey().convert2String(entry.getValue()));
             }
@@ -1389,15 +1389,16 @@ public abstract class AbstractDocument_Base
 
         add2JavaScript4Postions(_parameter, values, noEscape);
 
-        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
-        Collections.sort(strValues, new Comparator<Map<String, String>>()
+        Collections.sort(strValues, new Comparator<Map<String, Object>>()
         {
             @Override
-            public int compare(final Map<String, String> _o1,
-                               final Map<String, String> _o2)
+            public int compare(final Map<String, Object> _o1,
+                               final Map<String, Object> _o2)
             {
-                return _o1.get("productAutoComplete").compareTo(_o2.get("productAutoComplete"));
+                return String.valueOf(_o1.get("productAutoComplete"))
+                                .compareTo(String.valueOf(_o2.get("productAutoComplete")));
             }
         });
 
@@ -1512,23 +1513,6 @@ public abstract class AbstractDocument_Base
     {
         return new StringBuilder();
     }
-
-
-    /**
-     * @param _parameter Paramter as passed by the eFaps API
-     * @param _values values to be added to
-     * @param _noEscape no escape fields
-     * @throws EFapsException on error
-     */
-    @Deprecated
-    protected void add2SetValuesString4Postions(final Parameter _parameter,
-                                                final Map<Integer, Map<String, String>> _values,
-                                                final Set<String> _noEscape)
-        throws EFapsException
-    {
-        // to be used by implementations
-    }
-
 
     /**
      * Add additional JavaScript to the Script that will be executed after the
@@ -2580,10 +2564,10 @@ public abstract class AbstractDocument_Base
         multi.addSelect(selProdOID, selProdName, selProdDim);
         multi.execute();
 
-        final Map<Integer, Map<String, String>> values = new TreeMap<Integer, Map<String, String>>();
+        final Map<Integer, Map<String, Object>> values = new TreeMap<Integer, Map<String, Object>>();
 
         while (multi.next()) {
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, Object> map = new HashMap<String, Object>();
 
             final BigDecimal netUnitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
             final BigDecimal discountNetUnitPrice = multi.
@@ -2639,7 +2623,6 @@ public abstract class AbstractDocument_Base
         final Set<String> noEscape = new HashSet<String>();
         noEscape.add("uoM");
 
-        add2SetValuesString4Postions(_parameter, values, noEscape);
         js.append("require([\"dojo/domReady!\"], function(){\n")
             .append("setValue();\n");
         if (TargetMode.EDIT.equals(Context.getThreadContext()

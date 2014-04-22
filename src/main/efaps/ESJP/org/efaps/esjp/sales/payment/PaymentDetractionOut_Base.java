@@ -217,7 +217,7 @@ public abstract class PaymentDetractionOut_Base
             }
         }
         final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
-        final List<Map<String, String>> strValues = convertMap4Script(_parameter, values);
+        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
         js.append("<script type=\"text/javascript\">\n");
         if (total.compareTo(BigDecimal.ZERO) == 0) {
@@ -231,8 +231,8 @@ public abstract class PaymentDetractionOut_Base
                             .append(getTableAddNewRowsScript(_parameter, "paymentTable", strValues,
                                             getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
         }
-        js.append(getSetFieldValue(0, "amount", getTwoDigitsformater().format(total), true))
-            .append(getSetFieldValue(0, "total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO), true))
+        js.append(getSetFieldValue(0, "amount", getTwoDigitsformater().format(total)))
+            .append(getSetFieldValue(0, "total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO)))
             .append("</script>\n");
         return js;
     }
@@ -243,13 +243,13 @@ public abstract class PaymentDetractionOut_Base
         return new StringBuilder();
     }
 
-    protected List<Map<String, String>> convertMap4Script(final Parameter _parameter,
+    protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
                                                           final Collection<Map<KeyDef, Object>> _values)
         throws EFapsException
     {
-        final List<Map<String, String>> ret = new ArrayList<Map<String, String>>();
+        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
         for (final Map<KeyDef, Object> valueMap : _values) {
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, Object> map = new HashMap<String, Object>();
             for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
                 map.put(entry.getKey().getName(), entry.getKey().convert2String(entry.getValue()));
             }

@@ -95,12 +95,12 @@ public abstract class Credit_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String val = (String) properties.get("ValidationType");
         if (val != null && val.equals("Employee")) {
-            js.append(getSetFieldValue(0, "contactAutoComplete", "", true))
-                            .append(getSetFieldValue(0, "contact", "", true))
-                            .append(getSetFieldValue(0, "contactData", "", true));
+            js.append(getSetFieldValue(0, "contactAutoComplete", ""))
+                            .append(getSetFieldValue(0, "contact", ""))
+                            .append(getSetFieldValue(0, "contactData", ""));
         } else if (val != null && val.equals("Contact")) {
-            js.append(getSetFieldValue(0, "employee", "", true))
-                            .append(getSetFieldValue(0, "employeeAutoComplete", "", true));
+            js.append(getSetFieldValue(0, "employee", ""))
+                            .append(getSetFieldValue(0, "employeeAutoComplete", ""));
         }
         values.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(values);

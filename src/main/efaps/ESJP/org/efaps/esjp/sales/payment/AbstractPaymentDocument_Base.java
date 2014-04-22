@@ -79,7 +79,9 @@ import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.IncomingDetraction;
+import org.efaps.esjp.sales.document.IncomingDetraction_Base;
 import org.efaps.esjp.sales.document.IncomingRetention;
+import org.efaps.esjp.sales.document.IncomingRetention_Base;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -328,10 +330,10 @@ public abstract class AbstractPaymentDocument_Base
                             && parseBigDecimal(amount4Create[i]).compareTo(BigDecimal.ZERO) > 0) {
                     final String valueDoc = option4Create[i];
                     if ("IncomingRetention".equalsIgnoreCase(valueDoc)) {
-                        _createdDoc.addValue(IncomingRetention.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
+                        _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
                         new IncomingRetention().create4Doc(_parameter, _createdDoc, i);
                     } else if ("IncomingDetraction".equalsIgnoreCase(valueDoc)) {
-                        _createdDoc.addValue(IncomingDetraction.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
+                        _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
                         new IncomingDetraction().create4Doc(_parameter, _createdDoc, i);
                     }
                 }
@@ -1278,12 +1280,12 @@ public abstract class AbstractPaymentDocument_Base
         final StringBuilder js = new StringBuilder();
         js.append(getTableRemoveScript(_parameter, "paymentTable"));
 
-        final List<Map<String, String>> values = new ArrayList<Map<String, String>>();
+        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
 
         int index = 0;
         boolean lastPos = false;
         for (final Instance payment : _instancesList) {
-            final Map<String, String> map = new HashMap<String, String>();
+            final Map<String, Object> map = new HashMap<String, Object>();
             values.add(map);
             if (_instancesList.size() == index + 1) {
                 lastPos = true;
@@ -1317,7 +1319,7 @@ public abstract class AbstractPaymentDocument_Base
                                           final boolean _lastPosition,
                                           final BigDecimal _restAmount,
                                     final Instance _currencyActual,
-                                    final Map<String, String> _map)
+                                    final Map<String, Object> _map)
         throws EFapsException
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
