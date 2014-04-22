@@ -63,7 +63,6 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
-import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.Currency;
@@ -581,10 +580,8 @@ public abstract class DocumentSum_Base
         String name;
         // validate that a product was selected
         if (oid.length() > 0) {
-            final PrintQuery print = new PrintQuery(oid);
-            print.addAttribute(CIProducts.ProductAbstract.Name);
-            print.execute();
-            name = print.getAttribute(CIProducts.ProductAbstract.Name);
+            add2UpdateField4Product(_parameter, map, Instance.get(oid));
+            name = map.get(fieldName + "AutoComplete");
         } else {
             name = "";
         }
@@ -593,7 +590,6 @@ public abstract class DocumentSum_Base
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
                 add2Map4UpdateField(_parameter, map, calcList, cal);
-                map.put(fieldName + "AutoComplete", name);
                 list.add(map);
                 retVal.put(ReturnValues.VALUES, list);
             }
@@ -614,7 +610,6 @@ public abstract class DocumentSum_Base
      * @return List map for the update event
      * @throws EFapsException on error
      */
-
     public Return updateFields4Uom(final Parameter _parameter)
         throws EFapsException
     {

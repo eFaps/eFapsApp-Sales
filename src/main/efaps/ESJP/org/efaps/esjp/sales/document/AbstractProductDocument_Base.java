@@ -276,6 +276,7 @@ public abstract class AbstractProductDocument_Base
         if (prodInst.isValid() && storInst.isValid()) {
             map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
                             getStock4ProductInStorage(_parameter, prodInst, storInst));
+            add2UpdateField4Product(_parameter, map, prodInst);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         } else {

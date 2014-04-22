@@ -1547,6 +1547,47 @@ public abstract class AbstractDocument_Base
         return "";
     }
 
+
+    /**
+     * @param _parameter
+     * @param _map
+     * @param _instance
+     */
+    protected void add2UpdateField4Product(final Parameter _parameter,
+                                           final Map<String, String> _map,
+                                           final Instance _prodInst)
+        throws EFapsException
+    {
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        final String fieldName = field.getName();
+
+        final PrintQuery print = new PrintQuery(_prodInst);
+        print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
+                        CIProducts.ProductAbstract.Dimension,
+                        CIProducts.ProductAbstract.DefaultUoM);
+        if (print.execute()) {
+            final String name = print.getAttribute(CIProducts.ProductAbstract.Name);
+            final String desc = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
+            final Long dimId = print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension);
+            final Long dUoMId = print.<Long>getAttribute(CIProducts.ProductAbstract.DefaultUoM);
+            long selectedUoM;
+            if (dUoMId == null) {
+                selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
+            } else {
+                if (Dimension.getUoM(dUoMId).getDimension().equals(Dimension.get(dimId))) {
+                    selectedUoM = dUoMId;
+                } else {
+                    selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
+                }
+            }
+            _map.put("uoM", getUoMFieldStr(selectedUoM, dimId));
+            _map.put("productDesc", desc);
+            // TODO: remove when autocomplete ready
+            _map.put(fieldName + "AutoComplete", name);
+        }
+    }
+
+
     /**
      * Auto-complete for the field with products.
      *
@@ -1617,9 +1658,7 @@ public abstract class AbstractDocument_Base
             final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.ProductAbstract.Name,
-                            CIProducts.ProductAbstract.Description,
-                            CIProducts.ProductAbstract.Dimension,
-                            CIProducts.ProductAbstract.DefaultUoM);
+                            CIProducts.ProductAbstract.Description);
             multi.execute();
             while (multi.next()) {
                 final String name = multi.<String> getAttribute(CIProducts.ProductAbstract.Name);
@@ -1631,25 +1670,10 @@ public abstract class AbstractDocument_Base
                 } else {
                     choice = desc + " - " + name;
                 }
-                final Long dimId = multi.<Long> getAttribute(CIProducts.ProductAbstract.Dimension);
-                final Long dUoMId = multi.<Long> getAttribute(CIProducts.ProductAbstract.DefaultUoM);
-                long selected;
-                if (dUoMId == null) {
-                    selected = Dimension.get(dimId).getBaseUoM().getId();
-                } else {
-                    if (Dimension.getUoM(dUoMId).getDimension().equals( Dimension.get(dimId))) {
-                        selected = dUoMId;
-                    } else {
-                        selected = Dimension.get(dimId).getBaseUoM().getId();
-                    }
-                }
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
                 map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
-                map.put("productDesc", desc);
-                map.put("uoM", getUoMFieldStr(selected, dimId));
-                map.put("discount", "0");
 
                 add2JavaScript4ProductAutoComplete(_parameter, map);
                 sortMap.put(choice, map);
