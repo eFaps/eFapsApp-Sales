@@ -44,6 +44,7 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
@@ -51,8 +52,10 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
@@ -191,6 +194,84 @@ public abstract class AbstractProductDocument_Base
             add2PositionCreate(_parameter, posIns, _createdDoc, i);
 
             posIns.execute();
+        }
+    }
+
+
+    protected void createIndiviuals(final Parameter _parameter,
+                                    final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final String[] products = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.PositionAbstract.Product.name));
+
+        final Object date = _createdDoc.getValues().get(CISales.DocumentStockAbstract.Date.name);
+
+        for (final String product : products) {
+            final Instance prodInst = Instance.get(product);
+            if (prodInst.isValid()) {
+                final String[] individuals = _parameter.getParameterValues(prodInst.getOid());
+                if (individuals.length > 0) {
+                    final PrintQuery print = new PrintQuery(prodInst);
+                    print.addAttribute(CIProducts.ProductAbstract.Individual);
+                    print.executeWithoutAccessCheck();
+                    final ProductIndividual prIn = print
+                                    .<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual);
+                    if (prIn != null && !ProductIndividual.NONE.equals(prIn)) {
+                        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+                        queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, prodInst);
+                        queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document, _createdDoc.getInstance());
+                        final MultiPrintQuery multi = queryBldr.getPrint();
+                        multi.addAttribute(CIProducts.TransactionInOutAbstract.Storage,
+                                        CIProducts.TransactionInOutAbstract.UoM,
+                                        CIProducts.TransactionInOutAbstract.Quantity,
+                                        CIProducts.TransactionInOutAbstract.Description);
+                        multi.executeWithoutAccessCheck();
+                        multi.next();
+                        final Object storage = multi.getAttribute(CIProducts.TransactionInOutAbstract.Storage);
+                        final Object uom = multi.getAttribute(CIProducts.TransactionInOutAbstract.UoM);
+                        final Object descr = multi.getAttribute(CIProducts.TransactionInOutAbstract.Description);
+
+                        Type prodType;
+                        Type relType;
+                        boolean clazz;
+                        Object quantity;
+                        if (ProductIndividual.BATCH.equals(prIn)) {
+                            prodType = CIProducts.ProductBatch.getType();
+                            relType = CIProducts.StockProductAbstract2Batch.getType();
+                            clazz = false;
+                            quantity = multi.getAttribute(CIProducts.TransactionInOutAbstract.Quantity);
+                        } else {
+                            prodType = CIProducts.ProductIndividual.getType();
+                            relType = CIProducts.StockProductAbstract2Individual.getType();
+                            clazz = true;
+                            quantity = 1;
+                        }
+
+                        for (final String individual : individuals) {
+                            final Map<String, Object> map = new HashMap<String, Object>();
+                            map.put("Name", individual);
+                            final Instance indInst = new Product().cloneProduct(_parameter, prodInst,
+                                            prodType, map, clazz);
+                            final Insert relInsert = new Insert(relType);
+                            relInsert.add(CIProducts.Product2ProductAbstract.FromAbstract, prodInst);
+                            relInsert.add(CIProducts.Product2ProductAbstract.ToAbstract, indInst);
+                            relInsert.execute();
+
+                            final Insert transInsert = new Insert(CIProducts.TransactionIndividualInbound);
+                            transInsert.add(CIProducts.TransactionAbstract.Quantity, quantity);
+                            transInsert.add(CIProducts.TransactionAbstract.Storage, storage);
+                            transInsert.add(CIProducts.TransactionAbstract.Product, indInst);
+                            transInsert.add(CIProducts.TransactionAbstract.Description, descr);
+                            transInsert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime() : date);
+                            transInsert.add(CIProducts.TransactionAbstract.Document, _createdDoc.getInstance());
+                            transInsert.add(CIProducts.TransactionAbstract.UoM, uom);
+                            transInsert.add(CIProducts.TransactionAbstract.UoM, uom);
+                            transInsert.executeWithoutAccessCheck();
+                        }
+                    }
+                }
+            }
         }
     }
 

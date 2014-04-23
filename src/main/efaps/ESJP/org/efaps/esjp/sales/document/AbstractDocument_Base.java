@@ -76,6 +76,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
@@ -84,6 +85,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
@@ -1548,7 +1550,8 @@ public abstract class AbstractDocument_Base
         final PrintQuery print = new PrintQuery(_prodInst);
         print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
                         CIProducts.ProductAbstract.Dimension,
-                        CIProducts.ProductAbstract.DefaultUoM);
+                        CIProducts.ProductAbstract.DefaultUoM,
+                        CIProducts.ProductAbstract.Individual);
         if (print.execute()) {
             final String name = print.getAttribute(CIProducts.ProductAbstract.Name);
             final String desc = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
@@ -1568,6 +1571,72 @@ public abstract class AbstractDocument_Base
             _map.put("productDesc", desc);
             // TODO: remove when autocomplete ready
             _map.put(fieldName + "AutoComplete", name);
+
+            addIndividual(_parameter, print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual), _map,
+                            _prodInst.getOid(), name+  "-" + desc);
+        }
+    }
+
+
+    protected void addIndividual(final Parameter _parameter,
+                                 final ProductIndividual _individual,
+                                 final Map<String, Object> _map,
+                                 final String _key,
+                                 final String _legend)
+    {
+        if (_individual != null) {
+            // TODO make configurable from properties
+            final String fieldName = "individual";
+            final String qfieldName = "quantity";
+            int quantity;
+            switch (_individual) {
+                case INDIVIDUAL:
+                    final String quantityStr = _parameter.getParameterValues(qfieldName)[getSelectedRow(_parameter)];
+                    if (quantityStr != null && !quantityStr.isEmpty()) {
+                        quantity = Integer.parseInt(quantityStr);
+                    } else {
+                        quantity = 1;
+                    }
+                    break;
+                default:
+                    quantity = 1;
+                    break;
+            }
+            final StringBuilder js = new StringBuilder();
+            js.append("require([\"dojo/query\", \"dojo/dom\",\"dojo/dom-construct\",\"dojo/number\"],")
+                .append(" function(query, dom, domConstruct,number){")
+                .append("var ind = query(\"[name='").append(fieldName).append("']\")[0];")
+                .append("if (typeof(ind)!=='undefined') {")
+                .append("domConstruct.destroy(\"in").append(_key).append("\");")
+                .append(" var x = domConstruct.create(\"span\", { id: \"in").append(_key)
+                .append("\", class: \"eFapsIndividual\"}, ind);")
+                .append(" var fs=  domConstruct.create(\"fieldset\", { }, x);")
+                .append("domConstruct.create(\"legend\", { innerHTML: \"").append(_legend).append("\"}, fs);");
+
+            if (quantity > 5) {
+                js.append("var j = 0;");
+            }
+            if (quantity > 1) {
+                js.append("for (var i=1;i < ").append(quantity + 1).append("; i++) {");
+            }
+
+            js.append(" domConstruct.create(\"label\", { innerHTML: number.format(i, {pattern:'00'}) +\".\"}, fs); ")
+                .append(" domConstruct.create(\"input\", { name: \"").append(_key).append("\"}, fs);");
+
+            if (quantity > 5) {
+                js.append("j++;")
+                    .append("if (j==5) {")
+                    .append("j=0;")
+                    .append("domConstruct.create(\"br\", {}, fs);")
+                    .append("}");
+            }
+            if (quantity > 1) {
+                js.append("}");
+            }
+            js.append("}")
+                .append("});");
+
+            InterfaceUtils.appendScript4FieldUpdate(_map, js);
         }
     }
 

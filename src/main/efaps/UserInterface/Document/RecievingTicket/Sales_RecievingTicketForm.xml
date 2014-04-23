@@ -212,6 +212,11 @@
                 <property name="LinkFroms">RecievingTicket</property>
             </evaluate>
         </field>
+         <field name="individual">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>

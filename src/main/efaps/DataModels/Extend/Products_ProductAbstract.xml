@@ -102,6 +102,13 @@
             <sqlcolumn>UOMID</sqlcolumn>
         </attribute>
         <attribute>
+            <name>Individual</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.products.util.Products$ProductIndividual</className>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>INDIVIDUAL</sqlcolumn>
+        </attribute>
+        <attribute>
             <name>SalesUnit</name>
             <type>Decimal</type>
             <sqltable>Products_ProductSQLTable</sqltable>
@@ -218,6 +225,13 @@
             <typelink>Admin_DataModel_UoM</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>UOMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Individual</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.products.util.Products$ProductIndividual</className>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>INDIVIDUAL</sqlcolumn>
         </attribute>
         <attribute>
             <name>SalesUnit</name>
