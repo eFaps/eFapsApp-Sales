@@ -259,6 +259,7 @@
         </status>
 
         <status group="Sales_IncomingCreditNoteStatus">
+            <key>Registered</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
