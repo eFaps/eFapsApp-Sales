@@ -1851,7 +1851,11 @@ public abstract class DocumentSum_Base
     {
         final Instance ret;
 
-        final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        final String contact = getProperty(_parameter, "ContactFieldName") != null
+                                        ? _parameter.getParameterValue(getProperty(_parameter, "ContactFieldName"))
+                                        : _parameter.getParameterValue("contact");
+
+        final Instance contactInst = Instance.get(contact);
         final Instance instance = _parameter.getInstance();
 
         if (instance != null && !contactInst.isValid()) {
