@@ -540,7 +540,7 @@ Y/O PAGO]]></text>
                 </textElement>
                 <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
             </textField>
-            <textField pattern="dd/MM/yyyy">
+            <textField pattern="dd/MM/yyyy" isBlankWhenNull="true">
                 <reportElement uuid="565159e3-dabe-41c9-8ab2-b1fcd259a8ca" stretchType="RelativeToBandHeight" x="120" y="0" width="60" height="14"/>
                 <box leftPadding="2" rightPadding="2">
                     <topPen lineWidth="0.0"/>
