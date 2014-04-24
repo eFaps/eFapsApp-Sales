@@ -215,7 +215,16 @@
          <field name="individual">
             <property name="HideLabel">true</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Products-Configuration -->
+                <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
+                <property name="Attribute">org.efaps.products.ActivateIndividual</property>
+            </trigger>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
