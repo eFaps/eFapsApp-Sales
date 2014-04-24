@@ -1572,17 +1572,19 @@ public abstract class AbstractDocument_Base
             // TODO: remove when autocomplete ready
             _map.put(fieldName + "AutoComplete", name);
 
-            addIndividual(_parameter, print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual), _map,
-                            _prodInst.getOid(), name+  "-" + desc);
+            if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+                add4Individual(_parameter, print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual),
+                            _map, _prodInst.getOid(), name +  "-" + desc);
+            }
         }
     }
 
 
-    protected void addIndividual(final Parameter _parameter,
-                                 final ProductIndividual _individual,
-                                 final Map<String, Object> _map,
-                                 final String _key,
-                                 final String _legend)
+    protected void add4Individual(final Parameter _parameter,
+                                  final ProductIndividual _individual,
+                                  final Map<String, Object> _map,
+                                  final String _key,
+                                  final String _legend)
     {
         if (_individual != null) {
             // TODO make configurable from properties
