@@ -40,7 +40,6 @@ import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -212,52 +211,36 @@ public abstract class IncomingCreditNote_Base
                 }
             };
 
-            @Override
-            protected List<Map<String, Object>> updateFields4Doc(final Parameter _parameter)
-                throws EFapsException
-            {
-                final List<Map<String, Object>> ret = super.updateFields4Doc(_parameter);
-                final Instance instance = _parameter.getInstance();
-
-                if ((instance != null && instance.isValid())
-                                && instance.getType().equals(CISales.AccountPettyCash.getType())) {
-                    final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-                    final String fieldName = field.getName();
-                    final String currentOid = _parameter.getParameterValue(fieldName);
-                    final Map<String, Object> map = ret.get(0);
-                    final PrintQuery print = new PrintQuery(currentOid);
-
-                    final SelectBuilder selContactInst = new SelectBuilder()
-                                    .linkto(CISales.PettyCashReceipt.Contact).instance();
-                    final SelectBuilder selContactName = new SelectBuilder()
-                                    .linkto(CISales.PettyCashReceipt.Contact).attribute(CIContacts.Contact.Name);
-                    print.addSelect(selContactInst, selContactName);
-                    print.execute();
-                    final Instance contactInst = print.<Instance>getSelect(selContactInst);
-                    map.put("contact", contactInst.getOid());
-                    map.put("contactAutoComplete", print.<String>getSelect(selContactName));
-                    map.put("contactData", new Contacts().getFieldValue4Contact(contactInst, false));
-                }
-                return ret;
-            }
-
-            @Override
-            protected void addMulti4Autocomplete(final Parameter _parameter,
-                                                 final MultiPrintQuery _multi)
-                throws EFapsException
-            {
-                final Instance instance = _parameter.getInstance();
-
-                if ((instance != null && instance.isValid())
-                                && instance.getType().equals(CISales.AccountPettyCash.getType())) {
-                    final SelectBuilder selContactInst = new SelectBuilder()
-                                    .linkto(CISales.PettyCashReceipt.Contact).instance();
-                    final SelectBuilder selContactName = new SelectBuilder()
-                                    .linkto(CISales.PettyCashReceipt.Contact).attribute(CIContacts.Contact.Name);
-                    _multi.addSelect(selContactInst, selContactName);
-                }
-            }
         }.autoComplete4Doc(_parameter, CISales.PettyCashReceipt.uuid, (Status[]) null);
+    }
+
+    @Override
+    protected List<Map<String, Object>> updateFields4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, Object>> ret = super.updateFields4Doc(_parameter);
+        final Instance instance = _parameter.getInstance();
+
+        if ((instance != null && instance.isValid())
+                        && instance.getType().equals(CISales.AccountPettyCash.getType())) {
+            final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+            final String fieldName = field.getName();
+            final String currentOid = _parameter.getParameterValue(fieldName);
+            final Map<String, Object> map = ret.get(0);
+            final PrintQuery print = new PrintQuery(currentOid);
+
+            final SelectBuilder selContactInst = new SelectBuilder()
+                            .linkto(CISales.PettyCashReceipt.Contact).instance();
+            final SelectBuilder selContactName = new SelectBuilder()
+                            .linkto(CISales.PettyCashReceipt.Contact).attribute(CIContacts.Contact.Name);
+            print.addSelect(selContactInst, selContactName);
+            print.execute();
+            final Instance contactInst = print.<Instance>getSelect(selContactInst);
+            map.put("contact", contactInst.getOid());
+            map.put("contactAutoComplete", print.<String>getSelect(selContactName));
+            map.put("contactData", new Contacts().getFieldValue4Contact(contactInst, false));
+        }
+        return ret;
     }
 
     @Override
