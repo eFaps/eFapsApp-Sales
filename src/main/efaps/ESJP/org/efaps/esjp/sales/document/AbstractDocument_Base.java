@@ -84,6 +84,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.products.Product_Base;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.products.util.ProductsSettings;
@@ -1658,6 +1659,7 @@ public abstract class AbstractDocument_Base
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         if (!input.isEmpty()) {
+            boolean cache = true;
             final boolean nameSearch = Character.isDigit(input.charAt(0));
             final String typeStr = (String) properties.get("Type");
             Type type;
@@ -1696,6 +1698,7 @@ public abstract class AbstractDocument_Base
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIProducts.Inventory.Product);
                 queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
+                cache = false;
             }
 
             final String exclude = (String) properties.get("ExcludeTypes");
@@ -1711,7 +1714,8 @@ public abstract class AbstractDocument_Base
             catalogFilter4productAutoComplete(_parameter, queryBldr);
 
             final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
-            final MultiPrintQuery multi = queryBldr.getPrint();
+            final MultiPrintQuery multi = cache ? queryBldr.getCachedPrint(Product_Base.CACHEKEY4PRODUCT) : queryBldr
+                            .getPrint();
             multi.addAttribute(CIProducts.ProductAbstract.Name,
                             CIProducts.ProductAbstract.Description);
             multi.execute();
