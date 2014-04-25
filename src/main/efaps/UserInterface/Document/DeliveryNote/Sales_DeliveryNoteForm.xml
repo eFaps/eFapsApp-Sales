@@ -224,7 +224,7 @@
             <property name="Label">Sales_DeliveryNote/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">98</property>
+            <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Carrier"
                 name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
