@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -470,7 +471,6 @@ public abstract class AbstractDocument_Base
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) status);
         }
         final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
-        final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
 
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(key);
@@ -487,8 +487,6 @@ public abstract class AbstractDocument_Base
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
                             name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
                                                             Context.getThreadContext().getLocale())));
-            map.put(input, multi.getCurrentInstance().getOid());
-            addMap4Autocomplete(_parameter, multi, map);
             tmpMap.put(name, map);
         }
         list.addAll(tmpMap.values());
@@ -498,22 +496,8 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter
-     * @param _multi
-     * @param -map
-     * @throws EFapsException on error.
-     */
-    protected void addMap4Autocomplete(final Parameter _parameter,
-                                       final MultiPrintQuery _multi,
-                                       final Map<String, String> _map)
-        throws EFapsException
-    {
-        // to be implemented
-    }
-
-    /**
-     * @param _parameter
-     * @param _multi
+     * @param _parameter Paframeter as passed by the eFaps API
+     * @param _multi mutli to add 2
      * @throws EFapsException on error.
      */
     protected void addMulti4Autocomplete(final Parameter _parameter,
@@ -574,7 +558,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4DeliveryNote(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -587,7 +571,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4IncomingInvoice(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -600,7 +584,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4RecievingTicket(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -613,7 +597,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4Invoice(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -626,7 +610,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4OrderInbound(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -639,7 +623,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4OrderOutbound(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -652,7 +636,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4ServiceOrderOutbound(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -665,7 +649,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4Reservation(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -678,7 +662,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4Quotation(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -692,7 +676,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4ProductRequest(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -706,7 +690,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4QuoteRequest(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -719,7 +703,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4Receipt(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -732,7 +716,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4CreditNote(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -745,7 +729,7 @@ public abstract class AbstractDocument_Base
     public Return updateFields4CostSheet(final Parameter _parameter)
         throws EFapsException
     {
-        return updateFields4Doc(_parameter);
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
     /**
@@ -755,21 +739,23 @@ public abstract class AbstractDocument_Base
      * @return map list for update event
      * @throws EFapsException on error
      */
-    protected Return updateFields4Doc(final Parameter _parameter)
+    protected List<Map<String, Object>> updateFields4Doc(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        final String fieldName = field.getName();
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
-        final String input = properties.containsKey("input") ? (String) properties.get("input") : "selectedDoc";
-        final String field = properties.containsKey("field") ? (String) properties.get("field") : "info";
-        final boolean multiple = "true".equalsIgnoreCase((String) properties.get("multiple"));
-
-        final String oid = _parameter.getParameterValue(input);
-        final String[] oids = _parameter.getParameterValues(input);
-        if (oid != null && !oid.isEmpty()) {
-            final PrintQuery print = new PrintQuery(oid);
+        final String input = containsProperty(_parameter, "input") ? getProperty(_parameter, "input") : "selectedDoc";
+        final String infofield = containsProperty(_parameter, "field") ? getProperty(_parameter, "field") : "info";
+        final boolean multiple = "true".equalsIgnoreCase(getProperty(_parameter, "multiple"));
+        // the oid of the document that executed the update event
+        final String currentOid = _parameter.getParameterValue(fieldName);
+        // the previous selected oids
+        final String[] selectedOids = _parameter.getParameterValues(input);
+        if (currentOid != null && !currentOid.isEmpty()) {
+            final PrintQuery print = new PrintQuery(currentOid);
             print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
             final SelectBuilder sel = SelectBuilder.get().type().label();
             print.addSelect(sel);
@@ -780,29 +766,28 @@ public abstract class AbstractDocument_Base
                 .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
             if (multiple) {
-                if (!Arrays.asList(Arrays.copyOfRange(oids, 1, oids.length)).contains(
+                if (!Arrays.asList(Arrays.copyOfRange(selectedOids, 1, selectedOids.length)).contains(
                                 print.getCurrentInstance().getOid())) {
-                    final StringBuilder js = new StringBuilder();
-
-                    js.append("require([\"dojo/query\", \"dojo/dom\", \"dojo/dom-construct\",\"dojo/on\"], ")
-                        .append("function(query, dom, domConstruct, on) {")
-                        .append(" query(\"span[name='").append(field).append("']\").forEach(function(node){")
+                    final StringBuilder js = new StringBuilder()
+                        .append("require([\"dojo/query\", \"dojo/dom-construct\",\"dojo/on\"], ")
+                        .append("function(query, domConstruct, on) {")
+                        .append("query(\"div  + input[name='").append(input).append("']\").forEach(domConstruct.destroy); ")
+                        .append(" query(\"span[name='").append(infofield).append("']\").forEach(function(node){")
                         .append("var ul;")
-                        .append("if (node.innerHTML ==\"\") {")
-                        .append("query(\"input[name='").append(input).append("']\").forEach(domConstruct.destroy);")
-                        .append("domConstruct.place(\"<input type=\\\"hidden\\\" name=\\\"").append(input)
-                        .append("\\\" value=\\\"\\\">\", node);")
+                        .append("if (query(\"ul\", node).length==0) {")
+                        .append(" domConstruct.empty(node);")
                         .append("ul = domConstruct.place(\"<ul></ul>\", node);")
                         .append("} else {")
                         .append("ul = query(\"ul\", node)[0];")
                         .append("}")
-                        .append("var x = domConstruct.place(\"<li>").append(label)
+                        .append("var x = domConstruct.place(\"<li>")
+                        .append(StringEscapeUtils.escapeEcmaScript(label.toString()))
                         .append("<img style=\\\"cursor:pointer\\\"")
                         .append(" src=\\\"/").append(AppAccessHandler.getApplicationKey())
                         .append("/servlet/image/org.efaps.ui.wicket.components.table.delete.png?\\\">")
                         .append("<input type=\\\"hidden\\\" ")
                         .append("name=\\\"").append(input).append("\\\" ")
-                        .append("value=\\\"").append(oid).append("\\\"></li>\"")
+                        .append("value=\\\"").append(currentOid).append("\\\"></li>\"")
                         .append(", ul, \"last\"); \n")
                         .append("var img = query(\"img\", x)[0];")
                         .append("on(img, \"click\", function(e){")
@@ -810,17 +795,31 @@ public abstract class AbstractDocument_Base
                         .append("});")
                         .append("});")
                         .append("});");
-                    map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+
+                    InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
                 }
             } else {
-                map.put(field, StringEscapeUtils.escapeEcmaScript(label.toString()));
-                map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getCleanJS(_parameter));
+                final StringBuilder js = new StringBuilder()
+                    .append("require([\"dojo/query\", \"dojo/dom-construct\"], function(query, domConstruct) { ")
+                    .append("query(\"div  + input[name='").append(input).append("']\").forEach(domConstruct.destroy); ")
+                    .append(" query(\"span[name='").append(infofield).append("']\").forEach(function(node){")
+                    .append(" domConstruct.empty(node);")
+                    .append(" domConstruct.place(\"<span>")
+                    .append(StringEscapeUtils.escapeEcmaScript(label.toString()))
+                    .append("<span>")
+                    .append("<input type=\\\"hidden\\\" ")
+                        .append("name=\\\"").append(input).append("\\\" ")
+                        .append("value=\\\"").append(currentOid).append("\\\">\"")
+                        .append(", node, \"last\"); \n")
+                    .append("});")
+                    .append("});");
+
+                InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
             }
-            list.add(map);
+            InterfaceUtils.appendScript4FieldUpdate(map, getCleanJS(_parameter));
+            ret.add(map);
         }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
+        return ret;
     }
 
     /**
@@ -829,23 +828,20 @@ public abstract class AbstractDocument_Base
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @return script
+     * @throws EFapsException on error
      */
     protected String getCleanJS(final Parameter _parameter)
+        throws EFapsException
     {
-        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-
         final StringBuilder js = new StringBuilder();
-        js.append("inputs = document.getElementsByTagName('INPUT');")
-            .append("for (i=0;i<inputs.length;i++) {")
-            .append("if (inputs[i].type == 'text' && inputs[i].name != '").append(field.getName())
-            .append("AutoComplete') {")
-            .append("inputs[i].value='';")
-            .append("}")
-            .append("}");
+        final Field currentField = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        for (final Field field : currentField.getCollection().getFields()) {
+            if (!currentField.equals(field) && field.getEvents(EventType.UI_FIELD_AUTOCOMPLETE) != null) {
+                js.append(getSetFieldValue(0, field.getName(), "", ""));
+            }
+        }
         return js.toString();
     }
-
-
 
     /**
      * Method to get the value for the field directly under the Contact.
@@ -1536,9 +1532,9 @@ public abstract class AbstractDocument_Base
 
 
     /**
-     * @param _parameter
-     * @param _map
-     * @param _instance
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _map          Map to add to
+     * @param _instance     Instance of the Product
      */
     protected void add2UpdateField4Product(final Parameter _parameter,
                                            final Map<String, Object> _map,
@@ -1913,7 +1909,7 @@ public abstract class AbstractDocument_Base
     /**
      * @param _parameter Parameter parameter as passe dfrom the eFaps API
      * @param _oldCalc calculator
-     * @param _oid oid of the product
+     * @param _prodInstance Instance of the product
      * @param _quantity quantity
      * @param _unitPrice unit price
      * @param _discount discount
