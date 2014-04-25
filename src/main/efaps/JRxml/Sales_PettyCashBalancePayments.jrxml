@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 5.0.4-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalancePayments" language="groovy" pageWidth="802" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ec1a5467-1e04-4edf-99fa-8337ee3277ea">
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
@@ -15,7 +15,7 @@
 		<property name="Select" value="linkto[CreateDocument].attribute[Date]"/>
 	</field>
 	<field name="numberDoc" class="java.lang.String">
-		<property name="Select" value="linkto[CreateDocument].class[Sales_PettyCashReceipt_Class].attribute[Name]"/>
+		<property name="Select" value="linkto[CreateDocument].attribute[Name]"/>
 	</field>
 	<field name="ruc" class="java.lang.String">
 		<property name="Select" value="linkto[CreateDocument].linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
@@ -29,14 +29,11 @@
 	<field name="rateCurrencySymbol" class="java.lang.String">
 		<property name="Select" value="linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol]"/>
 	</field>
-	<field name="employee" class="java.lang.String">
-		<property name="Select" value="linkto[CreateDocument].class[Sales_PettyCashReceipt_Class].attribute[EmployeeName]"/>
-	</field>
 	<field name="note" class="java.lang.String">
 		<property name="Select" value="linkto[CreateDocument].attribute[Note]"/>
 	</field>
-	<field name="receiptType" class="java.lang.String">
-		<property name="Select" value="linkto[CreateDocument].class[Sales_PettyCashReceipt_Class].linkto[ReceiptTypeLink].attribute[Value]"/>
+	<field name="documentType" class="java.lang.String">
+		<property name="Select" value="linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]"/>
 	</field>
 	<field name="createDocument" class="org.joda.time.DateTime">
 		<property name="Select" value="linkto[CreateDocument].attribute[Created]"/>
@@ -154,7 +151,8 @@ Documento]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="239cfb67-2938-41a6-997f-0764097b857d" stretchType="RelativeToTallestObject" x="0" y="0" width="28" height="16">
-					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395") ? true : false]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
+					|| $F{typeName}.equals("e6274de0-4ca3-48cd-a0e5-97932e420668") ? true : false]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
@@ -162,7 +160,10 @@ Documento]]></text>
 				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="568d7f57-e6de-4a81-a2d6-9c20c69d4617" stretchType="RelativeToTallestObject" x="125" y="0" width="90" height="17"/>
+				<reportElement uuid="568d7f57-e6de-4a81-a2d6-9c20c69d4617" stretchType="RelativeToTallestObject" x="125" y="0" width="90" height="17">
+					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
+					|| $F{typeName}.equals("e6274de0-4ca3-48cd-a0e5-97932e420668") ? true : false]]></printWhenExpression>
+				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
@@ -173,7 +174,7 @@ Documento]]></text>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{receiptType}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{documentType}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement uuid="7ee65b27-e697-4d8a-9cff-e2616380a3d0" stretchType="RelativeToTallestObject" x="273" y="0" width="197" height="17"/>
@@ -184,9 +185,9 @@ Documento]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement uuid="0cd0a4bd-5540-4933-a762-a038f04da630" stretchType="RelativeToTallestObject" x="215" y="0" width="15" height="17">
-					<printWhenExpression><![CDATA[(true == false ? true:false)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[false]]></printWhenExpression>
 				</reportElement>
-				<textElement/>
+				<textElement verticalAlignment="Middle"/>
 				<textFieldExpression><![CDATA[$F{createDocument}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -198,7 +199,8 @@ Documento]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement uuid="c7f3b6b6-95ee-4edc-8a86-008b37b23e8d" stretchType="RelativeToTallestObject" x="215" y="0" width="58" height="17" isPrintWhenDetailOverflows="true">
-					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395") ? true : false]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395")
+					|| $F{typeName}.equals("e6274de0-4ca3-48cd-a0e5-97932e420668") ? true : false]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>

@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.0.4-->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PettyCashBalance" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9b130e51-4c5e-4653-af16-9ee7ebe3850d">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
@@ -46,7 +47,7 @@
 				<text><![CDATA[LIQUIDACIÓN]]></text>
 			</staticText>
 			<textField>
-				<reportElement uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb" x="91" y="14" width="226" height="14"/>
+				<reportElement uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb" x="91" y="14" width="711" height="14"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>
 				</textElement>
@@ -69,7 +70,7 @@
 				<text><![CDATA[CAJA:]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement uuid="95de231f-f359-4b91-b319-8334960ede77" x="91" y="0" width="226" height="14"/>
+				<reportElement uuid="95de231f-f359-4b91-b319-8334960ede77" x="91" y="0" width="711" height="14"/>
 				<textElement textAlignment="Left" verticalAlignment="Top">
 					<font size="11" isBold="true"/>
 				</textElement>
