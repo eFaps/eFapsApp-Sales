@@ -475,7 +475,6 @@ public abstract class AbstractDocument_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(key);
         multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
-        addMulti4Autocomplete(_parameter, multi);
         multi.execute();
         while (multi.next()) {
             final String name = multi.<String> getAttribute(CISales.DocumentAbstract.Name);
@@ -493,18 +492,6 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
-    }
-
-    /**
-     * @param _parameter Paframeter as passed by the eFaps API
-     * @param _multi mutli to add 2
-     * @throws EFapsException on error.
-     */
-    protected void addMulti4Autocomplete(final Parameter _parameter,
-                                         final MultiPrintQuery _multi)
-        throws EFapsException
-    {
-        // to be implemented
     }
 
     /**
@@ -674,6 +661,20 @@ public abstract class AbstractDocument_Base
      */
 
     public Return updateFields4ProductRequest(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
+    }
+
+    /**
+     * Used by the update event used in the select doc form for PettyCashReceipt.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+
+    public Return updateFields4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
         return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
@@ -2275,6 +2276,7 @@ public abstract class AbstractDocument_Base
         return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
     }
 
+    @Override
     public boolean priceFromUIisNet(final Parameter _parameter)
         throws EFapsException
     {
