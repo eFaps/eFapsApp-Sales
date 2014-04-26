@@ -888,8 +888,9 @@ public abstract class AbstractDocument_Base
 
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">\n")
-            .append("require([\"dojo/query\",\"dojo/dom-construct\",\"dojo/domReady!\"],")
-            .append(" function(query, domConstruct){\n")
+            .append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
+            .append(" function(ready, query, domConstruct){\n")
+            .append(" ready(1500, function(){")
             .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
             .append("var pN = dojo.query('.eFapsContentDiv')[0];\n");
 
@@ -940,7 +941,7 @@ public abstract class AbstractDocument_Base
                     .append(getJavaScript4Positions(_parameter, instCall));
             }
         }
-        js.append("});\n</script>\n");
+        js.append("});").append("});\n</script>\n");
         return js.toString();
     }
 
@@ -1048,7 +1049,7 @@ public abstract class AbstractDocument_Base
 
         js.append(currStrBldr);
         if (isContact2JavaScript4Document(_parameter, _instances)) {
-            js.append(getSetFieldValue(0, "contact", contactOid)).append("\n")
+            js.append(getSetFieldValue(0, "contact", contactOid, contactName)).append("\n")
                 .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
                 .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
         }
@@ -1163,7 +1164,8 @@ public abstract class AbstractDocument_Base
             map.put(new KeyDefFrmt("quantity", qtyFrmt),
                             multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
             map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
-            map.put(new KeyDefStr("product"),  multi.<String>getSelect(selProdOID));
+            map.put(new KeyDefStr("product"), new String[] { multi.<String>getSelect(selProdOID),
+                multi.<String>getSelect(selProdName) });
             map.put(new KeyDefStr("productDesc"),  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
             map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                                             multi.<Long>getSelect(selProdDim)));
@@ -1200,9 +1202,10 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter
-     * @param _values
-     * @return
+     * @param _parameter Paramert as passed by the eFaps API
+     * @param _values   values
+     * @return converted map
+     * @throws EFapsException on error
      */
     protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
                                                           final Collection<Map<KeyDef, Object>> _values)
@@ -1212,7 +1215,7 @@ public abstract class AbstractDocument_Base
         for (final Map<KeyDef, Object> valueMap :_values) {
             final Map<String, Object> map  = new HashMap<String, Object>();
             for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
-                map.put(entry.getKey().getName(), entry.getKey().convert2String(entry.getValue()));
+                map.put(entry.getKey().getName(), entry.getKey().convert4Map(entry.getValue()));
             }
             ret.add(map);
         }
@@ -1371,7 +1374,8 @@ public abstract class AbstractDocument_Base
                 map = new HashMap<KeyDef, Object>();
                 valuesTmp.put(prodInst, map);
                 map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
-                map.put(new KeyDefStr("product"),  prodInst.getOid());
+                map.put(new KeyDefStr("product"), new String[] { prodInst.getOid(),
+                    multi.<String>getSelect(selProdName)});
                 map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(
                                 CISales.PositionSumAbstract.ProductDesc));
                 map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
@@ -2779,9 +2783,11 @@ public abstract class AbstractDocument_Base
 
     public abstract static class KeyDef
     {
+
         private final String name;
 
-        public KeyDef(final String _name) {
+        public KeyDef(final String _name)
+        {
             this.name = _name;
         }
 
@@ -2790,7 +2796,8 @@ public abstract class AbstractDocument_Base
             return this.name;
         }
 
-        public abstract String convert2String(final Object _value) throws EFapsException;
+        public abstract Object convert4Map(final Object _value)
+            throws EFapsException;
 
         @Override
         public boolean equals(final Object _obj)
@@ -2801,7 +2808,7 @@ public abstract class AbstractDocument_Base
             } else {
                 ret = super.equals(_obj);
             }
-            return ret ;
+            return ret;
         }
 
         @Override
@@ -2826,9 +2833,9 @@ public abstract class AbstractDocument_Base
          * {@inheritDoc}
          */
         @Override
-        public String convert2String(final Object _value)
+        public Object convert4Map(final Object _value)
         {
-            return (String) _value;
+            return  _value;
         }
     }
 
@@ -2852,7 +2859,7 @@ public abstract class AbstractDocument_Base
          * {@inheritDoc}
          */
         @Override
-        public String convert2String(final Object _value)
+        public Object convert4Map(final Object _value)
             throws EFapsException
         {
             return this.format.format(_value);

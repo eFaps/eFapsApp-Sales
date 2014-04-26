@@ -251,7 +251,7 @@ public abstract class PaymentDetractionOut_Base
         for (final Map<KeyDef, Object> valueMap : _values) {
             final Map<String, Object> map = new HashMap<String, Object>();
             for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
-                map.put(entry.getKey().getName(), entry.getKey().convert2String(entry.getValue()));
+                map.put(entry.getKey().getName(), entry.getKey().convert4Map(entry.getValue()));
             }
             ret.add(map);
         }
