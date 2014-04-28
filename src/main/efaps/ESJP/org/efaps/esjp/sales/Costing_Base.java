@@ -420,7 +420,13 @@ public abstract class Costing_Base
                     }
                     // check if the costing has a cost assigned, if not inherit from previous
                     if (current.getCost().compareTo(BigDecimal.ZERO) == 0) {
-                        current.setCost(prev.getCost());
+                        // it mus be inherited the average, but if not exist use the cost directly
+                        if (prev.getResult().compareTo(BigDecimal.ZERO) == 0) {
+                            current.setCost(prev.getCost());
+                        } else {
+                            current.setCost(prev.getResult());
+                        }
+
                         update = true;
                     }
 
