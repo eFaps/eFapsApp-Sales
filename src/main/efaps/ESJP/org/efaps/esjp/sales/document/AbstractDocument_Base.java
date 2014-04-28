@@ -1657,12 +1657,12 @@ public abstract class AbstractDocument_Base
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+
 
         if (!input.isEmpty()) {
             boolean cache = true;
             final boolean nameSearch = Character.isDigit(input.charAt(0));
-            final String typeStr = (String) properties.get("Type");
+            final String typeStr = getProperty(_parameter, "Type");
             Type type;
             if (typeStr != null) {
                 type = Type.get(typeStr);
@@ -1673,28 +1673,24 @@ public abstract class AbstractDocument_Base
             final QueryBuilder queryBldr = new QueryBuilder(type);
             if (nameSearch) {
                 queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
+                queryBldr.addOrderByAttributeAsc(CIProducts.ProductAbstract.Name);
             } else {
                 queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Description, input + "*")
                                 .setIgnoreCase(true);
+                queryBldr.addOrderByAttributeAsc(CIProducts.ProductAbstract.Description);
             }
             queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Active, true);
 
-            if (properties.containsKey("Classifications")) {
-                final String classesStr = (String) properties.get("Classifications");
-                String[] classes = new String[0];
-                if (classesStr != null) {
-                    classes = classesStr.split(";");
+            final Map<Integer, String> classes = analyseProperty(_parameter, "Classification");
+            if (!classes.isEmpty()) {
+                final List<Classification> classTypes = new ArrayList<Classification>();
+                for (final String clazz : classes.values()) {
+                    classTypes.add((Classification) Type.get(clazz));
                 }
-                if (classes.length > 0) {
-                    final Classification[] classTypes = new Classification[classes.length];
-                    for (int i = 0; i < classes.length; i++) {
-                        classTypes[i] = (Classification) Type.get(classes[i]);
-                    }
-                    queryBldr.addWhereClassification(classTypes);
-                }
+                queryBldr.addWhereClassification(classTypes.toArray(new Classification[classTypes.size()]));
             }
 
-            if (properties.containsKey("InStock")) {
+            if (containsProperty(_parameter, "InStock")) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Inventory);
                 final AttributeQuery attrQuery = attrQueryBldr
                                 .getAttributeQuery(CIProducts.Inventory.Product);
@@ -1702,16 +1698,14 @@ public abstract class AbstractDocument_Base
                 cache = false;
             }
 
-            final String exclude = (String) properties.get("ExcludeTypes");
-            if (exclude != null) {
-                final String[] typesArray = exclude.split(";");
-                for (final String element : typesArray) {
-                    final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(element));
-                    final AttributeQuery attrQuery = queryBldr2.getAttributeQuery(CIProducts.ProductAbstract.ID);
-                    queryBldr.addWhereAttrNotInQuery(CIProducts.ProductAbstract.ID, attrQuery);
-                }
+            final Map<Integer, String> excludes = analyseProperty(_parameter, "ExcludeType");
+            for (final String element : excludes.values()) {
+                final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(element));
+                final AttributeQuery attrQuery = queryBldr2.getAttributeQuery(CIProducts.ProductAbstract.ID);
+                queryBldr.addWhereAttrNotInQuery(CIProducts.ProductAbstract.ID, attrQuery);
             }
 
+            InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
             catalogFilter4productAutoComplete(_parameter, queryBldr);
 
             final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
