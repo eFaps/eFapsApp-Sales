@@ -65,7 +65,7 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_ComparativeDetailProvider4CostForm.providerLink.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.comparative.ComparativeProvider">
-                <property name="Classifications">Contacts_ClassSupplier</property>
+                <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
                 name="Sales_ComparativeDetailProvider4CostForm.providerLink.UI_FIELD_UPDATE"

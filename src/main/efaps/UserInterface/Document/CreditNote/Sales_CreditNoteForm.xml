@@ -146,7 +146,7 @@
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="autoComplete4Contact"
                 name="Sales_CreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Classifications">Contacts_ClassClient</property>
+                <property name="Classification">Contacts_ClassClient</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="updateFields4Contact"
                 name="Sales_CreditNoteForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

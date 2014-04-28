@@ -174,7 +174,7 @@
             <property name="Required">true</property>
             <property name="Columns">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_IncomingReminderForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts">
-                <property name="Classifications">Contacts_ClassSupplier</property>
+                <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_IncomingReminderForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>

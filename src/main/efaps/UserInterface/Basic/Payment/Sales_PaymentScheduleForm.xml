@@ -75,7 +75,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4Contact" 
                 name="Sales_PaymentScheduleForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Classifications">Contacts_ClassSupplier</property>
+                <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="updateFields4Contact" 
                 name="Sales_PaymentScheduleForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

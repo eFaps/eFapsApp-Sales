@@ -122,7 +122,7 @@
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="autoComplete4Contact"
                 name="Sales_IncomingExchangeForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Classifications">Contacts_ClassSupplier</property>
+                <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="updateFields4Contact"
                 name="Sales_IncomingExchangeForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
