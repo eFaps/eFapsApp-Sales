@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -45,6 +47,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -81,6 +84,13 @@ public abstract class IncomingCreditNote_Base
         return new Return();
     }
 
+    /**
+     * Method to create IncomingCreditNote into tree of the AccountPettyCash.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return create4AccountPettyCash(final Parameter _parameter)
         throws EFapsException
     {
@@ -218,15 +228,18 @@ public abstract class IncomingCreditNote_Base
     protected List<Map<String, Object>> updateFields4Doc(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, Object>> ret = super.updateFields4Doc(_parameter);
+        List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+
         final Instance instance = _parameter.getInstance();
 
         if ((instance != null && instance.isValid())
                         && instance.getType().equals(CISales.AccountPettyCash.getType())) {
+            final StringBuilder js = new StringBuilder();
+
             final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
             final String fieldName = field.getName();
             final String currentOid = _parameter.getParameterValue(fieldName);
-            final Map<String, Object> map = ret.get(0);
             final PrintQuery print = new PrintQuery(currentOid);
 
             final SelectBuilder selContactInst = new SelectBuilder()
@@ -235,10 +248,17 @@ public abstract class IncomingCreditNote_Base
                             .linkto(CISales.PettyCashReceipt.Contact).attribute(CIContacts.Contact.Name);
             print.addSelect(selContactInst, selContactName);
             print.execute();
+
             final Instance contactInst = print.<Instance>getSelect(selContactInst);
-            map.put("contact", contactInst.getOid());
-            map.put("contactAutoComplete", print.<String>getSelect(selContactName));
-            map.put("contactData", new Contacts().getFieldValue4Contact(contactInst, false));
+            final String contactName = print.<String>getSelect(selContactName);
+            final String contactData = new Contacts().getFieldValue4Contact(contactInst, false);
+
+            js.append(getSetFieldValue(0, "contact", contactInst.getOid(), contactName)).append("\n")
+                .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
+            InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
+            ret.add(map);
+        } else {
+            ret = super.updateFields4Doc(_parameter);
         }
         return ret;
     }
