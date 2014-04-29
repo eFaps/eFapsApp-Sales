@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8180 $
- * Last Changed:    $Date: 2012-11-08 19:00:37 -0500 (jue, 08 nov 2012) $
- * Last Changed By: $Author: m.aranya@moxter.net $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -46,7 +46,7 @@ import org.efaps.util.EFapsException;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("09c62a59-c334-4e84-8ae5-96dfbc6f7463")
-@EFapsRevision("$Rev: 8180 $")
+@EFapsRevision("$Rev$")
 public abstract class PaymentOrder_Base
     extends DocumentSum
 {
@@ -127,7 +127,7 @@ public abstract class PaymentOrder_Base
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
         }
 
-        insert.add("SpendingLink", spendingLink);
+        insert.add(CISales.PaymentOrder.SpendingLink, spendingLink);
         insert.add(CISales.DocumentSumAbstract.RateCrossTotal, ratcross);
         insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateCrossTotal);
         insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
