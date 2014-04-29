@@ -53,8 +53,7 @@
         <type>Products_ProductSupply</type>
         <type>Products_ProductMaterial</type>
         <type>Products_ProductStandart</type>
-        <type>Products_ProductUnique</type>
-        <type>Products_ProductUniqueComponent</type>
+        <type>Products_ProductIndividual</type>
         <type>Products_ProductComponent</type>
         <type>Products_ProductService</type>
         <type>Products_ProductCost</type>
