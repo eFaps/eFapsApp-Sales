@@ -1570,7 +1570,7 @@ public abstract class AbstractDocument_Base
                 }
             }
             _map.put("uoM", getUoMFieldStr(selectedUoM, dimId));
-            _map.put("productDesc", desc);
+            _map.put("productDesc", StringEscapeUtils.escapeEcmaScript(desc));
             // TODO: remove when autocomplete ready
             _map.put(fieldName + "AutoComplete", name);
 
