@@ -458,9 +458,7 @@ public abstract class AbstractDocument_Base
         } else {
             status = _status;
         }
-
         final String req = (String) _parameter.get(ParameterValues.OTHERS);
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
@@ -470,22 +468,30 @@ public abstract class AbstractDocument_Base
         if (status != null) {
             queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) status);
         }
-        final String key = properties.containsKey("Key") ? (String) properties.get("Key") : "OID";
+        final String key = containsProperty(_parameter, "Key") ? getProperty(_parameter, "Key") : "OID";
+        final boolean showContact = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowContact"));
 
         final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact)
+                        .attribute(CIContacts.Contact.Name);
+        if (showContact) {
+            multi.addSelect(selContactName);
+        }
         multi.addAttribute(key);
         multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date);
         multi.execute();
         while (multi.next()) {
-            final String name = multi.<String> getAttribute(CISales.DocumentAbstract.Name);
-            final DateTime date = multi.<DateTime> getAttribute(CISales.DocumentAbstract.Date);
-
+            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+            String choice = name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
+                            Context.getThreadContext().getLocale()));
+            if (showContact) {
+                choice = choice + " - " + multi.getSelect(selContactName);
+            }
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
-                            name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                                                            Context.getThreadContext().getLocale())));
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
             tmpMap.put(name, map);
         }
         list.addAll(tmpMap.values());
