@@ -131,7 +131,6 @@ public abstract class PettyCashReceipt_Base
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _editedDoc doc the transaction is connected to
-     * @param _prevAmount previous amount
      * @throws EFapsException on error
      */
     protected void updateTransaction(final Parameter _parameter,
@@ -299,7 +298,7 @@ public abstract class PettyCashReceipt_Base
         final Instance inst = _parameter.getCallInstance();
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">")
-                        .append("Wicket.Event.add(window, \"domready\", function(event) {");
+            .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){");
 
         if (inst.isValid()) {
             final PrintQuery print = new PrintQuery(inst);
@@ -331,16 +330,13 @@ public abstract class PettyCashReceipt_Base
                     js.append(getSetFieldValue(0,
                                     CIFormSales.Sales_PettyCashReceiptJustificationEditForm.contactData.name, info))
                         .append(getSetFieldValue(0,
-                                    CIFormSales.Sales_PettyCashReceiptJustificationEditForm.contact.name
-                                                                    + "AutoComplete", contName))
-                        .append(getSetFieldValue(0,
                                     CIFormSales.Sales_PettyCashReceiptJustificationEditForm.contact.name,
-                                                    contInst.getOid()))
+                                                    contInst.getOid(), contName))
                         .append(getSetFieldValue(0,
                                     CIFormSales.Sales_PettyCashReceiptJustificationEditForm.name4create.name, name));
                 }
             }
-            js.append(" });").append("</script>");
+            js.append(" })});").append("</script>");
         }
         ret.put(ReturnValues.SNIPLETT, js.toString());
         return ret;
