@@ -82,7 +82,7 @@ public abstract class ReturnUsageReport_Base
         if (salesConfig != null) {
             final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT);
             if (productDocType != null && productDocType.isValid()) {
-                insert2DocumenTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
+                insert2DocumentTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
             }
         }
     }
