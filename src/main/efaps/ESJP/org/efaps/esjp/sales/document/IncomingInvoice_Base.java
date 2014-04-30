@@ -56,7 +56,8 @@ import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
-import org.efaps.esjp.sales.Costs;
+import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -98,12 +99,13 @@ public abstract class IncomingInvoice_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        new Costs().updateCosts(_parameter, createdDoc.getInstance());
         incomingInvoiceCreateTransaction(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2ProductDocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2RecievingTicket(_parameter, createdDoc);
+        registerPurchasePrices(_parameter, createdDoc);
+
         final String perceptionValueStr = _parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
         if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
@@ -154,17 +156,24 @@ public abstract class IncomingInvoice_Base
         list.add(map);
         ret.put(ReturnValues.VALUES, list);
 
-        final Map<Object,Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
         props.remove("FieldName");
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter from the eFaps API.
+     *  @param _instance instance
+     * @return new Return.
+     * @throws EFapsException on error.
+     *
+     */
     protected StringBuilder getJS4RecievingTicket(final Parameter _parameter,
                                                   final Instance _instance)
         throws EFapsException
     {
         @SuppressWarnings("unchecked")
-        final Map<Object,Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
+        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
         props.put("FieldName", CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
 
         final StringBuilder ret = new StringBuilder();
@@ -219,7 +228,7 @@ public abstract class IncomingInvoice_Base
      * @throws EFapsException on error
      */
     protected void connect2RecievingTicket(final Parameter _parameter,
-                                          final CreatedDoc _createdDoc)
+                                           final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final String[] tickets = _parameter.getParameterValues(
@@ -237,6 +246,64 @@ public abstract class IncomingInvoice_Base
         }
     }
 
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
+    protected void registerPurchasePrices(final Parameter _parameter,
+                                          final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATEREGPURPRICE)) {
+            @SuppressWarnings("unchecked")
+            final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
+                            DocumentSum_Base.CALCULATORS_VALUE);
+            if (calcList != null) {
+                final String dateStr = (String) _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name);
+                DateTime date;
+                if (dateStr == null) {
+                    date = new DateTime().withTimeAtStartOfDay();
+                } else {
+                    date = new DateTime(dateStr).withTimeAtStartOfDay();
+                }
+                final Object[] rateObj = getRateObject(_parameter);
+                final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                                BigDecimal.ROUND_HALF_UP);
+                final DecimalFormat unitFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
+                final int uScale = unitFrmt.getMaximumFractionDigits();
+                for (final Calculator calc : calcList) {
+
+                    final ProductPrice prodPrice = new PriceUtil().getPrice(_parameter, date, calc.getProductInstance(),
+                                    CIProducts.ProductPricelistPurchase);
+                    final BigDecimal basePrice = prodPrice.getBasePrice();
+                    BigDecimal price;
+                    if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET)) {
+                        price = calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                        .setScale(uScale, BigDecimal.ROUND_HALF_UP);
+                    } else {
+                        price = calc.getCrossUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
+                                        .setScale(uScale, BigDecimal.ROUND_HALF_UP);
+                    }
+                    if (price.compareTo(basePrice) != 0) {
+                        final Insert insert = new Insert(CIProducts.ProductPricelistPurchase);
+                        insert.add(CIProducts.ProductPricelistPurchase.ProductLink, calc.getProductInstance());
+                        insert.add(CIProducts.ProductPricelistPurchase.ValidFrom, date);
+                        insert.add(CIProducts.ProductPricelistPurchase.ValidUntil, date.plusYears(10));
+                        insert.execute();
+
+                        final Insert posInsert = new Insert(CIProducts.ProductPricelistPosition);
+                        posInsert.add(CIProducts.ProductPricelistPosition.ProductPricelist, insert.getInstance());
+                        posInsert.add(CIProducts.ProductPricelistPosition.CurrencyId,
+                                        Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE));
+                        posInsert.add(CIProducts.ProductPricelistPosition.Price, price);
+                        posInsert.execute();
+                    }
+                }
+            }
+        }
+    }
 
     /**
      * Method to do a transaction of all the products of a Incoming Invoice when
@@ -373,7 +440,11 @@ public abstract class IncomingInvoice_Base
         return CISales.IncomingInvoice.getType().getName();
     }
 
-
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
     public Return recievingTicketMultiPrint(final Parameter _parameter)
         throws EFapsException
     {

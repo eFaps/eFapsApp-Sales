@@ -35,15 +35,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsRevision("$Rev$")
 public interface SalesSettings
 {
-
-    /**
-     * Boolean (true/false).<br/>
-     * Activate the calculation of Costs for a product in
-     * stock. Executed by calling en esjp after the insertion of a Incoming
-     * Invoice..
-     */
-    String CALCULATECOSTS = "org.efaps.sales.ActivateCalculateCosts";
-
     /**
      * OID for a Link.<br/>
      * Default Currency for the Form like Invoice etc..
@@ -61,6 +52,12 @@ public interface SalesSettings
      * Allows to activate/deactivate the costing mechanisms.
      */
     String ACTIVATECOSTING = "org.efaps.sales.ActivateCosting";
+
+    /**
+     * Boolean.
+     * Allows to activate/deactivate the registering of the prices during a purchase.
+     */
+    String ACTIVATEREGPURPRICE = "org.efaps.sales.ActivateRegisterOfPuchasePrice";
 
     /**
      * Link.
