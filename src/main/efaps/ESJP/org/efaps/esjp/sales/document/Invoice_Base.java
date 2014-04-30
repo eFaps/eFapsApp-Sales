@@ -53,6 +53,8 @@ public abstract class Invoice_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
 
+        connect2Object(_parameter, createdDoc);
+
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
             new PerceptionCertificate().create4Doc(_parameter, createdDoc);
         }

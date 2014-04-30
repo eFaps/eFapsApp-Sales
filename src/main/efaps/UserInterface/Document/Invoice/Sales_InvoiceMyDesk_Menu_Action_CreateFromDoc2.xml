@@ -33,13 +33,14 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_InvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <name>Sales_InvoiceMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Teller</role>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
@@ -49,8 +50,39 @@
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
         </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Invoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 
-        <!-- properties -->
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_InvoiceMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_InvoiceForm</form>
+            <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Status">Open</property>
+                <!-- Projects_ProjectService2Invoice -->
+                <property name="ConnectType">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Invoice</property>
         <property name="TargetMode">create</property>

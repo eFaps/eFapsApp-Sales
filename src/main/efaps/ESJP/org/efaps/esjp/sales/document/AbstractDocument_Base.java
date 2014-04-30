@@ -2308,7 +2308,7 @@ public abstract class AbstractDocument_Base
     {
         final Instance instDocType = Instance.get(_parameter.getParameterValue("documentType"));
         if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
-            insert2DocumenTypeAbstract(CISales.Document2DocumentType, _createdDoc, instDocType);
+            insert2DocumentTypeAbstract(CISales.Document2DocumentType, _createdDoc, instDocType);
         }
     }
 
@@ -2323,7 +2323,7 @@ public abstract class AbstractDocument_Base
     {
         final Instance instDocType = Instance.get(_parameter.getParameterValue("productDocumentType"));
         if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
-            insert2DocumenTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, instDocType);
+            insert2DocumentTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, instDocType);
         }
     }
 
@@ -2335,9 +2335,9 @@ public abstract class AbstractDocument_Base
      * @param _docTypeAbs instance the document type.
      * @throws EFapsException on error.
      */
-    protected void insert2DocumenTypeAbstract(final CIType _type,
-                                              final CreatedDoc _createdDoc,
-                                              final Instance _docTypeAbs)
+    protected void insert2DocumentTypeAbstract(final CIType _type,
+                                               final CreatedDoc _createdDoc,
+                                               final Instance _docTypeAbs)
         throws EFapsException
     {
         final Insert insert = new Insert(_type);

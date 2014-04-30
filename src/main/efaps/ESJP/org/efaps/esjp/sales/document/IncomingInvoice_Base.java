@@ -80,7 +80,7 @@ public abstract class IncomingInvoice_Base
     /**
      * Used to store the Revision in the Context.
      */
-    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingInvoice.RevisionKey";
+    public static final String REVISIONKEY = IncomingInvoice.class.getName() + "RevisionKey";
 
     /**
      * Logging instance used in this class.
@@ -105,6 +105,8 @@ public abstract class IncomingInvoice_Base
         connect2Derived(_parameter, createdDoc);
         connect2RecievingTicket(_parameter, createdDoc);
         registerPurchasePrices(_parameter, createdDoc);
+
+        connect2Object(_parameter, createdDoc);
 
         final String perceptionValueStr = _parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
