@@ -463,6 +463,7 @@ public abstract class AbstractDocument_Base
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
         final QueryBuilder queryBldr = new QueryBuilder(type);
+        InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
         add2QueryBldr(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
         if (status != null) {
