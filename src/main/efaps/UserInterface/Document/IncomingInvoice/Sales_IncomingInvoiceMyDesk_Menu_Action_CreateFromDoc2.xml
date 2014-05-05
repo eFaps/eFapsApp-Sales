@@ -36,7 +36,7 @@
         <profiles>
             <profile name="eFaps"/>
         </profiles>
-        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</name>
+        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
@@ -70,7 +70,7 @@
          <profiles>
             <profile name="projects"/>
         </profiles>
-        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</name>
+        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
