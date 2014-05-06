@@ -125,6 +125,12 @@ public interface SalesSettings
      * Boolean (true/false).<br/>
      * Activate the show variable.
      */
+    String ACTIVATERETENTION = "org.efaps.sales.ActivateRetentionCertificate";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the show variable.
+     */
     String ACTIVATECODE4PAYMENTDOCUMENTOUT = "org.efaps.sales.ActivateCode4PaymentDocumentOut";
 
     /**
