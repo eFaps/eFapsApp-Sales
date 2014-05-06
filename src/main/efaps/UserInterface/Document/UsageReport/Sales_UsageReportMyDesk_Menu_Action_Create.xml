@@ -23,14 +23,11 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0fc78808-675e-472d-bac1-95334a0280f2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_UsageReportMyDesk_Menu_Action_Create</name>
@@ -38,8 +35,6 @@
             <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_UsageReportForm</form>
             <execute program="org.efaps.esjp.sales.document.UsageReport" method="create">
@@ -48,9 +43,11 @@
                 <property name="StatusGroup">Sales_UsageReportStatus</property>
                 <property name="Status">Closed</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.UsageReport" method="validate">
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">QUANTITYINSTOCK</property>
+            </validate>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_UsageReport</property>
         <property name="TargetMode">create</property>
@@ -59,5 +56,4 @@
         <property name="TargetDefaultMenu">none</property>
         <property name="ShowStorage">true</property>
     </definition>
-
 </ui-command>
