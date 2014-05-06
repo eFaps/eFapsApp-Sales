@@ -46,5 +46,6 @@
         <property name="TargetShowFile">true</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_Quotation</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
     </definition>
 </ui-command>
