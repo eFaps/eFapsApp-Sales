@@ -264,7 +264,8 @@ public abstract class AbstractSumOnlyDocument_Base
         final StringBuilder js = new StringBuilder();
         final Instance instance = _parameter.getInstance() != null
                         ? _parameter.getInstance() : _parameter.getCallInstance();
-        js.append("<script type=\"text/javascript\">\n");
+        js.append("<script type=\"text/javascript\">\n")
+            .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){\n");
         if (instance.isValid()
                         && (instance.getType().equals(CISales.IncomingExchange.getType())
                         || instance.getType().equals(CISales.Exchange.getType()))) {
@@ -276,10 +277,12 @@ public abstract class AbstractSumOnlyDocument_Base
             print.addSelect(selContactId, selContactName);
             print.execute();
 
-            js.append(getSetFieldValue(0, "contact", String.valueOf(print.<Long>getSelect(selContactId)))).append("\n")
-                .append(getSetFieldValue(0, "contactAutoComplete", print.<String>getSelect(selContactName)));
+            final Long contactId = print.<Long>getSelect(selContactId);
+            final String contactName = print.<String>getSelect(selContactName);
+
+            js.append(getSetFieldValue(0, "contact", String.valueOf(contactId), contactName)).append("\n");
         }
-        js.append("\n</script>\n");
+        js.append(" })});").append("</script>");
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
