@@ -152,7 +152,7 @@ public abstract class PaymentDocReport_Base
                 BigDecimal acumulatedRatePay = BigDecimal.ZERO;
                 final BigDecimal rateCrossInv = multi
                                 .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                final BigDecimal crossInv = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                 final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
                 for (final PaymentIn payOut : lstPayDocs) {
                     if (!rateCurDocInst.equals(payOut.getRateCurrency())) {
@@ -287,21 +287,21 @@ public abstract class PaymentDocReport_Base
          */
         private BigDecimal getAmount()
         {
-            return amount;
+            return this.amount;
         }
         /**
          * @return the rateCurrency
          */
         private Instance getRateCurrency()
         {
-            return rateCurrency;
+            return this.rateCurrency;
         }
         /**
          * @return the rate
          */
         private Object[] getRate()
         {
-            return rate;
+            return this.rate;
         }
     }
 }

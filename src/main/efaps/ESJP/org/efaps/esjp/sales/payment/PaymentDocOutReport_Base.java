@@ -48,6 +48,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
@@ -192,15 +193,14 @@ public abstract class PaymentDocOutReport_Base
                     }
                 }
                 final CurrencyInst curInst = new CurrencyInst(rateCurDocInst);
-                map.put("Currency", curInst.getName());
+                map.put("Currency", curInst.getISOCode());
                 map.put("Rate", curInst.isInvert() ? ratesDoc[1] : ratesDoc[0]);
                 map.put("RateCrossTotal", rateCrossInv);
                 map.put("RatePayment", acumulatedRatePay);
                 map.put("RateDiscountPayment", rateCrossInv.subtract(acumulatedRatePay));
-                /*map.put("CrossTotal", crossInv);
+                map.put("CrossTotal", crossInv);
                 map.put("Payment", acumulatedPay);
-                map.put("DiscountPayment", crossInv.subtract(acumulatedPay));*/
-
+                map.put("DiscountPayment", crossInv.subtract(acumulatedPay));
                 map.put("Id", multi.getCurrentInstance().getId());
                 map.put("DocumentType", type.getLabel());
                 map.put("Date", multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
@@ -245,7 +245,9 @@ public abstract class PaymentDocOutReport_Base
         report.getJrParameters().put("FromDate", from.toDate());
         report.getJrParameters().put("ToDate", to.toDate());
         report.getJrParameters().put("Mime", mime);
+        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
+        report.getJrParameters().put("BaseCurrency", CurrencyInst_Base.get(baseCurrInst).getISOCode());
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
             final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
@@ -269,38 +271,44 @@ public abstract class PaymentDocOutReport_Base
                         + "-" + _to.toString(DateTimeFormat.shortDate());
     }
 
-    public class PaymentOut {
+    public class PaymentOut
+    {
+
         private final BigDecimal amount;
         private final Instance rateCurrency;
         private final Object[] rate;
 
         public PaymentOut(final BigDecimal _amount,
                           final Instance _rateCurrency,
-                          final Object[] _rate) {
+                          final Object[] _rate)
+        {
             this.amount = _amount;
             this.rateCurrency = _rateCurrency;
             this.rate = _rate;
         }
+
         /**
          * @return the amount
          */
         private BigDecimal getAmount()
         {
-            return amount;
+            return this.amount;
         }
+
         /**
          * @return the rateCurrency
          */
         private Instance getRateCurrency()
         {
-            return rateCurrency;
+            return this.rateCurrency;
         }
+
         /**
          * @return the rate
          */
         private Object[] getRate()
         {
-            return rate;
+            return this.rate;
         }
     }
 }
