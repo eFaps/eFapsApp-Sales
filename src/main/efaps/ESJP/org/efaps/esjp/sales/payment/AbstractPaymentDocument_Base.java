@@ -1463,11 +1463,10 @@ public abstract class AbstractPaymentDocument_Base
         final Return ret = new Return();
 
         final Instance selectDoc = Instance.get(_parameter.getParameterValue("name"));
-        final String selectDocAutoComplete = _parameter.getParameterValue("nameAutoComplete");
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, String> map = new HashMap<String, String>();
-        if (selectDoc.isValid() && !selectDocAutoComplete.isEmpty()) {
+        if (selectDoc.isValid()) {
             final SelectBuilder selContact = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact);
             final SelectBuilder selContactOid = new SelectBuilder(selContact).oid();
             final SelectBuilder selContactName = new SelectBuilder(selContact).attribute(CIContacts.Contact.Name);
