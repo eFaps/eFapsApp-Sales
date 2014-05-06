@@ -82,6 +82,9 @@ public abstract class DeliveryNote_Base
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
         connect2ProductDocumentType(_parameter, doc);
+
+        connect2Object(_parameter, doc);
+
         final File file = createReport(_parameter, doc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);

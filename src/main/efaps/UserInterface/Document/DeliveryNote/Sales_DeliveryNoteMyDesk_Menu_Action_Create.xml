@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,23 +23,21 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>19128d5f-6894-4455-a019-72ac69171c87</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_DeliveryNoteMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_DeliveryNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.DeliveryNote" method="create">
@@ -47,10 +45,49 @@
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
                 <property name="JasperReport">Sales_DeliveryNote</property>
-             </execute>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">QUANTITYINSTOCK</property>
+            </validate>
         </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_DeliveryNote</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="ShowStorage">true</property>
+    </definition>
 
-        <!-- properties -->
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_DeliveryNoteMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_DeliveryNoteForm</form>
+            <execute program="org.efaps.esjp.sales.document.DeliveryNote" method="create">
+                <property name="PositionType">Sales_DeliveryNotePosition</property>
+                <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
+                <property name="Status">Open</property>
+                <property name="JasperReport">Sales_DeliveryNote</property>
+                <!-- Projects_ProjectService2DeliveryNote -->
+                <property name="ConnectType">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">QUANTITYINSTOCK</property>
+            </validate>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_DeliveryNote</property>
         <property name="TargetMode">create</property>

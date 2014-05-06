@@ -2294,6 +2294,18 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation();
+        return validation.validate(_parameter);
+    }
+
+    /**
      * @param _parameter
      * @return
      */
