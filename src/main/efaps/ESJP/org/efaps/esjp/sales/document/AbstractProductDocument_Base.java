@@ -391,7 +391,7 @@ public abstract class AbstractProductDocument_Base
         final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
         if (defaultStorageInst.isValid()) {
             for (final Map<KeyDef, Object> map : _values) {
-                final Instance prodInst = Instance.get((String) map.get(new KeyDefStr("product")));
+                final Instance prodInst = Instance.get(((String[]) map.get(new KeyDefStr("product")))[0]);
                 if (prodInst.isValid()) {
                     final String quantityInStock = getStock4ProductInStorage(_parameter, prodInst, defaultStorageInst);
                     map.put(new KeyDefStr("quantityInStock"), quantityInStock);
