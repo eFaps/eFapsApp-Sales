@@ -152,11 +152,11 @@ public abstract class DeliveryNote_Base
             _createdDoc.getValues().put(CISales.DeliveryNote.VehicleLicencePlate.name, vehicleLicencePlate);
         }
 
-        final Instance carrierInst = Instance.get(_parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
         if (carrierInst.isValid()) {
             _insert.add(CISales.DeliveryNote.CarrierLink, carrierInst);
             _createdDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
-
         }
     }
 
@@ -172,23 +172,6 @@ public abstract class DeliveryNote_Base
     {
         final Contacts contacts = new Contacts();
         return contacts.autoComplete4Contact(_parameter);
-    }
-
-
-    public Return getJS4SelectInvoiceForm(final Parameter _parameter)
-        throws EFapsException
-    {
-        final StringBuilder js = new StringBuilder();
-        js.append("<script type=\"text/javascript\">")
-            .append("Wicket.Event.add(window, \"domready\", function(event) {")
-            .append("var obj=wicketGet(\"label25\");")
-            .append("obj.setfocus();")
-            .append(" });")
-            .append("</script>");
-
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, js.toString());
-        return retVal;
     }
 
     /**
