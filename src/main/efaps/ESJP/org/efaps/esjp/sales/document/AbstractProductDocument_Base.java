@@ -343,6 +343,11 @@ public abstract class AbstractProductDocument_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     * @return listmap for update
+     */
     public Return updateFields4Product(final Parameter _parameter)
         throws EFapsException
     {
@@ -354,7 +359,7 @@ public abstract class AbstractProductDocument_Base
         final Instance prodInst = Instance.get(_parameter.getParameterValues("product")[selected]);
 
         Instance storInst = null;
-        if (_parameter.getParameterValues("storage")!= null) {
+        if (_parameter.getParameterValues("storage") != null) {
             storInst  = Instance.get(_parameter.getParameterValues("storage")[selected]);
         }
 

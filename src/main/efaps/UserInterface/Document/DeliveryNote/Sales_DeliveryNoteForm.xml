@@ -31,6 +31,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_DeliveryNoteForm</name>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
@@ -272,7 +275,325 @@
                 method="autoComplete4Storage"
                 name="Sales_DeliveryNoteForm.storage.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Key">ID</property>
+            </trigger>
+             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Storage"
+                name="Sales_DeliveryNoteForm.storage.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_DeliveryNoteForm.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
+        <field name="headingPositon" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_DeliveryNote/Position.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="positionTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Sales_DeliveryNotePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_DeliveryNotePosition</property>
+                <property name="LinkFrom">DeliveryNote</property>
+            </evaluate>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="getJavaScriptUIValue"
+                name="Sales_DeliveryNoteForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" />
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_DeliveryNoteForm</name>
+        <field name="dategroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="salesperson">
+            <property name="Attribute">Salesperson</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+               method="getSalesPersonFieldValue"
+               name="Sales_DeliveryNoteForm.salesperson.UI_FIELD_VALUE"
+               event="UI_FIELD_VALUE">
+               <property name="Type">Admin_User_Person</property>
+               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+               <property name="OrderSelect">attribute[LastName]</property>
+               <property name="WhereAttrEqValue">Status|true</property>
+               <property name="SelectCurrent">true</property>
+           </trigger>
+        </field>
+        <field name="salespersonLink">
+            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Attribute">Salesperson</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="namegroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="getNameFieldValueUI"
+                name="Sales_DeliveryNoteForm.name4create.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_DeliveryNote</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="productDocumentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_DeliveryNoteForm.productDocumentType.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="dropDown4ProdDocTypeFieldValue"
+                name="Sales_DeliveryNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">OUTGOING</property>
+            </trigger>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+        </field>
+        <field name="createGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="modifyGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+         <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_DeliveryNoteForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="project">
+            <property name="Label">Sales_DeliveryNoteForm.project.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">130</property>
+            <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project"
+                name="Sales_DeliveryNoteForm.project.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="StatusGroup">Projects_ProjectServiceStatus</property>
+                <property name="Status">Closed</property>
+            </trigger>
+        </field>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2DeliveryNote#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2DeliveryNote#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2DeliveryNote#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ProductRequest.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="headingClient" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_DeliveryNoteForm.headingClient.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_DeliveryNote/Contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Columns">98</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Contact"
+                name="Sales_DeliveryNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Contact"
+                name="Sales_DeliveryNoteForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_DeliveryNote/ContactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="headingInfo" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_DeliveryNoteForm.headingInfo.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="departureGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="departurePoint">
+            <property name="Attribute">DeparturePoint</property>
+            <property name="Label">Sales_DeliveryNote/DeparturePoint.Label</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">80</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="departurePointFieldValue"
+                name="Sales_DeliveryNoteForm.departurePoint.UI_FIELD_UPDATE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="vehicleBrand">
+            <property name="Attribute">VehicleBrand</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="arrivalGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="arrivalPoint">
+            <property name="Attribute">ArrivalPoint</property>
+            <property name="Label">Sales_DeliveryNote/ArrivalPoint.Label</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">80</property>
+        </field>
+        <field name="vehicleLicencePlate">
+            <property name="Attribute">VehicleLicencePlate</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="carrierGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="carrierLink">
+            <property name="SelectAlternateOID">linkto[CarrierLink].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_DeliveryNote/CarrierLink.Label</property>
+            <property name="Select">linkto[CarrierLink].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">80</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Carrier"
+                name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="updateFields4Contact"
+                name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" >
+                <property name="FieldName">carrierData</property>
+            </trigger>
+        </field>
+        <field name="vehicleDriverInfo">
+            <property name="Attribute">VehicleDriverInfo</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="storageGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_DeliveryNoteForm.headingGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
+        <field name="carrierData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_DeliveryNoteForm.carrierData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="storageSetter">
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_DeliveryNoteForm.storage.Label</property>
+             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4Storage"
+                name="Sales_DeliveryNoteForm.storage.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
             </trigger>
              <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="updateFields4Storage"

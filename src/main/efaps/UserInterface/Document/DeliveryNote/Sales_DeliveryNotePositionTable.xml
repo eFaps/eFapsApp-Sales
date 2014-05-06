@@ -44,13 +44,11 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Width">1</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="propertyCheck"
-                name="Sales_DeliveryNotePositionTable.storage.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK" >
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
+                name="Sales_DeliveryNotePositionTable.storage.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="CheckCallingCommand">true</property>
                 <property name="Property">ShowStorage</property>
-             </trigger>
+            </trigger>
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
@@ -61,6 +59,7 @@
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="autoComplete4Product"
                 name="Sales_DeliveryNotePositionTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="InStock">true</property>
+                <property name="ExtraParameter">storage</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="updateFields4Product"
                 name="Sales_DeliveryNotePositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

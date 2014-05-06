@@ -1651,7 +1651,6 @@ public abstract class AbstractDocument_Base
         }
     }
 
-
     /**
      * Auto-complete for the field with products.
      *
@@ -1664,7 +1663,6 @@ public abstract class AbstractDocument_Base
     {
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-
 
         if (!input.isEmpty()) {
             boolean cache = true;
@@ -1699,8 +1697,15 @@ public abstract class AbstractDocument_Base
 
             if (containsProperty(_parameter, "InStock")) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Inventory);
-                final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CIProducts.Inventory.Product);
+                final String[] storageArr = _parameter.getParameterValues("storage");
+                if (storageArr != null && storageArr.length > 0) {
+                    final int selected = getSelectedRow(_parameter);
+                    final Instance storInst = Instance.get(storageArr[selected]);
+                    if (storInst.isValid()) {
+                        attrQueryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, storInst);
+                    }
+                }
+                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Inventory.Product);
                 queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
                 cache = false;
             }
