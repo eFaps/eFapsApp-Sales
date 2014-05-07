@@ -402,19 +402,26 @@ public abstract class AbstractProductDocument_Base
         }
     }
 
-
-
+    /**
+     * method to get string to values with inventory.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _productinst Product.
+     * @param _storageInst Storage.
+     * @return String to values.
+     * @throws EFapsException on error.
+     */
     protected String getStock4ProductInStorage(final Parameter _parameter,
-                                               final Instance productinst,
-                                               final Instance storageInst)
+                                               final Instance _productinst,
+                                               final Instance _storageInst)
         throws EFapsException
     {
-        String ret = "";
+        final StringBuilder ret = new StringBuilder();
         final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, storageInst);
-        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, productinst);
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, _storageInst);
+        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _productinst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CIProducts.Inventory.Quantity, CIProducts.Inventory.Reserved);
         multi.execute();
@@ -422,11 +429,11 @@ public abstract class AbstractProductDocument_Base
             final BigDecimal quantity = multi.getAttribute(CIProducts.Inventory.Quantity);
             final BigDecimal quantityReserved = multi.getAttribute(CIProducts.Inventory.Reserved);
 
-            ret = qtyFrmt.format(quantity) + " / " + qtyFrmt.format(quantityReserved);
+            ret.append(qtyFrmt.format(quantity)).append(" / ").append(qtyFrmt.format(quantityReserved));
         } else {
-            ret = "0 / 0";
+            ret.append("0 / 0");
         }
-        return ret;
+        return ret.toString();
     }
 
 
