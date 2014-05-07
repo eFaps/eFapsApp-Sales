@@ -44,10 +44,10 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4ScheduleDoc"
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type01">Sales_IncomingInvoice</property>
-                <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
+                <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Open</property>
                 <property name="Type02">Sales_IncomingReminder</property>
-                <property name="StatusGrp02">Sales_IncomingReminderStatus</property>
+                <property name="StatusGroup02">Sales_IncomingReminderStatus</property>
                 <property name="Status02">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="updateFields4ScheduleDoc"
@@ -105,13 +105,13 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="autoComplete4ScheduleDoc"
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type01">Sales_IncomingInvoice</property>
-                <property name="StatusGrp01">Sales_IncomingInvoiceStatus</property>
+                <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Open</property>
                 <property name="Type02">Sales_IncomingReminder</property>
-                <property name="StatusGrp02">Sales_IncomingReminderStatus</property>
+                <property name="StatusGroup02">Sales_IncomingReminderStatus</property>
                 <property name="Status02">Open</property>
                 <property name="Type03">Accounting_ExternalVoucher</property>
-                <property name="StatusGrp03">Accounting_ExternalVoucherStatus</property>
+                <property name="StatusGroup03">Accounting_ExternalVoucherStatus</property>
                 <property name="Status03">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="updateFields4ScheduleDoc"

@@ -35,22 +35,22 @@
                 <property name="JasperReport">Sales_PaymentDocOutReport</property>
                 <property name="DataSourceClass">org.efaps.esjp.sales.payment.PaymentDocOutReport</property>
                 <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGrp">Sales_IncomingInvoiceStatus</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">Open</property>
                 <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGrp01">Accounting_ExternalVoucherStatus</property>
+                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
                 <property name="Status01">Open</property>
                 <property name="Type02">Sales_IncomingReceipt</property>
-                <property name="StatusGrp02">Sales_IncomingReceiptStatus</property>
+                <property name="StatusGroup02">Sales_IncomingReceiptStatus</property>
                 <property name="Status02">Open</property>
                 <property name="Type03">Sales_PaymentOrder</property>
-                <property name="StatusGrp03">Sales_PaymentOrderStatus</property>
+                <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
                 <property name="Status03">Open</property>
                 <property name="Type04">Sales_IncomingExchange</property>
-                <property name="StatusGrp04">Sales_IncomingExchangeStatus</property>
+                <property name="StatusGroup04">Sales_IncomingExchangeStatus</property>
                 <property name="Status04">Open</property>
                 <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGrp05">Sales_IncomingCreditStatus</property>
+                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
                 <property name="Status05">Open</property>
             </execute>
         </target>

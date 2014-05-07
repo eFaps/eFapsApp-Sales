@@ -38,19 +38,19 @@
                 <property name="JasperReport">Sales_PaymentDocReport</property>
                 <property name="DataSourceClass">org.efaps.esjp.sales.payment.PaymentDocReport</property>
                 <property name="Type">Sales_Invoice</property>
-                <property name="StatusGrp">Sales_InvoiceStatus</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
                 <property name="Status">Open</property>
                 <property name="Type01">Sales_Receipt</property>
-                <property name="StatusGrp01">Sales_ReceiptStatus</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
                 <property name="Status01">Open</property>
                 <property name="Type02">Sales_Exchange</property>
-                <property name="StatusGrp02">Sales_ExchangeStatus</property>
+                <property name="StatusGroup02">Sales_ExchangeStatus</property>
                 <property name="Status02">Open</property>
                 <property name="Type03">Sales_CollectionOrder</property>
-                <property name="StatusGrp03">Sales_CollectionOrderStatus</property>
+                <property name="StatusGroup03">Sales_CollectionOrderStatus</property>
                 <property name="Status03">Open</property>
                 <property name="Type04">Sales_Credit</property>
-                <property name="StatusGrp04">Sales_CreditStatus</property>
+                <property name="StatusGroup04">Sales_CreditStatus</property>
                 <property name="Status04">Open</property>
             </execute>
         </target>

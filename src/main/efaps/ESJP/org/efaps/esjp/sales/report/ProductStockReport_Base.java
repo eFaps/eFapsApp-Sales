@@ -62,7 +62,6 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -144,16 +143,8 @@ public abstract class ProductStockReport_Base
     protected AttributeQuery getAttrQuery(final Parameter _parameter)
         throws EFapsException
     {
-        final MultiPrint multi = new MultiPrint();
-        final List<QueryBuilder> queryBldrs = multi.getQueryBuilders(_parameter);
-        AttributeQuery attrQuery = null;
-        if (queryBldrs.size() == 1) {
-            final QueryBuilder queryBldr = queryBldrs.get(0);
-            attrQuery = queryBldr.getAttributeQuery("ID");
-        } else {
-            ProductStockReport_Base.LOG.error("Wrong Properties for this esjp.");
-        }
-        return attrQuery;
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        return queryBldr.getAttributeQuery("ID");
     }
 
     public void addQuery2PositionReport(final Parameter _parameter,

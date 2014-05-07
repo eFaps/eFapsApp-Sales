@@ -337,7 +337,7 @@
             <trigger program="org.efaps.esjp.humanresource.Employee" method="autoComplete4Employee"
                 name="Sales_CreditForm.number.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">HumanResource_Employee</property>
-                <property name="StatusGrp01">HumanResource_EmployeeStatus</property>
+                <property name="StatusGroup01">HumanResource_EmployeeStatus</property>
                 <property name="Status01">Worker</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Credit"
