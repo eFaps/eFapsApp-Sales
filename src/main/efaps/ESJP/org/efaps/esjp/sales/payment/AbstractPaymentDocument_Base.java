@@ -1426,8 +1426,8 @@ public abstract class AbstractPaymentDocument_Base
 
         final Instance selectDoc = Instance.get(_parameter.getParameterValue("name"));
 
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         if (selectDoc.isValid()) {
             final SelectBuilder selContact = new SelectBuilder().linkto(CISales.DocumentAbstract.Contact);
             final SelectBuilder selContactOid = new SelectBuilder(selContact).oid();
@@ -1444,6 +1444,7 @@ public abstract class AbstractPaymentDocument_Base
 
                 for (final Entry<Integer, String> field : fields.entrySet()) {
                     String value;
+                    String value2 = null;
                     if (field.getValue().equalsIgnoreCase("amount")) {
                         final BigDecimal amount =
                                         print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
@@ -1457,8 +1458,7 @@ public abstract class AbstractPaymentDocument_Base
                         value = getTwoDigitsformater().format(amount);
                     } else if (field.getValue().equalsIgnoreCase("contact")) {
                         value = print.<String>getSelect(selContactOid);
-                    } else if (field.getValue().equalsIgnoreCase("contactAutoComplete")) {
-                        value = print.<String>getSelect(selContactName);
+                        value2 = print.<String>getSelect(selContactName);
                     } else if (field.getValue().equalsIgnoreCase("date_eFapsDate")) {
                         final DateTime date = print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
                         value = date.toString("dd/MM/YY");
@@ -1469,23 +1469,29 @@ public abstract class AbstractPaymentDocument_Base
                         value = "";
                     }
                     if (value != null && !value.isEmpty()) {
-                        map.put(field.getValue(), StringEscapeUtils.escapeEcmaScript(value));
+                        if (value2 == null) {
+                            map.put(field.getValue(), StringEscapeUtils.escapeEcmaScript(value));
+                        } else {
+                            map.put(field.getValue(), new String[] { StringEscapeUtils.escapeEcmaScript(value),
+                                            StringEscapeUtils.escapeEcmaScript(value2) });
+                        }
                     }
                 }
                 if (map.containsKey("contact")) {
-                    final Instance contactInst = Instance.get(map.get("contact"));
+                    final Instance contactInst = Instance.get(((String[]) map.get("contact"))[0]);
                     if (contactInst.isValid()) {
                         Context.getThreadContext()
-                                .setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY, contactInst);
+                                        .setSessionAttribute(AbstractPaymentDocument_Base.INVOICE_SESSIONKEY,
+                                                        contactInst);
                         Context.getThreadContext()
-                                .setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY, contactInst);
+                                        .setSessionAttribute(AbstractPaymentDocument_Base.CONTACT_SESSIONKEY,
+                                                        contactInst);
                     }
                 }
                 list.add(map);
             }
         }
         ret.put(ReturnValues.VALUES, list);
-
         return ret;
     }
 
