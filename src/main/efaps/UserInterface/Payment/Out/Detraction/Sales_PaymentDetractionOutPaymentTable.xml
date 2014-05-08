@@ -71,6 +71,8 @@
                 <property name="Status04">Approved</property>
                 <property name="Type05">Sales_IncomingCredit</property>
                 <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
+                <property name="ExtraParameter">contact</property>
+                <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4CreateDocument"
                 name="Sales_PaymentDetractionOutPaymentTable.createDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>

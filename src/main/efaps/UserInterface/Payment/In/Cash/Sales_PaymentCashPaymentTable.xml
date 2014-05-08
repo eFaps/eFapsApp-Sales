@@ -65,6 +65,8 @@
                 <property name="Type04">Sales_PerceptionCertificate</property>
                 <property name="StatusGroup04">Sales_PerceptionCertificateStatus</property>
                 <property name="Status04">Open</property>
+                <property name="ExtraParameter">contact</property>
+                <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
 
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument" name="Sales_PaymentCashPaymentTable.product.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCash"/>
@@ -81,7 +83,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4PaymentRate" 
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4PaymentRate"
                 name="Sales_PaymentCashPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
@@ -103,7 +105,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4PaymentDiscount" 
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCash" method="updateFields4PaymentDiscount"
             name="Sales_PaymentCashPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="paymentAmountDesc">

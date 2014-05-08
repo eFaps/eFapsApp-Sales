@@ -72,6 +72,8 @@
                 <property name="Type06">Sales_IncomingPerceptionCertificate</property>
                 <property name="StatusGroup06">Sales_IncomingPerceptionCertificateStatus</property>
                 <property name="Status06">Open</property>
+                <property name="ExtraParameter">contact</property>
+                <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4CreateDocument"
                 name="Sales_PaymentCashOutPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
@@ -118,7 +120,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentCashOutPaymentTable.paymentAmountDesc.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4PaymentAmountDesc" 
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4PaymentAmountDesc"
                 name="Sales_PaymentCashOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="accountLink">
@@ -141,7 +143,7 @@
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateOptions4DetAndRet</property>
             </trigger>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="multiCheckboxFieldValue" 
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="multiCheckboxFieldValue"
                 name="Sales_PaymentCashOutPaymentTable.option4DocCreate.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Value">IncomingRetention</property>
                 <property name="Value01">IncomingDetraction</property>

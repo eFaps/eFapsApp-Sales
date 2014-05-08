@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -48,7 +47,6 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.AbstractUserInterfaceObject;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
@@ -70,6 +68,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -389,104 +388,67 @@ public abstract class AbstractPaymentDocument_Base
         // used by implementation
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return listmap for autocomplete
+     * @throws EFapsException on error
+     */
     public Return autoComplete4CreateDocument(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance contactInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractPaymentDocument_Base.INVOICE_SESSIONKEY);
 
-        final Instance contactSessionInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractPaymentDocument_Base.CONTACT_SESSIONKEY);
+        final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+        final boolean check = !"true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Invoice"));
 
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "StatusGroup");
-        final Map<Integer, String> status = analyseProperty(_parameter, "Status");
 
-        if (statusGrps.size() != status.size()) {
-            final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
-                            .get(ParameterValues.UIOBJECT);
-            AbstractPaymentDocument_Base.LOG.error("Map for StatusGrp and Status are of different size. Command: {}",
-                            command.getName());
-            throw new EFapsException(getClass(), "StatusSizes", statusGrps, status);
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
+        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
+        queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
+
+        if (contactInst.isValid() && check) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
         }
+        InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
 
-        if (!types.isEmpty()) {
-            for (final Entry<Integer, String> typeEntry : types.entrySet()) {
-                final Map<Integer, Map<String, String>> tmpMap = new TreeMap<Integer, Map<String, String>>();
-                final Type type = Type.get(typeEntry.getValue());
-                if (type == null) {
-                    final AbstractUserInterfaceObject command = (AbstractUserInterfaceObject) _parameter
-                                    .get(ParameterValues.UIOBJECT);
-                    AbstractPaymentDocument_Base.LOG.error("Type cannot be found for name: {}. Command: {}",
-                                    typeEntry.getValue(), command.getName());
-                    throw new EFapsException(getClass(), "type", typeEntry);
-                }
-                final QueryBuilder queryBldr = new QueryBuilder(type);
-                queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
-                if (contactInst != null && contactInst.isValid() && contactSessionInst != null
-                                && contactSessionInst.isValid()) {
-                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
-                    queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
-                    queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
-                }
-                add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
+        add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
-                if (statusGrps.containsKey(typeEntry.getKey())) {
-                    final String statiStr = status.get(typeEntry.getKey());
-                    final String[] statiAr = statiStr.split(";");
-                    final List<Object> statusList = new ArrayList<Object>();
-                    for (final String stati : statiAr) {
-                        final Status stat = Status.find(statusGrps.get(typeEntry.getKey()), stati);
-                        if (stat != null) {
-                            statusList.add(stat.getId());
-                        }
-                    }
-                    if (statusList.isEmpty()) {
-                        statusList.add(0);
-                    }
-                    queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusList.toArray());
-                }
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.DocumentAbstract.Date,
+                        CISales.DocumentAbstract.Name,
+                        CISales.DocumentSumAbstract.RateCrossTotal);
+        final SelectBuilder selCur = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+        multi.addSelect(selCur);
+        multi.setEnforceSorted(true);
+        multi.execute();
 
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CISales.DocumentAbstract.Date,
-                                CISales.DocumentAbstract.Name,
-                                CISales.DocumentAbstract.OID,
-                                CISales.DocumentSumAbstract.RateCrossTotal);
-                final SelectBuilder selCur = new SelectBuilder()
-                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-                multi.addSelect(selCur);
-                multi.setEnforceSorted(true);
-                multi.execute();
-                int number = 0;
-                while (multi.next()) {
-                    final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
-                    final String oid = multi.<String>getAttribute(CISales.DocumentAbstract.OID);
-                    final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+            final String oid = multi.getCurrentInstance().getOid();
+            final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
 
-                    final StringBuilder choice = new StringBuilder()
-                                        .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
-                                        .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-")
-                                        .withLocale(Context.getThreadContext().getLocale())));
-                    if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                        final BigDecimal amount = multi
-                                        .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                        final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
-                        choice.append(" - ").append(curr.getSymbol()).append(" ")
-                                        .append(getTwoDigitsformater().format(amount));
-                    }
-                    final Map<String, String> map = new HashMap<String, String>();
-                    map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                    map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
-                    number++;
-                    tmpMap.put(number, map);
-                }
-                list.addAll(tmpMap.values());
+            final StringBuilder choice = new StringBuilder()
+                            .append(name).append(" - ").append(Instance.get(oid).getType().getLabel())
+                            .append(" - ").append(date.toString(DateTimeFormat.forStyle("S-")
+                                            .withLocale(Context.getThreadContext().getLocale())));
+            if (multi.getCurrentInstance().getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                final BigDecimal amount = multi
+                                .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
+                choice.append(" - ").append(curr.getSymbol()).append(" ")
+                                .append(getTwoDigitsformater().format(amount));
             }
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
+            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
+            map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice.toString());
+            list.add(map);
         }
+
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -1119,7 +1081,7 @@ public abstract class AbstractPaymentDocument_Base
     protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
                                                              final QueryBuilder _queryBldr)
     {
-        // used bt implementation
+        // used by implementation
     }
 
     protected void addParameter4Report(final Parameter _parameter,
