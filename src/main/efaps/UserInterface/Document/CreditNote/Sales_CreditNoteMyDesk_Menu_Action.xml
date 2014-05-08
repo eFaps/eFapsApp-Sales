@@ -27,19 +27,18 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-  <uuid>b0a67821-8a5d-46b6-b464-320fc869f410</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+    <uuid>b0a67821-8a5d-46b6-b464-320fc869f410</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
 
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_CreditNoteMyDesk_Menu_Action</name>
-    <!-- childs -->
-    <childs>
-      <child>Sales_CreditNoteMyDesk_Menu_Action_Create</child>
-      <child>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc</child>
-      <child>Sales_CreditNoteMyDesk_Menu_Action_Delete</child>
-    </childs>
-  </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_CreditNoteMyDesk_Menu_Action</name>
+        <!-- childs -->
+        <childs>
+            <child>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc</child>
+            <child>Sales_CreditNoteMyDesk_Menu_Action_Delete</child>
+        </childs>
+    </definition>
 
 </ui-menu>

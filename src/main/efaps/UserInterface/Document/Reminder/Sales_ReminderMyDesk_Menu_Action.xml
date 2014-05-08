@@ -36,7 +36,6 @@
         <name>Sales_ReminderMyDesk_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Sales_ReminderMyDesk_Menu_Action_Create</child>
             <child>Sales_ReminderMyDesk_Menu_Action_CreateFromDoc</child>
             <child>Sales_ReminderMyDesk_Menu_Action_Delete</child>
         </childs>
