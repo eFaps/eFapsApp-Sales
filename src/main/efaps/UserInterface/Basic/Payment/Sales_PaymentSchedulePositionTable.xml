@@ -49,6 +49,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
                 <property name="Type02">Sales_IncomingReminder</property>
                 <property name="StatusGroup02">Sales_IncomingReminderStatus</property>
                 <property name="Status02">Open</property>
+                <property name="ExtraParameter">contact</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="updateFields4ScheduleDoc"
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
@@ -113,6 +114,7 @@ xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.
                 <property name="Type03">Accounting_ExternalVoucher</property>
                 <property name="StatusGroup03">Accounting_ExternalVoucherStatus</property>
                 <property name="Status03">Open</property>
+                <property name="ExtraParameter">contact</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule" method="updateFields4ScheduleDoc"
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

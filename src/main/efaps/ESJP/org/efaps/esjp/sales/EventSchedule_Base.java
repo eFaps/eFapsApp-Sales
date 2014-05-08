@@ -68,19 +68,26 @@ import org.joda.time.format.DateTimeFormatter;
 public abstract class EventSchedule_Base
     extends DocumentSum
 {
-    /**
-     * Instance to the Contact.
-     */
-    public static final String CONTACT_SESSIONKEY = EventSchedule.class.getName() +  ".ContactSessionKey";
 
+    /**
+     * Method to autoComplete Schedules Doc.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return autoComplete4ScheduleDoc(final Parameter _parameter)
         throws EFapsException
     {
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
-        final Instance contact = (Instance) Context.getThreadContext()
-                        .getSessionAttribute(EventSchedule_Base.CONTACT_SESSIONKEY);
+        final Instance contact;
+        if (containsProperty(_parameter, "ExtraParameter")) {
+            contact = Instance.get(_parameter.getParameterValue(getProperty(_parameter, "ExtraParameter")));
+        } else {
+            contact = Instance.get("");
+        }
 
         final List<Instance> query = new MultiPrint()
         {
@@ -210,11 +217,9 @@ public abstract class EventSchedule_Base
             map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
             map.put("amount4Schedule", getNetPriceFmtStr(netPrice.subtract(getPaymentDocumentOut4Doc(docInst))));
             map.put("total", getTotalFmtStr(getTotal(_parameter, docInst)));
-            map.put("documentAutoComplete", name);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         } else {
-            map.put("documentAutocomplete", name);
             map.put("amount4Schedule", "");
             map.put("netPrice", "");
             map.put("rateNetPrice", "");
@@ -336,6 +341,13 @@ public abstract class EventSchedule_Base
         return ret;
     }
 
+    /**
+     * Get JavaScript.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return java script.
+     * @throws EFapsException on error.
+     */
     public Return getJavaScript4UIValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -368,15 +380,11 @@ public abstract class EventSchedule_Base
                 print.addSelect(selContact);
                 print.executeWithoutAccessCheck();
 
-                final Instance contact = print.<Instance>getSelect(selContact);
-                if (contact != null && contact.isValid()) {
-                    Context.getThreadContext().setSessionAttribute(EventSchedule_Base.CONTACT_SESSIONKEY, contact);
-                }
-
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PaymentSchedulePosition);
                 queryBldr.addWhereAttrEqValue(CISales.PaymentSchedulePosition.EventScheduleAbstractLink, instance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addSelect(selDoc, selDocName, selDocCrossTotal, selDocRateCrossTotal, selDocSymbol, selDocRateSymbol);
+                multi.addSelect(selDoc, selDocName, selDocCrossTotal,
+                                selDocRateCrossTotal, selDocSymbol, selDocRateSymbol);
                 multi.addAttribute(CISales.PaymentSchedulePosition.DocumentDesc,
                                 CISales.PaymentSchedulePosition.NetPrice);
                 multi.executeWithoutAccessCheck();
@@ -391,12 +399,13 @@ public abstract class EventSchedule_Base
                     if (!valuesTmp.containsKey(docInst)) {
                         map = new HashMap<KeyDef, Object>();
                         valuesTmp.put(docInst, map);
-                        map.put(new KeyDefStr("document"), docInst.getOid());
-                        map.put(new KeyDefStr("documentAutoComplete"), multi.<String>getSelect(selDocName));
+                        map.put(new KeyDefStr("document"),
+                                        new String[] { docInst.getOid(), multi.<String>getSelect(selDocName) });
                         map.put(new KeyDefStr("documentDesc"),
                                         multi.<String>getAttribute(CISales.PaymentSchedulePosition.DocumentDesc));
                         map.put(new KeyDefStr("amount4Schedule"),
-                                        getNetPriceFmtStr(multi.<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice)));
+                                        getNetPriceFmtStr(multi
+                                                        .<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice)));
                         map.put(new KeyDefStr("rateNetPrice"), rateSymbol + getNetPriceFmtStr(rateNetPrice));
                         map.put(new KeyDefStr("netPrice"), symbol + getNetPriceFmtStr(netPrice) + " / "
                                         + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)) + " / "

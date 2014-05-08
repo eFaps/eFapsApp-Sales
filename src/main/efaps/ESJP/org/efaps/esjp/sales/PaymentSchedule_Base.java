@@ -290,28 +290,6 @@ public abstract class PaymentSchedule_Base
     }
 
     @Override
-    public Return updateFields4Contact(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String value = _parameter.getParameterValue("contactAutoComplete");
-        final Instance contact = Instance.get(_parameter.getParameterValue("contact"));
-        if (value != null && value.length() > 0 && contact.isValid()) {
-            Context.getThreadContext().setSessionAttribute(PaymentSchedule.CONTACT_SESSIONKEY, contact);
-        } else {
-            Context.getThreadContext().removeSessionAttribute(PaymentSchedule.CONTACT_SESSIONKEY);
-            _parameter.getParameters().put("contact", new String[]{ "" });
-        }
-        return super.updateFields4Contact(_parameter);
-    }
-
-    public Return removeSession4Schedule(final Parameter _parameter)
-        throws EFapsException
-    {
-        Context.getThreadContext().removeSessionAttribute(PaymentSchedule.CONTACT_SESSIONKEY);
-        return new Return();
-    }
-
-    @Override
     protected BigDecimal getPaymentDocumentOut4Doc(final Instance _docInstance)
         throws EFapsException
     {
