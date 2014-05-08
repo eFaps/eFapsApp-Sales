@@ -960,7 +960,7 @@ public abstract class AbstractDocument_Base
                         ? _parameter.getInstance() : _parameter.getCallInstance();
         js.append("<script type=\"text/javascript\">\n")
                         .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){\n");
-        if (instance.isValid()) {
+        if (instance != null && instance.isValid()) {
             final SelectBuilder selContactId = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.Contact).id();
             final SelectBuilder selContactName = new SelectBuilder()
