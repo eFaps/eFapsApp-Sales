@@ -19,18 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6fcff694-b302-4499-997f-5325475f5afe</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_IncomingInvoice</name>
+        <name>Sales_IncomingExchangeTree_Documents</name>
         <target>
-            <menu>Sales_IncomingExchangeTree_IncomingInvoice_Menu</menu>
+            <menu>Sales_IncomingExchangeTree_Documents_Menu</menu>
             <table>Sales_Document2DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_IncomingExchange2IncomingInvoice</property>
+                <property name="Type">Sales_IncomingExchange2Invoice</property>
                 <property name="LinkFrom">FromLink</property>
             </evaluate>
         </target>

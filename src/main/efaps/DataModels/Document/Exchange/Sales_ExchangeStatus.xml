@@ -28,31 +28,21 @@
     <file-revision>$Rev$</file-revision>
 
     <definition>
-
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ExchangeStatus</name>
         <parent>Sales_DocumentStatus</parent>
-
         <status key="Open">
-            <description>Exchange is open</description>
+            <description>Exchange is open. It is in the hands of the Recipient. (Emitido)</description>
         </status>
-        <status key="Annulled">
-            <description>Exchange is open</description>
-        </status>
-        <status key="Discount">
-            <description>Exchange is open</description>
-        </status>
-        <status key="Collection">
-            <description>Exchange is open</description>
+        <status key="Closed">
+            <description>Exchange is closed. Everything was done. (Cerrado)</description>
         </status>
         <status key="Canceled">
-            <description>Exchange is open</description>
+            <description>Exchange is open. (Anulado)</description>
         </status>
-        <status key="Protest">
-            <description>Exchange is open</description>
-        </status>
-        <status key="Renewed">
-            <description>Exchange is renewed</description>
+        <status key="Booked">
+            <description>Exchange was booked. no changes possible after that.(Contabilizado)</description>
         </status>
     </definition>
 </datamodel-statusgroup>
+

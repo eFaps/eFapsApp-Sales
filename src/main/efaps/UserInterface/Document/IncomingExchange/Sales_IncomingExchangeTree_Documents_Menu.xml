@@ -19,16 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8cb85b59-5658-4a8d-be75-cd989cc7829b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_IncomingInvoice_Menu</name>
+        <name>Sales_IncomingExchangeTree_Documents_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Sales_IncomingExchangeTree_IncomingInvoice_Menu_Action</child>
+            <child>Sales_IncomingExchangeTree_Documents_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

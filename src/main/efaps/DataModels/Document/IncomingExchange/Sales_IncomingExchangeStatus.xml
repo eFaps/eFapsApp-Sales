@@ -31,27 +31,30 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeStatus</name>
         <parent>Sales_DocumentStatus</parent>
-
-        <status key="Open">
-            <description>Exchange is open</description>
+         <status key="Open">
+            <description>Exchange is open. It is in the hands of the Recipient. (En cartera)</description>
         </status>
-        <status key="Annulled">
-            <description>Exchange is open</description>
-        </status>
-        <status key="Discount">
-            <description>Exchange is open</description>
-        </status>
-        <status key="Collection">
-            <description>Exchange is open</description>
+        <status key="Closed">
+            <description>Exchange is closed. Everything was done. (Cancelado)</description>
         </status>
         <status key="Canceled">
-            <description>Exchange is open</description>
+            <description>Exchange is open. (Anulado)</description>
+        </status>
+        <status key="Booked">
+            <description>Exchange was booked. no changes possible after that.(Contabilizado)</description>
+        </status>
+
+        <status key="Discount">
+            <description>Exchange is open. (Descuento)</description>
+        </status>
+        <status key="Collection">
+            <description>Exchange is open. (Cobranza)</description>
         </status>
         <status key="Protest">
-            <description>Exchange is open</description>
+            <description>Exchange is open. (Protesto)</description>
         </status>
         <status key="Renewed">
-            <description>Exchange is renewed</description>
+            <description>Exchange is renewed. (Renovado)</description>
         </status>
     </definition>
 </datamodel-statusgroup>

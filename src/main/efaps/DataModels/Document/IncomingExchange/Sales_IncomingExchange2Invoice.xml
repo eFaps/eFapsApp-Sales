@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,13 +20,15 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c100ceb2-33d8-456e-8ae6-4c4d12f95f0f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchange2IncomingInvoice</name>
+        <name>Sales_IncomingExchange2Invoice</name>
         <parent>Sales_Document2DocumentAbstract</parent>
         <attribute>
             <name>FromLink</name>
@@ -37,7 +40,7 @@
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_IncomingInvoice</typelink>
+            <typelink>Sales_Invoice</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
