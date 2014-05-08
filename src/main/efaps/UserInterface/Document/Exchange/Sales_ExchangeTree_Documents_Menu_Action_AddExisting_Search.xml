@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,22 +20,20 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>cbb9379d-baaf-45f5-af53-a86b5c08b142</uuid>
+    <uuid>2b48322a-b7ab-47f0-b6da-1cbfcf8e3fd2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeSearch</name>
-        <!-- target definitions -->
-        <target>
-            <form>Sales_IncomingExchangeSearchForm</form>
-            <table>Sales_DocumentAbstractUnfilteredTable</table>
-            <evaluate program="org.efaps.esjp.common.uisearch.Search">
-                <property name="Type">Sales_IncomingExchange</property>
-            </evaluate>
-        </target>
-        <property name="TargetMode">search</property>
+        <name>Sales_ExchangeTree_Documents_Menu_Action_AddExisting_Search</name>
+        <default>
+            <command>Sales_IncomingInvoiceSearch</command>
+        </default>
+        <childs>
+            <child>Sales_IncomingInvoiceSearch</child>
+            <child>Sales_PaymentOrderSearch</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-search>

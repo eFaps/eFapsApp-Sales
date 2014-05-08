@@ -19,20 +19,23 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2b48322a-b7ab-47f0-b6da-1cbfcf8e3fd2</uuid>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f9b828c5-2898-4f86-845a-4315db819057</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ExchangeTree_Invoice_Menu_Action_AddExisting_Search</name>
-        <!-- defaults -->
-        <default>
-            <command>Sales_ExchangeSearch</command>
-        </default>
-        <!-- childs -->
-        <childs>
-            <child>Sales_ExchangeSearch</child>
-        </childs>
+        <name>Sales_InvoiceSearch</name>
+        <target>
+            <form>Sales_InvoiceSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Sales_Invoice</property>
+                <property name="ExpandChildTypes">true</property>
+            </evaluate>
+        </target>
+        <property name="TargetMode">search</property>
     </definition>
-</ui-search>
+</ui-command>

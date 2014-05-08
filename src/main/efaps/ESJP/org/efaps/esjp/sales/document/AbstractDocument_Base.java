@@ -952,6 +952,34 @@ public abstract class AbstractDocument_Base
         return js.toString();
     }
 
+    public Return getJavaScript4Search(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final Instance instance = _parameter.getInstance() != null
+                        ? _parameter.getInstance() : _parameter.getCallInstance();
+        js.append("<script type=\"text/javascript\">\n")
+                        .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){\n");
+        if (instance.isValid()) {
+            final SelectBuilder selContactId = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.Contact).id();
+            final SelectBuilder selContactName = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
+            final PrintQuery print = new PrintQuery(instance);
+            print.addSelect(selContactId, selContactName);
+            print.execute();
+
+            final Long contactId = print.<Long>getSelect(selContactId);
+            final String contactName = print.<String>getSelect(selContactName);
+
+            js.append(getSetFieldValue(0, "contact", String.valueOf(contactId), contactName)).append("\n");
+        }
+        js.append(" })});").append("</script>");
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.SNIPLETT, js.toString());
+        return retVal;
+    }
+
     protected Instance evaluateCurrency4JavaScript(final Parameter _parameter)
         throws CacheReloadException, EFapsException
     {
@@ -2426,6 +2454,7 @@ public abstract class AbstractDocument_Base
             }
         }
     }
+
 
     /**
      * Method to get the javascript.

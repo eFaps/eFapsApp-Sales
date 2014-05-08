@@ -19,21 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>81d3f49f-dd39-4415-a961-26b9b282f3d5</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_IncomingInvoice_Menu_Action_Disconnect</name>
-        <!-- target definitions -->
+        <name>Sales_IncomingExchangeTree_Documents_Menu_Action_Disconnect</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
             <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
     </definition>

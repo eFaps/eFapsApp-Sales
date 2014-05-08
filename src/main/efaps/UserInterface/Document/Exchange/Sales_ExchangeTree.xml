@@ -30,17 +30,14 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ExchangeTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_ExchangeTree_Menu</menu>
             <form>Sales_ExchangeForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_Exchange</type>
         <childs>
-            <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_DocumentAbstractTree_PaymentDocument</child>
-            <child>Sales_ExchangeTree_Invoice</child>
+            <child>Sales_ExchangeTree_Documents</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>

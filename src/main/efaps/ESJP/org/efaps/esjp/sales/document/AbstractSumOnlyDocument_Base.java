@@ -41,8 +41,6 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -210,12 +208,12 @@ public abstract class AbstractSumOnlyDocument_Base
                 final Instance child = Instance.get(childOid);
                 if (callInstance.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
                     if (child.getType().equals(CISales.IncomingInvoice.getType())
-                                    && check4Relation(CISales.IncomingExchange2IncomingInvoice.uuid, child).next()) {
+                                    && check4Relation(CISales.IncomingExchange2Invoice.uuid, child).next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;
                     } else if (child.getType().equals(CISales.Invoice.getType())
-                                    && check4Relation(CISales.Exchange2Invoice.uuid, child).next()) {
+                                    && check4Relation(CISales.Exchange2IncomingInvoice.uuid, child).next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;
@@ -256,35 +254,5 @@ public abstract class AbstractSumOnlyDocument_Base
         print.execute();
         return html.append(_child.getType().getLabel()
                         + " - " + print.<String>getAttribute(CISales.DocumentAbstract.Name));
-    }
-
-    public Return getJavaScript4Search(final Parameter _parameter)
-        throws EFapsException
-    {
-        final StringBuilder js = new StringBuilder();
-        final Instance instance = _parameter.getInstance() != null
-                        ? _parameter.getInstance() : _parameter.getCallInstance();
-        js.append("<script type=\"text/javascript\">\n")
-            .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){\n");
-        if (instance.isValid()
-                        && (instance.getType().equals(CISales.IncomingExchange.getType())
-                        || instance.getType().equals(CISales.Exchange.getType()))) {
-            final SelectBuilder selContactId = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).id();
-            final SelectBuilder selContactName = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
-            final PrintQuery print = new PrintQuery(instance);
-            print.addSelect(selContactId, selContactName);
-            print.execute();
-
-            final Long contactId = print.<Long>getSelect(selContactId);
-            final String contactName = print.<String>getSelect(selContactName);
-
-            js.append(getSetFieldValue(0, "contact", String.valueOf(contactId), contactName)).append("\n");
-        }
-        js.append(" })});").append("</script>");
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, js.toString());
-        return retVal;
     }
 }

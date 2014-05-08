@@ -19,20 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5bba6692-02a3-4f4e-a68b-127302ce60b3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeTree_Documents_Menu_Action_AddExisting_Search</name>
-        <!-- defaults -->
         <default>
-            <command>Sales_IncomingExchangeSearch</command>
+            <command>Sales_InvoiceSearch</command>
         </default>
-        <!-- childs -->
         <childs>
-            <child>Sales_IncomingExchangeSearch</child>
+            <child>Sales_InvoiceSearch</child>
+            <child>Sales_PaymentOrderSearch</child>
         </childs>
     </definition>
 </ui-search>

@@ -19,22 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>e4962b5d-9cde-4165-8e9e-d2fd998bd99e</uuid>
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>0890b4cc-1766-4dfb-ab5f-9c1ace785bcc</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ExchangeTree_Invoice_Menu_Action_Disconnect</name>
-        <!-- target definitions -->
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
-        </target>
-        <!-- properties -->
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
+        <name>Sales_ExchangeTree_Documents_Menu_Action</name>
+        <childs>
+            <child>Sales_ExchangeTree_Documents_Menu_Action_AddExisting</child>
+            <child>Sales_ExchangeTree_Documents_Menu_Action_Disconnect</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>
