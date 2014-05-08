@@ -13,14 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8342 $
- * Last Changed:    $Date: 2012-12-11 09:42:17 -0500 (Tue, 11 Dec 2012) $
- * Last Changed By: $Author: jan@moxter.net $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
 
 
 package org.efaps.esjp.sales.document;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -31,12 +34,18 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -47,10 +56,10 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: CodeTemplates.xml 8342 2012-12-11 14:42:17Z jan@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("a126d27b-105b-4751-bc88-22d320f5b177")
-@EFapsRevision("$Rev: 10270 $")
+@EFapsRevision("$Rev$")
 public abstract class IncomingReminder_Base
     extends DocumentSum
 {
@@ -121,5 +130,47 @@ public abstract class IncomingReminder_Base
         throws EFapsException
     {
         return CISales.IncomingReminder.getType().getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Return updateFields4IncomingInvoice(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret;
+        if (containsProperty(_parameter, "UpdateContactField")
+                        && "true".equalsIgnoreCase(getProperty(_parameter, "UpdateContactField"))) {
+            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            final Map<String, Object> map = new HashMap<String, Object>();
+
+            final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+            final Instance docInst = Instance.get(_parameter.getParameterValue(field.getName()));
+
+            final SelectBuilder selContactInst = new SelectBuilder()
+                                    .linkto(CISales.DocumentAbstract.Contact).instance();
+            final SelectBuilder selContactName = new SelectBuilder()
+                                    .linkto(CISales.DocumentAbstract.Contact).attribute(CISales.DocumentAbstract.Name);
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addSelect(selContactInst, selContactName);
+            print.execute();
+
+            final Instance contactInst = print.<Instance>getSelect(selContactInst);
+            final String contactName = print.<String>getSelect(selContactName);
+
+            if (contactInst != null && contactInst.isValid()) {
+                map.put("contact", new String[]{ contactInst.getOid(), contactName });
+                map.put("contactData", getFieldValue4Contact(contactInst));
+            }
+
+            list.add(map);
+            ret = new Return().put(ReturnValues.VALUES, list);
+        } else {
+            ret = super.updateFields4IncomingInvoice(_parameter);
+        }
+
+        return ret;
     }
 }

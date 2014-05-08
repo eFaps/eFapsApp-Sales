@@ -35,6 +35,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
@@ -268,5 +269,44 @@ public abstract class IncomingCreditNote_Base
         throws EFapsException
     {
         return CISales.IncomingCreditNote.getType().getName();
+    }
+
+    @Override
+    public Return updateFields4IncomingInvoice(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret;
+        if (containsProperty(_parameter, "UpdateContactField")
+                        && "true".equalsIgnoreCase(getProperty(_parameter, "UpdateContactField"))) {
+            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            final Map<String, Object> map = new HashMap<String, Object>();
+
+            final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+            final Instance docInst = Instance.get(_parameter.getParameterValue(field.getName()));
+
+            final SelectBuilder selContactInst = new SelectBuilder()
+                            .linkto(CISales.DocumentAbstract.Contact).instance();
+            final SelectBuilder selContactName = new SelectBuilder()
+                            .linkto(CISales.DocumentAbstract.Contact).attribute(CISales.DocumentAbstract.Name);
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addSelect(selContactInst, selContactName);
+            print.execute();
+
+            final Instance contactInst = print.<Instance>getSelect(selContactInst);
+            final String contactName = print.<String>getSelect(selContactName);
+
+            if (contactInst != null && contactInst.isValid()) {
+                map.put("contact", new String[] { contactInst.getOid(), contactName });
+                map.put("contactData", getFieldValue4Contact(contactInst));
+            }
+
+            list.add(map);
+            ret = new Return().put(ReturnValues.VALUES, list);
+        } else {
+            ret = super.updateFields4IncomingInvoice(_parameter);
+        }
+
+        return ret;
     }
 }

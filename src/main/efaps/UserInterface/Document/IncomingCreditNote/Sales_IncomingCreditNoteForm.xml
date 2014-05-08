@@ -155,6 +155,10 @@
                 name="Sales_IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">Accounting_ExternalVoucher</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4IncomingInvoice"
+                name="Sales_IncomingCreditNoteForm.derived.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                <property name="UpdateContactField">true</property>
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd"
                 name="Sales_IncomingCreditNoteForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <!-- Sales_IncomingCreditMyDesk_Menu_Action_CreateFromDoc2 -->
