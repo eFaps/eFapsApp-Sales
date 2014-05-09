@@ -94,5 +94,11 @@
             <sqlcolumn>ACTIVE</sqlcolumn>
             <defaultvalue>true</defaultvalue>
         </attribute>
+        <attribute>
+            <name>ActInt</name>
+            <type>Integer</type>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
+            <sqlcolumn>ACTIVATION</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

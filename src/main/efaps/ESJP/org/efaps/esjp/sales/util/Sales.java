@@ -90,6 +90,43 @@ public final class Sales
         }
     }
 
+
+    /**
+     * Enum used for a multistate for Activation in Sales_AccountCashDesk.
+     */
+    public enum AccountCDActivation
+        implements IBitEnum
+    {
+
+        /** NONE. */
+        CASH,
+        CHECK,
+        CARD,
+        DEPOSIT,
+        TAX,
+        EXCHANGE;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getBitIndex()
+        {
+            return ordinal();
+        }
+    }
+
+
+
     /**
      * @return the SystemConfigruation for Sales
      * @throws CacheReloadException on error

@@ -142,10 +142,13 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue" name="Sales_PaymentExchangeForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
+            <trigger event="UI_FIELD_VALUE"
+                method="dropDown4AccountFieldValue" name="Sales_PaymentExchangeForm.account.UI_FIELD_VALUE"
+                    program="org.efaps.esjp.sales.payment.PaymentExchange">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
+                <property name="Activation">EXCHANGE</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentExchange" method="updateFields4RateCurrency"
                 name="Sales_PaymentExchangeForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

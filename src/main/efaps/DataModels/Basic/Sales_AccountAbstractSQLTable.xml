@@ -36,13 +36,14 @@
         <typeid-column>TYPEID</typeid-column>
         <database>
             <table-name>T_SALESACC</table-name>
-            <column name="COMPANYID" 	  type="INTEGER"      not-null="true"/>
+            <column name="COMPANYID"    type="INTEGER"      not-null="true"/>
             <column name="TYPEID"       type="INTEGER"      not-null="true" />
             <column name="NAME"         type="STRING_SHORT"                 length="128"/>
             <column name="DESCR"        type="STRING_SHORT"                 length="255"/>
             <column name="CURRENCYID"   type="INTEGER"/>
-            <column name="AMOUNT"   	  type="DECIMAL" 	  				  length="15" scale="4"/>
-            <column name="ACTIVE" type="BOOLEAN" />
+            <column name="AMOUNT"       type="DECIMAL"                      length="15" scale="4"/>
+            <column name="ACTIVE"       type="BOOLEAN" />
+            <column name="ACTIVATION"   type="INTEGER"/>
             <foreign name="T_SALESACC_FK_COMPANYID" key="COMPANYID" reference="T_USERABSTRACT(ID)"/>
         </database>
     </definition>

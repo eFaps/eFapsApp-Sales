@@ -30,7 +30,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Contacts_ClassTaxinfo</name>
-        
+
         <purpose classification="true">
             <LinkColumn>ContactLink</LinkColumn>
             <parent>Contacts_Class</parent>
@@ -64,7 +64,7 @@
             method="configCheck" name="Sales_Contacts_ClassTaxinfo.ACCESSCHECK.1"
             event="ACCESSCHECK" index="1">
             <property name="SystemConfig">Sales-Configuration</property>
-            <property name="Attribute">org.efaps.sales.PerceptionActivate</property>
+            <property name="Attribute">org.efaps.sales.ActivatePerception</property>
         </trigger>
     </definition>
 </datamodel-type>

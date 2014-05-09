@@ -121,11 +121,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+            <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut" method="dropDown4AccountFieldValue"
                 name="Sales_PaymentSupplierOutForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="WhereAttrEqValue">Active|true</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
+                <property name="Activation">TAX</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut" method="updateFields4RateCurrency"
                 name="Sales_PaymentSupplierOutForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />

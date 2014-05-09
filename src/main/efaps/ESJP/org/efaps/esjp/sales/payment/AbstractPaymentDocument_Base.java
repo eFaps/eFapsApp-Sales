@@ -83,6 +83,7 @@ import org.efaps.esjp.sales.document.IncomingRetention;
 import org.efaps.esjp.sales.document.IncomingRetention_Base;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -453,6 +454,39 @@ public abstract class AbstractPaymentDocument_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
+
+
+    /**
+     * Method to override if a default value is required for a document.
+     *
+     * @param _parameter as passed from eFaps API
+     * @return DropDownfield
+     * @throws EFapsException on error.
+     */
+    public Return dropDown4AccountFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
+        {
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Map<Integer, String> activations = analyseProperty(_parameter, "Activation");
+                final List<AccountCDActivation> pactivt = new ArrayList<AccountCDActivation>();
+                for (final String activation : activations.values()) {
+                    final AccountCDActivation pDAct = AccountCDActivation.valueOf(activation);
+                    pactivt.add(pDAct);
+                }
+                if (!pactivt.isEmpty()) {
+                    _queryBldr.addWhereAttrEqValue(CISales.AccountCashDesk.Activation, pactivt.toArray());
+                }
+            };
+        };
+        return field.dropDownFieldValue(_parameter);
+    }
+
 
     public Return updateFields4AbsoluteAmount(final Parameter _parameter)
         throws EFapsException
