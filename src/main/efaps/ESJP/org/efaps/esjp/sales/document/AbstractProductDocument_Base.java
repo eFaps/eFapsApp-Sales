@@ -51,6 +51,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
@@ -322,32 +323,33 @@ public abstract class AbstractProductDocument_Base
     public Return updateFields4Storage(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         list.add(map);
 
         final StringBuilder js = new StringBuilder();
         final String[] rows = _parameter.getParameterValues("product");
         final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
         final Instance storage = Instance.get(_parameter.getParameterValue("storageSetter"));
-        for (final String row : rows) {
-            final Map<KeyDef, Object> map2 = new HashMap<KeyDef, Object>();
-            final Instance prod = Instance.get(row);
-            if (prod != null && prod.isValid()) {
-                map2.put(new KeyDefStr("quantityInStock"), getStock4ProductInStorage(_parameter, prod, storage));
-                map2.put(new KeyDefStr("storage"), storage.getOid());
+        if (storage.isValid()) {
+            for (final String row : rows) {
+                final Map<KeyDef, Object> map2 = new HashMap<KeyDef, Object>();
+                final Instance prod = Instance.get(row);
+                if (prod != null && prod.isValid()) {
+                    map2.put(new KeyDefStr("quantityInStock"), getStock4ProductInStorage(_parameter, prod, storage));
+                    map2.put(new KeyDefStr("storage"), storage.getOid());
+                }
+                values.add(map2);
             }
-            values.add(map2);
+            final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
+            js.append(getSetFieldValuesScript(_parameter, strValues, null))
+                .append("require([\"dojo/query\"], function(query){")
+                .append("query(\"select[name=storage]\").forEach(function(node){")
+                .append("node.value=\"").append(storage.getId()).append("\";")
+                .append("});")
+                .append("});");
+            InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
         }
-        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
-        js.append(getSetFieldValuesScript(_parameter, strValues, null))
-            .append("require([\"dojo/query\"], function(query){")
-            .append("query(\"select[name=storage]\").forEach(function(node){")
-            .append("node.value=\"").append(_parameter.getParameterValue("storageSetter")).append("\";")
-            .append("});")
-            .append("});");
-
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;

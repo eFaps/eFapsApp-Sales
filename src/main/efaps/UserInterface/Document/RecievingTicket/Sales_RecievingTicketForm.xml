@@ -162,7 +162,9 @@
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="autoComplete4Contact"
                 name="Sales_InvoiceForm/contact.UI_Field_Autocomplete"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Classification">Contacts_ClassSupplier</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="updateFields4Contact"
                 name="Sales_InvoiceForm/contact.UI_Field_Update"
