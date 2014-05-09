@@ -34,6 +34,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -75,6 +76,25 @@ public abstract class PaymentCheckOut_Base
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }
+
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+
+        final String issued = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentCheckOut.Issued.name));
+        if (issued != null) {
+            _insert.add(CISales.PaymentCheckOut.Issued, issued);
+            _createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheckOut.Issued.name),
+                            issued);
+        }
+    }
+
+
 
     public Return getPayment2CheckOutPositionInstances(final Parameter _parameter)
         throws EFapsException

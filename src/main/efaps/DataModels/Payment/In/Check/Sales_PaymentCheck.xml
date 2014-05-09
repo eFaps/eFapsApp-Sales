@@ -40,5 +40,11 @@
             <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
                 name="Sales_PaymentCheck.Status.RANGE_VALUE" event="RANGE_VALUE" />
         </attribute>
+        <attribute>
+            <name>Issued</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

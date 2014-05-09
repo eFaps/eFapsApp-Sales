@@ -19,11 +19,12 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>70e1e369-711e-4959-ad68-6342a7150d03</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCheckOut</name>
@@ -34,7 +35,14 @@
             <typelink>Sales_PaymentCheckOutStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_PaymentCheckOut.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue"/>
+            <trigger event="RANGE_VALUE" name="Sales_PaymentCheckOut.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue" />
+        </attribute>
+        <attribute>
+            <name>Issued</name>
+            <type>String</type>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING1</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

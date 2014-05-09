@@ -32,6 +32,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -67,6 +68,23 @@ public abstract class PaymentCheck_Base
         return ret;
     }
 
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+
+        final String issued = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.PaymentCheck.Issued.name));
+        if (issued != null) {
+            _insert.add(CISales.PaymentCheck.Issued, issued);
+            _createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Issued.name),
+                            issued);
+        }
+    }
+
     public Return createWithOutDoc(final Parameter _parameter)
         throws EFapsException
     {
@@ -97,7 +115,8 @@ public abstract class PaymentCheck_Base
 
         final CreatedDoc createDoc = new CreatedDoc(_parameter.getInstance());
         createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Name.name), name);
-        createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.RateCurrencyLink.name), curId);
+        createDoc.getValues()
+                        .put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.RateCurrencyLink.name), curId);
         createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Date.name), date);
 
         return createDoc;
@@ -108,6 +127,7 @@ public abstract class PaymentCheck_Base
     {
         return new org.efaps.esjp.common.uiform.Field()
         {
+
             @Override
             protected void add2QueryBuilder4List(final Parameter _parameter,
                                                  final QueryBuilder _queryBldr)
