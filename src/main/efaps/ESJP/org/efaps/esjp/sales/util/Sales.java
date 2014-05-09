@@ -24,6 +24,7 @@ import java.util.UUID;
 
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.IBitEnum;
+import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.datamodel.attributetype.BitEnumType;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -49,14 +50,40 @@ public final class Sales
     /**
     * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
     */
-    public enum TaxPerception {
+    public enum TaxPerception
+        implements IEnum
+    {
         /** Cliente Normal. DEFAULT VALUE if no information available. */
         CLIENT,
         /** Cliente final. */
         ENDCOSTUMER,
         /** Agente de Percepcion. */
         AGENT;
+
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
     }
+
+    /**
+     * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
+     */
+     public enum TaxRetention
+         implements IEnum
+     {
+         /** Cliente Normal. DEFAULT VALUE if no information available. */
+         CLIENT,
+         /** Agente de Retencion. */
+         AGENT;
+
+         @Override
+         public int getInt()
+         {
+             return ordinal();
+         }
+     }
 
     /**
      * Enum used for a multistate for Activation in Sales_ProductDocumentType.

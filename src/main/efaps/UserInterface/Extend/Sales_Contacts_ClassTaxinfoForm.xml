@@ -31,19 +31,17 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Contacts_ClassTaxinfoForm</name>
         <type>Sales_Contacts_ClassTaxinfo</type>
-        
         <field name="perception">
             <property name="Attribute">Perception</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" 
-                method="getRadioList4Enum" 
-                name="Sales_Contacts_ClassTaxinfoForm.perception.UI_FIELD_VALUE" 
-                event="UI_FIELD_VALUE">
-                <property name="Enum">org.efaps.esjp.sales.util.Sales$TaxPerception</property>
-            </trigger>
         </field>
-        
+        <field name="retention">
+            <property name="Attribute">Retention</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
     </definition>
 </ui-form>

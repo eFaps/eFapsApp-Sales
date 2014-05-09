@@ -34,6 +34,7 @@
             <table-name>T_SALESCOCLASSTAX</table-name>
             <column name="CONTACTID"    type="INTEGER"  not-null="true"/>
             <column name="PERCEPTION"   type="INTEGER"  not-null="true"/>
+            <column name="RETENTION"    type="INTEGER"  not-null="true"/>
             <foreign key="CONTACTID" name="T_SALESCOCLASSTAX_FK_CONTACTID" reference="T_COCONTACT(ID)" />
         </database>
     </definition>

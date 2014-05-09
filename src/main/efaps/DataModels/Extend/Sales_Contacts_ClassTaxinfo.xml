@@ -56,9 +56,17 @@
         </attribute>
         <attribute>
             <name>Perception</name>
-            <type>Integer</type>
+            <type>Enum</type>
+            <className>org.efaps.esjp.sales.util.Sales$TaxPerception</className>
             <sqltable>Sales_Contacts_ClassTaxinfoSQLTable</sqltable>
             <sqlcolumn>PERCEPTION</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Retention</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.sales.util.Sales$TaxRetention</className>
+            <sqltable>Sales_Contacts_ClassTaxinfoSQLTable</sqltable>
+            <sqlcolumn>RETENTION</sqlcolumn>
         </attribute>
         <trigger program="org.efaps.esjp.admin.access.AccessOnField"
             method="configCheck" name="Sales_Contacts_ClassTaxinfo.ACCESSCHECK.1"
