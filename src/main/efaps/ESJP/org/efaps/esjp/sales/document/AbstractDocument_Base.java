@@ -58,6 +58,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
@@ -92,6 +93,7 @@ import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.listener.IOnCreateFromDocument;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
@@ -1131,7 +1133,12 @@ public abstract class AbstractDocument_Base
                                                     final List<Instance> _instances)
         throws EFapsException
     {
-        return new StringBuilder();
+        final StringBuilder ret = new StringBuilder();
+        for (final IOnCreateFromDocument listener : Listener.get().<IOnCreateFromDocument>invoke(
+                        IOnCreateFromDocument.class)) {
+            ret.append(listener.add2JavaScript4Document(_parameter, _instances));
+        }
+        return ret;
     }
 
     /**
