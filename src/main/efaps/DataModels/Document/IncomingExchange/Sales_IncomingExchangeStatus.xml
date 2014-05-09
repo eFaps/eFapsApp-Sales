@@ -31,7 +31,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeStatus</name>
         <parent>Sales_DocumentStatus</parent>
-         <status key="Open">
+        <status key="Open">
             <description>Exchange is open. It is in the hands of the Recipient. (En cartera)</description>
         </status>
         <status key="Closed">

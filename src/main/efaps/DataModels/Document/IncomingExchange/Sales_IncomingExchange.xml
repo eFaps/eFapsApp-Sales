@@ -36,7 +36,8 @@
             <typelink>Sales_IncomingExchangeStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_IncomingExchange.Status.RANGE_VALUE"
+            <trigger event="RANGE_VALUE"
+                name="Sales_IncomingExchange.Status.RANGE_VALUE"
                 program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
