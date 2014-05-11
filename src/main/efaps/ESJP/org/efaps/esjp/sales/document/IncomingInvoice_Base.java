@@ -416,6 +416,42 @@ public abstract class IncomingInvoice_Base
         return retVal;
     }
 
+    public Return updateFields4RetentionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        if (calcList.size() > 0) {
+            add2Map4UpdateField(_parameter, map, calcList, null);
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+    public Return updateFields4DetractionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+
+        if (calcList.size() > 0) {
+            add2Map4UpdateField(_parameter, map, calcList, null);
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
+
+
+
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return Return with Snipplet
@@ -433,6 +469,37 @@ public abstract class IncomingInvoice_Base
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+
+    @Override
+    protected String getJavaScript4SelectDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+
+        final StringBuilder js = new StringBuilder()
+            .append(super.getJavaScript4SelectDoc(_parameter))
+            .append("<script type=\"text/javascript\">\n")
+            .append("function deac(_key, _dis) {")
+            .append("require([\"dojo/query\"], function(query){")
+            .append("query(\"input[name^=\\\"\" + _key + \"\\\"]\").forEach(function(node) {")
+            .append("if (node.type==='text') {")
+            .append("node.disabled = _dis ? '' : 'disabled';")
+            .append("}")
+            .append("});")
+            .append("});")
+            .append("}")
+            .append("deac(\"perception\");")
+            .append("deac(\"retention\");")
+            .append("deac(\"detraction\");")
+            .append("require([\"dojo/query\"], function(query){")
+            .append("query(\"input[name$=\\\"Checkbox\\\"] \").on(\"click\", function(evt) {")
+            .append("var key = evt.currentTarget.name.substring(0,evt.currentTarget.name.length-8);")
+            .append("deac(key, evt.currentTarget.checked );")
+            .append("});")
+            .append("});")
+            .append("\n</script>\n");
+        return js.toString();
     }
 
     @Override
