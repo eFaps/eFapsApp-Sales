@@ -219,7 +219,7 @@ public abstract class AbstractProductDocument_Base
                 final Instance prodInst = Instance.get(product);
                 if (prodInst.isValid()) {
                     final String[] individuals = _parameter.getParameterValues(prodInst.getOid());
-                    if (individuals.length > 0) {
+                    if (individuals != null && individuals.length > 0) {
                         final PrintQuery print = new PrintQuery(prodInst);
                         print.addAttribute(CIProducts.ProductAbstract.Individual);
                         print.executeWithoutAccessCheck();

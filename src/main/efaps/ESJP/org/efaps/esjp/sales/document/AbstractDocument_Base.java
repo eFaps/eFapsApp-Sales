@@ -1630,7 +1630,7 @@ public abstract class AbstractDocument_Base
                                   final String _key,
                                   final String _legend)
     {
-        if (_individual != null) {
+        if (_individual != null && !ProductIndividual.NONE.equals(_individual)) {
             // TODO make configurable from properties
             final String fieldName = "individual";
             final String qfieldName = "quantity";
