@@ -47,7 +47,9 @@
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="autoComplete4Product"
                 name="Sales_RecievingTicketPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type">Products_StockProductAbstract</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="updateFields4Product"
                 name="Sales_RecievingTicketPositionTable.product.UI_FIELD_UPDATE"

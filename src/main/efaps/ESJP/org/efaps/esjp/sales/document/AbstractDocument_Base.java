@@ -44,7 +44,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -86,7 +85,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.esjp.products.Product_Base;
+import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.products.util.ProductsSettings;
@@ -1696,93 +1695,36 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Product(final Parameter _parameter)
         throws EFapsException
     {
-        final String input = (String) _parameter.get(ParameterValues.OTHERS);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-
-        if (!input.isEmpty()) {
-            boolean cache = true;
-            final boolean nameSearch = Character.isDigit(input.charAt(0));
-            final String typeStr = getProperty(_parameter, "Type");
-            Type type;
-            if (typeStr != null) {
-                type = Type.get(typeStr);
-            } else {
-                type = CIProducts.ProductAbstract.getType();
+        final Product product = new Product()
+        {
+            @Override
+            protected boolean add2QueryBldr4autoComplete4Product(final Parameter _parameter,
+                                                              final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                return AbstractDocument_Base.this.add2QueryBldr4autoComplete4Product(_parameter, _queryBldr);
             }
-
-            final QueryBuilder queryBldr = new QueryBuilder(type);
-            if (nameSearch) {
-                queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Name, input + "*").setIgnoreCase(true);
-                queryBldr.addOrderByAttributeAsc(CIProducts.ProductAbstract.Name);
-            } else {
-                queryBldr.addWhereAttrMatchValue(CIProducts.ProductAbstract.Description, input + "*")
-                                .setIgnoreCase(true);
-                queryBldr.addOrderByAttributeAsc(CIProducts.ProductAbstract.Description);
-            }
-            queryBldr.addWhereAttrEqValue(CIProducts.ProductAbstract.Active, true);
-
-            final Map<Integer, String> classes = analyseProperty(_parameter, "Classification");
-            if (!classes.isEmpty()) {
-                final List<Classification> classTypes = new ArrayList<Classification>();
-                for (final String clazz : classes.values()) {
-                    classTypes.add((Classification) Type.get(clazz));
-                }
-                queryBldr.addWhereClassification(classTypes.toArray(new Classification[classTypes.size()]));
-            }
-
-            if (containsProperty(_parameter, "InStock")) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Inventory);
-                final String[] storageArr = _parameter.getParameterValues("storage");
-                if (storageArr != null && storageArr.length > 0) {
-                    final int selected = getSelectedRow(_parameter);
-                    final Instance storInst = Instance.get(storageArr[selected]);
-                    if (storInst.isValid()) {
-                        attrQueryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, storInst);
-                    }
-                }
-                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Inventory.Product);
-                queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
-                cache = false;
-            }
-
-            final Map<Integer, String> excludes = analyseProperty(_parameter, "ExcludeType");
-            for (final String element : excludes.values()) {
-                final QueryBuilder queryBldr2 = new QueryBuilder(Type.get(element));
-                final AttributeQuery attrQuery = queryBldr2.getAttributeQuery(CIProducts.ProductAbstract.ID);
-                queryBldr.addWhereAttrNotInQuery(CIProducts.ProductAbstract.ID, attrQuery);
-            }
-
-            InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
-            catalogFilter4productAutoComplete(_parameter, queryBldr);
-
-            final Map<String, Map<String, String>> sortMap = new TreeMap<String, Map<String, String>>();
-            final MultiPrintQuery multi = cache ? queryBldr.getCachedPrint(Product_Base.CACHEKEY4PRODUCT) : queryBldr
-                            .getPrint();
-            multi.addAttribute(CIProducts.ProductAbstract.Name,
-                            CIProducts.ProductAbstract.Description);
-            multi.execute();
-            while (multi.next()) {
-                final String name = multi.<String> getAttribute(CIProducts.ProductAbstract.Name);
-                final String desc = multi.<String> getAttribute(CIProducts.ProductAbstract.Description);
-                final String oid = multi.getCurrentInstance().getOid();
-                final String choice;
-                if (nameSearch) {
-                    choice = name + " - " + desc;
-                } else {
-                    choice = desc + " - " + name;
-                }
-                final Map<String, String> map = new HashMap<String, String>();
-                map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
-                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
-                sortMap.put(choice, map);
-            }
-            list.addAll(sortMap.values());
-        }
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
+        };
+        return product.autoComplete4Product(_parameter);
     }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _queryBldr    QueryBuilder to add to
+     * @return true if allow cache, else false
+     * @throws EFapsException on error
+     */
+    protected boolean add2QueryBldr4autoComplete4Product(final Parameter _parameter,
+                                                         final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        catalogFilter4productAutoComplete(_parameter, _queryBldr);
+        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+
+        }
+        return true;
+    }
+
 
     protected void catalogFilter4productAutoComplete(final Parameter _parameter,
                                                      final QueryBuilder _queryBldr)
@@ -1827,7 +1769,6 @@ public abstract class AbstractDocument_Base
                 _queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
             }
         }
-
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Products_Catalog2DocumentType);
         queryBldr.addWhereAttrEqValue(CISales.Products_Catalog2DocumentType.DocumentTypeLink, typeDoc.getId());
