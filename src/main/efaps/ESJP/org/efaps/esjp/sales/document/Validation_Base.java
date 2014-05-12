@@ -97,8 +97,9 @@ public abstract class Validation_Base
 
     /**
      * Validate that the given quantities have numbers bigger than Zero.
-     * @param _paramter Parameter as passed by the eFasp API
+     * @param _parameter Parameter as passed by the eFasp API
      * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityGreaterZero(final Parameter _parameter)
         throws EFapsException
@@ -124,8 +125,9 @@ public abstract class Validation_Base
 
     /**
      * Validate that the given quantities exist in the stock.
-     * @param _paramter Parameter as passed by the eFasp API
+     * @param _parameter Parameter as passed by the eFasp API
      * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
      */
     public List<IWarning> validateQuantityInStorage(final Parameter _parameter)
         throws EFapsException
@@ -144,18 +146,20 @@ public abstract class Validation_Base
             final Instance prodInst = Instance.get(product[i]);
             if (prodInst.isValid()) {
                 BigDecimal currQuantity = BigDecimal.ZERO;
-                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-                queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, prodInst);
+                final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
+                queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, prodInst);
                 if (ArrayUtils.isNotEmpty(storage)) {
-                    queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, Instance.get(storage[i]));
+                    queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, Instance.get(storage[i]));
                 }
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CIProducts.Inventory.Quantity,
-                                CIProducts.Inventory.Reserved);
+                multi.addAttribute(CIProducts.InventoryAbstract.Quantity,
+                                CIProducts.InventoryAbstract.Reserved);
                 multi.execute();
                 while (multi.next()) {
-                    currQuantity = currQuantity.add(multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity));
-                    currQuantity = currQuantity.add(multi.<BigDecimal>getAttribute(CIProducts.Inventory.Reserved));
+                    currQuantity = currQuantity.add(multi
+                                    .<BigDecimal>getAttribute(CIProducts.InventoryAbstract.Quantity));
+                    currQuantity = currQuantity.add(multi
+                                    .<BigDecimal>getAttribute(CIProducts.InventoryAbstract.Reserved));
                 }
                 if (StringUtils.isNotEmpty(quantities[i])) {
                     BigDecimal quantity = BigDecimal.ZERO;

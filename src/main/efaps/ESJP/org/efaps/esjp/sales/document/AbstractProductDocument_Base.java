@@ -46,6 +46,7 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -161,14 +162,32 @@ public abstract class AbstractProductDocument_Base
     {
 
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
-            final Insert posIns = new Insert(getType4PositionCreate(_parameter));
-            posIns.add(CISales.PositionAbstract.PositionNumber, i + 1);
-            posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance().getId());
 
+            final Insert posIns = new Insert(getType4PositionCreate(_parameter));
+
+            posIns.add(CISales.PositionAbstract.PositionNumber, i + 1);
+            posIns.add(CISales.PositionAbstract.DocumentAbstractLink, _createdDoc.getInstance());
+
+            String individualName = null;
             final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                             CISales.PositionAbstract.Product.name));
             if (product != null && product.length > i) {
-                final Instance inst = Instance.get(product[i]);
+                Instance inst = Instance.get(product[i]);
+                if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+                    if (inst.getType().isKindOf(CIProducts.ProductIndividualAbstract.getType())) {
+                        final PrintQuery print = new PrintQuery(inst);
+                        final SelectBuilder sel = SelectBuilder.get()
+                                        .linkfrom(CIProducts.StockProductAbstract2IndividualAbstract,
+                                                        CIProducts.StockProductAbstract2IndividualAbstract.ToAbstract)
+                                        .linkto(CIProducts.StockProductAbstract2IndividualAbstract.FromAbstract)
+                                        .instance();
+                        print.addSelect(sel);
+                        print.addAttribute(CIProducts.ProductAbstract.Name);
+                        print.executeWithoutAccessCheck();
+                        inst = print.getSelect(sel);
+                        individualName = print.getAttribute(CIProducts.ProductAbstract.Name);
+                    }
+                }
                 if (inst.isValid()) {
                     posIns.add(CISales.PositionAbstract.Product, inst.getId());
                 }
@@ -177,7 +196,11 @@ public abstract class AbstractProductDocument_Base
             final String[] productDesc = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                             CISales.PositionAbstract.ProductDesc.name));
             if (productDesc != null && productDesc.length > i) {
-                posIns.add(CISales.PositionAbstract.ProductDesc, productDesc[i]);
+                String descr = productDesc[i];
+                if (individualName != null) {
+                    descr = descr + " - Nº: " + individualName;
+                }
+                posIns.add(CISales.PositionAbstract.ProductDesc, descr);
             }
 
             final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
@@ -195,6 +218,19 @@ public abstract class AbstractProductDocument_Base
             add2PositionCreate(_parameter, posIns, _createdDoc, i);
 
             posIns.execute();
+            if (individualName != null) {
+                final Insert transInsert = new Insert(CIProducts.TransactionIndividualOutbound);
+                transInsert.add(CIProducts.TransactionAbstract.Quantity, quantity[i]);
+                transInsert.add(CIProducts.TransactionAbstract.Storage,
+                                Instance.get(_parameter.getParameterValues("storage")[i]));
+                transInsert.add(CIProducts.TransactionAbstract.Product, Instance.get(product[i]));
+                transInsert.add(CIProducts.TransactionAbstract.Description, "TODO");
+                transInsert.add(CIProducts.TransactionAbstract.Date,
+                                _createdDoc.getValue(CISales.DocumentStockAbstract.Date.name));
+                transInsert.add(CIProducts.TransactionAbstract.Document, _createdDoc.getInstance());
+                transInsert.add(CIProducts.TransactionAbstract.UoM, uoM[i]);
+                transInsert.executeWithoutAccessCheck();
+            }
         }
     }
 
@@ -277,7 +313,6 @@ public abstract class AbstractProductDocument_Base
                                 transInsert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime()
                                                 : date);
                                 transInsert.add(CIProducts.TransactionAbstract.Document, _createdDoc.getInstance());
-                                transInsert.add(CIProducts.TransactionAbstract.UoM, uom);
                                 transInsert.add(CIProducts.TransactionAbstract.UoM, uom);
                                 transInsert.executeWithoutAccessCheck();
                             }
@@ -433,15 +468,15 @@ public abstract class AbstractProductDocument_Base
         final StringBuilder ret = new StringBuilder();
         final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
 
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
-        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Storage, _storageInst);
-        queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _productinst);
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
+        queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, _storageInst);
+        queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, _productinst);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIProducts.Inventory.Quantity, CIProducts.Inventory.Reserved);
+        multi.addAttribute(CIProducts.InventoryAbstract.Quantity, CIProducts.InventoryAbstract.Reserved);
         multi.execute();
         if (multi.next()) {
-            final BigDecimal quantity = multi.getAttribute(CIProducts.Inventory.Quantity);
-            final BigDecimal quantityReserved = multi.getAttribute(CIProducts.Inventory.Reserved);
+            final BigDecimal quantity = multi.getAttribute(CIProducts.InventoryAbstract.Quantity);
+            final BigDecimal quantityReserved = multi.getAttribute(CIProducts.InventoryAbstract.Reserved);
 
             ret.append(qtyFrmt.format(quantity)).append(" / ").append(qtyFrmt.format(quantityReserved));
         } else {
@@ -587,6 +622,11 @@ public abstract class AbstractProductDocument_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return inverseTransaction(final Parameter _parameter)
         throws EFapsException
     {
