@@ -592,8 +592,9 @@ public abstract class AbstractProductDocument_Base
     {
         final Instance instance = _parameter.getInstance();
         if (instance.isValid()) {
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-            queryBldr.addType(CIProducts.TransactionIndividualAbstract);
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInbound);
+            queryBldr.addType(CIProducts.TransactionOutbound, CIProducts.TransactionIndividualInbound,
+                            CIProducts.TransactionIndividualOutbound);
             queryBldr.addWhereAttrEqValue(CIProducts.TransactionAbstract.Document, instance);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.TransactionAbstract.Quantity,
@@ -607,26 +608,30 @@ public abstract class AbstractProductDocument_Base
                 Insert insert;
                 if (CIProducts.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
                     insert = new Insert(CIProducts.TransactionOutbound);
-                } else {
+                } else if (CIProducts.TransactionOutbound.getType().equals(multi.getCurrentInstance().getType())) {
                     insert = new Insert(CIProducts.TransactionInbound);
+                } else if (CIProducts.TransactionIndividualInbound.getType().equals(
+                                multi.getCurrentInstance().getType())) {
+                    insert = new Insert(CIProducts.TransactionIndividualOutbound);
+                } else {
+                    insert = new Insert(CIProducts.TransactionIndividualInbound);
                 }
-                insert.add(CIProducts.TransactionInOutAbstract.Quantity,
-                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Quantity));
-                insert.add(CIProducts.TransactionInOutAbstract.Storage,
-                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Storage));
-                insert.add(CIProducts.TransactionInOutAbstract.Product,
-                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Product));
-                insert.add(CIProducts.TransactionInOutAbstract.Description,
-                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Description));
-                insert.add(CIProducts.TransactionInOutAbstract.Date,
-                                multi.getAttribute(CIProducts.TransactionInOutAbstract.Date));
-                insert.add(CIProducts.TransactionInOutAbstract.Document, instance);
-                insert.add(CIProducts.TransactionInOutAbstract.UoM,
-                                multi.getAttribute(CIProducts.TransactionInOutAbstract.UoM));
+                insert.add(CIProducts.TransactionAbstract.Quantity,
+                                multi.getAttribute(CIProducts.TransactionAbstract.Quantity));
+                insert.add(CIProducts.TransactionAbstract.Storage,
+                                multi.getAttribute(CIProducts.TransactionAbstract.Storage));
+                insert.add(CIProducts.TransactionAbstract.Product,
+                                multi.getAttribute(CIProducts.TransactionAbstract.Product));
+                insert.add(CIProducts.TransactionAbstract.Description,
+                                multi.getAttribute(CIProducts.TransactionAbstract.Description));
+                insert.add(CIProducts.TransactionAbstract.Date,
+                                multi.getAttribute(CIProducts.TransactionAbstract.Date));
+                insert.add(CIProducts.TransactionAbstract.Document, instance);
+                insert.add(CIProducts.TransactionAbstract.UoM,
+                                multi.getAttribute(CIProducts.TransactionAbstract.UoM));
                 insert.execute();
             }
         }
-
         return new Return();
     }
 

@@ -48,6 +48,7 @@
                 <property name="Status">Closed</property>
                 <property name="UseNumberGenerator4Name">true</property>
              </execute>
+             <command>Sales_RecievingTicket_ShowRevision</command>
         </target>
 
         <!-- properties -->

@@ -27,6 +27,7 @@ import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
@@ -52,7 +53,7 @@ import org.efaps.util.EFapsException;
 public abstract class RecievingTicket_Base
     extends AbstractProductDocument
 {
-    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.RecievingTicket.RevisionKey";
+    public static final String REVISIONKEY =  RecievingTicket.class.getName() +  ".RevisionKey";
 
     /**
      * @param _parameter Parameter as passed from the eFaps API.
@@ -89,7 +90,7 @@ public abstract class RecievingTicket_Base
         final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
-            Context.getThreadContext().setSessionAttribute(IncomingCreditNote_Base.REVISIONKEY, revision);
+            Context.getThreadContext().setSessionAttribute(RecievingTicket_Base.REVISIONKEY, revision);
             _insert.add(CISales.RecievingTicket.Revision, revision);
         }
 
@@ -126,5 +127,25 @@ public abstract class RecievingTicket_Base
             }
         };
         return multi.execute(_parameter);
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
+    public Return showRevisionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String revision = (String) Context.getThreadContext().getSessionAttribute(
+                        RecievingTicket_Base.REVISIONKEY);
+        Context.getThreadContext().setSessionAttribute(RecievingTicket_Base.REVISIONKEY, null);
+        final StringBuilder html = new StringBuilder();
+        html.append("<span style=\"text-align: center; display: block; width: 100%; font-size: 40px; height: 55px;\">")
+                        .append(revision).append("</span>");
+        ret.put(ReturnValues.SNIPLETT, html.toString());
+        return ret;
     }
 }
