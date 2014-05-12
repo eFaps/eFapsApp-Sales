@@ -1209,7 +1209,8 @@ public abstract class AbstractDocument_Base
             final BigDecimal rateDiscountNetUnitPrice = multi.
                             <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
             final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
-            final BigDecimal rateCrossPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
+            final BigDecimal rateCrossPrice = multi
+                            .<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
 
             map.put(new KeyDefStr("oid"), multi.getCurrentInstance().getOid());
@@ -1217,10 +1218,10 @@ public abstract class AbstractDocument_Base
                             multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
             map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
             map.put(new KeyDefStr("product"), new String[] { multi.<String>getSelect(selProdOID),
-                multi.<String>getSelect(selProdName) });
-            map.put(new KeyDefStr("productDesc"),  multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
+                            multi.<String>getSelect(selProdName) });
+            map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
             map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
-                                            multi.<Long>getSelect(selProdDim)));
+                            multi.<Long>getSelect(selProdDim)));
 
             map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice == null ? BigDecimal.ZERO
                             : rateNetUnitPrice);
@@ -1246,8 +1247,8 @@ public abstract class AbstractDocument_Base
             js.append(getSetFieldValuesScript(_parameter, strValues, noEscape));
         } else {
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
-                            getOnCompleteScript(_parameter), false, false, noEscape));
+                            .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                                            getOnCompleteScript(_parameter), false, false, noEscape));
         }
         js.append("\n");
         return js;
@@ -1425,7 +1426,6 @@ public abstract class AbstractDocument_Base
             } else {
                 map = new HashMap<KeyDef, Object>();
                 valuesTmp.put(prodInst, map);
-                map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
                 map.put(new KeyDefStr("product"), new String[] { prodInst.getOid(),
                     multi.<String>getSelect(selProdName)});
                 map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(
@@ -1481,7 +1481,7 @@ public abstract class AbstractDocument_Base
                         ? _parameter.getParameterValues("selectedRow") : _parameter.getParameterValues("selectedDoc");
         if (selectedDoc != null) {
             if (selectedDoc.length > 1) {
-                for (int i = 1; i < selectedDoc.length; i++) {
+                for (int i = 0; i < selectedDoc.length; i++) {
                     final Instance instance = Instance.get(selectedDoc[i]);
                     if (instance.isValid()) {
                         ret.add(instance);
