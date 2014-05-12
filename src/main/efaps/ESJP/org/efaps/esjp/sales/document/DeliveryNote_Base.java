@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -61,15 +61,13 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DeliveryNote_Base.java 7915 2012-08-17 15:30:12Z
- *          m.aranya@moxter.net $
+ * @version $Id$
  */
 @EFapsUUID("363ad7a5-1e7b-4194-89e3-a31d07d783df")
 @EFapsRevision("$Rev$")
 public abstract class DeliveryNote_Base
     extends AbstractProductDocument
 {
-
     /**
      * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
@@ -350,5 +348,12 @@ public abstract class DeliveryNote_Base
             }
         };
         revision.revise(parameter);
+    }
+
+    @Override
+    public String getTypeName4AutoComplete4Product(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.DeliveryNote.getType().getName();
     }
 }

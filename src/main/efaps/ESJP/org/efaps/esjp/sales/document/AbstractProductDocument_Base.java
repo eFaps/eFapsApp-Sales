@@ -259,7 +259,9 @@ public abstract class AbstractProductDocument_Base
 
                             for (final String individual : individuals) {
                                 final Map<String, Object> map = new HashMap<String, Object>();
-                                map.put("Name", individual);
+                                map.put(CIProducts.ProductAbstract.Individual.name,
+                                                Products.ProductIndividual.NONE.getInt());
+                                map.put(CIProducts.ProductAbstract.Name.name, individual);
                                 final Instance indInst = new Product().cloneProduct(_parameter, prodInst,
                                                 prodType, map, clazz);
                                 final Insert relInsert = new Insert(relType);
@@ -591,14 +593,15 @@ public abstract class AbstractProductDocument_Base
         final Instance instance = _parameter.getInstance();
         if (instance.isValid()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-            queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document, instance);
+            queryBldr.addType(CIProducts.TransactionIndividualAbstract);
+            queryBldr.addWhereAttrEqValue(CIProducts.TransactionAbstract.Document, instance);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIProducts.TransactionInOutAbstract.Quantity,
-                            CIProducts.TransactionInOutAbstract.Storage,
-                            CIProducts.TransactionInOutAbstract.Product,
-                            CIProducts.TransactionInOutAbstract.Description,
-                            CIProducts.TransactionInOutAbstract.Date,
-                            CIProducts.TransactionInOutAbstract.UoM);
+            multi.addAttribute(CIProducts.TransactionAbstract.Quantity,
+                            CIProducts.TransactionAbstract.Storage,
+                            CIProducts.TransactionAbstract.Product,
+                            CIProducts.TransactionAbstract.Description,
+                            CIProducts.TransactionAbstract.Date,
+                            CIProducts.TransactionAbstract.UoM);
             multi.execute();
             while (multi.next()) {
                 Insert insert;

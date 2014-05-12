@@ -750,16 +750,6 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
-    protected int getSelectedRow(final Parameter _parameter)
-    {
-        int ret = 0;
-        final String value = _parameter.getParameterValue("eFapsRowSelectedRow");
-        if (value != null && value.length() > 0) {
-            ret = Integer.parseInt(value);
-        }
-        return ret;
-    }
-
     public Return update4checkbox4Invoive(final Parameter _parameter)
         throws EFapsException
     {

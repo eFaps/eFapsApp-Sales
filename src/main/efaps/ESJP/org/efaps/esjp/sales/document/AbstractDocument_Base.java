@@ -99,7 +99,6 @@ import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.jaas.AppAccessHandler;
-import org.efaps.ui.wicket.behaviors.SetSelectedRowBehavior;
 import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -1710,11 +1709,11 @@ public abstract class AbstractDocument_Base
         final Product product = new Product()
         {
             @Override
-            protected boolean add2QueryBldr4autoComplete4Product(final Parameter _parameter,
-                                                              final QueryBuilder _queryBldr)
+            protected boolean add2QueryBldr4AutoComplete4Product(final Parameter _parameter,
+                                                                 final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                return AbstractDocument_Base.this.add2QueryBldr4autoComplete4Product(_parameter, _queryBldr);
+                return AbstractDocument_Base.this.add2QueryBldr4AutoComplete4Product(_parameter, _queryBldr);
             }
         };
         return product.autoComplete4Product(_parameter);
@@ -1726,7 +1725,7 @@ public abstract class AbstractDocument_Base
      * @return true if allow cache, else false
      * @throws EFapsException on error
      */
-    protected boolean add2QueryBldr4autoComplete4Product(final Parameter _parameter,
+    protected boolean add2QueryBldr4AutoComplete4Product(final Parameter _parameter,
                                                          final QueryBuilder _queryBldr)
         throws EFapsException
     {
@@ -1734,7 +1733,8 @@ public abstract class AbstractDocument_Base
         if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
             final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
                             SalesSettings.AUTOCOMPLETE4PRODUCT, true);
-            final String typeName = getTypeName4SysConf(_parameter);
+            final String typeName = getTypeName4AutoComplete4Product(_parameter);
+            // show products of type Individual and Batch
             final boolean showIndividual = "true".equalsIgnoreCase(properties.getProperty(typeName + ".ShowIndividual",
                             "false"));
             if (!showIndividual) {
@@ -1742,10 +1742,25 @@ public abstract class AbstractDocument_Base
                                 CIProducts.ProductIndividual.getType().getId(),
                                 CIProducts.ProductBatch.getType().getId());
             }
+            // show products that are marked to use individual
+            final boolean hideIndividualizable = "true".equalsIgnoreCase(properties.getProperty(typeName
+                            + ".HideMarkedIndividual", "false"));
+            if (hideIndividualizable) {
+                _queryBldr.addWhereAttrNotEqValue(CIProducts.StockProductAbstract.Individual,
+                                ProductIndividual.INDIVIDUAL,ProductIndividual.BATCH);
+            }
         }
         return true;
     }
 
+    /**
+     * @param _parameter
+     * @return
+     */
+    protected String getTypeName4AutoComplete4Product(final Parameter _parameter) throws EFapsException
+    {
+        return getTypeName4SysConf(_parameter);
+    }
 
     protected void catalogFilter4productAutoComplete(final Parameter _parameter,
                                                      final QueryBuilder _queryBldr)
@@ -1811,24 +1826,6 @@ public abstract class AbstractDocument_Base
                             .getAttributeQuery(CIProducts.Catalog2Products.ProductLink);
             _queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID, attrQuery);
         }
-    }
-
-
-
-    /**
-     * Method to evaluate the selected row.
-     *
-     * @param _parameter paaremter
-     * @return number of selected row.
-     */
-    protected int getSelectedRow(final Parameter _parameter)
-    {
-        int ret = 0;
-        final String value = _parameter.getParameterValue(SetSelectedRowBehavior.INPUT_ROW);
-        if (value != null && value.length() > 0) {
-            ret = Integer.parseInt(value);
-        }
-        return ret;
     }
 
     /**

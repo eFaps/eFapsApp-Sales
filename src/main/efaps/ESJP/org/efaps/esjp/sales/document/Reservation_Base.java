@@ -216,6 +216,7 @@ public abstract class Reservation_Base
         return ret;
     }
 
+    @Override
     public Return updateFields4Product(final Parameter _parameter)
         throws EFapsException
     {
