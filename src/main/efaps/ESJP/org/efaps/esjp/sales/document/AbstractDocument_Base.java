@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -780,7 +781,8 @@ public abstract class AbstractDocument_Base
                     final StringBuilder js = new StringBuilder()
                         .append("require([\"dojo/query\", \"dojo/dom-construct\",\"dojo/on\"], ")
                         .append("function(query, domConstruct, on) {")
-                        .append("query(\"div  + input[name='").append(input).append("']\").forEach(domConstruct.destroy); ")
+                        .append("query(\"div  + input[name='").append(input)
+                        .append("']\").forEach(domConstruct.destroy); ")
                         .append(" query(\"span[name='").append(infofield).append("']\").forEach(function(node){")
                         .append("var ul;")
                         .append("if (query(\"ul\", node).length==0) {")
@@ -953,6 +955,11 @@ public abstract class AbstractDocument_Base
         return js.toString();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return script
+     * @throws EFapsException on error
+     */
     public Return getJavaScript4Search(final Parameter _parameter)
         throws EFapsException
     {
@@ -981,8 +988,13 @@ public abstract class AbstractDocument_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return instance of the currency
+     * @throws EFapsException on error
+     */
     protected Instance evaluateCurrency4JavaScript(final Parameter _parameter)
-        throws CacheReloadException, EFapsException
+        throws EFapsException
     {
         Instance ret = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
@@ -1720,7 +1732,16 @@ public abstract class AbstractDocument_Base
     {
         catalogFilter4productAutoComplete(_parameter, _queryBldr);
         if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
-
+            final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
+                            SalesSettings.AUTOCOMPLETE4PRODUCT, true);
+            final String typeName = getTypeName4SysConf(_parameter);
+            final boolean showIndividual = "true".equalsIgnoreCase(properties.getProperty(typeName + ".ShowIndividual",
+                            "false"));
+            if (!showIndividual) {
+                _queryBldr.addWhereAttrNotEqValue(CIProducts.ProductAbstract.Type,
+                                CIProducts.ProductIndividual.getType().getId(),
+                                CIProducts.ProductBatch.getType().getId());
+            }
         }
         return true;
     }
