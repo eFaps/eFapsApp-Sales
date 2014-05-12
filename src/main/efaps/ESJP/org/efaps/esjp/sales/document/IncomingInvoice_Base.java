@@ -107,21 +107,60 @@ public abstract class IncomingInvoice_Base
         registerPurchasePrices(_parameter, createdDoc);
 
         connect2Object(_parameter, createdDoc);
+        createTaxDoc(_parameter, createdDoc);
 
-        final String perceptionValueStr = _parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
-        if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
-            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
-            try {
-                final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
-                final IncomingPerceptionCertificate_Base doc = new IncomingPerceptionCertificate();
-                createdDoc.addValue(IncomingPerceptionCertificate_Base.PERCEPTIONVALUE, perception);
-                doc.create4Doc(_parameter, createdDoc);
-            } catch (final ParseException p) {
-                throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
-            }
-        }
         return new Return();
+    }
+
+
+    protected void createTaxDoc(final Parameter _parameter,
+                                final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        if ("false".equalsIgnoreCase(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc.name))) {
+
+            final String perceptionValueStr = _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
+            if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
+                final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                try {
+                    final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
+                    final IncomingPerceptionCertificate doc = new IncomingPerceptionCertificate();
+                    _createdDoc.addValue(IncomingPerceptionCertificate_Base.PERCEPTIONVALUE, perception);
+                    doc.create4Doc(_parameter, _createdDoc);
+                } catch (final ParseException p) {
+                    throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
+                }
+            }
+            final String detractionValueStr = _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionValue.name);
+            if (detractionValueStr != null && !detractionValueStr.isEmpty()) {
+                final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                try {
+                    final BigDecimal detraction = (BigDecimal) formatter.parse(detractionValueStr);
+                    final IncomingDetraction doc = new IncomingDetraction();
+                    _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, detraction);
+                    doc.create4Doc(_parameter, _createdDoc ,-1);
+                } catch (final ParseException p) {
+                    throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
+                }
+            }
+            final String retentionValueStr = _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionValue.name);
+            if (retentionValueStr != null && !retentionValueStr.isEmpty()) {
+                final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                try {
+                    final BigDecimal retention = (BigDecimal) formatter.parse(retentionValueStr);
+                    final IncomingRetention doc = new IncomingRetention();
+                    _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, retention);
+                    doc.create4Doc(_parameter, _createdDoc, -1);
+                } catch (final ParseException p) {
+                    throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
+                }
+            }
+
+        }
     }
 
     /**
@@ -392,6 +431,40 @@ public abstract class IncomingInvoice_Base
                 IncomingInvoice_Base.LOG.error("Catched parsing error", e);
             }
         }
+        final String detractionPercentStr = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionPercent.name);
+        if (detractionPercentStr != null && !detractionPercentStr.isEmpty()) {
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal detractionPercent = (BigDecimal) formatter.parse(detractionPercentStr);
+                final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
+                final BigDecimal detraction = crossTotal.multiply(detractionPercent
+                                .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                final String detractionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                .format(detraction);
+                _map.put(CIFormSales.Sales_IncomingInvoiceForm.detractionValue.name, detractionStr);
+            } catch (final ParseException e) {
+                IncomingInvoice_Base.LOG.error("Catched parsing error", e);
+            }
+        }
+        final String retentionPercentStr = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionPercent.name);
+        if (retentionPercentStr != null && !retentionPercentStr.isEmpty()) {
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+            try {
+                final BigDecimal retentionPercent = (BigDecimal) formatter.parse(retentionPercentStr);
+                final BigDecimal crossTotal = getCrossTotal(_parameter, _calcList);
+                final BigDecimal retention = crossTotal.multiply(retentionPercent
+                                .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                .format(retention);
+                _map.put(CIFormSales.Sales_IncomingInvoiceForm.retentionValue.name, retentionStr);
+            } catch (final ParseException e) {
+                IncomingInvoice_Base.LOG.error("Catched parsing error", e);
+            }
+        }
     }
 
     /**
@@ -416,6 +489,11 @@ public abstract class IncomingInvoice_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
     public Return updateFields4RetentionPercent(final Parameter _parameter)
         throws EFapsException
     {
@@ -433,6 +511,11 @@ public abstract class IncomingInvoice_Base
         return retVal;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
     public Return updateFields4DetractionPercent(final Parameter _parameter)
         throws EFapsException
     {
@@ -449,8 +532,6 @@ public abstract class IncomingInvoice_Base
         }
         return retVal;
     }
-
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -471,15 +552,19 @@ public abstract class IncomingInvoice_Base
         return ret;
     }
 
-
-    @Override
-    protected String getJavaScript4SelectDoc(final Parameter _parameter)
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Snipplet
+     * @throws EFapsException on error
+     */
+    public Return getJavaScript4TaxDocUIValue(final Parameter _parameter)
         throws EFapsException
     {
-
+        final Return retVal = new Return();
         final StringBuilder js = new StringBuilder()
-            .append(super.getJavaScript4SelectDoc(_parameter))
             .append("<script type=\"text/javascript\">\n")
+            .append("require([\"dojo/ready\"], function(ready) {")
+            .append("ready(1600, function(){")
             .append("function deac(_key, _dis) {")
             .append("require([\"dojo/query\"], function(query){")
             .append("query(\"input[name^=\\\"\" + _key + \"\\\"]\").forEach(function(node) {")
@@ -498,9 +583,13 @@ public abstract class IncomingInvoice_Base
             .append("deac(key, evt.currentTarget.checked );")
             .append("});")
             .append("});")
+            .append("});")
+            .append("});")
             .append("\n</script>\n");
-        return js.toString();
+        retVal.put(ReturnValues.SNIPLETT, js.toString());
+        return retVal;
     }
+
 
     @Override
     public String getTypeName4SysConf(final Parameter _parameter)

@@ -138,66 +138,57 @@ public abstract class AbstractPaymentDocument_Base
                         CISales.PaymentDocumentAbstract.Note.name));
         if (note != null) {
             insert.add(CISales.PaymentDocumentAbstract.Note, note);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Note.name),
-                            note);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Note.name, note);
         }
 
         final String amount = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Amount.name));
         if (amount != null) {
             insert.add(CISales.PaymentDocumentAbstract.Amount, amount);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Amount.name),
-                            amount);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Amount.name, amount);
         }
 
         final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Date.name));
         if (date != null) {
             insert.add(CISales.PaymentDocumentAbstract.Date, date);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Date.name),
-                            date);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Date.name, date);
         }
 
         final String dueDate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.DueDate.name));
         if (dueDate != null) {
             insert.add(CISales.PaymentDocumentAbstract.DueDate, dueDate);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.DueDate.name),
-                            dueDate);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.DueDate.name, dueDate);
         }
 
         final String revision = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.Revision.name));
         if (revision != null) {
             insert.add(CISales.PaymentDocumentAbstract.Revision, revision);
-            createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Revision.name),
-                            revision);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Revision.name, revision);
         }
 
         final String currencyLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.PaymentDocumentAbstract.CurrencyLink.name));
         if (currencyLink != null) {
             insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink);
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name,
                             Long.parseLong(currencyLink));
             final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.CurrencyLink.name,
                             baseCurrInst.getId());
         }
 
         final String currencyLink4Account = getRateCurrencyLink4Account(_parameter);
         if (currencyLink4Account != null) {
             insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink4Account);
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name),
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name,
                             Long.parseLong(currencyLink4Account));
             final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name),
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.CurrencyLink.name,
                             baseCurrInst.getId());
         }
 
@@ -205,23 +196,20 @@ public abstract class AbstractPaymentDocument_Base
                         CISales.PaymentDocumentAbstract.Contact.name));
         if (contact != null && Instance.get(contact).isValid()) {
             insert.add(CISales.PaymentDocumentAbstract.Contact, Instance.get(contact).getId());
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Contact.name),
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Contact.name,
                             Instance.get(contact).getId());
         }
 
         final Object rateObj = _parameter.getParameterValue("rate");
         if (rateObj != null) {
             insert.add(CISales.PaymentDocumentAbstract.Rate, getRateObject(_parameter));
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Rate.name), getRateObject(_parameter));
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Rate.name, getRateObject(_parameter));
         }
 
         final String code = getCode4GeneratedDocWithSysConfig(_parameter);
         if (code != null) {
             insert.add(CISales.PaymentDocumentAbstract.Code, code);
-            createdDoc.getValues().put(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name), code);
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Code.name, code);
         }
 
         addStatus2DocCreate(_parameter, insert, createdDoc);
@@ -288,25 +276,21 @@ public abstract class AbstractPaymentDocument_Base
             }
             payInsert.add(CISales.Payment.TargetDocument, _createdDoc.getInstance().getId());
             payInsert.add(CISales.Payment.CurrencyLink,
-                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
+                            _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
             payInsert.add(CISales.Payment.Date,
-                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.Date.name)));
+                            _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
             payInsert.add(CISales.Payment.Rate, getRateObject(_parameter, "paymentRate", i));
             add2PaymentCreate(_parameter, payInsert, _createdDoc, i);
             payInsert.execute();
 
             transIns.add(CISales.TransactionAbstract.CurrencyId,
-                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
+                            _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
             transIns.add(CISales.TransactionAbstract.Payment, payInsert.getId());
             transIns.add(CISales.TransactionAbstract.Date,
-                            _createdDoc.getValues().get(getFieldName4Attribute(_parameter,
-                                            CISales.PaymentDocumentAbstract.Date.name)));
+                            _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Date.name));
             transIns.add(CISales.TransactionAbstract.Account, _parameter.getParameterValue("account"));
-            _createdDoc.getValues().put(getFieldName4Attribute(_parameter,
-                            CISales.TransactionAbstract.Account.name), _parameter.getParameterValue("account"));
+            _createdDoc.getValues().put(CISales.TransactionAbstract.Account.name,
+                            _parameter.getParameterValue("account"));
 
             transIns.execute();
         }
@@ -1017,8 +1001,7 @@ public abstract class AbstractPaymentDocument_Base
             Object name = _createdDoc.getValues().get(
                             getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name));
             if (name == null) {
-                name = _createdDoc.getValues()
-                                .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Name.name));
+                name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Name.name);
             }
 
             final String fileName = DBProperties.getProperty(_createdDoc.getInstance().getType().getName() + ".Label")
@@ -1028,13 +1011,11 @@ public abstract class AbstractPaymentDocument_Base
                             .attribute(CIERP.Currency.Name);
             report.getJrParameters().put("accountName",
                     getSelectString4AttributeAccount((String) _createdDoc.getValues()
-                                .get(getFieldName4Attribute(_parameter,
-                                            CISales.TransactionAbstract.Account.name)),
+                                .get(CISales.TransactionAbstract.Account.name),
                                             null, CISales.AccountCashDesk.Name));
             report.getJrParameters().put("accountCurrencyName",
                     getSelectString4AttributeAccount((String) _createdDoc.getValues()
-                                .get(getFieldName4Attribute(_parameter,
-                                            CISales.TransactionAbstract.Account.name)), selCurName, null));
+                                .get(CISales.TransactionAbstract.Account.name), selCurName, null));
 
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {

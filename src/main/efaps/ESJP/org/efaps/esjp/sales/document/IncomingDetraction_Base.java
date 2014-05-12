@@ -61,28 +61,46 @@ public abstract class IncomingDetraction_Base
     public static final String AMOUNTVALUE = IncomingDetraction.class.getName() + ".AmountValue";
 
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc   cretaeddo
+     * @param _index >0 if position, -1 if doc itself
+     * @throws EFapsException on error
+     */
     public void create4Doc(final Parameter _parameter,
                            final CreatedDoc _createdDoc,
                            final int _index)
         throws EFapsException
     {
-        final BigDecimal amount = (BigDecimal) _createdDoc.getValue(AMOUNTVALUE);
-        final Instance documentInst = _createdDoc.getPositions().get(_index);
+        final BigDecimal amount = (BigDecimal) _createdDoc.getValue(IncomingDetraction_Base.AMOUNTVALUE);
+        final Instance documentInst;
+        if (_index < 0) {
+            documentInst = _createdDoc.getInstance();
+        } else {
+            documentInst = _createdDoc.getPositions().get(_index);
+        }
 
         final Insert insert = new Insert(CISales.IncomingDetraction);
         insert.add(CISales.IncomingDetraction.Date, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Date.name)));
+                        .get(CISales.PaymentDocumentAbstract.Date.name));
         insert.add(CISales.IncomingDetraction.Contact, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Contact.name)));
+                        .get(CISales.PaymentDocumentAbstract.Contact.name));
         insert.add(CISales.IncomingDetraction.Salesperson, Context.getThreadContext().getPersonId());
         insert.add(CISales.IncomingDetraction.Group, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Group.name)));
+                        .get(CISales.PaymentDocumentAbstract.Group.name));
         insert.add(CISales.IncomingDetraction.Rate, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Rate.name)));
-        insert.add(CISales.IncomingDetraction.CurrencyId, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name)));
-        insert.add(CISales.IncomingDetraction.RateCurrencyId, _createdDoc.getValues()
-                        .get(getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name)));
+                        .get(CISales.PaymentDocumentAbstract.Rate.name));
+        if (_createdDoc.getValues().containsKey(CISales.PaymentDocumentAbstract.CurrencyLink.name)) {
+            insert.add(CISales.IncomingDetraction.CurrencyId, _createdDoc.getValues()
+                        .get(CISales.PaymentDocumentAbstract.CurrencyLink.name));
+            insert.add(CISales.IncomingDetraction.RateCurrencyId, _createdDoc.getValues()
+                        .get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
+        } else {
+            insert.add(CISales.IncomingDetraction.CurrencyId, _createdDoc.getValues()
+                            .get(CISales.DocumentSumAbstract.CurrencyId.name));
+                insert.add(CISales.IncomingDetraction.RateCurrencyId, _createdDoc.getValues()
+                            .get(CISales.DocumentSumAbstract.RateCurrencyId.name));
+        }
         insert.add(CISales.IncomingDetraction.RateNetTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.RateDiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.NetTotal, BigDecimal.ZERO);

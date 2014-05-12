@@ -394,35 +394,27 @@
             <property name="Label">Sales_IncomingInvoiceForm.recievingTickets.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="headingPerceptionTitle" character="Heading">
-            <property name="Level">2</property>
-            <property name="Label">Sales_IncomingInvoiceForm.headingPerceptionTitle.Label</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">READONLY</property>
-        </field>
-        <field name="perceptionDocument">
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeView">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="SelectAlternateOID">linkfrom[Sales_IncomingDocumentTax2Document#ToAbstractLink].linkto[FromAbstractLink].oid</property>
-            <property name="Select">linkfrom[Sales_IncomingDocumentTax2Document#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_IncomingInvoice/Perception.Label</property>
-        </field>
-        <field name="headingPerception" character="Heading">
+      <field name="headingTaxDoc" character="Heading">
             <property name="Level">3</property>
-            <property name="Label">Sales_IncomingInvoiceForm.headingPerception.Label</property>
+            <property name="Label">Sales_IncomingInvoiceForm.headingTaxDoc.Heading</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Collapsed">TRUE</property>
         </field>
         <field name="perceptionGroup" character="Group">
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="perceptionCheckbox">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">Sales_IncomingInvoiceForm.perceptionCheckbox.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
         </field>
         <field name="perceptionPercent">
             <property name="ModeCreate">EDITABLE</property>
@@ -443,6 +435,72 @@
             <property name="Label">Sales_IncomingInvoiceForm.perceptionValue.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
+        <field name="retentionGroup" character="Group">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="retentionCheckbox">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">Sales_IncomingInvoiceForm.retentionCheckbox.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+        </field>
+        <field name="retentionPercent">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">2</property>
+            <property name="Label">Sales_IncomingInvoiceForm.retentionPercent.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4RetentionPercent"
+                name="Sales_IncomingInvoiceForm.retentionPercent.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="retentionValue">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.retentionValue.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+        </field>
+        <field name="detractionGroup" character="Group">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="detractionCheckbox">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">Sales_IncomingInvoiceForm.detractionCheckbox.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+        </field>
+        <field name="detractionPercent">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">2</property>
+            <property name="Label">Sales_IncomingInvoiceForm.detractionPercent.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4DetractionPercent"
+                name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="detractionValue">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.detractionValue.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
@@ -451,6 +509,16 @@
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingInvoiceForm.javaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="taxDocJavaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="getJavaScript4TaxDocUIValue"
+                name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"/>
         </field>
     </definition>
@@ -980,6 +1048,16 @@
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingInvoiceForm.javaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"/>
+        </field>
+        <field name="taxDocJavaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="getJavaScript4TaxDocUIValue"
+                name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"/>
         </field>
     </definition>
