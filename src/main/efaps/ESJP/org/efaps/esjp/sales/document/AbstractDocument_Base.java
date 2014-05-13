@@ -1346,9 +1346,10 @@ public abstract class AbstractDocument_Base
             }
 
             for (final Map<KeyDef, Object> map : _values) {
-                if (prodQuantMap.containsKey(((String[]) map.get(new KeyDefStr("product")))[0])) {
+                final String[] product = (String[]) map.get(new KeyDefStr("product"));
+                if (prodQuantMap.containsKey(product[0])) {
                     final BigDecimal quantityTotal = (BigDecimal) map.get(new KeyDefFrmt("quantity", qtyFrmt));
-                    final BigDecimal quantityPartial = prodQuantMap.get(map.get(new KeyDefFrmt("product", qtyFrmt)));
+                    final BigDecimal quantityPartial = prodQuantMap.get(product[0]);
 
                     if (substract) {
                         final BigDecimal quantityCurr = quantityTotal.subtract(quantityPartial);
