@@ -83,9 +83,10 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Width">2</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
-                   method="getStorageFieldValueUI"
-                   name="Sales_ProductionReportPositionTable.storage.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE"/>
+                method="getStorageFieldValueUI"
+                name="Sales_ProductionReportPositionTable.storage.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="ValueSelect">oid</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>
