@@ -32,11 +32,22 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_UsageReportPositionTable</name>
-        <!-- fields -->
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_UsageReportPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+        </field>
+         <field name="quantityInStock">
+            <property name="Label">Sales_DeliveryNotePositionTable.quantityInStock.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Width">1</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
+                name="Sales_UsageReportPositionTable.storage.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+            </trigger>
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
@@ -47,7 +58,11 @@
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="autoComplete4Product"
                 name="Sales_UsageReportPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="InStock">true</property>
+                <property name="ExtraParameter">storage</property>
+                <property name="ExtraParameter01">eFapsRSR</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="updateFields4Product"
                 name="Sales_UsageReportPositionTable.product.UI_FIELD_UPDATE"
