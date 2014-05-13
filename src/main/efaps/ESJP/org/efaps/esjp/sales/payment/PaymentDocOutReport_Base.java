@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 9149 $
- * Last Changed:    $Date: 2013-04-02 11:54:59 -0500 (mar, 02 abr 2013) $
- * Last Changed By: $Author: sara.landa@efaps.org $
+ * Revision:        $Rev$
+ * Last Changed:    $Date$
+ * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -63,7 +63,7 @@ import org.joda.time.format.DateTimeFormat;
  *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("a79e177d-ec60-4718-a4e1-c1e829bf20e9")
-@EFapsRevision("$Rev: 9149 $")
+@EFapsRevision("$Rev$")
 public abstract class PaymentDocOutReport_Base
     extends EFapsMapDataSource
 {
@@ -75,8 +75,7 @@ public abstract class PaymentDocOutReport_Base
                      final Map<String, Object> _jrParameters)
         throws EFapsException
     {
-        final String contactOid = _parameter.getParameterValue("contact");
-        final String contactName = _parameter.getParameterValue("contactAutoComplete");
+        final Instance contact = Instance.get(_parameter.getParameterValue("contact"));
         final String dateFromStr = _parameter.getParameterValue("dateFrom");
         final String dateToStr = _parameter.getParameterValue("dateTo");
         final DateTime from = DateTimeUtil.normalize(new DateTime(dateFromStr));
@@ -86,8 +85,8 @@ public abstract class PaymentDocOutReport_Base
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
 
-        if (contactOid != null && !contactOid.isEmpty() && contactName != null && !contactName.isEmpty()) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, Instance.get(contactOid));
+        if (contact.isValid()) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contact);
         }
         queryBldr.addOrderByAttributeAsc(CISales.DocumentSumAbstract.Date);
 

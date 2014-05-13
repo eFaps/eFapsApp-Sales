@@ -518,6 +518,7 @@ public abstract class AbstractPaymentDocument_Base
             final BigDecimal payments4Doc = docInfo.getTotalPayments();
             final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
 
+            map.put("createDocumentContact", docInfo.getContactName());
             map.put("createDocumentDesc", docInfo.getInfoOriginal());
             map.put("payment4Pay", getTwoDigitsformater().format(amount4PayDoc));
             map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
@@ -1788,6 +1789,22 @@ public abstract class AbstractPaymentDocument_Base
                 }
             }
             return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
+
+        protected String getContactName()
+            throws EFapsException
+        {
+            final StringBuilder ret = new StringBuilder();
+            if (this.instance != null && this.instance.isValid()) {
+                final SelectBuilder selContactName = new SelectBuilder()
+                            .linkto(CISales.DocumentAbstract.Contact).attribute(CIContacts.Contact.Name);
+                final PrintQuery print = new PrintQuery(this.instance);
+                print.addSelect(selContactName);
+                print.execute();
+
+                ret.append(print.<String>getSelect(selContactName));
+            }
+            return ret.toString();
         }
     }
 }

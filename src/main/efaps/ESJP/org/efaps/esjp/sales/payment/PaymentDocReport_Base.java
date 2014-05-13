@@ -74,8 +74,7 @@ public abstract class PaymentDocReport_Base
                      final Map<String, Object> _jrParameters)
         throws EFapsException
     {
-        final String contactOid = _parameter.getParameterValue("contact");
-        final String contactName = _parameter.getParameterValue("contactAutoComplete");
+        final Instance contact = Instance.get(_parameter.getParameterValue("contact"));
         final String dateFromStr = _parameter.getParameterValue("dateFrom");
         final String dateToStr = _parameter.getParameterValue("dateTo");
         final DateTime from = DateTimeUtil.normalize(new DateTime(dateFromStr));
@@ -85,8 +84,8 @@ public abstract class PaymentDocReport_Base
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, from.minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, to.plusDays(1));
 
-        if (contactOid != null && !contactOid.isEmpty() && contactName != null && !contactName.isEmpty()) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, Instance.get(contactOid));
+        if (contact.isValid()) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contact);
         }
         queryBldr.addOrderByAttributeAsc(CISales.DocumentSumAbstract.Date);
 
