@@ -45,6 +45,7 @@
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
                 <property name="JasperReport">Sales_DeliveryNote</property>
+                <property name="Mime">pdf</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
                 <property name="Validation01">QUANTITYGREATERZERO</property>
@@ -58,6 +59,7 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
         <property name="ShowStorage">true</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 
     <definition>
@@ -77,6 +79,7 @@
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
                 <property name="JasperReport">Sales_DeliveryNote</property>
+                <property name="Mime">pdf</property>
                 <!-- Projects_ProjectService2DeliveryNote -->
                 <property name="ConnectType">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
                 <property name="ConnectCurrentLink">ToLink</property>
@@ -95,5 +98,6 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
         <property name="ShowStorage">true</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
