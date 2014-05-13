@@ -219,5 +219,4 @@ public interface SalesSettings
      * Properties. Can be concatenated;
      */
     String AUTOCOMPLETE4PRODUCT = "org.efaps.sales.AutoComplete4Product";
-
 }

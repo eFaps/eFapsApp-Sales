@@ -86,10 +86,11 @@
         </status>
 
         <status group="Sales_IncomingInvoiceStatus">
-          <key>Open</key>
-          <key>Paid</key>
-          <key>Booked</key>
-          <key>Replaced</key>
+            <key>Digitized</key>
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
         </status>
 
         <status group="Sales_IncomingReceiptStatus">
