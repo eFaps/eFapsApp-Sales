@@ -131,36 +131,6 @@
             <description>Company should be setted.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.ActivatePerceptionCertificate</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateIncomingPerceptionCertificate</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateRetentionCertificate</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateIncomingRetentionCertificate</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate options to generated document PerceptionCertificate/IncomingPerceptionCertificate.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateOptions4DetAndRet</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate options to generated document Detraction/Retention.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivatePerception</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate options to generated document Perception Certificate.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.PriceList4Calculator</key>
             <value>Sales_Invoice=0eefc758-0be6-4c40-8cf9-a4f88986f76e
 Sales_Receipt=0eefc758-0be6-4c40-8cf9-a4f88986f76e
@@ -179,6 +149,30 @@ Set a Price List for a Type to Calculator. Used for Sales Documents.</descriptio
             <key>org.efaps.sales.DefaultDeparturePoint</key>
             <value>To be set by implementation</value>
             <description>Default address used as the departure point in delivery note.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.IsPerceptionAgent</key>
+            <value>false</value>
+            <description><![CDATA[Boolean (true/false).
+The current company is an Agent of Perception.]]></description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivatePerception</key>
+            <value>true</value>
+            <description><![CDATA[Boolean (true/false).
+Activate the calculation of Perception.]]></description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.IsRetentionAgent</key>
+            <value>false</value>
+            <description><![CDATA[Boolean (true/false).
+The current company is an Agent of Retention.]]></description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.ActivateRetention</key>
+            <value>true</value>
+            <description><![CDATA[Boolean (true/false).
+Activate the calculation of retention.]]></description>
         </attribute>
     </definition>
 </common-systemconfiguration>

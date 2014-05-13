@@ -111,9 +111,27 @@ public interface SalesSettings
 
     /**
      * Boolean (true/false).<br/>
-     * Acvtivate the calculation of Perception.
+     * The current company is an Agent of Perception.
      */
-    String PERCEPTION = "org.efaps.sales.ActivatePerception";
+    String ISPERCEPTIONAGENT = "org.efaps.sales.IsPerceptionAgent";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the calculation of Perception.
+     */
+    String ACTIVATEPERCEPTION = "org.efaps.sales.ActivatePerception";
+
+    /**
+     * Boolean (true/false).<br/>
+     * The current company is an Agent of Retention.
+     */
+    String ISRETENTIONAGENT = "org.efaps.sales.IsRetentionAgent";
+
+    /**
+     * Boolean (true/false).<br/>
+     * Activate the calculation of retention.
+     */
+    String ACTIVATERETENTION = "org.efaps.sales.ActivateRetention";
 
     /**
      * Boolean (true/false).<br/>
@@ -121,11 +139,6 @@ public interface SalesSettings
      */
     String ACTIVATECODE4PAYMENTDOCUMENT = "org.efaps.sales.ActivateCode4PaymentDocument";
 
-    /**
-     * Boolean (true/false).<br/>
-     * Activate the show variable.
-     */
-    String ACTIVATERETENTION = "org.efaps.sales.ActivateRetentionCertificate";
 
     /**
      * Boolean (true/false).<br/>
@@ -197,11 +210,6 @@ public interface SalesSettings
      * Default amount to validate generated payment order or collection order.
      */
     String DEFAULTSAMOUNT4CREATEDDOC = "org.efaps.sales.DefaultAmount4CreatedDoc";
-
-    /**
-     * (true/false) to show options and created retention and detraction.
-     */
-    String ACTIVATEOPTIONS4DETANDRET = "org.efaps.sales.ActivateOptions4DetAndRet";
 
     /**
      * Properties.<br/>

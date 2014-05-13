@@ -19,8 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c408bc0d-4bfe-42b8-ae15-77f00a06ee29</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -37,13 +38,12 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingPerceptionCertificate</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck" 
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
                 name="Sales_IncomingPerceptionCertificateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateIncomingPerceptionCertificate</property>
+                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

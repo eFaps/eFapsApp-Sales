@@ -61,7 +61,7 @@ public abstract class Perception_Base
     {
         boolean ret = false;
         // only if activated by SytemConfguration
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION) && _instance.isValid()) {
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT) && _instance.isValid()) {
             final PerceptionInfo info = evalProduct4Perception(_parameter, _instance);
             if (info != null) {
                 ret = info.isApply();

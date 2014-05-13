@@ -473,7 +473,7 @@ public abstract class DocumentSum_Base
         js.append(getTaxesScript(_parameter,
                         new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null))));
         _map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
             _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
         }
     }
@@ -703,7 +703,7 @@ public abstract class DocumentSum_Base
                 if (_parameter.getParameterValue("openAmount") != null) {
                     js.append(getSetFieldValue(0, "openAmount", getBaseCrossTotalFmtStr(_parameter, calculators)));
                 }
-                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
+                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
                     js.append(getSetFieldValue(0, "perceptionTotal",
                                     getPerceptionTotalFmtStr(_parameter, calculators)));
                 }

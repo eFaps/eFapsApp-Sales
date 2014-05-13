@@ -41,7 +41,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
                 name="Sales_PerceptionCertificateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerceptionCertificate</property>
+                <property name="Attribute">org.efaps.sales.IsPerceptionAgent</property>
             </trigger>
         </target>
         <!-- properties -->

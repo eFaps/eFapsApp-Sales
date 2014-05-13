@@ -55,7 +55,7 @@ public abstract class Invoice_Base
 
         connect2Object(_parameter, createdDoc);
 
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PERCEPTION)) {
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
             new PerceptionCertificate().create4Doc(_parameter, createdDoc);
         }
         return new Return();

@@ -68,11 +68,12 @@
             <sqltable>Sales_Contacts_ClassTaxinfoSQLTable</sqltable>
             <sqlcolumn>RETENTION</sqlcolumn>
         </attribute>
-        <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+        <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
             method="configCheck" name="Sales_Contacts_ClassTaxinfo.ACCESSCHECK.1"
             event="ACCESSCHECK" index="1">
             <property name="SystemConfig">Sales-Configuration</property>
-            <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+            <property name="Attribute01">org.efaps.sales.IsPerceptionAgent</property>
+            <property name="Attribute02">org.efaps.sales.IsRetentionAgent</property>
         </trigger>
     </definition>
 </datamodel-type>

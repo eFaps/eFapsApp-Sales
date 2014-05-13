@@ -133,6 +133,7 @@
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Sales_Payment/CurrencyLink.Label</property>
         </field>
+        <!--
         <field name="option4DocCreate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
@@ -157,6 +158,7 @@
                 <property name="JavaScript">true</property>
             </trigger>
         </field>
+         -->
         <field name="amount4DocCreate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
