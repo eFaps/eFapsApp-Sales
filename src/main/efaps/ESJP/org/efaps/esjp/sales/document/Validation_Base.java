@@ -25,11 +25,13 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -37,14 +39,19 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.AbstractPositionWarning;
+import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.WarningUtil;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -57,12 +64,18 @@ import org.efaps.util.EFapsException;
 public abstract class Validation_Base
     extends AbstractDocument
 {
-
+    /**
+     * Enum for enabling standard validations.
+     */
     public enum Validations
     {
-        QUANTITYINSTOCK, QUANTITYGREATERZERO;
+        /** Validate Quantity in Stock. */
+        QUANTITYINSTOCK,
+        /** Validate that Quantity is greater than zero. */
+        QUANTITYGREATERZERO,
+        /** Validate the Name. */
+        NAME;
     }
-
 
     @Override
     public Return validate(final Parameter _parameter)
@@ -70,7 +83,7 @@ public abstract class Validation_Base
     {
         final Return ret = new Return();
         final Map<Integer, String> validations = analyseProperty(_parameter, "Validation");
-        final List<IWarning> warnings = new ArrayList<IWarning>();
+        List<IWarning> warnings = new ArrayList<IWarning>();
         for (final String validation : validations.values()) {
             final Validations val = Validations.valueOf(validation);
             switch (val) {
@@ -80,10 +93,16 @@ public abstract class Validation_Base
                 case QUANTITYGREATERZERO:
                     warnings.addAll(validateQuantityGreaterZero(_parameter));
                     break;
+                case NAME:
+                    warnings.addAll(validateName(_parameter));
+                    break;
                 default:
                     break;
             }
         }
+
+        warnings = validate(_parameter, warnings);
+
         if (warnings.isEmpty()) {
             ret.put(ReturnValues.TRUE, true);
         } else {
@@ -94,6 +113,123 @@ public abstract class Validation_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _warnings warings to add/alternate etc.
+     * @return List of warnings
+     * @throws EFapsException on error
+     */
+    protected List<IWarning> validate(final Parameter _parameter,
+                                      final List<IWarning> _warnings)
+        throws EFapsException
+    {
+        // to be used by implementations
+        return _warnings;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing TRUE and SNIPLETT if warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validateName(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+
+        final Instance docInst = _parameter.getInstance();
+
+        final String fieldName = getProperty(_parameter, "NAME_FieldName");
+        String name = null;
+        if (fieldName == null) {
+            name = _parameter.getParameterValue("name4create");
+            if (name == null) {
+                name = _parameter.getParameterValue("name");
+            }
+        } else {
+            name = _parameter.getParameterValue(fieldName);
+        }
+
+        if (name != null) {
+            final String[] numbers = name.split("-");
+            if (numbers.length == 2 && numbers[0].length() >= numbers[1].length()) {
+                ret.add(new InvalidNameWarning());
+            } else if (numbers.length != 2) {
+                ret.add(new InvalidNameWarning());
+            }
+
+            if ("true".equalsIgnoreCase(getProperty(_parameter, "NAME_ValidateContact"))) {
+                final Instance contactInst = getContactInstance(_parameter);
+                if (contactInst != null && contactInst.isValid()) {
+                    QueryBuilder queryBldr = null;
+                    final Map<Integer, String> types = analyseProperty(_parameter, "NAME_QueryType");
+                    for (final Entry<Integer, String> entryType : types.entrySet()) {
+                        final Type type = Type.get(entryType.getValue());
+                        if (type != null) {
+                            if (queryBldr == null) {
+                                queryBldr = new QueryBuilder(type);
+                            } else {
+                                queryBldr.addType(type);
+                            }
+                        }
+                    }
+                    if (queryBldr != null) {
+                        queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInst);
+                        queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, name).setIgnoreCase(true);
+                        if (docInst != null && docInst.isValid()) {
+                            queryBldr.addWhereAttrNotEqValue(CIERP.DocumentAbstract.ID, docInst);
+                        }
+                        final MultiPrintQuery multi = queryBldr.getPrint();
+                        multi.addAttribute(CIERP.DocumentAbstract.Name,
+                                        CIERP.DocumentAbstract.Date);
+                        multi.execute();
+
+                        while (multi.next()) {
+                            ret.add(new ExistingNameWarning().addObject(
+                                            multi.getCurrentInstance().getType().getLabel(),
+                                            multi.<String>getAttribute(CIERP.DocumentAbstract.Name),
+                                            multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).toString(
+                                                            "dd/MM/YYYY")));
+                        }
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @return instance of the contact
+     * @throws EFapsException on error
+     */
+    protected Instance getContactInstance(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance ret;
+
+        final String contact = getProperty(_parameter, "ContactFieldName") != null
+                        ? _parameter.getParameterValue(getProperty(_parameter, "ContactFieldName"))
+                        : _parameter.getParameterValue("contact");
+
+        final Instance contactInst = Instance.get(contact);
+        final Instance instance = _parameter.getInstance();
+
+        if (instance != null && !contactInst.isValid()) {
+            final SelectBuilder selContactInst = new SelectBuilder()
+                            .linkto(CISales.DocumentAbstract.Contact).instance();
+
+            final PrintQuery print = new PrintQuery(instance);
+            print.addSelect(selContactInst);
+            print.execute();
+            ret = print.<Instance>getSelect(selContactInst);
+        } else {
+            ret = contactInst;
+        }
+        return ret;
+    }
+
 
     /**
      * Validate that the given quantities have numbers bigger than Zero.
@@ -199,6 +335,24 @@ public abstract class Validation_Base
         {
             setError(true);
         }
-}
+    }
+
+    public static class InvalidNameWarning
+        extends AbstractWarning
+    {
+        public InvalidNameWarning()
+        {
+            setError(false);
+        }
+    }
+
+    public static class ExistingNameWarning
+        extends AbstractWarning
+    {
+        public ExistingNameWarning()
+        {
+            setError(false);
+        }
+    }
 
 }

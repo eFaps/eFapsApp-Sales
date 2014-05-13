@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -46,6 +47,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
@@ -54,6 +56,8 @@ import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.AbstractWarning;
+import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
@@ -112,7 +116,11 @@ public abstract class IncomingInvoice_Base
         return new Return();
     }
 
-
+    /**
+     * @param _parameter Parameter as passed by the efasp API
+     * @param _createdDoc created Document
+     * @throws EFapsException on error
+     */
     protected void createTaxDoc(final Parameter _parameter,
                                 final CreatedDoc _createdDoc)
         throws EFapsException
@@ -133,25 +141,41 @@ public abstract class IncomingInvoice_Base
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
             }
-            final String detractionValueStr = _parameter
-                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionValue.name);
-            if (detractionValueStr != null && !detractionValueStr.isEmpty()) {
+
+            final boolean isDetraction = "true".equalsIgnoreCase(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionCheckbox.name));
+            if (isDetraction) {
                 final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                 try {
-                    final BigDecimal detraction = (BigDecimal) formatter.parse(detractionValueStr);
+                    final String detractionValueStr = _parameter
+                                    .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionValue.name);
+                    final BigDecimal detraction;
+                    if (detractionValueStr != null && !detractionValueStr.isEmpty()) {
+                        detraction = (BigDecimal) formatter.parse(detractionValueStr);
+                    } else {
+                        detraction = BigDecimal.ZERO;
+                    }
                     final IncomingDetraction doc = new IncomingDetraction();
                     _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, detraction);
-                    doc.create4Doc(_parameter, _createdDoc ,-1);
+                    doc.create4Doc(_parameter, _createdDoc, -1);
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
             }
-            final String retentionValueStr = _parameter
-                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionValue.name);
-            if (retentionValueStr != null && !retentionValueStr.isEmpty()) {
+            final boolean isRetention = "true".equalsIgnoreCase(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionCheckbox.name));
+
+            if (isRetention) {
                 final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                 try {
-                    final BigDecimal retention = (BigDecimal) formatter.parse(retentionValueStr);
+                    final String retentionValueStr = _parameter
+                                    .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionValue.name);
+                    final BigDecimal retention;
+                    if (retentionValueStr != null && !retentionValueStr.isEmpty()) {
+                        retention = (BigDecimal) formatter.parse(retentionValueStr);
+                    } else {
+                        retention = BigDecimal.ZERO;
+                    }
                     final IncomingRetention doc = new IncomingRetention();
                     _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, retention);
                     doc.create4Doc(_parameter, _createdDoc, -1);
@@ -159,7 +183,6 @@ public abstract class IncomingInvoice_Base
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
             }
-
         }
     }
 
@@ -622,5 +645,108 @@ public abstract class IncomingInvoice_Base
             }
         };
         return multi.execute(_parameter);
+    }
+
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation()
+        {
+            @Override
+            protected List<IWarning> validate(final Parameter _parameter,
+                                              final List<IWarning> _warnings)
+                throws EFapsException
+            {
+                final List<IWarning> ret = super.validate(_parameter, _warnings);
+                ret.addAll(validatTaxDoc(_parameter));
+                return ret;
+            }
+        };
+        return validation.validate(_parameter);
+    }
+
+    /**
+     * Validate that the given quantities have numbers bigger than Zero.
+     *
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validatTaxDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        if ("false".equalsIgnoreCase(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc.name))) {
+            final boolean isPerception = "true".equalsIgnoreCase(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionCheckbox.name));
+            final boolean isRetention = "true".equalsIgnoreCase(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionCheckbox.name));
+            final boolean isDetraction = "true".equalsIgnoreCase(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionCheckbox.name));
+            if ((BooleanUtils.toInteger(isPerception) + BooleanUtils.toInteger(isRetention) + BooleanUtils
+                            .toInteger(isDetraction)) > 1) {
+                ret.add(new OnlyOneTaxDocWarning());
+            }
+
+            if (isPerception && Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
+                final Instance inst = Instance.get(_parameter
+                                .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.contact.name));
+                final PrintQuery print = new PrintQuery(inst);
+                final SelectBuilder sel = SelectBuilder.get().clazz(CISales.Contacts_ClassTaxinfo)
+                                .attribute(CISales.Contacts_ClassTaxinfo.Perception);
+                print.addSelect(sel);
+                print.executeWithoutAccessCheck();
+                final Sales.TaxPerception perc = print.getSelect(sel);
+                if (perc != null && perc.equals(Sales.TaxPerception.AGENT)) {
+                    ret.add(new ContactIsPerceptionAgentWarning());
+                }
+            }
+
+            if (isRetention && Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISRETENTIONAGENT)) {
+                final Instance inst = Instance.get(_parameter
+                                .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.contact.name));
+                final PrintQuery print = new PrintQuery(inst);
+                final SelectBuilder sel = SelectBuilder.get().clazz(CISales.Contacts_ClassTaxinfo)
+                                .attribute(CISales.Contacts_ClassTaxinfo.Retention);
+                print.addSelect(sel);
+                print.executeWithoutAccessCheck();
+                final Sales.TaxRetention perc = print.getSelect(sel);
+                if (perc != null && perc.equals(Sales.TaxRetention.AGENT)) {
+                    ret.add(new ContactIsRetentionAgentWarning());
+                }
+            }
+        }
+        return ret;
+    }
+
+    public static class OnlyOneTaxDocWarning
+        extends AbstractWarning
+    {
+        public OnlyOneTaxDocWarning()
+        {
+            setError(true);
+        }
+    }
+
+    public static class ContactIsPerceptionAgentWarning
+        extends AbstractWarning
+    {
+
+        public ContactIsPerceptionAgentWarning()
+        {
+            setError(true);
+        }
+    }
+
+    public static class ContactIsRetentionAgentWarning
+        extends AbstractWarning
+    {
+
+        public ContactIsRetentionAgentWarning()
+        {
+            setError(true);
+        }
     }
 }
