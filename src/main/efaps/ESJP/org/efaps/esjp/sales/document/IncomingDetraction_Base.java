@@ -34,8 +34,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.PrintQuery;
-import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -43,6 +41,18 @@ import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 
+/**
+ * TODO comment!
+ *
+ * @author The eFaps Team
+ * @version $Id$
+ */
+/**
+ * TODO comment!
+ *
+ * @author The eFaps Team
+ * @version $Id$
+ */
 /**
  * TODO comment!
  *
@@ -106,7 +116,7 @@ public abstract class IncomingDetraction_Base
         insert.add(CISales.IncomingDetraction.NetTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.DiscountTotal, BigDecimal.ZERO);
         insert.add(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Open));
-        insert.add(CISales.IncomingDetraction.Name, getDocName4Document(_parameter, documentInst));
+        insert.add(CISales.IncomingDetraction.Name, getDocName4Document(_parameter, _createdDoc));
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
@@ -121,15 +131,20 @@ public abstract class IncomingDetraction_Base
         relInsert.execute();
     }
 
-    protected String getDocName4Document(final Parameter _parameter,
-                                         final Instance _instance)
+
+    /**
+     * Method to obtains name to CreatedDoc.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _createdDoc CreatedDoc with values.
+     * @return Object to name.
+     * @throws EFapsException on error.
+     */
+    protected Object getDocName4Document(final Parameter _parameter,
+                                         final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final PrintQuery print = new PrintQuery(_instance);
-        print.addAttribute(CIERP.DocumentAbstract.Name);
-        print.execute();
-
-        return print.<String>getAttribute(CIERP.DocumentAbstract.Name);
+        return _createdDoc.getValues().get(CISales.DocumentSumAbstract.Name.name);
     }
 
     /**
