@@ -227,7 +227,7 @@
             <property name="Required">true</property>
         </field>
         <field name="project">
-            <property name="Label">Sales_InvoiceForm.project.Label</property>
+            <property name="Label">Sales_InvoiceCreditNoteForm.project.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
@@ -245,7 +245,7 @@
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2IncomingCreditNote#ToLink].linkto[FromLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2IncomingCreditNote#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2IncomingCreditNote#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_ProductRequest.project.Label</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.project.Label</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
