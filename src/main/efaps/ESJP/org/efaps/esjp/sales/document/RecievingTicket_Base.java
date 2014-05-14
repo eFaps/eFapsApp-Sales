@@ -63,19 +63,13 @@ public abstract class RecievingTicket_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
-        createIndiviuals(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc);
-        connect2Derived(_parameter, doc);
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        createIndiviuals(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         return new Return();
-    }
-
-    @Override
-    protected String getDocName4Create(final Parameter _parameter)
-        throws EFapsException
-    {
-        return _parameter.getParameterValue("name");
     }
 
     @Override

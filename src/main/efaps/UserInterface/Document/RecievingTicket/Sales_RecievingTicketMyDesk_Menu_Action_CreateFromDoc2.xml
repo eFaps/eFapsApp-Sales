@@ -23,34 +23,70 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f59c2828-5b66-4548-9421-bb0954a91eaf</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_RecievingTicketMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
             <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_RecievingTicketForm</form>
             <execute program="org.efaps.esjp.sales.document.RecievingTicket" method="create">
                 <property name="PositionType">Sales_RecievingTicketPosition</property>
                 <property name="StatusGroup">Sales_RecievingTicketStatus</property>
                 <property name="Status">Closed</property>
-                <property name="UseNumberGenerator4Name">true</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.RecievingTicket" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+            </validate>
             <command>Sales_RecievingTicket_ShowRevision</command>
         </target>
-
-        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_RecievingTicket</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="ShowStorage">true</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_RecievingTicketMyDesk_Menu_Action_CreateFromDoc2</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_RecievingTicketForm</form>
+            <execute program="org.efaps.esjp.sales.document.RecievingTicket" method="create">
+                <property name="PositionType">Sales_RecievingTicketPosition</property>
+                <property name="StatusGroup">Sales_RecievingTicketStatus</property>
+                <property name="Status">Closed</property>
+                <!-- Projects_ProjectService2RecievingTicket -->
+                <property name="ConnectType">8069d557-349c-4ff4-80f1-b8fbd110a4dd</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.RecievingTicket" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+            </validate>
+            <command>Sales_RecievingTicket_ShowRevision</command>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_RecievingTicket</property>
         <property name="TargetMode">create</property>

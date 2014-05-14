@@ -139,6 +139,11 @@ public abstract class AbstractDocument_Base
     public static final String TARGETMODE_DOC_KEY = "org.efaps.esjp.sales.document.AbstractDocument.TargeModeKey";
 
     /**
+     * Used as a prefix for update script;
+     */
+    public static final String SELDOCUPDATEPF = "SDUP_";
+
+    /**
      * Logging instance used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(AbstractDocument.class);
@@ -483,7 +488,7 @@ public abstract class AbstractDocument_Base
      * Generic method to get a list of documents.
      *
      * @param _parameter Parameter as passed from the eFaps API.
-     * @param __queryBldr QueryBuilder used as base
+     * @param _queryBldr QueryBuilder used as base
      * @return map list for auto-complete.
      * @throws EFapsException on error.
      */
@@ -818,6 +823,7 @@ public abstract class AbstractDocument_Base
                 .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
                 .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+            final Map<?,?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             if (multiple) {
                 if (!Arrays.asList(Arrays.copyOfRange(selectedOids, 1, selectedOids.length)).contains(
                                 print.getCurrentInstance().getOid())) {
@@ -830,7 +836,15 @@ public abstract class AbstractDocument_Base
                         .append("var ul;")
                         .append("if (query(\"ul\", node).length==0) {")
                         .append(" domConstruct.empty(node);")
-                        .append("ul = domConstruct.place(\"<ul></ul>\", node);")
+                        .append("ul = domConstruct.place(\"<ul>");
+
+                    for (final Entry<?,?> entry : properties.entrySet()) {
+                        js.append("<input type=\\\"hidden\\\" ")
+                            .append("name=\\\"").append(AbstractDocument_Base.SELDOCUPDATEPF).append(entry.getKey())
+                            .append("\\\" ").append("value=\\\"").append(entry.getValue()).append("\\\">");
+                    }
+
+                    js.append("</ul>\", node);\n")
                         .append("} else {")
                         .append("ul = query(\"ul\", node)[0];")
                         .append("}")
@@ -863,8 +877,15 @@ public abstract class AbstractDocument_Base
                     .append("<span>")
                     .append("<input type=\\\"hidden\\\" ")
                         .append("name=\\\"").append(input).append("\\\" ")
-                        .append("value=\\\"").append(currentOid).append("\\\">\"")
-                        .append(", node, \"last\"); \n")
+                        .append("value=\\\"").append(currentOid).append("\\\">");
+
+                for (final Entry<?,?> entry : properties.entrySet()) {
+                    js.append("<input type=\\\"hidden\\\" ")
+                        .append("name=\\\"").append(AbstractDocument_Base.SELDOCUPDATEPF).append(entry.getKey())
+                        .append("\\\" ").append("value=\\\"").append(entry.getValue()).append("\\\">");
+                 }
+
+                js.append("\", node, \"last\"); \n")
                     .append("});")
                     .append("});");
 
@@ -1110,6 +1131,7 @@ public abstract class AbstractDocument_Base
         final String contactName = print.<String> getSelect(selContName);
         final String contactData = new Contacts().getFieldValue4Contact(Instance.get(contactOid), false);
         final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
+        final String name = print.<String> getAttribute(CIERP.DocumentAbstract.Name);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
@@ -1143,6 +1165,10 @@ public abstract class AbstractDocument_Base
             js.append(getSetFieldValue(0, "contact", contactOid, contactName)).append("\n")
                 .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
                 .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
+        }
+
+        if ("true".equalsIgnoreCase(_parameter.getParameterValue(AbstractDocument_Base.SELDOCUPDATEPF + "CopyName"))) {
+            js.append(getSetFieldValue(0, "name4create", name)).append("\n");
         }
 
         js.append(getSetFieldValue(0, "netTotal", netTotal == null
@@ -2271,9 +2297,8 @@ public abstract class AbstractDocument_Base
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final boolean useNumGen = "true".equalsIgnoreCase((String) properties.get("UseNumberGenerator4Name"));
-        final String uuidStr = (String) properties.get("NumberGenerator4NameUUID");
+        final boolean useNumGen = "true".equalsIgnoreCase(getProperty(_parameter, "UseNumberGenerator4Name"));
+        final String uuidStr = getProperty(_parameter, "NumberGenerator4NameUUID");
         String ret;
         if (useNumGen) {
             ret = super.getDocName4Create(_parameter);

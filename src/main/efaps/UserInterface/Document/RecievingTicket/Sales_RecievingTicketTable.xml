@@ -32,12 +32,22 @@
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_DocumentAbstract/Type.Label</property>
+            <property name="Label">Sales_RecievingTicket/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
         </field>
-        <field name="name">
+       <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_RecievingTicket/Revision.Label</property>
+        </field>
+        <field name="documentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="Label">Sales_RecievingTicketTable.documentType.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+            <property name="Label">Sales_RecievingTicket/Name.Label</property>
         </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
@@ -45,22 +55,16 @@
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
-            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+            <property name="Label">Sales_RecievingTicket/Date.Label</property>
         </field>
         <field name="vendorLink">
             <property name="Attribute">Salesperson</property>
-            <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
+            <property name="Label">Sales_RecievingTicket/Salesperson.Label</property>
         </field>
         <field name="status">
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
-            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
-        </field>
-        <field name="documentType">
-            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
-            <property name="Label">Sales_ReturnSlip.documentType.Label</property>
-            <property name="FilterType">PICKLIST</property>
+            <property name="Label">Sales_RecievingTicket/Status.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
