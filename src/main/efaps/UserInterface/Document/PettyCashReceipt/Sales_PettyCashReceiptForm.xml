@@ -155,7 +155,10 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
         </field>
-
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_PettyCashReceipt/Status.Label</property>
+        </field>
         <field name="headingSupplier" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_PettyCashReceiptForm.headingSupplier.Label</property>
