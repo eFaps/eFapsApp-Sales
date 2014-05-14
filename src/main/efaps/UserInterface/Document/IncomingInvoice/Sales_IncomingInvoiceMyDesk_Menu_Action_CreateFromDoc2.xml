@@ -49,11 +49,12 @@
                 <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validateName">
-                <property name="ValidateContact">true</property>
-                <property name="QueryType">Sales_IncomingInvoice</property>
-                <property name="QueryType01">Sales_IncomingReceipt</property>
-                <property name="QueryType02">Accounting_ExternalVoucher</property>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
+                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
+                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
             </validate>
             <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
@@ -88,11 +89,12 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validateName">
-                <property name="ValidateContact">true</property>
-                <property name="QueryType">Sales_IncomingInvoice</property>
-                <property name="QueryType01">Sales_IncomingReceipt</property>
-                <property name="QueryType02">Accounting_ExternalVoucher</property>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
+                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
+                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
             </validate>
             <command>Sales_IncomingInvoice_ShowRevision</command>
         </target>
