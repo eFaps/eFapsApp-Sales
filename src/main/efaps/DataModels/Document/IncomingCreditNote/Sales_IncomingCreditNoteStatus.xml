@@ -27,8 +27,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingCreditNoteStatus</name>
         <parent>Sales_DocumentStatus</parent>
-        <status key="Registered">
-            <description>Incoming Credit Note was registered.</description>
+        <status key="Digitized">
+            <description>Incoming Credit Note was digitized and is still editable. (Digitado)</description>
         </status>
         <status key="Open">
             <description>Incoming Credit Note was printed, but needs to be payed for.</description>

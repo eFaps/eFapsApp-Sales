@@ -38,7 +38,7 @@
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create4AccountPettyCash">
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
                 <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
-                <property name="Status">Registered</property>
+                <property name="Status">Digitized</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validateName" />
         </target>
