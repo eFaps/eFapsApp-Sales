@@ -82,6 +82,7 @@ public abstract class IncomingCreditNote_Base
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         return new Return();
     }
 
@@ -99,6 +100,7 @@ public abstract class IncomingCreditNote_Base
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         connect2Account(_parameter, createdDoc);
         createTransaction(_parameter, createdDoc);
         return new Return();

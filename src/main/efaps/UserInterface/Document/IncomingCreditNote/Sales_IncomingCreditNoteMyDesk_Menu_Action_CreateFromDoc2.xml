@@ -27,6 +27,9 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_IncomingCreditNoteMyDesk_Menu_Action_CreateFromDoc2</name>
 
         <!-- target definitions -->
@@ -37,7 +40,10 @@
                 <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+            </validate>
         </target>
 
         <!-- properties -->
@@ -49,4 +55,38 @@
         <property name="TargetDefaultMenu">none</property>
     </definition>
 
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_IncomingCreditNoteMyDesk_Menu_Action_CreateFromDoc2</name>
+
+        <!-- target definitions -->
+        <target>
+            <form>Sales_IncomingCreditNoteForm</form>
+            <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create">
+                <property name="PositionType">Sales_IncomingCreditNotePosition</property>
+                <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
+                <property name="Status">Open</property>
+                <!-- Projects_ProjectService2IncomingCreditNote -->
+                <property name="ConnectType">6d4934b5-ea8a-4926-9643-c29fb12776d6</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+            </validate>
+        </target>
+
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_IncomingCreditNote</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 </ui-command>
