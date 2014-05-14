@@ -428,6 +428,19 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, getQueryBldrFromProperties(_parameter));
+    }
+
+    /**
      * Generic method to get a list of documents.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -459,21 +472,38 @@ public abstract class AbstractDocument_Base
         } else {
             status = _status;
         }
+        final QueryBuilder queryBldr = new QueryBuilder(type);
+        if (status != null) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) status);
+        }
+        return autoComplete4Doc(_parameter, queryBldr);
+    }
+
+    /**
+     * Generic method to get a list of documents.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param __queryBldr QueryBuilder used as base
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    protected Return autoComplete4Doc(final Parameter _parameter,
+                                      final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
         final String req = (String) _parameter.get(ParameterValues.OTHERS);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
-        final QueryBuilder queryBldr = new QueryBuilder(type);
-        InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
-        add2QueryBldr(_parameter, queryBldr);
-        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
-        if (status != null) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, (Object[]) status);
-        }
+
+        InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, _queryBldr);
+        add2QueryBldr(_parameter, _queryBldr);
+        _queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, req + "*").setIgnoreCase(true);
+
         final String key = containsProperty(_parameter, "Key") ? getProperty(_parameter, "Key") : "OID";
         final boolean showContact = !"false".equalsIgnoreCase(getProperty(_parameter, "ShowContact"));
 
-        final MultiPrintQuery multi = queryBldr.getPrint();
+        final MultiPrintQuery multi = _queryBldr.getPrint();
         final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact)
                         .attribute(CIContacts.Contact.Name);
         if (showContact) {
@@ -669,6 +699,20 @@ public abstract class AbstractDocument_Base
      */
 
     public Return updateFields4ProductRequest(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
+    }
+
+    /**
+     * Used by the update event used in the select doc form for ProductRequest.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+
+    public Return updateFields4Document(final Parameter _parameter)
         throws EFapsException
     {
         return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
