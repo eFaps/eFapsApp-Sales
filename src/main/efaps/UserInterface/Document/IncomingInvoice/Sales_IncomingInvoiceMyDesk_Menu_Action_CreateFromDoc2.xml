@@ -46,8 +46,6 @@
             <form>Sales_IncomingInvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation">NAME</property>
@@ -81,8 +79,6 @@
             <form>Sales_IncomingInvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">Open</property>
                 <!-- Projects_ProjectService2IncomingInvoice -->
                 <property name="ConnectType">006219c0-4197-4584-9073-dd10aeca9edc</property>
                 <property name="ConnectCurrentLink">ToLink</property>
