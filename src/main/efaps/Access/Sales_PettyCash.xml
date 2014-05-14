@@ -46,6 +46,7 @@
         <type>Sales_AccountFundsToBeSettled</type>
 
         <status group="Sales_PettyCashReceiptStatus">
+            <key>Open</key>
             <key>Closed</key>
         </status>
 

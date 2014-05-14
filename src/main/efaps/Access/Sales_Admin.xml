@@ -184,6 +184,7 @@
         <status group="Sales_PettyCashReceiptStatus">
             <key>Open</key>
             <key>Closed</key>
+            <key>Booked</key>
         </status>
 
         <status group="Sales_PettyCashBalanceStatus">
