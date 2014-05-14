@@ -35,10 +35,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderOutboundTree_Menu_Action</name>
 
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-
         <!-- childs -->
         <childs>
             <child>Sales_OrderOutboundTree_Menu_Action_Edit</child>
