@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,23 +20,18 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ea88a6b0-7523-4373-bd5a-7ea07e888457</uuid>
+    <uuid>20a06dde-2fce-4770-bcaf-afd1fb4729ad</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionAbstractMyDesk_Menu_Action_CreateOutbound</name>
-        <target>
-            <form>Sales_TransactionAbstractForm</form>
-            <execute program="org.efaps.esjp.sales.Transaction" method="create"/>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_TransactionOutbound</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <name>Sales_PaymentInternalTree_Menu_Action</name>
+        <childs>
+            <child>Sales_PaymentInternalTree_Menu_Action_Edit</child>
+            <child>Sales_PaymentInternalTree_Menu_Action_SetCanceled</child>
+            <child>Sales_PaymentDocumentCheckout</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-menu>

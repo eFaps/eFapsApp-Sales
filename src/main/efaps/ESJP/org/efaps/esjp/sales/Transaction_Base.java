@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,16 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 
+import org.efaps.admin.common.NumberGenerator;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -52,7 +59,15 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -66,7 +81,109 @@ import org.joda.time.DateTime;
 @EFapsUUID("417d2eff-b3ab-4f1a-91f4-c75da34570f6")
 @EFapsRevision("$Rev$")
 public abstract class Transaction_Base
+    extends CommonDocument
 {
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Instance> transInstances = new ArrayList<Instance>();
+        transInstances.add((Instance) new Create().execute(_parameter).get(ReturnValues.INSTANCE));
+        createPaymentInternal(_parameter, transInstances);
+        return new Return();
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return the name for the internal payment document
+     * @throws EFapsException on error
+     */
+    protected String getName4Internal(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Properties props = ERP.getSysConfig()
+                        .getAttributeValueAsProperties(ERPSettings.NUMBERGENERATOR, true);
+        // Sales_PaymentInternalSequence
+        final String uuidStr = props.getProperty(CISales.PaymentInternal.getType().getName(),
+                        "b6a9be07-c4cb-4441-9f37-abe87bad2ef7");
+        final NumberGenerator numGen = NumberGenerator.get(UUID.fromString(uuidStr));
+        return numGen.getNextVal();
+    }
+
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _transInstances   list of transaction instances
+     * @throws EFapsException on error
+     */
+    protected void createPaymentInternal(final Parameter _parameter,
+                                         final List<Instance> _transInstances)
+        throws EFapsException
+    {
+        final Map<Instance, BigDecimal> currInst2amount = new HashMap<Instance, BigDecimal>();
+        final Set<String> notes = new HashSet<String>();
+        final MultiPrintQuery multi = new MultiPrintQuery(_transInstances);
+        multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date,
+                        CISales.TransactionAbstract.Description);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
+        multi.addSelect(sel);
+        multi.executeWithoutAccessCheck();
+        DateTime date = null;
+        while (multi.next()) {
+            BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            final Instance inst = multi.getSelect(sel);
+            if (currInst2amount.containsKey(inst)) {
+                amount = amount.add(currInst2amount.get(inst));
+            }
+            currInst2amount.put(inst, amount);
+            date = multi.getAttribute(CISales.TransactionAbstract.Date);
+            notes.add(multi.<String>getAttribute(CISales.TransactionAbstract.Description));
+        }
+        String noteStr = "";
+        for (final String note : notes) {
+            if (note != null) {
+                noteStr = noteStr + note;
+            }
+        }
+        for (final Entry<Instance, BigDecimal> entry : currInst2amount.entrySet()) {
+
+            final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, entry.getKey());
+
+            final Insert docInsert = new Insert(CISales.PaymentInternal);
+            docInsert.add(CISales.PaymentInternal.Name, getName4Internal(_parameter));
+            docInsert.add(CISales.PaymentInternal.CurrencyLink, Sales.getSysConfig()
+                            .getLink(SalesSettings.CURRENCYBASE));
+            docInsert.add(CISales.PaymentInternal.Amount, entry.getValue());
+            docInsert.add(CISales.PaymentInternal.RateCurrencyLink, entry.getKey());
+            docInsert.add(CISales.PaymentInternal.Rate, rateInfo.getRateObject());
+            docInsert.add(CISales.PaymentInternal.Date, date);
+            docInsert.add(CISales.PaymentInternal.Note, noteStr);
+            docInsert.add(CISales.PaymentInternal.Status, Status.find(CISales.PaymentInternalStatus.Open));
+            docInsert.execute();
+
+            final Insert payInsert = new Insert(CISales.Payment);
+            payInsert.add(CISales.Payment.Date, date);
+            payInsert.add(CISales.Payment.CreateDocument, docInsert.getInstance());
+            payInsert.add(CISales.Payment.Amount, entry.getValue());
+            payInsert.add(CISales.Payment.Rate, rateInfo.getRateObject());
+            payInsert.add(CISales.Payment.RateCurrencyLink, entry.getKey());
+            payInsert.add(CISales.Payment.CurrencyLink, Sales.getSysConfig()
+                            .getLink(SalesSettings.CURRENCYBASE));
+            payInsert.execute();
+
+            for (final Instance inst : _transInstances) {
+                final Update update = new Update(inst);
+                update.add(CISales.TransactionAbstract.Payment, payInsert.getInstance());
+                update.execute();
+            }
+        }
+    }
+
 
     /**
      * Method is executed as trigger after the insert of an

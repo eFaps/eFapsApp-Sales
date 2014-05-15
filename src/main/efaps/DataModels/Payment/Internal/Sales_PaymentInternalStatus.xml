@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,23 +20,26 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ea88a6b0-7523-4373-bd5a-7ea07e888457</uuid>
+    <uuid>86f15a56-196f-4ee4-9fb4-9b9099b80ee9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionAbstractMyDesk_Menu_Action_CreateOutbound</name>
-        <target>
-            <form>Sales_TransactionAbstractForm</form>
-            <execute program="org.efaps.esjp.sales.Transaction" method="create"/>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_TransactionOutbound</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <name>Sales_PaymentInternalStatus</name>
+        <parent>Sales_PaymentDocumentStatus</parent>
+        <status key="Open">
+            <description>Check is unused.</description>
+        </status>
+        <status key="Closed">
+            <description>Check was emited.</description>
+        </status>
+        <status key="Canceled">
+            <description>Check was canceled.</description>
+        </status>
+        <status key="Booked">
+            <description>Check was booked.</description>
+        </status>
     </definition>
-</ui-command>
+</datamodel-statusgroup>

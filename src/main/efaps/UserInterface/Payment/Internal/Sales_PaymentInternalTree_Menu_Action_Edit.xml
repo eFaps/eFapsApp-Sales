@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2012 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,27 +20,24 @@
  Last Changed By: $Author$
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>53b67e22-8774-4576-b407-c0fe025b9346</uuid>
-    <file-application>eFaps-ERP-Products</file-application>
+    <uuid>8bb26354-3ef1-46a2-b586-97e0f8a8edcc</uuid>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionAbstractMyDesk</name>
+        <name>Sales_PaymentInternalTree_Menu_Action_Edit</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_TransactionAbstractMyDesk_Menu</menu>
-            <table>Sales_TransactionAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_TransactionAbstract</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
+            <form>Sales_PaymentInternalForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>
