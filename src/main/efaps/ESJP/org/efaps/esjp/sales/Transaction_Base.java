@@ -128,6 +128,7 @@ public abstract class Transaction_Base
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _transInstances   list of transaction instances
+     * @return file created or null
      * @throws EFapsException on error
      */
     protected File createPaymentInternal(final Parameter _parameter,
@@ -148,7 +149,10 @@ public abstract class Transaction_Base
         multi.executeWithoutAccessCheck();
         DateTime date = null;
         while (multi.next()) {
-            final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionOutbound.getType())) {
+                amount = amount.negate();
+            }
             final Instance inst = multi.getSelect(sel);
             TransInfo info;
             if (currInst2info.containsKey(inst)) {
@@ -189,7 +193,7 @@ public abstract class Transaction_Base
 
             final Insert payInsert = new Insert(CISales.Payment);
             payInsert.add(CISales.Payment.Date, date);
-            payInsert.add(CISales.Payment.CreateDocument, docInsert.getInstance());
+            payInsert.add(CISales.Payment.TargetDocument, docInsert.getInstance());
             payInsert.add(CISales.Payment.Amount, info.getAmount());
             payInsert.add(CISales.Payment.Rate, rateInfo.getRateObject());
             payInsert.add(CISales.Payment.RateCurrencyLink, curInst.getInstance());
@@ -637,7 +641,7 @@ public abstract class Transaction_Base
          */
         public TransInfo(final Instance _inst)
         {
-           this.currencyInst = _inst;
+            this.currencyInst = _inst;
         }
 
         /**
@@ -645,7 +649,7 @@ public abstract class Transaction_Base
          */
         public Object getAccountName()
         {
-            String ret = "" ;
+            String ret = "";
             for (final String account : this.accounts) {
                 if (account != null) {
                     ret = ret.isEmpty() ? account : (ret +  " -> " + account);
@@ -683,7 +687,6 @@ public abstract class Transaction_Base
             return new CurrencyInst(this.currencyInst);
         }
 
-
         /**
          * Getter method for the instance variable {@link #amount}.
          *
@@ -691,9 +694,8 @@ public abstract class Transaction_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount;
+            return this.amount.abs();
         }
-
 
         /**
          * Getter method for the instance variable {@link #transInst}.
@@ -705,5 +707,4 @@ public abstract class Transaction_Base
             return this.transInst;
         }
     }
-
 }

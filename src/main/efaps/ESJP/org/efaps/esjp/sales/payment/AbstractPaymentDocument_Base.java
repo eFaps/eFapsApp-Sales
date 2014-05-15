@@ -1115,7 +1115,7 @@ public abstract class AbstractPaymentDocument_Base
      * Inverse the transactions of a PaymentDocument.
      * @param _parameter Parameter as passed by the eFaps API
      * @param _instance instance of the Payment Document
-     * @param _isTargetDocument is it a targetDocument
+     * @param _isTargetDocument is it a targetDocument (PaymentDocument)
      * @throws EFapsException on error
      */
     protected void inverseTransactions(final Parameter _parameter,

@@ -64,7 +64,7 @@ public abstract class PaymentInternal_Base
                 final Long statusid = objID instanceof String ? Long.valueOf((String) objID) : (Long) objID;
                 final Status status = Status.get(statusid);
                 if (CISales.PaymentInternalStatus.Canceled.key.equals(status.getKey())) {
-                    inverseTransactions(_parameter, _parameter.getInstance(), false);
+                    inverseTransactions(_parameter, _parameter.getInstance(), true);
                 }
             }
         }
