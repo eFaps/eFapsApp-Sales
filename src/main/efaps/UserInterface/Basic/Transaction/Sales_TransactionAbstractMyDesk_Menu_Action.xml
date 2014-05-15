@@ -23,23 +23,19 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>d49019f1-a099-40cb-9396-74ce24770690</uuid>
-  <file-application>eFaps-ERP-Products</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_TransactionAbstractMyDesk_Menu_Action</name>
-    <!-- childs -->
-    <childs>
-      <child>Sales_TransactionAbstractMyDesk_Menu_Action_CreateInbound</child>
-      <child>Sales_TransactionAbstractMyDesk_Menu_Action_CreateOutbound</child>
-      <child>Sales_TransactionAbstractMyDesk_Menu_Action_Delete</child>
-    </childs>
-  </definition>
-
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>d49019f1-a099-40cb-9396-74ce24770690</uuid>
+    <file-application>eFaps-ERP-Products</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_TransactionAbstractMyDesk_Menu_Action</name>
+        <childs>
+            <child>Sales_TransactionAbstractMyDesk_Menu_Action_CreateInbound</child>
+            <child>Sales_TransactionAbstractMyDesk_Menu_Action_CreateOutbound</child>
+            <child>Sales_TransactionAbstractMyDesk_Menu_Action_CreateInternal</child>
+            <child>Sales_TransactionAbstractMyDesk_Menu_Action_Delete</child>
+        </childs>
+    </definition>
 </ui-menu>

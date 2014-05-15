@@ -22,24 +22,19 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>bdb1dc0e-03c6-4a22-8291-457154f7cbee</uuid>
-    <file-application>eFaps-ERP-Products</file-application>
+    <uuid>249e7a2a-5fc3-4ce4-97e6-7469f85f8f45</uuid>
+    <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 3449 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionInternalMyDesk</name>
+        <name>Sales_PaymentInternalMyDesk_Menu_Action_Delete</name>
         <access>
-            <role>Sales_Admin</role>
+            <role>Administration</role>
         </access>
         <target>
-            <menu>Sales_TransactionInternalMyDesk_Menu</menu>
-            <table>Sales_TransactionAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_TransactionAbstract</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
 </ui-command>
