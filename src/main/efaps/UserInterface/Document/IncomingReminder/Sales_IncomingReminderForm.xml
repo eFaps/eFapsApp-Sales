@@ -27,6 +27,9 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_IncomingReminderForm</name>
         <!-- fields -->
         <field name="activatePositionsCalculator">
@@ -138,6 +141,317 @@
         <field name="revision">
             <property name="Attribute">Revision</property>
             <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="derived">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="Required">true</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_IncomingReminderForm.derived.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="autoComplete4IncomingInvoice"
+                name="Sales_IncomingReminderForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Accounting_ExternalVoucher</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="updateFields4IncomingInvoice"
+                name="Sales_IncomingReminderForm.derived.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
+                <property name="UpdateContactField">true</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd"
+                name="Sales_IncomingReminderForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <!-- Sales_IncomingReminderMyDesk_Menu_Action_CreateFromDoc2 -->
+                <property name="CmdUUID">38ba6ccf-9c69-4046-9cf7-0dde3cccca6a</property>
+                <property name="Inverse">true</property>
+            </trigger>
+        </field>
+        <field character="Heading" name="headingClient">
+            <property name="Level">2</property>
+            <property name="Label">Sales_IncomingReminderForm.headingClient.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingReminderForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Columns">98</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_IncomingReminderForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts">
+                <property name="Classification">Contacts_ClassSupplier</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_IncomingReminderForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_IncomingReminderForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field character="Heading" name="headingPositon">
+            <property name="Level">2</property>
+            <property name="Label">Sales_IncomingReminderForm.headingPositon.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field character="Group" name="currencyGroup">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rateCurrencyId">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_IncomingReminderForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_IncomingReminderForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+        </field>
+        <field name="rateCurrencyData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_IncomingReminderForm.rateCurrencyData.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="withoutVAT">
+            <property name="Label">Sales_IncomingReminderForm.withoutVAT.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_IncomingReminderForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+        </field>
+        <field character="Target" name="positionTable">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Sales_IncomingReminderPositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_IncomingReminderPosition</property>
+                <property name="LinkFroms">IncomingReminder</property>
+            </evaluate>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="RowSpan">3</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="netTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">NetTotal</property>
+        </field>
+        <field name="crossTotal">
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">CrossTotal</property>
+        </field>
+        <field name="netTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingReminder/NetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingReminder/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field character="Heading" name="rate4ReadHeading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_IncomingReminderForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field character="Group" name="rateGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+        </field>
+        <field name="rateNetTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingReminder/RateNetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">READONLY</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingReminder/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ReminderPositionTable.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+        </field>
+    </definition>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_IncomingReminderForm</name>
+        <!-- fields -->
+        <field name="activatePositionsCalculator">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_IncomingReminderForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+        </field>
+        <field character="Group" name="dateGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="salesperson">
+            <property name="Attribute">Salesperson</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger event="UI_FIELD_VALUE" method="getSalesPersonFieldValue" name="Sales_IncomingReminderForm.salesperson.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder">
+                <property name="Type">Admin_User_Person</property>
+                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+                <property name="OrderSelect">attribute[LastName]</property>
+                <property name="WhereAttrEqValue">Status|true</property>
+                <property name="SelectCurrent">true</property>
+            </trigger>
+        </field>
+        <field name="salespersonLink">
+            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Attribute">Salesperson</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="documentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_IncomingReminderForm.documentType.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="dropDown4DocumentType"
+                    name="Sales_IncomingReminderForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">ERP_DocumentType</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Regex4DefaultValue">08 - .*</property>
+            </trigger>
+        </field>
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field character="Group" name="modifyGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="project">
+            <property name="Label">Sales_IncomingReminderForm.project.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">100</property>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="autoComplete4Project"
+                name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="StatusGroup">Projects_ProjectServiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="MaxChoiceLength">155</property>
+            </trigger>
+        </field>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2IncomingReminder#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2IncomingReminder#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2IncomingReminder#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">50</property>
         </field>
         <field name="derived">
             <property name="ModeCreate">EDITABLE</property>

@@ -107,6 +107,21 @@ public abstract class IncomingCreditNote_Base
     }
 
     /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        return new Return();
+    }
+
+    /**
      * Connect Account and PettyCash.
      *
      * @param _parameter Parameter as passed from the eFaps API

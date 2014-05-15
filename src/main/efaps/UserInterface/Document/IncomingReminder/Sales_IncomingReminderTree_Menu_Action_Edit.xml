@@ -15,15 +15,15 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 10116 $
- Last Changed:    $Date: 2013-08-26 07:23:50 -0500 (lun, 26 ago 2013) $
- Last Changed By: $Author: m.aranya@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>7a83144b-7b44-4eef-8f53-e2b78d68ddd4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 10116 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReminderTree_Menu_Action_Edit</name>
@@ -34,8 +34,13 @@
         <!-- target definitions -->
         <target>
             <form>Sales_IncomingReminderForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+            <execute program="org.efaps.esjp.sales.document.IncomingReminder" method="edit">
+                <property name="PositionType">Sales_IncomingReminderPosition</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingReminder" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+            </validate>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

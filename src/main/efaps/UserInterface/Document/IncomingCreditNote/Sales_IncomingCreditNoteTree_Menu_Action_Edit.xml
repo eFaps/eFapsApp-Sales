@@ -34,8 +34,13 @@
         <!-- target definitions -->
         <target>
             <form>Sales_IncomingCreditNoteForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+            <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="edit">
+                <property name="PositionType">Sales_IncomingCreditNotePosition</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+            </validate>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

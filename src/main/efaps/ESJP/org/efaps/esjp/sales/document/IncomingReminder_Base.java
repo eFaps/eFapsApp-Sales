@@ -80,6 +80,22 @@ public abstract class IncomingReminder_Base
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
+        return new Return();
+    }
+
+    /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
         return new Return();
     }
 
