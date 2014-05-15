@@ -27,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -49,7 +51,6 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.ProductsSettings;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -223,8 +224,8 @@ public abstract class Reservation_Base
         final Return retVal = new Return();
         final DecimalFormat formater = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
         final String oid = _parameter.getParameterValues("product")[selected];
@@ -241,6 +242,13 @@ public abstract class Reservation_Base
                 queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, storequery);
             }
             final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDesc = SelectBuilder.get().linkto(CIProducts.Inventory.Product)
+                            .attribute(CIProducts.ProductAbstract.Description);
+            final SelectBuilder selDim = SelectBuilder.get().linkto(CIProducts.Inventory.Product)
+                            .attribute(CIProducts.ProductAbstract.Dimension);
+            final SelectBuilder selUoM = SelectBuilder.get().linkto(CIProducts.Inventory.Product)
+                            .attribute(CIProducts.ProductAbstract.DefaultUoM);
+            multi.addSelect(selDesc, selDim, selUoM);
             multi.addAttribute(CIProducts.Inventory.Quantity);
             multi.execute();
             if (multi.next()) {
@@ -255,15 +263,26 @@ public abstract class Reservation_Base
                 map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
                                 formater.format(BigDecimal.ZERO));
             }
-
+            map.put(CITableSales.Sales_ReceiptPositionTable.productDesc.name,
+                            StringEscapeUtils.escapeEcmaScript(multi.<String>getSelect(selDesc)));
+            final Long dimId = multi.<Long>getSelect(selDim);
+            final Long dUoMId = multi.<Long>getSelect(selUoM);
+            long selectedUoM;
+            if (dUoMId == null) {
+                selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
+            } else {
+                if (Dimension.getUoM(dUoMId).getDimension().equals(Dimension.get(dimId))) {
+                    selectedUoM = dUoMId;
+                } else {
+                    selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
+                }
+            }
+            map.put(CITableSales.Sales_ReceiptPositionTable.uoM.name, getUoMFieldStr(selectedUoM, dimId));
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         } else {
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
-            final StringBuilder js = new StringBuilder();
-            js.append("document.getElementsByName('productAutoComplete')[").append(selected).append("].focus()");
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
     }
