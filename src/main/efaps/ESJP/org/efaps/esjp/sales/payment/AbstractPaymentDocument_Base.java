@@ -1672,27 +1672,29 @@ public abstract class AbstractPaymentDocument_Base
             this.lstPayments = queryBldr.getQuery().executeWithoutAccessCheck();
         }
 
-        protected BigDecimal getRateTotal4PayDocType(final CIType _type)
+        protected BigDecimal getRateTotal4TaxDocumentType(final CIType _type)
             throws EFapsException
         {
             BigDecimal ret = BigDecimal.ZERO;
-            if (this.instance.isValid() && !this.lstPayments.isEmpty()) {
-                final SelectBuilder selPaymentDocumentType = new SelectBuilder()
-                                .linkto(CISales.Payment.TargetDocument).type();
-                final MultiPrintQuery multi = new MultiPrintQuery(this.lstPayments);
-                multi.addSelect(selPaymentDocumentType);
-                multi.addAttribute(CISales.Payment.Amount,
-                                CISales.Payment.Date,
-                                CISales.Payment.Rate);
+            if (this.instance.isValid() && _type != null) {
+                final SelectBuilder selDoc = new SelectBuilder()
+                                .linkto(CISales.IncomingDocumentTax2Document.FromAbstractLink);
+                final SelectBuilder selDate = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Date);
+                final SelectBuilder selRate = new SelectBuilder(selDoc).attribute(CISales.DocumentSumAbstract.Rate);
+                final SelectBuilder selRateCross = new SelectBuilder(selDoc)
+                                .attribute(CISales.DocumentSumAbstract.RateCrossTotal);
+
+                final QueryBuilder queryBldr = new QueryBuilder(_type);
+                queryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.instance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addSelect(selDate, selRate, selRateCross);
                 multi.execute();
                 while (multi.next()) {
-                    if (multi.<Type>getSelect(selPaymentDocumentType).equals(_type.getType())) {
-                        final Object[] rateObj = multi.<Object[]>getAttribute(CISales.Payment.Rate);
-                        final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
-                        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                                        BigDecimal.ROUND_HALF_UP);
-                        ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
-                    }
+                    final Object[] rateObj = multi.<Object[]>getSelect(selRate);
+                    final BigDecimal amount = multi.<BigDecimal>getSelect(selRateCross);
+                    final BigDecimal rate = ((BigDecimal) rateObj[0])
+                                    .divide((BigDecimal) rateObj[1], 12, BigDecimal.ROUND_HALF_UP);
+                    ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
             }
             return ret;

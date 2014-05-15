@@ -872,13 +872,13 @@ public abstract class AbstractPaymentOut_Base
             throws EFapsException
         {
             final BigDecimal totPay = getRateTotalPayments();
-            final BigDecimal ret = getRateTotal4PayDocType(CISales.PaymentRetentionOut);
-            final BigDecimal det = getRateTotal4PayDocType(CISales.PaymentDetractionOut);
+            final BigDecimal ret = getRateTotal4TaxDocumentType(CISales.IncomingRetention2IncomingInvoice);
+            final BigDecimal det = getRateTotal4TaxDocumentType(CISales.IncomingDetraction2IncomingInvoice);
 
             final StringBuilder strBldr = new StringBuilder();
 
             strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
-                            .append(getTwoDigitsformater().format(totPay.subtract(ret).subtract(det))).append(" / ")
+                            .append(getTwoDigitsformater().format(totPay)).append(" / ")
                             .append(getTwoDigitsformater().format(det)).append(" / ")
                             .append(getTwoDigitsformater().format(ret)).append(" - ").append(getRateSymbol());
 

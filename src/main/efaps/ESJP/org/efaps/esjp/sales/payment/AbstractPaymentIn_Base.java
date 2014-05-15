@@ -202,13 +202,13 @@ public abstract class AbstractPaymentIn_Base
             throws EFapsException
         {
             final BigDecimal totPay = getRateTotalPayments();
-            final BigDecimal ret = getRateTotal4PayDocType(CISales.PaymentRetention);
-            final BigDecimal det = getRateTotal4PayDocType(CISales.PaymentDetraction);
+            final BigDecimal ret = getRateTotal4TaxDocumentType(null);
+            final BigDecimal det = getRateTotal4TaxDocumentType(null);
 
             final StringBuilder strBldr = new StringBuilder();
 
             strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
-                            .append(getTwoDigitsformater().format(totPay.subtract(ret).subtract(det))).append(" / ")
+                            .append(getTwoDigitsformater().format(totPay)).append(" / ")
                             .append(getTwoDigitsformater().format(det)).append(" / ")
                             .append(getTwoDigitsformater().format(ret)).append(" - ").append(getRateSymbol());
 
