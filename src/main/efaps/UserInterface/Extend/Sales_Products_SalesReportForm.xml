@@ -47,12 +47,16 @@
                 event="UI_FIELD_VALUE"
                 index="1">
                 <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+                <property name="ReportField">salesReport</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">type</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Type</property>
                 <property name="FilterDefault01">YEAR:-1</property>
                 <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">Sales_Invoice</property>
              </trigger>
             <trigger program="org.efaps.esjp.sales.SalesProductReport"
                 method="getFilterFieldValue"
@@ -62,8 +66,10 @@
                 <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">type</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.SalesProductReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.SalesProductReport.dateTo</property>
+                <property name="DBProperty03">ERP_ReportFilterForm4DateFromToType.type.Label</property>
             </trigger>
         </field>
         <field name="salesReport">
@@ -75,7 +81,12 @@
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
-                <property name="Type">Sales_Invoice</property>
+                <property name="Type01">Sales_Invoice</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
+                <property name="Status01">!Replaced</property>
+                <property name="Type02">Sales_IncomingInvoice</property>
+                <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
+                <property name="Status02">!Replaced</property>
                 <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </trigger>
         </field>

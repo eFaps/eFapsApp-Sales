@@ -29,8 +29,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
@@ -52,7 +50,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -86,6 +83,7 @@ import org.joda.time.DateTime;
 public abstract class SalesProductReport_Base
     extends FilteredReport
 {
+
     /**
      * @param _parameter    Parameter as passed by the eFasp API
      * @return Return containing html snipplet
@@ -144,43 +142,6 @@ public abstract class SalesProductReport_Base
             this.filteredReport = _salesProductReport_Base;
         }
 
-        protected QueryBuilder getQueryBuilder(final Parameter _parameter)
-            throws EFapsException
-        {
-            QueryBuilder ret = null;
-            final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-            final Map<Integer, String> status = analyseProperty(_parameter, "Status");
-            final List<Long> statusList = new ArrayList<Long>();
-            for (final Entry<Integer, String> typeEntry : types.entrySet()) {
-                final String typeStr = typeEntry.getValue();
-                final Type type = isUUID(typeStr) ? Type.get(UUID.fromString(typeStr)) : Type.get(typeStr);
-                if (ret == null) {
-                    ret = new QueryBuilder(type);
-                } else {
-                    ret.addType(type);
-                }
-
-                if (!status.isEmpty()) {
-                    final String statusStr = status.get(typeEntry.getKey());
-                    final String[] statusArr = statusStr.split(";");
-
-                    for (final String statusS : statusArr) {
-
-                        final Status statusTmp = Status.find(type.getStatusAttribute().getLink().getUUID(), statusS);
-                        if (statusTmp != null) {
-                            statusList.add(statusTmp.getId());
-                        }
-
-                    }
-                }
-            }
-            if (!statusList.isEmpty()) {
-                ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract,
-                                statusList.toArray(new Object[statusList.size()]));
-            }
-            return ret;
-        }
-
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
@@ -195,7 +156,7 @@ public abstract class SalesProductReport_Base
 
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
 
-            final QueryBuilder attrQueryBldr = getQueryBuilder(_parameter);
+            final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBuilder(_parameter, attrQueryBldr);
             if (instance.getType().isKindOf(CIContacts.Contact.getType())) {
                 attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, instance.getId());
@@ -355,7 +316,10 @@ public abstract class SalesProductReport_Base
             } else {
                 dateTo = new DateTime();
             }
-
+            if (filter.containsKey("type")) {
+                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
+                                ((TypeFilterValue) filter.get("type")).getObject());
+            }
             _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());

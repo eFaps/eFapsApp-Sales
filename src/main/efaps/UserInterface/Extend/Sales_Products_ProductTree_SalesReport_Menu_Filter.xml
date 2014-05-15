@@ -34,7 +34,7 @@
             <role>Products_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4DateFromTo</form>
+            <form>ERP_ReportFilterForm4DateFromToType</form>
             <execute program="org.efaps.esjp.sales.SalesProductReport" method="setFilter">
                 <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </execute>
@@ -43,5 +43,7 @@
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
         <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+        <property name="FilterTargetForm">Sales_Products_SalesReportForm</property>
+        <property name="FilterTargetField">salesReport</property>
     </definition>
 </ui-command>
