@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -27,9 +28,10 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
@@ -59,13 +61,16 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
+import org.efaps.esjp.sales.payment.PaymentInternal;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -94,8 +99,13 @@ public abstract class Transaction_Base
     {
         final List<Instance> transInstances = new ArrayList<Instance>();
         transInstances.add((Instance) new Create().execute(_parameter).get(ReturnValues.INSTANCE));
-        createPaymentInternal(_parameter, transInstances);
-        return new Return();
+        final File file = createPaymentInternal(_parameter, transInstances);
+        final Return ret = new Return();
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
@@ -115,34 +125,43 @@ public abstract class Transaction_Base
         return numGen.getNextVal();
     }
 
-
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _transInstances   list of transaction instances
      * @throws EFapsException on error
      */
-    protected void createPaymentInternal(final Parameter _parameter,
+    protected File createPaymentInternal(final Parameter _parameter,
                                          final List<Instance> _transInstances)
         throws EFapsException
     {
-        final Map<Instance, BigDecimal> currInst2amount = new HashMap<Instance, BigDecimal>();
+        final Map<Instance, TransInfo> currInst2info = new LinkedHashMap<Instance, TransInfo>();
         final Set<String> notes = new HashSet<String>();
+
         final MultiPrintQuery multi = new MultiPrintQuery(_transInstances);
         multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date,
-                        CISales.TransactionAbstract.Description);
+                        CISales.TransactionAbstract.Description, CISales.TransactionAbstract.Account);
         final SelectBuilder sel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
-        multi.addSelect(sel);
+
+        final SelectBuilder selAccName = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
+                        .attribute(CISales.AccountAbstract.Name);
+        multi.addSelect(sel, selAccName);
         multi.executeWithoutAccessCheck();
         DateTime date = null;
         while (multi.next()) {
-            BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
             final Instance inst = multi.getSelect(sel);
-            if (currInst2amount.containsKey(inst)) {
-                amount = amount.add(currInst2amount.get(inst));
+            TransInfo info;
+            if (currInst2info.containsKey(inst)) {
+                info = currInst2info.get(inst);
+            } else {
+                info = new TransInfo(inst);
             }
-            currInst2amount.put(inst, amount);
+            info.add(amount);
+            currInst2info.put(inst, info);
             date = multi.getAttribute(CISales.TransactionAbstract.Date);
             notes.add(multi.<String>getAttribute(CISales.TransactionAbstract.Description));
+            info.addAccount(multi.<String>getSelect(selAccName));
+            info.addTransInstance(multi.getCurrentInstance());
         }
         String noteStr = "";
         for (final String note : notes) {
@@ -150,16 +169,18 @@ public abstract class Transaction_Base
                 noteStr = noteStr + note;
             }
         }
-        for (final Entry<Instance, BigDecimal> entry : currInst2amount.entrySet()) {
 
-            final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, entry.getKey());
-
+        final List<File> files = new ArrayList<File>();
+        for (final TransInfo info : currInst2info.values()) {
+            final CurrencyInst curInst = info.getCurrencyInst();
+            final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, curInst.getInstance());
+            final String name = getName4Internal(_parameter);
             final Insert docInsert = new Insert(CISales.PaymentInternal);
-            docInsert.add(CISales.PaymentInternal.Name, getName4Internal(_parameter));
+            docInsert.add(CISales.PaymentInternal.Name, name);
             docInsert.add(CISales.PaymentInternal.CurrencyLink, Sales.getSysConfig()
                             .getLink(SalesSettings.CURRENCYBASE));
-            docInsert.add(CISales.PaymentInternal.Amount, entry.getValue());
-            docInsert.add(CISales.PaymentInternal.RateCurrencyLink, entry.getKey());
+            docInsert.add(CISales.PaymentInternal.Amount, info.getAmount());
+            docInsert.add(CISales.PaymentInternal.RateCurrencyLink, curInst.getInstance());
             docInsert.add(CISales.PaymentInternal.Rate, rateInfo.getRateObject());
             docInsert.add(CISales.PaymentInternal.Date, date);
             docInsert.add(CISales.PaymentInternal.Note, noteStr);
@@ -169,21 +190,34 @@ public abstract class Transaction_Base
             final Insert payInsert = new Insert(CISales.Payment);
             payInsert.add(CISales.Payment.Date, date);
             payInsert.add(CISales.Payment.CreateDocument, docInsert.getInstance());
-            payInsert.add(CISales.Payment.Amount, entry.getValue());
+            payInsert.add(CISales.Payment.Amount, info.getAmount());
             payInsert.add(CISales.Payment.Rate, rateInfo.getRateObject());
-            payInsert.add(CISales.Payment.RateCurrencyLink, entry.getKey());
+            payInsert.add(CISales.Payment.RateCurrencyLink, curInst.getInstance());
             payInsert.add(CISales.Payment.CurrencyLink, Sales.getSysConfig()
                             .getLink(SalesSettings.CURRENCYBASE));
             payInsert.execute();
 
-            for (final Instance inst : _transInstances) {
+            for (final Instance inst : info.getTransInst()) {
                 final Update update = new Update(inst);
                 update.add(CISales.TransactionAbstract.Payment, payInsert.getInstance());
                 update.execute();
             }
+            final PaymentInternal internal = new PaymentInternal();
+            final CreatedDoc createdDoc = new CreatedDoc(docInsert.getInstance());
+            createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Name.name, name);
+            createdDoc.getValues().put("accountName", info.getAccountName());
+            createdDoc.getValues().put("accountCurrencyName", curInst.getName());
+            final File file = (File) internal.createReportDoc(_parameter, createdDoc).get(ReturnValues.VALUES);
+            if (file != null) {
+                files.add(file);
+            }
         }
+        File ret = null;
+        if (!files.isEmpty()) {
+            ret = new FileUtil().combinePdfs(files, CISales.PaymentInternal.getType().getLabel(), false);
+        }
+        return ret;
     }
-
 
     /**
      * Method is executed as trigger after the insert of an
@@ -469,6 +503,11 @@ public abstract class Transaction_Base
         return ret;
     }
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on errro
+     */
     public Return createInternalTransfer(final Parameter _parameter)
         throws EFapsException
     {
@@ -481,23 +520,36 @@ public abstract class Transaction_Base
         final String charger = _parameter.getParameterValue("charger");
         final String payment = _parameter.getParameterValue("payment");
 
+        final List<Instance> transInst = new ArrayList<Instance>();
         // transaction outbound
-        createInternalTransaction(_parameter, CISales.TransactionOutbound.getType(), charger, costOutStr, currIdOutStr,
-                        amountOutStr);
+        transInst.addAll(createInternalTransaction(_parameter, CISales.TransactionOutbound.getType(), charger,
+                        costOutStr, currIdOutStr, amountOutStr));
         // transaction inbound
-        createInternalTransaction(_parameter, CISales.TransactionInbound.getType(), payment, costInStr, currIdInStr,
-                        amountInStr);
-        return new Return();
+        transInst.addAll(createInternalTransaction(_parameter, CISales.TransactionInbound.getType(), payment,
+                        costInStr, currIdInStr, amountInStr));
+        final File file = createPaymentInternal(_parameter, transInst);
+        final Return ret = new Return();
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+
     }
 
     /**
      * Method for create internal transfers.
      *
      * @param _parameter Parameter as passed from the eFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
+     * @param _transactionType  type of transactio to be inserted
+     * @param _account  account the transaction belongs to
+     * @param _cost     cost
+     * @param _currencyId currency
+     * @param _amount   amount
+     * @return List of created transaction instance
+     * @throws EFapsException on error
      */
-    public Return createInternalTransaction(final Parameter _parameter,
+    public List<Instance> createInternalTransaction(final Parameter _parameter,
                                             final Type _transactionType,
                                             final String _account,
                                             final String _cost,
@@ -505,6 +557,7 @@ public abstract class Transaction_Base
                                             final String _amount)
         throws EFapsException
     {
+        final List<Instance> ret = new ArrayList<Instance>();
         final String note = _parameter.getParameterValue("note");
 
         Instance instCharger = null;
@@ -544,6 +597,7 @@ public abstract class Transaction_Base
                 transInsertCost.add(CISales.TransactionAbstract.Description, note);
                 transInsertCost.add(CISales.TransactionAbstract.Date, new DateTime());
                 transInsertCost.execute();
+                ret.add(transInsertCost.getInstance());
             }
         }
 
@@ -562,9 +616,94 @@ public abstract class Transaction_Base
             transInsertAmount.add(CISales.TransactionAbstract.Description, note);
             transInsertAmount.add(CISales.TransactionAbstract.Date, new DateTime());
             transInsertAmount.execute();
+            ret.add(transInsertAmount.getInstance());
+        }
+        return ret;
+    }
+
+    public static class TransInfo
+    {
+
+        private final Instance currencyInst;
+
+        private BigDecimal amount = BigDecimal.ZERO;
+
+        private final Set<String> accounts = new LinkedHashSet<String>();
+
+        private final Set<Instance> transInst = new LinkedHashSet<Instance>();
+
+        /**
+         * @param _inst
+         */
+        public TransInfo(final Instance _inst)
+        {
+           this.currencyInst = _inst;
         }
 
-        return new Return();
+        /**
+         * @return
+         */
+        public Object getAccountName()
+        {
+            String ret = "" ;
+            for (final String account : this.accounts) {
+                if (account != null) {
+                    ret = ret.isEmpty() ? account : (ret +  " -> " + account);
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * @param _select
+         */
+        public void addAccount(final String _select)
+        {
+            this.accounts.add(_select);
+        }
+
+        /**
+         * @param _select
+         */
+        public void addTransInstance(final Instance _inst)
+        {
+            this.transInst.add(_inst);
+        }
+
+        /**
+         * @param _amount
+         */
+        public void add(final BigDecimal _amount)
+        {
+            this.amount = this.amount.add(_amount);
+        }
+
+        public CurrencyInst getCurrencyInst()
+        {
+            return new CurrencyInst(this.currencyInst);
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #amount}.
+         *
+         * @return value of instance variable {@link #amount}
+         */
+        public BigDecimal getAmount()
+        {
+            return this.amount;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #transInst}.
+         *
+         * @return value of instance variable {@link #transInst}
+         */
+        public Set<Instance> getTransInst()
+        {
+            return this.transInst;
+        }
     }
 
 }

@@ -33,12 +33,16 @@
         <name>Sales_TransactionAbstractMyDesk_Menu_Action_CreateInbound</name>
         <target>
             <form>Sales_TransactionAbstractForm</form>
-            <execute program="org.efaps.esjp.sales.Transaction" method="create"/>
+            <execute program="org.efaps.esjp.sales.Transaction" method="create">
+                <property name="JasperReport">Sales_PaymentDocumentReport</property>
+                <property name="Mime">pdf</property>
+            </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_TransactionInbound</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

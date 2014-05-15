@@ -989,8 +989,8 @@ public abstract class AbstractPaymentDocument_Base
         // to be implemented
     }
 
-    protected Return createReportDoc(final Parameter _parameter,
-                                     final CreatedDoc _createdDoc)
+    public Return createReportDoc(final Parameter _parameter,
+                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
         Return ret = new Return();
@@ -1010,14 +1010,19 @@ public abstract class AbstractPaymentDocument_Base
             report.setFileName(fileName);
             final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
                             .attribute(CIERP.Currency.Name);
-            report.getJrParameters().put("accountName",
-                    getSelectString4AttributeAccount((String) _createdDoc.getValues()
-                                .get(CISales.TransactionAbstract.Account.name),
-                                            null, CISales.AccountCashDesk.Name));
-            report.getJrParameters().put("accountCurrencyName",
-                    getSelectString4AttributeAccount((String) _createdDoc.getValues()
-                                .get(CISales.TransactionAbstract.Account.name), selCurName, null));
 
+            if (_createdDoc.getValues().containsKey("accountName")) {
+                report.getJrParameters().put("accountName", _createdDoc.getValues().get("accountName"));
+                report.getJrParameters().put("accountCurrencyName", _createdDoc.getValues().get("accountCurrencyName"));
+            } else {
+                report.getJrParameters().put("accountName",
+                                getSelectString4AttributeAccount((String) _createdDoc.getValues()
+                                                .get(CISales.TransactionAbstract.Account.name),
+                                                null, CISales.AccountCashDesk.Name));
+                report.getJrParameters().put("accountCurrencyName",
+                                getSelectString4AttributeAccount((String) _createdDoc.getValues()
+                                                .get(CISales.TransactionAbstract.Account.name), selCurName, null));
+            }
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {
                 final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
@@ -1031,13 +1036,11 @@ public abstract class AbstractPaymentDocument_Base
             }
 
             if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
-                report.getJrParameters()
-                                .put("ClientOrSupplier",
-                                                DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractDocumentOutPaymentSupplier.Label"));
+                report.getJrParameters().put("ClientOrSupplier", DBProperties.getProperty(
+                                "org.efaps.esjp.sales.payment.AbstractDocumentOutPaymentSupplier.Label"));
             } else if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
-                report.getJrParameters()
-                                .put("ClientOrSupplier",
-                                                DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractDocumentInPaymentClient.Label"));
+                report.getJrParameters().put("ClientOrSupplier", DBProperties.getProperty(
+                                "org.efaps.esjp.sales.payment.AbstractDocumentInPaymentClient.Label"));
             }
 
             addParameter4Report(_parameter, _createdDoc, report);
@@ -1053,7 +1056,6 @@ public abstract class AbstractPaymentDocument_Base
                 throw new EFapsException(Invoice.class, "create.FileNotFoundException", e);
             }
         }
-
         return ret;
     }
 
