@@ -15,14 +15,14 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 9460 $
- Last Changed:    $Date: 2013-05-17 15:11:18 -0500 (vie, 17 may 2013) $
- Last Changed By: $Author: jorge.cueva@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fafe0966-a7c7-448a-8e2f-11a42a55e39d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9460 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCheckOutDiferedTable</name>
@@ -45,9 +45,19 @@
             <property name="Label">Sales_PaymentDocumentAbstract/Name.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[TargetDocument].linkto[Contact].oid</property>
+            <property name="Select">linkto[TargetDocument].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_PaymentDocumentAbstractOutTable.Contact.Label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
+        <field name="issued">
+            <property name="Attribute">Issued</property>
+            <property name="Label">Sales_PaymentDocumentAbstractOutTable.Issued.Label</property>
+        </field>
         <field name="date">
             <property name="Select">linkto[TargetDocument].attribute[Date]</property>
-            <property name="Label">Sales_OrderInbound/Date.Label</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/Date.Label</property>
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
@@ -56,7 +66,7 @@
         </field>
         <field name="dueDate">
             <property name="Select">linkto[TargetDocument].attribute[DueDate]</property>
-            <property name="Label">Sales_OrderInbound/DueDate.Label</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/DueDate.Label</property>
         </field>
         <field name="status">
             <property name="Select">linkto[TargetDocument].attribute[StatusAbstract]</property>
