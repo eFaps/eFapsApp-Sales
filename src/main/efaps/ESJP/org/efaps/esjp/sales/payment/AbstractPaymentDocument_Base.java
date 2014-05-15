@@ -1103,13 +1103,38 @@ public abstract class AbstractPaymentDocument_Base
     public Return update4StatusCanceled (final Parameter _parameter)
         throws EFapsException
     {
+        inverseTransactions(_parameter, _parameter.getInstance(), true);
+        final Update updatePayment = new Update(_parameter.getInstance());
+        updatePayment.add(CISales.Payment.Amount, BigDecimal.ZERO);
+        updatePayment.executeWithoutAccessCheck();
+
+        return new StatusValue().setStatus(_parameter);
+    }
+
+    /**
+     * Inverse the transactions of a PaymentDocument.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance instance of the Payment Document
+     * @param _isTargetDocument is it a targetDocument
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    protected void inverseTransactions(final Parameter _parameter,
+                                       final Instance _instance,
+                                       final boolean _isTargetDocument)
+        throws EFapsException
+    {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-        queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _parameter.getInstance().getId());
+        if (_isTargetDocument) {
+            queryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _instance);
+        } else {
+            queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _instance);
+        }
         final InstanceQuery queryInst = queryBldr.getQuery();
         queryInst.execute();
         while (queryInst.next()) {
             final QueryBuilder queryBldr2 = new QueryBuilder(CISales.TransactionAbstract);
-            queryBldr2.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, queryInst.getCurrentValue().getId());
+            queryBldr2.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, queryInst.getCurrentValue());
             final MultiPrintQuery multi = queryBldr2.getPrint();
             multi.addAttribute(CISales.TransactionAbstract.Amount,
                             CISales.TransactionAbstract.CurrencyId,
@@ -1123,12 +1148,15 @@ public abstract class AbstractPaymentDocument_Base
                 } else {
                     insert = new Insert(CISales.TransactionOutbound);
                 }
-                insert.add(CISales.TransactionAbstract.Amount, multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount));
-                insert.add(CISales.TransactionAbstract.CurrencyId, multi.<Long>getAttribute(CISales.TransactionAbstract.CurrencyId));
-                insert.add(CISales.TransactionAbstract.Account, multi.<Long>getAttribute(CISales.TransactionAbstract.Account));
+                insert.add(CISales.TransactionAbstract.Amount,
+                                multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount));
+                insert.add(CISales.TransactionAbstract.CurrencyId,
+                                multi.<Long>getAttribute(CISales.TransactionAbstract.CurrencyId));
+                insert.add(CISales.TransactionAbstract.Account,
+                                multi.<Long>getAttribute(CISales.TransactionAbstract.Account));
                 insert.add(CISales.TransactionAbstract.Payment, queryInst.getCurrentValue().getId());
-                insert.add(CISales.TransactionAbstract.Description,
-                                DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractPaymentDocument.correctionPayment"));
+                insert.add(CISales.TransactionAbstract.Description, DBProperties.getProperty(
+                                AbstractPaymentDocument.class.getName() +  ".correctionPayment"));
                 insert.add(CISales.TransactionAbstract.Date, new DateTime());
                 insert.execute();
 
@@ -1143,13 +1171,8 @@ public abstract class AbstractPaymentDocument_Base
                 update.executeWithoutAccessCheck();
             }
         }
-
-        final Update updatePayment = new Update(_parameter.getInstance());
-        updatePayment.add(CISales.Payment.Amount, BigDecimal.ZERO);
-        updatePayment.executeWithoutAccessCheck();
-
-        return new StatusValue().setStatus(_parameter);
     }
+
 
     public Return getPayments4Document(final Parameter _parameter)
         throws EFapsException

@@ -39,5 +39,9 @@
                 name="Sales_PaymentInternal.Status.RANGE_VALUE"
                 program="org.efaps.esjp.admin.datamodel.StatusValue" />
         </attribute>
+        <trigger program="org.efaps.esjp.sales.payment.PaymentInternal"
+            method="updatePostTrigger"
+            name="Sales_PaymentInternal.UPDATE_POST"
+            event="UPDATE_POST"/>
     </definition>
 </datamodel-type>

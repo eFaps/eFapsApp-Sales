@@ -21,8 +21,18 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.util.Map;
+import java.util.Map.Entry;
+
+import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -37,4 +47,27 @@ public abstract class PaymentInternal_Base
     extends AbstractPaymentDocument
 {
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return updatePostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        @SuppressWarnings("unchecked")
+        final Map<Attribute, Object> values = (Map<Attribute, Object>) _parameter.get(ParameterValues.NEW_VALUES);
+        for (final Entry<Attribute, Object> entry : values.entrySet()) {
+            if (CISales.PaymentInternal.Status.name.equals(entry.getKey().getName())
+                            || CISales.PaymentInternal.StatusAbstract.name.equals(entry.getKey().getName())) {
+                final Object objID = ((Object[]) entry.getValue())[0];
+                final Long statusid = objID instanceof String ? Long.valueOf((String) objID) : (Long) objID;
+                final Status status = Status.get(statusid);
+                if (CISales.PaymentInternalStatus.Canceled.key.equals(status.getKey())) {
+                    inverseTransactions(_parameter, _parameter.getInstance(), false);
+                }
+            }
+        }
+        return new Return();
+    }
 }
