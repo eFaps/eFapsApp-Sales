@@ -382,12 +382,11 @@ public abstract class SalesProductReport_Base
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
             final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn).groupByDataType();
 
-            DynamicReports.sbt
-                            .customValue(new UnitPriceSubtotal(), netUnitPriceColumn)
+            DynamicReports.sbt.customValue(new UnitPriceSubtotal(), netUnitPriceColumn)
                                       .setDataType(DynamicReports.type.bigDecimalType());
 
             final AggregationSubtotalBuilder<BigDecimal> quantityProdSum = DynamicReports.sbt.sum(quantityColumn);
-            final AggregationSubtotalBuilder<BigDecimal> netUnitPriceProdSum = DynamicReports.sbt.sum(netUnitPriceColumn);
+            final AggregationSubtotalBuilder<Number> netUnitPriceProdAvg = DynamicReports.sbt.avg(netUnitPriceColumn);
             final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum = DynamicReports.sbt.sum(netPriceColumn);
 
             final AggregationSubtotalBuilder<BigDecimal> quantityTotSum = DynamicReports.sbt.sum(quantityColumn)
@@ -450,28 +449,22 @@ public abstract class SalesProductReport_Base
                 if (_parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract.getType())) {
                     _builder.groupBy(yearGroup, monthGroup, contactGroup);
                     _builder.addSubtotalAtGroupFooter(contactGroup, quantityProdSum);
-                    //_builder.addSubtotalAtGroupFooter(contactGroup, unitPriceSbt);
-                    _builder.addSubtotalAtGroupFooter(contactGroup, netUnitPriceProdSum);
+                    _builder.addSubtotalAtGroupFooter(contactGroup, netUnitPriceProdAvg);
+                    _builder.addSubtotalAtGroupFooter(contactGroup, netPriceProdSum);
                 } else {
                     _builder.groupBy(yearGroup, monthGroup, productGroup);
                     _builder.addSubtotalAtGroupFooter(productGroup, quantityProdSum);
-                    //_builder.addSubtotalAtGroupFooter(productGroup, unitPriceSbt);
-                    _builder.addSubtotalAtGroupFooter(productGroup, netUnitPriceProdSum);
+                    _builder.addSubtotalAtGroupFooter(productGroup, netUnitPriceProdAvg);
                     _builder.addSubtotalAtGroupFooter(productGroup, netPriceProdSum);
                     _builder.addSubtotalAtSummary(quantityTotSum, netPriceTotSum);
                 }
             } else {
                 _builder.groupBy(yearGroup, monthGroup);
                 _builder.addSubtotalAtGroupFooter(monthGroup, quantityProdSum);
-                //_builder.addSubtotalAtGroupFooter(monthGroup, unitPriceSbt);
-                _builder.addSubtotalAtGroupFooter(monthGroup, netUnitPriceProdSum);
+                _builder.addSubtotalAtGroupFooter(monthGroup, netUnitPriceProdAvg);
                 _builder.addSubtotalAtGroupFooter(monthGroup, netPriceProdSum);
                 _builder.addSubtotalAtSummary(quantityTotSum, netPriceTotSum);
             }
-            /*_builder.pageFooter(DynamicReports.cmp.pageXofY()
-                                            .setStyle(DynamicReports.stl.style().bold()
-                                            .setAlignment(HorizontalAlignment.CENTER, VerticalAlignment.MIDDLE)
-                                            .setTopBorder(DynamicReports.stl.pen1Point())));*/
         }
 
         protected class UnitPriceSubtotal
@@ -480,10 +473,10 @@ public abstract class SalesProductReport_Base
             private static final long serialVersionUID = 1L;
 
             @Override
-            public BigDecimal evaluate(final ReportParameters reportParameters)
+            public BigDecimal evaluate(final ReportParameters _reportParameters)
             {
-                final BigDecimal quantitySumValue = reportParameters.getValue(BuySellReport.this.quantitySum);
-                final BigDecimal priceSumValue = reportParameters.getValue(BuySellReport.this.netPriceSum);
+                final BigDecimal quantitySumValue = _reportParameters.getValue(BuySellReport.this.quantitySum);
+                final BigDecimal priceSumValue = _reportParameters.getValue(BuySellReport.this.netPriceSum);
 
                 final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
                 return total;
