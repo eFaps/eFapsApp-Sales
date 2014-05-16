@@ -1833,4 +1833,46 @@ public abstract class AbstractPaymentDocument_Base
             return ret.toString();
         }
     }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _payDocInst instance of a PaymentDocument
+     * @return StringBuilder
+     * @throws EFapsException on error
+     */
+    public static StringBuilder getTransactionHtml(final Parameter _parameter,
+                                                   final Instance _payDocInst)
+        throws EFapsException
+    {
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _payDocInst);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
+        final SelectBuilder selAccName = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
+                        .attribute(CISales.AccountAbstract.Name);
+        final SelectBuilder selAccDescr = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
+                        .attribute(CISales.AccountAbstract.Description);
+        multi.addSelect(selCurInst, selAccName, selAccDescr);
+        multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Description);
+        multi.execute();
+        final HtmlTable html = new HtmlTable();
+        html.table();
+        while (multi.next()) {
+            final CurrencyInst currencyInst = new CurrencyInst(multi.<Instance>getSelect(selCurInst));
+            html.tr()
+                .td(multi.getCurrentInstance().getType().getLabel())
+                .td(NumberFormatter.get().getTwoDigitsFormatter().format(
+                            multi.getAttribute(CISales.TransactionAbstract.Amount)))
+                .td(currencyInst.getISOCode())
+                .td(multi.<String>getSelect(selAccName))
+                .td(multi.<String>getSelect(selAccDescr))
+                .trC();
+        }
+        html.tableC();
+        return new StringBuilder(html.toString());
+    }
 }

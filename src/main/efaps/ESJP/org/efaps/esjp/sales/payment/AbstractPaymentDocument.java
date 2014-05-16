@@ -20,8 +20,11 @@
 
 package org.efaps.esjp.sales.payment;
 
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -36,5 +39,17 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public abstract class AbstractPaymentDocument
     extends AbstractPaymentDocument_Base
 {
+
+    /**
+     * @param _parameter
+     * @param _instance
+     * @return
+     */
+    public static StringBuilder getTransactionHtml(final Parameter _parameter,
+                                                   final Instance _instance)
+        throws EFapsException
+    {
+        return AbstractPaymentDocument_Base.getTransactionHtml(_parameter, _instance);
+    }
 
 }
