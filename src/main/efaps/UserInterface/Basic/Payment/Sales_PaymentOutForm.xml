@@ -52,11 +52,18 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">Date</property>
         </field>
-        <field name="createdocument">
+         <field name="createdocument">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Phrase">$&lt;linkto[CreateDocument].type.label&gt; - $&lt;linkto[CreateDocument].attribute[Name]&gt;</property>
-            <property name="Label">Sales_Payment/Document.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_Payment/CreateDocument.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+         <field name="targetDocument">
+            <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
+            <property name="Phrase">$&lt;linkto[TargetDocument].type.label&gt; - $&lt;linkto[TargetDocument].attribute[Name]&gt;</property>
+            <property name="Label">Sales_Payment/TargetDocument.Label</property>
+            <property name="HRef">TREE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Group" name="createGroup">

@@ -144,7 +144,7 @@
             <table>Sales_PaymentInternalPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>
-                <property name="LinkFrom">CreateDocument</property>
+                <property name="LinkFrom">TargetDocument</property>
             </evaluate>
         </field>
     </definition>

@@ -34,23 +34,6 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_Payment/Date.Label</property>
         </field>
-        <field name="createDocumentType">
-            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
-            <property name="Select">linkto[CreateDocument].type.label</property>
-            <property name="Label">Sales_PaymentInternalPaymentTable.createDocumentType.Label</property>
-        </field>
-        <field name="createDocument4Read">
-            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
-            <property name="Select">linkto[CreateDocument].attribute[Name]</property>
-            <property name="Label">Sales_PaymentInternalPaymentTable.createDocument.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-        </field>
-        <field name="createDocumentDesc">
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="Label">Sales_PaymentInternalPaymentTable.createDocumentDesc.Label</property>
-        </field>
         <field name="paymentRate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">READONLY</property>
@@ -70,8 +53,8 @@
             <property name="Label">Sales_PaymentInternalPaymentTable.accountLink.Label</property>
         </field>
         <field name="currencyLink">
-            <property name="Attribute">CurrencyLink</property>
-            <property name="Label">Sales_Payment/CurrencyLink.Label</property>
+            <property name="Attribute">RateCurrencyLink</property>
+            <property name="Label">Sales_Payment/RateCurrencyLink.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
