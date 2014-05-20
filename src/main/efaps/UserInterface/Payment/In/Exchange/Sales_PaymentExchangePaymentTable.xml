@@ -52,20 +52,21 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument"
                 name="Sales_PaymentExchangePaymentTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.payment.PaymentExchange">
-                <property name="Type">Sales_Invoice</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Type">Sales_IncomingInvoice</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">Open</property>
-                <property name="Type01">Sales_Receipt</property>
-                <property name="StatusGroup01">Sales_ReceiptStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_CollectionOrder</property>
-                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_Credit</property>
-                <property name="StatusGroup03">Sales_CreditStatus</property>
-                <property name="Status03">Open</property>
+                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
+                <property name="Status01">Paid</property>
+                <property name="Type02">Sales_PaymentOrder</property>
+                <property name="StatusGroup02">Sales_PaymentOrderStatus</property>
+                <property name="Status02">Open</property>
+                <property name="Type03">Sales_PaymentOrder</property>
+                <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
+                <property name="Status03">Approved</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
+                <property name="ExtraParameter02">name</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4CreateDocument"
                 name="Sales_PaymentExchangePaymentTable.product.UI_FIELD_UPDATE"

@@ -1088,6 +1088,7 @@ public abstract class AbstractPaymentDocument_Base
      */
     protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
                                                              final QueryBuilder _queryBldr)
+        throws EFapsException
     {
         // used by implementation
     }
@@ -1399,7 +1400,6 @@ public abstract class AbstractPaymentDocument_Base
                         queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
                         queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
                     }
-                    add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
                     if (props.containsKey("StatusGroup" + i)) {
                         final String statiStr = String.valueOf(props.get("Stati" + i));
