@@ -20,22 +20,23 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d8ce44f7-d393-4df4-a049-48ba52640b79</uuid>
+    <uuid>5f4fc2fe-4b47-4c79-83ad-55544cb66ae1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentIOAbstract</name>
-        <parent>ERP_PaymentDocumentAbstract</parent>
-        <purpose abstract="true" />
-        <attribute>
-            <name>ConciliationLink</name>
-            <type>Link</type>
-            <typelink>Sales_Conciliation</typelink>
-            <sqltable>ERP_PaymentDocumentSQLTable</sqltable>
-            <sqlcolumn>CONPOSID</sqlcolumn>
-        </attribute>
+        <name>Sales_ConciliationStatus</name>
+        <parent>Admin_DataModel_StatusAbstract</parent>
+        <status key="Open">
+            <description>Conciliation is open.</description>
+        </status>
+        <status key="Closed">
+            <description>Conciliation was closed.</description>
+        </status>
+        <status key="Canceled">
+            <description>Conciliation was canceled.</description>
+        </status>
     </definition>
-</datamodel-type>
+</datamodel-statusgroup>

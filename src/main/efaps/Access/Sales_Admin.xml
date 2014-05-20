@@ -84,6 +84,7 @@
         <type>Sales_UsageReport</type>
         <type>Sales_ServiceOrderOutbound</type>
         <type>Sales_ComparativeDocProvider</type>
+        <type>Sales_Conciliation</type>
 
 
         <status group="Sales_CostSheetStatus">
@@ -329,6 +330,12 @@
         </status>
 
         <status group="Sales_ComparativeDocProviderStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_ConciliationStatus">
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>

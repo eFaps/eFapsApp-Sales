@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,22 +20,25 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d8ce44f7-d393-4df4-a049-48ba52640b79</uuid>
+    <uuid>8e8cbe0d-46bd-4c0f-b4b5-37cc6ce602fb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentIOAbstract</name>
-        <parent>ERP_PaymentDocumentAbstract</parent>
-        <purpose abstract="true" />
-        <attribute>
-            <name>ConciliationLink</name>
-            <type>Link</type>
-            <typelink>Sales_Conciliation</typelink>
-            <sqltable>ERP_PaymentDocumentSQLTable</sqltable>
-            <sqlcolumn>CONPOSID</sqlcolumn>
-        </attribute>
+        <name>Sales_ConciliationMyDesk</name>
+         <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_ConciliationMyDesk_Menu</menu>
+            <table>Sales_ConciliationTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_Conciliation</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</datamodel-type>
+</ui-command>

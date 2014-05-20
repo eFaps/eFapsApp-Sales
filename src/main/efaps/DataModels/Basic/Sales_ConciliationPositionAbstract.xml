@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,20 +22,49 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d8ce44f7-d393-4df4-a049-48ba52640b79</uuid>
+    <uuid>de3cb8bb-bf14-43d8-947f-1eb34f014328</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentIOAbstract</name>
-        <parent>ERP_PaymentDocumentAbstract</parent>
+        <name>Sales_ConciliationPositionAbstract</name>
         <purpose abstract="true" />
+        <attribute>
+            <name>Type</name>
+            <type>Type</type>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>TYPEID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>OID</name>
+            <type>OID</type>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>TYPEID,ID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ID</name>
+            <type>Long</type>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>ID</sqlcolumn>
+        </attribute>
         <attribute>
             <name>ConciliationLink</name>
             <type>Link</type>
             <typelink>Sales_Conciliation</typelink>
-            <sqltable>ERP_PaymentDocumentSQLTable</sqltable>
-            <sqlcolumn>CONPOSID</sqlcolumn>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>DOCID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>PositionNumber</name>
+            <type>Integer</type>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>POS</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Name</name>
+            <type>String</type>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>NAME</sqlcolumn>
         </attribute>
     </definition>
 </datamodel-type>

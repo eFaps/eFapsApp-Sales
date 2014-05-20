@@ -41,6 +41,7 @@
             <child>Sales_PaymentMyDesk</child>
             <child>Sales_TransactionAbstractMyDesk</child>
             <child>Sales_PaymentInternalMyDesk</child>
+            <child>Sales_ConciliationMyDesk</child>
             <child>Sales_BalanceMyDesk</child>
             <child>Sales_CashDeskBalanceMyDesk</child>
             <child>Sales_PettyCashBalanceMyDesk</child>
