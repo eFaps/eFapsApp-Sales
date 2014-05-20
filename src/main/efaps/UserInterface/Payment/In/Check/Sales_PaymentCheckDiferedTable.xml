@@ -52,6 +52,10 @@
             <property name="Label">Sales_PaymentDocumentAbstract/Contact.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
+        <field name="issued">
+            <property name="Attribute">Issued</property>
+            <property name="Label">Sales_PaymentCheck/Issued.Label</property>
+        </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="FilterType">FREETEXT</property>
