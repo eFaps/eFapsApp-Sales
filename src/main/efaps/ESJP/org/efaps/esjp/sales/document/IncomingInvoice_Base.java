@@ -245,7 +245,8 @@ public abstract class IncomingInvoice_Base
         final Field field = new Field();
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicket);
-        queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Status, Status.find(CISales.RecievingTicketStatus.Open));
+        queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Status,
+                        Status.find(CISales.RecievingTicketStatus.Closed));
 
         if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
             queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Contact, _instance);
