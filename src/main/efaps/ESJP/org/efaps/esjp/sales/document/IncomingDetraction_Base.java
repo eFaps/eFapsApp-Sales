@@ -118,11 +118,15 @@ public abstract class IncomingDetraction_Base
         insert.add(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Open));
         insert.add(CISales.IncomingDetraction.Name, getDocName4Document(_parameter, _createdDoc));
 
+        final Object[] rateObj = (Object[]) _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
 
         insert.add(CISales.IncomingDetraction.RateCrossTotal, amount.setScale(scale, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.IncomingDetraction.CrossTotal, amount.setScale(scale, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingDetraction.CrossTotal,
+                        amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
         insert.execute();
 
         final Insert relInsert = new Insert(CISales.IncomingDetraction2IncomingInvoice);

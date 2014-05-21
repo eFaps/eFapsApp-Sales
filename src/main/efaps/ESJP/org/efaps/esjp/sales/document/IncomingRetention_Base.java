@@ -109,11 +109,15 @@ public abstract class IncomingRetention_Base
         insert.add(CISales.IncomingRetention.Status, Status.find(CISales.IncomingRetentionStatus.Open));
         insert.add(CISales.IncomingRetention.Name, getDocName4Document(_parameter, documentInst));
 
+        final Object[] rateObj = (Object[]) _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
 
         insert.add(CISales.IncomingRetention.RateCrossTotal, amount.setScale(scale, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.IncomingRetention.CrossTotal, amount.setScale(scale, BigDecimal.ROUND_HALF_UP));
+        insert.add(CISales.IncomingRetention.CrossTotal,
+                        amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
         insert.execute();
 
         final Insert relInsert = new Insert(CISales.IncomingRetention2IncomingInvoice);
