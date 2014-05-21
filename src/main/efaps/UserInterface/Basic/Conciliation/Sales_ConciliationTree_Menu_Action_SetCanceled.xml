@@ -20,23 +20,29 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>924fe02b-144e-4875-80a1-c10057a56ec0</uuid>
+    <uuid>425ced5a-cf71-47d8-a00d-645e681e7a96</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ConciliationPositionSQLTable</name>
-        <typeid-column>TYPEID</typeid-column>
-        <database>
-            <table-name>T_SALESCONPOS</table-name>
-            <column name="TYPEID"      not-null="true"  type="INTEGER"/>
-            <column name="DOCID"       not-null="true"  type="INTEGER"/>
-            <column name="POS"         not-null="true"  type="INTEGER"/>
-            <column name="AMOUNT"                       type="DECIMAL" length="12" scale="2"/>
-            <column name="NAME"                         type="STRING_SHORT" length="128"/>
-            <foreign name="T_SALESCONPOS_DOCID"     key="DOCID"      reference="T_ERPDOC(ID)"/>
-        </database>
+        <name>Sales_ConciliationTree_Menu_Action_SetCanceled</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Canceled</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_ConciliationTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
-</datamodel-sqltable>
+</ui-command>

@@ -135,33 +135,37 @@ public abstract class Transaction_Base
                                          final List<Instance> _transInstances)
         throws EFapsException
     {
-        final Map<Instance, TransInfo> currInst2info = new LinkedHashMap<Instance, TransInfo>();
+        final Map<String, TransInfo> key2info = new LinkedHashMap<String, TransInfo>();
         final Set<String> notes = new HashSet<String>();
 
         final MultiPrintQuery multi = new MultiPrintQuery(_transInstances);
         multi.addAttribute(CISales.TransactionAbstract.Amount, CISales.TransactionAbstract.Date,
                         CISales.TransactionAbstract.Description, CISales.TransactionAbstract.Account);
-        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
+        final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
 
         final SelectBuilder selAccName = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account)
                         .attribute(CISales.AccountAbstract.Name);
-        multi.addSelect(sel, selAccName);
+        final SelectBuilder selAccInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
+        multi.addSelect(selCurInst, selAccName, selAccInst);
         multi.executeWithoutAccessCheck();
         DateTime date = null;
         while (multi.next()) {
             BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+
             if (multi.getCurrentInstance().getType().isKindOf(CISales.TransactionOutbound.getType())) {
                 amount = amount.negate();
             }
-            final Instance inst = multi.getSelect(sel);
+            final Instance curInst = multi.getSelect(selCurInst);
+            final Instance accInst = multi.getSelect(selAccInst);
+            final String key = curInst.getOid() + "-"  + accInst.getOid();
             TransInfo info;
-            if (currInst2info.containsKey(inst)) {
-                info = currInst2info.get(inst);
+            if (key2info.containsKey(key)) {
+                info = key2info.get(key);
             } else {
-                info = new TransInfo(inst);
+                info = new TransInfo(curInst);
             }
             info.add(amount);
-            currInst2info.put(inst, info);
+            key2info.put(key, info);
             date = multi.getAttribute(CISales.TransactionAbstract.Date);
             notes.add(multi.<String>getAttribute(CISales.TransactionAbstract.Description));
             info.addAccount(multi.<String>getSelect(selAccName));
@@ -175,7 +179,7 @@ public abstract class Transaction_Base
         }
 
         final List<File> files = new ArrayList<File>();
-        for (final TransInfo info : currInst2info.values()) {
+        for (final TransInfo info : key2info.values()) {
             final CurrencyInst curInst = info.getCurrencyInst();
             final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, curInst.getInstance());
             final String name = getName4Internal(_parameter);
@@ -694,7 +698,7 @@ public abstract class Transaction_Base
          */
         public BigDecimal getAmount()
         {
-            return this.amount.abs();
+            return this.amount;
         }
 
         /**

@@ -31,9 +31,9 @@
         <parent>ERP_PaymentDocumentAbstract</parent>
         <purpose abstract="true" />
         <attribute>
-            <name>ConciliationLink</name>
+            <name>ConciliationPositionLink</name>
             <type>Link</type>
-            <typelink>Sales_Conciliation</typelink>
+            <typelink>Sales_ConciliationPosition</typelink>
             <sqltable>ERP_PaymentDocumentSQLTable</sqltable>
             <sqlcolumn>CONPOSID</sqlcolumn>
         </attribute>

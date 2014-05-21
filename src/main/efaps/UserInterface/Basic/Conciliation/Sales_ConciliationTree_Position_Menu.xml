@@ -20,23 +20,16 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>924fe02b-144e-4875-80a1-c10057a56ec0</uuid>
+    <uuid>70bfdc40-2019-4e07-ada0-242c00234355</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ConciliationPositionSQLTable</name>
-        <typeid-column>TYPEID</typeid-column>
-        <database>
-            <table-name>T_SALESCONPOS</table-name>
-            <column name="TYPEID"      not-null="true"  type="INTEGER"/>
-            <column name="DOCID"       not-null="true"  type="INTEGER"/>
-            <column name="POS"         not-null="true"  type="INTEGER"/>
-            <column name="AMOUNT"                       type="DECIMAL" length="12" scale="2"/>
-            <column name="NAME"                         type="STRING_SHORT" length="128"/>
-            <foreign name="T_SALESCONPOS_DOCID"     key="DOCID"      reference="T_ERPDOC(ID)"/>
-        </database>
+        <name>Sales_ConciliationTree_Position_Menu</name>
+        <childs>
+            <child>Sales_ConciliationTree_Position_Menu_Action</child>
+        </childs>
     </definition>
-</datamodel-sqltable>
+</ui-menu>

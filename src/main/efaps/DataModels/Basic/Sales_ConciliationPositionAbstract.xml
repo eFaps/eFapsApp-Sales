@@ -66,5 +66,11 @@
             <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
             <sqlcolumn>NAME</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>Amount</name>
+            <type>Decimal</type>
+            <sqltable>Sales_ConciliationPositionSQLTable</sqltable>
+            <sqlcolumn>AMOUNT</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>
