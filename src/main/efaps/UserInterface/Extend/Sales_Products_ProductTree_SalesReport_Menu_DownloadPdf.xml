@@ -16,16 +16,16 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8079 $
- Last Changed:    $Date: 2012-10-23 19:02:32 -0500 (mar, 23 oct 2012) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dcaf8feb-f9cc-4d86-8dc1-9da09137cbc6</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8079 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_ProductTree_SalesReport_Menu_DownloadPdf</name>
@@ -47,6 +47,7 @@
                 <property name="Type02">Sales_IncomingInvoice</property>
                 <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
                 <property name="Status02">!Replaced</property>
+                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
