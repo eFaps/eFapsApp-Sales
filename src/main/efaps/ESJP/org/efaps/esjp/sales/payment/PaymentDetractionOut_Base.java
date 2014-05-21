@@ -193,7 +193,7 @@ public abstract class PaymentDetractionOut_Base
         final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
         BigDecimal total = BigDecimal.ZERO;
         while (multi.next()) {
-            final BigDecimal rCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
             final Instance docInstance = multi.<Instance>getSelect(selDocInstance);
             final String docName = multi.<String>getSelect(selDocName);
             final String docContactName = multi.<String>getSelect(selDocContactName);
@@ -211,13 +211,13 @@ public abstract class PaymentDetractionOut_Base
                                 .format(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)));
                 map.put(new KeyDefStr("paymentRate"), NumberFormatter.get().getFormatter(0, 3)
                                 .format(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)[1]));
-                map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), "" + (false));
-                map.put(new KeyDefStr("paymentAmount"), getTwoDigitsformater()
-                                .format(rCrossTotal));
+                map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), Boolean.toString(false));
+                map.put(new KeyDefStr("paymentAmount"),
+                                NumberFormatter.get().getZeroDigitsFormatter().format(crossTotal));
                 map.put(new KeyDefStr("paymentDiscount"), getTwoDigitsformater().format(BigDecimal.ZERO));
                 map.put(new KeyDefStr("paymentAmountDesc"), getTwoDigitsformater().format(BigDecimal.ZERO));
                 map.put(new KeyDefStr("detractionDoc"), multi.getCurrentInstance().getOid());
-                total = total.add(rCrossTotal);
+                total = total.add(crossTotal);
             }
         }
         final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
