@@ -33,6 +33,7 @@ import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -244,6 +245,7 @@ public abstract class IncomingInvoice_Base
         final Field field = new Field();
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicket);
+        queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Status, Status.find(CISales.RecievingTicketStatus.Open));
 
         if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
             queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Contact, _instance);
