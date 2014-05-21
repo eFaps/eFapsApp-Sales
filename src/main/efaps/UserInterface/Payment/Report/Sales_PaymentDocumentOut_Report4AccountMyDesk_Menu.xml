@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,23 +20,17 @@
  Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>fa2e6080-91ec-4bd0-8de9-faa7ae446466</uuid>
+    <uuid>acc3cc83-7000-4372-99e8-f6089bc11c48</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractOutMyDesk</name>
+        <name>Sales_PaymentDocumentOut_Report4AccountMyDesk_Menu</name>
+        <!-- childs -->
         <childs>
-            <child>Sales_PaymentDocumentOutMyDesk</child>
-            <child>Sales_PaymentDocumentOut4PayPaymentMyDesk</child>
-            <child>Sales_PaymentDocumentOut_Report4AccountMyDesk</child>
-            <child>Sales_PaymentOrderMyDesk</child>
-            <child>Sales_BulkPaymentMyDesk</child>
-            <child>Sales_BulkPaymentDefinitionMyDesk</child>
-            <child>Sales_DatedCheckOutMyDesk</child>
-            <child>Sales_DatedCheckDerivadedOutMyDesk</child>
-            <child>Sales_PaymentRetention_Report</child>
+            <child>Sales_PaymentDocumentOut_Report4AccountMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_PaymentDocumentOut_Report4AccountMyDesk_Menu_DownloadPDF</child>
+            <child>Sales_PaymentDocumentOut_Report4AccountMyDesk_Menu_Filter</child>
         </childs>
     </definition>
 </ui-menu>
