@@ -19,12 +19,12 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>11f97178-8319-46ad-89c7-fe824e8c2975</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingDetractionTable</name>
@@ -40,10 +40,6 @@
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
@@ -58,8 +54,11 @@
             <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
         </field>
         <field name="status">
-            <property name="FilterType">PICKLIST</property>
-            <property name="Attribute">StatusAbstract</property>
+            <property name="Attribute">Status</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Open</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
