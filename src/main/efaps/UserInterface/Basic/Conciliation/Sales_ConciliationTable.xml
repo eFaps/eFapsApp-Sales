@@ -52,8 +52,8 @@
             <property name="Label">Sales_Conciliation/StatusAbstract.Label</property>
         </field>
         <field name="amount">
-            <property name="Attribute">Amount</property>
-            <property name="Label">Sales_Conciliation/Amount.Label</property>
+            <property name="Attribute">RateNetTotal</property>
+            <property name="Label">Sales_Conciliation/RateNetTotal.Label</property>
         </field>
         <field name="accountLink">
             <property name="SelectAlternateOID">linkto[AccountLink].oid</property>

@@ -52,7 +52,7 @@
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">NONE</property>
         </field>
         <field name="account">
             <property name="Label">Sales_ConciliationForm.account.Label</property>
