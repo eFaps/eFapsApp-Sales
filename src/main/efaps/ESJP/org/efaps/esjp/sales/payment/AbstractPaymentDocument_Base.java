@@ -402,6 +402,9 @@ public abstract class AbstractPaymentDocument_Base
         add2QueryBldr4autoComplete4CreateDocument(_parameter, queryBldr);
 
         final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selConName = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact)
+                        .attribute(CIContacts.ContactAbstract.Name);
+        multi.addSelect(selConName);
         multi.addAttribute(CISales.DocumentAbstract.Date,
                         CISales.DocumentAbstract.Name,
                         CISales.DocumentSumAbstract.RateCrossTotal);
@@ -412,6 +415,7 @@ public abstract class AbstractPaymentDocument_Base
         multi.execute();
 
         while (multi.next()) {
+            final String conName = multi.<String>getSelect(selConName);
             final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
             final String oid = multi.getCurrentInstance().getOid();
             final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
@@ -427,6 +431,7 @@ public abstract class AbstractPaymentDocument_Base
                 choice.append(" - ").append(curr.getSymbol()).append(" ")
                                 .append(getTwoDigitsformater().format(amount));
             }
+            choice.append(" - ").append(conName);
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
