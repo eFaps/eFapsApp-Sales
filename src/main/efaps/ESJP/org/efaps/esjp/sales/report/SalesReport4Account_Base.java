@@ -18,7 +18,7 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.sales;
+package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -283,53 +283,53 @@ public abstract class SalesReport4Account_Base
             final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
 
             final TextColumnBuilder<Date> monthColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.FilterDate1"), "docDate",
+                            .getProperty(SalesReport4Account.class.getName() + ".FilterDate1"), "docDate",
                             DynamicReports.type.dateMonthType());
             final TextColumnBuilder<Date> yearColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.FilterDate2"), "docDate",
+                            .getProperty(SalesReport4Account.class.getName() + ".FilterDate2"), "docDate",
                             DynamicReports.type.dateYearType());
             final TextColumnBuilder<Date> dateColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.Created"), "docDate",
+                            .getProperty(SalesReport4Account.class.getName() + ".Created"), "docDate",
                             DynamicReports.type.dateType());
 
             final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.Type"), "docType",
+                            .getProperty(SalesReport4Account.class.getName() + ".Type"), "docType",
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<Date> createdColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.Date"), "docCreated",
+                            .getProperty(SalesReport4Account.class.getName() + ".Date"), "docCreated",
                             DynamicReports.type.dateType());
 
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.Name"), "docName",
+                            .getProperty(SalesReport4Account.class.getName() + ".Name"), "docName",
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.ContactName"), "docContactName",
+                            .getProperty(SalesReport4Account.class.getName() + ".ContactName"), "docContactName",
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<Date> dueDateColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.DueDate"), "docDueDate",
+                            .getProperty(SalesReport4Account.class.getName() + ".DueDate"), "docDueDate",
                             DynamicReports.type.dateType());
 
             final TextColumnBuilder<BigDecimal> crossTotalColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.CrossTotal"), "docCrossTotal",
+                            .getProperty(SalesReport4Account.class.getName() + ".CrossTotal"), "docCrossTotal",
                             DynamicReports.type.bigDecimalType());
 
             final TextColumnBuilder<BigDecimal> paymentColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.Payment"), "docPayment",
+                            .getProperty(SalesReport4Account.class.getName() + ".Payment"), "docPayment",
                             DynamicReports.type.bigDecimalType());
 
             final TextColumnBuilder<BigDecimal> differenceColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.Difference"), "docDifference",
+                            .getProperty(SalesReport4Account.class.getName() + ".Difference"), "docDifference",
                             DynamicReports.type.bigDecimalType());
 
             final TextColumnBuilder<String> rateCurrencyColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.RateCurrency"), "docRateCurrency",
+                            .getProperty(SalesReport4Account.class.getName() + ".RateCurrency"), "docRateCurrency",
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<BigDecimal> rateObjectColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesReport4Account.RateObject"), "docRateObject",
+                            .getProperty(SalesReport4Account.class.getName() + ".RateObject"), "docRateObject",
                             DynamicReports.type.bigDecimalType());
 
             final ColumnGroupBuilder yearGroup  = DynamicReports.grp.group(yearColumn).groupByDataType();

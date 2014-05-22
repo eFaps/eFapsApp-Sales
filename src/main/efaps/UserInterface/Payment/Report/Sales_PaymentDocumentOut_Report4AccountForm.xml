@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0681f048-b4d3-4b2c-bcaf-7482ef343f31</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -29,22 +31,18 @@
         <!-- fields -->
         <field name="description">
             <property name="HideLabel">true</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="getDBPropertiesFieldValue"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.description.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="DBProperty">org.efaps.esjp.sales.SalesReport4Account.Title</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getDBPropertiesFieldValue"
+                name="Sales_PaymentDocumentOut_Report4AccountForm.description.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="DBProperty">org.efaps.esjp.sales.report.SalesReport4Account.Title</property>
             </trigger>
         </field>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-             <trigger program="org.efaps.esjp.sales.SalesReport4Account"
-                method="setDefaultFilter"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.1"
-                event="UI_FIELD_VALUE"
+            <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="setDefaultFilter"
+                name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE"
                 index="1">
-                <property name="FilterKey">org.efaps.esjp.sales.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
@@ -55,27 +53,23 @@
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03"></property>
-             </trigger>
-            <trigger program="org.efaps.esjp.sales.SalesReport4Account"
-                method="getFilterFieldValue"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.2"
-                event="UI_FIELD_VALUE"
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="getFilterFieldValue"
+                name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE"
                 index="2">
-                <property name="FilterKey">org.efaps.esjp.sales.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">contact</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.SalesReport4Account.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.SalesReport4Account.dateTo</property>
-                <property name="DBProperty03">org.efaps.esjp.sales.SalesReport4Account.contact</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.SalesReport4Account.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.SalesReport4Account.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.SalesReport4Account.contact</property>
             </trigger>
         </field>
         <field name="salesReport">
             <property name="HideLabel">true</property>
-            <trigger program="org.efaps.esjp.sales.SalesReport4Account"
-                method="generateReport"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.salesReport.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="generateReport"
+                name="Sales_PaymentDocumentOut_Report4AccountForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
@@ -85,7 +79,7 @@
                 <property name="Type01">Accounting_ExternalVoucher</property>
                 <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
                 <property name="Status01">!Replaced</property>
-                <property name="FilterKey">org.efaps.esjp.sales.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
             </trigger>
         </field>
     </definition>

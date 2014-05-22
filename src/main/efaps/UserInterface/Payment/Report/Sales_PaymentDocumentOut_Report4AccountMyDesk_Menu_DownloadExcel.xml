@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8984162a-8ca8-40c2-94d8-ab1b6d27828d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -31,7 +33,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.SalesReport4Account">
+            <execute method="exportReport" program="org.efaps.esjp.sales.report.SalesReport4Account">
                 <property name="Mime">xls</property>
                 <property name="ShowDetails">true</property>
                 <!-- <property name="Template">Sales_Products_SalesReportTemplate</property> -->
@@ -42,7 +44,7 @@
                 <property name="Type01">Accounting_ExternalVoucher</property>
                 <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
                 <property name="Status01">!Replaced</property>
-                <property name="FilterKey">org.efaps.esjp.sales.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,12 @@
  * Last Changed By: $Author$
  */
 
-package org.efaps.esjp.sales;
+
+package org.efaps.esjp.sales.report;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -31,10 +33,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("3dc21670-5ae1-4646-ae86-4ed61ddab0a6")
+@EFapsUUID("3ce82ab7-14c7-4ff5-a3c6-5091ff0bdf3e")
 @EFapsRevision("$Rev$")
-public class SalesReport4Account
-    extends SalesReport4Account_Base
+public class ConciliationReport
+    extends ConciliationReport_Base
 {
 
 }

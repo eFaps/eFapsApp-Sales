@@ -120,18 +120,14 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
-    <!--    <field character="Heading" name="headingPayment">
-            <property name="Level">2</property>
-            <property name="Label">Sales_ConciliationForm.headingPayment.Heading</property>
+        <field name="report">
+            <property name="HideLabel">true</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.report.ConciliationReport"
+                method="generateReport"
+                name="Sales_ConciliationForm.report.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE"></trigger>
         </field>
-        <field character="Target" name="paymentTable">
-
-            <table>Sales_ConciliationPaymentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_Payment</property>
-                <property name="LinkFrom">TargetDocument</property>
-            </evaluate>
-        </field>
-         -->
     </definition>
 </ui-form>
