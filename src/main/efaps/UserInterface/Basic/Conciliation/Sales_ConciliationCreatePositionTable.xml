@@ -49,7 +49,7 @@
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract/Contact.Label</property>
+            <property name="Label">Sales_ConciliationCreatePositionTable.contact.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="date">
