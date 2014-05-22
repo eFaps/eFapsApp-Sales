@@ -191,11 +191,11 @@ public abstract class SalesReport4Account_Base
 
                 map.put("docOID", multi.getCurrentInstance().getOid());
                 map.put("docType", multi.getCurrentInstance().getType().getLabel());
-                map.put("docCreated", created.toDate());
-                map.put("docDate", date.toDate());
+                map.put("docCreated", created != null ? created.toDate() : created);
+                map.put("docDate", date != null ? date.toDate() : date);
                 map.put("docName", name);
                 map.put("docContactName", contactName);
-                map.put("docDueDate", dueDate.toDate());
+                map.put("docDueDate", dueDate != null ? dueDate.toDate() : dueDate);
                 map.put("docCrossTotal", crossTotal);
                 map.put("docPayment", BigDecimal.ZERO);
                 map.put("docDifference", BigDecimal.ZERO);
