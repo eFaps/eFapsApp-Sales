@@ -39,6 +39,14 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
         </field>
+        <field name="dueDate">
+            <property name="Columns">15</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
+            <property name="Required">true</property>
+        </field>
         <field name="salesperson">
             <property name="Attribute">Salesperson</property>
             <property name="ModeCreate">EDITABLE</property>
