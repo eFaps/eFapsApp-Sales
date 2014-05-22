@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,23 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>deb49b6f-1bcc-4a2c-bfb6-ea86d6f55b06</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>38965644-b467-47bc-9580-df57c303b871</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractMyDesk</name>
-        <childs>
-            <child>Sales_PaymentDocumentMyDesk</child>
-            <child>Sales_PaymentExchangeMyDesk</child>
-            <child>Sales_PaymentDocument_Report4AccountMyDesk</child>
-            <child>Sales_CollectionOrderMyDesk</child>
-            <child>Sales_DatedCheckMyDesk</child>
-        </childs>
+        <name>Sales_PaymentDocument_Report4AccountMyDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_PaymentDocument_Report4AccountMyDesk_Menu</menu>
+            <form>Sales_PaymentDocument_Report4AccountForm</form>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>

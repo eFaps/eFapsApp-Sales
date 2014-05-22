@@ -19,20 +19,18 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0681f048-b4d3-4b2c-bcaf-7482ef343f31</uuid>
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>2d9ca9dd-49dd-481a-9428-51d87f9eda2c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentOut_Report4AccountForm</name>
+        <name>Sales_PaymentDocument_Report4AccountForm</name>
         <!-- fields -->
         <field name="description">
             <property name="HideLabel">true</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="getDBPropertiesFieldValue"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.description.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_PaymentDocument_Report4AccountForm.description.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="DBProperty">org.efaps.esjp.sales.report.SalesReport4Account.Title</property>
             </trigger>
         </field>
@@ -40,9 +38,8 @@
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="setDefaultFilter"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE"
-                index="1">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                name="Sales_PaymentDocument_Report4AccountForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE" index="1">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountIn.FilterKey</property>
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
@@ -55,9 +52,8 @@
                 <property name="FilterDefault03"></property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="getFilterFieldValue"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE"
-                index="2">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                name="Sales_PaymentDocument_Report4AccountForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE" index="2">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountIn.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">contact</property>
@@ -69,29 +65,26 @@
         <field name="salesReport">
             <property name="HideLabel">true</property>
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="generateReport"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_PaymentDocument_Report4AccountForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Type">Sales_Invoice</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
                 <property name="Status">!Replaced</property>
-                <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
                 <property name="Status01">!Replaced</property>
-                <property name="Type02">Sales_IncomingReceipt</property>
-                <property name="StatusGroup02">Sales_IncomingReceiptStatus</property>
-                <property name="Status02">!Replaced</property>
-                <property name="Type03">Sales_PaymentOrder</property>
-                <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
+                <property name="Type02">Sales_IncomingExchange</property>
+                <property name="StatusGroup02">Sales_IncomingExchangeStatus</property>
+                <property name="Status02">!Canceled</property>
+                <property name="Type03">Sales_CollectionOrder</property>
+                <property name="StatusGroup03">Sales_CollectionOrderStatus</property>
                 <property name="Status03">!Canceled</property>
-                <property name="Type04">Sales_Exchange</property>
-                <property name="StatusGroup04">Sales_ExchangeStatus</property>
+                <property name="Type04">Sales_Credit</property>
+                <property name="StatusGroup04">Sales_CreditStatus</property>
                 <property name="Status04">!Canceled</property>
-                <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
-                <property name="Status05">!Canceled</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountIn.FilterKey</property>
             </trigger>
         </field>
     </definition>

@@ -19,15 +19,13 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8984162a-8ca8-40c2-94d8-ab1b6d27828d</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>46204ef9-2efe-4614-8eb7-c0c8d439dbb5</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentOut_Report4AccountMyDesk_Menu_DownloadExcel</name>
+        <name>Sales_PaymentDocument_Report4AccountMyDesk_Menu_DownloadExcel</name>
         <icon>Document_Excel</icon>
         <access>
             <role>Sales_Admin</role>
@@ -38,25 +36,22 @@
                 <property name="ShowDetails">true</property>
                 <!-- <property name="Template">Sales_Products_SalesReportTemplate</property> -->
                 <property name="DateFilter">month</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Type">Sales_Invoice</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
                 <property name="Status">!Replaced</property>
-                <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
                 <property name="Status01">!Replaced</property>
-                <property name="Type02">Sales_IncomingReceipt</property>
-                <property name="StatusGroup02">Sales_IncomingReceiptStatus</property>
-                <property name="Status02">!Replaced</property>
-                <property name="Type03">Sales_PaymentOrder</property>
-                <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
+                <property name="Type02">Sales_IncomingExchange</property>
+                <property name="StatusGroup02">Sales_IncomingExchangeStatus</property>
+                <property name="Status02">!Canceled</property>
+                <property name="Type03">Sales_CollectionOrder</property>
+                <property name="StatusGroup03">Sales_CollectionOrderStatus</property>
                 <property name="Status03">!Canceled</property>
-                <property name="Type04">Sales_Exchange</property>
-                <property name="StatusGroup04">Sales_ExchangeStatus</property>
+                <property name="Type04">Sales_Credit</property>
+                <property name="StatusGroup04">Sales_CreditStatus</property>
                 <property name="Status04">!Canceled</property>
-                <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
-                <property name="Status05">!Canceled</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4AccountIn.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
