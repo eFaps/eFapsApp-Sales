@@ -73,8 +73,8 @@
                 <property name="Type06">Sales_IncomingPerceptionCertificate</property>
                 <property name="StatusGroup06">Sales_IncomingPerceptionCertificateStatus</property>
                 <property name="Status06">Open</property>
-                <property name="Type07">Sales_Exchange</property>
-                <property name="StatusGroup07">Sales_ExchangeStatus</property>
+                <property name="Type07">Sales_IncomingExchange</property>
+                <property name="StatusGroup07">Sales_IncomingExchangeStatus</property>
                 <property name="Status07">Open</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
