@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +55,10 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.ui.wicket.models.EmbeddedLink;
@@ -191,11 +194,11 @@ public abstract class SalesReport4Account_Base
 
                 map.put("docOID", multi.getCurrentInstance().getOid());
                 map.put("docType", multi.getCurrentInstance().getType().getLabel());
-                map.put("docCreated", created != null ? created.toDate() : created);
-                map.put("docDate", date != null ? date.toDate() : date);
+                map.put("docCreated", created);
+                map.put("docDate", date);
                 map.put("docName", name);
                 map.put("docContactName", contactName);
-                map.put("docDueDate", dueDate != null ? dueDate.toDate() : dueDate);
+                map.put("docDueDate", dueDate);
                 map.put("docCrossTotal", crossTotal);
                 map.put("docPayment", BigDecimal.ZERO);
                 map.put("docDifference", BigDecimal.ZERO);
@@ -210,8 +213,8 @@ public abstract class SalesReport4Account_Base
                 public int compare(final Map<String, Object> _o1,
                                    final Map<String, Object> _o2)
                 {
-                    final Date date1 = (Date) _o1.get("docDate");
-                    final Date date2 = (Date) _o2.get("docDate");
+                    final DateTime date1 = (DateTime) _o1.get("docDate");
+                    final DateTime date2 = (DateTime) _o2.get("docDate");
                     final int ret;
                     if (date1.equals(date2)) {
                         final String contact1 = (String) _o1.get("docContactName");
@@ -282,23 +285,23 @@ public abstract class SalesReport4Account_Base
         {
             final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
 
-            final TextColumnBuilder<Date> monthColumn = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".FilterDate1"), "docDate",
-                            DynamicReports.type.dateMonthType());
-            final TextColumnBuilder<Date> yearColumn = DynamicReports.col.column(DBProperties
+                            DateTimeMonth.get());
+            final TextColumnBuilder<DateTime> yearColumn = AbstractDynamicReport_Base.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".FilterDate2"), "docDate",
-                            DynamicReports.type.dateYearType());
-            final TextColumnBuilder<Date> dateColumn = DynamicReports.col.column(DBProperties
+                            DateTimeYear.get());
+            final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".Created"), "docDate",
-                            DynamicReports.type.dateType());
+                            DateTimeDate.get());
 
             final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".Type"), "docType",
                             DynamicReports.type.stringType());
 
-            final TextColumnBuilder<Date> createdColumn = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<DateTime> createdColumn = AbstractDynamicReport_Base.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".Date"), "docCreated",
-                            DynamicReports.type.dateType());
+                            DateTimeDate.get());
 
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".Name"), "docName",
@@ -308,9 +311,9 @@ public abstract class SalesReport4Account_Base
                             .getProperty(SalesReport4Account.class.getName() + ".ContactName"), "docContactName",
                             DynamicReports.type.stringType());
 
-            final TextColumnBuilder<Date> dueDateColumn = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<DateTime> dueDateColumn = AbstractDynamicReport_Base.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".DueDate"), "docDueDate",
-                            DynamicReports.type.dateType());
+                            DateTimeDate.get());
 
             final TextColumnBuilder<BigDecimal> crossTotalColumn = DynamicReports.col.column(DBProperties
                             .getProperty(SalesReport4Account.class.getName() + ".CrossTotal"), "docCrossTotal",
