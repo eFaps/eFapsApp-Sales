@@ -75,8 +75,8 @@
                 <property name="Type01">Sales_Receipt</property>
                 <property name="StatusGroup01">Sales_ReceiptStatus</property>
                 <property name="Status01">!Replaced</property>
-                <property name="Type02">Sales_IncomingExchange</property>
-                <property name="StatusGroup02">Sales_IncomingExchangeStatus</property>
+                <property name="Type02">Sales_Exchange</property>
+                <property name="StatusGroup02">Sales_ExchangeStatus</property>
                 <property name="Status02">!Canceled</property>
                 <property name="Type03">Sales_CollectionOrder</property>
                 <property name="StatusGroup03">Sales_CollectionOrderStatus</property>

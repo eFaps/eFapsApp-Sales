@@ -51,8 +51,8 @@
                 <property name="Type03">Sales_PaymentOrder</property>
                 <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
                 <property name="Status03">!Canceled</property>
-                <property name="Type04">Sales_Exchange</property>
-                <property name="StatusGroup04">Sales_ExchangeStatus</property>
+                <property name="Type04">Sales_IncomingExchange</property>
+                <property name="StatusGroup04">Sales_IncomingExchangeStatus</property>
                 <property name="Status04">!Canceled</property>
                 <property name="Type05">Sales_IncomingCredit</property>
                 <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
