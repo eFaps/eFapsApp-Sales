@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -41,6 +42,7 @@ import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -50,6 +52,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -61,6 +64,8 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -189,6 +194,7 @@ public abstract class SalesReport4Account_Base
                 final String name = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
                 final String contactName = multi.<String>getSelect(selContactName);
                 final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                final BigDecimal payment = getPayments4Document(_parameter, multi.getCurrentInstance());
 
                 final Map<String, Object> map = new HashMap<String, Object>();
 
@@ -200,8 +206,8 @@ public abstract class SalesReport4Account_Base
                 map.put("docContactName", contactName);
                 map.put("docDueDate", dueDate);
                 map.put("docCrossTotal", crossTotal);
-                map.put("docPayment", BigDecimal.ZERO);
-                map.put("docDifference", BigDecimal.ZERO);
+                map.put("docPayment", payment);
+                map.put("docDifference", crossTotal.subtract(payment));
                 map.put("docRateCurrency", rateCurInst.getISOCode());
                 map.put("docRateObject", rateCurInst.isInvert() ? rate[1] : rate[0]);
                 lst.add(map);
@@ -366,6 +372,83 @@ public abstract class SalesReport4Account_Base
             }
             _builder.groupBy(yearGroup, monthGroup);
         }
+
+        /**
+         * Method to obtains totals of the payments relations to document.
+         *
+         * @param _parameter
+         * @param _currentInstance
+         * @return
+         */
+        protected BigDecimal getPayments4Document(final Parameter _parameter,
+                                                  final Instance _document)
+            throws EFapsException
+        {
+            BigDecimal ret = BigDecimal.ZERO;
+
+            if (_document.isValid()) {
+                final SelectBuilder sel = new SelectBuilder().linkto(CISales.Payment.TargetDocument);
+                final SelectBuilder selTypePay = new SelectBuilder(sel).type();
+                final SelectBuilder selRatePay = new SelectBuilder(sel)
+                                .attribute(CISales.PaymentDocumentAbstract.Rate);
+                final SelectBuilder selRateCurPay = new SelectBuilder(sel)
+                                .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink).instance();
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _document);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addSelect(selTypePay, selRatePay, selRateCurPay);
+                multi.addAttribute(CISales.Payment.Amount);
+                multi.execute();
+
+                final List<PaymentInfoDocument4Report> lstPayDocs = new ArrayList<PaymentInfoDocument4Report>();
+                while (multi.next()) {
+                    final Type type = multi.<Type>getSelect(selTypePay);
+                    if (type.isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
+                        final Instance rateCurInst = multi.<Instance>getSelect(selRateCurPay);
+                        final Object[] ratePay = multi.<Object[]>getSelect(selRatePay);
+                        final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
+
+                        final PaymentInfoDocument4Report payInfo = new PaymentInfoDocument4Report();
+                        payInfo.setAmount(amount);
+                        payInfo.setCurrency(rateCurInst);
+                        payInfo.setRate(ratePay);
+                        payInfo.setDocument(_document);
+                        lstPayDocs.add(payInfo);
+                    }
+                }
+                if (!lstPayDocs.isEmpty()) {
+                    final Instance curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                    final Iterator<PaymentInfoDocument4Report> iter = lstPayDocs.iterator();
+                    while (iter.hasNext()) {
+                        final PaymentInfoDocument4Report current = iter.next();
+                        if (current.getCurrDocument() != null
+                                        && current.getCurrency() != null) {
+                            if (current.getCurrDocument().equals(curBase)
+                                            && current.getCurrency().equals(curBase)) {
+                                ret = ret.add(current.getAmount());
+                            } else if (current.getCurrDocument().equals(curBase)
+                                            && !current.getCurrency().equals(curBase)){
+                                final Object[] rates = current.getRate();
+                                final BigDecimal amountPay = current.getAmount();
+                                final BigDecimal rate = ((BigDecimal) rates[1]).divide((BigDecimal) rates[0], 12,
+                                                BigDecimal.ROUND_HALF_UP);
+                                ret = ret.add(amountPay.multiply(rate));
+                            } else {
+                                final Object[] rates = current.getRate();
+                                final BigDecimal amountPay = current.getAmount();
+                                final BigDecimal rate = ((BigDecimal) rates[0]).divide((BigDecimal) rates[1], 12,
+                                                BigDecimal.ROUND_HALF_UP);
+                                ret = ret.add(amountPay.multiply(rate));
+                            }
+                        }
+                    }
+                }
+
+            }
+
+            return ret;
+        }
     }
 
     public static class LinkExpression
@@ -385,6 +468,121 @@ public abstract class SalesReport4Account_Base
         {
             final String oid = (String) _values.get(0);
             return EmbeddedLink.getJasperLink(oid);
+        }
+    }
+
+    /**
+     * TODO comment!
+     *
+     * @author The eFaps Team
+     * @version $Id$
+     */
+    public static class PaymentInfoDocument4Report
+    {
+
+        /**
+         * amount of the pay.
+         */
+        private BigDecimal amount;
+
+        /**
+         * currency of the pay.
+         */
+        private Instance currency;
+
+        /**
+         * rate of the pay.
+         */
+        private Object[] rate;
+
+        /**
+         * Instance of the document.
+         */
+        private Instance document;
+
+
+        /**
+         * class.
+         */
+        public PaymentInfoDocument4Report()
+        {
+
+        }
+
+        /**
+         * @param _document to the document.
+         */
+        protected void setDocument(final Instance _document)
+        {
+            this.document = _document;
+        }
+
+        /**
+         * @param _amount to the amount pay.
+         */
+        protected void setAmount(final BigDecimal _amount)
+        {
+            this.amount = _amount;
+        }
+
+        /**
+         * @param _currency to the currency pay.
+         */
+        protected void setCurrency(final Instance _currency)
+        {
+            this.currency = _currency;
+        }
+
+        /**
+         * @param _rate to the rate pay.
+         */
+        protected void setRate(final Object[] _rate)
+        {
+            this.rate = _rate;
+        }
+
+        /**
+         * @return the amount
+         */
+        protected BigDecimal getAmount()
+        {
+            return this.amount;
+        }
+
+        /**
+         * @return the rateCurrency
+         */
+        protected Instance getCurrency()
+        {
+            return this.currency;
+        }
+
+        /**
+         * @return the rate
+         */
+        protected Object[] getRate()
+        {
+            return this.rate;
+        }
+
+        /**
+         * @return Instance to the currency of the document.
+         * @throws EFapsException on error.
+         */
+        protected Instance getCurrDocument()
+            throws EFapsException
+        {
+            Instance ret = null;
+            if (this.document != null && this.document.isValid()) {
+                final SelectBuilder selRateCur = new SelectBuilder()
+                                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                final PrintQuery print = new PrintQuery(this.document);
+                print.addSelect(selRateCur);
+                print.execute();
+
+                ret = print.<Instance>getSelect(selRateCur);
+            }
+            return ret;
         }
     }
 }

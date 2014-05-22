@@ -193,6 +193,7 @@ public abstract class PaymentDetractionOut_Base
         final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
         BigDecimal total = BigDecimal.ZERO;
         while (multi.next()) {
+            final DocumentInfo docInfo = getNewDocumentInfo(multi.getCurrentInstance());
             final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
             final Instance docInstance = multi.<Instance>getSelect(selDocInstance);
             final String docName = multi.<String>getSelect(selDocName);
@@ -205,13 +206,12 @@ public abstract class PaymentDetractionOut_Base
                 valuesTmp.put(multi.getCurrentInstance(), map);
                 map.put(new KeyDefStr("createDocument"), new String[] { docInstance.getOid(), docName });
                 map.put(new KeyDefStr("createDocumentContact"), docContactName);
-                map.put(new KeyDefStr("createDocumentDesc"),
-                                getNewDocumentInfo(multi.getCurrentInstance()).getInfoOriginal());
+                map.put(new KeyDefStr("createDocumentDesc"), docInfo.getInfoOriginal());
                 map.put(new KeyDefStr("payment4Pay"), getTwoDigitsformater()
                                 .format(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)));
                 map.put(new KeyDefStr("paymentRate"), NumberFormatter.get().getFormatter(0, 3)
                                 .format(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)[1]));
-                map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), Boolean.toString(false));
+                map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), docInfo.getCurrencyInst().isInvert());
                 map.put(new KeyDefStr("paymentAmount"),
                                 NumberFormatter.get().getZeroDigitsFormatter().format(crossTotal));
                 map.put(new KeyDefStr("paymentDiscount"), getTwoDigitsformater().format(BigDecimal.ZERO));

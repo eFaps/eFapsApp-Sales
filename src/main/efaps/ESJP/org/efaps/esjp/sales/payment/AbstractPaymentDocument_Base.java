@@ -1723,7 +1723,7 @@ public abstract class AbstractPaymentDocument_Base
                     final BigDecimal amount = multi.<BigDecimal>getSelect(selRateCross);
                     final BigDecimal rate = ((BigDecimal) rateObj[0])
                                     .divide((BigDecimal) rateObj[1], 12, BigDecimal.ROUND_HALF_UP);
-                    ret = ret.add(amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP));
+                    ret = ret.add(amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP));
                 }
             }
             return ret;
