@@ -666,7 +666,7 @@ public abstract class IncomingInvoice_Base
                 return ret;
             }
         };
-        return validation.validate(_parameter);
+        return validation.validate(_parameter, this);
     }
 
     /**

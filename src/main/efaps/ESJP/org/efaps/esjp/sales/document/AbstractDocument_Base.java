@@ -2366,7 +2366,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Validation validation = new Validation();
-        return validation.validate(_parameter);
+        return validation.validate(_parameter, this);
     }
 
     /**

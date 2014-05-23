@@ -50,8 +50,11 @@ import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.WarningUtil;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -73,12 +76,25 @@ public abstract class Validation_Base
         QUANTITYINSTOCK,
         /** Validate that Quantity is greater than zero. */
         QUANTITYGREATERZERO,
+        /** Validate that Amount is greater than zero. */
+        AMOUNTGREATERZERO,
         /** Validate the Name. */
         NAME;
     }
 
-    @Override
-    public Return validate(final Parameter _parameter)
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Validation.class);
+
+    /**
+     * @param _parameter parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return Return with the result
+     * @throws EFapsException on error
+     */
+    public Return validate(final Parameter _parameter,
+                           final AbstractDocument_Base _doc)
         throws EFapsException
     {
         final Return ret = new Return();
@@ -88,13 +104,16 @@ public abstract class Validation_Base
             final Validations val = Validations.valueOf(validation);
             switch (val) {
                 case QUANTITYINSTOCK:
-                    warnings.addAll(validateQuantityInStorage(_parameter));
+                    warnings.addAll(validateQuantityInStorage(_parameter, _doc));
                     break;
                 case QUANTITYGREATERZERO:
-                    warnings.addAll(validateQuantityGreaterZero(_parameter));
+                    warnings.addAll(validateQuantityGreaterZero(_parameter, _doc));
                     break;
                 case NAME:
-                    warnings.addAll(validateName(_parameter));
+                    warnings.addAll(validateName(_parameter, _doc));
+                    break;
+                case AMOUNTGREATERZERO:
+                    warnings.addAll(validateAmountGreaterZero(_parameter, _doc));
                     break;
                 default:
                     break;
@@ -115,6 +134,31 @@ public abstract class Validation_Base
     }
 
     /**
+     * Validate that the given quantities have numbers bigger than Zero.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validateAmountGreaterZero(final Parameter _parameter,
+                                                    final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
+        int i = 0;
+        for (final Calculator calc : calcs) {
+            if (!calc.isEmpty()) {
+                if (calc.getCrossPrice().compareTo(BigDecimal.ZERO) < 1) {
+                    ret.add(new AmountGreateZeroWarning().setPosition(i + 1));
+                }
+            }
+            i++;
+        }
+        return ret;
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _warnings warings to add/alternate etc.
      * @return List of warnings
@@ -130,10 +174,12 @@ public abstract class Validation_Base
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
-     * @return Return containing TRUE and SNIPLETT if warning
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, if none an empty list
      * @throws EFapsException on error
      */
-    public List<IWarning> validateName(final Parameter _parameter)
+    public List<IWarning> validateName(final Parameter _parameter,
+                                       final AbstractDocument_Base _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<IWarning>();
@@ -234,10 +280,12 @@ public abstract class Validation_Base
     /**
      * Validate that the given quantities have numbers bigger than Zero.
      * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
-    public List<IWarning> validateQuantityGreaterZero(final Parameter _parameter)
+    public List<IWarning> validateQuantityGreaterZero(final Parameter _parameter,
+                                                      final AbstractDocument_Base _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<IWarning>();
@@ -246,10 +294,11 @@ public abstract class Validation_Base
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
             BigDecimal quantity = BigDecimal.ZERO;
             try {
-                quantity = (BigDecimal) NumberFormatter.get().getFormatter().parse(quantities[i]);
+                if (StringUtils.isNotEmpty(quantities[i])) {
+                    quantity = (BigDecimal) NumberFormatter.get().getFormatter().parse(quantities[i]);
+                }
             } catch (final ParseException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                Validation_Base.LOG.debug("Catched ParseException on validation", e);
             }
             if (quantity.compareTo(BigDecimal.ZERO) < 1) {
                 ret.add(new QuantityGreateZeroWarning().setPosition(i + 1));
@@ -258,14 +307,15 @@ public abstract class Validation_Base
         return ret;
     }
 
-
     /**
      * Validate that the given quantities exist in the stock.
      * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
      * @return List of warnings, empty list if no warning
      * @throws EFapsException on error
      */
-    public List<IWarning> validateQuantityInStorage(final Parameter _parameter)
+    public List<IWarning> validateQuantityInStorage(final Parameter _parameter,
+                                                    final AbstractDocument_Base _doc)
         throws EFapsException
     {
         final List<IWarning> ret = new ArrayList<IWarning>();
@@ -302,8 +352,7 @@ public abstract class Validation_Base
                     try {
                         quantity = (BigDecimal) NumberFormatter.get().getFormatter().parse(quantities[i]);
                     } catch (final ParseException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+                        Validation_Base.LOG.debug("Catched ParseException on validation", e);
                     }
                     final UoM uoM = Dimension.getUoM(Long.valueOf(uoMs[i]));
                     quantity = quantity.multiply(new BigDecimal(uoM.getNumerator())).divide(
@@ -317,42 +366,64 @@ public abstract class Validation_Base
         return ret;
     }
 
+    /**
+     * Warning for not enough Stock.
+     */
     public static class NotEnoughStockWarning
         extends AbstractPositionWarning
     {
-
+        /**
+         * Constructor.
+         */
         public NotEnoughStockWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * Warning for quantity greater zero.
+     */
     public static class QuantityGreateZeroWarning
         extends AbstractPositionWarning
     {
-
+        /**
+         * Constructor.
+         */
         public QuantityGreateZeroWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * Warning for amount greater zero.
+     */
+    public static class AmountGreateZeroWarning
+        extends AbstractPositionWarning
+    {
+        /**
+         * Constructor.
+         */
+        public AmountGreateZeroWarning()
+        {
+            setError(true);
+        }
+    }
+
+    /**
+     * Warning for invalid name.
+     */
     public static class InvalidNameWarning
         extends AbstractWarning
     {
-        public InvalidNameWarning()
-        {
-            setError(false);
-        }
     }
 
+    /**
+     * Warning for existing name.
+     */
     public static class ExistingNameWarning
         extends AbstractWarning
     {
-        public ExistingNameWarning()
-        {
-            setError(false);
-        }
     }
-
 }
