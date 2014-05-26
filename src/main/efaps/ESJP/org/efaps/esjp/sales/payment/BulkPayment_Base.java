@@ -198,12 +198,12 @@ public abstract class BulkPayment_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selDocName = new SelectBuilder().linkto(CISales.Payment.CreateDocument).attribute(
                             CIERP.DocumentAbstract.Name);
-            final SelectBuilder selContactOid = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+            final SelectBuilder selContactOid = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                             .linkto(CISales.PaymentDocumentOutAbstract.Contact).oid();
-            final SelectBuilder selContact = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+            final SelectBuilder selContact = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                             .linkto(CISales.PaymentDocumentOutAbstract.Contact)
                             .attribute(CIContacts.Contact.Name);
-            final SelectBuilder selTaxnumber = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
+            final SelectBuilder selTaxnumber = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                             .linkto(CISales.PaymentDocumentOutAbstract.Contact)
                             .clazz(CIContacts.ClassOrganisation)
                             .attribute(CIContacts.ClassOrganisation.TaxNumber);
@@ -270,6 +270,7 @@ public abstract class BulkPayment_Base
         }
     }
 
+    @Override
     public Return validate(final Parameter _parameter)
         throws EFapsException
     {
