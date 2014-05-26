@@ -40,8 +40,6 @@
             <form>Sales_IncomingReminderForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingReminder">
                 <property name="PositionType">Sales_IncomingReminderPosition</property>
-                <property name="StatusGroup">Sales_IncomingReminderStatus</property>
-                <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingReminder" method="validate">
                 <property name="Validation">NAME</property>
@@ -73,8 +71,6 @@
             <form>Sales_IncomingReminderForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingReminder">
                 <property name="PositionType">Sales_IncomingReminderPosition</property>
-                <property name="StatusGroup">Sales_IncomingReminderStatus</property>
-                <property name="Status">Open</property>
                 <!-- Projects_ProjectService2IncomingReminder -->
                 <property name="ConnectType">6ffdcf20-41b7-4eeb-83cc-e46e0413d859</property>
                 <property name="ConnectCurrentLink">ToLink</property>

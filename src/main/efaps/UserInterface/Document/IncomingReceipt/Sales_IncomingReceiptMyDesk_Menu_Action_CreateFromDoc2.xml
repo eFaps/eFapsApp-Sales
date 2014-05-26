@@ -19,34 +19,74 @@
  Last Changed:    $Date: 2012-12-12 13:41:35 -0500 (Wed, 12 Dec 2012) $
  Last Changed By: $Author: jan@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e1adfb98-91eb-4875-938c-e61d18a629d2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 8362 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
         <name>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc2</name>
-
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_IncomingReceiptForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.IncomingReceipt">
                 <property name="PositionType">Sales_IncomingReceiptPosition</property>
-                <property name="StatusGroup">Sales_IncomingReceiptStatus</property>
-                <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.IncomingReceipt" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
+                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
+                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
             <command>Sales_IncomingReceipt_ShowRevision</command>
         </target>
-
-        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_IncomingReceipt</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects" />
+        </profiles>
+        <name>Sales_IncomingReceiptMyDesk_Menu_Action_CreateFromDoc2</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
+        </access>
+        <target>
+            <form>Sales_IncomingReceiptForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.document.IncomingReceipt">
+                <property name="PositionType">Sales_IncomingReceiptPosition</property>
+                <!-- Projects_ProjectService2IncomingReceipt -->
+                <property name="ConnectType">1a7432b0-8df1-40fb-8426-5ec33752e4ba</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingReceipt" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
+                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
+                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
+            <command>Sales_IncomingReceipt_ShowRevision</command>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingReceipt</property>
         <property name="TargetMode">create</property>

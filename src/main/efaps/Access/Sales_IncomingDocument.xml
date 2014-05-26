@@ -94,6 +94,7 @@
         </status>
 
         <status group="Sales_IncomingReceiptStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
@@ -109,6 +110,7 @@
         </status>
 
         <status group="Sales_IncomingReminderStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>

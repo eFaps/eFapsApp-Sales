@@ -19,7 +19,9 @@
  Last Changed:    $Date: 2013-08-26 07:23:50 -0500 (lun, 26 ago 2013) $
  Last Changed By: $Author: m.aranya@moxter.net $
 
---><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5ef8dcba-cd6c-4778-b8cd-ca10a501d208</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 10116 $</file-revision>
@@ -27,6 +29,10 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingReminderStatus</name>
         <parent>Sales_DocumentStatus</parent>
+        <status key="Digitized">
+            <description>Incoming Credit Note was digitized and is still editable. (Digitado)
+            </description>
+        </status>
         <status key="Open">
             <description>Incoming Reminder was printed, but needs to be payed for.</description>
         </status>

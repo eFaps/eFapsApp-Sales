@@ -37,8 +37,6 @@
             <form>Sales_IncomingCreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create">
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
-                <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
-                <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validate">
                 <property name="Validation">NAME</property>
@@ -67,8 +65,6 @@
             <form>Sales_IncomingCreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create">
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
-                <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
-                <property name="Status">Open</property>
                 <!-- Projects_ProjectService2IncomingCreditNote -->
                 <property name="ConnectType">6d4934b5-ea8a-4926-9643-c29fb12776d6</property>
                 <property name="ConnectCurrentLink">ToLink</property>
