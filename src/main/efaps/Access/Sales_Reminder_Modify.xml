@@ -23,36 +23,26 @@
 
 -->
 
-<access-set xmlns="http://www.efaps.org/xsd" 
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>8fd95390-b60e-4b6b-9b9a-9358e2b8c87f</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-  
-    <name>Sales_Reminder_Modify</name>
-
-    <access-type>show</access-type>
-    <access-type>read</access-type>
-    <access-type>modify</access-type>
-    <access-type>checkout</access-type>
-    <access-type>checkin</access-type>
-    <access-type>create</access-type>
-    <access-type>statusBoost</access-type>
-    
-    <type>Sales_Reminder</type>
-    
-    <status group="Sales_ReminderStatus">
-      <key>Open</key>
-    </status>
-
-    <role>Sales_Accounting</role>
-
-  </definition>
-
+<access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>8fd95390-b60e-4b6b-9b9a-9358e2b8c87f</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Reminder_Modify</name>
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
+        <type>Sales_Reminder</type>
+        <status group="Sales_ReminderStatus">
+            <key>Digitized</key>
+            <key>Open</key>
+        </status>
+        <role>Sales_Accounting</role>
+    </definition>
 </access-set>
-
-

@@ -50,8 +50,10 @@ public abstract class Receipt_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         return new Return();
     }
 

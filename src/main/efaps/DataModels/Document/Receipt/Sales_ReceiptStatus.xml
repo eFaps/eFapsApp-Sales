@@ -23,35 +23,30 @@
 
 -->
 
-<datamodel-statusgroup  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>0265e30e-eb04-4287-a0a6-588b2ab586d1</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_ReceiptStatus</name>
-    <parent>Sales_DocumentStatus</parent>
-    <status key="Open">
-      <description>Receipt was printed, but needs to be payed for..</description>
-    </status>
-
-    <status key="Paid">
-      <description>Receipt was payed.</description>
-    </status>
-
-    <status key="Booked">
-     <description>Invoice was booked.</description>
-    </status>
-
-   <status key="Replaced">
-     <description>Receipt was replaced by another Invoice or Receipt.</description>
-    </status>
-
-  </definition>
-
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>0265e30e-eb04-4287-a0a6-588b2ab586d1</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ReceiptStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Digitized">
+            <description>Receipt was digitized and is still editable. (Digitado)</description>
+        </status>
+        <status key="Open">
+            <description>Receipt was printed, but needs to be payed for. (Pendiente)
+            </description>
+        </status>
+        <status key="Paid">
+            <description>Receipt was payed. (Cancelado)</description>
+        </status>
+        <status key="Booked">
+            <description>Receipt was booked. (Contabilizado)</description>
+        </status>
+        <status key="Replaced">
+            <description>Canceled. Receipt was replaced by another Receipt. Normaly used key would be canceled! (Anulado)</description>
+        </status>
+    </definition>
 </datamodel-statusgroup>
-

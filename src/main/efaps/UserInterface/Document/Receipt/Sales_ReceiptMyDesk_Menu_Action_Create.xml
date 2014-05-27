@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -31,22 +31,23 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
         <name>Sales_ReceiptMyDesk_Menu_Action_Create</name>
         <access>
-            <role>Sales_Admin</role>
             <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_ReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
                 <property name="PositionType">Sales_ReceiptPosition</property>
-                <property name="StatusGroup">Sales_ReceiptStatus</property>
-                <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Receipt</property>
         <property name="TargetMode">create</property>
@@ -54,5 +55,35 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects" />
+        </profiles>
+        <name>Sales_ReceiptMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_ReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
+                <property name="PositionType">Sales_ReceiptPosition</property>
+                <!-- Projects_ProjectService2Receipt -->
+                <property name="ConnectType">6665b0d5-3209-453c-be4a-cc8cb6dce387</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Receipt</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 </ui-command>

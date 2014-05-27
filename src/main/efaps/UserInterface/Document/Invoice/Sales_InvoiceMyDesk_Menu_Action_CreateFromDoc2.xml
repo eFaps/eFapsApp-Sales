@@ -45,10 +45,10 @@
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <property name="PositionType">Sales_InvoicePosition</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
-                <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Invoice</property>
@@ -57,8 +57,6 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
-
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -73,15 +71,15 @@
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <property name="PositionType">Sales_InvoicePosition</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
-                <property name="Status">Open</property>
                 <!-- Projects_ProjectService2Invoice -->
                 <property name="ConnectType">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Invoice</property>

@@ -23,39 +23,29 @@
 
 -->
 
-<access-set xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>c14c89bc-5bd1-48b1-ae26-97d67c3dbe33</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-
-    <name>Sales_CreditNote_Modify</name>
-
-    <access-type>show</access-type>
-    <access-type>read</access-type>
-    <access-type>modify</access-type>
-    <access-type>checkout</access-type>
-    <access-type>checkin</access-type>
-    <access-type>create</access-type>
-    <access-type>statusBoost</access-type>
-
-    <type>Sales_CreditNote</type>
-
-    <status group="Sales_CreditNoteStatus">
-      <key>Open</key>
-      <key>Paid</key>
-      <key>Booked</key>
-      <key>Replaced</key>
-    </status>
-
-    <role>Sales_Accounting</role>
-
-  </definition>
-
+<access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c14c89bc-5bd1-48b1-ae26-97d67c3dbe33</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_CreditNote_Modify</name>
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>modify</access-type>
+        <access-type>checkout</access-type>
+        <access-type>checkin</access-type>
+        <access-type>create</access-type>
+        <access-type>statusBoost</access-type>
+        <type>Sales_CreditNote</type>
+        <status group="Sales_CreditNoteStatus">
+            <key>Digitized</key>
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+        <role>Sales_Accounting</role>
+    </definition>
 </access-set>
-
-

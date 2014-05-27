@@ -23,32 +23,26 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>ac02bf10-c39a-4703-ac56-afb0766d765b</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc</name>
-    <access>
-      <role>Sales_Admin</role>
-    </access>
-    <!-- target definitions -->
-    <target>
-      <form>Sales_CreditNote_SelectDocForm</form>
-      <command>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2</command>
-    </target>
-
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">660</property>
-    <property name="WindowWidth">1200</property>
-    <property name="TargetDefaultMenu">none</property>
-    <property name="TargetCmdRevise">true</property>
-  </definition>
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ac02bf10-c39a-4703-ac56-afb0766d765b</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_CreditNote_SelectDocForm</form>
+            <command>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2</command>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetCmdRevise">true</property>
+    </definition>
 </ui-command>

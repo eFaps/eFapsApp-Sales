@@ -100,6 +100,7 @@
         </status>
 
         <status group="Sales_InvoiceStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
@@ -107,6 +108,7 @@
         </status>
 
         <status group="Sales_ReceiptStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
@@ -130,6 +132,7 @@
         </status>
 
         <status group="Sales_CreditNoteStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
@@ -137,6 +140,7 @@
         </status>
 
         <status group="Sales_ReminderStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>

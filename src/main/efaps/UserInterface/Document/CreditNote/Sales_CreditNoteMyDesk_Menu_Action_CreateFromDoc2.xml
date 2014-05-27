@@ -23,36 +23,29 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>13f66c8e-67e5-42ac-b5f6-01133cf969b5</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2</name>
-
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
                 <property name="JasperReport">Sales_CreditNote</property>
                 <property name="Mime">pdf</property>
                 <property name="PositionType">Sales_CreditNotePosition</property>
-                <property name="StatusGroup">Sales_CreditNoteStatus</property>
-                <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName"/>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_CreditNote</property>
         <property name="TargetMode">create</property>
@@ -61,5 +54,35 @@
         <property name="TargetDefaultMenu">none</property>
         <property name="TargetShowFile">true</property>
     </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
+        <target>
+            <form>Sales_CreditNoteForm</form>
+            <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
+                <property name="JasperReport">Sales_CreditNote</property>
+                <property name="Mime">pdf</property>
+                <property name="PositionType">Sales_CreditNotePosition</property>
+                <!-- Projects_ProjectService2CreditNote -->
+                <property name="ConnectType">d9d8ce4c-03ff-467f-9863-9976033ff1a9</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_CreditNote</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
+    </definition>
 </ui-command>

@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -26,27 +26,56 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>4b2275b5-0bac-4499-a77d-f9739f033b7d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_InvoiceMyDesk_Menu_Action_Copy</name>
         <access>
             <role>Sales_Teller</role>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_InvoiceForm</form>
-            <execute program="org.efaps.esjp.sales.document.Invoice"
-                method="create" />
+            <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="PositionType">Sales_InvoicePosition</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
         </target>
-
-        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Invoice</property>
+        <property name="TargetMode">create</property>
+        <property name="Submit">true</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_InvoiceMyDesk_Menu_Action_Copy</name>
+        <access>
+            <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_InvoiceForm</form>
+            <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <!-- Projects_ProjectService2Invoice -->
+                <property name="ConnectType">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validateName"/>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Invoice</property>
         <property name="TargetMode">create</property>

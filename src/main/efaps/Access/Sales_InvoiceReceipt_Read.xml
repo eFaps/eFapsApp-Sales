@@ -23,43 +23,33 @@
 
 -->
 
-<access-set xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>5dafc5c7-94f7-451e-bf88-f1dc27d1344b</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-
-    <name>Sales_InvoiceReceipt_Read</name>
-
-    <access-type>show</access-type>
-    <access-type>read</access-type>
-    <access-type>checkout</access-type>
-
-    <type>Sales_Invoice</type>
-    <type>Sales_Receipt</type>
-
-    <status group="Sales_InvoiceStatus">
-      <key>Open</key>
-      <key>Paid</key>
-      <key>Booked</key>
-      <key>Replaced</key>
-    </status>
-
-    <status group="Sales_ReceiptStatus">
-      <key>Open</key>
-      <key>Paid</key>
-      <key>Booked</key>
-      <key>Replaced</key>
-    </status>
-
-    <role>Sales_Teller</role>
-
-  </definition>
-
+<access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5dafc5c7-94f7-451e-bf88-f1dc27d1344b</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_InvoiceReceipt_Read</name>
+        <access-type>show</access-type>
+        <access-type>read</access-type>
+        <access-type>checkout</access-type>
+        <type>Sales_Invoice</type>
+        <type>Sales_Receipt</type>
+        <status group="Sales_InvoiceStatus">
+            <key>Digitized</key>
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+        <status group="Sales_ReceiptStatus">
+            <key>Digitized</key>
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Replaced</key>
+        </status>
+        <role>Sales_Teller</role>
+    </definition>
 </access-set>
-
-

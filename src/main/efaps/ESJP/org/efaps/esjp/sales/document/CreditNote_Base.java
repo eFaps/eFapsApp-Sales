@@ -64,6 +64,7 @@ public abstract class CreditNote_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
 
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         if (properties.containsKey("JasperReport")) {
