@@ -26,21 +26,48 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>06dcb58a-39ba-4247-adff-dc8e86e717ac</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps" />
+        </profiles>
         <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountPettyCash</name>
         <access>
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_AccountAbstractForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <form>Sales_AccountPettyCashForm</form>
+            <execute program="org.efaps.esjp.sales.Account" method="create"/>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_AccountPettyCash</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects" />
+        </profiles>
+        <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountPettyCash</name>
+        <access>
+            <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_AccountPettyCashForm</form>
+            <execute program="org.efaps.esjp.sales.Account" method="create">
+                <!-- Projects_ProjectService2PettyCash -->
+                <property name="ConnectType">ef21210d-88fe-4a7c-84ea-8ebdd01cc801</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_AccountPettyCash</property>

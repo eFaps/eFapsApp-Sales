@@ -61,6 +61,8 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
@@ -80,7 +82,18 @@ import org.joda.time.DateTime;
 @EFapsUUID("70868417-752b-45e8-8ada-67d0b15ad35b")
 @EFapsRevision("$Rev$")
 public abstract class Account_Base
+    extends CommonDocument
 {
+
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Create create = new Create();
+        final Instance instance = create.basicInsert(_parameter);
+        final CreatedDoc createdDoc = new  CreatedDoc(instance);
+        connect2Object(_parameter, createdDoc);
+        return new Return();
+    }
 
     public Return insertPostTrigger4Acc2Doc(final Parameter _parameter)
         throws EFapsException

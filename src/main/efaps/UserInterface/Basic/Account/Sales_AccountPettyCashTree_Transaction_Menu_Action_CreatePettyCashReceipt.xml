@@ -26,31 +26,65 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>d92dfb39-00d3-4e77-ac51-d067e52bb5e8</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
         <access>
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PettyCashReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create" >
+            <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create">
                 <property name="PositionType">Sales_PettyCashReceiptPosition</property>
                 <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
-                <property name="Status">Open</property></execute>
-            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate"/>
+                <property name="Status">Open</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate" />
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
         </target>
-        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_PettyCashReceipt</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
+        <access>
+            <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_PettyCashReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create">
+                <property name="PositionType">Sales_PettyCashReceiptPosition</property>
+                <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
+                <property name="Status">Open</property>
+                <!-- Projects_ProjectService2PettyCashReceipt -->
+                <property name="ConnectType">bd3e779c-6349-431f-82f0-5a31b036848b</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate" />
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
+                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
+        </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_PettyCashReceipt</property>
