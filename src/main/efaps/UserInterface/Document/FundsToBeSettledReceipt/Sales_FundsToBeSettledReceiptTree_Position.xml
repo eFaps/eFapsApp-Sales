@@ -33,8 +33,8 @@
             <menu>Sales_FundsToBeSettledReceiptTree_Position_Menu</menu>
             <table>Sales_FundsToBeSettledReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_FundsToBeSettledReceiptPosition</property>
-                <property name="LinkFroms">FundsToBeSettledReceiptLink</property>
+                <property name="Type">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="LinkFrom">FundsToBeSettledReceiptLink</property>
             </evaluate>
         </target>
         <!-- properties -->

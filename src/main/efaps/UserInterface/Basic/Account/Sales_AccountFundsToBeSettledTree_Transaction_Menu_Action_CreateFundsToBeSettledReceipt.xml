@@ -19,37 +19,75 @@
  Last Changed:    $Date: 2013-09-12 18:25:20 -0500 (jue, 12 sep 2013) $
  Last Changed By: $Author: m.aranya@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a805c01a-c00c-4f95-aac7-995a4f03b85c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 10192 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</name>
         <access>
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_FundsToBeSettledReceiptForm</form>
-            <execute program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="create" >
+            <execute program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="create">
                 <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
                 <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate"/>
+            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="validate" />
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_FundsToBeSettledReceipt</property>
-        <property name="WindowHeight">500</property>
-        <property name="WindowWidth">700</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</name>
+        <access>
+            <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_FundsToBeSettledReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="create">
+                <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
+                <property name="Status">Open</property>
+                <!-- Projects_ProjectService2FundsToBeSettledReceipt -->
+                <property name="ConnectType">2edaa579-cae0-49bd-8760-a10dbc2c6e88</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="validate" />
+            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
+                name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_FundsToBeSettledReceipt</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
     </definition>
 </ui-command>

@@ -19,14 +19,17 @@
  Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (Tue, 26 Oct 2010) $
  Last Changed By: $Author: jorge.m.cueva $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>801d5d1f-2a6e-404d-8bc9-e47e3418d754</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5742 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountFundsToBeSettled</name>
         <access>
             <role>Sales_Admin</role>
@@ -34,12 +37,39 @@
         </access>
         <target>
             <form>Sales_AccountFundsToBeSettledForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create"/>
+            <execute program="org.efaps.esjp.sales.Account" method="create"/>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_AccountFundsToBeSettled</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowWidth">900</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountFundsToBeSettled</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+        </access>
+        <target>
+            <form>Sales_AccountFundsToBeSettledForm</form>
+            <execute program="org.efaps.esjp.sales.Account" method="create">
+                <!-- Projects_ProjectService2FundsToBeSettled -->
+                <property name="ConnectType">414ff7af-2bb5-4931-a085-37ec3c5b1181</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_AccountFundsToBeSettled</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>
+
