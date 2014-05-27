@@ -65,6 +65,10 @@
                 method="autoComplete4Product"
                 name="Products_TransactionAbstractForm.product.autocomplete"
                 event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.products.Product"
+                method="updateFields4Product"
+                name="Products_TransactionAbstractForm.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="product4View">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
