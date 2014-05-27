@@ -823,7 +823,7 @@ public abstract class AbstractDocument_Base
                 .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
                 .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
-            final Map<?,?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
+            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             if (multiple) {
                 if (!Arrays.asList(Arrays.copyOfRange(selectedOids, 1, selectedOids.length)).contains(
                                 print.getCurrentInstance().getOid())) {
@@ -838,7 +838,7 @@ public abstract class AbstractDocument_Base
                         .append(" domConstruct.empty(node);")
                         .append("ul = domConstruct.place(\"<ul>");
 
-                    for (final Entry<?,?> entry : properties.entrySet()) {
+                    for (final Entry<?, ?> entry : properties.entrySet()) {
                         js.append("<input type=\\\"hidden\\\" ")
                             .append("name=\\\"").append(AbstractDocument_Base.SELDOCUPDATEPF).append(entry.getKey())
                             .append("\\\" ").append("value=\\\"").append(entry.getValue()).append("\\\">");
@@ -879,11 +879,11 @@ public abstract class AbstractDocument_Base
                         .append("name=\\\"").append(input).append("\\\" ")
                         .append("value=\\\"").append(currentOid).append("\\\">");
 
-                for (final Entry<?,?> entry : properties.entrySet()) {
+                for (final Entry<?, ?> entry : properties.entrySet()) {
                     js.append("<input type=\\\"hidden\\\" ")
                         .append("name=\\\"").append(AbstractDocument_Base.SELDOCUPDATEPF).append(entry.getKey())
                         .append("\\\" ").append("value=\\\"").append(entry.getValue()).append("\\\">");
-                 }
+                }
 
                 js.append("\", node, \"last\"); \n")
                     .append("});")

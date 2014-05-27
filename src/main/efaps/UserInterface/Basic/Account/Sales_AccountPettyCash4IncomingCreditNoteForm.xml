@@ -19,23 +19,24 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d0bc6d0c-0949-4942-96a0-ace0440b5180</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="eFaps" />
         </profiles>
         <name>Sales_AccountPettyCash4IncomingCreditNoteForm</name>
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE"  event="UI_FIELD_VALUE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field character="Group" name="dateGroup">
             <property name="GroupCount">2</property>
@@ -52,7 +53,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getSalesPersonFieldValue"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.salesperson.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -64,7 +66,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.Label</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
@@ -83,9 +86,10 @@
             <property name="Required">true</property>
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.derived.Label</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="autoComplete4PettyCashReceipt"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4PettyCashReceipt"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>
@@ -98,11 +102,12 @@
             <property name="Required">true</property>
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4Contact"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.contactData.Label</property>
@@ -124,9 +129,11 @@
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="rateCurrencyFieldValueUI"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4RateCurrency"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModeCreate">READONLY</property>
@@ -137,7 +144,8 @@
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="withoutVATFieldValue"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.withoutVAT.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
@@ -168,22 +176,22 @@
         </field>
         <field name="javaScript">
             <property name="ModeCreate">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"  method="getJavaScriptUIValue"
-                name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getJavaScriptUIValue"
+                name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
     </definition>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="projects"/>
+            <profile name="projects" />
         </profiles>
         <name>Sales_AccountPettyCash4IncomingCreditNoteForm</name>
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE"  event="UI_FIELD_VALUE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field character="Group" name="dateGroup">
             <property name="GroupCount">2</property>
@@ -200,7 +208,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getSalesPersonFieldValue"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.salesperson.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -212,7 +221,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.Label</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
@@ -226,16 +236,19 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
         <field name="project">
-            <property name="Label">Sales_InvoiceCreditNoteForm.project.Label</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.project.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">100</property>
-            <trigger program="org.efaps.esjp.projects.Project"
-                method="autoComplete4Project"
-                name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project"
+                name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
                 <property name="Status">Closed</property>
                 <property name="MaxChoiceLength">155</property>
@@ -257,9 +270,10 @@
             <property name="Required">true</property>
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.derived.Label</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="autoComplete4PettyCashReceipt"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4PettyCashReceipt"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field character="Heading" name="headingClient">
             <property name="Level">2</property>
@@ -272,11 +286,12 @@
             <property name="Required">true</property>
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4Contact"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.contactData.Label</property>
@@ -298,9 +313,11 @@
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="rateCurrencyFieldValueUI"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="updateFields4RateCurrency"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModeCreate">READONLY</property>
@@ -311,7 +328,8 @@
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="withoutVATFieldValue"
-                name="Sales_AccountPettyCash4IncomingCreditNoteForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+                name="Sales_AccountPettyCash4IncomingCreditNoteForm.withoutVAT.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
@@ -340,10 +358,16 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
         </field>
-        <field name="javaScript">
+        <field name="javascript">
             <property name="ModeCreate">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"  method="getJavaScriptUIValue"
-                name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger event="UI_FIELD_VALUE"
+                method="getJavaScript4ProjectUIValue"
+                name="Sales_AccountPettyCashForm.javascript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.projects.Project">
+                <property name="ReadOnly">true</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

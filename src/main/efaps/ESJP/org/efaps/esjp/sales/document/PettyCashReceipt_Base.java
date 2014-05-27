@@ -77,6 +77,7 @@ public abstract class PettyCashReceipt_Base
         connect2DocumentType(_parameter, createdDoc);
         connect2Account(_parameter, createdDoc);
         createTransaction(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         return new Return();
     }
 
@@ -195,6 +196,7 @@ public abstract class PettyCashReceipt_Base
      * @return html for display and true or false
      * @throws EFapsException on errro
      */
+    @Override
     public Return validate(final Parameter _parameter)
         throws EFapsException
     {

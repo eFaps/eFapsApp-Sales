@@ -437,6 +437,11 @@
             <property name="Attribute">Revision</property>
             <property name="ModeEdit">NONE</property>
         </field>
+        <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
         <field name="project">
             <property name="Label">Sales_IncomingCreditNoteForm.project.Label</property>
             <property name="ModeCreate">EDITABLE</property>

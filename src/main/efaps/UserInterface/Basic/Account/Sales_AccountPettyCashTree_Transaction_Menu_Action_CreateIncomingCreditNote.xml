@@ -19,15 +19,16 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a11ac8b3-dd35-4a31-8f88-46c85e9fa42a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="eFaps" />
         </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
         <access>
@@ -56,11 +57,10 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="projects"/>
+            <profile name="projects" />
         </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
         <access>

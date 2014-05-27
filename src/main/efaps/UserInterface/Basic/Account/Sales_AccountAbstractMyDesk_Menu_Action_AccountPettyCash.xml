@@ -47,7 +47,7 @@
         <property name="TargetCreateType">Sales_AccountPettyCash</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowWidth">900</property>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -73,6 +73,6 @@
         <property name="TargetCreateType">Sales_AccountPettyCash</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -26,11 +26,9 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>8bebec0b-772a-4fb6-bc75-03c28d8d201e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree</name>
@@ -38,19 +36,15 @@
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- targets -->
         <target>
             <menu>Sales_AccountAbstractTree_Menu</menu>
-            <form>Sales_AccountAbstractForm</form>
+            <form>Sales_AccountPettyCashForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_AccountPettyCash</type>
         <childs>
             <child>Sales_AccountPettyCashTree_Transaction</child>
             <child>Sales_AccountPettyCashTree_Documents</child>
         </childs>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
