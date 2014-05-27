@@ -24,21 +24,28 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -70,6 +77,63 @@ public abstract class IncomingDetraction_Base
      */
     public static final String AMOUNTVALUE = IncomingDetraction.class.getName() + ".AmountValue";
 
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(IncomingDetraction.class);
+
+    /**
+     * Executed from a Command execute event to create a new Incoming PerceptionCertificate.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.incomingInvoice.name);
+        final Instance docInst = Instance.get(docOID);
+        if(docInst != null && docInst.isValid()) {
+            final CreatedDoc createdDoc = new CreatedDoc();
+            createdDoc.setInstance(docInst);
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.Name);
+            print.addAttribute(CISales.DocumentSumAbstract.Date);
+            print.addAttribute(CISales.DocumentSumAbstract.Contact);
+            print.addAttribute(CISales.DocumentSumAbstract.Group);
+            print.addAttribute(CISales.DocumentSumAbstract.Rate);
+            print.addAttribute(CISales.DocumentSumAbstract.CurrencyId);
+            print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+            print.execute();
+
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Name.name, print.getAttribute(CISales.DocumentSumAbstract.Name));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, print.getAttribute(CISales.DocumentSumAbstract.Date));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, print.getAttribute(CISales.DocumentSumAbstract.Contact));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, print.getAttribute(CISales.DocumentSumAbstract.Group));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, print.getAttribute(CISales.DocumentSumAbstract.Rate));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+
+            try {
+                final String detractionValueStr = _parameter
+                                .getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.detractionValue.name);
+                final BigDecimal detraction;
+                if (detractionValueStr != null && !detractionValueStr.isEmpty()) {
+                    detraction = (BigDecimal) formatter.parse(detractionValueStr);
+                } else {
+                    detraction = BigDecimal.ZERO;
+                }
+                final IncomingDetraction doc = new IncomingDetraction();
+                createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, detraction);
+                doc.create4Doc(_parameter, createdDoc, -1);
+            } catch (final ParseException p) {
+                throw new EFapsException(IncomingDetraction.class, "Perception.ParseException", p);
+            }
+        }
+        return new Return();
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -186,4 +250,50 @@ public abstract class IncomingDetraction_Base
 
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
+    public Return updateFields4DetractionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+
+        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.incomingInvoice.name);
+        final Instance docInst = Instance.get(docOID);
+
+        if(docInst != null && docInst.isValid()) {
+
+            final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
+
+            final String detractionPercentStr = _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.detractionPercent.name);
+            if (detractionPercentStr != null && !detractionPercentStr.isEmpty()) {
+                final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                try {
+                    final BigDecimal detractionPercent = (BigDecimal) formatter.parse(detractionPercentStr);
+                    final BigDecimal crossTotal = getCrossTotal(_parameter, calcList);
+                    final BigDecimal detraction = crossTotal.multiply(detractionPercent
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                    final String detractionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .format(detraction);
+                    map.put(CIFormSales.Sales_IncomingDetractionCreateForm.detractionValue.name, detractionStr);
+                } catch (final ParseException e) {
+                    IncomingDetraction_Base.LOG.error("Catched parsing error", e);
+                }
+            }
+
+            if (calcList.size() > 0) {
+                list.add(map);
+                retVal.put(ReturnValues.VALUES, list);
+            }
+        }
+        return retVal;
+    }
+
 }

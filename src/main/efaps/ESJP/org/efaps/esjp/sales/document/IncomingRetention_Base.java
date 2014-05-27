@@ -24,11 +24,15 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
@@ -41,6 +45,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -58,6 +64,62 @@ public abstract class IncomingRetention_Base
      * Used to store the PerceptionValue in the Context.
      */
     public static final String AMOUNTVALUE = IncomingRetention.class.getName() + ".AmountValue";
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(IncomingRetention.class);
+
+    /**
+     * Executed from a Command execute event to create a new Incoming PerceptionCertificate.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @throws EFapsException on error
+     */
+    public Return create(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.incomingInvoice.name);
+        final Instance docInst = Instance.get(docOID);
+        if(docInst != null && docInst.isValid()) {
+            final CreatedDoc createdDoc = new CreatedDoc();
+            createdDoc.setInstance(docInst);
+            final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.Date);
+            print.addAttribute(CISales.DocumentSumAbstract.Contact);
+            print.addAttribute(CISales.DocumentSumAbstract.Group);
+            print.addAttribute(CISales.DocumentSumAbstract.Rate);
+            print.addAttribute(CISales.DocumentSumAbstract.CurrencyId);
+            print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+            print.execute();
+
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, print.getAttribute(CISales.DocumentSumAbstract.Date));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, print.getAttribute(CISales.DocumentSumAbstract.Contact));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, print.getAttribute(CISales.DocumentSumAbstract.Group));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, print.getAttribute(CISales.DocumentSumAbstract.Rate));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+
+            try {
+                final String retentionValueStr = _parameter
+                                .getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.retentionValue.name);
+                final BigDecimal retention;
+                if (retentionValueStr != null && !retentionValueStr.isEmpty()) {
+                    retention = (BigDecimal) formatter.parse(retentionValueStr);
+                } else {
+                    retention = BigDecimal.ZERO;
+                }
+                final IncomingRetention doc = new IncomingRetention();
+                createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, retention);
+                doc.create4Doc(_parameter, createdDoc, -1);
+            } catch (final ParseException p) {
+                throw new EFapsException(IncomingRetention.class, "Perception.ParseException", p);
+            }
+        }
+        return new Return();
+    }
 
     /**
      * Executed from a Command execute event to create a new Incoming PerceptionCertificate.
@@ -172,4 +234,50 @@ public abstract class IncomingRetention_Base
 
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
+    public Return updateFields4RetentionPercent(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+
+        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.incomingInvoice.name);
+        final Instance docInst = Instance.get(docOID);
+
+        if(docInst != null && docInst.isValid()) {
+
+            final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
+
+            final String retentionPercentStr = _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.retentionPercent.name);
+            if (retentionPercentStr != null && !retentionPercentStr.isEmpty()) {
+                final DecimalFormat formatter = NumberFormatter.get().getFormatter();
+                try {
+                    final BigDecimal retentionPercent = (BigDecimal) formatter.parse(retentionPercentStr);
+                    final BigDecimal crossTotal = getCrossTotal(_parameter, calcList);
+                    final BigDecimal retention = crossTotal.multiply(retentionPercent
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
+                    final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .format(retention);
+                    map.put(CIFormSales.Sales_IncomingRetentionCreateForm.retentionValue.name, retentionStr);
+                } catch (final ParseException e) {
+                    IncomingRetention_Base.LOG.error("Catched parsing error", e);
+                }
+            }
+
+            if (calcList.size() > 0) {
+                list.add(map);
+                retVal.put(ReturnValues.VALUES, list);
+            }
+        }
+        return retVal;
+    }
+
 }

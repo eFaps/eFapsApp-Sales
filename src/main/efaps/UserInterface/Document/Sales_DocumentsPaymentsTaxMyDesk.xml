@@ -31,6 +31,7 @@
         <childs>
             <child>Sales_IncomingRetentionMyDesk</child>
             <child>Sales_IncomingDetractionMyDesk</child>
+            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
