@@ -62,7 +62,7 @@
                 <property name="Status01">Digitized</property>
                 <property name="Type02">Sales_IncomingInvoice</property>
                 <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
-                <property name="Status02">Canceled</property>
+                <property name="Status02">Paid</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
