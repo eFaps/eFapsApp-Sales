@@ -1662,7 +1662,8 @@ public abstract class AbstractDocument_Base
     /**
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _map          Map to add to
-     * @param _instance     Instance of the Product
+     * @param _prodInst     Instance of the Product
+     * @throws EFapsException on error
      */
     protected void add2UpdateField4Product(final Parameter _parameter,
                                            final Map<String, Object> _map,
@@ -1705,11 +1706,20 @@ public abstract class AbstractDocument_Base
     }
 
 
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _individual   value of the individual attribute
+     * @param _map          map the script will be added to
+     * @param _key          key to be used as fieldname etc
+     * @param _legend       legend to be presented
+     * @throws EFapsException on error
+     */
     protected void add4Individual(final Parameter _parameter,
                                   final ProductIndividual _individual,
                                   final Map<String, Object> _map,
                                   final String _key,
                                   final String _legend)
+        throws EFapsException
     {
         if (_individual != null && !ProductIndividual.NONE.equals(_individual)) {
             // TODO make configurable from properties
@@ -1738,7 +1748,8 @@ public abstract class AbstractDocument_Base
                 .append(" var x = domConstruct.create(\"span\", { id: \"in").append(_key)
                 .append("\", class: \"eFapsIndividual\"}, ind);")
                 .append(" var fs=  domConstruct.create(\"fieldset\", { }, x);")
-                .append("domConstruct.create(\"legend\", { innerHTML: \"").append(_legend).append("\"}, fs);");
+                .append("domConstruct.create(\"legend\", { innerHTML: \"")
+                    .append(StringEscapeUtils.escapeEcmaScript(_legend)).append("\"}, fs);");
 
             if (quantity > 5) {
                 js.append("var j = 0;");
