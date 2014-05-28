@@ -60,7 +60,7 @@
                 <property name="Type01">Sales_IncomingInvoice</property>
                 <property name="StatusGroup01">Sales_IncomingInvoiceStatus</property>
                 <property name="Status01">Digitized</property>
-                <property name="Type01">Sales_IncomingInvoice</property>
+                <property name="Type02">Sales_IncomingInvoice</property>
                 <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
                 <property name="Status02">Canceled</property>
                 <property name="ExtraParameter">contact</property>
