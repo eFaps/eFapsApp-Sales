@@ -42,28 +42,33 @@
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="setDefaultFilter"
                 name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE"
                 index="1">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">contact</property>
+                <property name="Field04">switch</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
-                <property name="FilterType03">Instance</property>
+                <property name="FilterType03">Contact</property>
+                <property name="FilterType04">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03"></property>
+                <property name="FilterDefault04">true</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="getFilterFieldValue"
                 name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE"
                 index="2">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">contact</property>
+                <property name="Field04">switch</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SalesReport4Account.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SalesReport4Account.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.SalesReport4Account.contact</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.SalesReport4Account.switch</property>
             </trigger>
         </field>
         <field name="salesReport">
@@ -71,8 +76,10 @@
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="generateReport"
                 name="Sales_PaymentDocumentOut_Report4AccountForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ShowDetails">true</property>
+                <property name="ReportKey">OUT</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
                 <property name="Type">Sales_IncomingInvoice</property>
                 <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">!Replaced</property>
@@ -91,7 +98,28 @@
                 <property name="Type05">Sales_IncomingCredit</property>
                 <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
                 <property name="Status05">!Canceled</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                <property name="Type100">Sales_IncomingInvoice</property>
+                <property name="Type101">Accounting_ExternalVoucher</property>
+                <property name="Type102">Sales_IncomingReceipt</property>
+                <property name="Type103">Sales_PaymentOrder</property>
+                <property name="Type104">Sales_IncomingExchange</property>
+                <property name="Type105">Sales_IncomingCredit</property>
+                <property name="StatusGroup100">Sales_IncomingInvoiceStatus</property>
+                <property name="Status100">!Replaced</property>
+                <property name="StatusGroup101">Sales_IncomingInvoiceStatus</property>
+                <property name="Status101">!Paid</property>
+                <property name="StatusGroup102">Accounting_ExternalVoucherStatus</property>
+                <property name="Status102">!Replaced</property>
+                <property name="StatusGroup103">Sales_IncomingReceiptStatus</property>
+                <property name="Status103">!Replaced</property>
+                <property name="StatusGroup104">Sales_IncomingReceiptStatus</property>
+                <property name="Status104">!Paid</property>
+                <property name="StatusGroup106">Sales_PaymentOrderStatus</property>
+                <property name="Status106">!Canceled</property>
+                <property name="StatusGroup107">Sales_IncomingExchangeStatus</property>
+                <property name="Status108">!Canceled</property>
+                <property name="StatusGroup109">Sales_IncomingCreditStatus</property>
+                <property name="Status109">!Canceled</property>
             </trigger>
         </field>
     </definition>

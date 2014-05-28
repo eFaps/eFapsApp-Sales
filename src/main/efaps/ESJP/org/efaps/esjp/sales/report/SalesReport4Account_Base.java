@@ -45,7 +45,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -83,6 +82,22 @@ public abstract class SalesReport4Account_Base
 {
 
     /**
+     * Used to distinguish between incoming and outgoing report.
+     */
+    public enum ReportKey
+    {
+        /** Incoming. */
+        IN,
+        /** Outgoing. */
+        OUT
+    }
+
+    /**
+     * ReportKey for this report.
+     */
+    private ReportKey reportKey = ReportKey.IN;
+
+    /**
      * @param _parameter    Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
@@ -92,7 +107,6 @@ public abstract class SalesReport4Account_Base
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName("SaleReport4Account");
         final String html = dyRp.getHtmlSnipplet(_parameter);
         ret.put(ReturnValues.SNIPLETT, html);
         return ret;
@@ -109,10 +123,9 @@ public abstract class SalesReport4Account_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String mime = (String) props.get("Mime");
+        final String mime = getProperty(_parameter, "Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName("SaleReport4Account");
+        dyRp.setFileName(getLabel(_parameter, "FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -135,9 +148,44 @@ public abstract class SalesReport4Account_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
+        this.reportKey = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
         return new Report4Account(this);
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _key key to be searched
+     * @return new Label
+     */
+    protected String getLabel(final Parameter _parameter,
+                              final String _key)
+    {
+        return DBProperties.getProperty(SalesReport4Account.class.getName() + "." + getReportKey() + "." + _key);
+    }
+
+    /**
+     * Getter method for the instance variable {@link #reportKey}.
+     *
+     * @return value of instance variable {@link #reportKey}
+     */
+    protected ReportKey getReportKey()
+    {
+        return this.reportKey;
+    }
+
+    /**
+     * Setter method for instance variable {@link #reportKey}.
+     *
+     * @param _reportKey value for instance variable {@link #reportKey}
+     */
+    protected void setReportKey(final ReportKey _reportKey)
+    {
+        this.reportKey = _reportKey;
+    }
+
+    /**
+     * Report class.
+     */
     public static class Report4Account
         extends AbstractDynamicReport
     {
@@ -147,11 +195,13 @@ public abstract class SalesReport4Account_Base
          */
         private final SalesReport4Account_Base filteredReport;
 
+        /**
+         * @param _report4Account class used
+         */
         public Report4Account(final SalesReport4Account_Base _report4Account)
         {
             this.filteredReport = _report4Account;
         }
-
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
@@ -163,7 +213,13 @@ public abstract class SalesReport4Account_Base
 
             final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
 
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+
+            boolean offset = false;
+            if (filter.containsKey("switch")) {
+                offset = (boolean) filter.get("switch");
+            }
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 100 : 0);
             add2QueryBuilder(_parameter, queryBldr);
 
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -291,57 +347,57 @@ public abstract class SalesReport4Account_Base
         {
             final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
 
-            final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".FilterDate1"), "docDate",
+            final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(
+                            this.filteredReport.getLabel(_parameter, "FilterDate1"), "docDate",
                             DateTimeMonth.get());
-            final TextColumnBuilder<DateTime> yearColumn = AbstractDynamicReport_Base.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".FilterDate2"), "docDate",
+            final TextColumnBuilder<DateTime> yearColumn = AbstractDynamicReport_Base.column(
+                            this.filteredReport.getLabel(_parameter, "FilterDate2"), "docDate",
                             DateTimeYear.get());
-            final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".Created"), "docDate",
+            final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
+                            this.filteredReport.getLabel(_parameter, "Created"), "docDate",
                             DateTimeDate.get());
 
-            final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".Type"), "docType",
+            final TextColumnBuilder<String> typeColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Type"), "docType",
                             DynamicReports.type.stringType());
 
-            final TextColumnBuilder<DateTime> createdColumn = AbstractDynamicReport_Base.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".Date"), "docCreated",
+            final TextColumnBuilder<DateTime> createdColumn = AbstractDynamicReport_Base.column(
+                            this.filteredReport.getLabel(_parameter, "Date"), "docCreated",
                             DateTimeDate.get());
 
-            final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".Name"), "docName",
+            final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Name"), "docName",
                             DynamicReports.type.stringType());
 
-            final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".ContactName"), "docContactName",
+            final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "ContactName"), "docContactName",
                             DynamicReports.type.stringType());
 
-            final TextColumnBuilder<DateTime> dueDateColumn = AbstractDynamicReport_Base.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".DueDate"), "docDueDate",
+            final TextColumnBuilder<DateTime> dueDateColumn = AbstractDynamicReport_Base.column(
+                            this.filteredReport.getLabel(_parameter, "DueDate"), "docDueDate",
                             DateTimeDate.get());
 
-            final TextColumnBuilder<BigDecimal> crossTotalColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".CrossTotal"), "docCrossTotal",
+            final TextColumnBuilder<BigDecimal> crossTotalColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "CrossTotal"), "docCrossTotal",
                             DynamicReports.type.bigDecimalType());
 
-            final TextColumnBuilder<BigDecimal> paymentColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".Payment"), "docPayment",
+            final TextColumnBuilder<BigDecimal> paymentColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Payment"), "docPayment",
                             DynamicReports.type.bigDecimalType());
 
-            final TextColumnBuilder<BigDecimal> differenceColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".Difference"), "docDifference",
+            final TextColumnBuilder<BigDecimal> differenceColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Difference"), "docDifference",
                             DynamicReports.type.bigDecimalType());
 
-            final TextColumnBuilder<String> rateCurrencyColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".RateCurrency"), "docRateCurrency",
+            final TextColumnBuilder<String> rateCurrencyColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "RateCurrency"), "docRateCurrency",
                             DynamicReports.type.stringType());
 
-            final TextColumnBuilder<BigDecimal> rateObjectColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(SalesReport4Account.class.getName() + ".RateObject"), "docRateObject",
+            final TextColumnBuilder<BigDecimal> rateObjectColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "RateObject"), "docRateObject",
                             DynamicReports.type.bigDecimalType());
 
-            final ColumnGroupBuilder yearGroup  = DynamicReports.grp.group(yearColumn).groupByDataType();
+            final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
@@ -376,17 +432,18 @@ public abstract class SalesReport4Account_Base
         /**
          * Method to obtains totals of the payments relations to document.
          *
-         * @param _parameter
-         * @param _currentInstance
-         * @return
+         * @param _parameter    Parameter as passed by the eFaps API
+         * @param _docInst      Instance of the payment
+         * @return value of the payments
+         * @throws EFapsException on error
          */
         protected BigDecimal getPayments4Document(final Parameter _parameter,
-                                                  final Instance _document)
+                                                  final Instance _docInst)
             throws EFapsException
         {
             BigDecimal ret = BigDecimal.ZERO;
 
-            if (_document.isValid()) {
+            if (_docInst.isValid()) {
                 final SelectBuilder sel = new SelectBuilder().linkto(CISales.Payment.TargetDocument);
                 final SelectBuilder selTypePay = new SelectBuilder(sel).type();
                 final SelectBuilder selRatePay = new SelectBuilder(sel)
@@ -395,7 +452,7 @@ public abstract class SalesReport4Account_Base
                                 .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink).instance();
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _document);
+                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _docInst);
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addSelect(selTypePay, selRatePay, selRateCurPay);
                 multi.addAttribute(CISales.Payment.Amount);
@@ -413,7 +470,7 @@ public abstract class SalesReport4Account_Base
                         payInfo.setAmount(amount);
                         payInfo.setCurrency(rateCurInst);
                         payInfo.setRate(ratePay);
-                        payInfo.setDocument(_document);
+                        payInfo.setDocument(_docInst);
                         lstPayDocs.add(payInfo);
                     }
                 }
@@ -428,7 +485,7 @@ public abstract class SalesReport4Account_Base
                                             && current.getCurrency().equals(curBase)) {
                                 ret = ret.add(current.getAmount());
                             } else if (current.getCurrDocument().equals(curBase)
-                                            && !current.getCurrency().equals(curBase)){
+                                            && !current.getCurrency().equals(curBase)) {
                                 final Object[] rates = current.getRate();
                                 final BigDecimal amountPay = current.getAmount();
                                 final BigDecimal rate = ((BigDecimal) rates[1]).divide((BigDecimal) rates[0], 12,
@@ -451,12 +508,21 @@ public abstract class SalesReport4Account_Base
         }
     }
 
+    /**
+     * Link class.
+     */
     public static class LinkExpression
         extends AbstractComplexExpression<EmbeddedLink>
     {
 
+        /**
+         * Needed for serialization.
+         */
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Constructor.
+         */
         public LinkExpression()
         {
             addExpression(DynamicReports.field("docOID", String.class));

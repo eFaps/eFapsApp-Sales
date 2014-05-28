@@ -33,15 +33,15 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4ContactDateFromTo</form>
+            <form>Sales_PaymentDocumentOut_FilterForm</form>
             <execute method="setFilter" program="org.efaps.esjp.sales.report.SalesReport4Account">
-                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
             </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
-        <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.FilterKey</property>
+        <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
         <property name="FilterTargetForm">Sales_PaymentDocumentOut_Report4AccountForm</property>
         <property name="FilterTargetField">salesReport</property>
     </definition>
