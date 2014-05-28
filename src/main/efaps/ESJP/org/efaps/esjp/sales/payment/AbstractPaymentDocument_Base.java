@@ -574,7 +574,7 @@ public abstract class AbstractPaymentDocument_Base
             if (!accInfo.getCurrency().equals(docInfo.getRateCurrency())
                             && (docInfo.getCurrencyBase().equals(docInfo.getRateCurrency())
                                             || !docInfo.getCurrencyBase().equals(docInfo.getRateCurrency()))) {
-                newAmount4PayDoc = amount4PayDoc.divide(rate, 2, BigDecimal.ROUND_HALF_UP);
+                newAmount4PayDoc = getRound4Amount(amount4PayDoc, rate);
             }
 
             map.put("payment4Pay", getTwoDigitsformater().format(newAmount4PayDoc));
@@ -595,6 +595,19 @@ public abstract class AbstractPaymentDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    /**
+     * Method to round amount divide.
+     *
+     * @param _amount4PayDoc BigDecimal of the amount finally.
+     * @param _rate BigDecimal of the division amount.
+     * @return BigDecimal rounding.
+     */
+    protected BigDecimal getRound4Amount(final BigDecimal _amount4PayDoc,
+                                       final BigDecimal _rate)
+    {
+        return _amount4PayDoc.divide(_rate, 2, BigDecimal.ROUND_HALF_UP);
     }
 
     public Return updateFields4PaymentDiscount(final Parameter _parameter)

@@ -40,11 +40,13 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
@@ -204,6 +206,7 @@ public abstract class PaymentDetractionOut_Base
             } else {
                 map = new HashMap<KeyDef, Object>();
                 valuesTmp.put(multi.getCurrentInstance(), map);
+
                 map.put(new KeyDefStr("createDocument"), new String[] { docInstance.getOid(), docName });
                 map.put(new KeyDefStr("createDocumentContact"), docContactName);
                 map.put(new KeyDefStr("createDocumentDesc"), docInfo.getInfoOriginal());
@@ -217,7 +220,7 @@ public abstract class PaymentDetractionOut_Base
                 map.put(new KeyDefStr("paymentDiscount"), getTwoDigitsformater().format(BigDecimal.ZERO));
                 map.put(new KeyDefStr("paymentAmountDesc"), getTwoDigitsformater().format(BigDecimal.ZERO));
                 map.put(new KeyDefStr("detractionDoc"), multi.getCurrentInstance().getOid());
-                total = total.add(crossTotal);
+                total = total.add(crossTotal.setScale(0, BigDecimal.ROUND_HALF_UP));
             }
         }
         final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
@@ -260,5 +263,67 @@ public abstract class PaymentDetractionOut_Base
             ret.add(map);
         }
         return ret;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
+                                                             final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
+        final AttributeQuery attrQuery =
+                        attrQueryBldr.getAttributeQuery(CISales.IncomingDetraction2IncomingInvoice.ToLink);
+
+        _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
+    }
+
+    @Override
+    public DocumentInfo getNewDocumentInfo(final Instance _instance)
+        throws EFapsException
+    {
+        Instance ret = _instance;
+        if (CISales.IncomingInvoice.getType().equals(_instance.getType())) {
+            final SelectBuilder selDet = new SelectBuilder()
+                            .linkto(CISales.IncomingDetraction2IncomingInvoice.FromLink).instance();
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToLink, _instance);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addSelect(selDet);
+            multi.execute();
+            while (multi.next()) {
+                ret = multi.<Instance>getSelect(selDet);
+            }
+        }
+        return new DocumentDetractionInfoOut(ret);
+    }
+
+    @Override
+    protected BigDecimal getRound4Amount(final BigDecimal _amount4PayDoc,
+                                         final BigDecimal _rate)
+    {
+        return super.getRound4Amount(_amount4PayDoc, _rate).setScale(0, BigDecimal.ROUND_HALF_UP);
+    }
+
+    public class DocumentDetractionInfoOut
+        extends AbstractPaymentOut.DocumentInfoOut
+    {
+
+        public DocumentDetractionInfoOut(final Instance _instance)
+            throws EFapsException
+        {
+            super(_instance);
+        }
+
+        @Override
+        protected BigDecimal getCrossTotal()
+            throws EFapsException
+        {
+            // TODO Auto-generated method stub
+            return super.getCrossTotal().setScale(0, BigDecimal.ROUND_HALF_UP);
+        }
     }
 }
