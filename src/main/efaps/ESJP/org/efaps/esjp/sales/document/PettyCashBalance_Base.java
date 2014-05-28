@@ -230,14 +230,24 @@ public abstract class PettyCashBalance_Base
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(sel);
                 if (docInst != null && docInst.isValid()) {
-                    final Insert rel2Insert = new Insert(CISales.PettyCashBalance2PettyCashReceipt);
-                    rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.FromLink, balanceInst);
-                    rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.ToLink, docInst);
-                    rel2Insert.execute();
+                    if(docInst.getType().equals(CISales.PettyCashReceipt.getType())) {
+                        final Insert rel2Insert = new Insert(CISales.PettyCashBalance2PettyCashReceipt);
+                        rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.FromLink, balanceInst);
+                        rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.ToLink, docInst);
+                        rel2Insert.execute();
 
-                    final Update update = new Update(docInst);
-                    update.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
-                    update.execute();
+                        final Update update = new Update(docInst);
+                        update.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
+                        update.execute();
+                    }else if(docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
+                        final Insert rel2Insert = new Insert(CISales.PettyCashBalance2IncomingCreditNote);
+                        rel2Insert.add(CISales.PettyCashBalance2IncomingCreditNote.FromLink, balanceInst);
+                        rel2Insert.add(CISales.PettyCashBalance2IncomingCreditNote.ToLink, docInst);
+                        rel2Insert.execute();
+                        final Update update = new Update(docInst);
+                        update.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
+                        update.execute();
+                    }
                 }
             }
 
