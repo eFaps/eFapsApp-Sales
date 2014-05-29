@@ -139,6 +139,11 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="nameGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+        </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -146,6 +151,15 @@
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4AbsoluteAmount"
                 name="Sales_PaymentDetractionOut4MassiveForm.amount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="updateButton" character="Command">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_PaymentDetractionOut4MassiveForm.updateButton.Label</property>
+            <property name="CmdIcon">ACCEPT</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="recalculateAmount"
+                name="Sales_PaymentDetractionOut4MassiveForm.updateButton.UI_FIELD_CMD" event="UI_FIELD_CMD">
+            </trigger>
         </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>

@@ -285,6 +285,24 @@ public abstract class PaymentDetractionOut_Base
         }
     }
 
+    public Return recalculateAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final StringBuilder js = new StringBuilder();
+
+        final String[] amount4Payments = _parameter.getParameterValues("paymentAmount");
+        BigDecimal ret = BigDecimal.ZERO;
+        if (amount4Payments != null && amount4Payments.length > 0) {
+            for (final String amount4Pay : amount4Payments) {
+                ret = ret.add(parseBigDecimal(amount4Pay));
+            }
+        }
+        js.append(getSetFieldValue(0, "amount",  getTwoDigitsformater().format(ret)));
+        retVal.put(ReturnValues.SNIPLETT, js.toString());
+        return retVal;
+    }
+
     @Override
     public DocumentInfo getNewDocumentInfo(final Instance _instance)
         throws EFapsException
