@@ -1415,7 +1415,7 @@ public abstract class DocumentSum_Base
         final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.Product).instance();
         multi.addSelect(selProdInst);
         multi.addAttribute(CISales.PositionSumAbstract.Quantity, CISales.PositionSumAbstract.Discount,
-                        CISales.PositionSumAbstract.NetUnitPrice, CISales.PositionSumAbstract.CrossUnitPrice,
+                        CISales.PositionSumAbstract.RateNetUnitPrice, CISales.PositionSumAbstract.RateCrossUnitPrice,
                         CISales.PositionSumAbstract.PositionNumber);
         multi.execute();
         while (multi.next()) {
@@ -1423,9 +1423,9 @@ public abstract class DocumentSum_Base
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
             BigDecimal unitPrice;
             if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET)) {
-                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
             } else {
-                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.CrossUnitPrice);
+                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossUnitPrice);
             }
             final Integer idx = multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber);
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);

@@ -47,7 +47,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="getSalesPersonFieldValue" 
+            <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="getSalesPersonFieldValue"
                 name="Sales_IncomingDetractionForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
@@ -172,8 +172,25 @@
             <property name="Label">Sales_IncomingDetractionForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="crossTotal">
+        <field name="detractionPercent">
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">2</property>
+            <property name="Label">Sales_IncomingDetractionCreateForm.detractionPercent.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction"
+                method="updateFields4DetractionPercent"
+                name="Sales_IncomingDetractionCreateForm.detractionPercent.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="detractionValue">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingDetractionCreateForm.detractionValue.Label</property>
+             <property name="Attribute">RateCrossTotal</property>
+        </field>
+        <field name="crossTotal">
+            <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>

@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>65fe3c03-f1a0-4b34-b108-3b46295114a6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -50,13 +52,15 @@
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+         <field name="crossTotal">
+            <property name="Phrase">$&lt;linkto[ToLink].attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[ToLink].linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="rateCrossTotal">
+            <property name="Phrase">$&lt;linkto[ToLink].attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[ToLink].linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_DocumentAbstract/RateCrossTotal.Label</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
     </definition>
 </ui-table>

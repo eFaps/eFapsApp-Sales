@@ -59,11 +59,6 @@
                 method="updateFields4RetentionPercent"
                 name="Sales_IncomingInvoiceForm.retentionPercent.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE"/>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Sales_IncomingInvoiceForm.retentionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
-            </trigger>
         </field>
         <field name="retentionValue">
             <property name="ModeCreate">EDITABLE</property>
@@ -71,11 +66,6 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingRetentionCreateForm.retentionValue.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
-                name="Sales_IncomingRetentionCreateForm.retentionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
-            </trigger>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>

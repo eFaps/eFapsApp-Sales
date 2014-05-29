@@ -39,11 +39,14 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,17 +74,20 @@ public abstract class IncomingRetention_Base
     private static final Logger LOG = LoggerFactory.getLogger(IncomingRetention.class);
 
     /**
-     * Executed from a Command execute event to create a new Incoming PerceptionCertificate.
+     * Executed from a Command execute event to create a new Incoming
+     * PerceptionCertificate.
      *
      * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Empty Return
      * @throws EFapsException on error
      */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.incomingInvoice.name);
+        final String docOID = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.incomingInvoice.name);
         final Instance docInst = Instance.get(docOID);
-        if(docInst != null && docInst.isValid()) {
+        if (docInst != null && docInst.isValid()) {
             final CreatedDoc createdDoc = new CreatedDoc();
             createdDoc.setInstance(docInst);
             final DecimalFormat formatter = NumberFormatter.get().getFormatter();
@@ -95,12 +101,18 @@ public abstract class IncomingRetention_Base
             print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
             print.execute();
 
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, print.getAttribute(CISales.DocumentSumAbstract.Date));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, print.getAttribute(CISales.DocumentSumAbstract.Contact));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, print.getAttribute(CISales.DocumentSumAbstract.Group));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, print.getAttribute(CISales.DocumentSumAbstract.Rate));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Date));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Contact));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Group));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Rate));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
 
             try {
                 final String retentionValueStr = _parameter
@@ -214,6 +226,50 @@ public abstract class IncomingRetention_Base
     }
 
     @Override
+    protected Instance getRateCurrencyInstance(final Parameter _parameter,
+                                               final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        Instance ret;
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
+                        && _parameter.getInstance().getType().isKindOf(CISales.IncomingRetention.getType())) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink)
+                            .linkto(CISales.IncomingInvoice.RateCurrencyId).instance();
+            print.addSelect(sel);
+            print.execute();
+            ret = print.getSelect(sel);
+        } else {
+
+            ret = _parameter.getParameterValue("rateCurrencyId") == null
+                            ? Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE)
+                            : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+        }
+        return ret;
+    }
+
+    @Override
+    protected Object[] getRateObject(final Parameter _parameter)
+        throws EFapsException
+    {
+        Object[] ret;
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
+                        && _parameter.getInstance().getType().isKindOf(CISales.IncomingRetention.getType())) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink)
+                            .attribute(CISales.IncomingInvoice.Rate);
+            print.addSelect(sel);
+            print.execute();
+            ret = print.getSelect(sel);
+        } else {
+            ret = super.getRateObject(_parameter);
+        }
+        return ret;
+    }
+
+    @Override
     protected BigDecimal getCrossTotal(final Parameter _parameter,
                                        final List<Calculator> _calcList)
         throws EFapsException
@@ -223,7 +279,7 @@ public abstract class IncomingRetention_Base
             final DecimalFormat formatter = NumberFormatter.get().getFormatter();
             try {
                 final BigDecimal rateCrossTotal = (BigDecimal) formatter.parse(_parameter
-                                .getParameterValue(CIFormSales.Sales_IncomingRetentionForm.crossTotal.name));
+                                .getParameterValue(CIFormSales.Sales_IncomingRetentionForm.retentionValue.name));
                 ret = ret.add(rateCrossTotal);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingRetention.class, "RateCrossTotal.ParseException", p);
@@ -247,10 +303,18 @@ public abstract class IncomingRetention_Base
         final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.incomingInvoice.name);
-        final Instance docInst = Instance.get(docOID);
-
-        if(docInst != null && docInst.isValid()) {
+        final String docOID = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.incomingInvoice.name);
+        Instance docInst = Instance.get(docOID);
+        if (!docInst.isValid() && _parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink).instance();
+            print.addSelect(sel);
+            print.execute();
+            docInst = print.getSelect(sel);
+        }
+        if (docInst != null && docInst.isValid()) {
 
             final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
 

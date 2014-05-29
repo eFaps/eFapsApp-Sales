@@ -39,10 +39,14 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,13 +91,15 @@ public abstract class IncomingDetraction_Base
      *
      * @param _parameter Parameter as passed from the eFaps API.
      * @throws EFapsException on error
+     * @return new empty Return
      */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.incomingInvoice.name);
+        final String docOID = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.incomingInvoice.name);
         final Instance docInst = Instance.get(docOID);
-        if(docInst != null && docInst.isValid()) {
+        if (docInst != null && docInst.isValid()) {
             final CreatedDoc createdDoc = new CreatedDoc();
             createdDoc.setInstance(docInst);
             final DecimalFormat formatter = NumberFormatter.get().getFormatter();
@@ -108,13 +114,20 @@ public abstract class IncomingDetraction_Base
             print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
             print.execute();
 
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Name.name, print.getAttribute(CISales.DocumentSumAbstract.Name));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, print.getAttribute(CISales.DocumentSumAbstract.Date));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, print.getAttribute(CISales.DocumentSumAbstract.Contact));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, print.getAttribute(CISales.DocumentSumAbstract.Group));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name, print.getAttribute(CISales.DocumentSumAbstract.Rate));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name, print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Name.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Name));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Date.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Date));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Contact));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Group.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Group));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Rate.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.Rate));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.CurrencyId.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCurrencyId.name,
+                            print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
 
             try {
                 final String detractionValueStr = _parameter
@@ -125,9 +138,8 @@ public abstract class IncomingDetraction_Base
                 } else {
                     detraction = BigDecimal.ZERO;
                 }
-                final IncomingDetraction doc = new IncomingDetraction();
                 createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, detraction);
-                doc.create4Doc(_parameter, createdDoc, -1);
+                create4Doc(_parameter, createdDoc, -1);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingDetraction.class, "Perception.ParseException", p);
             }
@@ -172,7 +184,7 @@ public abstract class IncomingDetraction_Base
         } else {
             insert.add(CISales.IncomingDetraction.CurrencyId, _createdDoc.getValues()
                             .get(CISales.DocumentSumAbstract.CurrencyId.name));
-                insert.add(CISales.IncomingDetraction.RateCurrencyId, _createdDoc.getValues()
+            insert.add(CISales.IncomingDetraction.RateCurrencyId, _createdDoc.getValues()
                             .get(CISales.DocumentSumAbstract.RateCurrencyId.name));
         }
         insert.add(CISales.IncomingDetraction.RateNetTotal, BigDecimal.ZERO);
@@ -239,7 +251,7 @@ public abstract class IncomingDetraction_Base
             final DecimalFormat formatter = NumberFormatter.get().getFormatter();
             try {
                 final BigDecimal rateCrossTotal = (BigDecimal) formatter.parse(_parameter
-                                .getParameterValue(CIFormSales.Sales_IncomingDetractionForm.crossTotal.name));
+                                .getParameterValue(CIFormSales.Sales_IncomingDetractionForm.detractionValue.name));
                 ret = ret.add(rateCrossTotal);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingDetraction.class, "RateCrossTotal.ParseException", p);
@@ -248,6 +260,50 @@ public abstract class IncomingDetraction_Base
             ret = super.getCrossTotal(_parameter, _calcList);
         }
 
+        return ret;
+    }
+
+    @Override
+    protected Instance getRateCurrencyInstance(final Parameter _parameter,
+                                               final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        Instance ret;
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
+                        && _parameter.getInstance().getType().isKindOf(CISales.IncomingDetraction.getType())) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.IncomingDetraction2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink)
+                            .linkto(CISales.IncomingInvoice.RateCurrencyId).instance();
+            print.addSelect(sel);
+            print.execute();
+            ret = print.getSelect(sel);
+        } else {
+
+            ret = _parameter.getParameterValue("rateCurrencyId") == null
+                            ? Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE)
+                            : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+        }
+        return ret;
+    }
+
+    @Override
+    protected Object[] getRateObject(final Parameter _parameter)
+        throws EFapsException
+    {
+        Object[] ret;
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
+                        && _parameter.getInstance().getType().isKindOf(CISales.IncomingDetraction.getType())) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.IncomingDetraction2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink)
+                            .attribute(CISales.IncomingInvoice.Rate);
+            print.addSelect(sel);
+            print.execute();
+            ret = print.getSelect(sel);
+        } else {
+            ret = super.getRateObject(_parameter);
+        }
         return ret;
     }
 
@@ -263,10 +319,18 @@ public abstract class IncomingDetraction_Base
         final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
         final Map<String, Object> map = new HashMap<String, Object>();
 
-        final String docOID = _parameter.getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.incomingInvoice.name);
-        final Instance docInst = Instance.get(docOID);
-
-        if(docInst != null && docInst.isValid()) {
+        final String docOID = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.incomingInvoice.name);
+        Instance docInst = Instance.get(docOID);
+        if (!docInst.isValid() && _parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.IncomingDetraction2IncomingInvoice.FromLink)
+                            .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink).instance();
+            print.addSelect(sel);
+            print.execute();
+            docInst = print.getSelect(sel);
+        }
+        if (docInst != null && docInst.isValid()) {
 
             final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
 
@@ -276,7 +340,7 @@ public abstract class IncomingDetraction_Base
                 final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                 try {
                     final BigDecimal detractionPercent = (BigDecimal) formatter.parse(detractionPercentStr);
-                    final BigDecimal crossTotal = getCrossTotal(_parameter, calcList);
+                    final BigDecimal crossTotal = super.getCrossTotal(_parameter, calcList);
                     final BigDecimal detraction = crossTotal.multiply(detractionPercent
                                     .setScale(8, BigDecimal.ROUND_HALF_UP)
                                     .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
@@ -295,5 +359,4 @@ public abstract class IncomingDetraction_Base
         }
         return retVal;
     }
-
 }

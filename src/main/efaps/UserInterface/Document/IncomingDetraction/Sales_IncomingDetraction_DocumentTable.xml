@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5bdc0fa1-acd5-489e-819b-4fb4ada67378</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -28,35 +30,37 @@
         <name>Sales_IncomingDetraction_DocumentTable</name>
         <!-- fields -->
         <field name="type">
-            <property name="Select">linkto[ToAbstractLink].attribute[Type]</property>
+            <property name="Select">linkto[ToLink].attribute[Type]</property>
             <property name="Label">Sales_Document2DocumentAbstract/Type.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="name">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToAbstractLink].attribute[Name]</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="date">
-            <property name="Select">linkto[ToAbstractLink].attribute[Date]</property>
+            <property name="Select">linkto[ToLink].attribute[Date]</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="status">
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
-            <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
+            <property name="SelectAlternateOID">linkto[ToLink].oid</property>
+            <property name="Select">linkto[ToLink].attribute[StatusAbstract]</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
             <property name="ModeSearch">READONLY</property>
         </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="crossTotal">
+            <property name="Phrase">$&lt;linkto[ToLink].attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[ToLink].linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="rateCrossTotal">
+            <property name="Phrase">$&lt;linkto[ToLink].attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[ToLink].linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_DocumentAbstract/RateCrossTotal.Label</property>
+            <property name="ModeSearch">READONLY</property>
         </field>
     </definition>
 </ui-table>
