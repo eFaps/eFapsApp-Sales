@@ -230,7 +230,7 @@ public abstract class PettyCashBalance_Base
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(sel);
                 if (docInst != null && docInst.isValid()) {
-                    if(docInst.getType().equals(CISales.PettyCashReceipt.getType())) {
+                    if (docInst.getType().equals(CISales.PettyCashReceipt.getType())) {
                         final Insert rel2Insert = new Insert(CISales.PettyCashBalance2PettyCashReceipt);
                         rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.FromLink, balanceInst);
                         rel2Insert.add(CISales.PettyCashBalance2PettyCashReceipt.ToLink, docInst);
@@ -239,13 +239,14 @@ public abstract class PettyCashBalance_Base
                         final Update update = new Update(docInst);
                         update.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                         update.execute();
-                    }else if(docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
+                    } else if (docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
                         final Insert rel2Insert = new Insert(CISales.PettyCashBalance2IncomingCreditNote);
                         rel2Insert.add(CISales.PettyCashBalance2IncomingCreditNote.FromLink, balanceInst);
                         rel2Insert.add(CISales.PettyCashBalance2IncomingCreditNote.ToLink, docInst);
                         rel2Insert.execute();
                         final Update update = new Update(docInst);
-                        update.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
+                        update.add(CISales.IncomingCreditNote.Status,
+                                        Status.find(CISales.IncomingCreditNoteStatus.Paid));
                         update.execute();
                     }
                 }
@@ -290,31 +291,52 @@ public abstract class PettyCashBalance_Base
         return new DateTime().toLocalTime().toString();
     }
 
+    /**
+     * Method for verify a Petty Cash Balance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return verify(final Parameter _parameter)
         throws EFapsException
     {
         final Instance instance = _parameter.getInstance();
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
-        attrQueryBldr.addWhereAttrEqValue(CISales.PettyCashBalance2PettyCashReceipt.FromLink, instance);
+        attrQueryBldr.addType(CISales.PettyCashBalance2IncomingCreditNote);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, instance);
         final AttributeQuery attrQuery = attrQueryBldr
-                        .getAttributeQuery(CISales.PettyCashBalance2PettyCashReceipt.ToLink);
+                        .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashReceipt);
-        queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.PettyCashReceipt.Contact);
+        multi.addAttribute(CISales.DocumentSumAbstract.Contact);
         multi.execute();
         while (multi.next()) {
-            final Object contactObj = multi.getAttribute(CISales.PettyCashReceipt.Contact);
-            final Update recUpdate = new Update(multi.getCurrentInstance());
-            recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
-            if (contactObj != null) {
+            final Object contactObj = multi.getAttribute(CISales.DocumentSumAbstract.Contact);
+            final Instance docInst = multi.getCurrentInstance();
+
+            final Update recUpdate = new Update(docInst);
+            if (docInst.getType().isKindOf(CISales.PettyCashReceipt.getType())) {
+                recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
+                if (contactObj != null) {
+                    final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
+                                    SalesSettings.INCOMINGINVOICESEQUENCE);
+                    final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                    if (numgen != null) {
+                        final String revision = numgen.getNextVal();
+                        recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
+                    }
+                }
+            } else {
+                recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
                 final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                SalesSettings.INCOMINGINVOICESEQUENCE);
+                                SalesSettings.INCOMINGCREDITNOTESEQUENCE);
                 final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
                 if (numgen != null) {
                     final String revision = numgen.getNextVal();
-                    recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
+                    recUpdate.add(CISales.IncomingCreditNote.Revision, revision);
                 }
             }
             recUpdate.execute();
