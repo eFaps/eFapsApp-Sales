@@ -33,7 +33,7 @@
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_PaymentDetractionOutForm</form>
+            <form>Sales_PaymentDetractionOut4MassiveForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>

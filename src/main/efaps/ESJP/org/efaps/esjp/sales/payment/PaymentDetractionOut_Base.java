@@ -119,7 +119,8 @@ public abstract class PaymentDetractionOut_Base
             if (detractionDocs != null && detractionDocs.length > 0) {
                 for (final String detractionDoc : detractionDocs) {
                     final Instance detractionInst = Instance.get(detractionDoc);
-                    if (detractionInst.isValid()) {
+                    if (detractionInst.isValid()
+                                    && CISales.IncomingDetraction.getType().equals(detractionInst.getType())) {
                         final Update update = new Update(detractionInst);
                         update.add(CISales.IncomingDetraction.Status,
                                         Status.find(CISales.IncomingDetractionStatus.Paid));
@@ -177,19 +178,19 @@ public abstract class PaymentDetractionOut_Base
                         .linkfrom(CIERP.Document2DocumentAbstract, CIERP.Document2DocumentAbstract.FromAbstractLink)
                         .linkto(CIERP.Document2DocumentAbstract.ToAbstractLink);
         final SelectBuilder selDocInstance = new SelectBuilder(selDoc).instance();
-        final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CIERP.DocumentAbstract.Name);
         final SelectBuilder selDocContactName = new SelectBuilder(selDoc)
                         .linkto(CIERP.DocumentAbstract.Contact).attribute(CIContacts.Contact.Name);
 
         final StringBuilder js = new StringBuilder();
 
         final MultiPrintQuery multi = new MultiPrintQuery(_instances);
-        multi.addAttribute(CISales.DocumentSumAbstract.Rate,
+        multi.addAttribute(CISales.DocumentSumAbstract.Name,
+                        CISales.DocumentSumAbstract.Rate,
                         CISales.DocumentSumAbstract.CurrencyId,
                         CISales.DocumentSumAbstract.RateCurrencyId,
                         CISales.DocumentSumAbstract.CrossTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal);
-        multi.addSelect(selDocInstance, selDocName, selDocContactName);
+        multi.addSelect(selDocInstance, selDocContactName);
         multi.execute();
 
         final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
@@ -198,7 +199,7 @@ public abstract class PaymentDetractionOut_Base
             final DocumentInfo docInfo = getNewDocumentInfo(multi.getCurrentInstance());
             final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
             final Instance docInstance = multi.<Instance>getSelect(selDocInstance);
-            final String docName = multi.<String>getSelect(selDocName);
+            final String docName = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
             final String docContactName = multi.<String>getSelect(selDocContactName);
             final Map<KeyDef, Object> map;
             if (valuesTmp.containsKey(multi.getCurrentInstance())) {
@@ -273,32 +274,22 @@ public abstract class PaymentDetractionOut_Base
                                                              final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
-        final AttributeQuery attrQuery =
-                        attrQueryBldr.getAttributeQuery(CISales.IncomingDetraction2IncomingInvoice.ToLink);
+        if (_queryBldr.getType().equals(CISales.IncomingInvoice.getType())) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
+            final AttributeQuery attrQuery =
+                            attrQueryBldr.getAttributeQuery(CISales.IncomingDetraction2IncomingInvoice.ToLink);
 
-        _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
+            _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
+        } else {
+            super.add2QueryBldr4autoComplete4CreateDocument(_parameter, _queryBldr);
+        }
     }
 
     @Override
     public DocumentInfo getNewDocumentInfo(final Instance _instance)
         throws EFapsException
     {
-        Instance ret = _instance;
-        if (CISales.IncomingInvoice.getType().equals(_instance.getType())) {
-            final SelectBuilder selDet = new SelectBuilder()
-                            .linkto(CISales.IncomingDetraction2IncomingInvoice.FromLink).instance();
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
-            queryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToLink, _instance);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addSelect(selDet);
-            multi.execute();
-            while (multi.next()) {
-                ret = multi.<Instance>getSelect(selDet);
-            }
-        }
-        return new DocumentDetractionInfoOut(ret);
+        return new DocumentDetractionInfoOut(_instance);
     }
 
     @Override
@@ -306,6 +297,52 @@ public abstract class PaymentDetractionOut_Base
                                          final BigDecimal _rate)
     {
         return super.getRound4Amount(_amount4PayDoc, _rate).setScale(0, BigDecimal.ROUND_HALF_UP);
+    }
+
+    public Return updateFields4CreateDocumentMassive(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+        final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
+        final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
+                        _parameter.getParameterValue("account"));
+        if (docInstance.isValid() && accInstance.isValid()) {
+            final AccountInfo accInfo = new AccountInfo(accInstance);
+            final DocumentInfo docInfo = getNewDocumentInfo(docInstance);
+            docInfo.setAccountInfo(accInfo);
+            docInfo.setRateOptional(getRateObject(_parameter));
+
+            final BigDecimal total4Doc = docInfo.getCrossTotal();
+            final BigDecimal payments4Doc = docInfo.getTotalPayments();
+            final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
+
+            map.put("createDocument", docInfo.getOid());
+            map.put("detractionDoc", docInfo.getInstance().getOid());
+            map.put("createDocumentContact", docInfo.getContactName());
+            map.put("createDocumentDesc", docInfo.getInfoOriginal());
+            map.put("payment4Pay", getTwoDigitsformater().format(amount4PayDoc));
+            map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
+            map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
+            map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
+            map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
+            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + (docInfo.getCurrencyInst().isInvert()));
+            final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
+            final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
+            if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
+                map.put("amount", getTwoDigitsformater().format(totalPay4Position));
+                map.put("total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO));
+            } else {
+                final BigDecimal amount = parseBigDecimal(_parameter.getParameterValue("amount"));
+                map.put("total4DiscountPay", getTwoDigitsformater().format(amount.subtract(totalPay4Position)));
+            }
+            list.add(map);
+        }
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
     }
 
     public class DocumentDetractionInfoOut
@@ -324,6 +361,45 @@ public abstract class PaymentDetractionOut_Base
         {
             // TODO Auto-generated method stub
             return super.getCrossTotal().setScale(0, BigDecimal.ROUND_HALF_UP);
+        }
+
+        @Override
+        protected String getInfoOriginal()
+            throws EFapsException
+        {
+            final StringBuilder strBldr = new StringBuilder();
+            if (CISales.IncomingDetraction.getType().equals(getInstance().getType())) {
+                strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
+                    .append(getTwoDigitsformater().format(getDocCrossTotal()))
+                    .append(" - ").append(getRateSymbol());
+            } else {
+                strBldr.append(super.getInfoOriginal());
+            }
+
+            return strBldr.toString();
+        }
+
+        @Override
+        protected String getOid()
+            throws EFapsException
+        {
+            String ret = getInstance().getOid();
+
+            if (CISales.IncomingDetraction.getType().equals(getInstance().getType())) {
+                final SelectBuilder selDoc = new SelectBuilder()
+                                .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink).instance();
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
+                queryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.FromLink, getInstance());
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addSelect(selDoc);
+                multi.execute();
+                while (multi.next()) {
+                    ret = multi.<Instance>getSelect(selDoc).getOid();
+                }
+            }
+
+            return ret;
         }
     }
 }

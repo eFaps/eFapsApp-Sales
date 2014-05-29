@@ -1589,6 +1589,8 @@ public abstract class AbstractPaymentDocument_Base
 
         private BigDecimal rateCrossTotal;
 
+        private BigDecimal crossTotal;
+
         private String symbol;
 
         private Object[] rate;
@@ -1612,12 +1614,15 @@ public abstract class AbstractPaymentDocument_Base
                 final SelectBuilder selDocRCurSymbol = new SelectBuilder(selDocRate).attribute(CIERP.Currency.Symbol);
 
                 final PrintQuery print = new PrintQuery(this.instance);
-                print.addAttribute(CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.RateCrossTotal);
+                print.addAttribute(CISales.DocumentSumAbstract.Rate,
+                                CISales.DocumentSumAbstract.CrossTotal,
+                                CISales.DocumentSumAbstract.RateCrossTotal);
                 print.addSelect(selDocRCurInst, selDocRCurSymbol);
                 print.execute();
 
                 this.rate = print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
                 this.rateCrossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                this.crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                 this.rateCurrency = print.<Instance>getSelect(selDocRCurInst);
                 this.symbol = print.<String>getSelect(selDocRCurSymbol);
                 this.curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
@@ -1681,6 +1686,12 @@ public abstract class AbstractPaymentDocument_Base
         protected BigDecimal getRateCrossTotal()
         {
             return this.rateCrossTotal;
+        }
+
+        protected BigDecimal getDocCrossTotal()
+            throws EFapsException
+        {
+            return this.crossTotal;
         }
 
         protected BigDecimal getTotalPayments()
@@ -1849,6 +1860,15 @@ public abstract class AbstractPaymentDocument_Base
                 ret.append(print.<String>getSelect(selContactName));
             }
             return ret.toString();
+        }
+
+        /**
+         * @return oid of the instance.
+         */
+        protected String getOid()
+            throws EFapsException
+        {
+            return getInstance().getOid();
         }
     }
 
