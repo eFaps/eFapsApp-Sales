@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,26 +20,25 @@
  Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f9315bd5-028a-4b75-99ae-e9fec1dc3735</uuid>
+    <uuid>4c5fc326-759f-4dc1-a307-644cf76984ad</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentAbstractTree_PaymentDerivedDocument_Menu_Action_AddExisting</name>
-        <!-- target definition -->
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_InvoiceTree_Doc</name>
         <target>
-            <search>Sales_DocumentAbstractTree_PaymentDerivedDocument_Menu_Action_AddExisting_Search</search>
-            <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Sales_PaymentDerivedDocument2Document</property>
-            </execute>
+            <menu>Sales_InvoiceTree_Doc_Menu</menu>
+            <table>Sales_Document2DocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom01">FromAbstractLink</property>
+                <property name="Type02">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom02">ToAbstractLink</property>
+            </evaluate>
         </target>
         <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Label">Sales_DocumentAbstractTree_Doc.Label</property>
     </definition>
 </ui-command>

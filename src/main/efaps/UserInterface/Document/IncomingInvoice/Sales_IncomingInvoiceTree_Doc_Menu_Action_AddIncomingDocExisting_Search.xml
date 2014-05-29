@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -20,21 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d16bbe2b-c063-4f60-a842-a1dac72c4192</uuid>
+--><ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>84f5c95d-5e65-4f14-8461-303d49668770</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoiceTree_Doc_Menu_Action</name>
+        <name>Sales_IncomingInvoiceTree_Doc_Menu_Action_AddIncomingDocExisting_Search</name>
+        <!-- defaults -->
+        <default>
+            <command>Sales_IncomingCreditNoteSearch</command>
+        </default>
+        <!-- childs -->
         <childs>
-            <child>Sales_IncomingInvoiceTree_Doc_Menu_Action_AddRecievingTicket</child>
-            <child>Sales_IncomingInvoiceTree_Doc_Menu_Action_AddIncomingDocExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
+            <child>Sales_IncomingCreditNoteSearch</child>
+            <child>Sales_IncomingReminderSearch</child>
         </childs>
-        <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>
     </definition>
-</ui-menu>
+</ui-search>
