@@ -41,6 +41,7 @@
         <type>Sales_PettyCashReceipt</type>
         <childs>
             <child>Sales_PettyCashReceiptTree_Position</child>
+            <child>Sales_DocumentAbstractTree_Doc</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
