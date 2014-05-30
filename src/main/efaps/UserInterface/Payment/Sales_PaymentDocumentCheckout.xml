@@ -29,6 +29,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentCheckout</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
             <execute program="org.efaps.esjp.common.file.FileCheckout"/>
         </target>
