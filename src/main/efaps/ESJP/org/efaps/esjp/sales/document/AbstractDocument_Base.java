@@ -525,6 +525,7 @@ public abstract class AbstractDocument_Base
             if (showContact) {
                 choice = choice + " - " + multi.getSelect(selContactName);
             }
+            choice = choice + add2ChoiceAutoComplete4Doc(_parameter, multi.getCurrentInstance());
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
@@ -535,6 +536,18 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    /**
+     * @param _currentInstance
+     * @param _choice
+     */
+    protected String add2ChoiceAutoComplete4Doc(final Parameter _parameter,
+                                              final Instance _instance)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
+        return "";
     }
 
     /**
@@ -823,6 +836,7 @@ public abstract class AbstractDocument_Base
                 .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
                 .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+            label.append(add2LabelUpdateFields4Doc(_parameter, print.getInstance()));
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             if (multiple) {
                 if (!Arrays.asList(Arrays.copyOfRange(selectedOids, 1, selectedOids.length)).contains(
@@ -895,6 +909,19 @@ public abstract class AbstractDocument_Base
             ret.add(map);
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _instance
+     * @param _label
+     */
+    protected String add2LabelUpdateFields4Doc(final Parameter _parameter,
+                                             final Instance _instance)
+        throws EFapsException
+    {
+        // TODO Auto-generated method stub
+        return "";
     }
 
     /**

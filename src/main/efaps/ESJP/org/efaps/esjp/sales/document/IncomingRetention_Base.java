@@ -35,10 +35,12 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
@@ -342,6 +344,82 @@ public abstract class IncomingRetention_Base
             }
         }
         return retVal;
+    }
+
+    /**
+     * @param _parameter
+     * @param _instance
+     */
+    @Override
+    protected String add2ChoiceAutoComplete4Doc(final Parameter _parameter,
+                                              final Instance _instance)
+        throws EFapsException
+    {
+        String ret = "";
+        final PrintQuery print = new PrintQuery(_instance);
+        final SelectBuilder selSymbol = new SelectBuilder()
+        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+
+        print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        print.addSelect(selSymbol);
+        print.execute();
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final String symbol = print.<String>getSelect(selSymbol);
+        if(crossTotal != null) {
+            ret =  " - " + symbol + " " + crossTotal;
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _instance
+     */
+    @Override
+    protected String add2LabelUpdateFields4Doc(final Parameter _parameter,
+                                             final Instance _instance)
+        throws EFapsException
+    {
+        String ret = "";
+        final PrintQuery print = new PrintQuery(_instance);
+        final SelectBuilder selSymbol = new SelectBuilder()
+        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+
+        print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        print.addSelect(selSymbol);
+        print.execute();
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final String symbol = print.<String>getSelect(selSymbol);
+        if(crossTotal != null) {
+            ret =  " - " + symbol + " " + crossTotal;
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2QueryBldr(final Parameter _parameter,
+                                 final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final QueryBuilder detractionQueryBldr = new QueryBuilder(CISales.IncomingDetraction);
+        detractionQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Canceled));
+        final AttributeQuery detractionAttrQueryBldr = detractionQueryBldr.getAttributeQuery(CISales.IncomingDetraction.ID);
+
+        final QueryBuilder retentionQueryBldr = new QueryBuilder(CISales.IncomingRetention);
+        retentionQueryBldr.addWhereAttrEqValue(CISales.IncomingRetention.Status, Status.find(CISales.IncomingRetentionStatus.Canceled));
+        final AttributeQuery retentionAttrQueryBldr = retentionQueryBldr.getAttributeQuery(CISales.IncomingRetention.ID);
+
+        final QueryBuilder perceptionQueryBldr = new QueryBuilder(CISales.IncomingPerceptionCertificate);
+        perceptionQueryBldr.addWhereAttrEqValue(CISales.IncomingPerceptionCertificate.Status, Status.find(CISales.IncomingPerceptionCertificateStatus.Canceled));
+        final AttributeQuery perceptionAttrQueryBldr = perceptionQueryBldr.getAttributeQuery(CISales.IncomingPerceptionCertificate.ID);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+        queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, detractionAttrQueryBldr);
+        queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, retentionAttrQueryBldr);
+        queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, perceptionAttrQueryBldr);
+        final AttributeQuery attrQueryBldr = queryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink);
+
+        _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQueryBldr);
     }
 
 }
