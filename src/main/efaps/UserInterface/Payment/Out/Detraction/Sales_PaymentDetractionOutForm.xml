@@ -190,6 +190,13 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
+        <field name="bulkPaymentDoc4View">
+            <property name="ModeView">READONLY</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_BulkPayment.Label</property>
+        </field>
         <field name="bulkPaymentDoc">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
