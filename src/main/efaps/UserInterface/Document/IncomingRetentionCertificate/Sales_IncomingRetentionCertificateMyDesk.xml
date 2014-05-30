@@ -41,7 +41,8 @@
             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
                 name="Sales_IncomingRetentionCertificateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IsRetentionAgent</property>
+                <property name="Inverse">true</property>
             </trigger>
         </target>
         <property name="Target">content</property>
