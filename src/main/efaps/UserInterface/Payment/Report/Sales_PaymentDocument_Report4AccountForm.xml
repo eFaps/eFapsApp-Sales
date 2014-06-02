@@ -78,14 +78,14 @@
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.IN.FilterKey</property>
                 <property name="Type">Sales_Invoice</property>
                 <property name="Type01">Sales_Receipt</property>
-                <property name="Type02">Sales_Exchange</property>
+                <property name="Type02">Sales_IncomingExchange</property>
                 <property name="Type03">Sales_CollectionOrder</property>
                 <property name="Type04">Sales_Credit</property>
                 <property name="StatusGroup">Sales_InvoiceStatus</property>
                 <property name="Status">!Replaced</property>
                 <property name="StatusGroup01">Sales_ReceiptStatus</property>
                 <property name="Status01">!Replaced</property>
-                <property name="StatusGroup02">Sales_ExchangeStatus</property>
+                <property name="StatusGroup02">Sales_IncomingExchangeStatus</property>
                 <property name="Status02">!Canceled</property>
                 <property name="StatusGroup03">Sales_CollectionOrderStatus</property>
                 <property name="Status03">!Canceled</property>
@@ -93,7 +93,7 @@
                 <property name="Status04">!Canceled</property>
                 <property name="Type100">Sales_Invoice</property>
                 <property name="Type101">Sales_Receipt</property>
-                <property name="Type102">Sales_Exchange</property>
+                <property name="Type102">Sales_IncomingExchange</property>
                 <property name="Type103">Sales_CollectionOrder</property>
                 <property name="Type104">Sales_Credit</property>
                 <property name="StatusGroup100">Sales_InvoiceStatus</property>
@@ -104,9 +104,9 @@
                 <property name="Status102">!Replaced</property>
                 <property name="StatusGroup103">Sales_ReceiptStatus</property>
                 <property name="Status103">!Paid</property>
-                <property name="StatusGroup104">Sales_ExchangeStatus</property>
+                <property name="StatusGroup104">Sales_IncomingExchangeStatus</property>
                 <property name="Status104">!Canceled</property>
-                <property name="StatusGroup105">Sales_ExchangeStatus</property>
+                <property name="StatusGroup105">Sales_IncomingExchangeStatus</property>
                 <property name="Status105">!Closed</property>
                 <property name="StatusGroup106">Sales_CollectionOrderStatus</property>
                 <property name="Status106">!Canceled</property>

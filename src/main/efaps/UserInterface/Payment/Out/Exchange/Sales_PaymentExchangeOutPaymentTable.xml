@@ -51,12 +51,15 @@
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="autoComplete4CreateDocument"
                 name="Sales_PaymentExchangeOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_Invoice</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Type">Sales_IncomingInvoice</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">Open</property>
-                <property name="Type01">Sales_Invoice</property>
-                <property name="StatusGroup01">Sales_InvoiceStatus</property>
-                <property name="Status01">Paid</property>
+                <property name="Type01">Sales_PaymentOrder</property>
+                <property name="StatusGroup01">Sales_PaymentOrderStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Sales_PaymentOrder</property>
+                <property name="StatusGroup02">Sales_PaymentOrderStatus</property>
+                <property name="Status02">Approved</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
                 <property name="ExtraParameter02">name</property>

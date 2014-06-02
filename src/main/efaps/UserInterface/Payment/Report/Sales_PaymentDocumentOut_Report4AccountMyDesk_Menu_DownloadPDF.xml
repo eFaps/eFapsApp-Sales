@@ -54,8 +54,8 @@
                 <property name="Type03">Sales_PaymentOrder</property>
                 <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
                 <property name="Status03">!Canceled</property>
-                <property name="Type04">Sales_IncomingExchange</property>
-                <property name="StatusGroup04">Sales_IncomingExchangeStatus</property>
+                <property name="Type04">Sales_Exchange</property>
+                <property name="StatusGroup04">Sales_ExchangeStatus</property>
                 <property name="Status04">!Canceled</property>
                 <property name="Type05">Sales_IncomingCredit</property>
                 <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
@@ -64,7 +64,7 @@
                 <property name="Type101">Accounting_ExternalVoucher</property>
                 <property name="Type102">Sales_IncomingReceipt</property>
                 <property name="Type103">Sales_PaymentOrder</property>
-                <property name="Type104">Sales_IncomingExchange</property>
+                <property name="Type104">Sales_Exchange</property>
                 <property name="Type105">Sales_IncomingCredit</property>
                 <property name="StatusGroup100">Sales_IncomingInvoiceStatus</property>
                 <property name="Status100">!Replaced</property>
@@ -78,10 +78,10 @@
                 <property name="Status104">!Paid</property>
                 <property name="StatusGroup106">Sales_PaymentOrderStatus</property>
                 <property name="Status106">!Canceled</property>
-                <property name="StatusGroup107">Sales_IncomingExchangeStatus</property>
+                <property name="StatusGroup107">Sales_ExchangeStatus</property>
+                <property name="Status107">!Canceled</property>
+                <property name="StatusGroup108">Sales_IncomingCreditStatus</property>
                 <property name="Status108">!Canceled</property>
-                <property name="StatusGroup109">Sales_IncomingCreditStatus</property>
-                <property name="Status109">!Canceled</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

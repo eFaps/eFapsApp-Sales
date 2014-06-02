@@ -51,9 +51,11 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentExchangeOut/Name.Label</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="autoComplete4IncomingExchange"
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="autoComplete4Doc"
                 name="Sales_PaymentExchangeOutForm.name.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Status">Open</property>
+                <property name="Type">Sales_Exchange</property>
+                <property name="StatusGroup">Sales_ExchangeStatus</property>
+                <property name="Status">!Canceled</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentExchangeOut" method="updateFields4DocumentSelected"
                 name="Sales_PaymentExchangeOutForm.name.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE">
