@@ -73,12 +73,12 @@
                 <property name="Status103">!Replaced</property>
                 <property name="StatusGroup104">Sales_IncomingReceiptStatus</property>
                 <property name="Status104">!Paid</property>
-                <property name="StatusGroup106">Sales_PaymentOrderStatus</property>
+                <property name="StatusGroup105">Sales_PaymentOrderStatus</property>
+                <property name="Status105">!Canceled</property>
+                <property name="StatusGroup106">Sales_ExchangeStatus</property>
                 <property name="Status106">!Canceled</property>
-                <property name="StatusGroup107">Sales_ExchangeStatus</property>
+                <property name="StatusGroup107">Sales_IncomingCreditStatus</property>
                 <property name="Status107">!Canceled</property>
-                <property name="StatusGroup108">Sales_IncomingCreditStatus</property>
-                <property name="Status108">!Canceled</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
