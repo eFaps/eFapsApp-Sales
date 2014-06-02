@@ -105,9 +105,9 @@ public abstract class PaymentExchange_Base
     {
         final Instance exchange = Instance.get(_parameter.getParameterValue("name"));
         if (exchange.isValid()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Exchange2IncomingInvoice);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Exchange2IncomingInvoice.FromLink, exchange);
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Exchange2IncomingInvoice.ToLink);
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingExchange2Invoice);
+            attrQueryBldr.addWhereAttrEqValue(CISales.IncomingExchange2Invoice.FromLink, exchange);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.IncomingExchange2Invoice.ToLink);
 
             _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
         } else {
