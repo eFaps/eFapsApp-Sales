@@ -19,27 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6fcff694-b302-4499-997f-5325475f5afe</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1889d912-55de-4cd7-a577-57d9dfdaa892</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_Documents</name>
+        <name>Sales_CollectionOrderSearch</name>
         <target>
-            <menu>Sales_IncomingExchangeTree_Documents_Menu</menu>
-            <table>Sales_Document2DocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_IncomingExchange2Invoice</property>
-                <property name="LinkFrom">FromLink</property>
-                <property name="Type01">Sales_IncomingExchange2CollectionOrder</property>
-                <property name="LinkFrom01">FromLink</property>
+            <form>Sales_CollectionOrderSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Sales_CollectionOrder</property>
+                <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">search</property>
     </definition>
 </ui-command>

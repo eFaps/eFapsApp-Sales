@@ -27,6 +27,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingRetentionCertificateTree_Documents</name>
         <target>
+            <menu>Sales_IncomingRetentionCertificateTree_Documents_Menu</menu>
             <table>Sales_IncomingRetentionCertificate_DocumentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">ERP_Document2DocumentAbstract</property>

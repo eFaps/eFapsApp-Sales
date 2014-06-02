@@ -34,9 +34,13 @@
         <target>
             <search>Sales_IncomingExchangeTree_Documents_Menu_Action_AddExisting_Search</search>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectChildAttribute">ToLink</property>
                 <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Sales_IncomingExchange2Invoice</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="AllowMultiple">false</property>
+                <!-- Sales_Invoice, Sales_IncomingExchange2Invoice -->
+                <property name="ConnectTypeMap">180bf737-8816-4e36-ad71-5ee6392e185b;c100ceb2-33d8-456e-8ae6-4c4d12f95f0f</property>
+                <!-- Sales_CollectionOrder, Sales_IncomingExchange2CollectionOrder -->
+                <property name="ConnectTypeMap01">daffd13b-83f1-422b-b80e-7b44a1026ec4;ae571567-9f15-4f23-ab97-bec96f9cf48a</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingExchange" method="validateConnectDocument" />
         </target>
