@@ -57,15 +57,6 @@
                 <property name="Type">Sales_Invoice</property>
                 <property name="StatusGroup">Sales_InvoiceStatus</property>
                 <property name="Status">Open</property>
-                <property name="Type01">Sales_Receipt</property>
-                <property name="StatusGroup01">Sales_ReceiptStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_CollectionOrder</property>
-                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_Credit</property>
-                <property name="StatusGroup03">Sales_CreditStatus</property>
-                <property name="Status03">Open</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
             </trigger>
