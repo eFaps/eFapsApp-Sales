@@ -36,6 +36,7 @@
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectType">Sales_IncomingRetentionCertificate2Invoice</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="validateConnectDocument" />
         </target>
         <property name="Target">modal</property>
         <property name="TargetCmdRevise">true</property>

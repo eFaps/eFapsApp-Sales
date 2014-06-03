@@ -24,23 +24,13 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -192,77 +182,5 @@ public abstract class AbstractSumOnlyDocument_Base
 
         Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
         return createdDoc;
-    }
-
-    public Return validateConnectDocument(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        final StringBuilder html = new StringBuilder();
-        final String[] childOids = (String[]) others.get("selectedRow");
-        boolean validate = true;
-        if (childOids != null) {
-            final Instance callInstance = _parameter.getCallInstance();
-            for (final String childOid : childOids) {
-                final Instance child = Instance.get(childOid);
-                if (callInstance.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                    if (child.getType().equals(CISales.IncomingInvoice.getType())
-                                    && check4Relation(CISales.Exchange2IncomingInvoice.uuid, child).next()) {
-                        validate = false;
-                        html.append(getString4ReturnInvalidate(child));
-                        break;
-                    } else if (child.getType().equals(CISales.PaymentOrder.getType())
-                                    && check4Relation(CISales.Exchange2PaymentOrder.uuid, child).next()) {
-                        validate = false;
-                        html.append(getString4ReturnInvalidate(child));
-                        break;
-                    } else if (child.getType().equals(CISales.Invoice.getType())
-                                    && check4Relation(CISales.IncomingExchange2Invoice.uuid, child).next()) {
-                        validate = false;
-                        html.append(getString4ReturnInvalidate(child));
-                        break;
-                    } else if (child.getType().equals(CISales.CollectionOrder.getType())
-                                    && check4Relation(CISales.IncomingExchange2CollectionOrder.uuid, child).next()) {
-                        validate = false;
-                        html.append(getString4ReturnInvalidate(child));
-                        break;
-                    }
-                }
-            }
-            if (validate) {
-                ret.put(ReturnValues.TRUE, true);
-                html.append(DBProperties.getProperty(this.getClass().getName() + ".validateConnectDoc"));
-                ret.put(ReturnValues.SNIPLETT, html.toString());
-            } else {
-                html.insert(0, DBProperties.getProperty(this.getClass().getName() + ".invalidateConnectDoc")
-                                + "<p>");
-                ret.put(ReturnValues.SNIPLETT, html.toString());
-            }
-        }
-        return ret;
-    }
-
-    protected MultiPrintQuery check4Relation(final UUID _typeUUID,
-                                             final Instance _instance)
-        throws EFapsException
-    {
-        final QueryBuilder queryBldr = new QueryBuilder(_typeUUID);
-        queryBldr.addWhereAttrMatchValue(CISales.Document2DocumentAbstract.ToAbstractLink, _instance.getId());
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.Document2DocumentAbstract.OID);
-        multi.execute();
-        return multi;
-    }
-
-    protected StringBuilder getString4ReturnInvalidate(final Instance _child)
-        throws EFapsException
-    {
-        final StringBuilder html = new StringBuilder();
-        final PrintQuery print = new PrintQuery(_child);
-        print.addAttribute(CISales.DocumentAbstract.Name);
-        print.execute();
-        return html.append(_child.getType().getLabel()
-                        + " - " + print.<String>getAttribute(CISales.DocumentAbstract.Name));
     }
 }

@@ -176,6 +176,7 @@ public abstract class IncomingPerceptionCertificate_Base
      * @return Return values.
      * @throws EFapsException on error.
      */
+    @Override
     public Return validateConnectDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -219,6 +220,7 @@ public abstract class IncomingPerceptionCertificate_Base
      * @return StringBuilder to String.
      * @throws EFapsException on error.
      */
+    @Override
     protected StringBuilder getString4ReturnInvalidate(final Instance _child)
         throws EFapsException
     {
@@ -240,6 +242,7 @@ public abstract class IncomingPerceptionCertificate_Base
      *         instance, else false
      * @throws EFapsException on error
      */
+    @Override
     protected MultiPrintQuery check4Relation(final UUID _typeUUID,
                                              final Instance _instance)
         throws EFapsException
@@ -252,49 +255,6 @@ public abstract class IncomingPerceptionCertificate_Base
         multi.execute();
 
         return multi;
-    }
-
-    /**
-     * Connect Document.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
-     */
-    public Return connectDocument(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> others = (HashMap<?, ?>) _parameter.get(ParameterValues.OTHERS);
-        final Map<?, ?> props = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String[] childOids = (String[]) others.get("selectedRow");
-        if (childOids != null) {
-            final Instance callInstance = _parameter.getCallInstance();
-            for (final String childOid : childOids) {
-                final Instance child = Instance.get(childOid);
-                Insert insert = null;
-                if (callInstance.getType().isKindOf(CISales.IncomingPerceptionCertificate.getType())) {
-                    // defaults
-                    if (child.getType().equals(CISales.IncomingInvoice.getType())) {
-                        insert = new Insert(CISales.IncomingPerceptionCertificate2IncomingInvoice);
-                    }
-                    int i = 0;
-                    while (insert == null && props.containsKey("connect" + i)) {
-                        final String connectUUIDStr = (String) props.get("connect" + i);
-                        final String[] connectUUIDs = connectUUIDStr.split(";");
-                        if (child.getType().getUUID().equals(UUID.fromString(connectUUIDs[0]))) {
-                            insert = new Insert(UUID.fromString(connectUUIDs[1]));
-                        }
-                        i++;
-                    }
-                }
-                if (insert != null) {
-                    insert.add(CISales.IncomingDocumentTax2Document.FromAbstractLink, callInstance.getId());
-                    insert.add(CISales.IncomingDocumentTax2Document.ToAbstractLink, child.getId());
-                    insert.execute();
-                }
-            }
-        }
-        return new Return();
     }
 
     @Override

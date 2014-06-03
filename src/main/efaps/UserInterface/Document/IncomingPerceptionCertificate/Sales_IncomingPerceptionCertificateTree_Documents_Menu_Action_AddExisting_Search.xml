@@ -28,11 +28,11 @@
         <name>Sales_IncomingPerceptionCertificateTree_Documents_Menu_Action_AddExisting_Search</name>
         <!-- defaults -->
         <default>
-            <command>Sales_DocumentSearch</command>
+            <command>Sales_IncomingInvoiceSearch</command>
         </default>
         <!-- childs -->
         <childs>
-            <child>Sales_DocumentSearch</child>
+            <child>Sales_IncomingInvoiceSearch</child>
         </childs>
     </definition>
 </ui-search>
