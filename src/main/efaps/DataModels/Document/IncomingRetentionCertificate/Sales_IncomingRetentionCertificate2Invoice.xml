@@ -25,7 +25,7 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingRetentionCertificate2IncomingInvoice</name>
+        <name>Sales_IncomingRetentionCertificate2Invoice</name>
         <parent>Sales_IncomingDocumentTax2Document</parent>
         <attribute>
             <name>FromLink</name>
@@ -37,7 +37,7 @@
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_IncomingInvoice</typelink>
+            <typelink>Sales_Invoice</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

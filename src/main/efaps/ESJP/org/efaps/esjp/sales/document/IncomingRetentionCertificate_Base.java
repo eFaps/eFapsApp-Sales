@@ -108,11 +108,13 @@ public abstract class IncomingRetentionCertificate_Base
 
         if (retentionDoc != null && retentionDoc.isValid()) {
             for (int i = 0; i < _createdDoc.getPositions().size(); i++) {
-                final Insert relInsert = new Insert(CISales.IncomingRetentionCertificate2IncomingInvoice);
-                relInsert.add(CISales.IncomingRetentionCertificate2IncomingInvoice.FromLink, retentionDoc);
-                relInsert.add(CISales.IncomingRetentionCertificate2IncomingInvoice.ToLink,
-                                _createdDoc.getPositions().get(i));
-                relInsert.execute();
+                if (CISales.Invoice.getType().equals(_createdDoc.getPositions().get(i).getType())) {
+                    final Insert relInsert = new Insert(CISales.IncomingRetentionCertificate2Invoice);
+                    relInsert.add(CISales.IncomingRetentionCertificate2Invoice.FromLink, retentionDoc);
+                    relInsert.add(CISales.IncomingRetentionCertificate2Invoice.ToLink,
+                                    _createdDoc.getPositions().get(i));
+                    relInsert.execute();
+                }
             }
         }
     }
