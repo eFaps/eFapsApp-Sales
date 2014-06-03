@@ -26,6 +26,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
@@ -71,7 +72,20 @@ public abstract class PaymentRetention_Base
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
-        return _parameter.getParameterValue("nameAutoComplete");
+        final String name;
+        final Instance instance = Instance.get(_parameter.getParameterValue("name"));
+
+        if (instance.isValid()) {
+            final PrintQuery print = new PrintQuery(instance);
+            print.addAttribute(CISales.DocumentAbstract.Name);
+            print.execute();
+
+            name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
+        } else {
+            name = super.getDocName4Create(_parameter);
+        }
+
+        return name;
     }
 
     @Override
