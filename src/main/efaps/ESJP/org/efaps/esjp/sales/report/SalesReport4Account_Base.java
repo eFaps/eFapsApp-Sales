@@ -49,6 +49,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -338,6 +339,15 @@ public abstract class SalesReport4Account_Base
             _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Exchange2IncomingInvoice);
+            attrQueryBldr.addType(CISales.Exchange2PaymentOrder,
+                            CISales.IncomingExchange2CollectionOrder,
+                            CISales.IncomingExchange2Invoice);
+            final AttributeQuery attrQuery = attrQueryBldr
+                            .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+
+            _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
         }
 
         @Override
