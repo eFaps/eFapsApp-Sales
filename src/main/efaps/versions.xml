@@ -127,15 +127,18 @@
 
         <!-- connect the Sales_Products_ProductStock4ProductRequestReportMyDesk to Products_MyDesk -->
         update.add2Menu("3e3e1b63-e6be-44c1-a0f8-47caf61a2f36", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
-        
+
+        <!-- connect the Sales_ContactTree_ChannelSalesChannel to Contacts_ContactTree -->
+        update.add2Menu("29288ed8-e0b8-4e12-b4be-51b788be3c71", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
+
         <!-- Sales_sales, Admin_Help_MainMenu -->
         update.add2Help("f89e4bf5-c42d-4a2b-ae93-9f59b7b02319", "dead549e-5cc6-49f9-9a79-8e33aa139f6d", -1);
 
 
         <!-- Sales_InvoiceMyDesk_Menu_Action_Copy, Sales_InvoiceMyDesk_Menu_Action -->
         update.removeFromMenu("4b2275b5-0bac-4499-a77d-f9739f033b7d","949df39a-7e89-417b-a393-9024fb09f77c");
-        
-        
+
+
         <!-- Define attribute definition -->
         <!-- connect the Sales_AttributeDefinitionAbstractMyDesk_Menu_Action  to  ERP_AttributeDefinitionMyDesk_Menu-->
         update.add2Menu("4920c757-2e10-49e3-b15c-25c7fb0a56fd", "69e0b34a-2483-4662-9a45-1ce5d4e420e6", -1);
@@ -148,8 +151,8 @@
         rolUp.addUI("7a067a21-383c-4563-8ebe-a07338df705d");
         <!-- ERP_DocumentSearch -->
         rolUp.addUI("f6bdcbcd-5c2d-4e70-a279-6528d41d4c13");
-        
-        
+
+
         <!-- add to Sales_IncomingDocument role -->
         RoleUpdate rolUp = new RoleUpdate("b9a41c56-25aa-4ca9-a15c-0c5b54fa325a");
         <!-- Products_ProductTree_PricelistPurchase -->
