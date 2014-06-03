@@ -36,7 +36,7 @@
         <target>
             <form>Sales_AccountFundsToBeSettledBalancingWithDateForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.FundsToBeSettledBalance">
-                <property name="JasperReport">Sales_AccountFundsToBeSettled</property>
+                <property name="JasperReport">Sales_FundsToBeSettledBalance</property>
                 <property name="Mime">pdf</property>
             </execute>
         </target>
