@@ -33,9 +33,6 @@
             method="autoComplete4IncomingInvoice"
             name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
             program="org.efaps.esjp.sales.document.IncomingDetraction">
-                <property name="Status">Digitized</property>
-                <property name="Status01">Open</property>
-                <property name="Status02">Paid</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
             method="updateFields4IncomingInvoice"
@@ -61,10 +58,17 @@
                 event="UI_FIELD_UPDATE"/>
         </field>
         <field name="detractionValue">
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionValue.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+        </field>
+        <field name="totalAmount">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingDetractionCreateForm.totalAmount.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="javaScript">

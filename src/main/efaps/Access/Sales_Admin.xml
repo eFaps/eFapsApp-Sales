@@ -328,6 +328,7 @@
         <status group="Sales_IncomingCreditStatus">
             <key>Open</key>
             <key>Closed</key>
+            <key>Canceled</key>
         </status>
 
         <status group="Sales_ServiceOrderOutboundStatus">

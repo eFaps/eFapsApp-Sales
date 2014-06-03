@@ -333,6 +333,10 @@ public abstract class IncomingDetraction_Base
             docInst = print.getSelect(sel);
         }
         if (docInst != null && docInst.isValid()) {
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.Rate);
+            print.execute();
+            final Object[] rate = print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
 
             final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
 
@@ -348,7 +352,15 @@ public abstract class IncomingDetraction_Base
                                     .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
                     final String detractionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
                                     .format(detraction);
+                    BigDecimal totalAmount = detraction;
+                    if(!rate[2].equals(rate[3])) {
+                        totalAmount = totalAmount.multiply((BigDecimal) rate[1])
+                                        .setScale(8, BigDecimal.ROUND_HALF_UP);
+                    }
+                    final String totalAmountStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
+                                    .format(totalAmount);
                     map.put(CIFormSales.Sales_IncomingDetractionCreateForm.detractionValue.name, detractionStr);
+                    map.put(CIFormSales.Sales_IncomingDetractionCreateForm.totalAmount.name, totalAmountStr);
                 } catch (final ParseException e) {
                     IncomingDetraction_Base.LOG.error("Catched parsing error", e);
                 }
@@ -417,6 +429,7 @@ public abstract class IncomingDetraction_Base
                                  final QueryBuilder _queryBldr)
         throws EFapsException
     {
+        /*
         final QueryBuilder detractionQueryBldr = new QueryBuilder(CISales.IncomingDetraction);
         detractionQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Canceled));
         final AttributeQuery detractionAttrQueryBldr = detractionQueryBldr.getAttributeQuery(CISales.IncomingDetraction.ID);
@@ -428,15 +441,32 @@ public abstract class IncomingDetraction_Base
         final QueryBuilder perceptionQueryBldr = new QueryBuilder(CISales.IncomingPerceptionCertificate);
         perceptionQueryBldr.addWhereAttrEqValue(CISales.IncomingPerceptionCertificate.Status, Status.find(CISales.IncomingPerceptionCertificateStatus.Canceled));
         final AttributeQuery perceptionAttrQueryBldr = perceptionQueryBldr.getAttributeQuery(CISales.IncomingPerceptionCertificate.ID);
+*/
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDetraction);
+        queryBldr.addType(CISales.IncomingRetention, CISales.IncomingPerceptionCertificate);
+        queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract,
+                        Status.find(CISales.IncomingDetractionStatus.Canceled),
+                        Status.find(CISales.IncomingRetentionStatus.Canceled),
+                        Status.find(CISales.IncomingPerceptionCertificateStatus.Canceled));
+        final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.DocumentAbstract.ID);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
-        queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, detractionAttrQueryBldr);
-        queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, retentionAttrQueryBldr);
-        queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, perceptionAttrQueryBldr);
-        final AttributeQuery attrQueryBldr = queryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink);
+        final QueryBuilder queryBldr2 = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+        queryBldr2.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, attrQuery);
+        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink);
 
-        _queryBldr.addWhereAttrNotInQuery(CISales.DocumentAbstract.ID, attrQueryBldr);
+        final QueryBuilder queryBldr3 = new QueryBuilder(CISales.IncomingInvoice);
+        queryBldr3.setOr(true);
+        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Open));
+        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Paid));
+        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Digitized));
+        final AttributeQuery attrQuery3 = queryBldr3.getAttributeQuery(CISales.IncomingInvoice.ID);
 
+        final QueryBuilder queryBldr4 = new QueryBuilder(CISales.IncomingInvoice);
+        queryBldr4.addWhereAttrInQuery(CISales.IncomingInvoice.ID, attrQuery3);
+        queryBldr4.addWhereAttrNotInQuery(CISales.IncomingInvoice.ID, attrQuery2);
+        final AttributeQuery attrQuery4 = queryBldr4.getAttributeQuery(CISales.IncomingInvoice.ID);
+
+        _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery4);
     }
 
 }

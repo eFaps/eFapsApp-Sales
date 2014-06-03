@@ -61,10 +61,17 @@
                 event="UI_FIELD_UPDATE"/>
         </field>
         <field name="retentionValue">
-            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingRetentionCreateForm.retentionValue.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+        </field>
+        <field name="totalAmount">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingRetentionCreateForm.totalAmount.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="javaScript">
