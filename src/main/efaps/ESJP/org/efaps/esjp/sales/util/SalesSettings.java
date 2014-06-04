@@ -227,4 +227,10 @@ public interface SalesSettings
      * Properties. Can be concatenated;
      */
     String AUTOCOMPLETE4PRODUCT = "org.efaps.sales.AutoComplete4Product";
+
+    /**
+     * Properties. Can be concatenated.
+     * A mapping like: Sales_Invoice=001;002;003
+     */
+    String SERIALNUMBERS = "org.efaps.sales.SerialNumbers";
 }

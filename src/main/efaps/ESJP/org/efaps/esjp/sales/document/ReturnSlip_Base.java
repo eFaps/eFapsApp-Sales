@@ -55,10 +55,11 @@ public abstract class ReturnSlip_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc);
-        final File file = createReport(_parameter, doc);
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
+        final File file = createReport(_parameter, createdDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

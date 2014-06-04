@@ -128,16 +128,22 @@
             <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="Label">Sales_Invoice/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
-                method="getNameFieldValueUI"
-                name="Sales_InvoiceForm.name.UI_Field_Value"
+                method="getNameWithSerialFieldValue"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
+                <property name="Type">Sales_Invoice</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Name"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_Invoice</property>
             </trigger>
         </field>
@@ -413,16 +419,22 @@
             <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="Label">Sales_Invoice/Name.Label</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
-                method="getNameFieldValueUI"
-                name="Sales_InvoiceForm.name.UI_Field_Value"
+                method="getNameWithSerialFieldValue"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
+                <property name="Type">Sales_Invoice</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4Name"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_Invoice</property>
             </trigger>
         </field>

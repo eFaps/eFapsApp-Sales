@@ -23,20 +23,21 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a870cfcc-5987-45e1-9a03-ec81494f0b70</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_ReturnSlipMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_ReturnSlipForm</form>
             <execute program="org.efaps.esjp.sales.document.ReturnSlip" method="create">
@@ -45,9 +46,11 @@
                 <property name="Status">Open</property>
                 <property name="JasperReport">Sales_DeliveryNote</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate">
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">QUANTITYINSTOCK</property>
+            </validate>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_ReturnSlip</property>
         <property name="TargetMode">create</property>
@@ -56,5 +59,40 @@
         <property name="TargetDefaultMenu">none</property>
         <property name="ShowStorage">true</property>
     </definition>
-
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_ReturnSlipMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_ReturnSlipForm</form>
+            <execute program="org.efaps.esjp.sales.document.ReturnSlip" method="create">
+                <property name="PositionType">Sales_ReturnSlipPosition</property>
+                <property name="StatusGroup">Sales_ReturnSlipStatus</property>
+                <property name="Status">Open</property>
+                <property name="JasperReport">Sales_DeliveryNote</property>
+                <!-- Projects_ProjectService2ReturnSlip -->
+                <property name="ConnectType">de4ede93-630c-429b-83d8-5099dc2775ea</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate">
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">QUANTITYINSTOCK</property>
+            </validate>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_ReturnSlip</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="ShowStorage">true</property>
+    </definition>
 </ui-command>

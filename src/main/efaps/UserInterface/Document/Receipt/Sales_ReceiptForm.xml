@@ -114,14 +114,22 @@
             <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getNameFieldValueUI"
-                name="Sales_ReceiptForm.name.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="Label">Sales_Receipt/Name.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="getNameWithSerialFieldValue"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_Receipt</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Name"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_Receipt</property>
             </trigger>
         </field>
@@ -378,14 +386,22 @@
             <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name4create">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="getNameFieldValueUI"
-                name="Sales_ReceiptForm.name.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="Label">Sales_Receipt/Name.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="getNameWithSerialFieldValue"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_Receipt</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Name"
+                name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_Receipt</property>
             </trigger>
         </field>

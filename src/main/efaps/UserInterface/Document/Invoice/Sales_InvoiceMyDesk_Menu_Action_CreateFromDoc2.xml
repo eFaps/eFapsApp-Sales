@@ -47,7 +47,7 @@
                 <property name="PositionType">Sales_InvoicePosition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
-                <property name="Validation">NAME</property>
+                <property name="Validation">AMOUNTGREATERZERO</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -78,7 +78,7 @@
                 <property name="ConnectForeignField">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
-                <property name="Validation">NAME</property>
+                <property name="Validation">AMOUNTGREATERZERO</property>
             </validate>
         </target>
         <property name="Target">modal</property>

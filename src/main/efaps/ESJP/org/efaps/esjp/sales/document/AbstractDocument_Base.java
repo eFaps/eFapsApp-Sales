@@ -78,6 +78,8 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
@@ -139,7 +141,7 @@ public abstract class AbstractDocument_Base
     public static final String TARGETMODE_DOC_KEY = "org.efaps.esjp.sales.document.AbstractDocument.TargeModeKey";
 
     /**
-     * Used as a prefix for update script;
+     * Used as a prefix for update script.
      */
     public static final String SELDOCUPDATEPF = "SDUP_";
 
@@ -539,14 +541,14 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _currentInstance
-     * @param _choice
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _instance     instance the choice belongs to
      */
     protected String add2ChoiceAutoComplete4Doc(final Parameter _parameter,
-                                              final Instance _instance)
+                                                final Instance _instance)
         throws EFapsException
     {
-        // TODO Auto-generated method stub
+        // to be used by implementations
         return "";
     }
 
@@ -801,6 +803,47 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
+    }
+
+    /**
+     * Used by the update event used in the select doc form for CostSheet.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Name(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
+        final Map<String,Object> map = new HashMap<String,Object>();
+        final String type = getProperty(_parameter, "Type");
+        final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
+        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
+        final String fieldName = field.getName() + "_SN";
+
+        String number = getMaxNumber(_parameter, Type.get(type), _parameter.getParameterValue(fieldName),
+                        includeChildTypes);
+        if (number == null) {
+            number = "000001";
+        } else {
+            // get the numbers after the first "-"
+            final Pattern pattern = Pattern.compile("(?<=-)\\d*");
+            final Matcher matcher = pattern.matcher(number);
+            if (matcher.find()) {
+                final String numTmp = matcher.group();
+                final int length = numTmp.length();
+                final Integer numInt = Integer.parseInt(numTmp) + 1;
+                final NumberFormat nf = NumberFormat.getInstance();
+                nf.setMinimumIntegerDigits(length);
+                nf.setMaximumIntegerDigits(length);
+                nf.setGroupingUsed(false);
+                number = nf.format(numInt);
+            }
+        }
+        map.put(field.getName(), number);
+        values.add(map);
+        return new Return().put(ReturnValues.VALUES, values);
     }
 
     /**
@@ -2087,22 +2130,26 @@ public abstract class AbstractDocument_Base
         return getType4PositionCreate(_parameter);
     }
 
-
     /**
      * Method to get the maximum for a value from the database.
      * @param _parameter Parameter as passed by the eFaps API for esjp
      * @param _type type to search for
+     * @param _serial optional serial number used as filter
      * @param _expandChild expand childs
      * @return maximum
      * @throws EFapsException on error
      */
     protected String getMaxNumber(final Parameter _parameter,
                                   final Type _type,
+                                  final String _serial,
                                   final boolean _expandChild)
         throws EFapsException
     {
         String ret = null;
         final QueryBuilder queryBuilder = new QueryBuilder(_type);
+        if (_serial != null) {
+            queryBuilder.addWhereAttrMatchValue(CIERP.DocumentAbstract.Name, _serial + "*");
+        }
         queryBuilder.addOrderByAttributeDesc(CIERP.DocumentAbstract.Name);
         final InstanceQuery query = queryBuilder.getQuery();
         query.setIncludeChildTypes(_expandChild);
@@ -2126,11 +2173,10 @@ public abstract class AbstractDocument_Base
     public Return getNameFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String type = (String) properties.get("Type");
-        final String includeChildTypes = (String) properties.get("IncludeChildTypes");
+        final String type = getProperty(_parameter, "Type");
+        final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
 
-        String number = getMaxNumber(_parameter, Type.get(type), !"false".equalsIgnoreCase(includeChildTypes));
+        String number = getMaxNumber(_parameter, Type.get(type), null, includeChildTypes);
         if (number == null) {
             number = "001-000001";
         } else {
@@ -2151,6 +2197,102 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, number);
         return retVal;
+    }
+
+    /**
+     * Method to get the value for the name.
+     *
+     * @param _parameter Parameter as passed by the eFaps API for esjp
+     * @return Return containing the value
+     * @throws EFapsException on error
+     */
+    public Return getNameWithSerialFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String type = getProperty(_parameter, "Type");
+        final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
+        final StringBuilder html = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String fieldName = fieldValue.getField().getName() + "_SN";
+        final List<DropDownPosition> options = getSerialNumbers(_parameter);
+        String serial = "001";
+        StringBuilder snHtml;
+        if (options.size() ==1) {
+            serial = options.get(0).getValue().toString();
+            snHtml = new StringBuilder().append("<input type=\"hidden\" value=\"").append(serial).append("\" name=\"")
+                                .append(fieldName).append("\"><span>").append(serial).append("-</span>");
+        } else {
+            for (final DropDownPosition option : options) {
+                if (option.isSelected()) {
+                    serial = option.getValue().toString();
+                    break;
+                }
+            }
+            final Parameter parameter =  ParameterUtil.clone(_parameter);
+            ParameterUtil.setProperty(parameter, "FieldName", fieldName);
+            final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
+            snHtml = field.getDropDownField(parameter, options).append("-");
+        }
+        html.append(snHtml);
+        String number = getMaxNumber(_parameter, Type.get(type), serial, includeChildTypes);
+        if (number == null) {
+            number = "000001";
+        } else {
+            // get the numbers after the first "-"
+            final Pattern pattern = Pattern.compile("(?<=-)\\d*");
+            final Matcher matcher = pattern.matcher(number);
+            if (matcher.find()) {
+                final String numTmp = matcher.group();
+                final int length = numTmp.length();
+                final Integer numInt = Integer.parseInt(numTmp) + 1;
+                final NumberFormat nf = NumberFormat.getInstance();
+                nf.setMinimumIntegerDigits(length);
+                nf.setMaximumIntegerDigits(length);
+                nf.setGroupingUsed(false);
+                number = nf.format(numInt);
+            }
+        }
+        html.append("<input type=\"text\" size=\"8\" name=\"").append(fieldValue.getField().getName())
+            .append("\" value=\"").append(number).append("\">");
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.SNIPLETT, html);
+        return retVal;
+    }
+
+    /**
+     * Method to get the value for the name.
+     *
+     * @param _parameter Parameter as passed by the eFaps API for esjp
+     * @return list of dropdowns
+     * @throws EFapsException on error
+     */
+    protected List<DropDownPosition> getSerialNumbers(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String type = getProperty(_parameter, "Type");
+        final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
+                        SalesSettings.SERIALNUMBERS, true);
+        final String serialStr = properties.getProperty(type, "001");
+        final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
+        boolean first = true;
+        for (final String serial : serialStr.split(";")) {
+            final DropDownPosition option = field.getDropDownPosition(_parameter, serial, serial);
+            ret.add(option);
+            if (first) {
+                option.setSelected(true);
+                first = false;
+            }
+        }
+        Collections.sort(ret, new Comparator<DropDownPosition>() {
+            @SuppressWarnings("unchecked")
+            @Override
+            public int compare(final DropDownPosition _o1,
+                               final DropDownPosition _o2)
+            {
+                return _o1.getOrderValue().compareTo(_o2.getOrderValue());
+            }});
+        return ret;
     }
 
     /**
@@ -2345,6 +2487,10 @@ public abstract class AbstractDocument_Base
             ret = numGen.getNextVal();
         } else {
             ret = _parameter.getParameterValue("name4create");
+            final String sn = _parameter.getParameterValue("name4create_SN");
+            if (sn != null && !sn.isEmpty()) {
+                ret = sn + "-" + ret;
+            }
         }
         return ret;
     }
