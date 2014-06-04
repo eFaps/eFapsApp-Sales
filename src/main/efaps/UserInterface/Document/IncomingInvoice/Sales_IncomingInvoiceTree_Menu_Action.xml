@@ -35,12 +35,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceTree_Menu_Action</name>
 
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
-            <role>Sales_IncomingDocument</role>
-        </access>
-
         <!-- childs -->
         <childs>
             <child>Sales_IncomingInvoiceTree_Menu_Action_Edit</child>
