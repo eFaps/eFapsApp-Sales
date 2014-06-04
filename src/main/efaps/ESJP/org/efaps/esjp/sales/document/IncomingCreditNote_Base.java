@@ -221,6 +221,8 @@ public abstract class IncomingCreditNote_Base
     public Return autoComplete4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashReceipt);
+        queryBldr.addType(CISales.FundsToBeSettledReceipt);
         return new IncomingCreditNote()
         {
 
@@ -241,9 +243,11 @@ public abstract class IncomingCreditNote_Base
                     _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery);
                     _queryBldr.addWhereAttrNotIsNull(CISales.PettyCashReceipt.Contact);
                 } else if ((instance != null && instance.isValid())
-                                && instance.getType().equals(CISales.AccountFundsToBeSettled.getType())){
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt);
-                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.FromLink, instance);
+                                && instance.getType().equals(CISales.AccountFundsToBeSettled.getType())) {
+                    final QueryBuilder attrQueryBldr =
+                                    new QueryBuilder(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.FromLink,
+                                    instance);
                     final AttributeQuery attrQuery = attrQueryBldr
                                     .getAttributeQuery(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.ToLink);
 
@@ -254,7 +258,7 @@ public abstract class IncomingCreditNote_Base
                 }
             };
 
-        }.autoComplete4Doc(_parameter, CISales.PettyCashReceipt.uuid, (Status[]) null);
+        }.autoComplete4Doc(_parameter, queryBldr);
     }
 
     @Override
@@ -267,7 +271,8 @@ public abstract class IncomingCreditNote_Base
         final Instance instance = _parameter.getInstance();
 
         if ((instance != null && instance.isValid())
-                        && instance.getType().equals(CISales.AccountPettyCash.getType())) {
+                        && (instance.getType().equals(CISales.AccountPettyCash.getType())
+                                        || instance.getType().equals(CISales.AccountFundsToBeSettled.getType()))) {
             final StringBuilder js = new StringBuilder();
 
             final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
@@ -276,9 +281,9 @@ public abstract class IncomingCreditNote_Base
             final PrintQuery print = new PrintQuery(currentOid);
 
             final SelectBuilder selContactInst = new SelectBuilder()
-                            .linkto(CISales.PettyCashReceipt.Contact).instance();
+                            .linkto(CISales.DocumentSumAbstract.Contact).instance();
             final SelectBuilder selContactName = new SelectBuilder()
-                            .linkto(CISales.PettyCashReceipt.Contact).attribute(CIContacts.Contact.Name);
+                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
             print.addSelect(selContactInst, selContactName);
             print.execute();
 
