@@ -31,7 +31,10 @@
         <childs>
             <child>Sales_IncomingReminderTree_Menu_Action_Edit</child>
             <child>Sales_IncomingReminderTree_Menu_Action_Recalculate</child>
+            <child>Sales_IncomingReminderTree_Menu_Action_SetPaid</child>
+            <child>Sales_IncomingReminderTree_Menu_Action_SetReplaced</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 

@@ -35,6 +35,12 @@
         <target>
             <form>Sales_DocumentSum_RecalculateForm</form>
             <execute method="recalculateRate" program="org.efaps.esjp.sales.document.Reminder"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_ReminderTree_Menu_Action_Recalculate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Check4CreateStatus">true</property>
+             </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

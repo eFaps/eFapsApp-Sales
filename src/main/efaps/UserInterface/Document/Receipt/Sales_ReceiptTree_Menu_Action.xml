@@ -38,6 +38,9 @@
         <childs>
             <child>Sales_ReceiptTree_Menu_Action_Edit</child>
             <child>Sales_ReceiptTree_Menu_Action_Recalculate</child>
+            <child>Sales_ReceiptTree_Menu_Action_SetPaid</child>
+            <child>Sales_ReceiptTree_Menu_Action_SetReplaced</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 

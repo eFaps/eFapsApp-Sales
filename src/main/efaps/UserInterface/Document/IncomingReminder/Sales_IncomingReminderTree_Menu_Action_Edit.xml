@@ -41,6 +41,10 @@
                 <property name="Validation">NAME</property>
                 <property name="NAME_ValidateContact">true</property>
             </validate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_IncomingReminderTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Check4CreateStatus">true</property>
+            </trigger>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>

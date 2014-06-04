@@ -58,7 +58,6 @@
                 name="Sales_IncomingInvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="Check4CreateStatus">true</property>
-                <property name="Status">Open</property>
              </trigger>
         </target>
 

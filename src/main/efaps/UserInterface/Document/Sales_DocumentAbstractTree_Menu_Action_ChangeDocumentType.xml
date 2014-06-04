@@ -41,6 +41,12 @@
             <form>Sales_DocumentAbstract_ChangeDocumentTypeForm</form>
             <execute program="org.efaps.esjp.sales.document.DocumentSum"
                 method="changeDocumentType" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_IncomingInvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Check4CreateStatus">true</property>
+             </trigger>
         </target>
 
         <!-- properties -->

@@ -20,31 +20,27 @@
  Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-    <uuid>363c3598-69b5-4e33-84c1-11436784168a</uuid>
+    <uuid>25d8a2d8-4d40-4609-966d-640a8941fa22</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingCreditNoteTree_Menu_Action_Recalculate</name>
+        <name>Sales_InvoiceTree_Menu_Action_SetReplaced</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
         </access>
-        <!-- target definitions -->
         <target>
-            <form>Sales_DocumentSum_RecalculateForm</form>
-            <execute method="recalculateRate" program="org.efaps.esjp.sales.document.IncomingCreditNote"/>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_IncomingCreditNoteTree_Menu_Action_Recalculate.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Replaced</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Sales_InvoiceTree_Menu_Action_SetReplaced.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Check4CreateStatus">true</property>
             </trigger>
         </target>
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">ERP_DocumentAbstract</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">720</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>
