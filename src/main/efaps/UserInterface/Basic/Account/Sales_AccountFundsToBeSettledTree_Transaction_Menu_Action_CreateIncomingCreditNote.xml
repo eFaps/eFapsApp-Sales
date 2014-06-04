@@ -19,18 +19,16 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a11ac8b3-dd35-4a31-8f88-46c85e9fa42a</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>58588a9a-42c9-41d2-a87b-6ed9e86c29e4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps" />
+            <profile name="eFaps"/>
         </profiles>
-        <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
         <access>
             <role>Sales_Accounting</role>
             <role>Sales_Admin</role>
@@ -43,10 +41,10 @@
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
                 <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
                 <property name="Status">Digitized</property>
-                <!-- Sales_AccountPettyCash2IncomingCreditNote -->
-                <property name="ConnectAccountType">109225ce-bbbe-4ca1-a11f-49a7131e3e3a</property>
+                <!-- Sales_AccountFundsToBeSettled2IncomingCreditNote -->
+                <property name="ConnectAccountType">9b02a4e1-7baf-49e4-9846-c50801866ee9</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validate">
+            <validate method="validate" program="org.efaps.esjp.sales.document.IncomingCreditNote">
                 <property name="Validation">NAME</property>
                 <property name="NAME_ValidateContact">true</property>
             </validate>
@@ -62,9 +60,9 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="projects" />
+            <profile name="projects"/>
         </profiles>
-        <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
         <access>
             <role>Sales_Accounting</role>
             <role>Sales_Admin</role>
@@ -77,15 +75,15 @@
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
                 <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
                 <property name="Status">Digitized</property>
-                <!-- Sales_AccountPettyCash2IncomingCreditNote -->
-                <property name="ConnectAccountType">109225ce-bbbe-4ca1-a11f-49a7131e3e3a</property>
+                <!-- Sales_AccountFundsToBeSettled2IncomingCreditNote -->
+                <property name="ConnectAccountType">9b02a4e1-7baf-49e4-9846-c50801866ee9</property>
                 <!-- Projects_ProjectService2IncomingCreditNote -->
                 <property name="ConnectType">6d4934b5-ea8a-4926-9643-c29fb12776d6</property>
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingCreditNote" method="validate">
+            <validate method="validate" program="org.efaps.esjp.sales.document.IncomingCreditNote">
                 <property name="Validation">NAME</property>
                 <property name="NAME_ValidateContact">true</property>
             </validate>

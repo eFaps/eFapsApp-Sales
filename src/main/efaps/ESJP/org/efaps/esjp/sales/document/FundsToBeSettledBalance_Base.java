@@ -230,14 +230,24 @@ public abstract class FundsToBeSettledBalance_Base
             while (multi.next()) {
                 final Instance docInst = multi.<Instance>getSelect(sel);
                 if (docInst != null && docInst.isValid()) {
-                    final Insert rel2Insert = new Insert(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
-                    rel2Insert.add(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.FromLink, balanceInst);
-                    rel2Insert.add(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.ToLink, docInst);
-                    rel2Insert.execute();
+                    Insert rel2Insert = null;
+                    Status status = null;
+                    if (docInst.getType().equals(CISales.FundsToBeSettledReceipt.getType())) {
+                        rel2Insert = new Insert(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
+                        status = Status.find(CISales.FundsToBeSettledReceiptStatus.Closed);
+                    } else if (docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
+                        rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingCreditNote);
+                        status = Status.find(CISales.IncomingCreditNoteStatus.Replaced);
+                    }
+                    if (rel2Insert != null && status != null) {
+                        rel2Insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, balanceInst);
+                        rel2Insert.add(CISales.Document2DocumentAbstract.ToAbstractLink, docInst);
+                        rel2Insert.execute();
 
-                    final Update update = new Update(docInst);
-                    update.add(CISales.FundsToBeSettledReceipt.Status, Status.find(CISales.FundsToBeSettledReceiptStatus.Closed));
-                    update.execute();
+                        final Update update = new Update(docInst);
+                        update.add(CISales.DocumentSumAbstract.StatusAbstract, status);
+                        update.execute();
+                    }
                 }
             }
 

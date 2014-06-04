@@ -15,15 +15,15 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 7230 $
- Last Changed:    $Date: 2011-11-02 16:21:00 -0500 (Wed, 02 Nov 2011) $
- Last Changed By: $Author: jorge.cueva@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>1c1682b9-0d9f-4a3c-bbf7-830785e13414</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 7230 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -32,6 +32,7 @@
         <childs>
             <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</child>
             <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_BalancingWithDateSelect</child>
+            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateIncomingCreditNote</child>
             <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_Balancing</child>
         </childs>
     </definition>

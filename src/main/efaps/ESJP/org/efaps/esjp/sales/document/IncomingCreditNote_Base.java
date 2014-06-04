@@ -93,7 +93,7 @@ public abstract class IncomingCreditNote_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return create4AccountPettyCash(final Parameter _parameter)
+    public Return create4Account(final Parameter _parameter)
         throws EFapsException
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
@@ -132,9 +132,15 @@ public abstract class IncomingCreditNote_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Insert insert = new Insert(CISales.AccountPettyCash2IncomingCreditNote);
-        insert.add(CISales.AccountPettyCash2IncomingCreditNote.FromLink, _parameter.getInstance());
-        insert.add(CISales.AccountPettyCash2IncomingCreditNote.ToLink, _createdDoc.getInstance());
+        final Type relType;
+        if (isUUID(getProperty(_parameter, "ConnectAccountType"))) {
+            relType = Type.get(UUID.fromString(getProperty(_parameter, "ConnectAccountType")));
+        } else {
+            relType = Type.get(getProperty(_parameter, "ConnectAccountType"));
+        }
+        final Insert insert = new Insert(relType);
+        insert.add(CISales.Account2DocumentAbstract.FromLinkAbstract, _parameter.getInstance());
+        insert.add(CISales.Account2DocumentAbstract.ToLinkAbstract, _createdDoc.getInstance());
         insert.execute();
     }
 
