@@ -240,6 +240,15 @@ public abstract class IncomingCreditNote_Base
 
                     _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery);
                     _queryBldr.addWhereAttrNotIsNull(CISales.PettyCashReceipt.Contact);
+                } else if ((instance != null && instance.isValid())
+                                && instance.getType().equals(CISales.AccountFundsToBeSettled.getType())){
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.FromLink, instance);
+                    final AttributeQuery attrQuery = attrQueryBldr
+                                    .getAttributeQuery(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.ToLink);
+
+                    _queryBldr.addWhereAttrInQuery(CISales.FundsToBeSettledReceipt.ID, attrQuery);
+                    _queryBldr.addWhereAttrNotIsNull(CISales.FundsToBeSettledReceipt.Contact);
                 } else {
                     super.add2QueryBldr(_parameter, _queryBldr);
                 }

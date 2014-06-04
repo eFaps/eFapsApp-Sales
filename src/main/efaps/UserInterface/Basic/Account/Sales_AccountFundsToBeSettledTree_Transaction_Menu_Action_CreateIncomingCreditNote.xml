@@ -36,7 +36,7 @@
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountPettyCash4IncomingCreditNoteForm</form>
+            <form>Sales_AccountFundsToBeSettled4IncomingCreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create4Account">
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
                 <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
@@ -70,7 +70,7 @@
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_AccountPettyCash4IncomingCreditNoteForm</form>
+            <form>Sales_AccountFundsToBeSettled4IncomingCreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create4Account">
                 <property name="PositionType">Sales_IncomingCreditNotePosition</property>
                 <property name="StatusGroup">Sales_IncomingCreditNoteStatus</property>
