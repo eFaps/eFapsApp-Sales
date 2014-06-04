@@ -42,8 +42,9 @@
             <child>Sales_CreditMyDesk</child>
             <child>Sales_CreditNoteMyDesk</child>
             <child>Sales_DeliveryNoteMyDesk</child>
-            <child>Sales_GoodsIssueSlipMyDesk</child>
             <child>Sales_ReturnSlipMyDesk</child>
+            <child>Sales_ConsignmentNoteMyDesk</child>
+            <child>Sales_GoodsIssueSlipMyDesk</child>
             <child>Sales_ReservationMyDesk</child>
             <child>Sales_OrderOutboundMyDesk</child>
             <child>Sales_QuoteRequestMyDesk</child>

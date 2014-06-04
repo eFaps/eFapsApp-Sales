@@ -29,7 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ConsignmentNote_SelectDocForm</name>
         <field name="deliverynote">
-            <property name="Label">Sales_Invoice.Label</property>
+            <property name="Label">Sales_DeliveryNote.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
