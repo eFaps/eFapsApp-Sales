@@ -149,6 +149,10 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.documentType.Label</property>
         </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_FundsToBeSettledReceipt/Status.Label</property>
+        </field>
         <field character="Heading" name="headingSupplier">
             <property name="Level">2</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.headingSupplier.Label</property>
@@ -420,6 +424,10 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.documentType.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_FundsToBeSettledReceipt/Status.Label</property>
         </field>
         <field name="headingProject" character="Heading">
             <property name="Level">2</property>

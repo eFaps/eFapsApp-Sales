@@ -333,7 +333,8 @@ public abstract class Transaction_Base
 
         final Instance docInst = Instance.get(print.<String>getSelect(sel));
         final Instance accInst = print.<Instance>getSelect(selAcc);
-        if (docInst.isValid() && (accInst != null && !accInst.getType().equals(CISales.AccountPettyCash.getType()))) {
+        if (docInst.isValid() && (accInst != null && !accInst.getType().equals(CISales.AccountPettyCash.getType()))
+                        && (accInst != null && !accInst.getType().equals(CISales.AccountFundsToBeSettled.getType()))) {
             _parameter.put(ParameterValues.INSTANCE, docInst);
             final DocumentUpdate docUpdate = new DocumentUpdate() {
                 @Override

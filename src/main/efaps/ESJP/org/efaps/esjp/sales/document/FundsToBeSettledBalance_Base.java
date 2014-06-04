@@ -237,7 +237,7 @@ public abstract class FundsToBeSettledBalance_Base
                         status = Status.find(CISales.FundsToBeSettledReceiptStatus.Closed);
                     } else if (docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
                         rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingCreditNote);
-                        status = Status.find(CISales.IncomingCreditNoteStatus.Replaced);
+                        status = Status.find(CISales.IncomingCreditNoteStatus.Paid);
                     }
                     if (rel2Insert != null && status != null) {
                         rel2Insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, balanceInst);
@@ -290,31 +290,53 @@ public abstract class FundsToBeSettledBalance_Base
         return new DateTime().toLocalTime().toString();
     }
 
+    /**
+     * Method for verify a FundsToBeSettledBalance.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return verify(final Parameter _parameter)
         throws EFapsException
     {
         final Instance instance = _parameter.getInstance();
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
-        attrQueryBldr.addWhereAttrEqValue(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.FromLink, instance);
+        attrQueryBldr.addType(CISales.FundsToBeSettledBalance2IncomingCreditNote);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, instance);
         final AttributeQuery attrQuery = attrQueryBldr
-                        .getAttributeQuery(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.ToLink);
+                        .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.FundsToBeSettledReceipt);
-        queryBldr.addWhereAttrInQuery(CISales.FundsToBeSettledReceipt.ID, attrQuery);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.FundsToBeSettledReceipt.Contact);
+        multi.addAttribute(CISales.DocumentSumAbstract.Contact);
         multi.execute();
         while (multi.next()) {
             final Object contactObj = multi.getAttribute(CISales.FundsToBeSettledReceipt.Contact);
-            final Update recUpdate = new Update(multi.getCurrentInstance());
-            recUpdate.add(CISales.FundsToBeSettledReceipt.Status, Status.find(CISales.FundsToBeSettledReceiptStatus.Closed));
-            if (contactObj != null) {
+            final Instance docInst = multi.getCurrentInstance();
+
+            final Update recUpdate = new Update(docInst);
+            if (docInst.getType().isKindOf(CISales.FundsToBeSettledReceipt.getType())) {
+                recUpdate.add(CISales.FundsToBeSettledReceipt.Status,
+                                Status.find(CISales.FundsToBeSettledReceiptStatus.Closed));
+                if (contactObj != null) {
+                    final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
+                                    SalesSettings.INCOMINGINVOICESEQUENCE);
+                    final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                    if (numgen != null) {
+                        final String revision = numgen.getNextVal();
+                        recUpdate.add(CISales.FundsToBeSettledReceipt.Revision, revision);
+                    }
+                }
+            } else {
+                recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
                 final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                SalesSettings.INCOMINGINVOICESEQUENCE);
+                                SalesSettings.INCOMINGCREDITNOTESEQUENCE);
                 final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
                 if (numgen != null) {
                     final String revision = numgen.getNextVal();
-                    recUpdate.add(CISales.FundsToBeSettledReceipt.Revision, revision);
+                    recUpdate.add(CISales.IncomingCreditNote.Revision, revision);
                 }
             }
             recUpdate.execute();
