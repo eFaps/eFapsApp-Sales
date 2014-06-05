@@ -47,17 +47,18 @@
             <child>Sales_GoodsIssueSlipMyDesk</child>
             <child>Sales_ReservationMyDesk</child>
             <child>Sales_OrderOutboundMyDesk</child>
+            <child>Sales_ServiceOrderOutboundMyDesk</child>
             <child>Sales_QuoteRequestMyDesk</child>
             <child>Sales_Document_ReportMyDesk</child>
             <child>Sales_UsageReportMyDesk</child>
             <child>Sales_ProductRequestMyDesk</child>
+            <child>Sales_ServiceRequestMyDesk</child>
             <child>Sales_RetentionCertificateMyDesk</child>
             <child>Sales_PerceptionCertificateMyDesk</child>
             <child>Sales_ProductionReportMyDesk</child>
             <child>Sales_ReturnUsageReportMyDesk</child>
             <child>Sales_ExchangeMyDesk</child>
             <child>Sales_ProductionOrderMyDesk</child>
-            <child>Sales_ServiceOrderOutboundMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
