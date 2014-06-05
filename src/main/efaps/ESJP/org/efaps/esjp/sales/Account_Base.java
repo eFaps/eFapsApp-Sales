@@ -111,29 +111,34 @@ public abstract class Account_Base
         return new Return();
     }
 
-
-
+    /**
+     * Obtains max position to the relation documents.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _accInstance instance to account.
+     * @return integer max position.
+     * @throws EFapsException on error.
+     */
     public Integer getMaxPosition(final Parameter _parameter,
                                   final Instance _accInstance)
         throws EFapsException
     {
         Integer ret = 0;
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountPettyCash2PettyCashReceipt);
-        queryBldr.addWhereAttrEqValue(CISales.AccountPettyCash2PettyCashReceipt.FromLink, _accInstance);
-        queryBldr.addWhereAttrNotIsNull(CISales.AccountPettyCash2PettyCashReceipt.Position);
-        queryBldr.addOrderByAttributeDesc(CISales.AccountPettyCash2PettyCashReceipt.Position);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Account2DocumentAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.Account2DocumentAbstract.FromLinkAbstract, _accInstance);
+        queryBldr.addWhereAttrNotIsNull(CISales.Account2DocumentAbstract.Position);
+        queryBldr.addOrderByAttributeDesc(CISales.Account2DocumentAbstract.Position);
         final InstanceQuery query = queryBldr.getQuery();
         query.setLimit(1);
         final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
-        multi.addAttribute(CISales.AccountPettyCash2PettyCashReceipt.Position);
+        multi.addAttribute(CISales.Account2DocumentAbstract.Position);
         multi.execute();
         if (multi.next()) {
-            final Integer tmp = multi.<Integer>getAttribute(CISales.AccountPettyCash2PettyCashReceipt.Position);
+            final Integer tmp = multi.<Integer>getAttribute(CISales.Account2DocumentAbstract.Position);
             ret = tmp == null ? 0 : tmp;
         }
         return ret;
     }
-
 
     /**
      * Method for create a new Cash Desk Balance.
