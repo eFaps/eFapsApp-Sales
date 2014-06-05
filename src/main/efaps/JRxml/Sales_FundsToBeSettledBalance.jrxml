@@ -18,7 +18,7 @@
 	</parameter>
 	<parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
 	<parameter name="AccName" class="java.lang.String"/>
-	<parameter name="AmountFundsToBeSettled" class="java.math.BigDecimal"/>
+	<parameter name="AmountPettyCash" class="java.math.BigDecimal"/>
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<field name="name" class="java.lang.String">
 		<property name="Select" value="attribute[Name]"/>
@@ -90,7 +90,7 @@
 				<reportElement positionType="Float" x="0" y="0" width="802" height="60" uuid="0233034d-b54b-49d5-adaa-67e303dbd4d4"/>
 				<subreportParameter name="EFAPS_DEFINITION"/>
 				<subreportParameter name="AmountParameter">
-					<subreportParameterExpression><![CDATA[$P{AmountFundsToBeSettled}]]></subreportParameterExpression>
+					<subreportParameterExpression><![CDATA[$P{AmountPettyCash}]]></subreportParameterExpression>
 				</subreportParameter>
 				<dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_FundsToBeSettledBalancePayments")]]></dataSourceExpression>
 				<subreportExpression><![CDATA["JasperReport.Sales_FundsToBeSettledBalancePayments"]]></subreportExpression>

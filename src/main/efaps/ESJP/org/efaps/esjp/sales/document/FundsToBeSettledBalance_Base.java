@@ -104,7 +104,7 @@ public abstract class FundsToBeSettledBalance_Base
 
         final StandartReport report = new StandartReport();
         report.getJrParameters().put("AccName", accName);
-        report.getJrParameters().put("AmountFundsToBeSettled", amount);
+        report.getJrParameters().put("AmountPettyCash", amount);
 
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
