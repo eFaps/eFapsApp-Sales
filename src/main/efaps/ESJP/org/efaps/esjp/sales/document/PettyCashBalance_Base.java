@@ -83,8 +83,9 @@ public abstract class PettyCashBalance_Base
         throws EFapsException
     {
         Return ret = new Return();
+        final Instance accInstance = _parameter.getCallInstance();
 
-        final PrintQuery printAmount = new PrintQuery(_parameter.getCallInstance());
+        final PrintQuery printAmount = new PrintQuery(accInstance);
         printAmount.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
         printAmount.execute();
         BigDecimal amount = printAmount.<BigDecimal>getAttribute(CISales.AccountAbstract.AmountAbstract);
@@ -105,6 +106,7 @@ public abstract class PettyCashBalance_Base
         final StandartReport report = new StandartReport();
         report.getJrParameters().put("AccName", accName);
         report.getJrParameters().put("AmountPettyCash", amount);
+        add2Create4JrParameters(_parameter, report, accInstance);
 
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
@@ -289,6 +291,14 @@ public abstract class PettyCashBalance_Base
         throws EFapsException
     {
         return new DateTime().toLocalTime().toString();
+    }
+
+    protected void add2Create4JrParameters(final Parameter _parameter,
+                                           final StandartReport _report,
+                                           final Instance _instance)
+        throws EFapsException
+    {
+        // to be set implemented
     }
 
     /**
