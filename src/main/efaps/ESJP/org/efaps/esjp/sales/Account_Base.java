@@ -852,33 +852,38 @@ public abstract class Account_Base
         return ret;
     }
 
-    public Return downloadXlsLiquidation(final Parameter _parameter)
+    public Return downloadLiquidation(final Parameter _parameter)
         throws EFapsException
     {
         Return ret = new Return();
 
-        final SelectBuilder selPayId = new SelectBuilder().linkfrom(CISales.Payment, CISales.Payment.CreateDocument)
-                        .id();
+        final SelectBuilder selPayId = new SelectBuilder()
+                        .linkfrom(CISales.Payment, CISales.Payment.CreateDocument).id();
 
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         print.addAttribute(CISales.AccountBalance.Name, CISales.AccountBalance.CrossTotal);
         print.addSelect(selPayId);
         print.execute();
 
-        String nameAccount = null;
+        String accountName = null;
+        Instance accountInst = null;
         final QueryBuilder queryAcc = new QueryBuilder(CISales.TransactionAbstract);
         queryAcc.addWhereAttrEqValue(CISales.TransactionAbstract.Payment, print.<Long>getSelect(selPayId));
         final InstanceQuery queryInst = queryAcc.getQuery();
         queryInst.execute();
         if (!queryInst.getValues().isEmpty()) {
-            final SelectBuilder selNameAcc = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
-                            .attribute(CISales.AccountAbstract.Name);
+            final SelectBuilder selAcc = new SelectBuilder().linkto(CISales.TransactionAbstract.Account);
+            final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
+            final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CISales.AccountAbstract.Name);
             for (final Instance inst : queryInst.getValues()) {
-                if (nameAccount == null) {
+                if (accountName == null && accountInst == null) {
                     final PrintQuery print4Acc = new PrintQuery(inst);
-                    print4Acc.addSelect(selNameAcc);
+                    print4Acc.addSelect(selAccName, selAccInst);
                     print4Acc.execute();
-                    nameAccount = print4Acc.<String>getSelect(selNameAcc);
+                    accountName = print4Acc.<String>getSelect(selAccName);
+                    accountInst = print4Acc.<Instance>getSelect(selAccInst);
+                } else {
+                    break;
                 }
             }
         }
@@ -886,14 +891,16 @@ public abstract class Account_Base
         final String nameBalance = print.<String>getAttribute(CISales.AccountBalance.Name);
         final BigDecimal amount = print.<BigDecimal>getAttribute(CISales.AccountBalance.CrossTotal);
 
-        final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        if(properties.containsKey("JasperReport")) {
-            final String jrName = (String) properties.get("JasperReport");
+        if (getProperty(_parameter, "JasperReport") != null) {
+            final String jrName = getProperty(_parameter, "JasperReport");
             _parameter.put(ParameterValues.INSTANCE, _parameter.getInstance());
 
             final StandartReport report = new StandartReport();
-            report.getJrParameters().put("AccName", nameAccount);
+            report.getJrParameters().put("AccName", accountName);
             report.getJrParameters().put("AmountPettyCash", amount);
+            if (accountInst != null && accountInst.isValid()) {
+                add2DownloadLiquidation4JrParameters(_parameter, report, accountInst);
+            }
 
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {
@@ -903,13 +910,27 @@ public abstract class Account_Base
                 }
             }
 
-            final String fileName = DBProperties.getProperty(jrName+".Label", "es") + "_" + nameBalance;
+            final String fileName = DBProperties.getProperty(jrName + ".Label", "es") + "_" + nameBalance;
             report.setFileName(fileName);
             ret = report.execute(_parameter);
         }
 
-
         return ret;
+    }
+
+    /**
+     * Method to add new parameters to download liquidation.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _report Standartreport to adding a new jrParameters.
+     * @param _accountInst Instance of the account.
+     */
+    protected void add2DownloadLiquidation4JrParameters(final Parameter _parameter,
+                                                        final StandartReport _report,
+                                                        final Instance _instance)
+        throws EFapsException
+    {
+        // to be set implemented.
     }
 
     protected StringBuilder getSetFieldValue(final int _idx,

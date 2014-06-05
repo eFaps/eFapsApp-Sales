@@ -31,7 +31,7 @@
 
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.Account" method="downloadXlsLiquidation">
+            <execute program="org.efaps.esjp.sales.Account" method="downloadLiquidation">
                 <property name="JasperReport">Sales_PettyCashBalance</property>
                 <property name="Mime">pdf</property>
             </execute>
