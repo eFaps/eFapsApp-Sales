@@ -235,23 +235,48 @@ public abstract class IncomingCreditNote_Base
 
                 if ((instance != null && instance.isValid())
                                 && instance.getType().equals(CISales.AccountPettyCash.getType())) {
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.AccountPettyCash2PettyCashReceipt);
-                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountPettyCash2PettyCashReceipt.FromLink, instance);
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.AccountPettyCash2PettyCashBalance);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountPettyCash2PettyCashBalance.FromLink, instance);
                     final AttributeQuery attrQuery = attrQueryBldr
+                                    .getAttributeQuery(CISales.AccountPettyCash2PettyCashBalance.ToLink);
+
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
+                    queryBldr.addWhereAttrInQuery(CISales.PettyCashBalance.ID, attrQuery);
+                    queryBldr.addWhereAttrNotEqValue(CISales.PettyCashBalance.Status,
+                                    Status.find(CISales.PettyCashBalanceStatus.Verified));
+                    final AttributeQuery attrQuery2 = queryBldr.getAttributeQuery(CISales.PettyCashBalance.ID);
+
+                    final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+                    attrQueryBldr2.addWhereAttrInQuery(CISales.PettyCashBalance2PettyCashReceipt.FromLink, attrQuery2);
+                    final AttributeQuery attrQuery3 = attrQueryBldr2
                                     .getAttributeQuery(CISales.AccountPettyCash2PettyCashReceipt.ToLink);
 
-                    _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery);
+                    _queryBldr.addWhereAttrInQuery(CISales.PettyCashReceipt.ID, attrQuery3);
                     _queryBldr.addWhereAttrNotIsNull(CISales.PettyCashReceipt.Contact);
                 } else if ((instance != null && instance.isValid())
                                 && instance.getType().equals(CISales.AccountFundsToBeSettled.getType())) {
                     final QueryBuilder attrQueryBldr =
-                                    new QueryBuilder(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt);
-                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.FromLink,
+                                    new QueryBuilder(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance);
+                    attrQueryBldr.addWhereAttrEqValue(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance.FromLink,
                                     instance);
                     final AttributeQuery attrQuery = attrQueryBldr
-                                    .getAttributeQuery(CISales.AccountFundsToBeSettled2FundsToBeSettledReceipt.ToLink);
+                                    .getAttributeQuery(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance.ToLink);
 
-                    _queryBldr.addWhereAttrInQuery(CISales.FundsToBeSettledReceipt.ID, attrQuery);
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.FundsToBeSettledBalance);
+                    queryBldr.addWhereAttrInQuery(CISales.FundsToBeSettledBalance.ID, attrQuery);
+                    queryBldr.addWhereAttrNotEqValue(CISales.FundsToBeSettledBalance.Status,
+                                    Status.find(CISales.FundsToBeSettledBalanceStatus.Verified));
+                    final AttributeQuery attrQuery2 = queryBldr.getAttributeQuery(CISales.FundsToBeSettledBalance.ID);
+
+                    final QueryBuilder attrQueryBldr2 =
+                                    new QueryBuilder(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt);
+                    attrQueryBldr2.addWhereAttrInQuery(
+                                    CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.FromLink,
+                                    attrQuery2);
+                    final AttributeQuery attrQuery3 = attrQueryBldr2
+                                    .getAttributeQuery(CISales.FundsToBeSettledBalance2FundsToBeSettledReceipt.ToLink);
+
+                    _queryBldr.addWhereAttrInQuery(CISales.FundsToBeSettledReceipt.ID, attrQuery3);
                     _queryBldr.addWhereAttrNotIsNull(CISales.FundsToBeSettledReceipt.Contact);
                 } else {
                     super.add2QueryBldr(_parameter, _queryBldr);
