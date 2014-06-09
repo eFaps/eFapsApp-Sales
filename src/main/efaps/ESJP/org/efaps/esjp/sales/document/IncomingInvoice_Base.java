@@ -238,6 +238,7 @@ public abstract class IncomingInvoice_Base
                                                   final Instance _instance)
         throws EFapsException
     {
+        final List<Instance> selInstances = getInstances4Derived(_parameter);
         final Parameter paraClone = ParameterUtil.clone(_parameter);
         ParameterUtil.setProperty(paraClone, "FieldName", CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
 
@@ -246,7 +247,7 @@ public abstract class IncomingInvoice_Base
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicket);
         queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Status,
-                        Status.find(CISales.RecievingTicketStatus.Closed));
+                        Status.find(CISales.RecievingTicketStatus.Open));
 
         if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
             queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Contact, _instance);
@@ -268,6 +269,9 @@ public abstract class IncomingInvoice_Base
                             + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
             final DropDownPosition dropDown = field
                             .getDropDownPosition(paraClone, multi.getCurrentInstance().getOid(), option);
+            if (selInstances.contains(multi.getCurrentInstance())) {
+                dropDown.setSelected(true);
+            }
             values.add(dropDown);
         }
         final StringBuilder html = field.getInputField(paraClone, values, ListType.CHECKBOX);

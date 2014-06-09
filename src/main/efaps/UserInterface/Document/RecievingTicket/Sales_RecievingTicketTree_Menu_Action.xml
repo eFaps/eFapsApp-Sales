@@ -30,16 +30,15 @@
     <uuid>46b27272-77d9-433d-a6ff-69207a46a948</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RecievingTicketTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_RecievingTicketTree_Menu_Action_Edit</child>
             <child>Sales_RecievingTicketTree_Menu_Action_SetCanceled</child>
+            <child>Sales_RecievingTicketTree_Menu_Action_SetClosed</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
-
 </ui-menu>

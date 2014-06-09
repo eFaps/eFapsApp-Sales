@@ -26,32 +26,55 @@
 <ui-form xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>ca068d2c-c5b1-4a95-a33a-4160ea801a38</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoice_SelectDocForm</name>
-        <!-- fields -->
-        <field name="order">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        <field name="orderOutbound">
             <property name="Label">Sales_OrderOutbound.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="autoComplete4OrderOutbound"
-                name="Sales_IncomingInvoice_SelectDocForm.order.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="updateFields4OrderOutbound"
-                name="Sales_IncomingInvoice_SelectDocForm.order.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="autoComplete4Doc"
+                name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_OrderOutbound</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4Document"
+                name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
-        <field name="serviceOrder">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        <field name="serviceOrderOutbound">
             <property name="Label">Sales_ServiceOrderOutbound.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="autoComplete4ServiceOrderOutbound"
-                name="Sales_IncomingInvoice_SelectDocForm.serviceOrder.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="updateFields4ServiceOrderOutbound"
-                name="Sales_IncomingInvoice_SelectDocForm.serviceOrder.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="autoComplete4Doc"
+                name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_ServiceOrderOutbound</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4Document"
+                name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="recievingTicket">
+            <property name="Label">Sales_RecievingTicket.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="autoComplete4Doc"
+                name="Sales_IncomingInvoice_SelectDocForm.recievingTicket.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_RecievingTicket</property>
+                <property name="StatusGroup">Sales_RecievingTicketStatus</property>
+                <property name="Status">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4Document"
+                name="Sales_IncomingInvoice_SelectDocForm.recievingTicket.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>

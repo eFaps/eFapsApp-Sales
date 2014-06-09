@@ -44,7 +44,7 @@
             <execute program="org.efaps.esjp.sales.document.RecievingTicket" method="create">
                 <property name="PositionType">Sales_RecievingTicketPosition</property>
                 <property name="StatusGroup">Sales_RecievingTicketStatus</property>
-                <property name="Status">Closed</property>
+                <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.RecievingTicket" method="validate">
                 <property name="Validation">NAME</property>
@@ -76,7 +76,7 @@
             <execute program="org.efaps.esjp.sales.document.RecievingTicket" method="create">
                 <property name="PositionType">Sales_RecievingTicketPosition</property>
                 <property name="StatusGroup">Sales_RecievingTicketStatus</property>
-                <property name="Status">Closed</property>
+                <property name="Status">Open</property>
                 <!-- Projects_ProjectService2RecievingTicket -->
                 <property name="ConnectType">8069d557-349c-4ff4-80f1-b8fbd110a4dd</property>
                 <property name="ConnectCurrentLink">ToLink</property>

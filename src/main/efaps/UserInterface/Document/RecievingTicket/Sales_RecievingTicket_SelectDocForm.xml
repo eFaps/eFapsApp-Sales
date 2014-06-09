@@ -41,7 +41,7 @@
                 <property name="Type">Sales_OrderOutbound</property>
                 <property name="StatusGroup">Sales_OrderOutboundStatus</property>
                 <property name="Status01">!Canceled</property>
-                <property name="status02">!Received</property>
+                <property name="Status02">!Received</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="updateFields4Document"
