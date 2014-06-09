@@ -2434,7 +2434,7 @@ public abstract class AbstractDocument_Base
                 final Instance inst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
                 if (inst.isValid()) {
                     for (final DropDownPosition value  :_values) {
-                        if (value.getValue().equals(inst.getId())) {
+                        if (value.getValue().equals(inst.getId()) || value.getValue().equals(inst.getOid())) {
                             value.setSelected(true);
                         }
                     }
