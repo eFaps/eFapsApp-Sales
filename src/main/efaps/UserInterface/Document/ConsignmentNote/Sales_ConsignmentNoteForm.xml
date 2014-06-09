@@ -528,7 +528,7 @@
             <table>Sales_ConsignmentNotePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_ConsignmentNotePosition</property>
-                <property name="LinkFrom">ConsignmentNote</property>
+                <property name="LinkFrom">ConsignmentNoteLink</property>
             </evaluate>
         </field>
         <field name="note">
