@@ -53,6 +53,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uiform.Field_Base.ListType;
@@ -237,9 +238,8 @@ public abstract class IncomingInvoice_Base
                                                   final Instance _instance)
         throws EFapsException
     {
-        @SuppressWarnings("unchecked")
-        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
-        props.put("FieldName", CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
+        final Parameter paraClone = ParameterUtil.clone(_parameter);
+        ParameterUtil.setProperty(paraClone, "FieldName", CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
 
         final StringBuilder ret = new StringBuilder();
         final Field field = new Field();
@@ -267,10 +267,10 @@ public abstract class IncomingInvoice_Base
             final String option = name + " "
                             + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
             final DropDownPosition dropDown = field
-                            .getDropDownPosition(_parameter, multi.getCurrentInstance().getOid(), option);
+                            .getDropDownPosition(paraClone, multi.getCurrentInstance().getOid(), option);
             values.add(dropDown);
         }
-        final StringBuilder html = field.getInputField(_parameter, values, ListType.CHECKBOX);
+        final StringBuilder html = field.getInputField(paraClone, values, ListType.CHECKBOX);
         ret.append("if (document.getElementsByName('")
             .append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name).append("')[0]) {\n")
             .append("document.getElementsByName('").append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name)
