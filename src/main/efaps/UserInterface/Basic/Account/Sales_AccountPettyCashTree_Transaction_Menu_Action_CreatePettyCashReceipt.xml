@@ -46,7 +46,9 @@
                 <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate" />
+            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
@@ -80,7 +82,9 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate" />
+            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />

@@ -23,6 +23,7 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -45,9 +46,12 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.erp.AbstractWarning;
+import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Transaction;
+import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
 import org.efaps.util.EFapsException;
 
 /**
@@ -191,55 +195,81 @@ public abstract class PettyCashReceipt_Base
         return ret;
     }
 
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return html for display and true or false
-     * @throws EFapsException on errro
-     */
-    @Override
-    public Return validate(final Parameter _parameter)
+    public List<IWarning> validatePettyCash(final Parameter _parameter,
+                                            final List<IWarning> _ret)
         throws EFapsException
     {
-        final Return ret = new Return();
-        final StringBuilder html = new StringBuilder();
-        final boolean evaluatePostions = !"false".equalsIgnoreCase(getProperty(_parameter, "EvaluatePostions"));
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final boolean evaluatePositions = !"false".equalsIgnoreCase(getProperty(_parameter, "EvaluatePositions"));
         // first check the positions
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        if (evaluatePostions
+        if (evaluatePositions
                         && (calcList.isEmpty() || getNetTotal(_parameter, calcList).compareTo(BigDecimal.ZERO) == 0)) {
-            html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Positions"));
+            ret.add(new EvaluatePositionWarning());
         } else {
             if (evalDeducible(_parameter)) {
-                final Return tmp = validateName(_parameter);
-                final String snipplet = (String) tmp.get(ReturnValues.SNIPLETT);
-                if (snipplet != null) {
-                    html.append(snipplet);
-                }
                 final String name = _parameter
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
                 final Instance contactInst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name));
-                if (name != null && !name.isEmpty() && contactInst.isValid()) {
-                    ret.put(ReturnValues.TRUE, true);
-                } else {
-                    html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Deducible"));
+                if ((name == null || !name.isEmpty()) && !contactInst.isValid()) {
+                    ret.add(new EvaluateDeducibleDocWarning());
                 }
             } else {
                 final String name = _parameter
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
                 final String contact = _parameter
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name);
-                if ((name == null || name.isEmpty()) && (contact == null || contact.isEmpty())) {
-                    ret.put(ReturnValues.TRUE, true);
+                if ((name != null && !name.isEmpty()) || (contact != null && !contact.isEmpty())) {
+                    ret.add(new EvaluateNotDeducibleDocWarning());
                 } else {
-                    html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4NotDeducible"));
+                    final Iterator<IWarning> iterator = _ret.iterator();
+                    while (iterator.hasNext()) {
+                        final IWarning warning = iterator.next();
+                        if (warning instanceof InvalidNameWarning) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                }
+            }
+            final Instance instance = _parameter.getInstance();
+            if (instance != null && instance.isValid()
+                            && instance.getType().isKindOf(CISales.AccountAbstract.getType())) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
+                queryBldr.addWhereAttrEqValue(CISales.Balance.Account, instance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.Balance.Amount);
+                multi.execute();
+                BigDecimal amountBal = BigDecimal.ZERO;
+                while (multi.next()) {
+                    amountBal = amountBal.add(multi.<BigDecimal>getAttribute(CISales.Balance.Amount));
+                }
+                if (getNetTotal(_parameter, calcList).compareTo(amountBal) == 1) {
+                    ret.add(new EvaluateBalanceAccountDocWarning());
                 }
             }
         }
-        if (html.length() > 0) {
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        }
         return ret;
+    }
+
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Validation validation = new Validation()
+        {
+            @Override
+            protected List<IWarning> validate(final Parameter _parameter,
+                                              final List<IWarning> _warnings)
+                throws EFapsException
+            {
+                final List<IWarning> ret = super.validate(_parameter, _warnings);
+                ret.addAll(validatePettyCash(_parameter, ret));
+                return ret;
+            }
+        };
+        return validation.validate(_parameter, this);
     }
 
     /**
@@ -252,13 +282,12 @@ public abstract class PettyCashReceipt_Base
     {
         final Return retVal = new Return();
         if (!evalDeducible(_parameter)) {
-            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-            final Map<String, String> map = new HashMap<String, String>();
+            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+            final Map<String, Object> map = new HashMap<String, Object>();
             list.add(map);
             map.put(CIFormSales.Sales_PettyCashReceiptForm.name4create.name, "");
             map.put(CIFormSales.Sales_PettyCashReceiptForm.contactData.name, "");
-            map.put(CIFormSales.Sales_PettyCashReceiptForm.contact.name, "");
-            map.put(CIFormSales.Sales_PettyCashReceiptForm.contact.name + "AutoComplete", "");
+            map.put(CIFormSales.Sales_PettyCashReceiptForm.contact.name, new String[] { "", "" });
             retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
@@ -424,4 +453,45 @@ public abstract class PettyCashReceipt_Base
             };
         } .dropDownFieldValue(_parameter);
     }
+
+    public static class EvaluatePositionWarning
+        extends AbstractWarning
+    {
+
+        public EvaluatePositionWarning()
+        {
+            setError(true);
+        }
+    }
+
+    public static class EvaluateDeducibleDocWarning
+        extends AbstractWarning
+    {
+
+        public EvaluateDeducibleDocWarning()
+        {
+            setError(true);
+        }
+    }
+
+    public static class EvaluateNotDeducibleDocWarning
+        extends AbstractWarning
+    {
+
+        public EvaluateNotDeducibleDocWarning()
+        {
+            setError(true);
+        }
+    }
+
+    public static class EvaluateBalanceAccountDocWarning
+        extends AbstractWarning
+    {
+
+        public EvaluateBalanceAccountDocWarning()
+        {
+
+        }
+    }
+
 }
