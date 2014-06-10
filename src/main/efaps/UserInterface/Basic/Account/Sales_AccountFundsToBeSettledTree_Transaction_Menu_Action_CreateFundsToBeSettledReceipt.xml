@@ -42,8 +42,9 @@
                 <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
-                method="validate" />
+            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
@@ -77,8 +78,9 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
-                method="validate" />
+            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate">
+                <property name="Validation">NAME</property>
+            </validate>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" />
