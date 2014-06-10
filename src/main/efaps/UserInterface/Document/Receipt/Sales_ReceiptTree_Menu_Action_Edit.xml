@@ -39,7 +39,6 @@
         <target>
             <form>Sales_ReceiptForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
-            <validate program="org.efaps.esjp.sales.document.Receipt" method="validateName" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_ReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Check4CreateStatus">true</property>

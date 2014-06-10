@@ -61,6 +61,11 @@ public abstract class OrderOutbound_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _createdDoc the created document
+     * @throws EFapsException on error
+     */
     protected void connectChannel2Document(final Parameter _parameter,
                                            final CreatedDoc _createdDoc)
         throws EFapsException
@@ -72,6 +77,28 @@ public abstract class OrderOutbound_Base
             insert.add(CISales.ChannelSalesChannel2Document.ToLink, _createdDoc.getInstance());
             insert.execute();
         }
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return connect2RecievingTicketTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return connect2IncomingInvoiceTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return();
     }
 
     @Override

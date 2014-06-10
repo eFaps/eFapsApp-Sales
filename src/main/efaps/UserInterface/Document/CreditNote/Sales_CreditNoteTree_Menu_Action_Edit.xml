@@ -44,7 +44,6 @@
         <target>
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
-            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validateName" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_CreditNoteTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Check4CreateStatus">true</property>

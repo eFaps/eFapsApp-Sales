@@ -64,6 +64,9 @@ import org.efaps.util.EFapsException;
 public abstract class RecievingTicket_Base
     extends AbstractProductDocument
 {
+    /**
+     * Revision Key.
+     */
     public static final String REVISIONKEY =  RecievingTicket.class.getName() +  ".RevisionKey";
 
     /**
@@ -194,7 +197,7 @@ public abstract class RecievingTicket_Base
             multi.addSelect(selProdInst);
             multi.addAttribute(CISales.RecievingTicketPosition.Quantity, CISales.RecievingTicketPosition.UoM);
             multi.executeWithoutAccessCheck();
-            boolean updateStatus  =true;
+            boolean updateStatus = true;
             while (multi.next()) {
                 final Instance prodInst = multi.<Instance>getSelect(selProdInst);
                 if (prod2quant.containsKey(prodInst)) {
@@ -205,7 +208,7 @@ public abstract class RecievingTicket_Base
                                     .multiply(new BigDecimal(uom.getNumerator()).divide(
                                                     new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP)));
                     prod2quant.put(prodInst, quantity);
-                    if (quantity.compareTo(BigDecimal.ZERO) < 0 ) {
+                    if (quantity.compareTo(BigDecimal.ZERO) < 0) {
                         updateStatus  = false;
                     }
                 } else {

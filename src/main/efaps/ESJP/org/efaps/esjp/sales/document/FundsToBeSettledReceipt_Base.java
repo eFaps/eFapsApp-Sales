@@ -45,6 +45,8 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.erp.IWarning;
+import org.efaps.esjp.erp.WarningUtil;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Transaction;
@@ -211,10 +213,9 @@ public abstract class FundsToBeSettledReceipt_Base
             html.append(DBProperties.getProperty(PettyCashReceipt.class.getName() + ".validate4Positions"));
         } else {
             if (evalDeducible(_parameter)) {
-                final Return tmp = validateName(_parameter);
-                final String snipplet = (String) tmp.get(ReturnValues.SNIPLETT);
-                if (snipplet != null) {
-                    html.append(snipplet);
+                final List<IWarning> warnings = new Validation().validateName(_parameter, this);
+                if (!warnings.isEmpty()) {
+                    html.append(WarningUtil.getHtml4Warning(warnings).toString());
                 }
                 final String name = _parameter
                                 .getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptForm.name4create.name);
@@ -233,7 +234,8 @@ public abstract class FundsToBeSettledReceipt_Base
                 if ((name == null || name.isEmpty()) && (contact == null || contact.isEmpty())) {
                     ret.put(ReturnValues.TRUE, true);
                 } else {
-                    html.append(DBProperties.getProperty(FundsToBeSettledReceipt.class.getName() + ".validate4NotDeducible"));
+                    html.append(DBProperties.getProperty(FundsToBeSettledReceipt.class.getName()
+                                    + ".validate4NotDeducible"));
                 }
             }
         }

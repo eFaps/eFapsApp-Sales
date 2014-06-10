@@ -43,7 +43,7 @@
         <type>Sales_OrderOutbound</type>
         <childs>
             <child>Sales_OrderOutboundTree_Position</child>
-            <child>Sales_DocumentAbstractTree_Doc</child>
+            <child>Sales_OrderOutboundTree_Doc</child>
             <child>Sales_OrderOutboundTree_Payment</child>
         </childs>
         <!-- properties -->

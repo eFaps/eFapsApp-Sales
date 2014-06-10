@@ -40,7 +40,6 @@
             <execute program="org.efaps.esjp.sales.document.IncomingReceipt" method="edit">
                 <property name="PositionType">Sales_IncomingReceiptPosition</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.IncomingReceipt" method="validateName" />
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_IncomingReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Check4CreateStatus">true</property>

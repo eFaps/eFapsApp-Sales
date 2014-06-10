@@ -22,16 +22,15 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a9441eb5-d5d7-4f77-8594-37d781cc48fb</uuid>
+    <uuid>109af5dd-649f-4dfb-96e0-9717b6e0f408</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoiceSearchForm</name>
-         <field name="jsLinkField">
+        <name>Sales_RecievingTicketSearchForm</name>
+        <field name="jsLinkField">
             <property name="ModeSearch">HIDDEN</property>
-            <trigger event="UI_FIELD_VALUE"
-                method="getJSLinkField"
+            <trigger event="UI_FIELD_VALUE" method="getJSLinkField"
                 name="IC_TimeReportCreateForm1.jsLinkField.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
                 <property name="link">/servlet/static/org.efaps.ui.wicket.behaviors.FieldUpdate.js?</property>
@@ -44,7 +43,7 @@
             <property name="Label">Sales_IncomingInvoice/Contact.Label</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_IncomingInvoiceSearchForm.contact.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.IncomingInvoice">
+                program="org.efaps.esjp.sales.document.Exchange">
                 <property name="Key">ID</property>
             </trigger>
         </field>
@@ -58,7 +57,7 @@
             <property name="ModeSearch">HIDDEN</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScript4Search"
                 name="Sales_IncomingInvoiceSearchForm.javaScript.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.IncomingInvoice" />
+                program="org.efaps.esjp.sales.document.Exchange" />
         </field>
     </definition>
 </ui-form>

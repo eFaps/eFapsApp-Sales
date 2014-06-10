@@ -543,6 +543,8 @@ public abstract class AbstractDocument_Base
     /**
      * @param _parameter Parameter as passed from the eFaps API.
      * @param _instance     instance the choice belongs to
+     * @return string to add
+     * @throws EFapsException on error
      */
     protected String add2ChoiceAutoComplete4Doc(final Parameter _parameter,
                                                 final Instance _instance)
@@ -816,7 +818,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-        final Map<String,Object> map = new HashMap<String,Object>();
+        final Map<String, Object> map = new HashMap<String, Object>();
         final String type = getProperty(_parameter, "Type");
         final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
@@ -1116,7 +1118,9 @@ public abstract class AbstractDocument_Base
 
             js.append(getSetFieldValue(0, "contact", String.valueOf(contactId), contactName)).append("\n");
         }
-        js.append(" })});").append("</script>");
+        js.append(" })});")
+          .append(getSetFieldValue(0, "contact", String.valueOf("oid"), "valuename")).append("\n")
+        .append("</script>");
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
@@ -1719,6 +1723,7 @@ public abstract class AbstractDocument_Base
      * @param _instance Instance of the derived Document
      * @return String containing valid Javascript
      * @throws EFapsException on error
+     * @deprecated will be removed on 3.4
      */
     @Deprecated
     protected String getDomReadyScript(final Parameter _parameter,
@@ -2291,7 +2296,8 @@ public abstract class AbstractDocument_Base
                                final DropDownPosition _o2)
             {
                 return _o1.getOrderValue().compareTo(_o2.getOrderValue());
-            }});
+            }
+        });
         return ret;
     }
 
