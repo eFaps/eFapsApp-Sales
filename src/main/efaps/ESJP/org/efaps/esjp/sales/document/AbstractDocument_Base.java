@@ -1100,6 +1100,25 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
+        final Object uiObject = _parameter.get(ParameterValues.CLASS);
+        Status status = null;
+        if (uiObject instanceof UIForm) {
+            final AbstractCommand cmd = ((UIForm) uiObject).getCallingCommand();
+            if (cmd != null) {
+                final String statusGrp = getProperty(_parameter, "StatusGroup");
+                if (containsProperty(_parameter, "Status4SearchKey")) {
+                    final String statusStr = cmd.getProperty(getProperty(_parameter, "Status4SearchKey"));
+                    if (statusGrp != null && statusStr != null) {
+                        if (isUUID(statusGrp)) {
+                            status = Status.find(UUID.fromString(statusGrp), statusStr);
+                        } else {
+                            status = Status.find(statusGrp, statusStr);
+                        }
+                    }
+                }
+            }
+        }
+
         final Instance instance = _parameter.getInstance() != null
                         ? _parameter.getInstance() : _parameter.getCallInstance();
         js.append("<script type=\"text/javascript\">\n")
@@ -1117,10 +1136,11 @@ public abstract class AbstractDocument_Base
             final String contactName = print.<String>getSelect(selContactName);
 
             js.append(getSetFieldValue(0, "contact", String.valueOf(contactId), contactName)).append("\n");
+            if (status != null) {
+                js.append(getSetFieldValue(0, "status",Long.valueOf(status.getId()).toString()));
+            }
         }
-        js.append(" })});")
-          .append(getSetFieldValue(0, "contact", String.valueOf("oid"), "valuename")).append("\n")
-        .append("</script>");
+        js.append(" })});").append("</script>");
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;

@@ -40,10 +40,10 @@
             <property name="Attribute">Contact</property>
             <property name="Columns">15</property>
             <property name="ModeSearch">EDITABLE</property>
-            <property name="Label">Sales_IncomingInvoice/Contact.Label</property>
+            <property name="Label">Sales_RecievingTicket/Contact.Label</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_IncomingInvoiceSearchForm.contact.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.Exchange">
+                name="Sales_RecievingTicketSearchForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.RecievingTicket">
                 <property name="Key">ID</property>
             </trigger>
         </field>
@@ -51,13 +51,28 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeSearch">EDITABLE</property>
-            <property name="Label">Sales_IncomingInvoice/Name.Label</property>
+            <property name="Label">Sales_RecievingTicket/Name.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_RecievingTicket/Status.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getStatusDropDownFieldValue"
+                name="Sales_RecievingTicketSearchForm.status.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="StatusGroup">Sales_RecievingTicketStatus</property>
+                <property name="AddWildcard4Search">true</property>
+            </trigger>
         </field>
         <field name="javaScript">
             <property name="ModeSearch">HIDDEN</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScript4Search"
-                name="Sales_IncomingInvoiceSearchForm.javaScript.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.Exchange" />
+                name="Sales_RecievingTicketSearchForm.javaScript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.RecievingTicket" >
+               <property name="StatusGroup">Sales_RecievingTicketStatus</property>
+               <property name="Status4SearchKey">RecievingTicketStatus</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

@@ -39,5 +39,6 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
+        <property name="RecievingTicketStatus">Open</property>
     </definition>
 </ui-command>
