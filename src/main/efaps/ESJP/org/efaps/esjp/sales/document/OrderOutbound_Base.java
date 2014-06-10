@@ -22,12 +22,18 @@ package org.efaps.esjp.sales.document;
 
 import java.util.List;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -87,6 +93,7 @@ public abstract class OrderOutbound_Base
     public Return connect2RecievingTicketTrigger(final Parameter _parameter)
         throws EFapsException
     {
+        connect2DocTrigger(_parameter);
         return new Return();
     }
 
@@ -98,8 +105,55 @@ public abstract class OrderOutbound_Base
     public Return connect2IncomingInvoiceTrigger(final Parameter _parameter)
         throws EFapsException
     {
+        connect2DocTrigger(_parameter);
         return new Return();
     }
+
+    protected void connect2DocTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .attribute(CISales.OrderOutbound.Status);
+        final SelectBuilder selOOInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .instance();
+        print.addSelect(selOOInst, selStatus);
+        print.executeWithoutAccessCheck();
+        final Instance ooInst = print.getSelect(selOOInst);
+        final Status status = Status.get(print.<Long>getSelect(selStatus));
+        // if the recieving ticket was open check if the status must change
+        if (status.equals(Status.find(CISales.OrderOutboundStatus.Open))) {
+
+            final DocComparator comp = new DocComparator();
+            comp.setDocInstance(ooInst);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.OrderOutbound2IncomingInvoice);
+            queryBldr.addType(CISales.OrderOutbound2RecievingTicket);
+            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, ooInst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocInst = SelectBuilder.get()
+                            .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
+                            .instance();
+            multi.addSelect(selDocInst);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                final DocComparator docComp = new DocComparator();
+                docComp.setDocInstance(docInst);
+                if (docInst.getType().isKindOf(CISales.IncomingInvoice.getType())) {
+                    comp.substractNet(docComp);
+                } else {
+                    comp.substractQuantity(docComp);
+                }
+            }
+            if (comp.netIsZero() && comp.quantityIsZero()) {
+                final Update update = new Update(ooInst);
+                update.add(CISales.OrderOutbound.Status, Status.find(CISales.OrderOutboundStatus.Received));
+                update.executeWithoutAccessCheck();
+            }
+        }
+    }
+
 
     @Override
     protected boolean isContact2JavaScript4Document(final Parameter _parameter,

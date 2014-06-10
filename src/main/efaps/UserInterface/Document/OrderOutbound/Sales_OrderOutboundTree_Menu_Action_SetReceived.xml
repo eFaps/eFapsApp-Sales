@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -22,30 +20,29 @@
  Last Changed By: $Author$
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9416ec9f-f350-4aeb-aecb-6d375c1e9d0e</uuid>
+    <uuid>36d2ef22-ca4e-4f0d-bfeb-fa8667d12941</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_OrderOutboundTree_Menu_Action_Edit</name>
+        <name>Sales_OrderOutboundTree_Menu_Action_SetReceived</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_OrderOutboundForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Received</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_OrderOutboundTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                name="Sales_OrderOutboundTree_Menu_Action_SetReceived.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

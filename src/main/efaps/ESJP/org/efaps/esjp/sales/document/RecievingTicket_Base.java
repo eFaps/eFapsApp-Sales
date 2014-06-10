@@ -20,16 +20,11 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Dimension;
-import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -84,6 +79,34 @@ public abstract class RecievingTicket_Base
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         return new Return();
+    }
+
+    /**
+     * Method to connect the document with the selected document type.
+     *
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _createdDoc   CreatedDoc  to be connected
+     * @throws EFapsException on error
+     */
+    @Override
+    protected void connect2Derived(final Parameter _parameter,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.connect2Derived(_parameter, _createdDoc);
+        final String[] deriveds = _parameter.getParameterValues("derived");
+        if (deriveds != null) {
+            for (final String derived : deriveds) {
+                final Instance derivedInst = Instance.get(derived);
+                if (derivedInst.isValid() && _createdDoc.getInstance().isValid()
+                                && derivedInst.getType().isKindOf(CISales.OrderOutbound.getType())) {
+                    final Insert insert = new Insert(CISales.OrderOutbound2RecievingTicket);
+                    insert.add(CISales.OrderOutbound2RecievingTicket.FromLink, derivedInst);
+                    insert.add(CISales.OrderOutbound2RecievingTicket.ToLink, _createdDoc.getInstance());
+                    insert.execute();
+                }
+            }
+        }
     }
 
     @Override
@@ -162,61 +185,26 @@ public abstract class RecievingTicket_Base
         final Status status = Status.get(print.<Long>getSelect(selStatus));
         // if the recieving ticket was open check if the status must change
         if (status.equals(Status.find(CISales.RecievingTicketStatus.Open))) {
-            final Map<Instance, BigDecimal> prod2quant = new HashMap<Instance, BigDecimal>();
-            final QueryBuilder iPosQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-            iPosQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.IncomingInvoice,
-                            print.getAttribute(CISales.IncomingInvoice2RecievingTicket.FromLink));
-            final MultiPrintQuery iMulti = iPosQueryBldr.getPrint();
-            final SelectBuilder selIProdInst = SelectBuilder.get().linkto(CISales.IncomingInvoicePosition.Product)
-                            .instance();
-            iMulti.addSelect(selIProdInst);
-            iMulti.addAttribute(CISales.IncomingInvoicePosition.Quantity, CISales.IncomingInvoicePosition.UoM);
-            iMulti.executeWithoutAccessCheck();
-            while (iMulti.next()) {
-                final Instance prodInst = iMulti.<Instance>getSelect(selIProdInst);
-                BigDecimal quantity;
-                if (prod2quant.containsKey(prodInst)) {
-                    quantity = prod2quant.get(prodInst);
-                } else {
-                    quantity = BigDecimal.ZERO;
-                }
-                final BigDecimal quanTmp = iMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.Quantity);
-                final UoM uom = Dimension.getUoM(iMulti.<Long>getAttribute(CISales.IncomingInvoicePosition.UoM));
-                quantity = quantity.add(quanTmp.setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .multiply(new BigDecimal(uom.getNumerator()).divide(
-                                                new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP)));
-                prod2quant.put(prodInst, quantity);
-            }
+            final Instance recInst = print.<Instance>getSelect(selRecInst);
+            final DocComparator comp = new DocComparator();
+            comp.setDocInstance(recInst);
 
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicketPosition);
-            queryBldr.addWhereAttrEqValue(CISales.RecievingTicketPosition.RecievingTicket,
-                            print.getAttribute(CISales.IncomingInvoice2RecievingTicket.ToLink));
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink, recInst);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.RecievingTicketPosition.Product)
+            final SelectBuilder selInvInst = SelectBuilder.get()
+                            .linkto(CISales.IncomingInvoice2RecievingTicket.FromLink)
                             .instance();
-            multi.addSelect(selProdInst);
-            multi.addAttribute(CISales.RecievingTicketPosition.Quantity, CISales.RecievingTicketPosition.UoM);
+            multi.addSelect(selInvInst);
             multi.executeWithoutAccessCheck();
-            boolean updateStatus = true;
             while (multi.next()) {
-                final Instance prodInst = multi.<Instance>getSelect(selProdInst);
-                if (prod2quant.containsKey(prodInst)) {
-                    BigDecimal quantity = prod2quant.get(prodInst);
-                    final BigDecimal quanTmp = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.Quantity);
-                    final UoM uom = Dimension.getUoM(multi.<Long>getAttribute(CISales.IncomingInvoicePosition.UoM));
-                    quantity = quantity.subtract(quanTmp.setScale(8, BigDecimal.ROUND_HALF_UP)
-                                    .multiply(new BigDecimal(uom.getNumerator()).divide(
-                                                    new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP)));
-                    prod2quant.put(prodInst, quantity);
-                    if (quantity.compareTo(BigDecimal.ZERO) < 0) {
-                        updateStatus  = false;
-                    }
-                } else {
-                    updateStatus  = false;
-                }
+                final Instance invInst = multi.getSelect(selInvInst);
+                final DocComparator docComp = new DocComparator();
+                docComp.setDocInstance(invInst);
+                comp.substractQuantity(docComp);
             }
 
-            if (updateStatus) {
+            if (comp.quantityIsZero()) {
                 final Update update = new Update(print.<Instance>getSelect(selRecInst));
                 update.add(CISales.RecievingTicket.Status, Status.find(CISales.RecievingTicketStatus.Closed));
                 update.executeWithoutAccessCheck();

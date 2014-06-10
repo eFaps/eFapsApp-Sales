@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -31,6 +31,299 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <name>Sales_OrderOutboundForm</name>
+        <field name="activatePositionsCalculator">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="activatePositionsCalculator"
+                name="Sales_OrderOutboundForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="dategroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="dueDate">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">DueDate</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="salesperson">
+            <property name="Attribute">Salesperson</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+               method="getSalesPersonFieldValue"
+               name="Sales_OrderOutboundForm.salesperson.UI_FIELD_VALUE"
+               event="UI_FIELD_VALUE">
+               <property name="Type">Admin_User_Person</property>
+               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+               <property name="OrderSelect">attribute[LastName]</property>
+               <property name="WhereAttrEqValue">Status|true</property>
+               <property name="SelectCurrent">true</property>
+           </trigger>
+        </field>
+        <field name="salespersonLink">
+            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
+            <property name="Attribute">Salesperson</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="createGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="modifyGroup" character="Group">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="headingContact" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_OrderOutboundForm.Contact.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_OrderOutbound/Contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Columns">98</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="autoComplete4Contact"
+                name="Sales_OrderOutboundForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Classification">Contacts_ClassSupplier</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="updateFields4Contact"
+                name="Sales_OrderOutboundForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_OrderOutboundForm.contactData.Label</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="headingPositon" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_OrderOutboundForm.headingPositon.Label</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="currencyGroup" character="Group">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
+       <field name="rateCurrencyId">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="rateCurrencyFieldValueUI"
+                name="Sales_OrderOutboundForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="updateFields4RateCurrency"
+                name="Sales_OrderOutboundForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="rateCurrencyData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_OrderOutboundForm.rateCurrencyData.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+         <field name="withoutVAT">
+            <property name="Label">Sales_OrderOutboundForm.withoutVAT.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="withoutVATFieldValue"
+                name="Sales_OrderOutboundForm.withoutVAT.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+        <field name="positionTable" character="Target">
+            <property name="ModeCreate">EDITABLE</property>
+            <table>Sales_OrderOutboundPositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_OrderOutboundPosition</property>
+                <property name="LinkFroms">Order</property>
+            </evaluate>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="RowSpan">4</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="netTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <property name="Attribute">NetTotal</property>
+        </field>
+         <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">Taxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
+        </field>
+        <field name="crossTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <property name="Attribute">CrossTotal</property>
+        </field>
+        <field name="netTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_OrderOutboundForm/NetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_OrderOutboundForm/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rate4ReadHeading" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_OrderOutboundForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="rateGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+        </field>
+        <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_OrderOutboundForm/RateNetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_OrderOutboundForm/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="getJavaScriptUIValue"
+                name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
+         <field name="executeCalculator" character="Command">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="CmdRenderButton">false</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="executeCalculatorOnScript"
+                name="Sales_OrderOutboundForm.javaScript2.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
         <name>Sales_OrderOutboundForm</name>
         <!-- fields -->
         <field name="activatePositionsCalculator">
@@ -121,13 +414,42 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
+        </field>
+        <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_InvoiceForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="project">
+            <property name="Label">Sales_InvoiceForm.project.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">100</property>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="autoComplete4Project"
+                name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="StatusGroup">Projects_ProjectServiceStatus</property>
+                <property name="Status">Closed</property>
+                <property name="MaxChoiceLength">155</property>
+            </trigger>
+        </field>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2OrderOutbound#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2OrderOutbound#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2OrderOutbound#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ProductRequest.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">50</property>
         </field>
         <field name="headingContact" character="Heading">
             <property name="Level">2</property>
@@ -212,16 +534,11 @@
                 <property name="LinkFroms">Order</property>
             </evaluate>
         </field>
-        <field name="noteGroup" character="Group">
-            <property name="GroupCount">2</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeCreate">READONLY</property>
-        </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="RowSpan">2</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -231,6 +548,13 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Attribute">NetTotal</property>
+        </field>
+         <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">Taxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
         <field name="crossTotal">
             <property name="ModeCreate">READONLY</property>
@@ -244,6 +568,10 @@
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_OrderOutboundForm/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>
@@ -279,6 +607,10 @@
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_OrderOutboundForm/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">NONE</property>

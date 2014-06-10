@@ -119,6 +119,34 @@ public abstract class IncomingInvoice_Base
     }
 
     /**
+     * Method to connect the document with the selected document type.
+     *
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _createdDoc   CreatedDoc  to be connected
+     * @throws EFapsException on error
+     */
+    @Override
+    protected void connect2Derived(final Parameter _parameter,
+                                   final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.connect2Derived(_parameter, _createdDoc);
+        final String[] deriveds = _parameter.getParameterValues("derived");
+        if (deriveds != null) {
+            for (final String derived : deriveds) {
+                final Instance derivedInst = Instance.get(derived);
+                if (derivedInst.isValid() && _createdDoc.getInstance().isValid()
+                                && derivedInst.getType().isKindOf(CISales.OrderOutbound.getType())) {
+                    final Insert insert = new Insert(CISales.OrderOutbound2IncomingInvoice);
+                    insert.add(CISales.OrderOutbound2IncomingInvoice.FromLink, derivedInst);
+                    insert.add(CISales.OrderOutbound2IncomingInvoice.ToLink, _createdDoc.getInstance());
+                    insert.execute();
+                }
+            }
+        }
+    }
+
+    /**
      * @param _parameter Parameter as passed by the efasp API
      * @param _createdDoc created Document
      * @throws EFapsException on error
