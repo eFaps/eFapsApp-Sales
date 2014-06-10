@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -21,23 +20,19 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a7c011a6-7f41-4192-8675-03b226a44cf9</uuid>
+    <uuid>8f0eb864-093d-4fc7-9fdc-49d6ada69e14</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoiceTree_Doc_Menu_Action_AddRecievingTicket</name>
-        <target>
-            <search>Sales_IncomingInvoiceTree_Doc_Menu_Action_AddRecievingTicket_Search</search>
-             <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="ConnectType">Sales_IncomingInvoice2RecievingTicket</property>
-            </execute>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
+        <name>Sales_IncomingInvoiceTree_Doc_Menu_Action_AddRecievingTicket_Search</name>
+        <default>
+            <command>Sales_RecievingTicketSearch</command>
+        </default>
+        <childs>
+            <child>Sales_RecievingTicketSearch</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-search>
