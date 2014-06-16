@@ -314,10 +314,10 @@ public abstract class IncomingCreditNote_Base
     }
 
     @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
+    public Type getType4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.IncomingCreditNote.getType().getName();
+        return CISales.IncomingCreditNote.getType();
     }
 
     @Override

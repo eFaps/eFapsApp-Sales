@@ -1713,8 +1713,8 @@ public abstract class AbstractDocument_Base
             currencyInst = rates[1].getCurrencyInst();
         }
         if (rateInfo != null) {
-            js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
-                .append(getSetFieldValue(0, "rate", NumberFormatter.get().getFormatter().format(rateInfo.getRateUI())))
+            js.append(getSetFieldValue(0, "rateCurrencyData", getRateUIFrmt(_parameter, rateInfo)))
+                .append(getSetFieldValue(0, "rate", NumberFormatter.get().getFormatter().format(getRateUI(_parameter, rateInfo))))
                 .append("\n")
                 .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + currencyInst.isInvert()))
                 .append("\n");
@@ -2124,7 +2124,14 @@ public abstract class AbstractDocument_Base
     public String getTypeName4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.DocumentAbstract.getType().getName();
+        return getType4SysConf(_parameter).getName();
+    }
+
+    @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.DocumentAbstract.getType();
     }
 
     // new methods for abstraction

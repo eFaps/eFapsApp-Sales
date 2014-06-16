@@ -27,6 +27,7 @@ import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -174,9 +175,10 @@ public abstract class IncomingReceipt_Base
     }
 
     @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
+    public Type getType4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.IncomingReceipt.getType().getName();
+        return CISales.IncomingReceipt.getType();
     }
+
 }

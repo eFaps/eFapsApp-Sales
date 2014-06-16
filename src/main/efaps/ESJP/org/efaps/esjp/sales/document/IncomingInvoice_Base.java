@@ -34,6 +34,7 @@ import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -783,5 +784,13 @@ public abstract class IncomingInvoice_Base
         {
             setError(true);
         }
+    }
+
+
+    @Override
+    protected Type getType4SysConf(Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingInvoice.getType();
     }
 }
