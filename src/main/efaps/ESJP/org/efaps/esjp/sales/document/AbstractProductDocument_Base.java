@@ -382,7 +382,7 @@ public abstract class AbstractProductDocument_Base
             js.append(getSetFieldValuesScript(_parameter, strValues, null))
                 .append("require([\"dojo/query\"], function(query){")
                 .append("query(\"select[name=storage]\").forEach(function(node){")
-                .append("node.value=\"").append(storage.getId()).append("\";")
+                .append("node.value=\"").append(storage.getOid()).append("\";")
                 .append("});")
                 .append("});");
             InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
