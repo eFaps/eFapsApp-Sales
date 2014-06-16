@@ -45,7 +45,10 @@
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Reservation" method="validateStockInReservation"/>
+            <validate program="org.efaps.esjp.sales.document.ProductRequest" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">QUANTITYINSTOCK</property>
+            </validate>
         </target>
 
         <!-- properties -->

@@ -287,39 +287,6 @@ public abstract class Reservation_Base
         return retVal;
     }
 
-    public Return validateStockInReservation(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final StringBuilder html = new StringBuilder();
-        final String[] productOids = _parameter.getParameterValues("product");
-        final String[] quantities = _parameter.getParameterValues("quantity");
-        final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
-        int i = 0;
-        for (final String productOid : productOids) {
-            final Instance prodInst = Instance.get(productOid);
-            final String quantityInStock = getStockProduct4Storage(_parameter, prodInst, defaultStorageInst);
-            final BigDecimal stockInteger = new BigDecimal(quantityInStock);
-            if (stockInteger.compareTo(BigDecimal.ONE) == -1) {
-                html.append(DBProperties
-                                .getProperty("org.efaps.esjp.sales.document.Reservation.invalidQuantityStock.Label"));
-                ret.put(ReturnValues.SNIPLETT, html.toString());
-                break;
-            } else {
-                final BigDecimal quantity = new BigDecimal(quantities[i]);
-                if (quantity.compareTo(stockInteger) == 1) {
-                    html.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.document.Reservation.invalidQuantity2Stock.Label"));
-                    ret.put(ReturnValues.SNIPLETT, html.toString());
-                    break;
-                }
-                ret.put(ReturnValues.TRUE, true);
-            }
-            i++;
-        }
-        return ret;
-    }
-
     protected String getStockProduct4Storage(final Parameter _parameter,
                                              final Instance productinst,
                                              final Instance storageInst)

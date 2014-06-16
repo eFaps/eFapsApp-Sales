@@ -31,21 +31,18 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_ReservationForm</form>
-<!--
-            <evaluate program="org.efaps.esjp.common.uiform.Evaluate">
-                <property name="Status">Authorized</property>
-            </evaluate>
- -->
             <execute method="create" program="org.efaps.esjp.sales.document.Reservation">
                 <property name="PositionType">Sales_ReservationPosition</property>
                 <property name="StatusGroup">Sales_ReservationStatus</property>
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Reservation" method="validateStockInReservation"/>
+            <validate program="org.efaps.esjp.sales.document.ProductRequest" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">QUANTITYINSTOCK</property>
+            </validate>
         </target>
 
         <!-- properties -->

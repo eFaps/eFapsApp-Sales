@@ -37,7 +37,8 @@
             <role>Sales_Delivery</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.sales.document.Reservation" method="setStatus">
+            <execute program="org.efaps.esjp.sales.document.Reservation"
+                method="changeStatusWithInverseTransaction">
                 <property name="Status">Canceled</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
