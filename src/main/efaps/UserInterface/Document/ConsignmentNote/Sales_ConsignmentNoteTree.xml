@@ -39,6 +39,7 @@
         <type>Sales_ConsignmentNote</type>
         <childs>
             <child>Sales_ConsignmentNoteTree_Position</child>
+            <child>Sales_ConsignmentNoteTree_Doc</child>
         </childs>
         <!-- properties -->
         <property name="Target">content</property>
