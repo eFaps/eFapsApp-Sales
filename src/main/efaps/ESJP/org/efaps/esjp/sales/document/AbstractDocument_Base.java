@@ -2449,12 +2449,10 @@ public abstract class AbstractDocument_Base
     {
         @SuppressWarnings("unchecked")
         final Map<String, Object> props = (Map<String, Object>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typeStr = (String) props.get("Type");
-        if (typeStr == null) {
-            props.put("Type", CIProducts.StorageAbstract.getType().getName());
+        if (!containsProperty(_parameter, "Type")) {
+            props.put("Type", CIProducts.DynamicStorage.getType().getName());
         }
-        final String select = (String) props.get("Select");
-        if (select == null) {
+        if (!containsProperty(_parameter, "Select")) {
             props.put("Select", "attribute[" + CIProducts.StorageAbstract.Name.name + "]");
         }
 
@@ -2472,6 +2470,16 @@ public abstract class AbstractDocument_Base
                         }
                     }
                 }
+            }
+
+            @Override
+            protected void add2QueryBuilder4List(final Parameter _parameter,
+                                                 final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                super.add2QueryBuilder4List(_parameter, _queryBldr);
+                _queryBldr.addWhereAttrEqValue(CIProducts.StorageAbstract.StatusAbstract,
+                                Status.find(CIProducts.StorageAbstractStatus.Active));
             }
         };
         return field.dropDownFieldValue(_parameter);
