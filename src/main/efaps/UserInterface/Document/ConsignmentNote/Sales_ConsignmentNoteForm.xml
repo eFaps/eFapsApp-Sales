@@ -408,6 +408,13 @@
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
                 <property name="Status">Closed</property>
             </trigger>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="updateField4Project"
+                name="Sales_ConsignmentNoteForm.project.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+                <property name="ContactField">contact</property>
+                <property name="ContactData">contactData</property>
+            </trigger>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ConsignmentNote#ToLink].linkto[FromLink].oid</property>
