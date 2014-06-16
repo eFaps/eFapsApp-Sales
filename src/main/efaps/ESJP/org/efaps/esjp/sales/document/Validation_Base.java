@@ -79,7 +79,9 @@ public abstract class Validation_Base
         /** Validate that Amount is greater than zero. */
         AMOUNTGREATERZERO,
         /** Validate the Name. */
-        NAME;
+        NAME,
+        /** Present allways a warning "Are you sure". */
+        AREYOUSURE;
     }
 
     /**
@@ -100,6 +102,7 @@ public abstract class Validation_Base
         final Return ret = new Return();
         final Map<Integer, String> validations = analyseProperty(_parameter, "Validation");
         List<IWarning> warnings = new ArrayList<IWarning>();
+        boolean areyousure = false;
         for (final String validation : validations.values()) {
             final Validations val = Validations.valueOf(validation);
             switch (val) {
@@ -115,12 +118,18 @@ public abstract class Validation_Base
                 case AMOUNTGREATERZERO:
                     warnings.addAll(validateAmountGreaterZero(_parameter, _doc));
                     break;
+                case AREYOUSURE:
+                    areyousure = true;
+                    break;
                 default:
                     break;
             }
         }
 
         warnings = validate(_parameter, warnings);
+        if (warnings.isEmpty() && areyousure) {
+            warnings.add(new AreYouSureWarning());
+        }
 
         if (warnings.isEmpty()) {
             ret.put(ReturnValues.TRUE, true);
@@ -423,6 +432,14 @@ public abstract class Validation_Base
      * Warning for existing name.
      */
     public static class ExistingNameWarning
+        extends AbstractWarning
+    {
+    }
+
+    /**
+     * Warning for existing name.
+     */
+    public static class AreYouSureWarning
         extends AbstractWarning
     {
     }
