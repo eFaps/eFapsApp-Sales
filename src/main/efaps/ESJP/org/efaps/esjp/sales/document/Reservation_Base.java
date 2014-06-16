@@ -42,6 +42,7 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.admin.datamodel.StatusValue;
@@ -232,6 +233,9 @@ public abstract class Reservation_Base
         final Instance instProd = Instance.get(oid);
         // validate that a product was selected
         if (instProd.isValid()) {
+            long selectedUoM;
+            Long dimId;
+            Long dUoMId;
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Inventory);
             queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, instProd);
             if (defaultStorageInst.isValid()) {
@@ -253,21 +257,29 @@ public abstract class Reservation_Base
             multi.execute();
             if (multi.next()) {
                 final BigDecimal quantity = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
-                map.put(CITableSales.Sales_ReceiptPositionTable.quantity.name,
+                dimId = multi.<Long>getSelect(selDim);
+                dUoMId = multi.<Long>getSelect(selUoM);
+                map.put(CITableSales.Sales_ReservationPositionTable.quantity.name,
                                 BigDecimal.ONE.toString());
                 map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
                                 formater.format(quantity));
+                map.put(CITableSales.Sales_ReservationPositionTable.productDesc.name,
+                                StringEscapeUtils.escapeEcmaScript(multi.<String>getSelect(selDesc)));
             } else {
+                final PrintQuery print = new PrintQuery(instProd);
+                print.addAttribute(CIProducts.ProductAbstract.Description,
+                                CIProducts.ProductAbstract.Dimension,
+                                CIProducts.ProductAbstract.DefaultUoM);
+                print.execute();
+                dimId = print.getAttribute(CIProducts.ProductAbstract.Dimension);
+                dUoMId = print.getAttribute(CIProducts.ProductAbstract.DefaultUoM);
                 map.put(CITableSales.Sales_ReservationPositionTable.quantity.name,
                                 BigDecimal.ONE.toString());
                 map.put(CITableSales.Sales_ReservationPositionTable.quantityInStock.name,
                                 formater.format(BigDecimal.ZERO));
+                map.put(CITableSales.Sales_ReservationPositionTable.productDesc.name,
+                                StringEscapeUtils.escapeEcmaScript(print.<String>getAttribute(CIProducts.ProductAbstract.Description)));
             }
-            map.put(CITableSales.Sales_ReceiptPositionTable.productDesc.name,
-                            StringEscapeUtils.escapeEcmaScript(multi.<String>getSelect(selDesc)));
-            final Long dimId = multi.<Long>getSelect(selDim);
-            final Long dUoMId = multi.<Long>getSelect(selUoM);
-            long selectedUoM;
             if (dUoMId == null) {
                 selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
             } else {
