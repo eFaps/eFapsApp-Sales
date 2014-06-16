@@ -25,7 +25,6 @@
 
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>2f690e48-4cc3-45e1-bd12-e0e91df34316</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -36,17 +35,15 @@
             <role>Sales_Teller</role>
             <role>Sales_Admin</role>
         </access>
-
         <target>
             <menu>Sales_InvoiceMyDesk_Menu</menu>
-            <table>Sales_DocumentSumTable</table>
+            <table>Sales_InvoiceTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Invoice</property>
             </evaluate>
         </target>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>
