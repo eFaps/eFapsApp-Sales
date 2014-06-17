@@ -60,7 +60,7 @@
         </field>
         <field name="rateDiscountNetUnitPrice">
             <property name="Attribute">RateDiscountNetUnitPrice</property>
-            <property name="Label">Sales_InvoicePosition/RateDiscountNetUnitPrice.Label</property>
+            <property name="Label">Sales_IncomingInvoicePosition/RateDiscountNetUnitPrice.Label</property>
         </field>
         <field name="rateNetPrice">
             <property name="Attribute">RateNetPrice</property>
