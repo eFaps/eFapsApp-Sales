@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2014 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>3b6adbd4-58d7-40ba-a929-cfdd4f113dc2</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ProductDocumentsMyDesk</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <table>Sales_ProductDocumentsTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">Sales_ReturnSlip</property>
+                <property name="Type02">Sales_ConsignmentNote</property>
+                <property name="Type03">Sales_GoodsIssueSlip</property>
+                <property name="Type04">Sales_Reservation</property>
+                <property name="Type05">Sales_ProductionReport</property>
+                <property name="Type06">Sales_ReturnUsage</property>
+                <property name="Type07">Sales_UsageReport</property>
+                <property name="Type08">Sales_RecievingTicket</property>
+                <property name="Type09">Sales_TransactionDocument</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
+</ui-command>
