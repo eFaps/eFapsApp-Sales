@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,34 +19,43 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>30275770-2ba7-421f-adb7-eba9bd13c650</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_ServiceOrderOutbound_SelectDocForm</name>
-    <!-- fields -->
-    <field name="productrequest">
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Sales_ProductRequest.Label</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Required">true</property>
-      <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4ProductRequest" name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Autocomplete" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
-      <trigger event="UI_FIELD_UPDATE" method="updateFields4ProductRequest" name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Update" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
-    </field>
-    <field name="info">
-      <property name="ModePrint">NONE</property>
-      <property name="Label">Sales_Invoice_SelectQuotationForm/info.Label</property>
-      <property name="ModeCreate">READONLY</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-    </field>
-    <field name="javaScript">
-      <property name="ModePrint">NONE</property>
-      <property name="ModeCreate">HIDDEN</property>
-      <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm" name="Sales_ServiceOrderOutbound_SelectDocForm.javaScript.UI_Field_Value" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
-    </field>
-  </definition>
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>30275770-2ba7-421f-adb7-eba9bd13c650</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ServiceOrderOutbound_SelectDocForm</name>
+        <field name="serviceRequest">
+            <property name="Label">Sales_ServiceRequest.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="autoComplete4Doc"
+                name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_ServiceRequest</property>
+                <property name="StatusGroup">Sales_ServiceRequestStatus</property>
+                <property name="Status01">!Canceled</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4Document"
+                name="Sales_IncomingInvoice_SelectDocForm.orderOutbound.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="info">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_Invoice_SelectQuotationForm/info.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm"
+                name="Sales_ServiceOrderOutbound_SelectDocForm.javaScript.UI_Field_Value"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound" />
+        </field>
+    </definition>
 </ui-form>
