@@ -146,9 +146,14 @@ can be concatenated
 Set a Price List for a Type to Calculator. Used for Sales Documents.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.DefaultDeparturePoint</key>
+            <key>org.efaps.sales.DefaultDeparturePoints</key>
             <value>To be set by implementation</value>
-            <description>Default address used as the departure point in delivery note.</description>
+            <description>Default addresses used as the departure point in delivery note.</description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.DefaultArrivalPoints</key>
+            <value>To be set by implementation</value>
+            <description>Default addresses used as the arrival point in delivery note.</description>
         </attribute>
         <attribute>
             <key>org.efaps.sales.IsPerceptionAgent</key>

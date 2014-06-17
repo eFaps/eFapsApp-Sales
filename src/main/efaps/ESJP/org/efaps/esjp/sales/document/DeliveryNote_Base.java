@@ -22,12 +22,17 @@ package org.efaps.esjp.sales.document;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -47,6 +52,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -54,6 +60,7 @@ import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -101,13 +108,56 @@ public abstract class DeliveryNote_Base
     {
         final Return ret = new Return();
         if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
-            final String depPoint = Sales.getSysConfig().getAttributeValue(SalesSettings.DEFAULTDEPARTUREPOINT);
-            final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-            fieldValue.setValue(depPoint);
+            final String depPointsStr = Sales.getSysConfig().getAttributeValue(SalesSettings.DEFAULTDEPARTUREPOINTS);
+            if (depPointsStr != null  && !depPointsStr.isEmpty()) {
+                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+                fieldValue.setValue(depPointsStr.split("\n")[0].trim());
+            }
         }
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return return containing default value for create mode
+     * @throws EFapsException on error
+     */
+    public Return autoComplete4DeparturePoint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        boolean all = false;
+        if (input.isEmpty() || "*".equals(input)) {
+            all = true;
+        }
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final String destinationsStr = Sales.getSysConfig()
+                        .getAttributeValue(SalesSettings.DEFAULTDEPARTUREPOINTS);
+        if (destinationsStr != null && !destinationsStr.isEmpty()) {
+            final String[] destinations = destinationsStr.split("\n");
+            for (final String destination : destinations) {
+                if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
+                    list.add(map);
+                }
+            }
+        }
+        Collections.sort(list, new Comparator<Map<String, String>>()
+        {
+
+            @Override
+            public int compare(final Map<String, String> _o1,
+                               final Map<String, String> _o2)
+            {
+                return _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
+                                _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()));
+            }
+        });
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
 
     /**
      * {@inheritDoc}
@@ -174,6 +224,85 @@ public abstract class DeliveryNote_Base
         final Contacts contacts = new Contacts();
         return contacts.autoComplete4Contact(_parameter);
     }
+
+    /**
+     * Used by the AutoCompleteField used in the select contact.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4ArrivalPoint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        boolean all = false;
+        if (input.isEmpty() || "*".equals(input)) {
+            all = true;
+        }
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        final Instance contactInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.contact.name));
+        if (contactInst.isValid()) {
+            final PrintQuery print = new PrintQuery(contactInst);
+            final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
+                            .attribute(CIContacts.ClassLocation.LocationAdressStreet);
+            print.addSelect(sel);
+            print.execute();
+            final String adress = print.<String>getSelect(sel);
+            if (all || StringUtils.startsWithIgnoreCase(adress, input)) {
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), adress);
+                list.add(map);
+            }
+        }
+
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            final PrintQuery print = new PrintQuery(carrierInst);
+            final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
+                            .attribute(CIContacts.ClassLocation.LocationAdressStreet);
+            print.addSelect(sel);
+            print.execute();
+            final String adress = print.<String>getSelect(sel);
+            if (all || StringUtils.startsWithIgnoreCase(adress, input)) {
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), adress);
+                list.add(map);
+            }
+        }
+
+        final String destinationsStr = Sales.getSysConfig()
+                        .getAttributeValue(SalesSettings.DEFAULTARRIVALPOINTS);
+        if (destinationsStr != null && !destinationsStr.isEmpty()) {
+            final String[] destinations = destinationsStr.split("\n");
+            for (final String destination : destinations) {
+                if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
+                    final Map<String, String> map = new HashMap<String, String>();
+                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
+                    list.add(map);
+                }
+            }
+        }
+        Collections.sort(list, new Comparator<Map<String, String>>()
+        {
+
+            @Override
+            public int compare(final Map<String, String> _o1,
+                               final Map<String, String> _o2)
+            {
+                return _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
+                                _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()));
+            }
+        });
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
 
     /**
      * PositionNumber must start with 1.

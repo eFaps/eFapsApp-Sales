@@ -219,9 +219,16 @@ public interface SalesSettings
     String PRICELIST4CALCULATOR = "org.efaps.sales.PriceList4Calculator";
 
     /**
-     * Default address used as the departure point in delivery note.
+     * Listing seperated by LineBreak<br/>
+     * Default addresses used as the departure point in delivery note.
      */
-    String DEFAULTDEPARTUREPOINT = "org.efaps.sales.DefaultDeparturePoint";
+    String DEFAULTDEPARTUREPOINTS = "org.efaps.sales.DefaultDeparturePoints";
+
+    /**
+     * Listing seperated by LineBreak<br/>
+     * Default addresses used as the departure point in delivery note.
+     */
+    String DEFAULTARRIVALPOINTS = "org.efaps.sales.DefaultArrivalPoints";
 
     /**
      * Properties. Can be concatenated;
