@@ -36,8 +36,14 @@
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
             method="updateFields4IncomingInvoice"
-            name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE"
-            program="org.efaps.esjp.sales.document.IncomingDetraction"/>
+            name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
+            program="org.efaps.esjp.sales.document.IncomingDetraction"
+            index="1"/>
+            <trigger event="UI_FIELD_UPDATE"
+            method="updateFields4IncomingInvoice"
+            name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
+            program="org.efaps.esjp.sales.document.IncomingDetraction"
+            index="2"/>
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -58,14 +64,14 @@
                 event="UI_FIELD_UPDATE"/>
         </field>
         <field name="detractionValue">
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionValue.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
         </field>
         <field name="totalAmount">
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.totalAmount.Label</property>
@@ -75,7 +81,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <trigger event="UI_FIELD_VALUE"
-            method="getJS4SelectDocumentForm"
+            method="getJavaScriptUIValue"
             name="Sales_IncomingDetractionCreateForm.javaScript.UI_FIELD_VALUE"
             program="org.efaps.esjp.sales.document.IncomingDetraction"/>
         </field>

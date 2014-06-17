@@ -440,4 +440,36 @@ public abstract class IncomingRetention_Base
         _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery4);
     }
 
+    @Override
+    public Return getJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">\n")
+            .append("require([\"dojo/ready\"],")
+            .append(" function(ready){\n")
+            .append(" ready(1500, function(){")
+            .append(getSetFieldReadOnlyScript(_parameter, "retentionValue"))
+            .append(getSetFieldReadOnlyScript(_parameter, "totalAmount"))
+            .append("});").append("});\n</script>\n");
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.SNIPLETT, js.toString());
+        return retVal;
+    }
+
+    public Return cleanFields(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+        map.put(CIFormSales.Sales_IncomingRetentionCreateForm.retentionPercent.name, "");
+        map.put(CIFormSales.Sales_IncomingRetentionCreateForm.retentionValue.name, "");
+        map.put(CIFormSales.Sales_IncomingRetentionCreateForm.totalAmount.name, "");
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+
 }
