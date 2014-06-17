@@ -144,6 +144,8 @@ public abstract class DeliveryNote_Base
                 }
             }
         }
+        add2AutoComplete4DeparturePoint(_parameter, list);
+
         Collections.sort(list, new Comparator<Map<String, String>>()
         {
 
@@ -157,6 +159,18 @@ public abstract class DeliveryNote_Base
         });
         ret.put(ReturnValues.VALUES, list);
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _list     list to add to
+     * @throws EFapsException on error
+     */
+    protected void add2AutoComplete4DeparturePoint(final Parameter _parameter,
+                                                   final List<Map<String, String>> _list)
+        throws EFapsException
+    {
+        // to be used by implementation
     }
 
     /**
@@ -288,6 +302,9 @@ public abstract class DeliveryNote_Base
                 }
             }
         }
+
+        add2AutoComplete4ArrivalPoint(_parameter, list);
+
         Collections.sort(list, new Comparator<Map<String, String>>()
         {
 
@@ -303,6 +320,17 @@ public abstract class DeliveryNote_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _list     list to add to
+     *  @throws EFapsException on error
+     */
+    protected void add2AutoComplete4ArrivalPoint(final Parameter _parameter,
+                                                 final List<Map<String, String>> _list)
+        throws EFapsException
+    {
+        // to be used by implementation
+    }
 
     /**
      * PositionNumber must start with 1.

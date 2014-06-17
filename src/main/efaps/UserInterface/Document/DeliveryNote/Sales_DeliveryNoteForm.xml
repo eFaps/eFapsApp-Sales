@@ -202,6 +202,15 @@
                 method="departurePointFieldValue"
                 name="Sales_DeliveryNoteForm.departurePoint.UI_FIELD_UPDATE"
                 event="UI_FIELD_VALUE"/>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4DeparturePoint"
+                name="Sales_DeliveryNoteForm.departurePoint.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">contact</property>
+                <property name="ExtraParameter01">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="vehicleBrand">
             <property name="Attribute">VehicleBrand</property>
