@@ -35,12 +35,14 @@
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="autoComplete4FilteredDocuments"
                 name="Sales_PaymentRetentionOut4PayPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type0">Sales_IncomingInvoice</property>
-                <property name="StatusGroup0">Sales_IncomingInvoiceStatus</property>
-                <property name="Stati0">Open</property>
-                <property name="Type1">Sales_IncomingReceipt</property>
-                <property name="StatusGroup1">Sales_IncomingReceiptStatus</property>
-                <property name="Stati1">Open</property>
+                <property name="Type">Sales_IncomingInvoice</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_IncomingReceipt</property>
+                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
+                <property name="Status01">Open</property>
+                <property name="ExtraParameter01">createExistDocument</property>
+                <property name="ExtraParameter02">filterDocuments</property>
             </trigger>
         </field>
         <field name="crossTotal4Read">

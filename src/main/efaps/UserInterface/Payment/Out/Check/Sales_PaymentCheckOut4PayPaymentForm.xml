@@ -27,20 +27,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCheckOut4PayPaymentForm</name>
         <!-- fields -->
-        <field name="deactivateFiltered4Documents">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="activateFilteredDocuments"
-                name="Sales_PaymentCheckOut4PayPaymentForm.deactivateFiltered4Documents.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
-        </field>
-        <field name="deactivateFiltered4PaymentDocument">
-            <property name="ModeCreate">HIDDEN</property>
-            <property name="ModeView">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="activateUpdateField4Document"
-                name="Sales_PaymentCheckOut4PayPaymentForm.deactivateFiltered4PaymentDocument.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
-        </field>
         <field name="createExistDocument">
             <property name="Label">Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -55,8 +41,6 @@
                 <property name="ExcludeType01">Sales_IncomingInvoice</property>
                 <property name="ExcludeType02">Accounting_ExternalVoucher</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="activateUpdateField4Document"
-                name="Sales_PaymentCheckOut4PayPaymentForm.createExistDocument.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="filterDocuments">
             <property name="Label">Sales_PaymentCheckOut4PayPaymentForm.filterDocuments.Label</property>
@@ -67,8 +51,6 @@
                 name="Sales_PaymentCheckOut4PayPaymentForm.filterDocuments.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="activateFilteredDocuments"
-                name="Sales_PaymentCheckOut4PayPaymentForm.filterDocuments.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field character="Heading" name="headingDocuments">
             <property name="Level">2</property>
