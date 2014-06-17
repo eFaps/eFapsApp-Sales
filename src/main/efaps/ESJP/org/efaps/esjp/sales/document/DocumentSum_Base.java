@@ -103,6 +103,11 @@ public abstract class DocumentSum_Base
     public static final String CALCULATORS_VALUE = DocumentSum.class.getName() +  ".CalculatorValue";
 
     /**
+     * Key to sore access check during a request.
+     */
+    public static final String ACCESSREQKEY = DocumentSum.class.getName() + ".accessCheck4Rate";
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return return granting access or not
      * @throws EFapsException on error
@@ -114,6 +119,32 @@ public abstract class DocumentSum_Base
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
         if ((field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter))
                         || (field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter))) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * AccessCheck that grants access if currency and ratecurrency are different.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return return granting access or not
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4Rate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        Object obj = Context.getThreadContext().getRequestAttribute(DocumentSum_Base.ACCESSREQKEY);
+        if (obj == null) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId);
+            print.executeWithoutAccessCheck();
+            final Long currencyId = print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId);
+            final Long rateCurrencyId = print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
+            obj = currencyId != null && !currencyId.equals(rateCurrencyId);
+            Context.getThreadContext().setRequestAttribute(DocumentSum_Base.ACCESSREQKEY, obj);
+        }
+        if (((Boolean) obj)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
