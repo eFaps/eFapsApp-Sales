@@ -34,7 +34,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="autoComplete4FilteredDocuments"
-                name="Sales_PaymentCashOut4PayPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                name="Sales_PaymentCheckOut4PayPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">Sales_IncomingInvoice</property>
                 <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
                 <property name="Status">Open</property>
@@ -44,6 +44,8 @@
                 <property name="ExtraParameter01">createExistDocument</property>
                 <property name="ExtraParameter02">filterDocuments</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4FilteredDocuments"
+                name="Sales_PaymentCheckOut4PayPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="crossTotal4Read">
             <property name="ModeView">NONE</property>

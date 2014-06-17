@@ -281,6 +281,39 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    public Return updateFields4FilteredDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final int selected = getSelectedRow(_parameter);
+
+        final Instance docInst = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
+        if (docInst.isValid()) {
+            final SelectBuilder selCur = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+
+            final PrintQuery print = new PrintQuery(docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            print.addSelect(selCur);
+
+            if (print.execute()) {
+                if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+                    final BigDecimal amount = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+
+                    final CurrencyInst curr = new CurrencyInst(print.<Instance>getSelect(selCur));
+                    final String valueCrossTotal = curr.getSymbol() + " " + getTwoDigitsformater().format(amount);
+                    map.put("crossTotal4Read", valueCrossTotal);
+                    list.add(map);
+                }
+            }
+        }
+
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
     public Return updatePayableDocuments(final Parameter _parameter)
         throws EFapsException
     {
@@ -531,8 +564,6 @@ public abstract class AbstractPaymentOut_Base
     public Return autoComplete4FilteredDocuments(final Parameter _parameter)
         throws EFapsException
     {
-        final DecimalFormat formater = NumberFormatter.get().getFormatter(2, 2);
-
         final boolean filtered = "true".equalsIgnoreCase(_parameter.getParameterValue("filterDocuments"));
         final Instance docInst = Instance.get(_parameter.getParameterValue("createExistDocument"));
 
@@ -569,7 +600,8 @@ public abstract class AbstractPaymentOut_Base
                 final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
                 final MultiPrintQuery multi = new MultiPrintQuery(lstDocs);
                 multi.addAttribute(CISales.DocumentAbstract.Name,
-                                CISales.DocumentAbstract.Date);
+                                CISales.DocumentAbstract.Date,
+                                CISales.DocumentSumAbstract.RateCrossTotal);
                 final SelectBuilder selCur = new SelectBuilder()
                                 .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
                 multi.addSelect(selCur);
@@ -587,7 +619,8 @@ public abstract class AbstractPaymentOut_Base
                         final BigDecimal amount = multi
                                         .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                         final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
-                        choice.append(" - ").append(curr.getSymbol()).append(" ").append(formater.format(amount));
+                        choice.append(" - ").append(curr.getSymbol()).append(" ")
+                            .append(getTwoDigitsformater().format(amount));
                     }
 
                     final Map<String, String> map = new HashMap<String, String>();

@@ -44,6 +44,8 @@
                 <property name="ExtraParameter01">createExistDocument</property>
                 <property name="ExtraParameter02">filterDocuments</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4FilteredDocuments"
+                name="Sales_PaymentDepositOut4PayPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="crossTotal4Read">
             <property name="ModeView">NONE</property>
