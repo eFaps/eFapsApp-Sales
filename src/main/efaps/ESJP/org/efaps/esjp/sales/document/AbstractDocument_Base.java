@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -88,6 +89,8 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
@@ -2524,8 +2527,24 @@ public abstract class AbstractDocument_Base
         if (useNumGen) {
             ret = super.getDocName4Create(_parameter);
         } else if (uuidStr != null && !uuidStr.isEmpty()) {
+            final Type type = getType4DocCreate(_parameter);
+            final Properties props = ERP.getSysConfig()
+                            .getAttributeValueAsProperties(ERPSettings.NUMBERGENERATOR, true);
+
+            Date date = null;
+            for (int i = 1; i < 10; i++) {
+                final String params = props.getProperty(type.getName() + ".Parameter" + String.format("%02d", i));
+                if ("date".equalsIgnoreCase(params)) {
+                    date = new Date();
+                }
+            }
+
             final NumberGenerator numGen = NumberGenerator.get(UUID.fromString(uuidStr));
-            ret = numGen.getNextVal();
+            if (date != null) {
+                ret = numGen.getNextVal(date);
+            } else {
+                ret = numGen.getNextVal();
+            }
         } else {
             ret = _parameter.getParameterValue("name4create");
             final String sn = _parameter.getParameterValue("name4create_SN");
