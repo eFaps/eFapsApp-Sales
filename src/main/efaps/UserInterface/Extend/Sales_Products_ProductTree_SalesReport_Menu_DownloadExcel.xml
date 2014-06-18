@@ -50,7 +50,7 @@
                 <property name="Status02">!Replaced</property>
                 <property name="Type03">Sales_OrderOutbound</property>
                 <property name="StatusGroup03">Sales_OrderOutboundStatus</property>
-                <property name="Status04">!Canceled</property>
+                <property name="Status03">!Canceled</property>
                 <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </execute>
         </target>
