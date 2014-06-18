@@ -40,6 +40,12 @@
         <target>
             <form>Sales_ReservationForm</form>
             <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_ReservationTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Stati">Open</property>
+            </trigger>
         </target>
 
         <!-- properties -->

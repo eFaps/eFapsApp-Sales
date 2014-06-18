@@ -634,7 +634,8 @@ public abstract class AbstractProductDocument_Base
         if (instance.isValid()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInbound);
             queryBldr.addType(CIProducts.TransactionOutbound, CIProducts.TransactionIndividualInbound,
-                            CIProducts.TransactionIndividualOutbound);
+                            CIProducts.TransactionIndividualOutbound, CIProducts.TransactionReservationInbound,
+                            CIProducts.TransactionReservationOutbound);
             queryBldr.addWhereAttrEqValue(CIProducts.TransactionAbstract.Document, instance);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.TransactionAbstract.Quantity,
@@ -653,8 +654,14 @@ public abstract class AbstractProductDocument_Base
                 } else if (CIProducts.TransactionIndividualInbound.getType().equals(
                                 multi.getCurrentInstance().getType())) {
                     insert = new Insert(CIProducts.TransactionIndividualOutbound);
-                } else {
+                } else if (CIProducts.TransactionIndividualOutbound.getType().equals(
+                                multi.getCurrentInstance().getType())) {
                     insert = new Insert(CIProducts.TransactionIndividualInbound);
+                } else if (CIProducts.TransactionReservationInbound.getType().equals(
+                                multi.getCurrentInstance().getType())) {
+                    insert = new Insert(CIProducts.TransactionReservationOutbound);
+                } else {
+                    insert = new Insert(CIProducts.TransactionReservationInbound);
                 }
                 insert.add(CIProducts.TransactionAbstract.Quantity,
                                 multi.getAttribute(CIProducts.TransactionAbstract.Quantity));

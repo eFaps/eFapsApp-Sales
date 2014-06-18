@@ -23,16 +23,14 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>92d06101-36ac-4748-bb9c-60e8ebf52ea9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReservationTree</name>
-        <!-- targets -->
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
@@ -43,13 +41,12 @@
             <menu>Sales_ReservationTree_Menu</menu>
             <form>Sales_ReservationForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_Reservation</type>
-
         <childs>
             <child>Sales_ReservationTree_Position</child>
+            <child>Sales_ReservationTree_Transaction</child>
+            <child></child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
