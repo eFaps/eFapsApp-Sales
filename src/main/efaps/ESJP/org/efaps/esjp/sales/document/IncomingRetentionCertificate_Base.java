@@ -30,10 +30,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
-import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIFormSales;
-import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
@@ -91,32 +88,6 @@ public abstract class IncomingRetentionCertificate_Base
             editDoc(_parameter);
         }
         return new Return();
-    }
-
-    /**
-     * Executed from a Command execute vent to create a new Incoming PerceptionCertificate.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @param _createdDoc as CreatedDoc with values.
-     * @throws EFapsException on error
-     */
-    public void update4Connect(final Parameter _parameter,
-                               final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Instance retentionDoc = (Instance) _createdDoc.getValue(RETENTIONDOC);
-
-        if (retentionDoc != null && retentionDoc.isValid()) {
-            for (int i = 0; i < _createdDoc.getPositions().size(); i++) {
-                if (CISales.Invoice.getType().equals(_createdDoc.getPositions().get(i).getType())) {
-                    final Insert relInsert = new Insert(CISales.IncomingRetentionCertificate2Invoice);
-                    relInsert.add(CISales.IncomingRetentionCertificate2Invoice.FromLink, retentionDoc);
-                    relInsert.add(CISales.IncomingRetentionCertificate2Invoice.ToLink,
-                                    _createdDoc.getPositions().get(i));
-                    relInsert.execute();
-                }
-            }
-        }
     }
 
     @Override

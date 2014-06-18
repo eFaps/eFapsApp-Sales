@@ -31,7 +31,6 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.sales.document.IncomingRetentionCertificate;
 import org.efaps.util.EFapsException;
 
 /**
@@ -56,15 +55,7 @@ public abstract class PaymentRetention_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-
-        final Instance instDoc = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_PaymentRetentionForm.name.name));
-        if (instDoc.isValid()) {
-            createdDoc.addValue(IncomingRetentionCertificate.RETENTIONDOC, instDoc);
-            new IncomingRetentionCertificate().update4Connect(_parameter, createdDoc);
-        }
         final Return ret = createReportDoc(_parameter, createdDoc);
-
         return ret;
     }
 

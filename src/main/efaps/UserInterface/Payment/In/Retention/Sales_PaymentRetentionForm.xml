@@ -57,8 +57,10 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="autoComplete4IncomingRetentionCertificate"
+            <trigger program="org.efaps.esjp.sales.document.RetentionCertificate" method="autoComplete4Doc"
                 name="Sales_PaymentRetentionForm.name.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_IncomingRetentionCertificate</property>
+                <property name="StatusGroup">Sales_IncomingRetentionCertificateStatus</property>
                 <property name="Status">Open</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetention" method="updateFields4DocumentSelected"
