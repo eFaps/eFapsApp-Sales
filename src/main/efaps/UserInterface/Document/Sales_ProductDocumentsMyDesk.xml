@@ -40,10 +40,11 @@
                 <property name="Type03">Sales_GoodsIssueSlip</property>
                 <property name="Type04">Sales_Reservation</property>
                 <property name="Type05">Sales_ProductionReport</property>
-                <property name="Type06">Sales_ReturnUsage</property>
-                <property name="Type07">Sales_UsageReport</property>
-                <property name="Type08">Sales_RecievingTicket</property>
-                <property name="Type09">Sales_TransactionDocument</property>
+                <property name="Type06">Sales_UsageReport</property>
+                <property name="Type07">Sales_RecievingTicket</property>
+                <property name="Type08">Sales_TransactionDocument</property>
+                <property name="Type09">Sales_DeliveryNote</property>
+                <property name="Type10">Sales_ReturnUsageReport</property>
             </evaluate>
         </target>
         <!-- properties -->
