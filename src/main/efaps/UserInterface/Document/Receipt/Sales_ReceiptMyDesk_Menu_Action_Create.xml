@@ -44,9 +44,6 @@
             <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
                 <property name="PositionType">Sales_ReceiptPosition</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
-                <property name="Validation">NAME</property>
-            </validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Receipt</property>
@@ -75,9 +72,6 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Receipt" method="validate">
-                <property name="Validation">NAME</property>
-            </validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Receipt</property>
