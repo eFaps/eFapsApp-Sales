@@ -32,6 +32,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -43,6 +44,7 @@ import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -100,8 +102,13 @@ public abstract class AbstractComparative_Base
         addStatus2DocCreate(_parameter, insert, ret);
         add2DocCreate(_parameter, insert, ret);
         insert.execute();
-
         ret.setInstance(insert.getInstance());
+
+        // call possible listeners
+        for (final IOnCreateDocument listener : Listener.get().<IOnCreateDocument>invoke(
+                        IOnCreateDocument.class)) {
+            listener.afterCreate(_parameter, ret);
+        }
         return ret;
     }
 

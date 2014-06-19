@@ -23,6 +23,8 @@ package org.efaps.esjp.ci;
 import org.efaps.admin.program.esjp.EFapsNoUpdate;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
+import org.efaps.esjp.ci.CIArchives._Document2ArchiveAbstract;
+import org.efaps.esjp.ci.CIArchives._Object2ArchiveAbstract;
 
 /**
  * This class is only used in case that the Archive App is not installed
@@ -32,6 +34,16 @@ import org.efaps.ci.CIType;
 @EFapsNoUpdate
 public final class CIArchives
 {
+    public static final _Document2ArchiveAbstract Document2ArchiveAbstract = new _Document2ArchiveAbstract("459e97b9-b803-42c4-b620-d5af855eff4c");
+    public static class _Document2ArchiveAbstract extends _Object2ArchiveAbstract
+    {
+        protected _Document2ArchiveAbstract(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute FromLinkAbstract = new CIAttribute(this, "FromLinkAbstract");
+    }
+
     public static final _Object2ArchiveAbstract Object2ArchiveAbstract = new _Object2ArchiveAbstract("dff29743-ed7d-4cca-83a4-2c140777a752");
     public static class _Object2ArchiveAbstract extends CIType
     {
@@ -43,5 +55,6 @@ public final class CIArchives
         public final CIAttribute Creator = new CIAttribute(this, "Creator");
         public final CIAttribute Modified = new CIAttribute(this, "Modified");
         public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute ToLinkAbstract = new CIAttribute(this, "ToLinkAbstract");
     }
 }

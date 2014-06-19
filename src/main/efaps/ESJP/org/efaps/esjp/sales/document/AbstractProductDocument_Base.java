@@ -39,6 +39,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -54,6 +55,7 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
@@ -147,6 +149,13 @@ public abstract class AbstractProductDocument_Base
         insert.execute();
 
         createdDoc.setInstance(insert.getInstance());
+
+        // call possible listeners
+        for (final IOnCreateDocument listener : Listener.get().<IOnCreateDocument>invoke(
+                        IOnCreateDocument.class)) {
+            listener.afterCreate(_parameter, createdDoc);
+        }
+
         return createdDoc;
     }
 
