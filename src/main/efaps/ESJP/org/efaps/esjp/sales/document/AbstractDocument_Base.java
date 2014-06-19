@@ -2465,11 +2465,12 @@ public abstract class AbstractDocument_Base
                                               final List<DropDownPosition> _values)
                 throws EFapsException
             {
-                final Instance inst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+                final Instance inst = getDefaultStorage(_parameter);
                 if (inst.isValid()) {
-                    for (final DropDownPosition value  :_values) {
+                    for (final DropDownPosition value : _values) {
                         if (value.getValue().equals(inst.getId()) || value.getValue().equals(inst.getOid())) {
                             value.setSelected(true);
+                            break;
                         }
                     }
                 }
@@ -2487,6 +2488,18 @@ public abstract class AbstractDocument_Base
         };
         return field.dropDownFieldValue(_parameter);
     }
+
+    /**
+     * Get the default storage.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @throws EFapsException on error
+     */
+    protected Instance getDefaultStorage(final Parameter _parameter)
+        throws EFapsException
+    {
+        return Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+    }
+
 
     /**
      * Get a rate Object from the User Interface.
