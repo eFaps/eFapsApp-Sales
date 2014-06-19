@@ -259,6 +259,23 @@
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
+        <field name="storageJavaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
+                method="getStorageJavaScriptUIValue"
+                name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_RecievingTicketForm.storageJavaScript.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+            </trigger>
+        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
@@ -530,6 +547,23 @@
             <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="storageJavaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
+                method="getStorageJavaScriptUIValue"
+                name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_RecievingTicketForm.storageJavaScript.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+            </trigger>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>

@@ -714,4 +714,33 @@ public abstract class AbstractProductDocument_Base
         };
         return field.dropDownFieldValue(_parameter);
     }
+
+    /**
+     * Method is called from a hidden field to include javascript in the form.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return Return containing the javascript
+     * @throws EFapsException on error
+     */
+    public Return getStorageJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">\n")
+            .append("require([\"dojo/topic\",\"dojo/query\"], function(topic,query){\n")
+                .append("topic.subscribe(\"eFaps/addRow/positionTable\", function(){\n")
+                    .append("query(\"input[name=storageSetter]\").forEach(function(node){\n")
+                        .append("if (node.value!==\"\") {")
+                            .append("query(\"select[name=storage]\").forEach(function(node2){\n")
+                                .append("node2.value=node.value;\n")
+                             .append("});\n")
+                         .append("}")
+                     .append("});\n")
+                 .append("});\n")
+            .append("});\n")
+            .append("</script>");
+        retVal.put(ReturnValues.SNIPLETT, js.toString());
+        return retVal;
+    }
 }
