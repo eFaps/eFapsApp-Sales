@@ -451,13 +451,13 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="project">
-            <property name="Label">Sales_DeliveryNoteForm.project.Label</property>
+            <property name="Label">Sales_ReturnSlipForm.project.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">98</property>
             <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project"
-                name="Sales_DeliveryNoteForm.project.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_ReturnSlipForm.project.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
                 <property name="Status">Closed</property>
@@ -469,6 +469,12 @@
                 <property name="ContactField">contact</property>
                 <property name="ContactData">contactData</property>
             </trigger>
+        </field>
+        <field name="projectData">
+            <property name="Label">Sales_ReturnSlipForm.projectData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ReturnSlip#ToLink].linkto[FromLink].oid</property>

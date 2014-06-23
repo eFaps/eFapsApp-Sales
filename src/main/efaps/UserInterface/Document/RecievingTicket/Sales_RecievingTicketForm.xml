@@ -433,6 +433,16 @@
                 <property name="Status">Closed</property>
                 <property name="MaxChoiceLength">155</property>
             </trigger>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="updateField4Project"
+                name="Sales_RecievingTicketForm.project.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="projectData">
+            <property name="Label">Sales_RecievingTicketForm.projectData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2RecievingTicket#ToLink].linkto[FromLink].oid</property>

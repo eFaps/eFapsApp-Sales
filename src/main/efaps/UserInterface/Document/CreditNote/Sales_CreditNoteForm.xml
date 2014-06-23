@@ -408,7 +408,7 @@
             <property name="ModeCreate">EDITABLE</property>
         </field>
         <field name="project">
-            <property name="Label">Sales_InvoiceForm.project.Label</property>
+            <property name="Label">Sales_CreditNoteForm.project.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
@@ -428,6 +428,12 @@
                 <property name="ContactField">contact</property>
                 <property name="ContactData">contactData</property>
             </trigger>
+        </field>
+       <field name="projectData">
+            <property name="Label">Sales_CreditNoteForm.projectData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2CreditNote#ToLink].linkto[FromLink].oid</property>
