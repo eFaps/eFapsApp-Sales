@@ -19,6 +19,12 @@
 	<field name="typeName" class="java.lang.String">
 		<property name="Select" value="linkto[CreateDocument].type.uuid"/>
 	</field>
+	<field name="numberDoc" class="java.lang.String">
+		<property name="Select" value="linkto[CreateDocument].attribute[Name]"/>
+	</field>
+	<field name="documentType" class="java.lang.String">
+		<property name="Select" value="linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]"/>
+	</field>
 	<field name="date" class="org.joda.time.DateTime">
 		<property name="Select" value="linkto[CreateDocument].attribute[Date]"/>
 	</field>
@@ -153,7 +159,7 @@ Documento]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true">
 				<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="28" height="16" uuid="239cfb67-2938-41a6-997f-0764097b857d">
-					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395") ? true : false]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{typeName}.equals("5f3fc9c5-ba43-411c-b073-4d5b2a6e65c9") ? true : false]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
@@ -182,12 +188,30 @@ Documento]]></text>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="215" y="0" width="58" height="17" isPrintWhenDetailOverflows="true" uuid="c7f3b6b6-95ee-4edc-8a86-008b37b23e8d">
-					<printWhenExpression><![CDATA[$F{typeName}.equals("570f12ff-ab0d-4a0f-aa87-e39aabf6f395") ? true : false]]></printWhenExpression>
+					<printWhenExpression><![CDATA[$F{typeName}.equals("5f3fc9c5-ba43-411c-b073-4d5b2a6e65c9") ? true : false]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="9"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="28" y="0" width="97" height="16" uuid="32fcbd49-bf5b-40bb-826c-4fe63004123e"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{documentType}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="125" y="0" width="90" height="17" uuid="8f72b736-9d50-4f8e-9e48-c4e2e313c2db">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<printWhenExpression><![CDATA[$F{typeName}.equals("5f3fc9c5-ba43-411c-b073-4d5b2a6e65c9")
+					|| $F{typeName}.equals("e6274de0-4ca3-48cd-a0e5-97932e420668") ? true : false]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{numberDoc}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>
