@@ -36,7 +36,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 @EFapsUUID("a8780c89-3b3d-4001-8cfa-31485142c443")
 @EFapsRevision("$Rev$")
 public class ServiceRequest
-    extends ProductRequest_Base
+    extends ServiceRequest_Base
 {
 
 }
