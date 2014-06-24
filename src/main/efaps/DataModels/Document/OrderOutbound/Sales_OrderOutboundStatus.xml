@@ -23,31 +23,26 @@
 
 -->
 
-<datamodel-statusgroup  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>84f2f612-01c1-4d8d-8cfd-875107d1a80c</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderOutboundStatus</name>
-    <parent>Sales_DocumentStatus</parent>
-
-    <status key="Open">
-      <description>Order was placed.</description>
-    </status>
-
-    <status key="Received">
-      <description>Order was received.</description>
-    </status>
-
-    <status key="Canceled">
-     <description>Order was canceled.</description>
-    </status>
-  </definition>
-
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>84f2f612-01c1-4d8d-8cfd-875107d1a80c</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderOutboundStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Draft">
+            <description>Invoice was digitized and is still editable. (Borrador)</description>
+        </status>
+        <status key="Open">
+            <description>Order was placed. (Pendiente)</description>
+        </status>
+        <status key="Received">
+            <description>Order was received.(Cerrado)</description>
+        </status>
+        <status key="Canceled">
+            <description>Order was canceled.  (Anulado)</description>
+        </status>
+    </definition>
 </datamodel-statusgroup>
-

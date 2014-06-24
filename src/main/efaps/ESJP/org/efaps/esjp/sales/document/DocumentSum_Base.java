@@ -146,7 +146,7 @@ public abstract class DocumentSum_Base
             obj = currencyId != null && !currencyId.equals(rateCurrencyId);
             Context.getThreadContext().setRequestAttribute(DocumentSum_Base.ACCESSREQKEY, obj);
         }
-        if (((Boolean) obj)) {
+        if ((Boolean) obj) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;

@@ -80,7 +80,7 @@ public abstract class Validation_Base
         AMOUNTGREATERZERO,
         /** Validate the Name. */
         NAME,
-        /** Present allways a warning "Are you sure". */
+        /** Present always a warning "Are you sure". */
         AREYOUSURE;
     }
 
