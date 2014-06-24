@@ -74,6 +74,7 @@
                 <property name="Status06">Open</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
+                <property name="ShowRevision">true</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="updateFields4CreateDocument"
                 name="Sales_PaymentCashOutPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>

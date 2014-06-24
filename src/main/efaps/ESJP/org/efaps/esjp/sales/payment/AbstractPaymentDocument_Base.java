@@ -384,13 +384,21 @@ public abstract class AbstractPaymentDocument_Base
 
         final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
         final boolean check = !"true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Invoice"));
+        final boolean showRevision = "true".equalsIgnoreCase(getProperty(_parameter, "ShowRevision"));
 
         final String input = (String) _parameter.get(ParameterValues.OTHERS);
 
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
 
         final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
-        queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
+        final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter);
+        attrQueryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
+        if(showRevision) {
+            attrQueryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Revision, input + "*").setIgnoreCase(true);
+            attrQueryBldr.setOr(true);
+        }
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID);
+        queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
         queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Date);
         queryBldr.addOrderByAttributeAsc(CISales.DocumentAbstract.Name);
 
@@ -407,7 +415,8 @@ public abstract class AbstractPaymentDocument_Base
         multi.addSelect(selConName);
         multi.addAttribute(CISales.DocumentAbstract.Date,
                         CISales.DocumentAbstract.Name,
-                        CISales.DocumentSumAbstract.RateCrossTotal);
+                        CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentAbstract.Revision);
         final SelectBuilder selCur = new SelectBuilder()
                         .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
         multi.addSelect(selCur);
@@ -417,6 +426,7 @@ public abstract class AbstractPaymentDocument_Base
         while (multi.next()) {
             final String conName = multi.<String>getSelect(selConName);
             final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+            final String revision = multi.<String>getAttribute(CISales.DocumentAbstract.Revision);
             final String oid = multi.getCurrentInstance().getOid();
             final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
 
@@ -432,6 +442,9 @@ public abstract class AbstractPaymentDocument_Base
                                 .append(getTwoDigitsformater().format(amount));
             }
             choice.append(" - ").append(conName);
+            if(showRevision) {
+                choice.append(" - ").append(revision);
+            }
             final Map<String, String> map = new HashMap<String, String>();
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), oid);
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
