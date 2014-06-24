@@ -69,7 +69,7 @@
             <property name="ModeView">READONLY</property>
         </field>
         <field character="Group" name="namegroup">
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="name4create">
@@ -113,6 +113,11 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">OUTGOING</property>
             </trigger>
+        </field>
+        <field name="transferReason">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">TransferReason</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
@@ -318,7 +323,7 @@
             <property name="ModeView">READONLY</property>
         </field>
         <field character="Group" name="namegroup">
-            <property name="GroupCount">2</property>
+            <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
         </field>
         <field name="name4create">
@@ -360,6 +365,11 @@
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">OUTGOING</property>
             </trigger>
+        </field>
+        <field name="transferReason">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">TransferReason</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>

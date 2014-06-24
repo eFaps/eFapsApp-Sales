@@ -106,7 +106,8 @@ public abstract class ConsignmentNote_Base
             _createdDoc.getValues().put(CISales.ConsignmentNote.DeparturePoint.name, departurePoint);
         }
 
-        final String vehicleBrand = _parameter.getParameterValue(CIFormSales.Sales_ConsignmentNoteForm.vehicleBrand.name);
+        final String vehicleBrand = _parameter
+                        .getParameterValue(CIFormSales.Sales_ConsignmentNoteForm.vehicleBrand.name);
         if (vehicleBrand != null) {
             _insert.add(CISales.ConsignmentNote.VehicleBrand, vehicleBrand);
             _createdDoc.getValues().put(CISales.ConsignmentNote.VehicleBrand.name, vehicleBrand);
@@ -131,6 +132,13 @@ public abstract class ConsignmentNote_Base
         if (carrierInst.isValid()) {
             _insert.add(CISales.ConsignmentNote.CarrierLink, carrierInst);
             _createdDoc.getValues().put(CISales.ConsignmentNote.CarrierLink.name, carrierInst);
+        }
+
+        final String transferReason = _parameter
+                        .getParameterValue(CIFormSales.Sales_ConsignmentNoteForm.transferReason.name);
+        if (transferReason != null && !transferReason.isEmpty()) {
+            _insert.add(CISales.ConsignmentNote.TransferReason, transferReason);
+            _createdDoc.getValues().put(CISales.ConsignmentNote.TransferReason.name, transferReason);
         }
     }
 

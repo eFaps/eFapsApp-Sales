@@ -223,6 +223,13 @@ public abstract class DeliveryNote_Base
             _insert.add(CISales.DeliveryNote.CarrierLink, carrierInst);
             _createdDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
         }
+
+        final String transferReason =_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.transferReason.name);
+        if (transferReason != null && !transferReason.isEmpty()) {
+            _insert.add(CISales.DeliveryNote.TransferReason, transferReason);
+            _createdDoc.getValues().put(CISales.DeliveryNote.TransferReason.name, transferReason);
+        }
     }
 
     /**
