@@ -36,6 +36,7 @@
         <name>Sales_OrderOutboundTree_Menu_Action</name>
         <childs>
             <child>Sales_OrderOutboundTree_Menu_Action_Edit</child>
+            <child>Sales_OrderOutboundTree_Menu_Action_SetOpen</child>
             <child>Sales_OrderOutboundTree_Menu_Action_SetReceived</child>
             <child>Sales_OrderOutboundTree_Menu_Action_SetCanceled</child>
             <child>Sales_OrderOutboundTree_Menu_Action_Recalculate</child>
