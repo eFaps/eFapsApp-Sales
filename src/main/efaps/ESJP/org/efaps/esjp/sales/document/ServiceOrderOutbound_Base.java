@@ -32,7 +32,6 @@ import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
@@ -108,7 +107,7 @@ public class ServiceOrderOutbound_Base
     {
         boolean ret = true;
         if (!_instances.isEmpty() && _instances.get(0).isValid()) {
-            ret = !_instances.get(0).getType().isKindOf(CISales.ProductRequest.getType());
+            ret = !_instances.get(0).getType().isKindOf(CISales.ServiceRequest.getType());
         }
         return ret;
     }
