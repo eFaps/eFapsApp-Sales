@@ -812,6 +812,26 @@ public abstract class AbstractPaymentDocument_Base
         return retVal;
     }
 
+    public Return updateFields4Position(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+        final Map<String, String> map = new HashMap<String, String>();
+        final StringBuilder js = new StringBuilder();
+        js.append(getTableRemoveScript(_parameter, getTableName(_parameter)));
+
+        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+        list.add(map);
+
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    public String getTableName(final Parameter _parameter) {
+        return "paymentTable";
+    }
+
     public Return updateFields4Contact(final Parameter _parameter)
         throws EFapsException
     {
