@@ -158,6 +158,11 @@
             <property name="Label">Sales_InvoiceForm.headingClient.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
+        <field name="contactGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -184,6 +189,11 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="note4View">
+            <property name="Attribute">Note</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -239,6 +249,7 @@
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
@@ -279,43 +290,97 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
-            <property name="Level">2</property>
+            <property name="Level">1</property>
             <property name="Label">Sales_InvoiceForm.rate4ReadHeading.Heading</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rate4ReadHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateGroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCurrencyId4Read">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
         </field>
-        <field name="rateNetTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_InvoiceForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateHeadingPositon.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.ratePositionTable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+            <table>Sales_InvoiceRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_InvoicePosition</property>
+                <property name="LinkFrom">Invoice</property>
+            </evaluate>
+        </field>
+         <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateTaxes">
             <property name="Attribute">RateTaxes</property>
             <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateTaxes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCrossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
@@ -501,6 +566,11 @@
             <property name="Label">Sales_InvoiceForm.headingClient.Heading</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
+        <field name="contactGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -527,6 +597,11 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="note4View">
+            <property name="Attribute">Note</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -582,6 +657,7 @@
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
@@ -622,43 +698,97 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="rate4ReadHeading" character="Heading">
-            <property name="Level">2</property>
+            <property name="Level">1</property>
             <property name="Label">Sales_InvoiceForm.rate4ReadHeading.Heading</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rate4ReadHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateGroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCurrencyId4Read">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
         </field>
-        <field name="rateNetTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_InvoiceForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateHeadingPositon.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.ratePositionTable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+            <table>Sales_InvoiceRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_InvoicePosition</property>
+                <property name="LinkFrom">Invoice</property>
+            </evaluate>
+        </field>
+         <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateTaxes">
             <property name="Attribute">RateTaxes</property>
             <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateTaxes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCrossTotal4Read">
-            <property name="ModeEdit">READONLY</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Invoice"
+                method="accessCheck4Rate"
+                name="Sales_InvoiceForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>

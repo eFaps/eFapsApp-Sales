@@ -394,8 +394,15 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="accessCheck4Rate"
-                name="Sales_IncomingInvoiceForm.rate.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="accessCheck4Rate"
+                name="Sales_IncomingInvoiceForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
          <field name="rateHeadingPositon" character="Heading">
             <property name="Level">3</property>
@@ -1009,10 +1016,17 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="accessCheck4Rate"
-                name="Sales_IncomingInvoiceForm.rate.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+            <property name="ModeView">NONE</property>
         </field>
-         <field name="rateHeadingPositon" character="Heading">
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="accessCheck4Rate"
+                name="Sales_IncomingInvoiceForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
             <property name="Level">3</property>
             <property name="Label">Sales_IncomingInvoiceForm.headingPositon.Label</property>
             <property name="ModeEdit">NONE</property>
