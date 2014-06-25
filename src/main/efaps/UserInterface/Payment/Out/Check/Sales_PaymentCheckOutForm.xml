@@ -126,8 +126,10 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
                 <property name="Activation">CHECK</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency"
-                name="Sales_PaymentCheckOutForm.account.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentCheckOut" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4RateCurrency"
+                name="Sales_PaymentCheckOutForm.account.UI_FIELD_UPDATE.1" event="UI_FIELD_UPDATE" index="1"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheckOut" method="updateFields4Position"
+                name="Sales_PaymentCheckOutForm.account.UI_FIELD_UPDATE.2" event="UI_FIELD_UPDATE" index="2"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
