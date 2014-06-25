@@ -48,7 +48,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("771297ac-8d56-42f6-a1ed-fa573b42698e")
 @EFapsRevision("$Rev: 8180 $")
 public abstract class CollectionOrder_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

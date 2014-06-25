@@ -30,7 +30,7 @@
         <target>
             <form>Sales_DocumentSearchForm</form>
             <table>Sales_DocumentAbstractUnfilteredTable</table>
-            <evaluate program="org.efaps.esjp.sales.document.DocumentSum" method="search4DocumentType">
+            <evaluate program="org.efaps.esjp.sales.document.GenericDocumentSum" method="search4DocumentType">
                 <property name="Types">Sales_IncomingInvoice;Sales_IncomingReceipt;Sales_DeliveryNote;Sales_ReturnSlip;Sales_RecievingTicket;Sales_ReturnUsageReport;Sales_UsageReport;Sales_TransactionDocumentAbstract</property>
                 <property name="SelectType">ERP_DocumentType</property>
                 <property name="ExpandChildTypes">true</property>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,19 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
 
+/**
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
+ *
+ * @author The eFaps Team
+ * @version $Id: ReturnUsageReport.java 10186 2013-09-12 11:41:31Z m.aranya@moxter.net $
+ */
+@EFapsUUID("bba2774b-d078-4016-9ce6-3db8c7c48797")
+@EFapsRevision("$Rev: 10186 $")
 public class ServiceOrderOutbound
     extends ServiceOrderOutbound_Base
 {

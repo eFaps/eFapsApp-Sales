@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,40 +18,25 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.util.EFapsException;
+
 
 /**
- * TODO comment!
+ * Class is a generic class instance for all documents of type DocumentSum.
+ * and therefore is empty.
+ * This is necessary to be able to use it from any triggers.
  *
  * @author The eFaps Team
- * @version $Id: OrderInbound_Base.java 6431 2011-04-24 05:16:14Z jan@moxter.net
- *          $
+ * @version $Id$
  */
-@EFapsUUID("77aebe5f-aebd-4662-b503-efdc6e46d9d3")
+@EFapsUUID("bdb7b256-d5c9-4099-9c96-2f4563820ac4")
 @EFapsRevision("$Rev$")
-public abstract class OrderInbound_Base
+public abstract class GenericDocumentSum_Base
     extends AbstractDocumentSum
 {
 
-    /**
-     * Method for create a new Incoming Order.
-     *
-     * @param _parameter Parameter as passed from eFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
-     */
-    public Return create(final Parameter _parameter)
-        throws EFapsException
-    {
-        final CreatedDoc createdDoc = createDoc(_parameter);
-        createPositions(_parameter, createdDoc);
-        executeProcess(_parameter, createdDoc);
-        return new Return();
-    }
 }

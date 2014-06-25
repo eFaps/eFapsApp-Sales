@@ -63,7 +63,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("403479a4-9335-4fce-91ee-2c0f22cf525e")
 @EFapsRevision("$Rev$")
 public abstract class FundsToBeSettledReceipt_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

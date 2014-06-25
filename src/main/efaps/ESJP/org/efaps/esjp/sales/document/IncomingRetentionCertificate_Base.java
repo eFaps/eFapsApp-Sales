@@ -45,7 +45,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("07c31497-62dd-48af-9962-7dc8a20d4fb6")
 @EFapsRevision("$Rev$")
 public abstract class IncomingRetentionCertificate_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

@@ -63,7 +63,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("7eda4cc9-77ac-4050-a76a-fbc5ba973c04")
 @EFapsRevision("$Rev$")
 public abstract class IncomingCreditNote_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingCreditNote.RevisionKey";

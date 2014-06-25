@@ -38,7 +38,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("43417000-af54-4cb5-a266-4e6df2ed793e")
 @EFapsRevision("$Rev$")
 public abstract class Invoice_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Method for create a new Quotation.

@@ -53,7 +53,6 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
-import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -89,25 +88,25 @@ import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
 /**
- * Class is the generic instance for all documents of type DocumentSum.
+ * Class is the abstract instance for all documents of type DocumentSum.
  *
  * @author The eFaps Team
  * @version $Id$
  */
 @EFapsUUID("e177ab08-67f0-4ce2-8eff-d3f167352bee")
 @EFapsRevision("$Rev$")
-public abstract class DocumentSum_Base
+public abstract class AbstractDocumentSum_Base
     extends AbstractDocument
 {
     /**
      * Key to the Calculator.
      */
-    public static final String CALCULATORS_VALUE = DocumentSum.class.getName() +  ".CalculatorValue";
+    public static final String CALCULATORS_VALUE = AbstractDocumentSum.class.getName() +  ".CalculatorValue";
 
     /**
      * Key to sore access check during a request.
      */
-    public static final String ACCESSREQKEY = DocumentSum.class.getName() + ".accessCheck4Rate";
+    public static final String ACCESSREQKEY = AbstractDocumentSum.class.getName() + ".accessCheck4Rate";
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -136,7 +135,7 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        Object obj = Context.getThreadContext().getRequestAttribute(DocumentSum_Base.ACCESSREQKEY);
+        Object obj = Context.getThreadContext().getRequestAttribute(AbstractDocumentSum_Base.ACCESSREQKEY);
         if (obj == null) {
             final PrintQuery print = new PrintQuery(_parameter.getInstance());
             print.addAttribute(CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId);
@@ -144,7 +143,7 @@ public abstract class DocumentSum_Base
             final Long currencyId = print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId);
             final Long rateCurrencyId = print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
             obj = currencyId != null && !currencyId.equals(rateCurrencyId);
-            Context.getThreadContext().setRequestAttribute(DocumentSum_Base.ACCESSREQKEY, obj);
+            Context.getThreadContext().setRequestAttribute(AbstractDocumentSum_Base.ACCESSREQKEY, obj);
         }
         if ((Boolean) obj) {
             ret.put(ReturnValues.TRUE, true);
@@ -180,7 +179,7 @@ public abstract class DocumentSum_Base
         throws EFapsException
     {
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        _editDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+        _editDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
@@ -311,7 +310,7 @@ public abstract class DocumentSum_Base
         final CreatedDoc createdDoc = new CreatedDoc();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        createdDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+        createdDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, createdDoc);
 
@@ -934,7 +933,7 @@ public abstract class DocumentSum_Base
                         BigDecimal.ROUND_HALF_UP);
 
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
@@ -1038,7 +1037,7 @@ public abstract class DocumentSum_Base
                         BigDecimal.ROUND_HALF_UP);
 
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
         @SuppressWarnings("unchecked")
         final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
         final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());

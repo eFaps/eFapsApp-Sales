@@ -47,7 +47,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("a66a61fd-487a-4764-9e72-f65050c1d39e")
 @EFapsRevision("$Rev$")
 public abstract class CreditNote_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

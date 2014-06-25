@@ -61,7 +61,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("a126d27b-105b-4751-bc88-22d320f5b177")
 @EFapsRevision("$Rev$")
 public abstract class IncomingReminder_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingReminder.RevisionKey";

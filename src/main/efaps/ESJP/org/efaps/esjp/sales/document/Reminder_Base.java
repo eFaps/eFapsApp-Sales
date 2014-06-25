@@ -47,7 +47,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("f0c3b423-b48a-4eef-9c75-891330544b40")
 @EFapsRevision("$Rev$")
 public abstract class Reminder_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     public Return create(final Parameter _parameter)

@@ -278,7 +278,7 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        _editDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+        _editDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
 
         final Update update = new Update(_editDoc.getInstance());
         final String name = getDocName4Edit(_parameter);
@@ -349,7 +349,7 @@ public abstract class AbstractProductDocument_Base
     {
 
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
         @SuppressWarnings("unchecked")
         final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
         final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());

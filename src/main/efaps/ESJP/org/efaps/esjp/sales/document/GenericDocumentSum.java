@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,25 @@
  * Last Changed By: $Author$
  */
 
+
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.util.EFapsException;
+
 
 /**
- * TODO comment!
+ * This class must be replaced for customization, therefore it is left empty.
+ * Functional description can be found in the related "<code>_base</code>"
+ * class.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("2cedc1c6-2197-4048-a5bb-911d467f0ff9")
+@EFapsUUID("f8bfc4be-139f-473f-9d5d-663b1047ed68")
 @EFapsRevision("$Rev$")
-public abstract class Quotation_Base
-    extends AbstractDocumentSum
+public class GenericDocumentSum
+    extends GenericDocumentSum_Base
 {
-    /**
-     * Method for create a new Quotation.
-     *
-     * @param _parameter Parameter as passed from eFaps API.
-     * @return new Return.
-     * @throws EFapsException on error.
-     */
-    public Return create(final Parameter _parameter)
-        throws EFapsException
-    {
-        final CreatedDoc createdDoc = createDoc(_parameter);
-        createPositions(_parameter, createdDoc);
-        return new Return();
-    }
+
 }

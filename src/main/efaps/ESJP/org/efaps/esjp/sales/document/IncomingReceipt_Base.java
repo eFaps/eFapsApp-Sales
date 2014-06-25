@@ -54,7 +54,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("e740fd7c-4601-4595-8a7e-0175522cbd74")
 @EFapsRevision("$Rev$")
 public abstract class IncomingReceipt_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

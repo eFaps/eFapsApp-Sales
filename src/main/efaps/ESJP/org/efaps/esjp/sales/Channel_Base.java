@@ -31,7 +31,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("4541b746-f653-46d8-b066-9aea7e111766")
 @EFapsRevision("$Rev: 8120 $")
-public class Channel_Base
+public abstract class Channel_Base
 {
 
 }

@@ -58,7 +58,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("7a5f02e9-4e72-46a7-9334-48abca41d026")
 @EFapsRevision("$Rev$")
 public abstract class IncomingPerceptionCertificate_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

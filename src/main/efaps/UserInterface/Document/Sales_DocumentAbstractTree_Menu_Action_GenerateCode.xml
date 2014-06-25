@@ -35,7 +35,7 @@
         </access>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.document.DocumentSum" method="generateCode4Doc" />
+            <execute program="org.efaps.esjp.sales.document.GenericDocumentSum" method="generateCode4Doc" />
         </target>
         <!-- properties -->
         <property name="AskUser">true</property>

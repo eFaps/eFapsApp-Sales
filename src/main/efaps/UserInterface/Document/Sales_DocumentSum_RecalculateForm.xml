@@ -36,7 +36,7 @@
             <property name="Label">Sales_DocumentSum_RecalculateForm.date.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
-            <trigger program="org.efaps.esjp.sales.document.DocumentSum"
+            <trigger program="org.efaps.esjp.sales.document.GenericDocumentSum"
                 method="update4DateOnRecalculate"
                 name="Sales_DocumentSum_RecalculateForm.date.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE"/>

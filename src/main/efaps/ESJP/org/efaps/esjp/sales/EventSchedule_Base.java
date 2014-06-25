@@ -50,7 +50,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.sales.document.DocumentSum;
+import org.efaps.esjp.sales.document.AbstractDocumentSum;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -66,7 +66,7 @@ import org.joda.time.format.DateTimeFormatter;
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
 @EFapsRevision("$Rev: 1$")
 public abstract class EventSchedule_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

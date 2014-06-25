@@ -70,7 +70,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("d93f298b-f0bf-4278-a18e-b065cc330e50")
 @EFapsRevision("$Rev$")
 public abstract class PettyCashBalance_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Method for create a new petty Cash Balance.

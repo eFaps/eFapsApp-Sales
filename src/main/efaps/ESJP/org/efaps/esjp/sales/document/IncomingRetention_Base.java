@@ -63,7 +63,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("6c067449-1aba-42ea-b259-38a3d1e32658")
 @EFapsRevision("$Rev$")
 public abstract class IncomingRetention_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Used to store the PerceptionValue in the Context.

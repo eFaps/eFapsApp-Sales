@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import java.util.UUID;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
@@ -35,8 +37,16 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
-public class ServiceOrderOutbound_Base
-    extends DocumentSum
+
+/**
+ *
+ * @author The eFaps Team
+ * @version $Id: ReturnUsageReport.java 10186 2013-09-12 11:41:31Z m.aranya@moxter.net $
+ */
+@EFapsUUID("65d49d25-c1b9-4883-8bb1-0c53292ee789")
+@EFapsRevision("$Rev: 10186 $")
+public abstract class ServiceOrderOutbound_Base
+    extends AbstractDocumentSum
 {
 
     /**

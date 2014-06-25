@@ -36,7 +36,8 @@
         <!-- target definitions -->
         <target>
             <form>Sales_DocumentAbstract_ChangeProductDocumentTypeForm</form>
-            <execute method="changeDocumentType" program="org.efaps.esjp.sales.document.DocumentSum"/>
+            <execute method="changeDocumentType" 
+                program="org.efaps.esjp.sales.document.GenericDocumentSum"/>
         </target>
 
         <!-- properties -->

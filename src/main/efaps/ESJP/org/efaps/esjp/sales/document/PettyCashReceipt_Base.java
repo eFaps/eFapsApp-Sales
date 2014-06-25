@@ -63,7 +63,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("9b1b92aa-550a-48d3-a58e-2c47e54802f9")
 @EFapsRevision("$Rev$")
 public abstract class PettyCashReceipt_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

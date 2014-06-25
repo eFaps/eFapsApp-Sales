@@ -35,7 +35,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("f084c0b4-dcb0-4ae4-b84e-1841f0ea13ca")
 @EFapsRevision("$Rev: 1$")
 public abstract class CashReceipt_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Method for create a new CashReceipt.

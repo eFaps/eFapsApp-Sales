@@ -35,8 +35,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("dcdb6cdf-aee4-460e-ba3e-270085953c2d")
 @EFapsRevision("$Rev$")
-public abstract class DocumentSum
-    extends DocumentSum_Base
+public abstract class AbstractDocumentSum
+    extends AbstractDocumentSum_Base
 {
 
 }

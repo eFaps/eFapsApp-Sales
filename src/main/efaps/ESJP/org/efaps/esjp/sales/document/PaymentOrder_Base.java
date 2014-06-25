@@ -48,7 +48,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("09c62a59-c334-4e84-8ae5-96dfbc6f7463")
 @EFapsRevision("$Rev$")
 public abstract class PaymentOrder_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     public Return create(final Parameter _parameter)

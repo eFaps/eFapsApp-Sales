@@ -49,7 +49,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("87e507dd-cd65-428c-a8f3-c914b2cd431f")
 @EFapsRevision("$Rev$")
 public abstract class PerceptionCertificate_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**
@@ -62,7 +62,7 @@ public abstract class PerceptionCertificate_Base
         throws EFapsException
     {
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
         final BigDecimal perception = getPerceptionTotal(_parameter, calcList);
 
         if (perception.compareTo(BigDecimal.ZERO) > 0) {

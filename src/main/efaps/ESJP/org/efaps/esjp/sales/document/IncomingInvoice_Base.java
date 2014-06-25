@@ -82,7 +82,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("f7d75f38-5ac8-4bf4-9609-6226ac82fea3")
 @EFapsRevision("$Rev$")
 public abstract class IncomingInvoice_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Used to store the Revision in the Context.
@@ -359,7 +359,7 @@ public abstract class IncomingInvoice_Base
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATEREGPURPRICE)) {
             @SuppressWarnings("unchecked")
             final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
-                            DocumentSum_Base.CALCULATORS_VALUE);
+                            AbstractDocumentSum_Base.CALCULATORS_VALUE);
             if (calcList != null) {
                 final String dateStr = (String) _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name);
                 DateTime date;

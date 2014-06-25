@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("02d5a390-516e-43d4-8d46-ca9c6599146a")
 @EFapsRevision("$Rev$")
 public abstract class RetentionCertificate_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

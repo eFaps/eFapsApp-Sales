@@ -75,7 +75,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("15c2a1f5-9b93-4389-a298-5c4116ecf614")
 @EFapsRevision("$Rev$")
 public abstract class IncomingDetraction_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**

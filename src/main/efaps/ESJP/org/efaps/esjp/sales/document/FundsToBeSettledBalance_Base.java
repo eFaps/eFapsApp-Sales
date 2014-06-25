@@ -70,7 +70,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("4957283f-22c6-4b31-90be-948547309d13")
 @EFapsRevision("$Rev$")
 public abstract class FundsToBeSettledBalance_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Method for create a new petty Cash Balance.

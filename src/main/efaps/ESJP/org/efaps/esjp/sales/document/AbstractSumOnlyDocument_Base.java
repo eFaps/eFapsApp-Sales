@@ -48,7 +48,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("31c806ae-c891-4797-a85b-71113a79c02e")
 @EFapsRevision("$Rev$")
 public abstract class AbstractSumOnlyDocument_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
     /**
      * Method to create the basic Document. The method checks for the Type to be

@@ -35,7 +35,7 @@ import org.efaps.util.EFapsException;
 @EFapsUUID("8c4962d1-f010-43a7-a2a3-eefbbd9952a5")
 @EFapsRevision("$Rev$")
 public abstract class CostSheet_Base
-    extends DocumentSum
+    extends AbstractDocumentSum
 {
 
     /**
