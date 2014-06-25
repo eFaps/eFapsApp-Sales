@@ -21,15 +21,18 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.util.List;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
@@ -47,12 +50,42 @@ public class ServiceOrderOutbound_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connectChannel2Document(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
+        connect2Terms(_parameter, createdDoc);
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         executeProcess(_parameter, createdDoc);
-        return new Return();
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
+    }
+
+    /**
+     * Executed from a Command execute event to create a new OrderOutbound.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc createdDoc = editDoc(_parameter);
+        updatePositions(_parameter, createdDoc);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     protected void connectChannel2Document(final Parameter _parameter,

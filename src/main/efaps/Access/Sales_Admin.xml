@@ -348,6 +348,7 @@
         </status>
 
         <status group="Sales_ServiceOrderOutboundStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Received</key>
             <key>Canceled</key>

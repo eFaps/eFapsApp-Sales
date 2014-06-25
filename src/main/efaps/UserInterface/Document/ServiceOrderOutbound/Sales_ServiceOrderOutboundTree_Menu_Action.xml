@@ -33,7 +33,11 @@
         </access>
         <childs>
             <child>Sales_ServiceOrderOutboundTree_Menu_Action_Edit</child>
+            <child>Sales_ServiceOrderOutboundTree_Menu_Action_SetCanceled</child>
+            <child>Sales_ServiceOrderOutboundTree_Menu_Action_SetOpen</child>
+            <child>Sales_ServiceOrderOutboundTree_Menu_Action_SetClosed</child>
             <child>Sales_ServiceOrderOutboundTree_Menu_Action_Recalculate</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>

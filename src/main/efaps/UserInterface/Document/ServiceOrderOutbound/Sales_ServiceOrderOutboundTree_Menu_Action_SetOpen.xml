@@ -23,29 +23,30 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f45d2ff2-ba5a-4ebd-a601-4813303e09eb</uuid>
+    <uuid>58306471-0063-4ca8-8931-25a10727d13d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ServiceOrderOutboundTree_Menu_Action_Edit</name>
+        <name>Sales_ServiceOrderOutboundTree_Menu_Action_SetOpen</name>
         <access>
+            <role>Sales_Salesman</role>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_ServiceOrderOutboundForm</form>
-            <execute program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="edit">
-                <property name="PositionType">Sales_ServiceOrderOutboundPosition</property>
+            <execute method="setStatus"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Open</property>
             </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_OrderOutboundTree_Menu_Action_Edit.UI_ACCESSCHECK"
+            <trigger event="UI_ACCESSCHECK"
+                method="check4Status"
+                name="Sales_ServiceOrderOutboundTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Draft</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>
