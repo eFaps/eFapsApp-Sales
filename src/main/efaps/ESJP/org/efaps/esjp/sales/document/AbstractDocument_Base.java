@@ -66,6 +66,7 @@ import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -89,6 +90,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Product;
@@ -1440,6 +1442,50 @@ public abstract class AbstractDocument_Base
             ret.add(map);
         }
         return ret;
+    }
+
+    /**
+     * Delete the positions of a Document that were removed in the UserInterface.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _editDoc  EditDoc the postions that will be updated belong to
+     * @throws EFapsException on error
+     */
+    protected void deletePosition4Update(final Parameter _parameter,
+                                         final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(getType4PositionUpdate(_parameter));
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _editDoc.getInstance());
+        final InstanceQuery query = queryBldr.getQuery();
+        query.execute();
+        final Set<Instance> delIns = new HashSet<Instance>();
+        while (query.next()) {
+            final Instance inst = query.getCurrentValue();
+            if (!_editDoc.getPositions().contains(inst)) {
+                delIns.add(inst);
+            }
+        }
+        for (final Instance inst : delIns) {
+            final Delete delete = new Delete(inst);
+            delete.execute();
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calc Calculator
+     * @param _posUpdate Update
+     * @param _idx index
+     * @throws EFapsException on error
+     */
+    protected void add2PositionUpdate(final Parameter _parameter,
+                                      final Calculator _calc,
+                                      final Update _posUpdate,
+                                      final int _idx)
+        throws EFapsException
+    {
+        // to be used by implenentation
     }
 
     /**

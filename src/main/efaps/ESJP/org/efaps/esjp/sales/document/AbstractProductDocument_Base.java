@@ -26,6 +26,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +43,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -48,6 +51,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -55,13 +59,16 @@ import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.products.util.ProductsSettings;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -243,6 +250,153 @@ public abstract class AbstractProductDocument_Base
         }
     }
 
+    /**
+     * Method to edit the basic Document. The method checks for the Type to be
+     * created for every attribute if a related field is in the parameters.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return the edited document
+     * @throws EFapsException on error.
+     */
+    protected EditedDoc editDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return editDoc(_parameter, new EditedDoc(_parameter.getInstance()));
+    }
+
+    /**
+     * Method to edit the basic Document. The method checks for the Type to be
+     * created for every attribute if a related field is in the parameters.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _editDoc edited document
+     * @return the edited document
+     * @throws EFapsException on error.
+     */
+    protected EditedDoc editDoc(final Parameter _parameter,
+                                final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        _editDoc.addValue(DocumentSum_Base.CALCULATORS_VALUE, calcList);
+
+        final Update update = new Update(_editDoc.getInstance());
+        final String name = getDocName4Edit(_parameter);
+        if (name != null) {
+            update.add(CISales.DocumentStockAbstract.Name, name);
+            _editDoc.getValues().put(CISales.DocumentStockAbstract.Name.name, name);
+        }
+
+        final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.Date.name));
+        if (date != null) {
+            update.add(CISales.DocumentStockAbstract.Date, date);
+            _editDoc.getValues().put(CISales.DocumentStockAbstract.Date.name, date);
+        }
+        final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.DueDate.name));
+        if (duedate != null) {
+            update.add(CISales.DocumentStockAbstract.DueDate, duedate);
+            _editDoc.getValues().put(CISales.DocumentStockAbstract.DueDate.name, duedate);
+        }
+
+        final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.Contact.name));
+        final Instance contactIns = Instance.get(contact);
+        if (contactIns != null && contactIns.isValid()) {
+            update.add(CISales.DocumentStockAbstract.Contact, contactIns.getId());
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, contactIns);
+        }
+
+        final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.Note.name));
+        if (note != null) {
+            update.add(CISales.DocumentStockAbstract.Note, note);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Note.name, note);
+        }
+
+        final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.Salesperson.name));
+        if (salesperson != null) {
+            update.add(CISales.DocumentStockAbstract.Salesperson, salesperson);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
+        }
+
+        final String groupId = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.Group.name));
+        if (groupId != null) {
+            update.add(CISales.DocumentStockAbstract.Group, groupId);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
+        }
+
+        addStatus2DocEdit(_parameter, update, _editDoc);
+        add2DocEdit(_parameter, update, _editDoc);
+        update.execute();
+
+        return _editDoc;
+    }
+
+
+    /**
+     * Update the positions of a Document.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _editDoc  EditDoc the postions that will be updated belong to
+     * @throws EFapsException on error
+     */
+    protected void updatePositions(final Parameter _parameter,
+                                   final EditedDoc _editDoc)
+        throws EFapsException
+    {
+
+        @SuppressWarnings("unchecked")
+        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(DocumentSum_Base.CALCULATORS_VALUE);
+        @SuppressWarnings("unchecked")
+        final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
+        final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());
+
+        final Iterator<Calculator> iter = calcList.iterator();
+        for (int i = 0; i < rowKeys.length; i++) {
+            final Calculator calc = iter.next();
+            final Instance inst = Instance.get(oidMap.get(rowKeys[i]));
+            if (!calc.isEmpty()) {
+                final Update update;
+                if (inst.isValid()) {
+                    update = new Update(inst);
+                } else {
+                    update = new Insert(getType4PositionUpdate(_parameter));
+                }
+                update.add(CISales.PositionAbstract.PositionNumber, i + 1);
+                update.add(CISales.PositionAbstract.DocumentAbstractLink, _editDoc.getInstance());
+
+                final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.Product.name));
+                if (product != null && product.length > i) {
+                    final Instance prodInst = Instance.get(product[i]);
+                    if (prodInst.isValid()) {
+                        update.add(CISales.PositionAbstract.Product, prodInst);
+                    }
+                }
+
+                final String[] productDesc = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.ProductDesc.name));
+                if (productDesc != null && productDesc.length > i) {
+                    update.add(CISales.PositionAbstract.ProductDesc, productDesc[i]);
+                }
+
+                final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.UoM.name));
+                if (uoM != null && uoM.length > i) {
+                    update.add(CISales.PositionAbstract.UoM, uoM[i]);
+                }
+
+                update.add(CISales.PositionSumAbstract.Quantity, calc.getQuantity());
+                add2PositionUpdate(_parameter, calc, update, i);
+                update.execute();
+                _editDoc.addPosition(update.getInstance());
+            }
+        }
+        deletePosition4Update(_parameter, _editDoc);
+    }
 
     /**
      * @param _parameter Paramater as passed by the eFaps API

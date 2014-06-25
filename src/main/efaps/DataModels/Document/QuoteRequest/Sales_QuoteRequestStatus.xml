@@ -30,19 +30,17 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuoteRequestStatus</name>
         <parent>Sales_DocumentStatus</parent>
-
+        <status key="Draft">
+            <description>Invoice was digitized and is still editable. (Borrador)</description>
+        </status>
         <status key="Open">
-            <description>The products where not delivered yet.
-            </description>
+            <description>The products where not delivered yet. (Pendiente)</description>
         </status>
-
         <status key="Closed">
-            <description>The products where delivered.</description>
+            <description>The products where delivered. (Cerrado)</description>
         </status>
-
         <status key="Canceled">
-            <description>The QuoteRequest was canceled.</description>
+            <description>The QuoteRequest was canceled. (Anulado)</description>
         </status>
     </definition>
-
 </datamodel-statusgroup>
