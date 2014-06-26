@@ -315,7 +315,7 @@ public abstract class Calculator_Base
                 // check if unitprice is set from UI
                 if (!_priceFromDB && _unitPrice != null && _unitPrice.length() > 0) {
                     setPriceFromUI(_parameter, _unitPrice);
-                    this.priceIsNet =_config.priceFromUIisNet(_parameter);
+                    this.priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());

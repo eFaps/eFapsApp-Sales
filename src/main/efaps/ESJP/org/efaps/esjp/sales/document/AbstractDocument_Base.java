@@ -90,7 +90,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.esjp.erp.CommonDocument_Base.EditedDoc;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Product;
@@ -129,21 +128,30 @@ public abstract class AbstractDocument_Base
     extends CommonDocument
     implements ICalculatorConfig
 {
+    /**
+     * Key to the Calculator.
+     */
+    public static final String CALCULATORS_VALUE = AbstractDocument.class.getName() + ".CalculatorValue";
+
+    /**
+     * Key to the Calculator.
+     */
+    public static final String FIELDTABLES = AbstractDocument.class.getName() + ".FieldTables";
 
     /**
      * Key used to store the instance of the current Currency in the session.
      */
-    public static final String CURRENCYINST_KEY = "org.efaps.esjp.sales.document.AbstractDocument.CurrencyInstance";
+    public static final String CURRENCYINST_KEY = AbstractDocument.class.getName() + ".CurrencyInstance";
 
     /**
      * Key used to store the list of calculators in the session.
      */
-    public static final String CALCULATOR_KEY = "org.efaps.esjp.sales.document.AbstractDocument.CalculatorKey";
+    public static final String CALCULATOR_KEY = AbstractDocument.class.getName() + ".CalculatorKey";
 
     /**
      * Key used to store the target mode for the Document in the session.
      */
-    public static final String TARGETMODE_DOC_KEY = "org.efaps.esjp.sales.document.AbstractDocument.TargeModeKey";
+    public static final String TARGETMODE_DOC_KEY = AbstractDocument.class.getName() + ".TargeModeKey";
 
     /**
      * Used as a prefix for update script.
@@ -1485,7 +1493,7 @@ public abstract class AbstractDocument_Base
                                       final int _idx)
         throws EFapsException
     {
-        // to be used by implenentation
+        _posUpdate.add(CISales.PositionAbstract.PositionNumber, _idx + 1);
     }
 
     /**

@@ -20,8 +20,11 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
@@ -46,9 +49,40 @@ public abstract class ServiceRequest_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
+        connect2Terms(_parameter, createdDoc);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         executeProcess(_parameter, createdDoc);
-        return new Return();
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc createdDoc = editDoc(_parameter);
+        updatePositions(_parameter, createdDoc);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 }

@@ -99,11 +99,6 @@ public abstract class AbstractDocumentSum_Base
     extends AbstractDocument
 {
     /**
-     * Key to the Calculator.
-     */
-    public static final String CALCULATORS_VALUE = AbstractDocumentSum.class.getName() +  ".CalculatorValue";
-
-    /**
      * Key to sore access check during a request.
      */
     public static final String ACCESSREQKEY = AbstractDocumentSum.class.getName() + ".accessCheck4Rate";
@@ -179,7 +174,7 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        _editDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
+        _editDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
@@ -310,7 +305,7 @@ public abstract class AbstractDocumentSum_Base
         final CreatedDoc createdDoc = new CreatedDoc();
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
-        createdDoc.addValue(AbstractDocumentSum_Base.CALCULATORS_VALUE, calcList);
+        createdDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, createdDoc);
 
@@ -933,7 +928,7 @@ public abstract class AbstractDocumentSum_Base
                         BigDecimal.ROUND_HALF_UP);
 
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocument_Base.CALCULATORS_VALUE);
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
@@ -1037,7 +1032,7 @@ public abstract class AbstractDocumentSum_Base
                         BigDecimal.ROUND_HALF_UP);
 
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _editDoc.getValue(AbstractDocument_Base.CALCULATORS_VALUE);
         @SuppressWarnings("unchecked")
         final Map<String, String> oidMap = (Map<String, String>) _parameter.get(ParameterValues.OIDMAP4UI);
         final String[] rowKeys = _parameter.getParameterValues(EFapsKey.TABLEROW_NAME.getKey());
@@ -1059,7 +1054,6 @@ public abstract class AbstractDocumentSum_Base
                 } else {
                     update = new Insert(getType4PositionUpdate(_parameter));
                 }
-                update.add(CISales.PositionAbstract.PositionNumber, i + 1);
                 update.add(CISales.PositionAbstract.DocumentAbstractLink, _editDoc.getInstance());
 
                 final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
