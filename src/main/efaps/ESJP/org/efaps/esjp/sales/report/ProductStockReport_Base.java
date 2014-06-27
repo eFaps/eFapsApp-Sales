@@ -189,10 +189,12 @@ public abstract class ProductStockReport_Base
         return new ProdStockReport(this);
     }
 
+    /**
+     * FilterClass.
+     */
     public static class ProjectFilterValue
         extends FilterValue<Instance>
     {
-
         /**
          *
          */
@@ -214,7 +216,6 @@ public abstract class ProductStockReport_Base
             return ret;
         }
     }
-
 
     /**
      * Report class.
@@ -248,12 +249,17 @@ public abstract class ProductStockReport_Base
             return queryBldr.getAttributeQuery("ID");
         }
 
+        /**
+         * @param _parameter  Parameter as passed by the eFaps API
+         * @param _queryBldr    QueryBuilder to add to
+         * @throws EFapsException on error
+         */
         protected void add2QueryBldr(final Parameter _parameter,
                                      final QueryBuilder _queryBldr)
             throws EFapsException
         {
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
-            if (filter.containsKey("project")) {
+            if (filter.containsKey("project") && filter.get("project") instanceof ProjectFilterValue) {
                 final Instance projectInst = ((ProjectFilterValue) filter.get("project")).getObject();
                 if (projectInst.isValid()) {
                     // Projects_Project2DocumentAbstract
@@ -354,9 +360,16 @@ public abstract class ProductStockReport_Base
             return dataSource;
         }
 
+        /**
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _docInst instance of the document
+         * @param _prodInst instance of  the product
+         * @return value
+         * @throws EFapsException on error
+         */
         protected BigDecimal getQuantity4Derived(final Parameter _parameter,
-                                               final Instance _docInst,
-                                               final Instance _prodInst)
+                                                 final Instance _docInst,
+                                                 final Instance _prodInst)
             throws EFapsException
         {
             BigDecimal ret = BigDecimal.ZERO;

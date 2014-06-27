@@ -165,7 +165,9 @@
             <property name="Columns">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_ConsignmentNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.ConsignmentNote" />
+                program="org.efaps.esjp.sales.document.ConsignmentNote" >
+                <property name="Classification">Contacts_ClassClient</property>
+            </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
                 name="Sales_ConsignmentNoteForm.contact.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.document.ConsignmentNote" />
@@ -457,9 +459,13 @@
             <property name="Required">true</property>
             <property name="Columns">98</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
-                name="Sales_ConsignmentNoteForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.ConsignmentNote" />
+                name="Sales_ConsignmentNoteForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.ConsignmentNote" >
+                <property name="Classification">Contacts_ClassClient</property>
+            </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
-                name="Sales_ConsignmentNoteForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.ConsignmentNote" />
+                name="Sales_ConsignmentNoteForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
