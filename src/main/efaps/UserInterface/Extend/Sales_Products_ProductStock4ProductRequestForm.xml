@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,14 +19,18 @@
   Last Changed:    $Date: 2011-05-13 10:46:26 -0500 (vie, 13 may 2011) $
   Last Changed By: $Author: jorge.cueva@moxter.net $
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5d8b7bcc-65a9-497c-889c-e906aede5e19</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 1408 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_Products_ProductStock4ProductRequestForm</name>
-        <!-- fields -->
         <field name="description">
             <property name="HideLabel">true</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
@@ -36,7 +40,7 @@
                 <property name="DBProperty">org.efaps.sales.StorageGroup4ProductRequestReport.Title</property>
             </trigger>
         </field>
-        <field name="salesReport">
+        <field name="report">
             <property name="HideLabel">true</property>
             <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
                     method="generateReport"
@@ -46,6 +50,60 @@
                 <property name="Type">Sales_ProductRequest</property>
                 <property name="StatusGroup">Sales_ProductRequestStatus</property>
                 <property name="Status">Open</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
+            </trigger>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_Products_ProductStock4ProductRequestForm</name>
+        <field name="description">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                    method="getDBPropertiesFieldValue"
+                    name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE">
+                <property name="DBProperty">org.efaps.sales.StorageGroup4ProductRequestReport.Title</property>
+            </trigger>
+        </field>
+        <field name="filter">
+            <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+             <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
+                method="setDefaultFilter"
+                name="Sales_Products_ProductStock4ProductRequestForm.filter.UI_FIELD_VALUE.1"
+                event="UI_FIELD_VALUE"
+                index="1">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
+                <property name="ReportField">report</property>
+                <property name="Field01">project</property>
+                <property name="FilterType01">Project</property>
+                <property name="FilterDefault01">-</property>
+             </trigger>
+            <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
+                method="getFilterFieldValue"
+                name="Sales_Products_ProductStock4ProductRequestForm.filter.UI_FIELD_VALUE.2"
+                event="UI_FIELD_VALUE"
+                index="2">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
+                <property name="Field01">project</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.ProductStockReport.project</property>
+            </trigger>
+        </field>
+        <field name="report">
+            <property name="HideLabel">true</property>
+            <trigger program="org.efaps.esjp.sales.report.ProductStockReport"
+                    method="generateReport"
+                    name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"
+                    event="UI_FIELD_VALUE">
+                <property name="ProductRow">true</property>
+                <property name="Type">Sales_ProductRequest</property>
+                <property name="StatusGroup">Sales_ProductRequestStatus</property>
+                <property name="Status">Open</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
             </trigger>
         </field>
     </definition>

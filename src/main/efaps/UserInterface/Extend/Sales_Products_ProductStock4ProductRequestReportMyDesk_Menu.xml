@@ -27,11 +27,25 @@
     <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu</name>
-        <!-- childs -->
         <childs>
             <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadExcel</child>
             <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadPDF</child>
+        </childs>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu</name>
+        <childs>
+            <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadPDF</child>
+            <child>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_Filter</child>
         </childs>
     </definition>
 </ui-menu>

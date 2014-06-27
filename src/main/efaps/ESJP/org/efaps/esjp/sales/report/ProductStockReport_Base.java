@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -43,6 +44,7 @@ import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -53,15 +55,17 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -77,12 +81,62 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("361ad1b2-e734-4a50-b202-c20c19fb03e4")
 @EFapsRevision("$Rev: 8120 $")
 public abstract class ProductStockReport_Base
-    extends AbstractCommon
+    extends FilteredReport
 {
     /**
      * Logging instance used in this class.
      */
     protected static final Logger LOG = LoggerFactory.getLogger(ProductStockReport.class);
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return value for the form
+     * @throws EFapsException on error
+     */
+    public Return getJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Map<String, Object> map = getFilterMap(_parameter);
+        if (!map.containsKey("project")) {
+            map.put("project", "");
+        }
+
+        if (map.get("project") instanceof ProjectFilterValue) {
+            final ProjectFilterValue value = (ProjectFilterValue) map.get("project");
+            final StringBuilder js = new StringBuilder();
+            js.append("<script type=\"text/javascript\">\n")
+                .append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
+                .append(" function(ready, query, domConstruct){\n")
+                .append(" ready(1500, function(){")
+                .append("eFapsSetFieldValue(").append(0).append(",'").append("project").append("',")
+                .append("'").append(value.getObject().getOid()).append("'")
+                .append(",'").append(StringEscapeUtils.escapeEcmaScript(value.getLabel())).append("'")
+                .append(");")
+                .append("});").append("});\n</script>\n");
+            ret.put(ReturnValues.SNIPLETT, js.toString());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _field field teh valu eis wanted for
+     * @return object
+     */
+    @Override
+    protected Object getFilterValue(final Parameter _parameter,
+                                    final Field _field)
+    {
+        final Object obj;
+        final String val = _parameter.getParameterValue(_field.getName());
+        if ("project".equals(_field.getName())) {
+            obj = new ProjectFilterValue().setObject(Instance.get(val));
+        } else {
+            obj = super.getFilterValue(_parameter, _field);
+        }
+        return obj;
+    }
 
     /**
      * @param _parameter    Parameter as passed by the eFasp API
@@ -132,34 +186,86 @@ public abstract class ProductStockReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new ProdStockReport();
+        return new ProdStockReport(this);
     }
 
-    /**
-     * @param _parameter  Parameter as passed by the eFaps API
-     * @return AttributeQuery used for the DataSource
-     * @throws EFapsException on error
-     */
-    protected AttributeQuery getAttrQuery(final Parameter _parameter)
-        throws EFapsException
+    public static class ProjectFilterValue
+        extends FilterValue<Instance>
     {
-        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
-        return queryBldr.getAttributeQuery("ID");
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public String getLabel()
+            throws EFapsException
+        {
+            String ret;
+            if (getObject().isValid()) {
+                final PrintQuery print = new PrintQuery(getObject());
+                print.addAttribute("Name", "Description");
+                print.execute();
+                ret = print.<String>getAttribute("Name") +  " - " + print.<String>getAttribute("Description");
+            } else {
+                ret = "";
+            }
+            return ret;
+        }
     }
 
-    public void addQuery2PositionReport(final Parameter _parameter,
-                                        final QueryBuilder _qlb)
-        throws EFapsException
-    {
-        // To Implement
-    }
 
     /**
      * Report class.
      */
-    public class ProdStockReport
+    public static class ProdStockReport
         extends AbstractDynamicReport
     {
+
+        /**
+         * variable to report.
+         */
+        private final ProductStockReport_Base filteredReport;
+
+        /**
+         * @param _report4Account class used
+         */
+        public ProdStockReport(final ProductStockReport_Base _report4Account)
+        {
+            this.filteredReport = _report4Account;
+        }
+
+        /**
+         * @param _parameter  Parameter as passed by the eFaps API
+         * @return AttributeQuery used for the DataSource
+         * @throws EFapsException on error
+         */
+        protected AttributeQuery getDocAttrQuery(final Parameter _parameter)
+            throws EFapsException
+        {
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+            return queryBldr.getAttributeQuery("ID");
+        }
+
+        protected void add2QueryBldr(final Parameter _parameter,
+                                     final QueryBuilder _queryBldr)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            if (filter.containsKey("project")) {
+                final Instance projectInst = ((ProjectFilterValue) filter.get("project")).getObject();
+                if (projectInst.isValid()) {
+                    // Projects_Project2DocumentAbstract
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(
+                                    UUID.fromString("a6accf51-06d0-4882-a4c7-617cd5bf789b"));
+                    attrQueryBldr.addWhereAttrEqValue("FromAbstract", projectInst);
+                    _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
+                                    attrQueryBldr.getAttributeQuery("ToAbstract"));
+                }
+            }
+        }
+
 
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
@@ -170,8 +276,8 @@ public abstract class ProductStockReport_Base
             final Map<String, Map<String, BigDecimal>> rowMap = new LinkedHashMap<String, Map<String, BigDecimal>>();
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-            queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, getAttrQuery(_parameter));
-            addQuery2PositionReport(_parameter, queryBldr);
+            queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, getDocAttrQuery(_parameter));
+            add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CISales.PositionAbstract.Quantity);
             final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
@@ -327,18 +433,6 @@ public abstract class ProductStockReport_Base
                 ProductStockReport_Base.LOG.warn("It's required a system configuration for Storage Group");
             }
             return quantity;
-        }
-
-        /**
-         * @param _parameter Parameter as passed from the eFaps API
-         * @param _queryBldr QueryBuilder the criteria will be added to
-         * @throws EFapsException on error
-         */
-        protected void add2QueryBuilder(final Parameter _parameter,
-                                        final QueryBuilder _queryBldr)
-            throws EFapsException
-        {
-            // to be implemented by subclasses
         }
 
         @Override

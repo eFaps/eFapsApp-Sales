@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,37 +15,36 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 261 $
- Last Changed:    $Date: 2013-09-19 18:12:02 -0500 (jue, 19 sep 2013) $
- Last Changed By: $Author: Jan Moxter $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>8c5ea7ef-4279-4dcd-80b2-983e75620589</uuid>
+    <uuid>86cdc598-3400-4922-b88d-a1192087f328</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 261 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_DownloadExcel</name>
-        <icon>Document_Excel</icon>
+        <name>Sales_Products_ProductStock4ProductRequestReportMyDesk_Menu_Filter</name>
+        <icon>Filter</icon>
         <access>
             <role>Sales_Admin</role>
             <role>Products_Admin</role>
-            <role>Products_Modifier</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.ProductStockReport">
-                <property name="Mime">xls</property>
-                <property name="ProductRow">true</property>
-                <property name="Type">Sales_ProductRequest</property>
-                <property name="StatusGroup">Sales_ProductRequestStatus</property>
-                <property name="Status">Open</property>
+            <form>Sales_Products_ProductStock4ProductRequestFilterForm</form>
+            <execute method="setFilter" program="org.efaps.esjp.sales.report.ProductStockReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
             </execute>
         </target>
-        <property name="Target">hidden</property>
-        <property name="TargetShowFile">true</property>
-        <property name="Label">report.DownloadExcel</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="Label">report.Filter</property>
+        <property name="TargetTitle">report.Filter</property>
+        <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
+        <property name="FilterTargetForm">Sales_Products_ProductStock4ProductRequestForm</property>
+        <property name="FilterTargetField">report</property>
     </definition>
 </ui-command>

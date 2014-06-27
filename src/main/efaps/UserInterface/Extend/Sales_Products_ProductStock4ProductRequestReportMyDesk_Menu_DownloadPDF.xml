@@ -42,6 +42,7 @@
                 <property name="Type">Sales_ProductRequest</property>
                 <property name="StatusGroup">Sales_ProductRequestStatus</property>
                 <property name="Status">Open</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductStockReport.FilterKey</property>
             </execute>
         </target>
 
