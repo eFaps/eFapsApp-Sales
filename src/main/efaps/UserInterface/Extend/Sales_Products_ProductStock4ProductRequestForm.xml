@@ -15,16 +15,16 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev: 6547 $
-  Last Changed:    $Date: 2011-05-13 10:46:26 -0500 (vie, 13 may 2011) $
-  Last Changed By: $Author: jorge.cueva@moxter.net $
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
 
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>5d8b7bcc-65a9-497c-889c-e906aede5e19</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 1408 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
