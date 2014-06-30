@@ -72,6 +72,8 @@ public abstract class Validation_Base
      */
     public enum Validations
     {
+        /** Basic validation for Positions.*/
+        POSITION,
         /** Validate Quantity in Stock. */
         QUANTITYINSTOCK,
         /** Validate that Quantity is greater than zero. */
@@ -106,6 +108,9 @@ public abstract class Validation_Base
         for (final String validation : validations.values()) {
             final Validations val = Validations.valueOf(validation);
             switch (val) {
+                case POSITION:
+                    warnings.addAll(validatePositions(_parameter, _doc));
+                    break;
                 case QUANTITYINSTOCK:
                     warnings.addAll(validateQuantityInStorage(_parameter, _doc));
                     break;
@@ -137,6 +142,29 @@ public abstract class Validation_Base
             ret.put(ReturnValues.SNIPLETT, WarningUtil.getHtml4Warning(warnings).toString());
             if (!WarningUtil.hasError(warnings)) {
                 ret.put(ReturnValues.TRUE, true);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Validate that the positions are valid.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validatePositions(final Parameter _parameter,
+                                            final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.PositionAbstract.Product.name));
+        for (int i = 0; i < getPositionsCount(_parameter); i++) {
+            final Instance prodInst = Instance.get(product[i]);
+            if (!prodInst.isValid()) {
+                ret.add(new PositionWarning().setPosition(i + 1));
             }
         }
         return ret;
@@ -374,6 +402,22 @@ public abstract class Validation_Base
         }
         return ret;
     }
+
+    /**
+     * Warning for not enough Stock.
+     */
+    public static class PositionWarning
+        extends AbstractPositionWarning
+    {
+        /**
+         * Constructor.
+         */
+        public PositionWarning()
+        {
+            setError(true);
+        }
+    }
+
 
     /**
      * Warning for not enough Stock.
