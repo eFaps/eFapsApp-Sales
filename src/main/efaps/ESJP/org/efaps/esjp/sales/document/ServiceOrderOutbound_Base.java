@@ -65,6 +65,7 @@ public abstract class ServiceOrderOutbound_Base
         connectChannel2Document(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Terms(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         final File file = createReport(_parameter, createdDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
