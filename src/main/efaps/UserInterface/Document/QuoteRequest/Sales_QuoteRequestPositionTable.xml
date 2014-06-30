@@ -28,18 +28,20 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuoteRequestPositionTable</name>
-        <!-- fields -->
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_QuoteRequestPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
+            <property name="Attribute">Product</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_QuoteRequestPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Product"
                 name="Sales_QuoteRequestPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.QuoteRequest" />
@@ -51,12 +53,14 @@
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
             <property name="Label">Sales_QuoteRequestPosition/ProductDesc.Label</property>
             <property name="Width">10</property>
         </field>
         <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">None</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_QuoteRequestPosition/UoM.Label</property>
@@ -64,6 +68,7 @@
         <field name="uom4View">
             <property name="Width">1</property>
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_QuoteRequestPosition/UoM.Label</property>
         </field>
