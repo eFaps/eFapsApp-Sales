@@ -45,7 +45,7 @@
         <childs>
             <child>Sales_ReservationTree_Position</child>
             <child>Sales_ReservationTree_Transaction</child>
-            <child></child>
+            <child>Sales_ReservationTree_Doc</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
