@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -75,10 +76,19 @@ public abstract class Reservation_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
-        connect2Derived(_parameter, doc);
-        return new Return();
+        final Return ret = new Return();
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        executeProcess(_parameter, createdDoc);
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
     }
 
     /**
