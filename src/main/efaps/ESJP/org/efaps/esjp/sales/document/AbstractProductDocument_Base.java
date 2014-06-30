@@ -673,7 +673,7 @@ public abstract class AbstractProductDocument_Base
         insert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime() : date[0]);
         insert.add(CIProducts.TransactionAbstract.Document, evaluateParentDocId4PositionTrigger(_parameter));
         insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
-        insert.execute();
+        insert.executeWithoutAccessCheck();
     }
 
     /**
