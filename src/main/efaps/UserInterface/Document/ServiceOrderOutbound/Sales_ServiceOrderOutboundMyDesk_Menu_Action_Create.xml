@@ -19,19 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>4189392d-7945-4ec4-85df-d91c91679b36</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ServiceOrderOutboundMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_ServiceOrderOutboundForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
@@ -40,8 +39,11 @@
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+            </validate>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_ServiceOrderOutbound</property>
         <property name="TargetMode">create</property>

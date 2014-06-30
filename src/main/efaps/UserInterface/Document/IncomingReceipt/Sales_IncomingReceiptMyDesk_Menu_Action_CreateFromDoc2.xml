@@ -43,6 +43,8 @@
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingReceipt" method="validate">
                 <property name="Validation">NAME</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">AMOUNTGREATERZERO</property>
                 <property name="NAME_ValidateContact">true</property>
                 <property name="NAME_QueryType">Sales_IncomingInvoice</property>
                 <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
@@ -80,6 +82,8 @@
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingReceipt" method="validate">
                 <property name="Validation">NAME</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation02">AMOUNTGREATERZERO</property>
                 <property name="NAME_ValidateContact">true</property>
                 <property name="NAME_QueryType">Sales_IncomingInvoice</property>
                 <property name="NAME_QueryType01">Sales_IncomingReceipt</property>

@@ -44,6 +44,10 @@
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <property name="PositionType">Sales_InvoicePosition</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+            </validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Invoice</property>
@@ -73,8 +77,9 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
-                <property name="Validation">AMOUNTGREATERZERO</property>
+             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
             </validate>
         </target>
         <property name="Target">modal</property>
