@@ -237,8 +237,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_RecievingTicketPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_RecievingTicketPosition</property>
-                <property name="LinkFroms">RecievingTicket</property>
+                <property name="Type">Sales_RecievingTicketPosition</property>
+                <property name="LinkFrom">RecievingTicket</property>
             </evaluate>
         </field>
          <field name="individual">
@@ -540,8 +540,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_RecievingTicketPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_RecievingTicketPosition</property>
-                <property name="LinkFroms">RecievingTicket</property>
+                <property name="Type">Sales_RecievingTicketPosition</property>
+                <property name="LinkFrom">RecievingTicket</property>
             </evaluate>
         </field>
          <field name="individual">

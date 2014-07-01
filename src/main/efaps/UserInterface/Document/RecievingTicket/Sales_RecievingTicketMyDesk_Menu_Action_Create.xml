@@ -47,8 +47,9 @@
                 <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.RecievingTicket" method="validate">
-                <property name="Validation">NAME</property>
-                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">NAME</property>
+                <property name="Validation02">QUANTITYGREATERZERO</property>
             </validate>
             <command>Sales_RecievingTicket_ShowRevision</command>
         </target>
@@ -84,8 +85,9 @@
                 <property name="ConnectForeignField">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.RecievingTicket" method="validate">
-                <property name="Validation">NAME</property>
-                <property name="Validation01">QUANTITYGREATERZERO</property>
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">NAME</property>
+                <property name="Validation02">QUANTITYGREATERZERO</property>
             </validate>
             <command>Sales_RecievingTicket_ShowRevision</command>
         </target>
