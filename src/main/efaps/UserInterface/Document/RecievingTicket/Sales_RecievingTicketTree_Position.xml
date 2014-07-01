@@ -40,8 +40,8 @@
             <menu>Sales_RecievingTicketTree_Position_Menu</menu>
             <table>Sales_RecievingTicketPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_RecievingTicketPosition</property>
-                <property name="LinkFroms">RecievingTicket</property>
+                <property name="Type">Sales_RecievingTicketPosition</property>
+                <property name="LinkFrom">RecievingTicket</property>
             </evaluate>
         </target>
         <!-- properties -->

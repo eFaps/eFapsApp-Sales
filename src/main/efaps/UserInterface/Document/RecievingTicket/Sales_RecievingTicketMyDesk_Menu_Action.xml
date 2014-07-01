@@ -34,12 +34,11 @@
   <definition>
     <version-expression>(version==latest)</version-expression>
     <name>Sales_RecievingTicketMyDesk_Menu_Action</name>
-    <!-- childs -->
     <childs>
       <child>Sales_RecievingTicketMyDesk_Menu_Action_Create</child>
       <child>Sales_RecievingTicketMyDesk_Menu_Action_CreateFromDoc</child>
       <child>Sales_RecievingTicketMyDesk_Menu_Action_Delete</child>
+      <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
     </childs>
   </definition>
-
 </ui-menu>
