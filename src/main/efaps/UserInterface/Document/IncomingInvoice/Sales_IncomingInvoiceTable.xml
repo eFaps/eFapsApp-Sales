@@ -30,14 +30,8 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceTable</name>
-        <!-- fields -->
-        <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_DocumentAbstract/Type.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
         <field name="revision">
+            <property name="HRef">TREE</property>
             <property name="Attribute">Revision</property>
             <property name="Label">Sales_IncomingInvoice/Revision.Label</property>
         </field>

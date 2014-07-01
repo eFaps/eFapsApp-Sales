@@ -37,6 +37,7 @@
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_InvoicePosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Quantity"
                 name="Sales_InvoicePositionTable.product.UI_FIELD_AUTOCOMPLETE"
@@ -80,6 +81,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4NetUnitPrice"
                 name="Sales_InvoicePositionTable.netUnitPrice.UI_FIELD_UPDATE"
@@ -93,6 +95,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_InvoicePosition/NetUnitPrice.Label</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="accessCheck4NetUnitPrice"
                 name="Sales_InvoicePositionTable.netUnitPrice.UI_ACCESSCHECK"
@@ -102,6 +105,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Discount</property>
             <property name="Label">Sales_InvoicePosition/Discount.Label</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Discount"
                 name="Sales_InvoicePositionTable.product.UI_FIELD_UPDATE"
@@ -111,11 +115,13 @@
            <property name="ModeCreate">READONLY</property>
            <property name="Attribute">DiscountNetUnitPrice</property>
            <property name="Label">Sales_InvoicePosition/DiscountNetUnitPrice.Label</property>
+           <property name="Align">right</property>
         </field>
         <field name="netPrice">
             <property name="ModeCreate">READONLY</property>
             <property name="Attribute">NetPrice</property>
             <property name="Label">Sales_InvoicePosition/NetPrice.Label</property>
+            <property name="Align">right</property>
         </field>
     </definition>
 </ui-table>
