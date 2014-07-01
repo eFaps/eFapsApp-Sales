@@ -77,4 +77,63 @@
             <property name="Width">15px</property>
         </field>
     </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_RecievingTicketTable</name>
+        <field name="revision">
+            <property name="HRef">TREE</property>
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_RecievingTicket/Revision.Label</property>
+        </field>
+        <field name="documentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="Label">Sales_RecievingTicketTable.documentType.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_RecievingTicket/Name.Label</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_RecievingTicket/Contact.Label</property>
+            <property name="HRef">TREE</property>
+        </field>
+        <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_RecievingTicket/Date.Label</property>
+        </field>
+        <field name="vendorLink">
+            <property name="Attribute">Salesperson</property>
+            <property name="Label">Sales_RecievingTicket/Salesperson.Label</property>
+        </field>
+        <field name="status">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Sales_RecievingTicket/Status.Label</property>
+        </field>
+        <field name="project">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2RecievingTicket#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2RecievingTicket#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2RecievingTicket#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">TREE</property>
+            <property name="FilterType">PICKLIST</property>
+            <property name="Label">Projects_ProjectService.Label</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
 </ui-table>
