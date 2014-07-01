@@ -41,8 +41,8 @@
             <menu>Sales_DeliveryNoteTree_Position_Menu</menu>
             <table>Sales_DeliveryNotePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_DeliveryNotePosition</property>
-                <property name="LinkFroms">DeliveryNote</property>
+                <property name="Type">Sales_DeliveryNotePosition</property>
+                <property name="LinkFrom">DeliveryNote</property>
             </evaluate>
         </target>
         <!-- properties -->

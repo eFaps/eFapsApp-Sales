@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,32 +22,26 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>1530bc67-213d-481e-97dd-c7b751ca3a83</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_DeliveryNoteMyDesk</name>
-    <access>
-      <role>Sales_Delivery</role>
-      <role>Sales_Admin</role>
-    </access>
-    <target>
-      <menu>Sales_DeliveryNoteMyDesk_Menu</menu>
-      <table>Sales_DeliveryNoteTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Sales_DeliveryNote</property>
-      </evaluate>
-    </target>
-
-
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetShowCheckBoxes">true</property>
-  </definition>
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>1530bc67-213d-481e-97dd-c7b751ca3a83</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_DeliveryNoteMyDesk</name>
+        <access>
+            <role>Sales_Delivery</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_DeliveryNoteMyDesk_Menu</menu>
+            <table>Sales_DeliveryNoteTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_DeliveryNote</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
 </ui-command>
