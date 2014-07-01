@@ -138,7 +138,7 @@
         <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="projects"/>
         </profiles>
         <name>Sales_InvoiceTable</name>
         <field name="name">
