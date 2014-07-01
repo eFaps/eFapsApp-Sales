@@ -240,4 +240,10 @@ public interface SalesSettings
      * A mapping like: Sales_Invoice=001;002;003
      */
     String SERIALNUMBERS = "org.efaps.sales.SerialNumbers";
+
+    /**
+     * Link.
+     * The DocumentType used for Recibo Honorarios.
+     */
+    String PROFSERVDOCTYP = "org.efaps.sales.DocumentType4ProfessionalService";
 }
