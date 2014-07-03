@@ -56,6 +56,8 @@
                 name="Sales_ReservationPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
                 <property name="InStock">true</property>
+                <property name="UseDefaultWareHouse">true</property>
+                <property name="ExcludeReservation">true</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Reservation"
                      method="updateFields4Product"
