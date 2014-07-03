@@ -372,7 +372,7 @@ public abstract class DeliveryNote_Base
         }
 
         final Long storageID = evaluateStorage4PositionTrigger(_parameter);
-        if (Sales.getSysConfig().getAttributeValueAsBoolean("DeliveryNote_TransactionTrigger4Reservation")) {
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATETRANSTRIG4RES)) {
             final Instance contactInst = Instance.get(param.get("contact")[0]);
             String quantitystring = qauntity[0].toString();
             quantitystring = quantitystring.replace(",", "");

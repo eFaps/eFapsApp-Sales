@@ -55,11 +55,6 @@
                 receipts.</description>
         </attribute>
         <attribute>
-            <key>DeliveryNote_TransactionTrigger4Reservation</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate the mechanism to evaluate if the transaction must include Reservation.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.ActivateCode4PaymentDocument</key>
             <value>false</value>
             <description>boolean (true/false). Activate the code to generated a new code string to insert payment document.</description>

@@ -246,4 +246,11 @@ public interface SalesSettings
      * The DocumentType used for Recibo Honorarios.
      */
     String PROFSERVDOCTYP = "org.efaps.sales.DocumentType4ProfessionalService";
+
+    /**
+     * Boolean.
+     * Activate the reservation trigger mechanism on transactions.
+     */
+    String ACTIVATETRANSTRIG4RES = "org.efaps.sales.ActivateTransactionTrigger4Reservation";
+
 }
