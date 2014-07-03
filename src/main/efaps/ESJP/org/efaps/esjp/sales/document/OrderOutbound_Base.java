@@ -38,6 +38,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  * TODO comment!
@@ -144,6 +145,10 @@ public abstract class OrderOutbound_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @throws EFapsException on error
+     */
     protected void connect2DocTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -156,8 +161,8 @@ public abstract class OrderOutbound_Base
         print.executeWithoutAccessCheck();
         final Instance ooInst = print.getSelect(selOOInst);
         final Status status = Status.get(print.<Long>getSelect(selStatus));
-        // if the recieving ticket was open check if the status must change
-        if (status.equals(Status.find(CISales.OrderOutboundStatus.Open))) {
+        // if the OrderOutbound was open check if the status must change
+        if (executeConnect2DocTrigger(_parameter, status)) {
 
             final DocComparator comp = new DocComparator();
             comp.setDocInstance(ooInst);
@@ -187,6 +192,13 @@ public abstract class OrderOutbound_Base
                 update.executeWithoutAccessCheck();
             }
         }
+    }
+
+    protected boolean executeConnect2DocTrigger(final Parameter _parameter,
+                                                final Status _status)
+        throws CacheReloadException
+    {
+        return _status.equals(Status.find(CISales.OrderOutboundStatus.Open));
     }
 
 
