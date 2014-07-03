@@ -50,6 +50,8 @@ import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.WarningUtil;
+import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -373,6 +375,11 @@ public abstract class Validation_Base
                 queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, prodInst);
                 if (ArrayUtils.isNotEmpty(storage)) {
                     queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, Instance.get(storage[i]));
+                } else if ("true".equalsIgnoreCase(getProperty(_parameter, "QUANTITYINSTOCK_UseDefaultWareHouse"))) {
+                    final Instance wareHInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+                    if (wareHInst != null && wareHInst.isValid()) {
+                        queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, wareHInst);
+                    }
                 }
                 final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CIProducts.InventoryAbstract.Quantity,
