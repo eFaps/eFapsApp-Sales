@@ -37,10 +37,14 @@
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectChildAttribute">ToLink</property>
                 <property name="AllowMultiple">false</property>
-                <!-- Sales_IncomingInvoice, Sales_Exchange2IncomingInvoice -->
-                <property name="ConnectTypeMap">491aa65f-cbc8-464c-86bc-ef19ed6302ad;79e7eca6-fff7-4f62-ab95-18c7839ee2a8</property>
-                <!-- Sales_PaymentOrder, Sales_Exchange2PaymentOrder -->
-                <property name="ConnectTypeMap01">7f8feba6-a6a6-435b-84fe-8319d0039430;4c5b7c82-7f98-45be-8654-608be1724ebf</property>
+                <!-- Sales_Exchange2IncomingInvoice -->
+                <property name="ConnectType">79e7eca6-fff7-4f62-ab95-18c7839ee2a8</property>
+                 <!-- Sales_IncomingInvoice -->
+                <property name="ConnectChildType">491aa65f-cbc8-464c-86bc-ef19ed6302ad</property>
+                <!-- Sales_Exchange2PaymentOrder -->
+                <property name="ConnectType01">4c5b7c82-7f98-45be-8654-608be1724ebf</property>
+                 <!-- Sales_PaymentOrder -->
+                <property name="ConnectChildType01">7f8feba6-a6a6-435b-84fe-8319d0039430</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Exchange" method="validateConnectDocument" />
         </target>

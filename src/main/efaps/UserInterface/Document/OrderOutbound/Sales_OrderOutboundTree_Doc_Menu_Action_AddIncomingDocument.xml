@@ -36,10 +36,15 @@
             <execute program="org.efaps.esjp.common.uisearch.Connect">
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="ConnectChildAttribute">ToLink</property>
-                <!-- Sales_IncomingInvoice; Sales_OrderOutbound2IncomingInvoice -->
-                <property name="ConnectTypeMap01">491aa65f-cbc8-464c-86bc-ef19ed6302ad;2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
-                <!-- Sales_RecievingTicket; Sales_OrderOutbound2RecievingTicket -->
-                <property name="ConnectTypeMap02">9a73bf0d-9d2a-4de4-aa80-9e6398968ec5;f8d8e91a-9061-417c-81f3-c6390043ed04</property>
+
+                <!-- Sales_OrderOutbound2IncomingInvoice-->
+                <property name="ConnectType">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
+                <!-- Sales_IncomingInvoice -->
+                <property name="ConnectChildType">491aa65f-cbc8-464c-86bc-ef19ed6302ad</property>
+                <!-- Sales_OrderOutbound2RecievingTicket -->
+                <property name="ConnectType01">f8d8e91a-9061-417c-81f3-c6390043ed04</property>
+                <!-- Sales_RecievingTicket-->
+                <property name="ConnectChildType01">9a73bf0d-9d2a-4de4-aa80-9e6398968ec5</property>
             </execute>
         </target>
         <!-- properties -->
