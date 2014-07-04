@@ -43,7 +43,9 @@
             <trigger event="UI_FIELD_AUTOCOMPLETE"
                 method="autoComplete4Product"
                 name="Sales_ProductionOrderPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.ProductionOrder" />
+                program="org.efaps.esjp.sales.document.ProductionOrder" >
+                 <property name="Type">Products_StockProductAbstract</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.ProductionOrder"
                 method="updateFields4Product"
                 name="Sales_ProductionOrderPositionTable.product.UI_FIELD_UPDATE"
@@ -61,6 +63,9 @@
             <property name="ModeView">None</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_ProductionOrderPosition/UoM.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getUoMDropDownFieldValue"
+                name="Sales_ProductionReportPositionTable.uoM.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field" />
         </field>
         <field name="uom4View">
             <property name="Width">1</property>
