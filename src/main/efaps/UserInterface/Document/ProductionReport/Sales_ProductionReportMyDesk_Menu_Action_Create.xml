@@ -26,16 +26,12 @@
     <uuid>48d5b0fd-5003-434b-a28e-1cbef619aed6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductionReportMyDesk_Menu_Action_Create</name>
         <access>
-            <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_ProductionReportForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.ProductionReport">
@@ -44,9 +40,11 @@
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.ProductionReport" method="validate" >
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+            </validate>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_ProductionReport</property>
         <property name="TargetMode">create</property>
