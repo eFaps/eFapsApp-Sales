@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Insert;
-import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
-import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.ci.CITableSales;
-import org.efaps.esjp.products.Product;
 import org.efaps.util.EFapsException;
 
 /**
@@ -54,28 +49,18 @@ public abstract class ProductionReport_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
+        createIndiviuals(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
+        connect2Derived(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         return new Return();
     }
 
-    @Override
-    protected void add2PositionCreate(final Parameter _parameter,
-                                      final Insert _posInsert,
-                                      final CreatedDoc _createdDoc,
-                                      final int _idx)
-        throws EFapsException
-    {
-        final String[] product = _parameter
-                        .getParameterValues(CITableSales.Sales_ProductionReportPositionTable.batchProduct.name);
-        if (product != null && product.length > _idx) {
-            final Instance prodInst = Instance.get(product[_idx]);
-            if (prodInst.isValid()) {
-                final Product prod = new Product();
-                final Instance batchInst = prod.createBatch(_parameter, prodInst);
-                _posInsert.add(CISales.PositionAbstract.Product, batchInst);
-            }
-        }
-    }
-
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return productionReportPositionInsertTrigger(final Parameter _parameter)
         throws EFapsException
     {

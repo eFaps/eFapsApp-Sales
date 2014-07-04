@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Dimension;
@@ -52,6 +53,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.datamodel.ui.UIInterface;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -92,6 +94,7 @@ import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
@@ -1257,9 +1260,9 @@ public abstract class AbstractDocument_Base
             Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
             ratesCur = new PriceUtil().getExchangeRate(new DateTime().withTimeAtStartOfDay(), newInst);
 
-            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
+            if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived
                             || !rates[2].equals(rates[3])) {
-                currStrBldr.append(getSetFieldValue(0, "rateCurrencyId", "" + (rates[2]))).append("\n")
+                currStrBldr.append(getSetFieldValue(0, "rateCurrencyId", "" + rates[2])).append("\n")
                     .append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
                     .append(getSetFieldValue(0, "rate", ratesCur[1].toString())).append("\n")
                     .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
@@ -1822,9 +1825,6 @@ public abstract class AbstractDocument_Base
                                            final Instance _prodInst)
         throws EFapsException
     {
-        final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-        final String fieldName = field.getName();
-
         final PrintQuery print = new PrintQuery(_prodInst);
         print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description,
                         CIProducts.ProductAbstract.Dimension,
@@ -1847,12 +1847,11 @@ public abstract class AbstractDocument_Base
             }
             _map.put("uoM", getUoMFieldStr(selectedUoM, dimId));
             _map.put("productDesc", StringEscapeUtils.escapeEcmaScript(desc));
-            // TODO: remove when autocomplete ready
-            _map.put(fieldName + "AutoComplete", name);
 
             if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
-                add4Individual(_parameter, print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual),
-                            _map, _prodInst.getOid(), name +  "-" + desc);
+                add4Individual(_parameter, _prodInst,
+                                print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual),
+                                _map, _prodInst.getOid(), name +  "-" + desc);
             }
         }
     }
@@ -1860,6 +1859,7 @@ public abstract class AbstractDocument_Base
 
     /**
      * @param _parameter    Parameter as passed by the eFaps API
+     * @param _prodInst     instance of the product the new individuals will belong to
      * @param _individual   value of the individual attribute
      * @param _map          map the script will be added to
      * @param _key          key to be used as fieldname etc
@@ -1867,6 +1867,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected void add4Individual(final Parameter _parameter,
+                                  final Instance _prodInst,
                                   final ProductIndividual _individual,
                                   final Map<String, Object> _map,
                                   final String _key,
@@ -1879,6 +1880,7 @@ public abstract class AbstractDocument_Base
             final String qfieldName = "quantity";
             int quantity;
             switch (_individual) {
+                // only for individual it is necessary to now the quantity
                 case INDIVIDUAL:
                     final String quantityStr = _parameter.getParameterValues(qfieldName)[getSelectedRow(_parameter)];
                     if (quantityStr != null && !quantityStr.isEmpty()) {
@@ -1891,8 +1893,8 @@ public abstract class AbstractDocument_Base
                     quantity = 1;
                     break;
             }
-            final StringBuilder js = new StringBuilder();
-            js.append("require([\"dojo/query\", \"dojo/dom\",\"dojo/dom-construct\",\"dojo/number\"],")
+            final StringBuilder js = new StringBuilder()
+                .append("require([\"dojo/query\", \"dojo/dom\",\"dojo/dom-construct\",\"dojo/number\"],")
                 .append(" function(query, dom, domConstruct,number){")
                 .append("var ind = query(\"[name='").append(fieldName).append("']\")[0];")
                 .append("if (typeof(ind)!=='undefined') {")
@@ -1903,25 +1905,50 @@ public abstract class AbstractDocument_Base
                 .append("domConstruct.create(\"legend\", { innerHTML: \"")
                     .append(StringEscapeUtils.escapeEcmaScript(_legend)).append("\"}, fs);");
 
-            if (quantity > 5) {
-                js.append("var j = 0;");
-            }
-            if (quantity > 1) {
-                js.append("for (var i=1;i < ").append(quantity + 1).append("; i++) {");
-            }
+            if (_individual.equals(ProductIndividual.INDIVIDUAL)) {
+                if (quantity > 5) {
+                    js.append("var j = 0;");
+                }
+                if (quantity > 1) {
+                    js.append("for (var i=1;i < ").append(quantity + 1).append("; i++) {");
+                }
+                js.append(" domConstruct.create(\"label\", { innerHTML: number.format(i, {pattern:'00'}) +\".\"}, fs);")
+                    .append(" domConstruct.create(\"input\", { name: \"").append(_key).append("\"}, fs);");
 
-            js.append(" domConstruct.create(\"label\", { innerHTML: number.format(i, {pattern:'00'}) +\".\"}, fs); ")
-                .append(" domConstruct.create(\"input\", { name: \"").append(_key).append("\"}, fs);");
-
-            if (quantity > 5) {
-                js.append("j++;")
-                    .append("if (j==5) {")
-                    .append("j=0;")
-                    .append("domConstruct.create(\"br\", {}, fs);")
-                    .append("}");
-            }
-            if (quantity > 1) {
-                js.append("}");
+                if (quantity > 5) {
+                    js.append("j++;")
+                        .append("if (j==5) {")
+                        .append("j=0;")
+                        .append("domConstruct.create(\"br\", {}, fs);")
+                        .append("}");
+                }
+                if (quantity > 1) {
+                    js.append("}");
+                }
+            } else if (_individual.equals(ProductIndividual.BATCH)) {
+                final String id = RandomStringUtils.randomAlphabetic(8);
+                js.append(" domConstruct.create(\"input\", { name: \"").append(_key)
+                    .append("\" , checked: \"checked\", type:\"radio\", value: \"").append(ProductIndividual.BATCH)
+                    .append("\", id:\"").append(id).append("\"}, fs);")
+                    .append(" domConstruct.create(\"label\", { innerHTML: \"")
+                    .append(DBProperties.getProperty(AbstractDocument.class.getName() + ".CreateNewBatch"))
+                    .append("\", for:\"").append(id).append("\"}, fs);");
+                final List<Instance> batchInsts = new Batch().getExistingBatch4ProductInst(_parameter, _prodInst);
+                if (!batchInsts.isEmpty()) {
+                    final MultiPrintQuery multi = new MultiPrintQuery(batchInsts);
+                    multi.addAttribute(CIProducts.ProductAbstract.Name);
+                    multi.executeWithoutAccessCheck();
+                    while (multi.next()) {
+                        final String name = multi.getAttribute(CIProducts.ProductAbstract.Name);
+                        final String id2 = RandomStringUtils.randomAlphabetic(8);
+                        js.append(" domConstruct.create(\"input\", { name: \"").append(_key)
+                            .append("\" , type:\"radio\", value: \"").append(multi.getCurrentInstance().getOid())
+                            .append("\", id:\"").append(id2).append("\"}, fs);")
+                            .append(" domConstruct.create(\"label\", { innerHTML: \"")
+                            .append(StringEscapeUtils.escapeEcmaScript(name)).append("\", for:\"")
+                            .append(id2).append("\"}, fs);");
+                    }
+                }
             }
             js.append("}")
                 .append("});");
@@ -2971,9 +2998,9 @@ public abstract class AbstractDocument_Base
             Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
             ratesCur = new PriceUtil().getExchangeRate(new DateTime().toDateMidnight().toDateTime(), newInst);
 
-            if ((rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived)
+            if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived
                             || !rates[2].equals(rates[3])) {
-                currency.append(getSetFieldValue(0, "rateCurrencyId", "" + (rates[2])))
+                currency.append(getSetFieldValue(0, "rateCurrencyId", "" + rates[2]))
                         .append("\n");
                 currency.append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
                         .append(getSetFieldValue(0, "rate", ratesCur[1].toString()))

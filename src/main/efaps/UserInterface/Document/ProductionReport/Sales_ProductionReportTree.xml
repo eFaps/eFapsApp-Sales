@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2014 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -22,25 +22,21 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>ab879f70-f114-43aa-813d-e42f2f39675c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductionReportTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_ProductionReportTree_Menu</menu>
             <form>Sales_ProductionReportForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_ProductionReport</type>
         <childs>
             <child>Sales_ProductionReportTree_Position</child>
+            <child>Sales_ProductionReportTree_Transaction</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

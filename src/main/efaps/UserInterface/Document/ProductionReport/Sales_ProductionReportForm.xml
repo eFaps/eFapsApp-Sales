@@ -67,6 +67,26 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="productDocumentType">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_ProductionReportForm.documentType.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.ProductionReport"
+                method="dropDown4ProdDocTypeFieldValue"
+                name="Sales_ProductionReportForm.documentType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">INCOMING</property>
+            </trigger>
+        </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>
         </field>
@@ -108,6 +128,31 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="storageSetter">
+             <property name="ModeCreate">EDITABLE</property>
+             <property name="ModeView">NONE</property>
+             <property name="ModeEdit">NONE</property>
+             <property name="Label">Sales_RecievingTicketForm.storage.Label</property>
+             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
+                method="autoComplete4Storage"
+                name="Sales_ProductionReportForm.storage.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Type">Products_DynamicStorage</property>
+                <property name="StatusGroup">Products_StorageAbstractStatus</property>
+                <property name="Status">Active</property>
+             </trigger>
+             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
+                method="updateFields4Storage"
+                name="Sales_ProductionReportForm.storage.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_ProductionReportForm.storage.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+             </trigger>
+        </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
             <property name="Label">Sales_ProductionReportForm.headingPositon.Heading</property>
@@ -122,6 +167,45 @@
                 <property name="Types">Sales_ProductionReportPosition</property>
                 <property name="LinkFroms">ProductionReportLink</property>
             </evaluate>
+        </field>
+         <field name="individual">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Products-Configuration -->
+                <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
+                <property name="Attribute">org.efaps.products.ActivateIndividual</property>
+            </trigger>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="RowSpan">4</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="storageJavaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.ProductionReport"
+                method="getStorageJavaScriptUIValue"
+                name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="propertyCheck"
+                name="Sales_RecievingTicketForm.storageJavaScript.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="CheckCallingCommand">true</property>
+                <property name="Property">ShowStorage</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

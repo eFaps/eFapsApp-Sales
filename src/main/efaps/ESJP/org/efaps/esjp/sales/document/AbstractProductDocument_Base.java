@@ -60,6 +60,7 @@ import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
+import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
@@ -393,24 +394,31 @@ public abstract class AbstractProductDocument_Base
                                 final Map<String, Object> map = new HashMap<String, Object>();
                                 map.put(CIProducts.ProductAbstract.Individual.name,
                                                 Products.ProductIndividual.NONE.getInt());
-                                map.put(CIProducts.ProductAbstract.Name.name, individual);
-                                final Instance indInst = new Product().cloneProduct(_parameter, prodInst,
+                                final Instance indInst;
+                                if (individual.equals(Products.ProductIndividual.BATCH.toString())) {
+                                    final String name = new Batch().getNewName(_parameter, prodInst);
+                                    map.put(CIProducts.ProductAbstract.Name.name, name);
+                                    indInst = new Product().cloneProduct(_parameter, prodInst,
                                                 prodType, map, clazz);
-                                final Insert relInsert = new Insert(relType);
-                                relInsert.add(CIProducts.Product2ProductAbstract.FromAbstract, prodInst);
-                                relInsert.add(CIProducts.Product2ProductAbstract.ToAbstract, indInst);
-                                relInsert.execute();
-
-                                final Insert transInsert = new Insert(CIProducts.TransactionIndividualInbound);
-                                transInsert.add(CIProducts.TransactionAbstract.Quantity, quantity);
-                                transInsert.add(CIProducts.TransactionAbstract.Storage, storage);
-                                transInsert.add(CIProducts.TransactionAbstract.Product, indInst);
-                                transInsert.add(CIProducts.TransactionAbstract.Description, descr);
-                                transInsert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime()
-                                                : date);
-                                transInsert.add(CIProducts.TransactionAbstract.Document, _createdDoc.getInstance());
-                                transInsert.add(CIProducts.TransactionAbstract.UoM, uom);
-                                transInsert.executeWithoutAccessCheck();
+                                    final Insert relInsert = new Insert(relType);
+                                    relInsert.add(CIProducts.Product2ProductAbstract.FromAbstract, prodInst);
+                                    relInsert.add(CIProducts.Product2ProductAbstract.ToAbstract, indInst);
+                                    relInsert.execute();
+                                } else {
+                                    indInst = Instance.get(individual);
+                                }
+                                if (indInst != null && indInst.isValid()) {
+                                    final Insert transInsert = new Insert(CIProducts.TransactionIndividualInbound);
+                                    transInsert.add(CIProducts.TransactionAbstract.Quantity, quantity);
+                                    transInsert.add(CIProducts.TransactionAbstract.Storage, storage);
+                                    transInsert.add(CIProducts.TransactionAbstract.Product, indInst);
+                                    transInsert.add(CIProducts.TransactionAbstract.Description, descr);
+                                    transInsert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime()
+                                                    : date);
+                                    transInsert.add(CIProducts.TransactionAbstract.Document, _createdDoc.getInstance());
+                                    transInsert.add(CIProducts.TransactionAbstract.UoM, uom);
+                                    transInsert.executeWithoutAccessCheck();
+                                }
                             }
                         }
                     }
@@ -710,6 +718,11 @@ public abstract class AbstractProductDocument_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return changeStatusWithInverseTransaction(final Parameter _parameter)
         throws EFapsException
     {
@@ -778,6 +791,11 @@ public abstract class AbstractProductDocument_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return dropDown4ProdDocTypeFieldValue(final Parameter _parameter)
         throws EFapsException
     {

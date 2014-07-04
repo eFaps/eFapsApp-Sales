@@ -34,26 +34,22 @@
             <property name="Label">Sales_ProductionReportPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        <field name="batchProduct">
+       <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_ProductionReportPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
+            <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="autoComplete4Product"
                 name="Sales_ProductionReportPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                program="org.efaps.esjp.sales.document.ProductionReport" />
-             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Products_StockProductAbstract</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="updateFields4Product"
                 name="Sales_ProductionReportPositionTable.product.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
-        </field>
-         <field name="product">
-            <property name="SelectAlternateOID">linkto[Product].linkfrom[Products_StockProductAbstract2Batch#ToLink].linkto[FromLink].oid</property>
-            <property name="Select">linkto[Product].linkfrom[Products_StockProductAbstract2Batch#ToLink].linkto[FromLink].attribute[Name].attribute[Name]</property>
-            <property name="Label">Products_Inventory/Product.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>
@@ -64,9 +60,14 @@
         </field>
         <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">None</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModePrint">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_ProductionReportPosition/UoM.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getUoMDropDownFieldValue"
+                name="Sales_ProductionReportPositionTable.uoM.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field" />
         </field>
         <field name="uom4View">
             <property name="Width">1</property>
