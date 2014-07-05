@@ -48,6 +48,7 @@
                 <property name="Mime">pdf</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
+                <property name="Validation">POSITION</property>
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
             </validate>
@@ -87,6 +88,7 @@
                 <property name="ConnectForeignField">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
+                <property name="Validation">POSITION</property>
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
             </validate>
