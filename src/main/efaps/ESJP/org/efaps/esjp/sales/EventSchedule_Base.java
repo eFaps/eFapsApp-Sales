@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -46,11 +47,14 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocumentSum;
+import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -102,8 +106,7 @@ public abstract class EventSchedule_Base
                 }
                 _queryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
             }
-
-        }.getInstances(_parameter);
+        } .getInstances(_parameter);
 
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
         final SelectBuilder selrateCurrSymbol = new SelectBuilder()
@@ -175,8 +178,8 @@ public abstract class EventSchedule_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
 
         final int selected = getSelectedRow(_parameter);
         final Instance docInst = Instance.get(_parameter.getParameterValues("document")[selected]);
@@ -185,18 +188,21 @@ public abstract class EventSchedule_Base
         BigDecimal rateNetPrice = BigDecimal.ZERO;
         String symbol;
         String rateSymbol;
+        String contactName;
         if (docInst.isValid()) {
             final SelectBuilder selSymbol = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
             final SelectBuilder selRateSymbol = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selContactNameSel = new SelectBuilder()
+                .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.ContactAbstract.Name);
 
             final PrintQuery print = new PrintQuery(docInst);
             print.addAttribute(CISales.DocumentAbstract.Name,
                             CISales.DocumentAbstract.Note,
                             CISales.DocumentSumAbstract.CrossTotal,
                             CISales.DocumentSumAbstract.RateCrossTotal);
-            print.addSelect(selSymbol, selRateSymbol);
+            print.addSelect(selSymbol, selRateSymbol, selContactNameSel);
             print.execute();
 
             name = print.<String>getAttribute(CISales.DocumentAbstract.Name);
@@ -204,12 +210,14 @@ public abstract class EventSchedule_Base
             rateNetPrice = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             symbol = print.<String>getSelect(selSymbol);
             rateSymbol = print.<String>getSelect(selRateSymbol);
+            contactName = print.<String>getSelect(selContactNameSel);
         } else {
             name = "";
             symbol = "";
             rateSymbol = "";
+            contactName = "";
         }
-
+        map.put("contactPos", contactName);
         if (name.length() > 0) {
             map.put("netPrice", symbol + getNetPriceFmtStr(netPrice) + " / "
                             + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)) + " / "
@@ -217,6 +225,12 @@ public abstract class EventSchedule_Base
             map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
             map.put("amount4Schedule", getNetPriceFmtStr(netPrice.subtract(getPaymentDocumentOut4Doc(docInst))));
             map.put("total", getTotalFmtStr(getTotal(_parameter, docInst)));
+            final StringBuilder script = new StringBuilder()
+                .append("document.getElementsByName(\"retPerDet\")[").append(selected).append("].innerHTML=\"")
+                .append(StringEscapeUtils.escapeEcmaScript(
+                                AbstractDocumentTax.getSmallTaxField4Doc(_parameter, docInst).toString()))
+                .append("\"");
+            InterfaceUtils.appendScript4FieldUpdate(map, script);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         } else {
@@ -225,9 +239,6 @@ public abstract class EventSchedule_Base
             map.put("rateNetPrice", "");
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
-            final StringBuilder js = new StringBuilder();
-            js.append("document.getElementsByName('documentAutoComplete')[").append(selected).append("].focus()");
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
     }
@@ -405,7 +416,7 @@ public abstract class EventSchedule_Base
                                         multi.<String>getAttribute(CISales.PaymentSchedulePosition.DocumentDesc));
                         map.put(new KeyDefStr("amount4Schedule"),
                                         getNetPriceFmtStr(multi
-                                                        .<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice)));
+                                               .<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice)));
                         map.put(new KeyDefStr("rateNetPrice"), rateSymbol + getNetPriceFmtStr(rateNetPrice));
                         map.put(new KeyDefStr("netPrice"), symbol + getNetPriceFmtStr(netPrice) + " / "
                                         + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)) + " / "

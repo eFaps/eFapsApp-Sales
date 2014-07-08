@@ -24,7 +24,6 @@
 <ui-command xmlns="http://www.efaps.org/xsd"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>2fe40358-5c72-4813-b6c5-081121054a2e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -35,7 +34,6 @@
             <role>Sales_Admin</role>
             <role>Sales_PaymentSchedule</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentScheduleForm</form>
             <execute program="org.efaps.esjp.sales.PaymentSchedule" method="create">
@@ -45,13 +43,11 @@
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentSchedule</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">550</property>
-        <property name="WindowWidth">950</property>
+        <property name="WindowWidth">1100</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
-
 </ui-command>

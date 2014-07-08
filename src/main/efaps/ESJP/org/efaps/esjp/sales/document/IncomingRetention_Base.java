@@ -36,7 +36,6 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
-import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
@@ -63,7 +62,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("6c067449-1aba-42ea-b259-38a3d1e32658")
 @EFapsRevision("$Rev$")
 public abstract class IncomingRetention_Base
-    extends AbstractDocumentSum
+    extends AbstractDocumentTax
 {
     /**
      * Used to store the PerceptionValue in the Context.
@@ -127,7 +126,7 @@ public abstract class IncomingRetention_Base
                 }
                 final IncomingRetention doc = new IncomingRetention();
                 createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, retention);
-                doc.create4Doc(_parameter, createdDoc, -1);
+                doc.create4Doc(_parameter, createdDoc);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingRetention.class, "Perception.ParseException", p);
             }
@@ -135,72 +134,18 @@ public abstract class IncomingRetention_Base
         return new Return();
     }
 
-    /**
-     * Executed from a Command execute event to create a new Incoming PerceptionCertificate.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @param _createdDoc as CreatedDoc with values.
-     * @param _index > 0 if position, -1 if doc itself
-     * @throws EFapsException on error
-     */
-    public void create4Doc(final Parameter _parameter,
-                           final CreatedDoc _createdDoc,
-                           final int _index)
+    @Override
+    protected void connectDoc(final Parameter _parameter,
+                              final CreatedDoc _origDoc,
+                              final CreatedDoc _taxDoc)
         throws EFapsException
     {
-        final BigDecimal amount = (BigDecimal) _createdDoc.getValue(IncomingRetention_Base.AMOUNTVALUE);
-        final Instance documentInst;
-        if (_index < 0) {
-            documentInst = _createdDoc.getInstance();
-        } else {
-            documentInst = _createdDoc.getPositions().get(_index);
-        }
-
-        final Insert insert = new Insert(CISales.IncomingRetention);
-        insert.add(CISales.IncomingRetention.Date, _createdDoc.getValues()
-                        .get(CISales.PaymentDocumentAbstract.Date.name));
-        insert.add(CISales.IncomingRetention.Contact, _createdDoc.getValues()
-                        .get(CISales.PaymentDocumentAbstract.Contact.name));
-        insert.add(CISales.IncomingRetention.Salesperson, Context.getThreadContext().getPersonId());
-        insert.add(CISales.IncomingRetention.Group, _createdDoc.getValues()
-                        .get(CISales.PaymentDocumentAbstract.Group.name));
-        insert.add(CISales.IncomingRetention.Rate, _createdDoc.getValues()
-                        .get(CISales.PaymentDocumentAbstract.Rate.name));
-        if (_createdDoc.getValues().containsKey(CISales.PaymentDocumentAbstract.CurrencyLink.name)) {
-            insert.add(CISales.IncomingRetention.CurrencyId, _createdDoc.getValues()
-                        .get(CISales.PaymentDocumentAbstract.CurrencyLink.name));
-            insert.add(CISales.IncomingRetention.RateCurrencyId, _createdDoc.getValues()
-                        .get(CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
-        } else {
-            insert.add(CISales.IncomingRetention.CurrencyId, _createdDoc.getValues()
-                            .get(CISales.DocumentSumAbstract.CurrencyId.name));
-            insert.add(CISales.IncomingRetention.RateCurrencyId, _createdDoc.getValues()
-                            .get(CISales.IncomingRetention.RateCurrencyId.name));
-        }
-
-        insert.add(CISales.IncomingRetention.RateNetTotal, BigDecimal.ZERO);
-        insert.add(CISales.IncomingRetention.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.IncomingRetention.NetTotal, BigDecimal.ZERO);
-        insert.add(CISales.IncomingRetention.DiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.IncomingRetention.Status, Status.find(CISales.IncomingRetentionStatus.Open));
-        insert.add(CISales.IncomingRetention.Name, getDocName4Document(_parameter, documentInst));
-
-        final Object[] rateObj = (Object[]) _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name);
-        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
-                        BigDecimal.ROUND_HALF_UP);
-        final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
-        final int scale = totalFrmt.getMaximumFractionDigits();
-
-        insert.add(CISales.IncomingRetention.RateCrossTotal, amount.setScale(scale, BigDecimal.ROUND_HALF_UP));
-        insert.add(CISales.IncomingRetention.CrossTotal,
-                        amount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale, BigDecimal.ROUND_HALF_UP));
-        insert.execute();
-
         final Insert relInsert = new Insert(CISales.IncomingRetention2IncomingInvoice);
-        relInsert.add(CISales.IncomingRetention2IncomingInvoice.FromLink, insert.getInstance());
-        relInsert.add(CISales.IncomingRetention2IncomingInvoice.ToLink, documentInst);
+        relInsert.add(CISales.IncomingRetention2IncomingInvoice.FromLink, _taxDoc.getInstance());
+        relInsert.add(CISales.IncomingRetention2IncomingInvoice.ToLink, _origDoc.getInstance());
         relInsert.execute();
     }
+
 
     protected String getDocName4Document(final Parameter _parameter,
                                          final Instance _instance)

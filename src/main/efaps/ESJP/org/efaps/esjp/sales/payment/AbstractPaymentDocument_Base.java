@@ -77,10 +77,6 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
-import org.efaps.esjp.sales.document.IncomingDetraction;
-import org.efaps.esjp.sales.document.IncomingDetraction_Base;
-import org.efaps.esjp.sales.document.IncomingRetention;
-import org.efaps.esjp.sales.document.IncomingRetention_Base;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
@@ -300,28 +296,28 @@ public abstract class AbstractPaymentDocument_Base
                                      final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final String[] amount4Create = _parameter.getParameterValues("amount4DocCreate");
-        final String[] option4Create = _parameter.getParameterValues("option4DocCreate");
+        _parameter.getParameterValues("amount4DocCreate");
+        _parameter.getParameterValues("option4DocCreate");
 
-        final Object rateCurId = _createdDoc.getValues().get(
+        _createdDoc.getValues().get(
                         getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.RateCurrencyLink.name));
-        final Object curId = _createdDoc.getValues().get(
+        _createdDoc.getValues().get(
                         getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.CurrencyLink.name));
 
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
-            if (option4Create != null && amount4Create != null) {
-                if (((Long) curId).equals(rateCurId) && isIncomingInvoiceValid(_parameter, _createdDoc, i)
-                            && parseBigDecimal(amount4Create[i]).compareTo(BigDecimal.ZERO) > 0) {
-                    final String valueDoc = option4Create[i];
-                    if ("IncomingRetention".equalsIgnoreCase(valueDoc)) {
-                        _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
-                        new IncomingRetention().create4Doc(_parameter, _createdDoc, i);
-                    } else if ("IncomingDetraction".equalsIgnoreCase(valueDoc)) {
-                        _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
-                        new IncomingDetraction().create4Doc(_parameter, _createdDoc, i);
-                    }
-                }
-            }
+//            if (option4Create != null && amount4Create != null) {
+//                if (((Long) curId).equals(rateCurId) && isIncomingInvoiceValid(_parameter, _createdDoc, i)
+//                            && parseBigDecimal(amount4Create[i]).compareTo(BigDecimal.ZERO) > 0) {
+//                    final String valueDoc = option4Create[i];
+//                    if ("IncomingRetention".equalsIgnoreCase(valueDoc)) {
+//                        _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
+//                        new IncomingRetention().create4Doc(_parameter, _createdDoc, i);
+//                    } else if ("IncomingDetraction".equalsIgnoreCase(valueDoc)) {
+//                        _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, parseBigDecimal(amount4Create[i]));
+//                        new IncomingDetraction().create4Doc(_parameter, _createdDoc, i);
+//                    }
+//                }
+//            }
         }
     }
 

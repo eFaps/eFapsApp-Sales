@@ -166,7 +166,7 @@ public abstract class IncomingInvoice_Base
                 try {
                     final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
                     final IncomingPerceptionCertificate doc = new IncomingPerceptionCertificate();
-                    _createdDoc.addValue(IncomingPerceptionCertificate_Base.PERCEPTIONVALUE, perception);
+                    _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, perception);
                     doc.create4Doc(_parameter, _createdDoc);
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
@@ -187,8 +187,8 @@ public abstract class IncomingInvoice_Base
                         detraction = BigDecimal.ZERO;
                     }
                     final IncomingDetraction doc = new IncomingDetraction();
-                    _createdDoc.addValue(IncomingDetraction_Base.AMOUNTVALUE, detraction);
-                    doc.create4Doc(_parameter, _createdDoc, -1);
+                    _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, detraction);
+                    doc.create4Doc(_parameter, _createdDoc);
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
@@ -208,8 +208,8 @@ public abstract class IncomingInvoice_Base
                         retention = BigDecimal.ZERO;
                     }
                     final IncomingRetention doc = new IncomingRetention();
-                    _createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, retention);
-                    doc.create4Doc(_parameter, _createdDoc, -1);
+                    _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, retention);
+                    doc.create4Doc(_parameter, _createdDoc);
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
@@ -359,7 +359,7 @@ public abstract class IncomingInvoice_Base
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATEREGPURPRICE)) {
             @SuppressWarnings("unchecked")
             final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
-                            AbstractDocumentSum_Base.CALCULATORS_VALUE);
+                            AbstractDocument_Base.CALCULATORS_VALUE);
             if (calcList != null) {
                 final String dateStr = (String) _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name);
                 DateTime date;
@@ -649,12 +649,18 @@ public abstract class IncomingInvoice_Base
         return retVal;
     }
 
-
     @Override
     public String getTypeName4SysConf(final Parameter _parameter)
         throws EFapsException
     {
         return CISales.IncomingInvoice.getType().getName();
+    }
+
+    @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingInvoice.getType();
     }
 
     /**
@@ -757,40 +763,49 @@ public abstract class IncomingInvoice_Base
         return ret;
     }
 
+    /**
+     * Warning class.
+     */
     public static class OnlyOneTaxDocWarning
         extends AbstractWarning
     {
+        /**
+         * Constructor.
+         */
         public OnlyOneTaxDocWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * Warning class.
+     */
     public static class ContactIsPerceptionAgentWarning
         extends AbstractWarning
     {
 
+        /**
+         * Constructor.
+         */
         public ContactIsPerceptionAgentWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * Warning class.
+     */
     public static class ContactIsRetentionAgentWarning
         extends AbstractWarning
     {
-
+        /**
+         * Constructor.
+         */
         public ContactIsRetentionAgentWarning()
         {
             setError(true);
         }
-    }
-
-
-    @Override
-    protected Type getType4SysConf(Parameter _parameter)
-        throws EFapsException
-    {
-        return CISales.IncomingInvoice.getType();
     }
 }
