@@ -22,6 +22,8 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.datamodel.Status;
@@ -30,6 +32,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -43,7 +46,8 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: AbstractDocumentTax_Base.java 13280 2014-07-09 17:50:17Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("83f2f7db-b2d5-4817-bd4c-abf4a0cffa17")
 @EFapsRevision("$Rev: 1$")
@@ -55,6 +59,11 @@ public abstract class AbstractDocumentTax_Base
      * Used to store the PerceptionValue in the Context.
      */
     public static final String TAXAMOUNTVALUE = AbstractDocumentTax.class.getName() + ".TaxAmountValue";
+
+    /**
+     * Used to store the PerceptionValue in the Context.
+     */
+    public static final String REQKEY4DOCTAXINFO = AbstractDocumentTax.class.getName() + ".RequestKey4DocTaxInfo";
 
     /**
      * Executed from a Command execute vent to create a new Incoming
@@ -159,7 +168,7 @@ public abstract class AbstractDocumentTax_Base
     }
 
     public static StringBuilder getSmallTaxField4Doc(final Parameter _parameter,
-                                                    final Instance _docInst)
+                                                     final Instance _docInst)
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
@@ -169,7 +178,8 @@ public abstract class AbstractDocumentTax_Base
         final SelectBuilder selDocTax = SelectBuilder.get().linkto(
                         CISales.IncomingDocumentTax2Document.FromAbstractLink);
         final SelectBuilder selDocTaxInst = new SelectBuilder(selDocTax).instance();
-        final SelectBuilder selDocTaxCrossTotal = new SelectBuilder(selDocTax).attribute(CISales.DocumentSumAbstract.CrossTotal);
+        final SelectBuilder selDocTaxCrossTotal = new SelectBuilder(selDocTax)
+                        .attribute(CISales.DocumentSumAbstract.CrossTotal);
         multi.addSelect(selDocTaxInst, selDocTaxCrossTotal);
         multi.execute();
         Instance taxDocInst = null;
@@ -191,28 +201,31 @@ public abstract class AbstractDocumentTax_Base
             ret.append(" checked=\"checked\" ");
         }
         ret.append("/><label for=\"").append(id1).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel")).append("</label>");
+                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"))
+                        .append("</label>");
 
         ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingDetraction.getType().getId())
-            .append("\" name=\"").append(fieldName).append("\" id=\"").append(id2).append("\"");
+                        .append("\" name=\"").append(fieldName).append("\" id=\"").append(id2).append("\"");
         if (taxDocInst != null && taxDocInst.getType().equals(CISales.IncomingDetraction.getType())) {
             ret.append(" checked=\"checked\" ");
         }
         ret.append("/><label for=\"").append(id2).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".IncomingDetractionSmallLabel"))
+                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                        + ".IncomingDetractionSmallLabel"))
                         .append("</label>");
 
         ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingRetention.getType().getId())
-            .append("\" name=\"").append(fieldName).append("\" id=\"").append(id3).append("\"");
+                        .append("\" name=\"").append(fieldName).append("\" id=\"").append(id3).append("\"");
         if (taxDocInst != null && taxDocInst.getType().equals(CISales.IncomingRetention.getType())) {
             ret.append(" checked=\"checked\" ");
         }
         ret.append("/><label for=\"").append(id3).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".IncomingRetentionSmallLabel"))
+                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                        + ".IncomingRetentionSmallLabel"))
                         .append("</label>");
 
         ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingPerceptionCertificate.getType().getId())
-            .append("\" name=\"").append(fieldName).append("\" id=\"").append(id4).append("\"");
+                        .append("\" name=\"").append(fieldName).append("\" id=\"").append(id4).append("\"");
         if (taxDocInst != null && taxDocInst.getType().equals(CISales.IncomingPerceptionCertificate.getType())) {
             ret.append(" checked=\"checked\" ");
         }
@@ -221,9 +234,212 @@ public abstract class AbstractDocumentTax_Base
                                         + ".IncomingPerceptionCertificateSmallLabel")).append("</label>");
 
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
-        ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"").append(formater.format(crossTotal))
-            .append("\">");
+        ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
+                        .append(formater.format(crossTotal))
+                        .append("\">");
         return ret;
     }
 
+    /**
+     * @param _parameter
+     * @param _docInst
+     * @return
+     */
+    public static DocTaxInfo getDocTaxInfo(final Parameter _parameter,
+                                           final Instance _docInst)
+        throws EFapsException
+    {
+        if (!Context.getThreadContext().containsRequestAttribute(AbstractDocumentTax_Base.REQKEY4DOCTAXINFO)) {
+            Context.getThreadContext().setRequestAttribute(AbstractDocumentTax_Base.REQKEY4DOCTAXINFO,
+                            new HashMap<Instance, DocTaxInfo>());
+        }
+        @SuppressWarnings("unchecked")
+        final Map<Instance, DocTaxInfo> mapping = (Map<Instance, DocTaxInfo>) Context.getThreadContext()
+                        .getRequestAttribute(AbstractDocumentTax_Base.REQKEY4DOCTAXINFO);
+        if (!mapping.containsKey(_docInst)) {
+            mapping.put(_docInst, new DocTaxInfo(_docInst));
+        }
+        return mapping.get(_docInst);
+    }
+
+    public static class DocTaxInfo
+    {
+
+        private Instance docInstance;
+        private Instance taxDocInstance;
+
+        private boolean initialized = false;
+        private BigDecimal taxAmount = BigDecimal.ZERO;
+        private BigDecimal percent = BigDecimal.ZERO;
+
+        /**
+         * @param _docInst
+         */
+        public DocTaxInfo(final Instance _docInst)
+        {
+            this.docInstance = _docInst;
+        }
+
+        protected void initialize()
+            throws EFapsException
+        {
+            if (!this.initialized) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+                queryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.docInstance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selDoc = SelectBuilder.get().linkto(
+                                CISales.IncomingDocumentTax2Document.ToAbstractLink);
+                final SelectBuilder selDocTax = SelectBuilder.get().linkto(
+                                CISales.IncomingDocumentTax2Document.FromAbstractLink);
+                final SelectBuilder selDocTaxInst = new SelectBuilder(selDocTax).instance();
+                final SelectBuilder selDocTaxCrossTotal = new SelectBuilder(selDocTax)
+                                .attribute(CISales.DocumentSumAbstract.CrossTotal);
+                final SelectBuilder selDocCrossTotal = new SelectBuilder(selDoc)
+                                .attribute(CISales.DocumentSumAbstract.CrossTotal);
+                multi.addSelect(selDocTaxInst, selDocTaxCrossTotal, selDocCrossTotal);
+                multi.execute();
+                if (multi.next()) {
+                    this.taxDocInstance = multi.getSelect(selDocTaxInst);
+                    this.taxAmount = multi.getSelect(selDocTaxCrossTotal);
+                    final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
+                    this.percent = new BigDecimal(100).setScale(8).divide(crossTotal, BigDecimal.ROUND_HALF_UP)
+                                    .multiply(this.taxAmount);
+                }
+                this.initialized = true;
+            }
+        }
+
+        /**
+         * Getter method for the instance variable {@link #perception}.
+         *
+         * @return value of instance variable {@link #perception}
+         * @throws EFapsException on error
+         */
+        public boolean isPerception()
+            throws EFapsException
+        {
+            initialize();
+            return this.taxDocInstance != null
+                            && this.taxDocInstance.getType().isKindOf(CISales.IncomingPerceptionCertificate.getType());
+        }
+
+        /**
+         * Getter method for the instance variable {@link #retention}.
+         *
+         * @return value of instance variable {@link #retention}
+         * @throws EFapsException on error
+         */
+        public boolean isRetention()
+            throws EFapsException
+        {
+            initialize();
+            return this.taxDocInstance != null
+                            && this.taxDocInstance.getType().isKindOf(CISales.IncomingRetention.getType());
+        }
+
+        /**
+         * Getter method for the instance variable {@link #detraction}.
+         *
+         * @return value of instance variable {@link #detraction}
+         * @throws EFapsException on error
+         */
+        public boolean isDetraction()
+            throws EFapsException
+        {
+            initialize();
+            return this.taxDocInstance != null
+                            && this.taxDocInstance.getType().isKindOf(CISales.IncomingDetraction.getType());
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInstance}.
+         *
+         * @return value of instance variable {@link #docInstance}
+         * @throws EFapsException on error
+         */
+        public Instance getDocInstance()
+            throws EFapsException
+        {
+            initialize();
+            return this.docInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInstance}.
+         *
+         * @param _docInstance value for instance variable {@link #docInstance}
+         */
+        public void setDocInstance(final Instance _docInstance)
+        {
+            this.docInstance = _docInstance;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #taxDocInstance}.
+         *
+         * @return value of instance variable {@link #taxDocInstance}
+         * @throws EFapsException on error
+         */
+        public Instance getTaxDocInstance()
+            throws EFapsException
+        {
+            initialize();
+            return this.taxDocInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #taxDocInstance}.
+         *
+         * @param _taxDocInstance value for instance variable
+         *            {@link #taxDocInstance}
+         */
+        public void setTaxDocInstance(final Instance _taxDocInstance)
+        {
+            this.taxDocInstance = _taxDocInstance;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #taxAmount}.
+         *
+         * @return value of instance variable {@link #taxAmount}
+         */
+        public BigDecimal getTaxAmount()
+        {
+            return this.taxAmount;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #taxAmount}.
+         *
+         * @param _taxAmount value for instance variable {@link #taxAmount}
+         */
+        public void setTaxAmount(final BigDecimal _taxAmount)
+        {
+            this.taxAmount = _taxAmount;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #percent}.
+         *
+         * @return value of instance variable {@link #percent}
+         */
+        public BigDecimal getPercent()
+        {
+            return this.percent;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #percent}.
+         *
+         * @param _percent value for instance variable {@link #percent}
+         */
+        public void setPercent(final BigDecimal _percent)
+        {
+            this.percent = _percent;
+        }
+    }
 }

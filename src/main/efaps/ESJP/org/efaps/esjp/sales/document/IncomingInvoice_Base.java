@@ -65,6 +65,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -528,6 +529,163 @@ public abstract class IncomingInvoice_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4TaxDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+
+        final DocTaxInfo docTaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        final Boolean access = docTaxInfo.isDetraction() || docTaxInfo.isPerception() || docTaxInfo.isRetention();
+        if ((!inverse && access) || (inverse && !access)) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getPeceptionCheckBoxValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance())
+                        .isPerception());
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getRetentionCheckBoxValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance())
+                        .isRetention());
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getDetractionCheckBoxValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance())
+                        .isDetraction());
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getPeceptionPercentValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        if (doctaxInfo.isPerception()) {
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getRetentionPercentValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        if (doctaxInfo.isRetention()) {
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getDetractionPercentValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        if (doctaxInfo.isDetraction()) {
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getPeceptionValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        if (doctaxInfo.isPerception()) {
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getRetentionValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        if (doctaxInfo.isRetention()) {
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getDetractionValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+        if (doctaxInfo.isDetraction()) {
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+        }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing maplist
      * @throws EFapsException on error
      */
@@ -569,6 +727,7 @@ public abstract class IncomingInvoice_Base
         }
         return retVal;
     }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -623,9 +782,9 @@ public abstract class IncomingInvoice_Base
         final StringBuilder js = new StringBuilder()
             .append("<script type=\"text/javascript\">\n")
             .append("require([\"dojo/ready\"], function(ready) {")
-            .append("ready(1600, function(){")
-            .append("function deac(_key, _dis) {")
-            .append("require([\"dojo/query\"], function(query){")
+            .append("ready(1600, function(){\n")
+            .append("function deac(_key, _dis) {\n")
+            .append("require([\"dojo/query\"], function(query){\n")
             .append("query(\"input[name^=\\\"\" + _key + \"\\\"]\").forEach(function(node) {")
             .append("if (node.type==='text') {")
             .append("node.disabled = _dis ? '' : 'disabled';")
@@ -633,10 +792,14 @@ public abstract class IncomingInvoice_Base
             .append("});")
             .append("});")
             .append("}")
-            .append("deac(\"perception\");")
-            .append("deac(\"retention\");")
-            .append("deac(\"detraction\");")
-            .append("require([\"dojo/query\"], function(query){")
+            .append("require([\"dojo/query\"], function(query){\n")
+            .append("query(\"input[name$=\\\"Checkbox\\\"] \").forEach(function(_node) {")
+            .append("if (!_node.checked) {")
+            .append("deac(_node.name.substring(0,_node.name.length-8));")
+            .append("}")
+            .append("});")
+            .append("});")
+            .append("require([\"dojo/query\"], function(query){\n")
             .append("query(\"input[name$=\\\"Checkbox\\\"] \").on(\"click\", function(evt) {")
             .append("var key = evt.currentTarget.name.substring(0,evt.currentTarget.name.length-8);")
             .append("deac(key, evt.currentTarget.checked );")

@@ -46,4 +46,13 @@ public abstract class AbstractDocumentTax
     {
         return AbstractDocumentTax_Base.getSmallTaxField4Doc(_parameter, _docInst);
     }
+
+    /**
+     * @param _instance
+     */
+    public static DocTaxInfo getDocTaxInfo(final Parameter _parameter, final Instance _docInst)
+    throws EFapsException
+    {
+        return AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _docInst);
+    }
 }
