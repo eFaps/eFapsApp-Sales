@@ -363,9 +363,68 @@ public abstract class EventSchedule_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
+        js.append("<script type=\"text/javascript\">\n");
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        if (Display.HIDDEN.equals(fieldValue.getDisplay())) {
-            js.append("<script type=\"text/javascript\">\n");
+        final String[] oids = _parameter.getParameterValues("selectedRow");
+        final DecimalFormat formatter = NumberFormatter.get().getTwoDigitsFormatter();
+        if (oids != null && oids.length > 0) {
+            final List<Map<KeyDef, Object>> values = new ArrayList<>();
+            final List<Instance> instances = new ArrayList<>();
+            for (final String oid : oids) {
+                instances.add(Instance.get(oid));
+            }
+            final SelectBuilder selSymbol = new SelectBuilder()
+                .linkto(CISales.DocumentSumAbstract.CurrencyId).attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selRateSymbol = new SelectBuilder()
+                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+            final SelectBuilder selContactNameSel = new SelectBuilder()
+                .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.ContactAbstract.Name);
+
+            final MultiPrintQuery multi = new MultiPrintQuery(instances);
+            multi.addAttribute(CISales.DocumentAbstract.Name,
+                            CISales.DocumentAbstract.Note,
+                            CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.RateCrossTotal);
+            multi.addSelect(selSymbol, selRateSymbol, selContactNameSel);
+            multi.setEnforceSorted(true);
+            multi.execute();
+            while (multi.next()) {
+                final Instance docInst = multi.getCurrentInstance();
+                final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
+                final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                final BigDecimal rateCrossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                final String symbol = multi.<String>getSelect(selSymbol);
+                final String rateSymbol = multi.<String>getSelect(selRateSymbol);
+                final String contactName = multi.<String>getSelect(selContactNameSel);
+
+                final Map<KeyDef, Object> map = new HashMap<>();
+                values.add(map);
+                map.put(new KeyDefStr("contactPos"), contactName);
+                map.put(new KeyDefStr("document"), new String[] { docInst.getOid(), name });
+                map.put(new KeyDefStr("amount4Schedule"), formatter.format(crossTotal));
+                map.put(new KeyDefStr("rateNetPrice"), rateSymbol + formatter.format(rateCrossTotal));
+                map.put(new KeyDefStr("netPrice"), symbol + formatter.format(crossTotal) + " / "
+                                    + formatter.format(getPaymentDocumentOut4Doc(docInst)) + " / "
+                                    + formatter.format(getEventSchedule4Doc(docInst)));
+            }
+
+            final StringBuilder script = new StringBuilder();
+            int i = 0;
+            for (final Instance inst : instances) {
+                script.append("document.getElementsByName(\"retPerDet\")[").append(i).append("].innerHTML=\"")
+                    .append(StringEscapeUtils.escapeEcmaScript(
+                            AbstractDocumentTax.getSmallTaxField4Doc(_parameter, inst).toString()))
+                     .append("\";");
+                i++;
+            }
+
+            final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
+            js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                            .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                                            script, false, false, new HashSet<String>()));
+
+        } else if (Display.HIDDEN.equals(fieldValue.getDisplay())) {
+
             final SelectBuilder selDoc = new SelectBuilder()
                             .linkto(CISales.PaymentSchedulePosition.Document).instance();
             final SelectBuilder selDocName = new SelectBuilder()
@@ -429,8 +488,9 @@ public abstract class EventSchedule_Base
                                 .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
                                                 getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
             }
-            js.append("</script>\n");
+
         }
+        js.append("</script>\n");
         final Return ret = new Return();
         ret.put(ReturnValues.SNIPLETT, js.toString());
         return ret;

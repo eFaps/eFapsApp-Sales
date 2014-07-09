@@ -605,16 +605,11 @@ public abstract class AbstractDocumentSum_Base
         final int selected = getSelectedRow(_parameter);
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
         final String fieldName = field.getName();
-        final String oid = _parameter.getParameterValues(fieldName)[selected];
-        String name;
+        final Instance prodInst = Instance.get(_parameter.getParameterValues(fieldName)[selected]);
+
         // validate that a product was selected
-        if (oid.length() > 0) {
-            add2UpdateField4Product(_parameter, map, Instance.get(oid));
-            name = (String) map.get(fieldName + "AutoComplete");
-        } else {
-            name = "";
-        }
-        if (name.length() > 0) {
+        if (prodInst.isValid()) {
+            add2UpdateField4Product(_parameter, map, prodInst);
             final List<Calculator> calcList = analyseTable(_parameter, selected);
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
@@ -623,13 +618,8 @@ public abstract class AbstractDocumentSum_Base
                 retVal.put(ReturnValues.VALUES, list);
             }
         } else {
-            map.put(fieldName + "AutoComplete", name);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
-            final StringBuilder js = new StringBuilder();
-            js.append("document.getElementsByName('").append(fieldName).append("AutoComplete')[").append(selected)
-                .append("].focus()");
-            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
     }

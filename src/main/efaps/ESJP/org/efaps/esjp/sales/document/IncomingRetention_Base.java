@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -144,6 +145,18 @@ public abstract class IncomingRetention_Base
         relInsert.add(CISales.IncomingRetention2IncomingInvoice.FromLink, _taxDoc.getInstance());
         relInsert.add(CISales.IncomingRetention2IncomingInvoice.ToLink, _origDoc.getInstance());
         relInsert.execute();
+    }
+
+
+    /**
+     * @param _parameter
+     * @return
+     */
+    @Override
+    protected Type getType4create4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingRetention.getType();
     }
 
 

@@ -73,7 +73,7 @@ public abstract class AbstractDocumentTax_Base
         final BigDecimal value = (BigDecimal) _createdDoc.getValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE);
         if (value.compareTo(BigDecimal.ZERO) > 0) {
             ret = new CreatedDoc();
-            final Type type = getType4DocCreate(_parameter);
+            final Type type = getType4create4Doc(_parameter);
             final Insert insert = new Insert(type);
             insert.add(CISales.DocumentSumAbstract.Date,
                             _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
@@ -124,6 +124,13 @@ public abstract class AbstractDocumentTax_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter
+     * @return
+     */
+    protected abstract Type getType4create4Doc(final Parameter _parameter)
+        throws EFapsException;
 
     /**
      * @param _parameter Parameter as passed from the eFaps API.

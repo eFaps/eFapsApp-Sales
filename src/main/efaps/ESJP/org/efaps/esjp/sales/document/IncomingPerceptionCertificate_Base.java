@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -106,7 +107,17 @@ public abstract class IncomingPerceptionCertificate_Base
         relInsert.add(CISales.IncomingPerceptionCertificate2IncomingInvoice.FromLink, _taxDoc.getInstance());
         relInsert.add(CISales.IncomingPerceptionCertificate2IncomingInvoice.ToLink, _origDoc.getInstance());
         relInsert.execute();
+    }
 
+    /**
+     * @param _parameter
+     * @return
+     */
+    @Override
+    protected Type getType4create4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingPerceptionCertificate.getType();
     }
 
     /**

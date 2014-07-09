@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -131,17 +132,28 @@ public abstract class IncomingDetraction_Base
         return new Return();
     }
 
-        @Override
-        protected void connectDoc(final Parameter _parameter,
-                                  final CreatedDoc _origDoc,
-                                  final CreatedDoc _taxDoc)
-            throws EFapsException
-        {
-            final Insert relInsert = new Insert(CISales.IncomingDetraction2IncomingInvoice);
-            relInsert.add(CISales.IncomingDetraction2IncomingInvoice.FromLink, _taxDoc.getInstance());
-            relInsert.add(CISales.IncomingDetraction2IncomingInvoice.ToLink, _origDoc.getInstance());
-            relInsert.execute();
-        }
+    @Override
+    protected void connectDoc(final Parameter _parameter,
+                              final CreatedDoc _origDoc,
+                              final CreatedDoc _taxDoc)
+        throws EFapsException
+    {
+        final Insert relInsert = new Insert(CISales.IncomingDetraction2IncomingInvoice);
+        relInsert.add(CISales.IncomingDetraction2IncomingInvoice.FromLink, _taxDoc.getInstance());
+        relInsert.add(CISales.IncomingDetraction2IncomingInvoice.ToLink, _origDoc.getInstance());
+        relInsert.execute();
+    }
+
+    /**
+     * @param _parameter
+     * @return
+     */
+    @Override
+    protected Type getType4create4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.IncomingDetraction.getType();
+    }
 
     /**
      * Method to obtains name to CreatedDoc.

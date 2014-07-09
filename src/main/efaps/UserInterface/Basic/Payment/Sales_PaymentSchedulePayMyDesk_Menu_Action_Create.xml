@@ -36,8 +36,8 @@
         </access>
         <!-- target definitions -->
         <target>
-            <form>Sales_PaymentSchedulePayForm</form>
-            <execute method="createSchedule4SelectedDocs" program="org.efaps.esjp.sales.PaymentSchedule">
+            <form>Sales_PaymentScheduleForm</form>
+            <execute program="org.efaps.esjp.sales.PaymentSchedule" method="create">
                 <property name="PositionType">Sales_PaymentSchedulePosition</property>
                 <property name="StatusGroup">Sales_PaymentScheduleStatus</property>
                 <property name="Status">Open</property>
@@ -48,11 +48,11 @@
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentSchedule</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">400</property>
+        <property name="WindowHeight">550</property>
+        <property name="WindowWidth">1100</property>
         <property name="TargetDefaultMenu">none</property>
         <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="SubmitSelectedRows">0</property>
     </definition>
 
 </ui-command>

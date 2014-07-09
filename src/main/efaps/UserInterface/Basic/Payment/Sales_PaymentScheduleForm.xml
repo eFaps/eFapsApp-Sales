@@ -131,7 +131,7 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
-            <property name="ModeCreate">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule"
