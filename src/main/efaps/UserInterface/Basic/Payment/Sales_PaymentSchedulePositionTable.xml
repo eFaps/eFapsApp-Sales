@@ -52,6 +52,9 @@
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactPos">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[Document].linkto[Contact].oid</property>
+            <property name="Select">linkto[Document].linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_PaymentSchedulePositionTable.contactPos.Label</property>
@@ -62,7 +65,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DocumentDesc</property>
             <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
-            <property name="Width">8</property>
+            <property name="Width">2</property>
         </field>
         <field name="amount4Schedule">
             <property name="ModeCreate">EDITABLE</property>
@@ -128,6 +131,9 @@
                 name="Sales_PaymentSchedulePositionTable.document.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactPos">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[Document].linkto[Contact].oid</property>
+            <property name="Select">linkto[Document].linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_PaymentSchedulePositionTable.contactPos.Label</property>
@@ -138,7 +144,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">DocumentDesc</property>
             <property name="Label">Sales_PaymentSchedulePosition/DocumentDesc.Label</property>
-            <property name="Width">8</property>
+            <property name="Width">2</property>
         </field>
         <field name="amount4Schedule">
             <property name="ModeCreate">EDITABLE</property>
