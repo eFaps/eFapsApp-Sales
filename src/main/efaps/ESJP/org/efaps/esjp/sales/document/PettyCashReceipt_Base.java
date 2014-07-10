@@ -45,6 +45,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
@@ -212,7 +213,7 @@ public abstract class PettyCashReceipt_Base
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.name4create.name);
                 final Instance contactInst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contact.name));
-                if ((name == null || !name.isEmpty()) && !contactInst.isValid()) {
+                if (name.isEmpty() || !contactInst.isValid()) {
                     ret.add(new EvaluateDeducibleDocWarning());
                 }
             } else {
@@ -281,15 +282,24 @@ public abstract class PettyCashReceipt_Base
         throws EFapsException
     {
         final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+        list.add(map);
         if (!evalDeducible(_parameter)) {
-            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-            final Map<String, Object> map = new HashMap<String, Object>();
-            list.add(map);
             map.put(CIFormSales.Sales_PettyCashReceiptForm.name4create.name, "");
             map.put(CIFormSales.Sales_PettyCashReceiptForm.contactData.name, "");
             map.put(CIFormSales.Sales_PettyCashReceiptForm.contact.name, new String[] { "", "" });
-            retVal.put(ReturnValues.VALUES, list);
+            InterfaceUtils.appendScript4FieldUpdate(map, getSetFieldReadOnlyScript(_parameter,
+                        CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+                        CIFormSales.Sales_PettyCashReceiptForm.name4create.name));
+        } else {
+            InterfaceUtils.appendScript4FieldUpdate(map, getSetFieldReadOnlyScript(_parameter,
+                            null,
+                            false,
+                            CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+                            CIFormSales.Sales_PettyCashReceiptForm.name4create.name));
         }
+        retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
 
@@ -317,9 +327,25 @@ public abstract class PettyCashReceipt_Base
         updateTransaction(_parameter, editDoc);
         return new Return();
     }
+
     /**
      * @param _parameter parameter as passed by the eFaps API
-     * @return Return contiaining javascript
+     * @return Return containing javascript
+     * @throws EFapsException on error
+     */
+    public Return getJavaScriptUIValue4Receipt(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, wrappScript(getSetFieldReadOnlyScript(_parameter,
+                        CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+                        CIFormSales.Sales_PettyCashReceiptForm.name4create.name), true, 1500));
+        return ret;
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFaps API
+     * @return Return containing javascript
      * @throws EFapsException on error
      */
     public Return getJavaScriptUIValue4EditJustification(final Parameter _parameter)
