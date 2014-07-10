@@ -33,7 +33,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
-
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -245,14 +244,6 @@ public abstract class DeliveryNote_Base
     {
         final Contacts contacts = new Contacts();
         return contacts.autoComplete4Contact(_parameter);
-    }
-
-
-    public Return updateFields4Carrier(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Contacts contacts = new Contacts();
-        return contacts.updateFields4Contact(_parameter);
     }
 
     /**
