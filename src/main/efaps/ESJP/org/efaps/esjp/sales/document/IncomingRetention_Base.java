@@ -127,7 +127,7 @@ public abstract class IncomingRetention_Base
                 }
                 final IncomingRetention doc = new IncomingRetention();
                 createdDoc.addValue(IncomingRetention_Base.AMOUNTVALUE, retention);
-                doc.create4Doc(_parameter, createdDoc);
+                doc.createUpdate4Doc(_parameter, createdDoc);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingRetention.class, "Perception.ParseException", p);
             }

@@ -115,7 +115,7 @@ public abstract class IncomingInvoice_Base
         registerPurchasePrices(_parameter, createdDoc);
 
         connect2Object(_parameter, createdDoc);
-        createTaxDoc(_parameter, createdDoc);
+        createUpdateTaxDoc(_parameter, createdDoc, false);
 
         return new Return();
     }
@@ -153,12 +153,16 @@ public abstract class IncomingInvoice_Base
      * @param _createdDoc created Document
      * @throws EFapsException on error
      */
-    protected void createTaxDoc(final Parameter _parameter,
-                                final CreatedDoc _createdDoc)
+    protected void createUpdateTaxDoc(final Parameter _parameter,
+                                      final CreatedDoc _createdDoc,
+                                      final boolean _isUpdate)
         throws EFapsException
     {
-        if ("false".equalsIgnoreCase(_parameter
-                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc.name))) {
+        boolean executed = false;
+        if ("false".equalsIgnoreCase(ParameterUtil.getParameterValue(_parameter,
+                        CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc.name,
+                        CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc4Edit.name,
+                        CIFormSales.Sales_IncomingInvoiceForm.headingTaxDoc4EditCollapsed.name))) {
 
             final String perceptionValueStr = _parameter
                             .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionValue.name);
@@ -168,7 +172,8 @@ public abstract class IncomingInvoice_Base
                     final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
                     final IncomingPerceptionCertificate doc = new IncomingPerceptionCertificate();
                     _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, perception);
-                    doc.create4Doc(_parameter, _createdDoc);
+                    doc.createUpdate4Doc(_parameter, _createdDoc);
+                    executed = true;
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
@@ -189,7 +194,8 @@ public abstract class IncomingInvoice_Base
                     }
                     final IncomingDetraction doc = new IncomingDetraction();
                     _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, detraction);
-                    doc.create4Doc(_parameter, _createdDoc);
+                    doc.createUpdate4Doc(_parameter, _createdDoc);
+                    executed = true;
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
@@ -210,11 +216,33 @@ public abstract class IncomingInvoice_Base
                     }
                     final IncomingRetention doc = new IncomingRetention();
                     _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, retention);
-                    doc.create4Doc(_parameter, _createdDoc);
+                    doc.createUpdate4Doc(_parameter, _createdDoc);
+                    executed = true;
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
             }
+        }
+        if (_createdDoc.getValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE) == null && _isUpdate && !executed) {
+            _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, BigDecimal.ZERO);
+            new AbstractDocumentTax(){
+
+                @Override
+                protected Type getType4create4Doc(final Parameter _parameter)
+                    throws EFapsException
+                {
+                    // just any type so that the evaluation will fail
+                    return CISales.DeliveryNote.getType();
+                }
+
+                @Override
+                protected void connectDoc(final Parameter _parameter,
+                                          final CreatedDoc _origDoc,
+                                          final CreatedDoc _taxDoc)
+                    throws EFapsException
+                {
+                    // not needed
+                }}.createUpdate4Doc(_parameter, _createdDoc);
         }
     }
 
@@ -230,6 +258,7 @@ public abstract class IncomingInvoice_Base
     {
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
+        createUpdateTaxDoc(_parameter, editDoc, true);
         return new Return();
     }
 

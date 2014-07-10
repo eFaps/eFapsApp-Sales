@@ -124,7 +124,7 @@ public abstract class IncomingDetraction_Base
                     detraction = BigDecimal.ZERO;
                 }
                 createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, detraction);
-                create4Doc(_parameter, createdDoc);
+                createUpdate4Doc(_parameter, createdDoc);
             } catch (final ParseException p) {
                 throw new EFapsException(IncomingDetraction.class, "Perception.ParseException", p);
             }
