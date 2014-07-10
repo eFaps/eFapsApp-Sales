@@ -43,7 +43,8 @@
                 <property name="Status">Open</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate">
-                <property name="Validation">NAME</property>
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
             </validate>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
@@ -79,7 +80,8 @@
                 <property name="ConnectForeignField">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate">
-                <property name="Validation">NAME</property>
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
             </validate>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
