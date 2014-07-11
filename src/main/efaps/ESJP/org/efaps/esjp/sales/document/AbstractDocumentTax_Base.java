@@ -320,7 +320,7 @@ public abstract class AbstractDocumentTax_Base
         protected void initialize()
             throws EFapsException
         {
-            if (!this.initialized) {
+            if (!this.initialized && this.docInstance != null && this.docInstance.isValid()) {
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
                 queryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.docInstance);
                 final MultiPrintQuery multi = queryBldr.getPrint();
