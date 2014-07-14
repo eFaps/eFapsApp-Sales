@@ -43,6 +43,7 @@ import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
@@ -109,35 +110,28 @@ public abstract class AbstractDocumentTax_Base
                 update = new Update(docTaxInfo.getTaxDocInstance());
             } else {
                 update = new Insert(type);
-                update.add(CISales.DocumentSumAbstract.Date,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
+                final PrintQuery print = new PrintQuery(_createdDoc.getInstance());
+                print.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.Contact,
+                                CISales.DocumentSumAbstract.Salesperson, CISales.DocumentSumAbstract.Group,
+                                CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CurrencyId,
+                                CISales.DocumentSumAbstract.RateCurrencyId, CISales.DocumentSumAbstract.Name);
+                print.executeWithoutAccessCheck();
+                update.add(CISales.DocumentSumAbstract.Date, print.getAttribute(CISales.DocumentSumAbstract.Date));
                 update.add(CISales.DocumentSumAbstract.Contact,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Contact.name));
+                                print.getAttribute(CISales.DocumentSumAbstract.Contact));
                 update.add(CISales.DocumentSumAbstract.Salesperson,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Salesperson.name));
-                update.add(CISales.DocumentSumAbstract.Group,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Group.name));
-                update.add(CISales.DocumentSumAbstract.Rate,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name));
+                                print.getAttribute(CISales.DocumentSumAbstract.Salesperson));
+                update.add(CISales.DocumentSumAbstract.Group, print.getAttribute(CISales.DocumentSumAbstract.Group));
+                update.add(CISales.DocumentSumAbstract.Rate, print.getAttribute(CISales.DocumentSumAbstract.Rate));
                 update.add(CISales.DocumentSumAbstract.CurrencyId,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.CurrencyId.name));
+                                print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
                 update.add(CISales.DocumentSumAbstract.RateCurrencyId,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
-                update.add(CISales.DocumentSumAbstract.Creator,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Creator.name));
-                update.add(CISales.DocumentSumAbstract.Created,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Created.name));
-                update.add(CISales.DocumentSumAbstract.Modifier,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Modifier.name));
-                update.add(CISales.DocumentSumAbstract.Modified,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Modified.name));
+                                print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+                update.add(CISales.DocumentSumAbstract.Name, print.getAttribute(CISales.DocumentSumAbstract.Name));
                 update.add(CISales.DocumentSumAbstract.RateNetTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.NetTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
-
-                update.add(CISales.DocumentSumAbstract.Name,
-                                _createdDoc.getValue(CISales.DocumentSumAbstract.Name.name));
             }
 
             final Object[] rateObj = (Object[]) _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name);
