@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -39,20 +41,41 @@ import org.efaps.util.EFapsException;
 public abstract class AbstractDocumentTax
     extends AbstractDocumentTax_Base
 {
-
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst instance of the document
+     * @return html field value
+     * @throws EFapsException on error
+     */
     public static StringBuilder getSmallTaxField4Doc(final Parameter _parameter,
-                                                    final Instance _docInst)
+                                                     final Instance _docInst)
         throws EFapsException
     {
         return AbstractDocumentTax_Base.getSmallTaxField4Doc(_parameter, _docInst);
     }
 
     /**
-     * @param _instance
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst instance of the document
+     * @return html field value
+     * @throws EFapsException on error
      */
-    public static DocTaxInfo getDocTaxInfo(final Parameter _parameter, final Instance _docInst)
-    throws EFapsException
+    public static DocTaxInfo getDocTaxInfo(final Parameter _parameter,
+                                           final Instance _docInst)
+        throws EFapsException
     {
         return AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _docInst);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstances instance of the document
+     * @throws EFapsException on error
+     */
+    public static void evaluateDocTaxInfo(final Parameter _parameter,
+                                          final List<Instance> _docInstances)
+        throws EFapsException
+    {
+        AbstractDocumentTax_Base.evaluateDocTaxInfo(_parameter, _docInstances);
     }
 }

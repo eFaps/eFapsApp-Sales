@@ -22,16 +22,22 @@ package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -189,61 +195,89 @@ public abstract class AbstractDocumentTax_Base
                         Status.find(_insert.getInstance().getType().getStatusAttribute().getLink().getUUID(), "Open"));
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst instance of the document
+     * @return html field value
+     * @throws EFapsException on error
+     */
     public static StringBuilder getSmallTaxField4Doc(final Parameter _parameter,
                                                      final Instance _docInst)
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
+        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final DocTaxInfo doctaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _docInst);
-        // TODO configurable
-        final String fieldName = "taxDocType" + _docInst.getOid();
-        final String id1 = RandomStringUtils.randomAlphanumeric(6);
-        final String id2 = RandomStringUtils.randomAlphanumeric(6);
-        final String id3 = RandomStringUtils.randomAlphanumeric(6);
-        final String id4 = RandomStringUtils.randomAlphanumeric(6);
-
-        ret.append("<input type=\"radio\" value=\"").append("NONE").append("\" name=\"")
-                        .append(fieldName).append("\" id=\"").append(id1).append("\"");
-        if (!doctaxInfo.isValid()) {
-            ret.append(" checked=\"checked\" ");
-        }
-        ret.append("/><label for=\"").append(id1).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"))
-                        .append("</label>");
-
-        ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingDetraction.getType().getId())
-                        .append("\" name=\"").append(fieldName).append("\" id=\"").append(id2).append("\"");
-        if (doctaxInfo.isDetraction()) {
-            ret.append(" checked=\"checked\" ");
-        }
-        ret.append("/><label for=\"").append(id2).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
-                                        + ".IncomingDetractionSmallLabel"))
-                        .append("</label>");
-
-        ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingRetention.getType().getId())
-                        .append("\" name=\"").append(fieldName).append("\" id=\"").append(id3).append("\"");
-        if (doctaxInfo.isRetention()) {
-            ret.append(" checked=\"checked\" ");
-        }
-        ret.append("/><label for=\"").append(id3).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
-                                        + ".IncomingRetentionSmallLabel"))
-                        .append("</label>");
-
-        ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingPerceptionCertificate.getType().getId())
-                        .append("\" name=\"").append(fieldName).append("\" id=\"").append(id4).append("\"");
-        if (doctaxInfo.isPerception()) {
-            ret.append(" checked=\"checked\" ");
-        }
-        ret.append("/><label for=\"").append(id4).append("\">")
-                        .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
-                                        + ".IncomingPerceptionCertificateSmallLabel")).append("</label>");
-
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
-        ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
-                        .append(formater.format(doctaxInfo.getTaxAmount()))
-                        .append("\">");
+        if (fieldValue.getDisplay().equals(Display.EDITABLE)) {
+            // TODO configurable
+            final String fieldName = "taxDocType" + _docInst.getOid();
+            final String id1 = RandomStringUtils.randomAlphanumeric(6);
+            final String id2 = RandomStringUtils.randomAlphanumeric(6);
+            final String id3 = RandomStringUtils.randomAlphanumeric(6);
+            final String id4 = RandomStringUtils.randomAlphanumeric(6);
+
+            ret.append("<input type=\"radio\" value=\"").append("NONE").append("\" name=\"")
+                            .append(fieldName).append("\" id=\"").append(id1).append("\"");
+            if (!doctaxInfo.isValid()) {
+                ret.append(" checked=\"checked\" ");
+            }
+            ret.append("/><label for=\"").append(id1).append("\">")
+                            .append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"))
+                            .append("</label>");
+
+            ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingDetraction.getType().getId())
+                            .append("\" name=\"").append(fieldName).append("\" id=\"").append(id2).append("\"");
+            if (doctaxInfo.isDetraction()) {
+                ret.append(" checked=\"checked\" ");
+            }
+            ret.append("/><label for=\"").append(id2).append("\">")
+                            .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                            + ".IncomingDetractionSmallLabel"))
+                            .append("</label>");
+
+            ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingRetention.getType().getId())
+                            .append("\" name=\"").append(fieldName).append("\" id=\"").append(id3).append("\"");
+            if (doctaxInfo.isRetention()) {
+                ret.append(" checked=\"checked\" ");
+            }
+            ret.append("/><label for=\"").append(id3).append("\">")
+                            .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                            + ".IncomingRetentionSmallLabel"))
+                            .append("</label>");
+
+            ret.append("<input type=\"radio\" value=\"").append(CISales.IncomingPerceptionCertificate.getType().getId())
+                            .append("\" name=\"").append(fieldName).append("\" id=\"").append(id4).append("\"");
+            if (doctaxInfo.isPerception()) {
+                ret.append(" checked=\"checked\" ");
+            }
+            ret.append("/><label for=\"").append(id4).append("\">")
+                            .append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                            + ".IncomingPerceptionCertificateSmallLabel")).append("</label>");
+
+            ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
+                            .append(formater.format(doctaxInfo.getTaxAmount()))
+                            .append("\">");
+        } else if (fieldValue.getDisplay().equals(Display.READONLY)) {
+            if (!doctaxInfo.isValid()) {
+                ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"));
+            } else {
+                if (doctaxInfo.isDetraction()) {
+                    ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                + ".IncomingDetractionSmallLabel"));
+                } else if (doctaxInfo.isRetention()) {
+                    ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                + ".IncomingRetentionSmallLabel"));
+                } else if (doctaxInfo.isPerception()) {
+                    ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                + ".IncomingPerceptionCertificateSmallLabel"));
+                }
+                ret.append(": ").append(formater.format(doctaxInfo.getTaxAmount())).append(" (")
+                .append(formater.format(doctaxInfo.getPercent())).append("%)");
+            }
+        } else {
+            ret.append("-");
+        }
         return ret;
     }
 
@@ -268,6 +302,73 @@ public abstract class AbstractDocumentTax_Base
             mapping.put(_docInst, new DocTaxInfo(_docInst));
         }
         return mapping.get(_docInst);
+    }
+
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstances instance of the document
+     *
+     * @throws EFapsException on error
+     */
+    public static void evaluateDocTaxInfo(final Parameter _parameter,
+                                          final List<Instance> _docInstances)
+        throws EFapsException
+    {
+        if (!Context.getThreadContext().containsRequestAttribute(AbstractDocumentTax_Base.REQKEY4DOCTAXINFO)) {
+            Context.getThreadContext().setRequestAttribute(AbstractDocumentTax_Base.REQKEY4DOCTAXINFO,
+                            new HashMap<Instance, DocTaxInfo>());
+        }
+        @SuppressWarnings("unchecked")
+        final Map<Instance, DocTaxInfo> mapping = (Map<Instance, DocTaxInfo>) Context.getThreadContext()
+                        .getRequestAttribute(AbstractDocumentTax_Base.REQKEY4DOCTAXINFO);
+        final List<Instance> instances = new ArrayList<>();
+        final List<Instance> validInstances = new ArrayList<>();
+        for (final Instance docInstance : _docInstances) {
+            if (!mapping.containsKey(docInstance)) {
+                instances.add(docInstance);
+            }
+        }
+        if (!instances.isEmpty()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, instances.toArray());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDoc = SelectBuilder.get().linkto(
+                            CISales.IncomingDocumentTax2Document.ToAbstractLink);
+            final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
+            final SelectBuilder selDocTax = SelectBuilder.get().linkto(
+                            CISales.IncomingDocumentTax2Document.FromAbstractLink);
+            final SelectBuilder selDocTaxInst = new SelectBuilder(selDocTax).instance();
+            final SelectBuilder selDocTaxCrossTotal = new SelectBuilder(selDocTax)
+                            .attribute(CISales.DocumentSumAbstract.CrossTotal);
+            final SelectBuilder selDocCrossTotal = new SelectBuilder(selDoc)
+                            .attribute(CISales.DocumentSumAbstract.CrossTotal);
+            multi.addSelect(selDocInst, selDocTaxInst, selDocTaxCrossTotal, selDocCrossTotal);
+            multi.execute();
+            while (multi.next()) {
+                final Instance docInstance = multi.getSelect(selDocInst);
+                validInstances.add(docInstance);
+                final Instance relInstance = multi.getCurrentInstance();
+                final Instance taxDocInstance = multi.getSelect(selDocTaxInst);
+                final BigDecimal taxAmount = multi.getSelect(selDocTaxCrossTotal);
+                final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
+                final BigDecimal percent = new BigDecimal(100).setScale(8).divide(crossTotal, BigDecimal.ROUND_HALF_UP)
+                               .multiply(taxAmount);
+                final DocTaxInfo docTaxInfo = new DocTaxInfo(docInstance);
+                mapping.put(docInstance, docTaxInfo);
+                docTaxInfo.setRelInstance(relInstance);
+                docTaxInfo.setTaxDocInstance(taxDocInstance);
+                docTaxInfo.setTaxAmount(taxAmount);
+                docTaxInfo.setPercent(percent);
+                docTaxInfo.setInitialized(true);
+            }
+            for (final Instance inst : CollectionUtils.subtract(instances, validInstances)) {
+                final DocTaxInfo docTaxInfo = new DocTaxInfo(inst);
+                mapping.put(inst, docTaxInfo);
+                docTaxInfo.setInitialized(true);
+            }
+        }
     }
 
     /**
@@ -304,7 +405,6 @@ public abstract class AbstractDocumentTax_Base
          * The amount expressed in percent.
          */
         private BigDecimal percent = BigDecimal.ZERO;
-
 
         /**
          * @param _docInst instance of teh docuemnt the info belong to
@@ -529,6 +629,28 @@ public abstract class AbstractDocumentTax_Base
         public void setRelInstance(final Instance _relInstance)
         {
             this.relInstance = _relInstance;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #initialized}.
+         *
+         * @return value of instance variable {@link #initialized}
+         */
+        public boolean isInitialized()
+        {
+            return this.initialized;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #initialized}.
+         *
+         * @param _initialized value for instance variable {@link #initialized}
+         */
+        public void setInitialized(final boolean _initialized)
+        {
+            this.initialized = _initialized;
         }
     }
 }
