@@ -172,10 +172,13 @@ public abstract class RetentionReport_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentAbstract.Contact)
                             .attribute(CIContacts.ContactAbstract.Name);
-            multi.addSelect(selContactName);
+            final SelectBuilder selRateCurSymbol = SelectBuilder.get()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+
+            multi.addSelect(selContactName, selRateCurSymbol);
             multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Revision,
                             CISales.DocumentAbstract.Date, CISales.DocumentSumAbstract.CrossTotal,
-                            CISales.DocumentAbstract.StatusAbstract);
+                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentAbstract.StatusAbstract);
             multi.execute();
             while (multi.next()) {
                 final DocumentBean bean = getBean(_parameter);
@@ -186,6 +189,8 @@ public abstract class RetentionReport_Base
                 bean.setTypeLabel(multi.getCurrentInstance().getType().getLabel());
                 bean.setContactName(multi.<String>getSelect(selContactName));
                 bean.setDate(multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date));
+                bean.setRateCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                bean.setRateSymbol(multi.<String>getSelect(selRateCurSymbol));
                 bean.setCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
                 bean.setRevision(multi.<String>getAttribute(CISales.DocumentAbstract.Revision));
                 bean.setStatusLabel(Status.get(multi.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract))
@@ -344,6 +349,12 @@ public abstract class RetentionReport_Base
             final TextColumnBuilder<BigDecimal> crossTotalColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.CrossTotal"), "crossTotal",
                             DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<BigDecimal> rateCrossTotalColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".Column.RateCrossTotal"), "rateCrossTotal",
+                            DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<String> rateSymbolColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".Column.RateSymbol"), "rateSymbol",
+                            DynamicReports.type.stringType());
             final TextColumnBuilder<String> statusColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Status"), "statusLabel",
                             DynamicReports.type.stringType());
@@ -375,7 +386,8 @@ public abstract class RetentionReport_Base
             final AggregationSubtotalBuilder<BigDecimal> retentionSum = DynamicReports.sbt.sum(retentionColumn);
 
             _builder.addColumn(monthColumn, contactNameColumn, typeColumn, revisionColumn, nameColumn,
-                            dateColumn, crossTotalColumn, paymentColumn, retentionColumn, percentColumn, statusColumn);
+                            dateColumn, rateCrossTotalColumn, rateSymbolColumn, crossTotalColumn, paymentColumn,
+                            retentionColumn, percentColumn, statusColumn);
             _builder.addSubtotalAtGroupFooter(contactGroup, crossTotalSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, paymentSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, retentionSum);
@@ -478,6 +490,16 @@ public abstract class RetentionReport_Base
          * CrossTotal.
          */
         private BigDecimal crossTotal;
+
+        /**
+         * RateCrossTotal.
+         */
+        private BigDecimal rateCrossTotal;
+
+        /**
+         * Symbol.
+         */
+        private String rateSymbol;
 
         /**
          * Revision.
@@ -609,6 +631,48 @@ public abstract class RetentionReport_Base
             this.crossTotal = _crossTotal;
         }
 
+        /**
+         * Getter method for the instance variable {@link #rateCrossTotal}.
+         *
+         * @return value of instance variable {@link #rateCrossTotal}
+         */
+        public BigDecimal getRateCrossTotal()
+        {
+            return this.rateCrossTotal;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #rateCrossTotal}.
+         *
+         * @param _crossTotal value for instance variable {@link #rateCrossTotal}
+         */
+        public void setRateCrossTotal(final BigDecimal _rateCrossTotal)
+        {
+            this.rateCrossTotal = _rateCrossTotal;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #rateSymbol}.
+         *
+         * @return value of instance variable {@link #rateSymbol}
+         */
+        public String getRateSymbol()
+        {
+            return this.rateSymbol;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #rateSymbol}.
+         *
+         * @param _revision value for instance variable {@link #rateSymbol}
+         */
+        public void setRateSymbol(final String _rateSymbol)
+        {
+            this.rateSymbol = _rateSymbol;
+        }
 
         /**
          * Getter method for the instance variable {@link #revision}.
