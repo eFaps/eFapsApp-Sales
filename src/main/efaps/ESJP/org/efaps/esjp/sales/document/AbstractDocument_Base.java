@@ -451,6 +451,19 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Used by the AutoCompleteField used in the select doc form for ProductionOrder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4ProductionOrder(final Parameter _parameter)
+        throws EFapsException
+    {
+        return autoComplete4Doc(_parameter, CISales.ProductionOrder.uuid, (Status[]) null);
+    }
+
+    /**
      * Used by the AutoCompleteField used in the select doc form.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -818,6 +831,19 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     public Return updateFields4CostSheet(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
+    }
+
+    /**
+     * Used by the update event used in the select doc form for ProductionOrder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return map list for update event
+     * @throws EFapsException on error
+     */
+    public Return updateFields4ProductionOrder(final Parameter _parameter)
         throws EFapsException
     {
         return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
