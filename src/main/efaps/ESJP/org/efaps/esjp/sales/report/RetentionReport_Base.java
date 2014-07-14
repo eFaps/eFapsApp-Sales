@@ -174,8 +174,11 @@ public abstract class RetentionReport_Base
                             .attribute(CIContacts.ContactAbstract.Name);
             final SelectBuilder selRateCurSymbol = SelectBuilder.get()
                             .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
-
-            multi.addSelect(selContactName, selRateCurSymbol);
+            final SelectBuilder selRetAmount = SelectBuilder.get()
+                            .linkfrom(CISales.IncomingRetention2IncomingInvoice.ToLink)
+                            .linkto(CISales.IncomingRetention2IncomingInvoice.FromLink)
+                            .attribute(CISales.IncomingRetention.CrossTotal);
+            multi.addSelect(selContactName, selRateCurSymbol, selRetAmount);
             multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Revision,
                             CISales.DocumentAbstract.Date, CISales.DocumentSumAbstract.CrossTotal,
                             CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentAbstract.StatusAbstract);
@@ -195,6 +198,7 @@ public abstract class RetentionReport_Base
                 bean.setRevision(multi.<String>getAttribute(CISales.DocumentAbstract.Revision));
                 bean.setStatusLabel(Status.get(multi.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract))
                                 .getLabel());
+                bean.addRetention(multi.<BigDecimal>getSelect(selRetAmount));
             }
 
             analyzePayments(_parameter, inst2bean);
@@ -276,7 +280,7 @@ public abstract class RetentionReport_Base
 //                amount = amount.multiply(rate).setScale(2, BigDecimal.ROUND_HALF_UP);
 
                 if (payDocInst.getType().isKindOf(CISales.PaymentRetentionOut.getType())) {
-                    docBean.addRetention(amount);
+                    docBean.addRetentionPayment(amount);
                 } else {
                     docBean.addPayment(amount);
                 }
@@ -361,10 +365,16 @@ public abstract class RetentionReport_Base
             final TextColumnBuilder<BigDecimal> paymentColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Payment"), "payment",
                             DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<BigDecimal> retPaymentColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".Column.RetentionPayment"),
+                            "retentionPayment", DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<BigDecimal> percentPaymentColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".Column.PercenPayment"), "percentPayment",
+                            DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<BigDecimal> retentionColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Retention"), "retention",
                             DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> percentColumn = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<BigDecimal> percentColumn=  DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Percent"), "percent",
                             DynamicReports.type.bigDecimalType());
 
@@ -383,13 +393,15 @@ public abstract class RetentionReport_Base
             _builder.addGroup(monthGroup, contactGroup);
             final AggregationSubtotalBuilder<BigDecimal> crossTotalSum = DynamicReports.sbt.sum(crossTotalColumn);
             final AggregationSubtotalBuilder<BigDecimal> paymentSum = DynamicReports.sbt.sum(paymentColumn);
+            final AggregationSubtotalBuilder<BigDecimal> retentionPaymentSum = DynamicReports.sbt.sum(retPaymentColumn);
             final AggregationSubtotalBuilder<BigDecimal> retentionSum = DynamicReports.sbt.sum(retentionColumn);
 
             _builder.addColumn(monthColumn, contactNameColumn, typeColumn, revisionColumn, nameColumn,
                             dateColumn, rateCrossTotalColumn, rateSymbolColumn, crossTotalColumn, paymentColumn,
-                            retentionColumn, percentColumn, statusColumn);
+                            retPaymentColumn, percentPaymentColumn, statusColumn, retentionColumn, percentColumn);
             _builder.addSubtotalAtGroupFooter(contactGroup, crossTotalSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, paymentSum);
+            _builder.addSubtotalAtGroupFooter(contactGroup, retentionPaymentSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, retentionSum);
         }
 
@@ -484,6 +496,11 @@ public abstract class RetentionReport_Base
         /**
          * CrossTotal.
          */
+        private BigDecimal retentionPayment = BigDecimal.ZERO;
+
+        /**
+         * CrossTotal.
+         */
         private BigDecimal retention = BigDecimal.ZERO;
 
         /**
@@ -522,7 +539,7 @@ public abstract class RetentionReport_Base
         }
 
         /**
-         * @param _amount
+         * @param _amount amount to add
          */
         public void addPayment(final BigDecimal _amount)
         {
@@ -530,11 +547,21 @@ public abstract class RetentionReport_Base
         }
 
         /**
-         * @param _amount
+         * @param _amount to add
+         */
+        public void addRetentionPayment(final BigDecimal _amount)
+        {
+            this.retentionPayment = this.retentionPayment.add(_amount);
+        }
+
+        /**
+         * @param _amount to add
          */
         public void addRetention(final BigDecimal _amount)
         {
-            this.retention = this.retention.add(_amount);
+            if (_amount != null) {
+                this.retention = this.retention.add(_amount);
+            }
         }
 
         /**
@@ -641,17 +668,15 @@ public abstract class RetentionReport_Base
             return this.rateCrossTotal;
         }
 
-
         /**
          * Setter method for instance variable {@link #rateCrossTotal}.
          *
-         * @param _crossTotal value for instance variable {@link #rateCrossTotal}
+         * @param _rateCrossTotal value for instance variable {@link #rateCrossTotal}
          */
         public void setRateCrossTotal(final BigDecimal _rateCrossTotal)
         {
             this.rateCrossTotal = _rateCrossTotal;
         }
-
 
         /**
          * Getter method for the instance variable {@link #rateSymbol}.
@@ -663,11 +688,10 @@ public abstract class RetentionReport_Base
             return this.rateSymbol;
         }
 
-
         /**
          * Setter method for instance variable {@link #rateSymbol}.
          *
-         * @param _revision value for instance variable {@link #rateSymbol}
+         * @param _rateSymbol value for instance variable {@link #rateSymbol}
          */
         public void setRateSymbol(final String _rateSymbol)
         {
@@ -761,6 +785,42 @@ public abstract class RetentionReport_Base
             this.payment = _payment;
         }
 
+        /**
+         * Getter method for the instance variable {@link #retentionPayment}.
+         *
+         * @return value of instance variable {@link #retentionPayment}
+         */
+        public BigDecimal getRetentionPayment()
+        {
+            return this.retentionPayment;
+        }
+
+        /**
+         * Setter method for instance variable {@link #retentionPayment}.
+         *
+         * @param _retentionPayment value for instance variable {@link #retentionPayment}
+         */
+        public void setRetentionPayment(final BigDecimal _retentionPayment)
+        {
+            this.retentionPayment = _retentionPayment;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #percent}.
+         *
+         * @return value of instance variable {@link #percent}
+         */
+        public BigDecimal getPercentPayment()
+        {
+            BigDecimal ret;
+            if (getCrossTotal().compareTo(BigDecimal.ZERO) != 0) {
+                ret = new BigDecimal(100).setScale(8).divide(getCrossTotal(), BigDecimal.ROUND_HALF_UP)
+                                .multiply(getRetentionPayment()).setScale(2, BigDecimal.ROUND_HALF_UP);
+            } else {
+                ret = BigDecimal.ZERO;
+            }
+            return ret;
+        }
 
         /**
          * Getter method for the instance variable {@link #retention}.
@@ -772,7 +832,6 @@ public abstract class RetentionReport_Base
             return this.retention;
         }
 
-
         /**
          * Setter method for instance variable {@link #retention}.
          *
@@ -782,7 +841,6 @@ public abstract class RetentionReport_Base
         {
             this.retention = _retention;
         }
-
 
         /**
          * Getter method for the instance variable {@link #percent}.
