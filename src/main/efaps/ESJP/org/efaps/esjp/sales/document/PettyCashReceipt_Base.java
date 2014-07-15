@@ -337,7 +337,8 @@ public abstract class PettyCashReceipt_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, wrappScript(getSetFieldReadOnlyScript(_parameter,
+        ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter,
+                        getSetFieldReadOnlyScript(_parameter,
                         CIFormSales.Sales_PettyCashReceiptForm.contact.name,
                         CIFormSales.Sales_PettyCashReceiptForm.name4create.name), true, 1500));
         return ret;

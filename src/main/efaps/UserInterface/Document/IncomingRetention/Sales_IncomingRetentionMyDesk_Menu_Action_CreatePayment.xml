@@ -20,17 +20,27 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6b96a7ae-a63a-4444-bd00-464bda1f1cc9</uuid>
+    <uuid>5033120d-f499-4ade-ba84-63782005381a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingRetentionMyDesk_Menu_Action</name>
-        <childs>
-            <child>Sales_IncomingRetentionMyDesk_Menu_Action_Create</child>
-            <child>Sales_IncomingRetentionMyDesk_Menu_Action_CreatePayment</child>
-        </childs>
+        <name>Sales_IncomingRetentionMyDesk_Menu_Action_CreatePayment</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_IncomingRetention4PaymentRetentionForm</form>
+            <command>Sales_IncomingRetentionMyDesk_Menu_Action_CreatePayment2</command>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_PaymentRetention</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">800</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">0</property>
     </definition>
-</ui-menu>
+</ui-command>

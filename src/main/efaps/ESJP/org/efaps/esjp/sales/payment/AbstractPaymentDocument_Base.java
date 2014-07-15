@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,6 +80,7 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
@@ -1500,6 +1502,22 @@ public abstract class AbstractPaymentDocument_Base
         return instances;
     }
 
+    protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
+                                                          final Collection<Map<KeyDef, Object>> _values)
+        throws EFapsException
+    {
+        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
+        for (final Map<KeyDef, Object> valueMap : _values) {
+            final Map<String, Object> map = new HashMap<String, Object>();
+            for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
+                map.put(entry.getKey().getName(), entry.getKey().convert4Map(entry.getValue()));
+            }
+            ret.add(map);
+        }
+        return ret;
+    }
+
+
     /**
      * Method to update fields with document selected.
      *
@@ -1646,6 +1664,8 @@ public abstract class AbstractPaymentDocument_Base
 
         private AccountInfo accountInfo;
 
+        private String name;
+
         public DocumentInfo(final Instance _instance)
             throws EFapsException
         {
@@ -1657,7 +1677,8 @@ public abstract class AbstractPaymentDocument_Base
                 final SelectBuilder selDocRCurSymbol = new SelectBuilder(selDocRate).attribute(CIERP.Currency.Symbol);
 
                 final PrintQuery print = new PrintQuery(this.instance);
-                print.addAttribute(CISales.DocumentSumAbstract.Rate,
+                print.addAttribute(CISales.DocumentSumAbstract.Name,
+                                CISales.DocumentSumAbstract.Rate,
                                 CISales.DocumentSumAbstract.CrossTotal,
                                 CISales.DocumentSumAbstract.RateCrossTotal);
                 print.addSelect(selDocRCurInst, selDocRCurSymbol);
@@ -1670,6 +1691,7 @@ public abstract class AbstractPaymentDocument_Base
                 this.symbol = print.<String>getSelect(selDocRCurSymbol);
                 this.curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
                 this.rateOptional = null;
+                this.name = print.<String>getAttribute(CISales.DocumentSumAbstract.Name);
                 getPayments4Document();
             }
         }
@@ -1838,7 +1860,7 @@ public abstract class AbstractPaymentDocument_Base
             BigDecimal ret = BigDecimal.ONE;
             if (this.rateCurrency.equals(this.accountInfo.getCurrency())
                             && this.rateCurrency.equals(this.curBase)) {
-                ret = (BigDecimal) this.rateOptional[1];
+                ret = this.rateOptional == null ? (BigDecimal) this.rate[1] : (BigDecimal) this.rateOptional[1];
             } else {
                 if (!(this.rateCurrency.equals(this.accountInfo.getCurrency()))) {
                     ret = (BigDecimal) this.rate[1];
@@ -1912,6 +1934,28 @@ public abstract class AbstractPaymentDocument_Base
             throws EFapsException
         {
             return getInstance().getOid();
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #name}.
+         *
+         * @return value of instance variable {@link #name}
+         */
+        public String getName()
+        {
+            return this.name;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #name}.
+         *
+         * @param _name value for instance variable {@link #name}
+         */
+        public void setName(final String _name)
+        {
+            this.name = _name;
         }
     }
 
