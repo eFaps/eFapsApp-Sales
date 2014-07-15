@@ -76,6 +76,8 @@ import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.document.AbstractDocumentTax;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
@@ -530,14 +532,26 @@ public abstract class AbstractPaymentDocument_Base
 
             final BigDecimal total4Doc = docInfo.getCrossTotal();
             final BigDecimal payments4Doc = docInfo.getTotalPayments();
-            final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
-
+            final BigDecimal amount4PayDoc;
+            final BigDecimal paymentDiscount;
+            final BigDecimal paymentAmountDesc;
+            if (payments4Doc.compareTo(BigDecimal.ZERO) == 0) {
+                // if this is the first payment. check for detraction etc.
+                final DocTaxInfo docTaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, docInstance);
+                amount4PayDoc = total4Doc.subtract(docTaxInfo.getTaxAmount());
+                paymentDiscount = docTaxInfo.getPercent();
+                paymentAmountDesc = docTaxInfo.getTaxAmount();;
+            } else {
+                amount4PayDoc = total4Doc.subtract(payments4Doc);
+                paymentDiscount = BigDecimal.ZERO;
+                paymentAmountDesc = BigDecimal.ZERO;
+            }
             map.put("createDocumentContact", docInfo.getContactName());
             map.put("createDocumentDesc", docInfo.getInfoOriginal());
             map.put("payment4Pay", getTwoDigitsformater().format(amount4PayDoc));
             map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
-            map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
-            map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
+            map.put("paymentAmountDesc", getTwoDigitsformater().format(paymentAmountDesc));
+            map.put("paymentDiscount", getTwoDigitsformater().format(paymentDiscount));
             map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
             map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + (docInfo.getCurrencyInst().isInvert()));
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
