@@ -29,11 +29,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledBalancingForm</name>
         <!-- fields -->
-        <field name="revenues">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Sales_AccountPettyCashBalancingForm.revenues.Label</property>
-            <trigger event="UI_FIELD_VALUE" method="revenuesFieldValue4PettyCashUI" name="Sales_AccountPettyCashBalancingForm.revenues.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account"/>
-        </field>
         <field name="startAmount">
             <property name="Label">Sales_AccountPettyCashBalancingForm.startAmount.Label</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -47,6 +42,11 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="ModeCreate">READONLY</property>
             <trigger event="UI_FIELD_VALUE" method="setFieldValue4PettyCash" name="Sales_AccountPettyCashBalancingForm.messageBalancing.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account"/>
+        </field>
+        <field name="revenues">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_AccountPettyCashBalancingForm.revenues.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="revenuesFieldValue4PettyCashUI" name="Sales_AccountPettyCashBalancingForm.revenues.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account"/>
         </field>
     </definition>
 </ui-form>
