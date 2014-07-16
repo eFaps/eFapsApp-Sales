@@ -18,37 +18,39 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.listener;
-
-import java.util.List;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
-import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.common.listener.ITypedClass;
 import org.efaps.util.EFapsException;
 
-
 /**
- * Contains methods that are executed during the process of creating
- * a document from a document.
+ * Contains methods that are executed during the process of executing queries
+ * against the eFaps Database like Autocompletes or MultiPrints.
  *
  * @author The eFaps Team
  * @version $Id$
  */
-@EFapsUUID("ad2f45c6-a34f-4cbd-8e57-de16069ae8bf")
+@EFapsUUID("e7c522ee-861b-461b-afe7-1e9f1694da70")
 @EFapsRevision("$Rev$")
-public interface IOnCreateFromDocument
+public interface IOnQuery
     extends IEsjpListener
 {
+
     /**
+     * @param _typedClass typed class calling this method
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _instances list of instance
-     * @return StringBuilder to be added
+     * @param _queryBldr QueryBuilder to be added to
+     * @return true if caching allowed, false if not
      * @throws EFapsException on error
      */
-    StringBuilder add2JavaScript4Document(final Parameter _parameter,
-                                          final List<Instance> _instances) throws EFapsException;
+    boolean add2QueryBldr4AutoComplete4Product(final ITypedClass _typedClass,
+                                            final Parameter _parameter,
+                                            final QueryBuilder _queryBldr)
+        throws EFapsException;
+
 }

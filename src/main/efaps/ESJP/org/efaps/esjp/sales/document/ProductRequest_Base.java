@@ -27,6 +27,8 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -40,6 +42,15 @@ import org.efaps.util.EFapsException;
 public abstract class ProductRequest_Base
     extends AbstractProductDocument
 {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.ProductRequest;
+    }
 
     /**
      * @param _parameter Parameter as passed from the eFaps API.

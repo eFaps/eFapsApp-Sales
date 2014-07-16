@@ -103,6 +103,7 @@ import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.listener.IOnCreateFromDocument;
+import org.efaps.esjp.sales.listener.IOnQuery;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
@@ -2016,6 +2017,12 @@ public abstract class AbstractDocument_Base
                                                          final QueryBuilder _queryBldr)
         throws EFapsException
     {
+        boolean ret = true;
+        for (final IOnQuery listener : Listener.get().<IOnQuery>invoke(
+                        IOnQuery.class)) {
+            ret = ret && listener.add2QueryBldr4AutoComplete4Product(this, _parameter, _queryBldr);
+        }
+
         catalogFilter4productAutoComplete(_parameter, _queryBldr);
         if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
             final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
@@ -2034,10 +2041,10 @@ public abstract class AbstractDocument_Base
                             + ".HideMarkedIndividual", "false"));
             if (hideIndividualizable) {
                 _queryBldr.addWhereAttrNotEqValue(CIProducts.StockProductAbstract.Individual,
-                                ProductIndividual.INDIVIDUAL,ProductIndividual.BATCH);
+                                ProductIndividual.INDIVIDUAL, ProductIndividual.BATCH);
             }
         }
-        return true;
+        return ret;
     }
 
     /**
