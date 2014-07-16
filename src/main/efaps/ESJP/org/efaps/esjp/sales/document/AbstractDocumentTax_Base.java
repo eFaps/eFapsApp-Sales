@@ -37,6 +37,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
@@ -200,10 +201,11 @@ public abstract class AbstractDocumentTax_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
         final DocTaxInfo doctaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _docInst);
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
-        if (fieldValue.getDisplay().equals(Display.EDITABLE)) {
+        if (uiObject instanceof Field || ((FieldValue) uiObject).getDisplay().equals(Display.EDITABLE)
+                        || ((FieldValue) uiObject).getDisplay().equals(Display.HIDDEN)) {
             // TODO configurable
             final String fieldName = "taxDocType" + _docInst.getOid();
             final String id1 = RandomStringUtils.randomAlphanumeric(6);
@@ -252,7 +254,7 @@ public abstract class AbstractDocumentTax_Base
             ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
                             .append(formater.format(doctaxInfo.getTaxAmount()))
                             .append("\">");
-        } else if (fieldValue.getDisplay().equals(Display.READONLY)) {
+        } else if (((FieldValue) uiObject).getDisplay().equals(Display.READONLY)) {
             if (!doctaxInfo.isValid()) {
                 ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"));
             } else {
