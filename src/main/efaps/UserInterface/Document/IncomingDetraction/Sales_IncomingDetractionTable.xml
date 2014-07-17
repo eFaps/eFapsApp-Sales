@@ -52,6 +52,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstractOutTable.Contact.Label</property>
             <property name="HRef">TREEMENU</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="vendorLink">
             <property name="Attribute">Salesperson</property>
