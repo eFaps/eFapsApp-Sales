@@ -1058,7 +1058,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, getJavaScript4SelectDoc(_parameter));
+        retVal.put(ReturnValues.SNIPLETT, getJavaScript4SelectDoc(_parameter) + getJavaScript4Doc(_parameter));
         return retVal;
     }
 
