@@ -1,63 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_SalesReportTemplate" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="2a27ee25-522b-4b07-ae4e-9e3546c8ae6c">
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
-	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="columnHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="lastPageFooter"/>
-	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-		<property name="UUID" value="64863359-f112-4741-83a1-5b2f96c1538d"/>
-		<property name="Instance" value="true"/>
-	</parameter>
-	<field name="productName" class="java.lang.String">
-		<property name="Select" value="attribute[Name]"/>
-	</field>
-	<field name="productDescription" class="java.lang.String">
-		<property name="Select" value="attribute[Description]"/>
-	</field>
-	<pageHeader>
-		<band height="72" splitType="Stretch">
-			<staticText>
-				<reportElement uuid="94c08802-2639-4c46-ba8d-4d273af43cf2" x="0" y="10" width="107" height="20"/>
-				<textElement>
-					<font isBold="true" isItalic="false"/>
-				</textElement>
-				<text><![CDATA[Producto: ]]></text>
-			</staticText>
-			<textField>
-				<reportElement uuid="0f46bb56-8813-4c25-a315-f68f699f35a0" x="0" y="30" width="107" height="30"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement uuid="ebbbde0d-1446-47de-bd20-23d4f852fdc0" x="120" y="30" width="360" height="30"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[$F{productDescription}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageHeader>
-	<columnFooter>
-		<band height="45" splitType="Stretch"/>
-	</columnFooter>
-	<pageFooter>
-		<band height="60" splitType="Stretch">
-			<textField>
-				<reportElement uuid="20e64fbc-c9a6-4502-bb01-2b0c6c6be5f4" x="270" y="30" width="70" height="30"/>
-				<textElement textAlignment="Right"/>
-				<textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-			<textField evaluationTime="Report">
-				<reportElement uuid="ed92761e-6c5c-4ca3-bda7-3975f8c6f4dc" x="344" y="30" width="70" height="30"/>
-				<textElement textAlignment="Left"/>
-				<textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_SalesReportTemplate" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="64863359-f112-4741-83a1-5b2f96c1538d">
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.collapse.row.span" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.1" value="columnHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.2" value="pageHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
+    <property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="lastPageFooter"/>
+    <property name="ireport.zoom" value="1.0"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+        <property name="Instance" value="true"/>
+    </parameter>
+    <field name="productName" class="java.lang.String">
+        <property name="Select" value="attribute[Name]"/>
+    </field>
+    <field name="productDescription" class="java.lang.String">
+        <property name="Select" value="attribute[Description]"/>
+    </field>
+    <pageHeader>
+        <band height="72" splitType="Stretch">
+            <staticText>
+                <reportElement uuid="94c08802-2639-4c46-ba8d-4d273af43cf2" x="0" y="10" width="107" height="20"/>
+                <textElement>
+                    <font isBold="true" isItalic="false"/>
+                </textElement>
+                <text><![CDATA[Producto: ]]></text>
+            </staticText>
+            <textField>
+                <reportElement uuid="0f46bb56-8813-4c25-a315-f68f699f35a0" x="0" y="30" width="107" height="30"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{productName}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement uuid="ebbbde0d-1446-47de-bd20-23d4f852fdc0" x="120" y="30" width="360" height="30"/>
+                <textElement/>
+                <textFieldExpression><![CDATA[$F{productDescription}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageHeader>
+    <columnFooter>
+        <band height="45" splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band height="60" splitType="Stretch">
+            <textField>
+                <reportElement uuid="20e64fbc-c9a6-4502-bb01-2b0c6c6be5f4" x="270" y="30" width="70" height="30"/>
+                <textElement textAlignment="Right"/>
+                <textFieldExpression><![CDATA["Page " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+            <textField evaluationTime="Report">
+                <reportElement uuid="ed92761e-6c5c-4ca3-bda7-3975f8c6f4dc" x="344" y="30" width="70" height="30"/>
+                <textElement textAlignment="Left"/>
+                <textFieldExpression><![CDATA[" of " + $V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
 </jasperReport>

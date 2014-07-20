@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.2.0-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocOutReport" language="groovy" pageWidth="1000" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="960" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="ff65083e-27a5-4e76-9a8d-383966773154">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocOutReport" language="groovy" pageWidth="1000" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="960" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="de847cc0-4b35-4b88-99fa-30000e0deb55">
     <property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
     <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
     <property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
@@ -12,9 +12,6 @@
     <property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="columnFooter"/>
     <property name="net.sf.jasperreports.export.pdf.exclude.origin.band.5" value="lastPageFooter"/>
     <import value="org.efaps.admin.datamodel.Status"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="UUID" value="de847cc0-4b35-4b88-99fa-30000e0deb55"/>
-    </parameter>
     <parameter name="FromDate" class="java.util.Date"/>
     <parameter name="ToDate" class="java.util.Date"/>
     <parameter name="Mime" class="java.lang.String"/>

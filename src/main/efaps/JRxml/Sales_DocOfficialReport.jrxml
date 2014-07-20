@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocOfficialReport" language="groovy" pageWidth="1168" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1128" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="cb4fb8b8-a5a7-4f1e-ab19-aa9859338665">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DocOfficialReport" language="groovy" pageWidth="1168" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1128" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="eab4690f-8513-47e6-9a1c-31d18c54f70c">
     <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
     <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
     <property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
@@ -12,9 +12,6 @@
     <property name="net.sf.jasperreports.export.pdf.exclude.origin.band.6" value="summary"/>
     <import value="java.text.SimpleDateFormat"/>
     <import value="org.efaps.db.Context"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="UUID" value="eab4690f-8513-47e6-9a1c-31d18c54f70c"/>
-    </parameter>
     <parameter name="FromDate" class="java.util.Date"/>
     <parameter name="ToDate" class="java.util.Date"/>
     <parameter name="Mime" class="java.lang.String"/>
