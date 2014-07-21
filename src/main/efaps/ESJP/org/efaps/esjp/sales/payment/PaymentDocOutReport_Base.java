@@ -45,7 +45,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.util.Sales;
@@ -232,7 +231,7 @@ public abstract class PaymentDocOutReport_Base
         report.getJrParameters().put("Mime", mime);
         final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
-        report.getJrParameters().put("BaseCurrency", CurrencyInst_Base.get(baseCurrInst).getISOCode());
+        report.getJrParameters().put("BaseCurrency", CurrencyInst.get(baseCurrInst).getISOCode());
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
             final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);

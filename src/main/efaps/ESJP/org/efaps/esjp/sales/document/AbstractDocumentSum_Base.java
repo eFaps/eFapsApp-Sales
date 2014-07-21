@@ -67,7 +67,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
@@ -1333,7 +1332,7 @@ public abstract class AbstractDocumentSum_Base
             final Calculator calc = _calcList.iterator().next();
             UUID currencyUUID = null;
             if (_currencyInst != null) {
-                final CurrencyInst curInst = CurrencyInst_Base.get(_currencyInst);
+                final CurrencyInst curInst = CurrencyInst.get(_currencyInst);
                 currencyUUID = curInst.getUUID();
             }
             for (final Entry<Tax, BigDecimal> entry : values.entrySet()) {
