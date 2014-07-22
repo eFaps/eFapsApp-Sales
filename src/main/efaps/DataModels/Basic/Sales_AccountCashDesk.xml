@@ -39,5 +39,18 @@
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>ACTIVATION</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>TransferReason</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionFinancialInstitute</typelink>
+            <sqltable>Sales_DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>INTEGER2</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                     name="Sales_AccountCashDesk.TransferReason.RANGE_VALUE"
+                     event="RANGE_VALUE">
+                <property name="Value">Value</property>
+                <property name="Type">Sales_AttributeDefinitionFinancialInstitute</property>
+            </trigger>
+        </attribute>
     </definition>
 </datamodel-type>
