@@ -88,6 +88,11 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="financialInstitute">
+            <property name="Attribute">FinancialInstitute</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
         <field name="activation">
             <property name="Attribute">Activation</property>
             <property name="ModeCreate">EDITABLE</property>

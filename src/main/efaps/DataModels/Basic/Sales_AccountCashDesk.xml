@@ -39,15 +39,14 @@
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>ACTIVATION</sqlcolumn>
         </attribute>
-         <attribute>
+        <attribute>
             <name>FinancialInstitute</name>
             <type>LinkWithRanges</type>
             <typelink>Sales_AttributeDefinitionFinancialInstitute</typelink>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>FININSTID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                     name="Sales_AccountCashDesk.FinancialInstitute.RANGE_VALUE"
-                     event="RANGE_VALUE">
+                name="Sales_AccountCashDesk.FinancialInstitute.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Value</property>
                 <property name="Type">Sales_AttributeDefinitionFinancialInstitute</property>
                 <property name="EmptyValue">true</property>
