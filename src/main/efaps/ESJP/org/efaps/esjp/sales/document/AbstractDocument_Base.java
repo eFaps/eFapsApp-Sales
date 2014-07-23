@@ -1058,7 +1058,9 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Return retVal = new Return();
-        retVal.put(ReturnValues.SNIPLETT, getJavaScript4SelectDoc(_parameter) + getJavaScript4Doc(_parameter));
+        retVal.put(ReturnValues.SNIPLETT,
+                        InterfaceUtils.wrappInScriptTag(_parameter, getJavaScript4SelectDoc(_parameter)
+                                        + getJavaScript4Doc(_parameter), true, 0));
         return retVal;
     }
 
@@ -1076,8 +1078,7 @@ public abstract class AbstractDocument_Base
         final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
 
         final StringBuilder js = new StringBuilder();
-        js.append("<script type=\"text/javascript\">\n")
-            .append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
+            js.append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
             .append(" function(ready, query, domConstruct){\n")
             .append(" ready(1500, function(){")
             .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
@@ -1130,7 +1131,7 @@ public abstract class AbstractDocument_Base
                     .append(getJavaScript4Positions(_parameter, instCall));
             }
         }
-        js.append("});").append("});\n</script>\n");
+        js.append("});").append("});\n");
         return js.toString();
     }
 
