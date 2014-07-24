@@ -45,6 +45,10 @@
                 <property name="Status">Open</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+            </validate>
         </target>
 
         <!-- properties -->

@@ -49,7 +49,7 @@
             <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
-             </validate>
+            </validate>
         </target>
         <!-- properties -->
         <property name="Target">modal</property>
