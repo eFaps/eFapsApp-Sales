@@ -163,13 +163,23 @@ public abstract class TaxEntry_Base
     {
         this.currencyUuid = _currencyUuid == null ? null : _currencyUuid.toString();
     }
-
+    /**
+     * Getter method for the instance variable {@link #date}.
+     *
+     * @return value of instance variable {@link #date}
+     */
     public DateTime getDateTime()
     {
         return new DateTime(this.date);
     }
 
-    public void setDate(final DateTime _dateTime) {
+    /**
+     * Setter method for instance variable {@link #date}.
+     *
+     * @param _dateTime value for instance variable {@link #date}
+     */
+    public void setDate(final DateTime _dateTime)
+    {
         this.date = _dateTime.toDate();
     }
 

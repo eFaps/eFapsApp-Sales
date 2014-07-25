@@ -91,12 +91,12 @@ public abstract class Tax_Base
      * @param _numerator    Numerator for this tax
      * @param _denominator  Denominator for this tax
      */
-    public Tax_Base(final TaxCat_Base _taxcat,
-                    final Instance _instance,
-                    final String _name,
-                    final String _uuid,
-                    final Integer _numerator,
-                    final Integer _denominator)
+    protected Tax_Base(final TaxCat_Base _taxcat,
+                       final Instance _instance,
+                       final String _name,
+                       final String _uuid,
+                       final Integer _numerator,
+                       final Integer _denominator)
     {
         this.taxCat = _taxcat;
         this.instance = _instance;
@@ -110,7 +110,7 @@ public abstract class Tax_Base
     /**
      *
      */
-    public Tax_Base()
+    protected Tax_Base()
     {
     }
 

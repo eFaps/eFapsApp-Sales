@@ -20,11 +20,19 @@
 
 package org.efaps.esjp.sales.tax;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.util.UUID;
+
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.IJaxb;
 import org.efaps.admin.datamodel.ui.UIValue;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
+import org.efaps.db.Context;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
@@ -73,8 +81,7 @@ public abstract class TaxesAttribute_Base
                     html.append("<br/>");
                 }
                 final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
-                html.append(tax.getName()).append(" ")
-                                .append(NumberFormatter.get().getTwoDigitsFormatter().format(entry.getAmount()));
+                html.append(getLabel(_value.getAttribute(), tax.getName(), entry.getAmount(), entry.getCurrencyUUID()));
             }
             ret = html.toString();
         } else {
@@ -82,7 +89,6 @@ public abstract class TaxesAttribute_Base
         }
         return ret;
     }
-
 
     /**
      * @param _taxes taxes the html is wanted for
@@ -101,9 +107,44 @@ public abstract class TaxesAttribute_Base
                 html.append("<br/>");
             }
             final Tax tax = Tax_Base.get(entry.getCatUUID(), entry.getUUID());
-            html.append(tax.getName()).append(" ")
-                            .append(NumberFormatter.get().getTwoDigitsFormatter().format(entry.getAmount()));
+            html.append(getLabel(null, tax.getName(), entry.getAmount(), entry.getCurrencyUUID()));
         }
         return html.toString();
+    }
+
+    /**
+     * @param _attribute    Atribute
+     * @param _name         Name of the Tax
+     * @param _amount       Amnount
+     * @param _currencyUUID UUID of the Currency
+     * @return label for UserInterface
+     * @throws EFapsException on error
+     */
+    protected String getLabel(final Attribute _attribute,
+                              final String _name,
+                              final BigDecimal _amount,
+                              final UUID _currencyUUID)
+        throws EFapsException
+    {
+        String ret = "";
+        final CurrencyInst currencyInst = CurrencyInst.get(_currencyUUID);
+        String currName = "";
+        String currSymbol = "";
+        String currISOCode = "";
+        if (currencyInst != null) {
+            currName = currencyInst.getName();
+            currSymbol = currencyInst.getSymbol();
+            currISOCode = currencyInst.getISOCode();
+        }
+        DecimalFormat formatter;
+        if (_attribute != null) {
+            formatter = NumberFormatter.get().getFrmt4Total(_attribute.getParent().getName());
+        } else {
+            formatter = NumberFormatter.get().getTwoDigitsFormatter();
+        }
+        final String amount = formatter.format(_amount);
+        ret = DBProperties.getFormatedDBProperty(TaxesAttribute.class.getName() + ".Label",
+                        Context.getThreadContext().getLanguage(), _name, amount, currName, currSymbol, currISOCode);
+        return ret;
     }
 }
