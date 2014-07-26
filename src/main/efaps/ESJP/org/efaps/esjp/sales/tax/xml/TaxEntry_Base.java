@@ -151,7 +151,7 @@ public abstract class TaxEntry_Base
      */
     public UUID getCurrencyUUID()
     {
-        return UUID.fromString(this.currencyUuid);
+        return this.currencyUuid == null ? null : UUID.fromString(this.currencyUuid);
     }
 
     /**

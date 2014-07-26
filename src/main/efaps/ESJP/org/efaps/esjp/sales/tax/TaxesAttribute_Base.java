@@ -127,11 +127,11 @@ public abstract class TaxesAttribute_Base
         throws EFapsException
     {
         String ret = "";
-        final CurrencyInst currencyInst = CurrencyInst.get(_currencyUUID);
         String currName = "";
         String currSymbol = "";
         String currISOCode = "";
-        if (currencyInst != null) {
+        if (_currencyUUID != null) {
+            final CurrencyInst currencyInst = CurrencyInst.get(_currencyUUID);
             currName = currencyInst.getName();
             currSymbol = currencyInst.getSymbol();
             currISOCode = currencyInst.getISOCode();
