@@ -30,9 +30,11 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -51,6 +53,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -76,13 +79,16 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
+import org.efaps.esjp.sales.document.Conciliation;
 import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.Sales.AccountAutomation;
 import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.HtmlTable;
@@ -221,6 +227,105 @@ public abstract class AbstractPaymentDocument_Base
         return createdDoc;
     }
 
+
+    protected Sales.AccountAutomation evaluateAutomation(final Parameter _parameter,
+                                                         final Instance _paymentDocInst)
+        throws EFapsException
+    {
+        Sales.AccountAutomation ret =  Sales.AccountAutomation.NONE;
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _paymentDocInst);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.TransactionAbstract.Payment, attrQuery);
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selAccInst = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
+        multi.addSelect(selAccInst);
+        multi.execute();
+        final Set<Instance> accInsts = new HashSet<>();
+        while (multi.next()) {
+            accInsts.add(multi.<Instance>getSelect(selAccInst));
+        }
+        Sales.AccountAutomation auto = null;
+        for (final Instance accInst : accInsts) {
+            if (!accInst.getType().isKindOf(CISales.AccountCashDesk.getType())) {
+                auto = Sales.AccountAutomation.NONE;
+                break;
+            }
+            final PrintQuery print = new CachedPrintQuery(accInst, Account.CACHEKEY);
+            print.addAttribute(CISales.AccountCashDesk.Automation);
+            print.executeWithoutAccessCheck();
+            final Sales.AccountAutomation autoTmp = print.getAttribute(CISales.AccountCashDesk.Automation);
+            if (auto == null) {
+                auto = autoTmp;
+            }
+            switch (auto) {
+                // if none was set it cannot be unset
+                case NONE:
+                    break;
+                // if conciliation should be done automatic
+                case CONCILIATION:
+                    switch (autoTmp) {
+                        case NONE:
+                        case TRANSACTION:
+                            auto = Sales.AccountAutomation.NONE;
+                        default:
+                            break;
+                    }
+                    break;
+                case TRANSACTION:
+                    switch (autoTmp) {
+                        case NONE:
+                        case CONCILIATION:
+                            auto = Sales.AccountAutomation.NONE;
+                        default:
+                            break;
+                    }
+                    break;
+                case FULL:
+                    auto = autoTmp;
+                default:
+                    auto = autoTmp;
+                    break;
+            }
+        }
+        if  (auto != null) {
+            ret = auto;
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc doc
+     * @throws EFapsException on error
+     */
+    protected void executeAutomation(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Instance paymentDocInst = _createdDoc.getInstance();
+        final AccountAutomation auto = evaluateAutomation(_parameter, paymentDocInst);
+        switch (auto) {
+            case FULL:
+            case CONCILIATION:
+                new Conciliation().createPosition4Automation(_parameter, paymentDocInst);
+                final Status payStatus = Status.find(paymentDocInst.getType().getStatusAttribute().getLink().getUUID(),
+                                "Closed");
+                if (payStatus != null) {
+                    final Update update = new Update(paymentDocInst);
+                    update.add(CISales.PaymentDocumentIOAbstract.StatusAbstract, payStatus);
+                    update.execute();
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+
     protected String getRateCurrencyLink4Account(final Parameter _parameter)
         throws EFapsException
     {
@@ -251,11 +356,11 @@ public abstract class AbstractPaymentDocument_Base
 
             final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
             Insert transIns;
-            if ((getType4DocCreate(_parameter) != null
-                        && getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType()))
-                    || (_parameter.getInstance() != null
+            if (getType4DocCreate(_parameter) != null
+                        && getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
+                    || _parameter.getInstance() != null
                         && _parameter.getInstance().isValid()
-                        && _parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType()))) {
+                        && _parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
                 transIns = new Insert(CISales.TransactionInbound);
             } else {
                 transIns = new Insert(CISales.TransactionOutbound);
@@ -555,7 +660,7 @@ public abstract class AbstractPaymentDocument_Base
             map.put("paymentAmountDesc", getTwoDigitsformater().format(paymentAmountDesc));
             map.put("paymentDiscount", getTwoDigitsformater().format(paymentDiscount));
             map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
-            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + (docInfo.getCurrencyInst().isInvert()));
+            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
             final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
@@ -1862,7 +1967,7 @@ public abstract class AbstractPaymentDocument_Base
                             && this.rateCurrency.equals(this.curBase)) {
                 ret = this.rateOptional == null ? (BigDecimal) this.rate[1] : (BigDecimal) this.rateOptional[1];
             } else {
-                if (!(this.rateCurrency.equals(this.accountInfo.getCurrency()))) {
+                if (!this.rateCurrency.equals(this.accountInfo.getCurrency())) {
                     ret = (BigDecimal) this.rate[1];
                 }
             }

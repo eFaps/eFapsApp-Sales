@@ -20,18 +20,29 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>79f73f66-9778-4440-b6db-e837e39c04c1</uuid>
+    <uuid>7d8d6f4f-dce9-4771-a678-af4007e0368f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ConciliationMyDesk_Menu_Action</name>
-        <childs>
-            <child>Sales_ConciliationMyDesk_Menu_Action_Create</child>
-            <child>Sales_ConciliationMyDesk_Menu_Action_Create4Automatic</child>
-            <child>Sales_ConciliationMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Sales_ConciliationMyDesk_Menu_Action_Create4Automatic</name>
+        <access>
+            <role>Administration</role>
+        </access>
+        <target>
+            <form>Sales_Conciliation4AutomaticForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.document.Conciliation">
+                <property name="StatusGroup">Sales_ConciliationStatus</property>
+                <property name="Status">Closed</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Conciliation</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
+        <property name="HRef">TREE</property>
     </definition>
-</ui-menu>
+</ui-command>

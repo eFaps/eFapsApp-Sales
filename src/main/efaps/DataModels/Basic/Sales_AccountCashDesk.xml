@@ -39,6 +39,13 @@
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>ACTIVATION</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>Automation</name>
+            <type>Enum</type>
+            <className>org.efaps.esjp.sales.util.Sales$AccountAutomation</className>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
+            <sqlcolumn>AUTOMATION</sqlcolumn>
+        </attribute>
         <attribute>
             <name>FinancialInstitute</name>
             <type>LinkWithRanges</type>
@@ -52,5 +59,23 @@
                 <property name="EmptyValue">true</property>
             </trigger>
         </attribute>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger"
+            name="Sales_AccountCashDesk.INSERT_POST"
+            event="INSERT_POST">
+            <property name="CacheName">org.efaps.esjp.sales.Account.CasheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger"
+            name="Sales_AccountCashDesk.UPDATE_POST"
+            event="UPDATE_POST">
+            <property name="CacheName">org.efaps.esjp.sales.Account.CasheKey</property>
+        </trigger>
+        <trigger program="org.efaps.esjp.common.cache.CacheUtils"
+            method="cleanQueryCacheTrigger"
+            name="Sales_AccountCashDesk.DELETE_POST"
+            event="DELETE_POST">
+            <property name="CacheName">org.efaps.esjp.sales.Account.CasheKey</property>
+        </trigger>
     </definition>
 </datamodel-type>

@@ -44,7 +44,8 @@
             <column name="AMOUNT"       type="DECIMAL"                      length="15" scale="4"/>
             <column name="ACTIVE"       type="BOOLEAN" />
             <column name="ACTIVATION"   type="INTEGER" />
-            <column name="FININSTID"    type="INTEGER"/>
+            <column name="FININSTID"    type="INTEGER" />
+            <column name="AUTOMATION"   type="INTEGER" />
             <foreign name="T_SALESACC_FK_COMPANYID" key="COMPANYID" reference="T_USERABSTRACT(ID)"/>
         </database>
     </definition>

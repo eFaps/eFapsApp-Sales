@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,7 +38,6 @@ import org.efaps.util.EFapsException;
 public abstract class PaymentDepositOut_Base
     extends AbstractPaymentOut
 {
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return new Return
@@ -50,6 +49,7 @@ public abstract class PaymentDepositOut_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
         createDocumentTax(_parameter, createdDoc);
+        executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }

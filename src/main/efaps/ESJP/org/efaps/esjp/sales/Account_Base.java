@@ -84,6 +84,10 @@ import org.joda.time.DateTime;
 public abstract class Account_Base
     extends CommonDocument
 {
+    /**
+     * Key used for Caching.
+     */
+    protected static final String CACHEKEY = Account.class.getName() + ".CasheKey";
 
     public Return create(final Parameter _parameter)
         throws EFapsException
@@ -390,8 +394,8 @@ public abstract class Account_Base
         final List<Instance> lstInst = new ArrayList<Instance>();
 
         String[] oids = _parameter.getParameterValues("selectedRow");
-        if (withDateConf && (command != null
-                        && command.getTargetCreateType().isKindOf(CISales.PettyCashBalance.getType()))
+        if (withDateConf && command != null
+                        && command.getTargetCreateType().isKindOf(CISales.PettyCashBalance.getType())
                         || oids != null) {
             if (oids == null) {
                 oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
@@ -748,8 +752,8 @@ public abstract class Account_Base
 
         final BigDecimal startAmount = getStartAmount(_parameter);
         final BigDecimal amount = getAmountPayments(_parameter);
-        final BigDecimal difference = (amount != BigDecimal.ZERO ? startAmount.add(amount)
-                                                           : BigDecimal.ZERO);
+        final BigDecimal difference = amount != BigDecimal.ZERO ? startAmount.add(amount)
+                                                           : BigDecimal.ZERO;
 
         bldr.append(formater.format(difference));
         final Return ret = new Return();
@@ -1036,7 +1040,7 @@ public abstract class Account_Base
                             final Insert transInsertOut = new Insert(CISales.TransactionOutbound);
                             transInsertOut.add(
                                             CISales.TransactionOutbound.Amount,
-                                            (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
+                                            newAmount.compareTo(BigDecimal.ZERO) == -1 ? newAmount
                                                             .multiply(BigDecimal.valueOf(-1)) : newAmount);
                             transInsertOut.add(CISales.TransactionOutbound.CurrencyId, curId);
                             transInsertOut.add(CISales.TransactionOutbound.Payment, instPayment.getId());
@@ -1049,10 +1053,10 @@ public abstract class Account_Base
 
                             final Update update = new Update(_newInst);
                             update.add(CISales.DocumentSumAbstract.CrossTotal,
-                                            (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
+                                            newAmount.compareTo(BigDecimal.ZERO) == -1 ? newAmount
                                                             .multiply(BigDecimal.valueOf(-1)) : newAmount);
                             update.add(CISales.DocumentSumAbstract.RateCrossTotal,
-                                            (newAmount.compareTo(BigDecimal.ZERO) == -1) ? newAmount
+                                            newAmount.compareTo(BigDecimal.ZERO) == -1 ? newAmount
                                                             .multiply(BigDecimal.valueOf(-1)) : newAmount);
                             update.execute();
                         }

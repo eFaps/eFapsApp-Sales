@@ -253,4 +253,10 @@ public interface SalesSettings
      */
     String ACTIVATETRANSTRIG4RES = "org.efaps.sales.ActivateTransactionTrigger4Reservation";
 
+    /**
+     * Link.
+     * The Conciliation used for Automation Mechanism.
+     */
+    String CONCIL4AUTO = "org.efaps.sales.Conciliation4Automation";
+
 }

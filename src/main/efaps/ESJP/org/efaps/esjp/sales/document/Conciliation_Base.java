@@ -22,7 +22,9 @@
 package org.efaps.esjp.sales.document;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -45,9 +47,11 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
-
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO comment!
@@ -61,7 +65,12 @@ public abstract class Conciliation_Base
     /**
      * Key used to pass value during the request.
      */
-    public static final String REQUESTKEY = Conciliation.class.getName() + "RequestKey";
+    protected static final String REQUESTKEY = Conciliation.class.getName() + "RequestKey";
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Conciliation.class);
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -166,6 +175,18 @@ public abstract class Conciliation_Base
         } .execute(_parameter);
     }
 
+    public void createPosition4Automation(final Parameter _parameter,
+                                          final Instance _paymentDocInst)
+        throws EFapsException
+    {
+        final Instance conciliationInst = Sales.getSysConfig().getLink(SalesSettings.CONCIL4AUTO);
+        if (conciliationInst.isValid()) {
+            createPositions(_parameter, conciliationInst, _paymentDocInst);
+        } else {
+            LOG.error("Missing configuration '{}' for automatic conciliation", SalesSettings.CONCIL4AUTO);
+        }
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -175,42 +196,55 @@ public abstract class Conciliation_Base
     public Return create4Position(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<Instance, BigDecimal> inst2amount = new HashMap<Instance, BigDecimal>();
         final String[] oids = _parameter.getParameterValues("selectedRow");
-        final boolean single = "true".equalsIgnoreCase(getProperty(_parameter, "Single"));
         if (oids != null && oids.length > 0) {
-            Instance posInst = null;
+            final List<Instance> paymentInsts = new ArrayList<>();
             for (final String oid : oids) {
-                if (single || posInst == null) {
-                    final Insert insert = new Insert(CISales.ConciliationPosition);
-                    insert.add(CISales.ConciliationPosition.ConciliationLink, _parameter.getCallInstance());
-                    insert.add(CISales.ConciliationPosition.PositionNumber, 1);
-                    insert.execute();
-                    posInst = insert.getInstance();
-                    inst2amount.put(posInst, BigDecimal.ZERO);
-                }
-                final Instance paymentInst = Instance.get(oid);
-                final PrintQuery print = new PrintQuery(paymentInst);
-                print.addAttribute(CISales.PaymentDocumentIOAbstract.Amount);
-                print.executeWithoutAccessCheck();
-                BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PaymentDocumentIOAbstract.Amount);
-                if (paymentInst.getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
-                    amount = amount.negate();
-                }
-                inst2amount.put(posInst, inst2amount.get(posInst).add(amount));
-
-                final Update update = new Update(paymentInst);
-                update.add(CISales.PaymentDocumentIOAbstract.ConciliationPositionLink, posInst);
-                update.execute();
+                paymentInsts.add(Instance.get(oid));
             }
+            createPositions(_parameter, _parameter.getCallInstance(),
+                                paymentInsts.toArray(new Instance[paymentInsts.size()]));
         }
+        return new Return();
+    }
+
+    protected void createPositions(final Parameter _parameter,
+                                   final Instance _conciliationInst,
+                                   final Instance... _paymentInsts)
+        throws EFapsException
+    {
+        final boolean single = "true".equalsIgnoreCase(getProperty(_parameter, "Single", "true"));
+        final Map<Instance, BigDecimal> inst2amount = new HashMap<Instance, BigDecimal>();
+        Instance posInst = null;
+        for (final Instance paymentInst : _paymentInsts) {
+            if (single || posInst == null) {
+                final Insert insert = new Insert(CISales.ConciliationPosition);
+                insert.add(CISales.ConciliationPosition.ConciliationLink, _conciliationInst);
+                insert.add(CISales.ConciliationPosition.PositionNumber, 1);
+                insert.execute();
+                posInst = insert.getInstance();
+                inst2amount.put(posInst, BigDecimal.ZERO);
+            }
+            final PrintQuery print = new PrintQuery(paymentInst);
+            print.addAttribute(CISales.PaymentDocumentIOAbstract.Amount);
+            print.executeWithoutAccessCheck();
+            BigDecimal amount = print.<BigDecimal>getAttribute(CISales.PaymentDocumentIOAbstract.Amount);
+            if (paymentInst.getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
+                amount = amount.negate();
+            }
+            inst2amount.put(posInst, inst2amount.get(posInst).add(amount));
+
+            final Update update = new Update(paymentInst);
+            update.add(CISales.PaymentDocumentIOAbstract.ConciliationPositionLink, posInst);
+            update.execute();
+        }
+
         for (final Entry<Instance, BigDecimal> entry : inst2amount.entrySet()) {
             final Update update = new Update(entry.getKey());
             update.add(CISales.ConciliationPosition.Amount, entry.getValue());
             update.execute();
         }
-        recalculate(_parameter, _parameter.getCallInstance());
-        return new Return();
+        recalculate(_parameter, _conciliationInst);
     }
 
     /**

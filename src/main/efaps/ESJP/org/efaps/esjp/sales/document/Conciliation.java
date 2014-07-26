@@ -31,5 +31,8 @@ package org.efaps.esjp.sales.document;
 public class Conciliation
     extends Conciliation_Base
 {
-
+    /**
+     * Key used to pass value during the request.
+     */
+    public static final String REQUESTKEY = Conciliation_Base.REQUESTKEY;
 }

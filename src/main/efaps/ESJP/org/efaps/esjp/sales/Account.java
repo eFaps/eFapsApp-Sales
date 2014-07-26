@@ -33,8 +33,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("7c4d1b6b-4fa8-4a6a-bca7-6fc219fa000c")
 @EFapsRevision("$Rev$")
-public class Account extends Account_Base
+public class Account
+    extends Account_Base
 {
-
-
+    /**
+     * Key used for Caching.
+     */
+    public static final String CACHEKEY = Account_Base.CACHEKEY;
 }

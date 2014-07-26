@@ -99,5 +99,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
+        <field name="automation">
+            <property name="Attribute">Automation</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Required">true</property>
+        </field>
     </definition>
 </ui-form>

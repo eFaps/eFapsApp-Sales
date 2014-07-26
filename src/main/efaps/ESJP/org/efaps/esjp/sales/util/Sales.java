@@ -70,20 +70,20 @@ public final class Sales
     /**
      * Enum used for a multistate for Perception in Sales_Contacts_ClassTaxinfo.
      */
-     public enum TaxRetention
-         implements IEnum
-     {
-         /** Cliente Normal. DEFAULT VALUE if no information available. */
-         CLIENT,
-         /** Agente de Retencion. */
-         AGENT;
+    public enum TaxRetention
+        implements IEnum
+    {
+        /** Cliente Normal. DEFAULT VALUE if no information available. */
+        CLIENT,
+        /** Agente de Retencion. */
+        AGENT;
 
-         @Override
-         public int getInt()
-         {
-             return ordinal();
-         }
-     }
+        @Override
+        public int getInt()
+        {
+            return ordinal();
+        }
+    }
 
     /**
      * Enum used for a multistate for Activation in Sales_ProductDocumentType.
@@ -117,20 +117,23 @@ public final class Sales
         }
     }
 
-
     /**
      * Enum used for a multistate for Activation in Sales_AccountCashDesk.
      */
     public enum AccountCDActivation
         implements IBitEnum
     {
-
         /** NONE. */
         CASH,
+        /** CHECK. */
         CHECK,
+        /** CARD. */
         CARD,
+        /** DEPOSIT. */
         DEPOSIT,
+        /** TAX. */
         TAX,
+        /** EXCHANGE. */
         EXCHANGE;
 
         /**
@@ -152,7 +155,36 @@ public final class Sales
         }
     }
 
+    /**
+     * Enum used for a multistate for Automation in Sales_AccountCashDesk.
+     * <ol>
+     * <li>Create Payment</li>
+     * <li>Create Consolation</li>
+     * <li>Create Transaction in Accounting</li>
+     * </ol>
+     */
+    public enum AccountAutomation
+        implements IEnum
+    {
 
+        /** NONE. */
+        NONE,
+        /** CONCILIATION. */
+        CONCILIATION,
+        /** TRANSACTION. */
+        TRANSACTION,
+        /** FULL. */
+        FULL;
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public int getInt()
+        {
+            return BitEnumType.getInt4Index(ordinal());
+        }
+    }
 
     /**
      * @return the SystemConfigruation for Sales
