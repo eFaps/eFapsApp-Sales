@@ -74,7 +74,7 @@ public abstract class PaymentRetentionOut_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
         closeRetention(_parameter);
-
+        executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }
@@ -176,7 +176,7 @@ public abstract class PaymentRetentionOut_Base
             map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentRate.name), NumberFormatter
                             .get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
             map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentRate.name
-                            + RateUI.INVERTEDSUFFIX), "" + (docInfo.getCurrencyInst().isInvert()));
+                            + RateUI.INVERTEDSUFFIX), "" + docInfo.getCurrencyInst().isInvert());
         }
 
         final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);

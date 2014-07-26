@@ -49,6 +49,7 @@ public abstract class PaymentCash_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
+        executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }

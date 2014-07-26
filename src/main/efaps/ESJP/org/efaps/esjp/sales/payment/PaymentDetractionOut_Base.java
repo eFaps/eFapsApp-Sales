@@ -84,6 +84,7 @@ public abstract class PaymentDetractionOut_Base
         createPayment(_parameter, createdDoc);
         connectBulkPayment2PaymentDocumentOut(_parameter, createdDoc);
         updateDetractions(_parameter, createdDoc);
+        executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }
@@ -100,7 +101,7 @@ public abstract class PaymentDetractionOut_Base
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.bulkPaymentDoc.name);
 
         if (_createdDoc.getInstance().isValid()
-                        && (bulkPayId != null && !bulkPayId.isEmpty())) {
+                        && bulkPayId != null && !bulkPayId.isEmpty()) {
             final Insert insert = new Insert(CISales.BulkPayment2PaymentDocument);
             insert.add(CISales.BulkPayment2PaymentDocument.FromLink, bulkPayId);
             insert.add(CISales.BulkPayment2PaymentDocument.ToLink, _createdDoc.getInstance());
@@ -332,7 +333,7 @@ public abstract class PaymentDetractionOut_Base
             map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
             map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
             map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
-            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + (docInfo.getCurrencyInst().isInvert()));
+            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
             final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
