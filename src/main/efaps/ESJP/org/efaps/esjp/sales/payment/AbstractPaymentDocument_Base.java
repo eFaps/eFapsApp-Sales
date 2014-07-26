@@ -50,6 +50,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIAttribute;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
@@ -87,6 +88,7 @@ import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
 import org.efaps.esjp.sales.document.Conciliation;
 import org.efaps.esjp.sales.document.Invoice;
+import org.efaps.esjp.sales.listener.IOnPayment;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.AccountAutomation;
 import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
@@ -227,12 +229,17 @@ public abstract class AbstractPaymentDocument_Base
         return createdDoc;
     }
 
-
-    protected Sales.AccountAutomation evaluateAutomation(final Parameter _parameter,
-                                                         final Instance _paymentDocInst)
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _paymentDocInst instance of the payment document
+     * @return Sales.AccountAutomation
+     * @throws EFapsException on error
+     */
+    public AccountAutomation evaluateAutomation(final Parameter _parameter,
+                                                final Instance _paymentDocInst)
         throws EFapsException
     {
-        Sales.AccountAutomation ret =  Sales.AccountAutomation.NONE;
+        AccountAutomation ret =  AccountAutomation.NONE;
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
         attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _paymentDocInst);
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
@@ -248,16 +255,16 @@ public abstract class AbstractPaymentDocument_Base
         while (multi.next()) {
             accInsts.add(multi.<Instance>getSelect(selAccInst));
         }
-        Sales.AccountAutomation auto = null;
+        AccountAutomation auto = null;
         for (final Instance accInst : accInsts) {
             if (!accInst.getType().isKindOf(CISales.AccountCashDesk.getType())) {
-                auto = Sales.AccountAutomation.NONE;
+                auto = AccountAutomation.NONE;
                 break;
             }
             final PrintQuery print = new CachedPrintQuery(accInst, Account.CACHEKEY);
             print.addAttribute(CISales.AccountCashDesk.Automation);
             print.executeWithoutAccessCheck();
-            final Sales.AccountAutomation autoTmp = print.getAttribute(CISales.AccountCashDesk.Automation);
+            final AccountAutomation autoTmp = print.getAttribute(CISales.AccountCashDesk.Automation);
             if (auto == null) {
                 auto = autoTmp;
             }
@@ -270,7 +277,7 @@ public abstract class AbstractPaymentDocument_Base
                     switch (autoTmp) {
                         case NONE:
                         case TRANSACTION:
-                            auto = Sales.AccountAutomation.NONE;
+                            auto = AccountAutomation.NONE;
                         default:
                             break;
                     }
@@ -279,7 +286,7 @@ public abstract class AbstractPaymentDocument_Base
                     switch (autoTmp) {
                         case NONE:
                         case CONCILIATION:
-                            auto = Sales.AccountAutomation.NONE;
+                            auto = AccountAutomation.NONE;
                         default:
                             break;
                     }
@@ -322,6 +329,9 @@ public abstract class AbstractPaymentDocument_Base
                 break;
             default:
                 break;
+        }
+        for (final IOnPayment listener : Listener.get().<IOnPayment>invoke(IOnPayment.class)) {
+            listener.executeAutomation(this, _parameter, _createdDoc);
         }
     }
 
