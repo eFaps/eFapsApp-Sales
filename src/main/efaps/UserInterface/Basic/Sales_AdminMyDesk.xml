@@ -38,6 +38,7 @@
             <child>ERP_DocumentTypeMyDesk</child>
             <child>ERP_CurrencyMyDesk</child>
             <child>Sales_AccountAbstractMyDesk</child>
+            <child>Sales_CheckBookMyDesk</child>
             <child>Sales_PaymentMyDesk</child>
             <child>Sales_TransactionAbstractMyDesk</child>
             <child>Sales_PaymentInternalMyDesk</child>

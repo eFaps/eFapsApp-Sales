@@ -48,6 +48,7 @@
         <type>Sales_BulkPayment</type>
         <type>Sales_CashDeskBalance</type>
         <type>Sales_CashReceipt</type>
+        <type>Sales_CheckBook</type>
         <type>Sales_ComparativeDocProvider</type>
         <type>Sales_Conciliation</type>
         <type>Sales_ConsignmentNote</type>
@@ -366,6 +367,11 @@
             <key>Canceled</key>
         </status>
 
+        <status group="Sales_CheckBookStatus">
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
         <role>Sales_Admin</role>
     </definition>
 </access-set>
