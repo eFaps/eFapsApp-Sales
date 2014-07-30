@@ -90,6 +90,10 @@
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="Label">Sales_DocumentAbstract/Created.Label</property>
+        </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
