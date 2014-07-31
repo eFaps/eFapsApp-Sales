@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>1973d4fe-50b6-40ef-bedc-48519b72014b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -40,8 +42,8 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Attribute">Code</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentDebitCardForm.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck" name="Sales_PaymentDebitCardForm.code.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocument</property>
             </trigger>
@@ -88,11 +90,12 @@
             <property name="ModeEdit">READONLY</property>
             <property name="Columns">50</property>
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
-                name="Sales_PaymentDebitCardForm.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
+                name="Sales_PaymentDebitCardForm.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
             <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4Contact"
                 name="Sales_PaymentDebitCardForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
-        <field name="checkbox4Invoice" >
+        <field name="checkbox4Invoice">
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_PaymentDebitCardForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
@@ -102,7 +105,7 @@
                 <property name="checked">false</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="update4checkbox4Invoive"
-                name="Sales_PaymentDebitCardForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_PaymentDebitCardForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
@@ -125,10 +128,10 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
                 <property name="Activation">CARD</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard"
-                method="updateFields4RateCurrency"
-                name="Sales_PaymentDebitCardForm.account.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4RateCurrency"
+                name="Sales_PaymentDebitCardForm.account.UI_FIELD_UPDATE.1" event="UI_FIELD_UPDATE" index="1"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4Position"
+                name="Sales_PaymentDebitCardForm.account.UI_FIELD_UPDATE.2" event="UI_FIELD_UPDATE" index="2"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
@@ -141,8 +144,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4AbsoluteAmount"
-                name="Sales_PaymentDebitCardForm.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDebitCard" method="updateFields4AbsoluteAmount" name="Sales_PaymentDebitCardForm.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>
@@ -184,7 +187,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
-         <field character="Heading" name="headingPayment">
+        <field character="Heading" name="headingPayment">
             <property name="Level">2</property>
             <property name="Label">Sales_PaymentDebitCardForm.headingPayment.Heading</property>
             <property name="ModeCreate">READONLY</property>

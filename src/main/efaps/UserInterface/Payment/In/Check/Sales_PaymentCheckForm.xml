@@ -127,7 +127,9 @@
                 <property name="Activation">CHECK</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCheck" method="updateFields4RateCurrency"
-                name="Sales_PaymentCheckForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+                name="Sales_PaymentCheckForm.account.UI_FIELD_UPDATE.1" event="UI_FIELD_UPDATE" index="1"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentCheck" method="updateFields4Position"
+                name="Sales_PaymentCheckForm.account.UI_FIELD_UPDATE.2" event="UI_FIELD_UPDATE" index="2" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
