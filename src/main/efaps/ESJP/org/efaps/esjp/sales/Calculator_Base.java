@@ -82,6 +82,9 @@ public abstract class Calculator_Base
      */
     private ProductPrice productPrice;
 
+    /**
+     * The price is net.
+     */
     private boolean priceIsNet;
 
     /**
@@ -221,12 +224,12 @@ public abstract class Calculator_Base
                 this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
             }
         } else {
-            this.oid = (_prodInstance != null && _prodInstance.isValid()) ? _prodInstance.getOid() : null;
+            this.oid = _prodInstance != null && _prodInstance.isValid() ? _prodInstance.getOid() : null;
             if (this.oid != null && this.oid.length() > 0) {
                 // check if unitprice is set from UI
                 if (!_priceFromDB && _unitPrice != null) {
                     setPriceFromUI(_parameter, _unitPrice);
-                    this.priceIsNet =_config.priceFromUIisNet(_parameter);
+                    this.priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
                     final PriceUtil priceutil = new PriceUtil();
                     this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
@@ -298,7 +301,7 @@ public abstract class Calculator_Base
             // check if unitprice is set from UI
             if (!_priceFromDB && _unitPrice != null && _unitPrice.length() > 0) {
                 setPriceFromUI(_parameter, _unitPrice);
-                this.priceIsNet =_config.priceFromUIisNet(_parameter);
+                this.priceIsNet = _config.priceFromUIisNet(_parameter);
             } else {
                 if (_priceFromDB) {
                     final PriceUtil priceutil = new PriceUtil();
@@ -1352,7 +1355,7 @@ public abstract class Calculator_Base
             if (tax.equals(Tax_Base.getZeroTax())) {
                 ret.put(tax, BigDecimal.ZERO);
             } else {
-                ret.put(tax, net.multiply(tax.getFactor()));
+                ret.put(tax, net.multiply(tax.getFactor()).setScale(net.scale(), BigDecimal.ROUND_HALF_UP));
             }
         }
         return ret;
