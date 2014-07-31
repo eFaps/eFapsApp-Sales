@@ -33,8 +33,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -63,6 +65,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
@@ -854,6 +857,115 @@ public abstract class Account_Base
         }
 
         return ret;
+    }
+
+    public Return getAmount4FieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, getAmount4TransactionAccount(_parameter));
+        return ret;
+    }
+
+    protected BigDecimal getAmount4TransactionAccount(final Parameter _parameter)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, _parameter.getInstance());
+        queryBldr.addOrderByAttributeAsc(CISales.TransactionAbstract.Date);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.TransactionAbstract.Amount);
+        multi.execute();
+
+        while (multi.next()) {
+            BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
+            if (getProperty(_parameter, "Value") != null) {
+                if ("in".equalsIgnoreCase(getProperty(_parameter, "Value"))) {
+                    if (!CISales.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
+                        amount = BigDecimal.ZERO;
+                    }
+                } else if ("out".equalsIgnoreCase(getProperty(_parameter, "Value"))) {
+                    if (!CISales.TransactionOutbound.getType().equals(multi.getCurrentInstance().getType())) {
+                        amount = BigDecimal.ZERO;
+                    }
+                }
+            } else {
+                if (CISales.TransactionOutbound.getType().equals(multi.getCurrentInstance().getType())) {
+                    amount = amount.negate();
+                }
+            }
+            ret = ret.add(amount);
+        }
+
+        return ret;
+    }
+
+    public Return setClosed(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+
+        if (instance != null && CISales.AccountFundsToBeSettled.getType().equals(instance.getType())) {
+            final BigDecimal value = getAmount4TransactionAccount(_parameter);
+
+            Type type = null;
+            String name = null;
+            Status status = null;
+            if (value.signum() == 1) {
+                type = CISales.CollectionOrder.getType();
+                // Sales_CollectionOrderSequence
+                name = NumberGenerator.get(UUID.fromString("e89316af-42c6-4df1-ae7e-7c9f9c2bb73c")).getNextVal();
+                status = Status.find(CISales.CollectionOrderStatus.Open);
+            } else if (value.signum() == -1) {
+                type = CISales.PaymentOrder.getType();
+                // Sales_PaymentOrderSequence
+                name = NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
+                status = Status.find(CISales.PaymentOrderStatus.Open);
+            }
+            if (type != null && name != null && status != null) {
+                final PrintQuery print = new PrintQuery(instance);
+                print.addAttribute(CISales.AccountAbstract.CurrencyLink);
+                print.execute();
+
+                final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
+                                print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink));
+                final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+                final PriceUtil util = new PriceUtil();
+                final BigDecimal[] rates = util.getExchangeRate(new DateTime(), rateCurrInst);
+                final BigDecimal pay = value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : value
+                                .setScale(8, BigDecimal.ROUND_HALF_UP).divide(rates[0], BigDecimal.ROUND_HALF_UP)
+                                .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                final CurrencyInst cur = new CurrencyInst(rateCurrInst);
+                final Object[] rate = new Object[] { cur.isInvert() ? BigDecimal.ONE : rates[1],
+                                cur.isInvert() ? rates[1] : BigDecimal.ONE };
+
+                final Insert insert = new Insert(type);
+                insert.add(CISales.DocumentSumAbstract.Name, name);
+                insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
+                insert.add(CISales.DocumentSumAbstract.DueDate, new DateTime());
+                insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
+                insert.add(CISales.DocumentSumAbstract.RateCrossTotal, value);
+                insert.add(CISales.DocumentSumAbstract.RateNetTotal, value);
+                insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+                insert.add(CISales.DocumentSumAbstract.CrossTotal, pay);
+                insert.add(CISales.DocumentSumAbstract.NetTotal, pay);
+                insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+                insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
+                insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
+                insert.add(CISales.DocumentSumAbstract.Rate, rate);
+                insert.add(CISales.DocumentSumAbstract.StatusAbstract, status);
+                insert.execute();
+            }
+            final Update update = new Update(instance);
+            update.add(CISales.AccountAbstract.Active, false);
+            update.execute();
+        }
+
+        return new Return();
     }
 
     public Return downloadLiquidation(final Parameter _parameter)

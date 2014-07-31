@@ -19,21 +19,30 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>6988cd7d-ded0-4306-86e6-0bcfe71db4eb</uuid>
+    <uuid>31e2f22c-3af3-44d6-ab62-4df0bf815b54</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Edit</child>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Recalculate</child>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Closed</child>
-        </childs>
+        <name>Sales_AccountFundsToBeSettledTree_Menu_Action_Closed</name>
+
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+
+        <!-- target definitions -->
+        <target>
+            <form>Sales_AccountFundsToBeSettledClosedForm</form>
+            <execute program="org.efaps.esjp.sales.Account" method="setClosed" />
+        </target>
+        <!-- properties -->
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 
-</ui-menu>
+</ui-command>
