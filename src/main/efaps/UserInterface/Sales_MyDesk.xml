@@ -31,6 +31,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_MyDesk</name>
+        <icon>Sales_MyDeskImg</icon>
         <childs>
             <child>ERP_Common_SearchMyDesk</child>
             <child>Sales_DocumentsMyDesk</child>
