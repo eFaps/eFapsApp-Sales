@@ -25,6 +25,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.esjp.ci.CIFormSales;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.util.EFapsException;
@@ -44,14 +47,38 @@ public abstract class CheckBook_Base
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
-     * @return Return continaing the instance
+     * @return Return containing the instance
      * @throws EFapsException on error
      */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
         final Create create = new Create();
-
         return create.execute(_parameter);
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return empty Return
+     * @throws EFapsException on error
+     */
+    public Return createRelations(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String startStr = _parameter.getParameterValue(CIFormSales.Sales_CheckBookCreateRelationForm.start.name);
+        final String endStr = _parameter.getParameterValue(CIFormSales.Sales_CheckBookCreateRelationForm.end.name);
+
+        final int start = Integer.parseInt(startStr);
+        final int end = Integer.parseInt(endStr);
+        for (int i = start; i < end; i++) {
+            final Insert insert = new Insert(CISales.CheckBook2PaymentCheckOut);
+            insert.add(CISales.CheckBook2PaymentCheckOut.Number, String.format("%06d", i));
+            insert.add(CISales.CheckBook2PaymentCheckOut.FromLink, _parameter.getCallInstance());
+            insert.add(CISales.CheckBook2PaymentCheckOut.ToLink, _parameter.getCallInstance());
+            insert.execute();
+        }
+        return new Return();
+    }
 }
+
+

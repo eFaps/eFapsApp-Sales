@@ -20,12 +20,14 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -37,10 +39,18 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.sales.PriceUtil;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -73,6 +83,8 @@ public abstract class PaymentCheckOut_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
         createDocumentTax(_parameter, createdDoc);
+        connect2CheckBook(_parameter, createdDoc);
+        executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
         return ret;
     }
@@ -93,8 +105,100 @@ public abstract class PaymentCheckOut_Base
                             issued);
         }
     }
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc created doc
+     * @throws EFapsException on error
+     */
+    public void connect2CheckBook(final Parameter _parameter,
+                                  final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final Instance checkBook2checkInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentCheckOutForm.name.name));
+        if (checkBook2checkInst.isValid()) {
+            final PrintQuery print = new PrintQuery(checkBook2checkInst);
+            print.addAttribute(CISales.CheckBook2PaymentCheckOut.Number);
+            print.executeWithoutAccessCheck();
 
+            final Update updatePayDoc = new Update(_createdDoc.getInstance());
+            updatePayDoc.add(CIERP.PaymentDocumentAbstract.Name,
+                            print.getAttribute(CISales.CheckBook2PaymentCheckOut.Number));
+            updatePayDoc.executeWithoutTrigger();
 
+            final Update relUpdate = new Update(checkBook2checkInst);
+            relUpdate.add(CISales.CheckBook2PaymentCheckOut.ToLink, _createdDoc.getInstance());
+            relUpdate.executeWithoutAccessCheck();
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return containing maplist
+     * @throws EFapsException on error
+     */
+    public Return updateFields4CheckBook(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance checkBookInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_PaymentCheckOutForm.checkBook.name));
+        if (checkBookInst.isValid()) {
+            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final PrintQuery print = new PrintQuery(checkBookInst);
+            final SelectBuilder selAcc = SelectBuilder.get().linkto(CISales.CheckBook.AccountLink);
+            final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
+            final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CISales.AccountCashDesk.Name);
+            final SelectBuilder selCurrInst = new SelectBuilder(selAcc).linkto(CISales.AccountCashDesk.CurrencyLink)
+                            .instance();
+            final SelectBuilder selCurrName = new SelectBuilder(selAcc).linkto(CISales.AccountCashDesk.CurrencyLink)
+                            .attribute(CIERP.Currency.Name);
+            print.addSelect(selAccInst, selAccName, selCurrInst, selCurrName);
+            print.execute();
+
+            final String accName = print.<String>getSelect(selAccName);
+            final String currName = print.<String>getSelect(selCurrName);
+            final Instance accInst = print.<Instance>getSelect(selAccInst);
+            final Instance newInst = print.<Instance>getSelect(selCurrInst);
+
+            final StringBuilder nameArr = new StringBuilder().append("new Array('0'");
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.CheckBook2PaymentCheckOut);
+            queryBldr.addWhereAttrEqValue(CISales.CheckBook2PaymentCheckOut.FromLink, checkBookInst);
+            queryBldr.addWhereAttrEqValue(CISales.CheckBook2PaymentCheckOut.ToLink, checkBookInst);
+            queryBldr.addOrderByAttributeAsc(CISales.CheckBook2PaymentCheckOut.Number);
+            queryBldr.setLimit(10);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.setEnforceSorted(true);
+            multi.addAttribute(CISales.CheckBook2PaymentCheckOut.Number);
+            multi.execute();
+            while (multi.next()) {
+                final String number = multi.<String>getAttribute(CISales.CheckBook2PaymentCheckOut.Number);
+                nameArr.append(",'").append(multi.getCurrentInstance().getOid())
+                    .append("','").append(number).append("'");
+            }
+            nameArr.append(")");
+            final Map<String, String> map = new HashMap<String, String>();
+            map.put(CIFormSales.Sales_PaymentCheckOutForm.name.name, nameArr.toString());
+
+            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+
+            final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
+            map.put("rate", NumberFormatter.get().getFormatter(0, 3).format(rates[3]));
+            map.put("rate" + RateUI.INVERTEDSUFFIX, "" + (rates[3].compareTo(rates[0]) != 0));
+
+            final StringBuilder accArr = new StringBuilder()
+                    .append("new Array('").append(accInst.getId()).append("'")
+                    .append(",'").append(accInst.getId()).append("','").append(accName).append(" - ")
+                    .append(currName)
+                    .append("'").append(")");
+            map.put(CIFormSales.Sales_PaymentCheckOutForm.account.name, accArr.toString());
+            list.add(map);
+
+            ret.put(ReturnValues.VALUES, list);
+        }
+        return ret;
+    }
 
     public Return getPayment2CheckOutPositionInstances(final Parameter _parameter)
         throws EFapsException
@@ -264,19 +368,14 @@ public abstract class PaymentCheckOut_Base
                     final String name = multi.<String>getSelect(selAccountName);
                     derivadedAccountPayment.put(paymentInst, name);
                 }
-
             }
-
             for (final Entry<Instance, String> entry : derivadedAccountPayment.entrySet()) {
                 if (entry.getKey() != null && paymentList.get(entry.getKey()) != null) {
                     values.put(paymentList.get(entry.getKey()), entry.getValue().toString());
                 }
             }
-
         }
         ret.put(ReturnValues.VALUES, values.get(_parameter.getInstance()));
-
         return ret;
     }
-
 }

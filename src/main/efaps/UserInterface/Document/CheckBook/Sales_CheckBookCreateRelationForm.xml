@@ -20,26 +20,25 @@
   Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>cfce73eb-db4f-4da4-af6c-faa5177755e4</uuid>
+    <uuid>97330858-cf0f-44ca-bf18-9d1557571db1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CheckBookTree</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_CheckBookTree_Menu</menu>
-            <form>Sales_CheckBookForm</form>
-        </target>
-        <type>Sales_CheckBook</type>
-        <childs>
-            <child>Sales_CheckBookTree_Check</child>
-        </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <name>Sales_CheckBookCreateRelationForm</name>
+        <field name="start">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="Label">Sales_CheckBookCreateRelationForm.start.label</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="end">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <property name="Label">Sales_CheckBookCreateRelationForm.end.label</property>
+            <property name="Required">true</property>
+        </field>
     </definition>
-</ui-menu>
+</ui-form>
