@@ -20,19 +20,29 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b209b89b-80ef-4a10-8e12-2d5b485e6f03</uuid>
+    <uuid>7ccf936a-1f81-4aa0-9b37-28ae71844bb3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionDocumentTree_Menu_Action</name>
-        <childs>
-            <child>Sales_TransactionDocumentTree_Menu_Action_Edit</child>
-            <child>Sales_TransactionDocumentTree_Menu_Action_SetCanceled</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_TransactionDocumentTree_Menu_Action_Edit</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_TransactionDocumentForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_TransactionDocumentTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
-</ui-menu>
+</ui-command>
