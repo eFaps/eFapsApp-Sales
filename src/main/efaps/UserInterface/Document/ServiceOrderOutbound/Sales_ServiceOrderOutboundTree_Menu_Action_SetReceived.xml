@@ -41,7 +41,7 @@
             </execute>
             <trigger event="UI_ACCESSCHECK"
                 method="check4Status"
-                name="Sales_ServiceOrderOutboundTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
+                name="Sales_ServiceOrderOutboundTree_Menu_Action_SetReceived.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
