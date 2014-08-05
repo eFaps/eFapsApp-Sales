@@ -395,18 +395,28 @@ public abstract class AbstractProductDocument_Base
                                 map.put(CIProducts.ProductAbstract.Individual.name,
                                                 Products.ProductIndividual.NONE.getInt());
                                 final Instance indInst;
-                                if (individual.equals(Products.ProductIndividual.BATCH.toString())) {
-                                    final String name = new Batch().getNewName(_parameter, prodInst);
-                                    map.put(CIProducts.ProductAbstract.Name.name, name);
-                                    indInst = new Product().cloneProduct(_parameter, prodInst,
-                                                prodType, map, clazz);
+                                if (ProductIndividual.BATCH.equals(prIn)) {
+                                    if (individual.equals(Products.ProductIndividual.BATCH.toString())) {
+                                        final String name = new Batch().getNewName(_parameter, prodInst);
+                                        map.put(CIProducts.ProductAbstract.Name.name, name);
+                                        indInst = new Product().cloneProduct(_parameter, prodInst,
+                                                    prodType, map, clazz);
+                                        final Insert relInsert = new Insert(relType);
+                                        relInsert.add(CIProducts.Product2ProductAbstract.FromAbstract, prodInst);
+                                        relInsert.add(CIProducts.Product2ProductAbstract.ToAbstract, indInst);
+                                        relInsert.execute();
+                                    } else {
+                                        indInst = Instance.get(individual);
+                                    }
+                                } else {
+                                    map.put(CIProducts.ProductAbstract.Name.name, individual);
+                                    indInst = new Product().cloneProduct(_parameter, prodInst, prodType, map, clazz);
                                     final Insert relInsert = new Insert(relType);
                                     relInsert.add(CIProducts.Product2ProductAbstract.FromAbstract, prodInst);
                                     relInsert.add(CIProducts.Product2ProductAbstract.ToAbstract, indInst);
                                     relInsert.execute();
-                                } else {
-                                    indInst = Instance.get(individual);
                                 }
+
                                 if (indInst != null && indInst.isValid()) {
                                     final Insert transInsert = new Insert(CIProducts.TransactionIndividualInbound);
                                     transInsert.add(CIProducts.TransactionAbstract.Quantity, quantity);
