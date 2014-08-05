@@ -32,14 +32,14 @@
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_IncomingPerceptionCertificate</typelink>
+            <typelink>Sales_CheckBook</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>Sales_IncomingInvoice</typelink>
+            <typelink>Sales_PaymentCheckOut</typelink>
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>

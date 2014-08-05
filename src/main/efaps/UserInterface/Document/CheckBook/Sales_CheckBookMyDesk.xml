@@ -33,7 +33,7 @@
         </access>
         <target>
             <menu>Sales_CheckBookMyDesk_Menu</menu>
-            <table>Sales_DocumentAbstractTable</table>
+            <table>Sales_CheckBookTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_CheckBook</property>
             </evaluate>

@@ -51,6 +51,8 @@
         </field>
         <field name="checkBook">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentCheckOutForm.checkBook.Label</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
@@ -73,6 +75,13 @@
                 name="Sales_PaymentCheckOutForm.checkBook.UI_FIELD_UPDATE.2"
                 event="UI_FIELD_UPDATE"
                 index="2" />
+        </field>
+        <field name="checkBook4view">
+            <property name="ModeEdit">NONE</property>
+            <property name="Label">Sales_PaymentCheckOutForm.checkBook.Label</property>
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].attribute[Name]</property>
         </field>
         <field character="Group" name="nameGroup">
             <property name="GroupCount">2</property>
