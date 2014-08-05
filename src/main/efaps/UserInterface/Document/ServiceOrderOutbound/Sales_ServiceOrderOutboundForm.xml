@@ -224,40 +224,80 @@
             <property name="Label">Sales_ServiceOrderOutboundForm/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field character="Heading" name="rate4ReadHeading">
-            <property name="Level">2</property>
-            <property name="Label">Sales_ServiceOrderOutboundForm.rate4ReadHeading.Heading</property>
+        <field name="rate4ReadHeading" character="Heading">
+            <property name="Level">1</property>
+            <property name="Label">Sales_IncomingInvoiceForm.rate4ReadHeading.Heading</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rate4ReadHeading.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
-        <field character="Group" name="rateGroup">
+        <field name="rateGroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rateGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCurrencyId4Read">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rateCurrencyId4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_OrderOutboundForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rateHeadingPositon.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.ratePositionTable.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+            <table>Sales_ServiceOrderOutboundRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_ServiceOrderOutboundPosition</property>
+                <property name="LinkFrom">ServiceOrder</property>
+            </evaluate>
         </field>
         <field name="rateNetTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
-            <property name="Label">Sales_ServiceOrderOutboundForm/RateNetTotal.Label</property>
+            <property name="Label">Sales_OrderOutbound/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rateNetTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rateTaxes.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
-            <property name="Label">Sales_ServiceOrderOutboundForm/RateCrossTotal.Label</property>
+            <property name="Label">Sales_OrderOutbound/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
+                name="Sales_ServiceOrderOutboundForm.rateCrossTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
