@@ -59,7 +59,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.CurrencyInst_Base;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
@@ -592,7 +591,7 @@ public abstract class DocReport_Base
         // Sales-Configuration
         final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                         .getLink("CurrencyBase");
-        final String symbol = new CurrencyInst_Base(baseInst).getSymbol();
+        final String symbol = new CurrencyInst(baseInst).getSymbol();
         if (fieldValue.getTargetMode().equals(TargetMode.CREATE)) {
             if (fieldValue.getField().getName().equals("rate")) {
                 html.append("<input type='text' value='1' name=\"").append(fieldValue.getField().getName())
