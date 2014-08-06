@@ -37,7 +37,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_AccountAbstractTree_Menu</menu>
+            <menu>Sales_AccountPettyCashTree_Menu</menu>
             <form>Sales_AccountPettyCashForm</form>
         </target>
         <type>Sales_AccountPettyCash</type>
