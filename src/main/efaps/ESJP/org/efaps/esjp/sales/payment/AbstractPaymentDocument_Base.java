@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -72,6 +73,7 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
@@ -116,7 +118,7 @@ public abstract class AbstractPaymentDocument_Base
     /**
      * Logger for this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(MultiPrint.class);
+    private static final Logger LOG = LoggerFactory.getLogger(AbstractPaymentDocument.class);
 
     public static final String INVOICE_SESSIONKEY = "eFaps_Selected_Sales_Invoice";
 
@@ -335,6 +337,208 @@ public abstract class AbstractPaymentDocument_Base
         }
     }
 
+    /**
+     * Fills the paymentdocument form with the selected values.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return map for picker event
+     * @throws EFapsException on error
+     */
+    public Return picker4Document(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final Map<String, String> map = new HashMap<>();
+        retVal.put(ReturnValues.VALUES, map);
+
+        final StringBuilder js = new StringBuilder();
+        js.append(getTableRemoveScript(_parameter, "paymentTable"));
+        final List<Map<String, Object>> values = new ArrayList<>();
+
+        final List<Instance> docInsts = new ArrayList<>();
+        final String[] oids = _parameter.getParameterValues("selectedRow");
+        if (oids != null) {
+            for (final String oid : oids) {
+                final Instance docInst = Instance.get(oid);
+                if (docInst.isValid()) {
+                    docInsts.add(docInst);
+                }
+            }
+            final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PARAMETERS,
+                            _parameter.get(ParameterValues.PARENTPARAMETERS));
+            for (final Instance docInst : docInsts) {
+                values.add(getPositionUpdateMap(parameter, docInst, true));
+            }
+        }
+        final List<Map<String, Object>> sums = new ArrayList<>();
+        sums.add(getSumUpdateMap(_parameter, values, false));
+        js.append(getSetFieldValuesScript(_parameter, sums, null));
+        js.append(getTableAddNewRowsScript(_parameter, "paymentTable", values, null));
+        map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), js.toString());
+        return retVal;
+    }
+
+    /**
+     * Multiprint used to fill the table for the picker.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return map for picker event
+     * @throws EFapsException on error
+     */
+    public Return pickerMultiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint mulit = new MultiPrint(){
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+                final boolean deactFilter = "true".equalsIgnoreCase(_parameter.getParameterValue("checkbox4Invoice"));
+                if (contactInst.isValid() && !deactFilter) {
+                    _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, contactInst.getId());
+                } else if (!deactFilter) {
+                    // show nothing
+                    _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.ID, 0);
+                }
+                super.add2QueryBldr(_parameter, _queryBldr);
+            }
+        };
+        return mulit.execute(_parameter);
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFasp API
+     * @param _docInst instance of the document the map is wanted for
+     * @param _addDocInfo add the autocomplete field also
+     * @return map containing values for update
+     * @throws EFapsException on error
+     */
+    protected Map<String, Object> getPositionUpdateMap(final Parameter _parameter,
+                                                       final Instance _docInst,
+                                                       final boolean _addDocInfo)
+        throws EFapsException
+    {
+        final Map<String, Object> ret = new HashMap<>();
+        final Instance accInst = Instance.get(CISales.AccountCashDesk.getType(),
+                        _parameter.getParameterValue("account"));
+        if (_docInst.isValid() && accInst.isValid()) {
+            final AccountInfo accInfo = new AccountInfo(accInst);
+            final DocumentInfo docInfo = getNewDocumentInfo(_docInst);
+            docInfo.setAccountInfo(accInfo);
+            docInfo.setRateOptional(getRateObject(_parameter));
+
+            final BigDecimal total4Doc = docInfo.getCrossTotal();
+            final BigDecimal payments4Doc = docInfo.getTotalPayments();
+            final BigDecimal amount4PayDoc;
+            final BigDecimal paymentDiscount;
+            final BigDecimal paymentAmountDesc;
+            if (payments4Doc.compareTo(BigDecimal.ZERO) == 0) {
+                // if this is the first payment. check for detraction etc.
+                final DocTaxInfo docTaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _docInst);
+                amount4PayDoc = total4Doc.subtract(docTaxInfo.getTaxAmount());
+                paymentDiscount = docTaxInfo.getPercent();
+                paymentAmountDesc = docTaxInfo.getTaxAmount();
+            } else {
+                amount4PayDoc = total4Doc.subtract(payments4Doc);
+                paymentDiscount = BigDecimal.ZERO;
+                paymentAmountDesc = BigDecimal.ZERO;
+            }
+            if (_addDocInfo) {
+                ret.put("createDocument", new String[] {docInfo.getInstance().getOid(), docInfo.getName()});
+            }
+            ret.put("createDocumentContact", docInfo.getContactName());
+            ret.put("createDocumentDesc", docInfo.getInfoOriginal());
+            ret.put("payment4Pay", getTwoDigitsformater().format(amount4PayDoc));
+            ret.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
+            ret.put("paymentAmountDesc", getTwoDigitsformater().format(paymentAmountDesc));
+            ret.put("paymentDiscount", getTwoDigitsformater().format(paymentDiscount));
+            ret.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
+            ret.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFasp API
+     * @param _maps list of maps to be analyzed for the sum
+     * @param _includeUI inlude the values from the UI also
+     * @return map of sum
+     * @throws EFapsException on error
+     */
+    protected Map<String, Object> getSumUpdateMap(final Parameter _parameter,
+                                                  final Collection<Map<String, Object>> _maps,
+                                                  final boolean _includeUI)
+        throws EFapsException
+    {
+        final Map<String, Object> ret = new HashMap<>();
+        BigDecimal total = BigDecimal.ZERO;
+        for (final Map<String, Object> map : _maps) {
+            try {
+                total = total.add((BigDecimal) NumberFormatter.get().getFormatter()
+                                .parse((String) map.get("paymentAmount")));
+            } catch (final ParseException e) {
+                LOG.error("Catched ParseException", e);
+            }
+        }
+        if (_includeUI) {
+            total = total.add(getSum4Positions(_parameter, false));
+        }
+        if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
+            ret.put("amount", getTwoDigitsformater().format(total));
+            ret.put("total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO));
+        } else {
+            final BigDecimal amount = parseBigDecimal(_parameter.getParameterValue("amount"));
+            ret.put("total4DiscountPay", getTwoDigitsformater().format(amount.subtract(total)));
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return list map for fieldupdate event
+     * @throws EFapsException on error
+     */
+    @SuppressWarnings("unchecked")
+    public Return updateFields4CreateDocument(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final int selected = getSelectedRow(_parameter);
+        final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
+        final Map<String, Object> map = getPositionUpdateMap(_parameter, docInstance, false);
+        map.putAll(getSumUpdateMap(_parameter, Arrays.<Map<String, Object>>asList(new Map[]{ map }), true));
+        list.add(map);
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+    /**
+     * @param _parameter parameter as passed by the eFasp API
+     * @param _includeCurrent include the current position
+     * @return sum of the positions
+     * @throws EFapsException on error
+     */
+    protected BigDecimal getSum4Positions(final Parameter _parameter,
+                                          final boolean _includeCurrent)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        final String[] paymentAmounts = _parameter.getParameterValues("paymentAmount");
+        final int selected = getSelectedRow(_parameter);
+        for (int i = 0; i < paymentAmounts.length; i++) {
+            try {
+                if (!_includeCurrent && selected != i || _includeCurrent) {
+                    ret = ret.add((BigDecimal) NumberFormatter.get().getFormatter().parse(paymentAmounts[i]));
+                }
+            } catch (final ParseException e) {
+                // only show that error during debug, because it is likely that the user did just used invalid strings
+                LOG.debug("Catched ParseException", e);
+            }
+        }
+        return ret;
+    }
+
 
     protected String getRateCurrencyLink4Account(final Parameter _parameter)
         throws EFapsException
@@ -508,7 +712,7 @@ public abstract class AbstractPaymentDocument_Base
         final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
         final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter);
         attrQueryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Name, input + "*").setIgnoreCase(true);
-        if(showRevision) {
+        if (showRevision) {
             attrQueryBldr.addWhereAttrMatchValue(CISales.DocumentAbstract.Revision, input + "*").setIgnoreCase(true);
             attrQueryBldr.setOr(true);
         }
@@ -557,7 +761,7 @@ public abstract class AbstractPaymentDocument_Base
                                 .append(getTwoDigitsformater().format(amount));
             }
             choice.append(" - ").append(conName);
-            if(showRevision) {
+            if (showRevision) {
                 choice.append(" - ").append(revision);
             }
             final Map<String, String> map = new HashMap<String, String>();
@@ -613,7 +817,7 @@ public abstract class AbstractPaymentDocument_Base
         final Return retVal = new Return();
         final BigDecimal amount2Pay = getAmount4Pay(_parameter).abs();
         map.put("amount", getTwoDigitsformater().format(amount2Pay));
-        map.put("total4DiscountPay", getTwoDigitsformater().format(amount2Pay.subtract(getSumsPositions(_parameter))));
+        map.put("total4DiscountPay", getTwoDigitsformater().format(amount2Pay.subtract(getSum4Positions(_parameter, true))));
         list.add(map);
         retVal.put(ReturnValues.VALUES, list);
 
@@ -630,62 +834,6 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         return parseBigDecimal(_parameter.getParameterValue("amount"));
-    }
-
-    public Return updateFields4CreateDocument(final Parameter _parameter)
-        throws EFapsException
-    {
-        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final Map<String, String> map = new HashMap<String, String>();
-        final int selected = getSelectedRow(_parameter);
-        final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
-        final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
-                        _parameter.getParameterValue("account"));
-        if (docInstance.isValid() && accInstance.isValid()) {
-            final AccountInfo accInfo = new AccountInfo(accInstance);
-            final DocumentInfo docInfo = getNewDocumentInfo(docInstance);
-            docInfo.setAccountInfo(accInfo);
-            docInfo.setRateOptional(getRateObject(_parameter));
-
-            final BigDecimal total4Doc = docInfo.getCrossTotal();
-            final BigDecimal payments4Doc = docInfo.getTotalPayments();
-            final BigDecimal amount4PayDoc;
-            final BigDecimal paymentDiscount;
-            final BigDecimal paymentAmountDesc;
-            if (payments4Doc.compareTo(BigDecimal.ZERO) == 0) {
-                // if this is the first payment. check for detraction etc.
-                final DocTaxInfo docTaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, docInstance);
-                amount4PayDoc = total4Doc.subtract(docTaxInfo.getTaxAmount());
-                paymentDiscount = docTaxInfo.getPercent();
-                paymentAmountDesc = docTaxInfo.getTaxAmount();;
-            } else {
-                amount4PayDoc = total4Doc.subtract(payments4Doc);
-                paymentDiscount = BigDecimal.ZERO;
-                paymentAmountDesc = BigDecimal.ZERO;
-            }
-            map.put("createDocumentContact", docInfo.getContactName());
-            map.put("createDocumentDesc", docInfo.getInfoOriginal());
-            map.put("payment4Pay", getTwoDigitsformater().format(amount4PayDoc));
-            map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
-            map.put("paymentAmountDesc", getTwoDigitsformater().format(paymentAmountDesc));
-            map.put("paymentDiscount", getTwoDigitsformater().format(paymentDiscount));
-            map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
-            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
-            final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
-            final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
-            if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-                map.put("amount", getTwoDigitsformater().format(totalPay4Position));
-                map.put("total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO));
-            } else {
-                final BigDecimal amount = parseBigDecimal(_parameter.getParameterValue("amount"));
-                map.put("total4DiscountPay", getTwoDigitsformater().format(amount.subtract(totalPay4Position)));
-            }
-            list.add(map);
-        }
-
-        final Return retVal = new Return();
-        retVal.put(ReturnValues.VALUES, list);
-        return retVal;
     }
 
     public Return updateFields4PaymentRate(final Parameter _parameter)
@@ -722,12 +870,12 @@ public abstract class AbstractPaymentDocument_Base
             map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
             map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
             BigDecimal total4DiscountPay = BigDecimal.ZERO;
-            final BigDecimal newAmount = getSumsPositions(_parameter).subtract(parseBigDecimal(amount4PayStr));
+            final BigDecimal newAmount = getSum4Positions(_parameter, true).subtract(parseBigDecimal(amount4PayStr));
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
                 map.put("amount", getTwoDigitsformater().format(newAmount.add(newAmount4PayDoc)));
             } else {
                 total4DiscountPay = getAmount4Pay(_parameter).abs()
-                                                .subtract(getSumsPositions(_parameter)).add(newAmount4PayDoc);
+                                                .subtract(getSum4Positions(_parameter, true)).add(newAmount4PayDoc);
             }
             map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
             list.add(map);
@@ -768,7 +916,7 @@ public abstract class AbstractPaymentDocument_Base
                                                 .setScale(2, BigDecimal.ROUND_HALF_UP);
         map.put("paymentAmount", getTwoDigitsformater().format(amount.subtract(discAmount)));
         map.put("paymentAmountDesc", getTwoDigitsformater().format(amount.subtract(amount.subtract(discAmount))));
-        final BigDecimal recalculatePos = getSumsPositions(_parameter)
+        final BigDecimal recalculatePos = getSum4Positions(_parameter, true)
                                                     .subtract(payAmount).add(amount.subtract(discAmount));
         BigDecimal total4DiscountPay = BigDecimal.ZERO;
         if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
@@ -820,9 +968,9 @@ public abstract class AbstractPaymentDocument_Base
             map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
             BigDecimal total4DiscountPay = BigDecimal.ZERO;
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-                map.put("amount", getTwoDigitsformater().format(getSumsPositions(_parameter)));
+                map.put("amount", getTwoDigitsformater().format(getSum4Positions(_parameter, true)));
             } else {
-                total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(getSumsPositions(_parameter));
+                total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(getSum4Positions(_parameter, true));
             }
             map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
             list.add(map);
@@ -882,16 +1030,7 @@ public abstract class AbstractPaymentDocument_Base
         return ret == null ? BigDecimal.ZERO : ret;
     }
 
-    protected BigDecimal getSumsPositions(final Parameter _parameter)
-        throws EFapsException
-    {
-        BigDecimal ret = BigDecimal.ZERO;
-        final String[] paymentPosAmount = _parameter.getParameterValues("paymentAmount");
-        for (int i = 0; i < getPaymentCount(_parameter); i++) {
-            ret = ret.add(parseBigDecimal(paymentPosAmount[i]));
-        }
-        return ret;
-    }
+
 
     public Return update4checkbox4Invoive(final Parameter _parameter)
         throws EFapsException
@@ -1079,7 +1218,7 @@ public abstract class AbstractPaymentDocument_Base
         final Return ret = new Return();
         final StringBuilder html = new StringBuilder();
         final BigDecimal amount4Doc = getAmount4Pay(_parameter);
-        final BigDecimal pos4Doc = getSumsPositions(_parameter);
+        final BigDecimal pos4Doc = getSum4Positions(_parameter, true);
         if (amount4Doc.compareTo(pos4Doc) == 0) {
             html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.PaymentCorrect"));
         } else {

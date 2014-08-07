@@ -790,7 +790,7 @@ public abstract class AbstractPaymentOut_Base
 
         map.put("paymentAmount", getTwoDigitsformater().format(amount.subtract(payAmountDesc)));
         map.put("paymentAmountDesc", getTwoDigitsformater().format(payAmountDesc));
-        final BigDecimal recalculatePos = getSumsPositions(_parameter)
+        final BigDecimal recalculatePos = getSum4Positions(_parameter, true)
                         .subtract(payAmount).add(amount.subtract(payAmountDesc));
         BigDecimal total4DiscountPay = BigDecimal.ZERO;
         if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {

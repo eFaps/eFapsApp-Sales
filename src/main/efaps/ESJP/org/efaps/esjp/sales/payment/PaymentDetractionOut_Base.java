@@ -335,7 +335,7 @@ public abstract class PaymentDetractionOut_Base
             map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
             map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
-            final BigDecimal totalPay4Position = getSumsPositions(_parameter).subtract(update).add(amount4PayDoc);
+            final BigDecimal totalPay4Position = getSum4Positions(_parameter, true).subtract(update).add(amount4PayDoc);
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
                 map.put("amount", getTwoDigitsformater().format(totalPay4Position));
                 map.put("total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO));
