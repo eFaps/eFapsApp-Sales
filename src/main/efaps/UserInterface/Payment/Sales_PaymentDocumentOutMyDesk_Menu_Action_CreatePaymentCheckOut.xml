@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b80d84d8-68a5-418d-8381-a7398821c3ff</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -29,7 +31,6 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentCheckOutForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
@@ -38,14 +39,13 @@
                 <property name="StatusGroup">Sales_PaymentCheckOutStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentCheckOut"/>
+            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentCheckOut" />
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentCheckOut</property>
         <property name="TargetMode">create</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">800</property>
+        <property name="WindowHeight">800</property>
+        <property name="WindowWidth">1200</property>
         <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
