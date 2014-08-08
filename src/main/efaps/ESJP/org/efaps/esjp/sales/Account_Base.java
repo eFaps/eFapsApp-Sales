@@ -907,7 +907,8 @@ public abstract class Account_Base
     {
         final Instance instance = _parameter.getInstance();
 
-        if (instance != null && CISales.AccountFundsToBeSettled.getType().equals(instance.getType())) {
+        if (instance != null && (CISales.AccountFundsToBeSettled.getType().equals(instance.getType())
+                        || CISales.AccountPettyCash.getType().equals(instance.getType()))) {
             final BigDecimal value = getAmount4TransactionAccount(_parameter);
 
             Type type = null;
