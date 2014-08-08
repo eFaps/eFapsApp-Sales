@@ -236,8 +236,8 @@ public abstract class AbstractSumOnlyDocument_Base
             multi2.addAttribute(CISales.DocumentSumAbstract.Rate);
             multi2.addSelect(selRateCurInst);
             if (multi2.execute()) {
-                final Instance curInst = multi.getSelect(selRateCurInst);
-                final Instance curInst2 = multi2.getSelect(selRateCurInst);
+                final Instance curInst = multi.<Instance>getSelect(selRateCurInst);
+                final Instance curInst2 = multi2.<Instance>getSelect(selRateCurInst);
 
                 BigDecimal amount = BigDecimal.ZERO;
                 if (curInst.equals(curInst2)) {
