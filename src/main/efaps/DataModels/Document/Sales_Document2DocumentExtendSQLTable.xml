@@ -32,7 +32,8 @@
         <database>
             <table-name>T_SALESDOC2DOCEXT</table-name>
             <parent-table>T_ERPDOC2DOC</parent-table>
-            <column length="256" name="STRING1" type="STRING_SHORT" />
+            <column name="STRING1"  type="STRING_SHORT" length="256"/>
+            <column name="DECIMAL1" type="DECIMAL"      length="14"     scale="4"/>
         </database>
     </definition>
 </datamodel-sqltable>

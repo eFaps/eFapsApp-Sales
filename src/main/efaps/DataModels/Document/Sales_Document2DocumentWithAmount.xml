@@ -20,28 +20,19 @@
  Last Changed By: $Author$
 
 --><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4c5b7c82-7f98-45be-8654-608be1724ebf</uuid>
+    <uuid>321f4a01-7e70-4aab-a77b-111de2ca279b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Exchange2PaymentOrder</name>
-        <parent>Sales_Exchange2Document</parent>
+        <name>Sales_Document2DocumentWithAmount</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
+        <purpose abstract="true" />
         <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_Exchange</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
+            <name>Amount</name>
+            <type>Decimal</type>
+            <sqltable>Sales_Document2DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>DECIMAL1</sqlcolumn>
         </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_PaymentOrder</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
-        <trigger program="org.efaps.esjp.sales.document.Exchange" method="insertPostTrigger"
-            name="Sales_Exchange2PaymentOrder.INSERT_POST" event="INSERT_POST" />
     </definition>
 </datamodel-type>

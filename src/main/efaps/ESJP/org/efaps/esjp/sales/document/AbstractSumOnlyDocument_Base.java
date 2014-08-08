@@ -24,13 +24,22 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
+import java.util.HashMap;
+import java.util.Map;
 
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -182,5 +191,75 @@ public abstract class AbstractSumOnlyDocument_Base
 
         Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
         return createdDoc;
+    }
+
+    /**
+     * Method to update amount.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return insertPostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        updateAmount(_parameter);
+        return new Return();
+    }
+
+    /**
+     * Method to update amount with new values.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @throws EFapsException on error.
+     */
+    protected void updateAmount(final Parameter _parameter)
+        throws EFapsException
+    {
+        final SelectBuilder selRateCurInst = new SelectBuilder()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+
+        final Map<?, ?> values = (HashMap<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        final Attribute attr = _parameter.getInstance().getType().getAttribute("ToLink");
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.ID, (Object[]) values.get(attr));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentSumAbstract.CrossTotal);
+        multi.addSelect(selRateCurInst);
+        if (multi.execute()) {
+            final Attribute attr2 = _parameter.getInstance().getType().getAttribute("FromLink");
+            final QueryBuilder queryBldr2 = new QueryBuilder(CISales.DocumentSumAbstract);
+            queryBldr2.addWhereAttrEqValue(CISales.DocumentSumAbstract.ID, (Object[]) values.get(attr2));
+            final MultiPrintQuery multi2 = queryBldr2.getPrint();
+            multi2.addAttribute(CISales.DocumentSumAbstract.Rate);
+            multi2.addSelect(selRateCurInst);
+            if (multi2.execute()) {
+                final Instance curInst = multi.getSelect(selRateCurInst);
+                final Instance curInst2 = multi2.getSelect(selRateCurInst);
+
+                BigDecimal amount = BigDecimal.ZERO;
+                if (curInst.equals(curInst2)) {
+                    amount = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                } else {
+                    final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                    if (!curInst.equals(baseCurrInst) && curInst2.equals(baseCurrInst)) {
+                        amount = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                    } else {
+                        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+                        final int scale = frmt.getMaximumFractionDigits();
+                        final Object[] rateObj = multi2.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
+                        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                                        BigDecimal.ROUND_HALF_UP);
+                        amount = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                        .multiply(rate).setScale(scale, BigDecimal.ROUND_HALF_UP);
+                    }
+                }
+                final Update update = new Update(_parameter.getInstance());
+                update.add(CISales.Document2DocumentWithAmount.Amount, amount);
+                update.executeWithoutTrigger();
+            }
+        }
     }
 }

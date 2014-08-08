@@ -30,7 +30,7 @@
         <name>Sales_IncomingExchangeTree_Documents</name>
         <target>
             <menu>Sales_IncomingExchangeTree_Documents_Menu</menu>
-            <table>Sales_Document2DocumentTable</table>
+            <table>Sales_Document2DocumentWithAmountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingExchange2Invoice</property>
                 <property name="LinkFrom">FromLink</property>

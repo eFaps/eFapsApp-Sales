@@ -28,7 +28,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Exchange2IncomingInvoice</name>
-        <parent>Sales_Document2DocumentAbstract</parent>
+        <parent>Sales_Exchange2Document</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
@@ -43,5 +43,7 @@
             <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
+        <trigger program="org.efaps.esjp.sales.document.Exchange" method="insertPostTrigger"
+            name="Sales_Exchange2IncomingInvoice.INSERT_POST" event="INSERT_POST" />
     </definition>
 </datamodel-type>

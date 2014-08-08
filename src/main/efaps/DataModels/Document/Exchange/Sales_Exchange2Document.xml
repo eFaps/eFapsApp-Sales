@@ -20,28 +20,13 @@
  Last Changed By: $Author$
 
 --><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4c5b7c82-7f98-45be-8654-608be1724ebf</uuid>
+    <uuid>622035c1-f9c5-4822-8ccd-7f379ae37e79</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Exchange2PaymentOrder</name>
-        <parent>Sales_Exchange2Document</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_Exchange</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_PaymentOrder</typelink>
-            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
-        <trigger program="org.efaps.esjp.sales.document.Exchange" method="insertPostTrigger"
-            name="Sales_Exchange2PaymentOrder.INSERT_POST" event="INSERT_POST" />
+        <name>Sales_Exchange2Document</name>
+        <parent>Sales_Document2DocumentWithAmount</parent>
+        <purpose abstract="true" />
     </definition>
 </datamodel-type>
