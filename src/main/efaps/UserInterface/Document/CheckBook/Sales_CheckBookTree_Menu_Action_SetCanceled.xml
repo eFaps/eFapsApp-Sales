@@ -20,19 +20,29 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4c80e404-a1ee-4e2e-87b3-1b36079573db</uuid>
+    <uuid>12e42418-6bb7-4582-a0e0-6c7980b6c8f0</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CheckBookTree_Menu_Action</name>
-        <childs>
-            <child>Sales_CheckBookTree_Menu_Action_Edit</child>
-            <child>Sales_CheckBookTree_Menu_Action_SetClosed</child>
-            <child>Sales_CheckBookTree_Menu_Action_SetCanceled</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_CheckBookTree_Menu_Action_SetCanceled</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Canceled</property>
+            </execute>
+           <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_CheckBookTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
-</ui-menu>
+</ui-command>
