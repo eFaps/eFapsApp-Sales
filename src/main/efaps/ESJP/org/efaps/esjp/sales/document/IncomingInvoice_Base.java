@@ -42,6 +42,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -569,7 +570,7 @@ public abstract class IncomingInvoice_Base
 
         final DocTaxInfo docTaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         final Boolean access = docTaxInfo.isDetraction() || docTaxInfo.isPerception() || docTaxInfo.isRetention();
-        if ((!inverse && access) || (inverse && !access)) {
+        if (!inverse && access || inverse && !access) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -845,15 +846,23 @@ public abstract class IncomingInvoice_Base
     public String getTypeName4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.IncomingInvoice.getType().getName();
+        return getType4SysConf(_parameter).getName();
     }
 
     @Override
     protected Type getType4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.IncomingInvoice.getType();
+        return  getCIType().getType();
     }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.IncomingInvoice;
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -919,8 +928,8 @@ public abstract class IncomingInvoice_Base
                             .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.retentionCheckbox.name));
             final boolean isDetraction = "true".equalsIgnoreCase(_parameter
                             .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionCheckbox.name));
-            if ((BooleanUtils.toInteger(isPerception) + BooleanUtils.toInteger(isRetention) + BooleanUtils
-                            .toInteger(isDetraction)) > 1) {
+            if (BooleanUtils.toInteger(isPerception) + BooleanUtils.toInteger(isRetention) + BooleanUtils
+                            .toInteger(isDetraction) > 1) {
                 ret.add(new OnlyOneTaxDocWarning());
             }
 

@@ -143,6 +143,9 @@
         <!-- connect the Sales_AttributeDefinitionAbstractMyDesk_Menu_Action  to  ERP_AttributeDefinitionMyDesk_Menu-->
         update.add2Menu("4920c757-2e10-49e3-b15c-25c7fb0a56fd", "69e0b34a-2483-4662-9a45-1ce5d4e420e6", -1);
 
+        <!-- connect Sales_ActionDefinitionMyDesk_Menu_Action  to  ERP_ActionDefinitionMyDesk_Menu-->
+        update.add2Menu("79b31e5c-5ab0-4f8d-896f-35e60c58dc01", "7432b23b-a2b7-4f2f-aed9-d0ceef9c9a89", -1);
+
         <!-- add to Sales_Admin role -->
         rolUp = new RoleUpdate("d9ef697d-8910-4eaf-bf3b-bfe9e834314e");
         <!-- ERP_AttributeDefinitionMyDesk -->
