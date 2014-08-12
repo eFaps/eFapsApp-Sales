@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2013 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<common-systemconfiguration xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9ac2673a-18f9-41ba-b9be-5b0980bdf6f3</uuid>
+    <file-application>eFapsApp-Commons</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Commons-Configuration</name>
+        <attribute>
+            <key>org.efaps.erp.NumberGenerators01</key>
+            <value><![CDATA[Sales_ProductionReport=e028e7a5-d940-4735-914a-60af073bb557
+Sales_OrderOutbound=d7e3e088-4dea-43eb-8b09-710605405092
+Sales_ProductRequest=9bd0cebf-9b20-4744-bc48-7f8d34d4c642
+Sales_ProductionOrder=1795962c-09e7-49ba-bedc-0d8162db2519
+Sales_Quotation=edf432d0-d0b2-4bc1-a0e0-ed30ff187de0
+Sales_OrderInbound=8560c89c-3733-403c-a135-e0c63ff65279
+Sales_CostSheet=86a91aa4-fb3c-4db0-a4d7-5a3fb5d2c689
+Sales_RecievingTicket=89e1f319-95c7-43da-a5e4-66a74f56cebd
+Sales_ReturnUsageReport=4c09175b-eb53-49b6-b8f0-625e0c30549a
+Sales_UsageReport=1fa9433d-1708-4b08-b140-952bf16a663e
+Sales_TransactionDocument=9d237191-adc7-4353-9992-b36ed6dfb78b
+Sales_QuoteRequest=fe8cef47-1325-4c87-835d-be3a81189085
+Sales_Reservation=65fcff78-abaa-4a3e-8526-50b97db18245
+Sales_PaymentSchedule=f1a20ea4-e7d8-4401-9b85-84b91c3119c3
+Sales_ServiceOrderOutbound=b9ca5585-87da-411d-9b26-2a8bc090373e
+Sales_ComparativeDocProvider=d7de1a94-fa29-4c4e-8468-5fb6fd6d8565
+Sales_ServiceRequest=56c05868-0110-49b7-9282-c14749b949c4]]></value>
+        </attribute>
+    </definition>
+</common-systemconfiguration>
