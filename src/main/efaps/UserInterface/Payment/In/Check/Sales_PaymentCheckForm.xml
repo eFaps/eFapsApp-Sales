@@ -210,6 +210,13 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
+        <field name="docPicker" character="Picker">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_PaymentCheckForm.docPicker.Label</property>
+            <property name="UIType">BUTTON</property>
+            <picker name="Sales_PaymentCheckPicker4Documents"/>
+        </field>
         <field name="headingPayment" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_PaymentCheckForm.headingPayment.Heading</property>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2014 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ff9edbef-fc4a-4b64-bcc1-741d9172d3c7</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PaymentCheckPicker4Documents</name>
+        <target>
+            <table>Sales_PaymentCheckPicker4DocumentsTable</table>
+            <evaluate method="pickerMultiPrint" program="org.efaps.esjp.sales.payment.PaymentCheck">
+                <property name="Type">Sales_Invoice</property>
+                <property name="StatusGroup">Sales_InvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_Receipt</property>
+                <property name="StatusGroup01">Sales_ReceiptStatus</property>
+                <property name="Status01">Open</property>
+                <property name="Type02">Sales_CollectionOrder</property>
+                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
+                <property name="Status02">Approved</property>
+                <property name="Type03">Sales_Credit</property>
+                <property name="StatusGroup03">Sales_CreditStatus</property>
+                <property name="Status03">Open</property>
+                <property name="Type04">Sales_PerceptionCertificate</property>
+                <property name="StatusGroup04">Sales_PerceptionCertificateStatus</property>
+                <property name="Status04">Open</property>
+                <property name="Type05">Sales_IncomingExchange</property>
+                <property name="StatusGroup05">Sales_IncomingExchangeStatus</property>
+                <property name="Status05">Open</property>
+            </evaluate>
+            <trigger event="UI_PICKER" method="picker4Document"
+                name="Sales_PaymentCheckPicker4Documents.UI_PICKER"
+                program="org.efaps.esjp.sales.payment.PaymentCheck"/>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="NoUpdateAfterCOMMAND">true</property>
+        <property name="WindowHeight">500</property>
+        <property name="WindowWidth">800</property>
+    </definition>
+</ui-command>
