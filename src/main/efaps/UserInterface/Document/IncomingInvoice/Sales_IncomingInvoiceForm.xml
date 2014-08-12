@@ -163,6 +163,11 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="GroupCount">2</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.documentTypeGroup.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingInvoice">
+                <property name="Access">!NONE</property>
+            </trigger>
         </field>
          <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -199,6 +204,11 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ActionDefinitionIncomingInvoice.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingInvoice">
+                <property name="Access">!NONE</property>
+            </trigger>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -806,6 +816,11 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="GroupCount">2</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.documentTypeGroup.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingInvoice">
+                <property name="Access">!NONE</property>
+            </trigger>
         </field>
          <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -842,6 +857,11 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ActionDefinitionIncomingInvoice.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingInvoice">
+                <property name="Access">!NONE</property>
+            </trigger>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
