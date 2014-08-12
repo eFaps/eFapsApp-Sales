@@ -175,6 +175,13 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
+        <field name="docPicker" character="Picker">
+            <property name="HideLabel">true</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Label">Sales_PaymentDepositOutForm.docPicker.Label</property>
+            <property name="UIType">BUTTON</property>
+            <picker name="Sales_PaymentDepositOutPicker4Documents"/>
+        </field>
          <field character="Heading" name="headingPayment">
             <property name="Level">2</property>
             <property name="Label">Sales_PaymentDepositOutForm.headingPayment.Heading</property>
