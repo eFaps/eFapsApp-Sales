@@ -32,10 +32,12 @@ import java.util.UUID;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -43,6 +45,7 @@ import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -299,6 +302,96 @@ public abstract class PettyCashBalance_Base
         throws EFapsException
     {
         // to be set implemented
+    }
+
+    /**
+     * Created document CollectionOrder/PaymentOrder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createDoc4Account(final Parameter _parameter)
+        throws EFapsException
+    {
+        final SelectBuilder selAccInst = new SelectBuilder()
+                        .linkfrom(CISales.AccountPettyCash2PettyCashBalance,
+                                        CISales.AccountPettyCash2PettyCashBalance.ToLink)
+                        .linkto(CISales.AccountPettyCash2PettyCashBalance.FromLink).instance();
+
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        print.addAttribute(CISales.DocumentSumAbstract.Rate,
+                        CISales.DocumentSumAbstract.CurrencyId,
+                        CISales.DocumentSumAbstract.RateCurrencyId,
+                        CISales.DocumentSumAbstract.CrossTotal);
+        print.addSelect(selAccInst);
+        print.execute();
+
+        Type type = null;
+        Type relation = null;
+        String name = null;
+        Status status = null;
+
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+        final Instance accountInst = print.<Instance>getSelect(selAccInst);
+        if (crossTotal.signum() == 1) {
+            type = CISales.CollectionOrder.getType();
+            // Sales_CollectionOrderSequence
+            name = NumberGenerator.get(UUID.fromString("e89316af-42c6-4df1-ae7e-7c9f9c2bb73c")).getNextVal();
+            status = Status.find(CISales.CollectionOrderStatus.Open);
+            relation = CISales.AccountPettyCash2CollectionOrder.getType();
+        } else if (crossTotal.signum() == 1) {
+            type = CISales.PaymentOrder.getType();
+            // Sales_PaymentOrderSequence
+            name = NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
+            status = Status.find(CISales.PaymentOrderStatus.Open);
+            relation = CISales.AccountPettyCash2PaymentOrder.getType();
+        }
+        if (type != null && (accountInst != null && accountInst.isValid())) {
+            final Insert insert = new Insert(type);
+            insert.add(CISales.DocumentSumAbstract.Name, name);
+            insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
+            insert.add(CISales.DocumentSumAbstract.DueDate, new DateTime());
+            insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
+            insert.add(CISales.DocumentSumAbstract.RateCrossTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.RateNetTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.NetTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.CurrencyId,
+                            print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            insert.add(CISales.DocumentSumAbstract.RateCurrencyId,
+                            print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+            insert.add(CISales.DocumentSumAbstract.Rate,
+                            print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate));
+            insert.add(CISales.DocumentSumAbstract.StatusAbstract, status);
+            insert.execute();
+
+            final Insert relInsert = new Insert(relation);
+            relInsert.add(CISales.AccountPettyCash2Document.FromLinkAbstract, accountInst);
+            relInsert.add(CISales.AccountPettyCash2Document.ToLinkAbstract, _parameter.getInstance());
+            relInsert.execute();
+        }
+        return new Return();
+    }
+
+    public Return accessCheck4AccountDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountPettyCash2Document);
+            queryBldr.addWhereAttrEqValue(CISales.AccountPettyCash2Document.ToLinkAbstract, _parameter.getInstance());
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (!query.next()) {
+                ret.put(ReturnValues.TRUE, true);
+            }
+        }
+
+        return ret;
     }
 
     /**

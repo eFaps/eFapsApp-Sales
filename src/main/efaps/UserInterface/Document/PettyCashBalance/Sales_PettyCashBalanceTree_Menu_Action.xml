@@ -32,6 +32,7 @@
         <childs>
             <child>Sales_PettyCashBalanceTree_Menu_Action_Checkout4Liquidation</child>
             <child>Sales_PettyCashBalanceTree_Menu_Action_SetVerified</child>
+            <child>Sales_PettyCashBalanceTree_Menu_Action_CreateDocument</child>
         </childs>
     </definition>
 </ui-menu>
