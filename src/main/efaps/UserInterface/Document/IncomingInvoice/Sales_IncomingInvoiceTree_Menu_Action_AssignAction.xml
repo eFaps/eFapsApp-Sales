@@ -31,15 +31,23 @@
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
-            <role>Sales_IncomingDocument</role>
         </access>
         <target>
             <form>Sales_IncomingInvoice_AssignActionForm</form>
             <execute method="assignAction" program="org.efaps.esjp.sales.document.IncomingInvoice"/>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceTree_Menu_Action_AssignAction.UI_ACCESSCHECK.1"
+                program="org.efaps.esjp.sales.document.IncomingInvoice" index="1">
+                <property name="Access">EDIT</property>
+            </trigger>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_IncomingInvoiceTree_Menu_Action_AssignAction.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                name="Sales_IncomingInvoiceTree_Menu_Action_AssignAction.UI_ACCESSCHECK.2"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI" index="2">
                 <property name="Check4CreateStatus">true</property>
+            </trigger>
+             <trigger event="UI_ACCESSCHECK" method="accessCheck4ActionRelation"
+                name="Sales_IncomingInvoiceTree_Menu_Action_AssignAction.UI_ACCESSCHECK.3"
+                program="org.efaps.esjp.sales.document.IncomingInvoice" index="3">
             </trigger>
         </target>
         <property name="Target">modal</property>

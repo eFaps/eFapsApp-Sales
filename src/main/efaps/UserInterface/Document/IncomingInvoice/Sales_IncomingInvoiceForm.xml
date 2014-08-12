@@ -159,6 +159,11 @@
             <property name="Attribute">Revision</property>
             <property name="ModeEdit">NONE</property>
         </field>
+        <field name="documentTypeGroup" character="Group">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="GroupCount">2</property>
+        </field>
          <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
@@ -184,6 +189,16 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+        </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionIncomingInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionIncomingInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_ActionDefinitionIncomingInvoice.Label</property>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -787,7 +802,7 @@
             <property name="Attribute">Revision</property>
             <property name="ModeEdit">NONE</property>
         </field>
-         <field name="documentTypeGroup" character="Group">
+        <field name="documentTypeGroup" character="Group">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="GroupCount">2</property>
