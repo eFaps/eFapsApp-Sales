@@ -131,7 +131,7 @@ public abstract class Account_Base
         throws EFapsException
     {
         Integer ret = 0;
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Account2DocumentAbstract);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountPettyCash2DocumentWithTrans);
         queryBldr.addWhereAttrEqValue(CISales.Account2DocumentAbstract.FromLinkAbstract, _accInstance);
         queryBldr.addWhereAttrNotIsNull(CISales.Account2DocumentAbstract.Position);
         queryBldr.addOrderByAttributeDesc(CISales.Account2DocumentAbstract.Position);

@@ -43,6 +43,7 @@
         <type>Sales_AccountPettyCash</type>
         <childs>
             <child>Sales_AccountPettyCashTree_Transaction</child>
+            <child>Sales_AccountPettyCashTree_DocumentsWithTrans</child>
             <child>Sales_AccountPettyCashTree_Documents</child>
         </childs>
         <property name="Target">content</property>

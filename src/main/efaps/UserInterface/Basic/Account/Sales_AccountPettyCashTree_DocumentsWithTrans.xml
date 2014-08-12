@@ -21,30 +21,27 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b56c018e-f6f9-4ca6-895a-77d9e9b115f4</uuid>
+    <uuid>26564ff0-698f-405e-b1d3-2fbf31a152a3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountPettyCash2PettyCashReceipt</name>
-        <parent>Sales_AccountPettyCash2DocumentWithTrans</parent>
-        <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_AccountPettyCash</typelink>
-            <sqltable>Sales_Account2DocumentSQLTable</sqltable>
-            <sqlcolumn>ACCID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Sales_PettyCashReceipt</typelink>
-            <sqltable>Sales_Account2DocumentSQLTable</sqltable>
-            <sqlcolumn>DOCID</sqlcolumn>
-        </attribute>
-        <trigger program="org.efaps.esjp.sales.Account" method="insertPostTrigger4Acc2Doc"
-            name="Sales_AccountPettyCash2PettyCashReceipt.INSERT_POST" event="INSERT_POST"></trigger>
+        <name>Sales_AccountPettyCashTree_DocumentsWithTrans</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+        </access>
+        <target>
+            <table>Sales_Account2DocumentWithTransTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_AccountPettyCash2DocumentWithTrans</property>
+                <property name="LinkFrom">FromLinkAbstract</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</datamodel-type>
+</ui-command>

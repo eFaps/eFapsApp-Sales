@@ -19,26 +19,14 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a650bfb6-837d-47b3-9fdf-aabfa2fe6645</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ad32c31c-14f0-4c81-be32-d4886557c077</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountPettyCashTree_Documents</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_PettyCash</role>
-        </access>
-        <target>
-            <table>Sales_Account2DocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_AccountPettyCash2Document</property>
-                <property name="LinkFrom">FromLinkAbstract</property>
-            </evaluate>
-        </target>
-        <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_AccountPettyCash2DocumentWithTrans</name>
+        <parent>Sales_Account2DocumentAbstract</parent>
+        <purpose abstract="true" />
     </definition>
-</ui-command>
+</datamodel-type>
