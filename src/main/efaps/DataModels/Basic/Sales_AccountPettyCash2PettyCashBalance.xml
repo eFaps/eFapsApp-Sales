@@ -29,7 +29,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCash2PettyCashBalance</name>
-        <parent>Sales_AccountPettyCash2DocumentWithTrans</parent>
+        <parent>Sales_Account2DocumentWithTrans</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>

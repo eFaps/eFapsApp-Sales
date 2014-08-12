@@ -39,7 +39,7 @@
         <type>Sales_AccountFundsToBeSettled</type>
         <childs>
             <child>Sales_AccountFundsToBeSettledTree_Transaction</child>
-            <child>Sales_AccountFundsToBeSettledTree_Documents</child>
+            <child>Sales_AccountFundsToBeSettledTree_DocumentsWithTrans</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

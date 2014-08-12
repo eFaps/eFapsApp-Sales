@@ -131,17 +131,17 @@ public abstract class Account_Base
         throws EFapsException
     {
         Integer ret = 0;
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountPettyCash2DocumentWithTrans);
-        queryBldr.addWhereAttrEqValue(CISales.Account2DocumentAbstract.FromLinkAbstract, _accInstance);
-        queryBldr.addWhereAttrNotIsNull(CISales.Account2DocumentAbstract.Position);
-        queryBldr.addOrderByAttributeDesc(CISales.Account2DocumentAbstract.Position);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Account2DocumentWithTrans);
+        queryBldr.addWhereAttrEqValue(CISales.Account2DocumentWithTrans.FromLinkAbstract, _accInstance);
+        queryBldr.addWhereAttrNotIsNull(CISales.Account2DocumentWithTrans.Position);
+        queryBldr.addOrderByAttributeDesc(CISales.Account2DocumentWithTrans.Position);
         final InstanceQuery query = queryBldr.getQuery();
         query.setLimit(1);
         final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
-        multi.addAttribute(CISales.Account2DocumentAbstract.Position);
+        multi.addAttribute(CISales.Account2DocumentWithTrans.Position);
         multi.execute();
         if (multi.next()) {
-            final Integer tmp = multi.<Integer>getAttribute(CISales.Account2DocumentAbstract.Position);
+            final Integer tmp = multi.<Integer>getAttribute(CISales.Account2DocumentWithTrans.Position);
             ret = tmp == null ? 0 : tmp;
         }
         return ret;
