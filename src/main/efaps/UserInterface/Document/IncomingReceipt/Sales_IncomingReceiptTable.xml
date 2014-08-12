@@ -15,18 +15,21 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8333 $
- Last Changed:    $Date: 2012-12-09 22:40:21 -0500 (Sun, 09 Dec 2012) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
     <uuid>768771c8-ad47-4c81-bf57-444f7ff9e80c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8333 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_IncomingReceiptTable</name>
         <!-- fields -->
         <field name="type">
@@ -91,8 +94,112 @@
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
         </field>
         <field name="created">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Created</property>
             <property name="Label">Sales_DocumentAbstract/Created.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="creator">
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_DocumentAbstract/Creator.Label</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_IncomingReceiptTable</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_DocumentAbstract/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="Label">Sales_IncomingReceipt/Revision.Label</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
+            <property name="HRef">TREEMENU</property>
+        </field>
+        <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+        </field>
+         <field name="dueDate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_DocumentAbstract/DueDate.Label</property>
+        </field>
+        <field name="rateCrosstotal">
+            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentAbstract/RateCrossTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="rateNettotal">
+            <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentAbstract/RateNetTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="crosstotal">
+            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="nettotal">
+            <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentAbstract/NetTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="status">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+        </field>
+        <field name="project">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2IncomingReceipt#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2IncomingReceipt#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2IncomingReceipt#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_DocumentAbstract.project.Label</property>
+        </field>
+        <field name="created">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
+            <property name="Attribute">Created</property>
+            <property name="Label">Sales_DocumentAbstract/Created.Label</property>
+            <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="creator">
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_DocumentAbstract/Creator.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
