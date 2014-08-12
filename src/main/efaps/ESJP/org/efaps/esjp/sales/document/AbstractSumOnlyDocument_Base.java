@@ -37,6 +37,7 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
@@ -204,6 +205,21 @@ public abstract class AbstractSumOnlyDocument_Base
         throws EFapsException
     {
         updateAmount(_parameter);
+        recalculate(_parameter, false);
+        return new Return();
+    }
+
+    /**
+     * Method to recalculate amount to be removed.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return deletePreTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        recalculate(_parameter, true);
         return new Return();
     }
 
@@ -258,6 +274,64 @@ public abstract class AbstractSumOnlyDocument_Base
                 }
                 final Update update = new Update(_parameter.getInstance());
                 update.add(CISales.Document2DocumentWithAmount.Amount, amount);
+                update.executeWithoutTrigger();
+            }
+        }
+    }
+
+    /**
+     * Method to recalculate amounts and update document.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @throws EFapsException on error.
+     */
+    protected void recalculate(final Parameter _parameter,
+                               final boolean _exclude)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+
+        if (instance != null && instance.isValid()) {
+            final SelectBuilder selDocInst = new SelectBuilder()
+                            .linkto(CISales.Document2DocumentWithAmount.FromAbstractLink).instance();
+            final SelectBuilder selDocRate = new SelectBuilder()
+                            .linkto(CISales.Document2DocumentWithAmount.FromAbstractLink)
+                            .attribute(CISales.DocumentSumAbstract.Rate);
+
+            final PrintQuery print = new PrintQuery(instance);
+            print.addSelect(selDocInst, selDocRate);
+            print.execute();
+
+            final Instance document = print.<Instance>getSelect(selDocInst);
+            final Object[] rateObjDoc = print.<Object[]>getSelect(selDocRate);
+
+            if (document != null && document.isValid()) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentWithAmount);
+                queryBldr.addWhereAttrEqValue(CISales.Document2DocumentWithAmount.FromAbstractLink, document);
+                if (_exclude) {
+                    queryBldr.addWhereAttrNotEqValue(CISales.Document2DocumentWithAmount.ID, instance);
+                }
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.Document2DocumentWithAmount.Amount);
+                multi.execute();
+
+                BigDecimal rateAmount = BigDecimal.ZERO;
+                while (multi.next()) {
+                    rateAmount = rateAmount
+                                    .add(multi.<BigDecimal>getAttribute(CISales.Document2DocumentWithAmount.Amount));
+                }
+                final BigDecimal rate = ((BigDecimal) rateObjDoc[0])
+                                .divide((BigDecimal) rateObjDoc[1], 12, BigDecimal.ROUND_HALF_UP);
+                final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+                final int scale = frmt.getMaximumFractionDigits();
+
+                final Update update = new Update(document);
+                update.add(CISales.DocumentSumAbstract.RateCrossTotal, rateAmount);
+                update.add(CISales.DocumentSumAbstract.RateNetTotal, rateAmount);
+                final BigDecimal amount = rateAmount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale,
+                                BigDecimal.ROUND_HALF_UP);
+                update.add(CISales.DocumentSumAbstract.CrossTotal, amount);
+                update.add(CISales.DocumentSumAbstract.NetTotal, amount);
                 update.executeWithoutTrigger();
             }
         }

@@ -45,5 +45,7 @@
         </attribute>
         <trigger program="org.efaps.esjp.sales.document.Exchange" method="insertPostTrigger"
             name="Sales_Exchange2IncomingInvoice.INSERT_POST" event="INSERT_POST" />
+        <trigger program="org.efaps.esjp.sales.document.Exchange" method="deletePreTrigger"
+            name="Sales_Exchange2IncomingInvoice.DELETE_PRE" event="DELETE_PRE" />
     </definition>
 </datamodel-type>
