@@ -35,6 +35,7 @@
             <child>Sales_ProductABC4Provider_Report</child>
             <child>Sales_ProfServReceiptReportMyDesk</child>
             <child>Sales_RetentionReportMyDesk</child>
+            <child>Sales_AccountPettyCashReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
