@@ -268,7 +268,11 @@ public abstract class AbstractPaymentDocument_Base
             print.executeWithoutAccessCheck();
             final AccountAutomation autoTmp = print.getAttribute(CISales.AccountCashDesk.Automation);
             if (auto == null) {
-                auto = autoTmp;
+                if (autoTmp == null) {
+                    auto = AccountAutomation.NONE;
+                } else {
+                    auto = autoTmp;
+                }
             }
             switch (auto) {
                 // if none was set it cannot be unset
