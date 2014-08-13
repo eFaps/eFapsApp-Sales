@@ -81,7 +81,7 @@
         </field>
         <field name="accountPettyCash">
             <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].oid</property>
-            <property name="Select">>linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Select">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Label</property>
         </field>

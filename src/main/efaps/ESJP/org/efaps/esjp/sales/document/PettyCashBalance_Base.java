@@ -50,7 +50,6 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Account;
@@ -83,22 +82,9 @@ public abstract class PettyCashBalance_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance accInstance = _parameter.getCallInstance();
-
-        final PrintQuery printAmount = new PrintQuery(accInstance);
-        printAmount.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
-        printAmount.execute();
-        BigDecimal amount = printAmount.<BigDecimal>getAttribute(CISales.AccountAbstract.AmountAbstract);
-        final String accName = printAmount.<String>getAttribute(CISales.AccountAbstract.Name);
-        if (amount == null) {
-            amount = BigDecimal.ZERO;
-        }
-
         final Instance balanceInst = createPettyCashBalanceDoc(_parameter);
 
         final CreatedDoc createdDoc = new CreatedDoc();
-        createdDoc.addValue("AmountPettyCash", amount);
-        createdDoc.addValue("AccName", accName);
         createdDoc.setInstance(balanceInst);
 
         ret.put(ReturnValues.VALUES, createReport(_parameter, createdDoc));
@@ -106,15 +92,23 @@ public abstract class PettyCashBalance_Base
         return ret;
     }
 
-    @Override
-    protected void add2Report(final Parameter _parameter,
-                              final CreatedDoc _createdDoc,
-                              final StandartReport _report)
+    /**
+     * Create the Report again.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createReport(final Parameter _parameter)
         throws EFapsException
     {
-        super.add2Report(_parameter, _createdDoc, _report);
-        _report.getJrParameters().put("AccName", _createdDoc.getValue("AccName"));
-        _report.getJrParameters().put("AmountPettyCash", _createdDoc.getValue("AmountPettyCash"));
+        final Return ret = new Return();
+        final CreatedDoc createdDoc = new CreatedDoc();
+        createdDoc.setInstance(_parameter.getInstance());
+
+        ret.put(ReturnValues.VALUES, createReport(_parameter, createdDoc));
+        ret.put(ReturnValues.TRUE, true);
+        return ret;
     }
 
     /**
