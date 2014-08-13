@@ -39,6 +39,9 @@
         <status key="Canceled">
             <description>The ReturnSlip was canceled.</description>
         </status>
+        <status key="Booked">
+            <description>The Collection Order was booked.</description>
+        </status>
     </definition>
 
 </datamodel-statusgroup>
