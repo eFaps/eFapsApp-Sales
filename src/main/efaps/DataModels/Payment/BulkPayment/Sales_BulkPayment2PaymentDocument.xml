@@ -70,5 +70,13 @@
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
             </trigger>
         </attribute>
+        <trigger program="org.efaps.esjp.sales.payment.BulkPayment"
+            method="connectInsertPostTrigger"
+            name="Sales_BulkPayment2PaymentDocument.INSERT_POST"
+            event="INSERT_POST"/>
+        <trigger program="org.efaps.esjp.sales.payment.BulkPayment"
+            method="connectUpdatePostTrigger"
+            name="Sales_BulkPayment2PaymentDocument.UPDATE_POST"
+            event="UPDATE_POST"/>
     </definition>
 </datamodel-type>

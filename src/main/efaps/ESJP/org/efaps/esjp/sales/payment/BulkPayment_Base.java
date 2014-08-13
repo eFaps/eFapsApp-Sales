@@ -53,6 +53,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
@@ -106,6 +107,55 @@ public abstract class BulkPayment_Base
         relinsert.execute();
 
         return new Return();
+    }
+
+    public Return connectInsertPostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        updateTotal(_parameter, _parameter.getInstance());
+        return new Return();
+    }
+
+    public Return connectUpdatePostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        updateTotal(_parameter, _parameter.getInstance());
+        return new Return();
+    }
+
+    protected void updateTotal(final Parameter _parameter,
+                               final Instance _instance) throws EFapsException
+    {
+        Instance instance;
+        BigDecimal total = BigDecimal.ZERO;
+        if (_instance.getType().isKindOf(CISales.BulkPayment2PaymentDocument.getType())) {
+            final PrintQuery print = new PrintQuery(_instance);
+            final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.BulkPayment2PaymentDocument.FromLink).instance();
+            print.addSelect(selInst);
+            print.executeWithoutAccessCheck();
+            instance = print.getSelect(selInst);
+        } else {
+            instance = _instance;
+        }
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPayment2PaymentDocument);
+        attrQueryBldr.addWhereAttrEqValue(CISales.BulkPayment2PaymentDocument.FromLink, instance);
+
+        final AttributeQuery attrQuery = attrQueryBldr
+                        .getAttributeQuery(CISales.BulkPayment2PaymentDocument.ToLink);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+        queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attrQuery);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.Payment.Amount);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            total = total.add(multi.<BigDecimal>getAttribute(CISales.Payment.Amount));
+        }
+
+        final Update update = new Update(instance);
+        update.add(CISales.BulkPayment.CrossTotal, total);
+        update.executeWithoutAccessCheck();
     }
 
 

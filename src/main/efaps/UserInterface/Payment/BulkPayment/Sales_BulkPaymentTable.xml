@@ -54,11 +54,6 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/CrossTotal.Label</property>
         </field>
-        <field name="nettotal">
-            <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_DocumentAbstract/NetTotal.Label</property>
-        </field>
         <field name="accountLink">
             <property name="Select">linkfrom[Sales_BulkPayment2Account#FromLink].linkto[ToLink].attribute[Name]</property>
             <property name="Label">Sales_BulkPayment/AccountLink.Label</property>
