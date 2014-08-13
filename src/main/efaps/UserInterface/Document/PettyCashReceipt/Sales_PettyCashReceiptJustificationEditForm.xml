@@ -82,7 +82,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_ActionDefinitionPettyCashReceipt.Label</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"

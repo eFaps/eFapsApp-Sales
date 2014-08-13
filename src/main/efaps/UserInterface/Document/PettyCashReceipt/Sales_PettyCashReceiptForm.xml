@@ -189,7 +189,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_ActionDefinitionPettyCashReceipt.Label</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
@@ -210,7 +210,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_ActionDefinitionPettyCashReceipt.Label</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -545,7 +545,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_ActionDefinitionPettyCashReceipt.Label</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
@@ -566,7 +566,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_ActionDefinitionPettyCashReceipt.Label</property>
+            <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
