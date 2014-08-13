@@ -32,17 +32,19 @@
         <access>
             <role>Sales_PettyCash</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PettyCashReceiptJustificationEditForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="editJustification" />
             <validate program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="validate" >
-                <property name="EvaluatePostions">false</property>
+                <property name="EvaluatePositions">false</property>
             </validate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_PettyCashReceiptTree_Menu_Action_EditJustification.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Status">!Booked</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">550</property>

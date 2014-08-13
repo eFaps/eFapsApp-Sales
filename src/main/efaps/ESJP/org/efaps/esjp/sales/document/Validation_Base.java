@@ -266,16 +266,18 @@ public abstract class Validation_Base
                             queryBldr.addWhereAttrNotEqValue(CIERP.DocumentAbstract.ID, docInst);
                         }
                         final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addAttribute(CIERP.DocumentAbstract.Name,
+                        multi.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Revision,
                                         CIERP.DocumentAbstract.Date);
                         multi.execute();
 
                         while (multi.next()) {
-                            ret.add(new ExistingNameWarning().addObject(
-                                            multi.getCurrentInstance().getType().getLabel(),
-                                            multi.<String>getAttribute(CIERP.DocumentAbstract.Name),
-                                            multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date).toString(
-                                                            "dd/MM/YYYY")));
+                            final String label = multi.getCurrentInstance().getType().getLabel();
+                            final String nameStr = multi.<String>getAttribute(CIERP.DocumentAbstract.Name);
+                            final String dateStr = multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date)
+                                            .toString("dd/MM/YYYY");
+                            final String revStr = multi.<String>getAttribute(CIERP.DocumentAbstract.Revision);
+                            ret.add(new ExistingNameWarning().addObject(label, nameStr, dateStr,
+                                            revStr == null ? "" : revStr));
                         }
                     }
                 }

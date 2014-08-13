@@ -35,16 +35,16 @@
                 </textElement>
                 <text><![CDATA[Fecha:]]></text>
             </staticText>
-            <staticText>
-                <reportElement uuid="d283214b-9348-4e6f-ba65-b161ca1791b2" x="275" y="30" width="260" height="27">
+            <textField>
+                <reportElement uuid="d283214b-9348-4e6f-ba65-b161ca1791b2" x="0" y="30" width="802" height="27">
                     <property name="local_mesure_unitx" value="pixel"/>
                     <property name="com.jaspersoft.studio.unit.x" value="px"/>
                 </reportElement>
                 <textElement textAlignment="Center" verticalAlignment="Middle">
                     <font size="16" isBold="true"/>
                 </textElement>
-                <text><![CDATA[LIQUIDACIÓN]]></text>
-            </staticText>
+                <textFieldExpression><![CDATA["LIQUIDACIÓN-" + $F{name}]]></textFieldExpression>
+            </textField>
             <textField>
                 <reportElement uuid="e1b74d85-21e4-4541-ab3a-034d29c29beb" x="91" y="14" width="711" height="14"/>
                 <textElement textAlignment="Left" verticalAlignment="Top">
