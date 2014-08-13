@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.report;
 
 import java.io.File;
@@ -64,13 +63,13 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Report used to analyze receipt for professional fees
- * (Recibos Honorarios) by grouping them by month and contact.
+ * Report used to analyze receipt for professional fees (Recibos Honorarios) by
+ * grouping them by month and contact.
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: AccountPettyCashReport_Base.java 13616 2014-08-13 22:10:22Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("862bf037-e651-49a9-9b37-e0288c1a6e68")
 @EFapsRevision("$Rev$")
@@ -153,6 +152,12 @@ public abstract class AccountPettyCashReport_Base
             this.filteredReport = _report;
         }
 
+        protected boolean showDetails()
+        {
+            return true;
+        }
+
+
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
@@ -160,16 +165,14 @@ public abstract class AccountPettyCashReport_Base
             final SelectBuilder selCur = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
             final SelectBuilder selAccName = new SelectBuilder()
-                            .linkfrom(CISales.Account2DocumentWithTrans,
-                                            CISales.Account2DocumentWithTrans.ToLinkAbstract)
+                            .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
                             .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
                             .attribute(CISales.AccountPettyCash.Name);
             final SelectBuilder selDocTypeName = new SelectBuilder()
-                            .linkfrom(CISales.Document2DocumentType, CISales.Document2DocumentType.DocumentLink)
+                            .linkfrom(CISales.Document2DocumentType.DocumentLink)
                             .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(CIERP.DocumentType.Name);
             final SelectBuilder selActionName = new SelectBuilder()
-                            .linkfrom(CISales.ActionDefinitionPettyCashReceipt2Document,
-                                            CISales.ActionDefinitionPettyCashReceipt2Document.ToLink)
+                            .linkfrom(CISales.ActionDefinitionPettyCashReceipt2Document.ToLink)
                             .linkto(CISales.ActionDefinitionPettyCashReceipt2Document.FromLink)
                             .attribute(CISales.ActionDefinitionPettyCashReceipt.Name);
 
@@ -178,10 +181,13 @@ public abstract class AccountPettyCashReport_Base
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addSelect(selAccName, selDocTypeName, selActionName, selCur);
-            multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name);
             multi.execute();
             while (multi.next()) {
-                final BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                if (multi.getCurrentInstance().getType().isKindOf(CISales.IncomingCreditNote.getType())) {
+                    cross = cross.negate();
+                }
                 final DocumentBean bean = getBean(_parameter);
                 datasource.add(bean);
                 bean.setOid(multi.getCurrentInstance().getOid());
@@ -190,39 +196,46 @@ public abstract class AccountPettyCashReport_Base
                 bean.setAmount(cross);
                 bean.setCurrency(multi.<String>getSelect(selCur));
                 bean.setDocTypeName(multi.<String>getSelect(selDocTypeName));
-
+                bean.setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        return _o1.getPettyCash().compareTo(_o2.getPettyCash());
-                    }
+            chain.addComparator(new Comparator<DocumentBean>()
+            {
+
+                @Override
+                public int compare(final DocumentBean _o1,
+                                   final DocumentBean _o2)
+                {
+                    return _o1.getPettyCash().compareTo(_o2.getPettyCash());
                 }
-            );
-            chain.addComparator(new Comparator<DocumentBean>() {
-                    @Override
-                    public int compare(final DocumentBean _o1,
-                                       final DocumentBean _o2)
-                    {
-                        int i = 0;
-                        if (_o1.getAction() != null && _o2.getAction() != null) {
-                            i = _o1.getAction().compareTo(_o2.getAction());
-                        }
-                        return i;
-                    }
+            });
+            chain.addComparator(new Comparator<DocumentBean>()
+            {
+
+                @Override
+                public int compare(final DocumentBean _o1,
+                                   final DocumentBean _o2)
+                {
+                    return _o1.getOfficial().compareTo(_o2.getOfficial());
                 }
-            );
+            });
+            chain.addComparator(new Comparator<DocumentBean>()
+            {
+                @Override
+                public int compare(final DocumentBean _o1,
+                                   final DocumentBean _o2)
+                {
+                    return _o1.getAction().compareTo(_o2.getAction());
+                }
+            });
             Collections.sort(datasource, chain);
 
             return new JRBeanCollectionDataSource(datasource);
         }
 
         /**
-         * @param _parameter  Parameter as passed by the eFaps API
-         * @param _queryBldr    QueryBuilder to add to
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _queryBldr QueryBuilder to add to
          * @throws EFapsException on error
          */
         protected void add2QueryBldr(final Parameter _parameter,
@@ -232,12 +245,12 @@ public abstract class AccountPettyCashReport_Base
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("dateFrom")) {
                 final DateTime date = (DateTime) filter.get("dateFrom");
-                _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date,
+                _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Created,
                                 date.withTimeAtStartOfDay().minusSeconds(1));
             }
             if (filter.containsKey("dateTo")) {
                 final DateTime date = (DateTime) filter.get("dateTo");
-                _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date,
+                _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Created,
                                 date.withTimeAtStartOfDay().plusDays(1));
             }
 
@@ -269,6 +282,10 @@ public abstract class AccountPettyCashReport_Base
             final TextColumnBuilder<String> actionColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.Action"), "action",
                             DynamicReports.type.stringType());
+
+            final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.DocName"), "docName",
+                            DynamicReports.type.stringType());
             final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.Amount"), "amount",
                             DynamicReports.type.bigDecimalType());
@@ -281,22 +298,28 @@ public abstract class AccountPettyCashReport_Base
                             .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression())
                             .setHeight(12).setWidth(25);
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
-            if (getExType().equals(ExportType.HTML)) {
-                _builder.addColumn(linkColumn);
-            }
 
             final ColumnGroupBuilder pettyCashGroup = DynamicReports.grp.group(pettyCashColumn).groupByDataType();
             final ColumnGroupBuilder officialGroup = DynamicReports.grp.group(officialColumn).groupByDataType();
             final ColumnGroupBuilder actionGroup = DynamicReports.grp.group(actionColumn).groupByDataType();
 
             final AggregationSubtotalBuilder<BigDecimal> amountSum = DynamicReports.sbt.sum(amountColumn);
+            final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(amountColumn);
+            final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(amountColumn);
 
             _builder.addGroup(pettyCashGroup, officialGroup, actionGroup);
-            _builder.addColumn(pettyCashColumn, officialColumn, actionColumn, amountColumn, currencyColumn);
+            _builder.addColumn(pettyCashColumn, officialColumn, actionColumn);
+             if (showDetails()) {
+                 if (getExType().equals(ExportType.HTML)) {
+                     _builder.addColumn(linkColumn);
+                 }
+                 _builder.addColumn(docNameColumn);
+             }
+            _builder.addColumn( amountColumn, currencyColumn);
 
             _builder.addSubtotalAtGroupFooter(pettyCashGroup, amountSum);
-            _builder.addSubtotalAtGroupFooter(officialGroup, amountSum);
-            _builder.addSubtotalAtGroupFooter(actionGroup, amountSum);
+            _builder.addSubtotalAtGroupFooter(officialGroup, amountSum2);
+            _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
         }
 
         /**
@@ -320,7 +343,6 @@ public abstract class AccountPettyCashReport_Base
             return this.filteredReport;
         }
     }
-
 
     /**
      * Expression used to render a link for the UserInterface.
@@ -351,12 +373,12 @@ public abstract class AccountPettyCashReport_Base
         }
     }
 
-
     /**
      * DataBean.
      */
     public static class DocumentBean
     {
+
         /**
          * OID of the document.
          */
@@ -387,6 +409,7 @@ public abstract class AccountPettyCashReport_Base
          */
         private String currency;
 
+        private String docName;
 
         private String docTypeName;
 
@@ -445,7 +468,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getAction()
         {
-            return this.action;
+            return this.action == null ? "-" : this.action;
         }
 
         public String getOfficial()
@@ -519,7 +542,6 @@ public abstract class AccountPettyCashReport_Base
             return this.oid;
         }
 
-
         /**
          * Setter method for instance variable {@link #oid}.
          *
@@ -528,6 +550,28 @@ public abstract class AccountPettyCashReport_Base
         public void setOid(final String _oid)
         {
             this.oid = _oid;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #docName}.
+         *
+         * @return value of instance variable {@link #docName}
+         */
+        public String getDocName()
+        {
+            return this.docName;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #docName}.
+         *
+         * @param _docName value for instance variable {@link #docName}
+         */
+        public void setDocName(final String _docName)
+        {
+            this.docName = _docName;
         }
     }
 }
