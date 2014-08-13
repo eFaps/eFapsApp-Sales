@@ -20,24 +20,15 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>85190dda-eab7-41a1-b245-18ebb6a45b12</uuid>
+    <uuid>854b5b76-fce1-4b1b-b03a-5515fac8f056</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashBalanceMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <table>Sales_PettyCashBalanceTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_PettyCashBalance</property>
-            </evaluate>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_PettyCashBalance2OrderAbstract</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
+        <purpose abstract="true"/>
     </definition>
-</ui-command>
+</datamodel-type>

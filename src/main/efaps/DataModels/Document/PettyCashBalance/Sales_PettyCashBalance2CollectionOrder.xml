@@ -20,24 +20,28 @@
  Last Changed By: $Author$
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>85190dda-eab7-41a1-b245-18ebb6a45b12</uuid>
+    <uuid>b19c8a16-d303-4a4b-9cf8-f467030ecc6b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCashBalanceMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <table>Sales_PettyCashBalanceTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_PettyCashBalance</property>
-            </evaluate>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_PettyCashBalance2CollectionOrder</name>
+        <parent>Sales_PettyCashBalance2OrderAbstract</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_PettyCashBalance</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_CollectionOrder</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
-</ui-command>
+</datamodel-type>

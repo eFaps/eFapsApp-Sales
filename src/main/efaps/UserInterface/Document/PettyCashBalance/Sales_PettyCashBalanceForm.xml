@@ -22,19 +22,14 @@
   Last Changed By: $Author$
 
 -->
-
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dfaf7f60-4ed1-4fc7-860e-4ed9d7f38c0c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashBalanceForm</name>
-        <!-- fields -->
         <field name="date">
             <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -88,12 +83,21 @@
             <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].oid</property>
             <property name="Select">>linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">TREE</property>
-            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
+            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Label</property>
+        </field>
+         <field name="statusGroup" character="Group">
+            <property name="GroupCount">2</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_PettyCashBalance/Status.Label</property>
+        </field>
+        <field name="order">
+            <property name="SelectAlternateOID">linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].type.label&gt; - $&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].attribute[Name]&gt;</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PettyCashBalanceForm.order.Label</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>
@@ -115,8 +119,8 @@
         <field name="paymentTable" character="Target">
             <table>Sales_PaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_Payment</property>
-                <property name="LinkFroms">TargetDocument</property>
+                <property name="Type">Sales_Payment</property>
+                <property name="LinkFrom">TargetDocument</property>
             </evaluate>
         </field>
     </definition>

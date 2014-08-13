@@ -20,14 +20,11 @@
  Last Changed By: $Author: jorge.m.cueva $
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>98d089a8-5a43-4b7a-af34-4f487464fa35</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5742 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDateSelect</name>
@@ -35,7 +32,6 @@
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingWithDateSelectForm</form>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
@@ -46,7 +42,6 @@
             </trigger>
             <command>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate</command>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="TargetCreateType">Sales_PettyCashBalance</property>

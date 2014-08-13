@@ -22,28 +22,32 @@
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>1795b7be-fa90-4030-a586-288d72bc4819</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashBalanceTable</name>
-        <!-- fields -->
-        <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_CashDeskBalance/Type.Label</property>
-            <property name="ShowTypeIcon">true</property>
+         <field name="accountPettyCash">
+            <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">>linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_CashDeskBalance/Name.Label</property>
+            <property name="ShowTypeIcon">true</property>
         </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="Label">Sales_CashDeskBalance/Date.Label</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
         </field>
         <field name="crosstotal">
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
@@ -53,12 +57,13 @@
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="Label">Sales_CashDeskBalance/Status.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
-        <field name="accountPettyCash">
-            <property name="SelectAlternateOID">linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].oid</property>
-            <property name="Select">>linkfrom[Sales_AccountPettyCash2PettyCashBalance#ToLink].linkto[FromLink].attribute[Name]</property>
+        <field name="order">
+            <property name="SelectAlternateOID">linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].type.label&gt; - $&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="HRef">TREE</property>
-            <property name="Label">Sales_PettyCashBalanceForm.accountPettyCash.Name.Label</property>
+            <property name="Label">Sales_PettyCashBalanceForm.order.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

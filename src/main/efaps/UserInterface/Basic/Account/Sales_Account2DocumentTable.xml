@@ -19,14 +19,15 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>31499cfc-9189-4fa1-bca4-d421a342acce</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Account2DocumentTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Sales_Account2DocumentAbstract/Type.Label</property>
@@ -44,6 +45,10 @@
             <property name="Select">linkto[ToLinkAbstract].attribute[Date]</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="crossTotal">
+            <property name="Select">linkto[ToLinkAbstract].attribute[CrossTotal]</property>
+            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
         <field name="status">
             <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>

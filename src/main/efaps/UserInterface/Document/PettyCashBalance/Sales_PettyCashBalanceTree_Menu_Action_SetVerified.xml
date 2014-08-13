@@ -32,15 +32,14 @@
         <access>
             <role>Sales_PettyCash</role>
         </access>
-        <!-- target definitions -->
         <target>
             <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="verify"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
-                name="Sales_PettyCashBalanceTree_Menu_Action_SetVerified.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="Stati">Open</property>
+                name="Sales_PettyCashBalanceTree_Menu_Action_SetVerified.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
         <property name="SubmitSelectedRows">-1</property>

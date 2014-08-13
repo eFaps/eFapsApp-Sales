@@ -22,10 +22,8 @@
  Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6a816e30-e156-475b-983d-d97b6bb0f2a7</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -40,11 +38,10 @@
             <menu>Sales_AccountPettyCashTree_Transaction_Menu</menu>
             <table>Sales_TransactionAbstractTable_MONTH</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_TransactionAbstract</property>
-                <property name="LinkFroms">Account</property>
+                <property name="Type">Sales_TransactionAbstract</property>
+                <property name="LinkFrom">Account</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
         <property name="DefaultSelected">true</property>

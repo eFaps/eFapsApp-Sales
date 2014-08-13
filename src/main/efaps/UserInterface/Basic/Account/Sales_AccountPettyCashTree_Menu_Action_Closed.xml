@@ -19,30 +19,25 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>54bb1725-f0b1-483f-8a0a-624d3af1e637</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree_Menu_Action_Closed</name>
-
         <access>
             <role>Sales_Admin</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashClosedForm</form>
             <execute program="org.efaps.esjp.sales.Account" method="setClosed" />
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">460</property>
         <property name="WindowWidth">515</property>
     </definition>
-
 </ui-command>

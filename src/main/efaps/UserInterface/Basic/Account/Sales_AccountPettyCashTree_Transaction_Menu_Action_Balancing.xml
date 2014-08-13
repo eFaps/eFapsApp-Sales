@@ -44,6 +44,7 @@
             <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="create">
                 <property name="JasperReport">Sales_PettyCashBalance</property>
                 <property name="Mime">pdf</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
             <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK"

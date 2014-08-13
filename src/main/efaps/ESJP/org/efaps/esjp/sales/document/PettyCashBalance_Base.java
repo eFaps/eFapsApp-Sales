@@ -30,12 +30,10 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -53,9 +51,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
@@ -85,7 +82,7 @@ public abstract class PettyCashBalance_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
         final Instance accInstance = _parameter.getCallInstance();
 
         final PrintQuery printAmount = new PrintQuery(accInstance);
@@ -99,31 +96,25 @@ public abstract class PettyCashBalance_Base
 
         final Instance balanceInst = createPettyCashBalanceDoc(_parameter);
 
-        final PrintQuery print2 = new PrintQuery(balanceInst);
-        print2.addAttribute(CISales.PettyCashBalance.Name);
-        print2.execute();
-        final String nameBalance = print2.<String>getAttribute(CISales.PettyCashBalance.Name);
+        final CreatedDoc createdDoc = new CreatedDoc();
+        createdDoc.addValue("AmountPettyCash", amount);
+        createdDoc.addValue("AccName", accName);
+        createdDoc.setInstance(balanceInst);
 
-        _parameter.put(ParameterValues.INSTANCE, balanceInst);
-
-        final StandartReport report = new StandartReport();
-        report.getJrParameters().put("AccName", accName);
-        report.getJrParameters().put("AmountPettyCash", amount);
-        add2Create4JrParameters(_parameter, report, accInstance);
-
-        final SystemConfiguration config = ERP.getSysConfig();
-        if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            if (companyName != null && !companyName.isEmpty()) {
-                report.getJrParameters().put("CompanyName", companyName);
-            }
-        }
-
-        final String fileName = DBProperties.getProperty("Sales_PettyCashBalance.Label") + "_" + nameBalance;
-        report.setFileName(fileName);
-        ret = report.execute(_parameter);
-
+        ret.put(ReturnValues.VALUES, createReport(_parameter, createdDoc));
+        ret.put(ReturnValues.TRUE, true);
         return ret;
+    }
+
+    @Override
+    protected void add2Report(final Parameter _parameter,
+                              final CreatedDoc _createdDoc,
+                              final StandartReport _report)
+        throws EFapsException
+    {
+        super.add2Report(_parameter, _createdDoc, _report);
+        _report.getJrParameters().put("AccName", _createdDoc.getValue("AccName"));
+        _report.getJrParameters().put("AmountPettyCash", _createdDoc.getValue("AmountPettyCash"));
     }
 
     /**
@@ -289,21 +280,6 @@ public abstract class PettyCashBalance_Base
         return ret;
     }
 
-    @Override
-    protected String getDocName4Create(final Parameter _parameter)
-        throws EFapsException
-    {
-        return new DateTime().toLocalTime().toString();
-    }
-
-    protected void add2Create4JrParameters(final Parameter _parameter,
-                                           final StandartReport _report,
-                                           final Instance _instance)
-        throws EFapsException
-    {
-        // to be set implemented
-    }
-
     /**
      * Created document CollectionOrder/PaymentOrder.
      *
@@ -329,25 +305,26 @@ public abstract class PettyCashBalance_Base
 
         Type type = null;
         Type relation = null;
+        Type bal2orderType = null;
         String name = null;
         Status status = null;
 
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         final Instance accountInst = print.<Instance>getSelect(selAccInst);
-        if (crossTotal.signum() == 1) {
+        if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
             type = CISales.CollectionOrder.getType();
-            // Sales_CollectionOrderSequence
-            name = NumberGenerator.get(UUID.fromString("e89316af-42c6-4df1-ae7e-7c9f9c2bb73c")).getNextVal();
+            name = new Naming().fromNumberGenerator(_parameter, type.getName());
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountPettyCash2CollectionOrder.getType();
-        } else if (crossTotal.signum() == 1) {
+            bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
+        } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
-            // Sales_PaymentOrderSequence
-            name = NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
+            name = new Naming().fromNumberGenerator(_parameter, type.getName());
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
+            bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
         }
-        if (type != null && (accountInst != null && accountInst.isValid())) {
+        if (type != null && accountInst != null && accountInst.isValid()) {
             final Insert insert = new Insert(type);
             insert.add(CISales.DocumentSumAbstract.Name, name);
             insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
@@ -370,27 +347,36 @@ public abstract class PettyCashBalance_Base
 
             final Insert relInsert = new Insert(relation);
             relInsert.add(CISales.AccountPettyCash2Document.FromLinkAbstract, accountInst);
-            relInsert.add(CISales.AccountPettyCash2Document.ToLinkAbstract, _parameter.getInstance());
+            relInsert.add(CISales.AccountPettyCash2Document.ToLinkAbstract, insert.getInstance());
             relInsert.execute();
+
+            final Insert relInsert2 = new Insert(bal2orderType);
+            relInsert2.add(CISales.PettyCashBalance2OrderAbstract.FromAbstractLink, _parameter.getInstance());
+            relInsert2.add(CISales.PettyCashBalance2OrderAbstract.ToAbstractLink, insert.getInstance());
+            relInsert2.execute();
         }
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return with Access
+     * @throws EFapsException on error
+     */
     public Return accessCheck4AccountDoc(final Parameter _parameter)
         throws EFapsException
     {
         final Return ret = new Return();
-
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()) {
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountPettyCash2Document);
-            queryBldr.addWhereAttrEqValue(CISales.AccountPettyCash2Document.ToLinkAbstract, _parameter.getInstance());
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance2OrderAbstract);
+            queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance2OrderAbstract.FromAbstractLink,
+                            _parameter.getInstance());
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
             if (!query.next()) {
                 ret.put(ReturnValues.TRUE, true);
             }
         }
-
         return ret;
     }
 

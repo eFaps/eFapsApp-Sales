@@ -21,14 +21,11 @@
  Last Changed By: $Author: jorge.m.cueva $
 
 -->
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>97dc7ddc-8ec1-4d12-9b77-2ae21ae450aa</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5742 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_BalancingWithDate</name>
@@ -36,15 +33,14 @@
             <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingWithDateForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.PettyCashBalance">
                 <property name="JasperReport">Sales_PettyCashBalance</property>
                 <property name="Mime">pdf</property>
+                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_PettyCashBalance</property>
