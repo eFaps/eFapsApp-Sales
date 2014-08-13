@@ -29,5 +29,15 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ActionDefinitionIncomingInvoice</name>
         <parent>ERP_ActionDefinitionAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>ERP_ActionDefinitionStatus</typelink>
+            <sqltable>ERP_ActionDefinitionSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_ActionDefinitionIncomingInvoice.Status.RANGE_VALUE" event="RANGE_VALUE">
+            </trigger>
+        </attribute>
     </definition>
 </datamodel-type>
