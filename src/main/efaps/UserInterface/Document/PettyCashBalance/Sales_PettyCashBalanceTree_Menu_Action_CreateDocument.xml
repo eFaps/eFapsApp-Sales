@@ -32,10 +32,14 @@
             <role>Sales_PettyCash</role>
         </access>
         <target>
+            <form>Sales_PettyCashBalance4CreateDocForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="createDoc4Account" />
             <trigger program="org.efaps.esjp.sales.document.PettyCashBalance" method="accessCheck4AccountDoc"
                 name="Sales_PettyCashBalanceTree_Menu_Action_CreateDocument.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </target>
-        <property name="AskUser">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">400</property>
+        <property name="WindowWidth">800</property>
     </definition>
 </ui-command>

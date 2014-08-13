@@ -29,6 +29,10 @@
         <!-- childs -->
         <childs>
             <child>Sales_PaymentOrderTree_Menu_Action_Edit</child>
+            <child>Sales_PaymentOrderTree_Menu_Action_SetApproved</child>
+            <child>Sales_PaymentOrderTree_Menu_Action_SetCanceled</child>
+            <child>Sales_PaymentOrderTree_Menu_Action_SetClosed</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 

@@ -343,6 +343,9 @@ public abstract class PettyCashBalance_Base
             insert.add(CISales.DocumentSumAbstract.Rate,
                             print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate));
             insert.add(CISales.DocumentSumAbstract.StatusAbstract, status);
+            insert.add(CISales.DocumentSumAbstract.Note,
+                            _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                                            CISales.DocumentSumAbstract.Note.name)));
             insert.execute();
 
             final Insert relInsert = new Insert(relation);
