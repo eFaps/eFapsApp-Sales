@@ -53,6 +53,7 @@
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_CashDeskBalance/CrossTotal.Label</property>
+            <property name="Align">right</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
