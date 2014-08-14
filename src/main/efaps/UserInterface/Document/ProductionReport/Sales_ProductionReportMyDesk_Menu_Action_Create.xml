@@ -28,6 +28,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_ProductionReportMyDesk_Menu_Action_Create</name>
         <access>
             <role>Sales_Admin</role>
@@ -53,4 +56,40 @@
         <property name="TargetDefaultMenu">none</property>
         <property name="ShowStorage">true</property>
     </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="fabrication"/>
+        </profiles>
+        <name>Sales_ProductionReportMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_ProductionReportForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.document.ProductionReport">
+                <property name="PositionType">Sales_ProductionReportPosition</property>
+                <property name="StatusGroup">Sales_ProductionReportStatus</property>
+                <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
+                <!-- Fabrication_Process2ProductionReport -->
+                <property name="ConnectType">59e72720-04c5-4443-add1-96c2ae97017a</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">fabricationProcess</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.ProductionReport" method="validate" >
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+            </validate>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_ProductionReport</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="ShowStorage">true</property>
+    </definition>
+
 </ui-command>
