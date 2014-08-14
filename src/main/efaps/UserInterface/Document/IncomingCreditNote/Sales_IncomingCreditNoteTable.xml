@@ -53,10 +53,6 @@
             <property name="Label">Sales_IncomingCreditNote/Revision.Label</property>
         </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
@@ -87,6 +83,10 @@
             <property name="Label">Sales_DocumentAbstract/Symbol.Label</property>
         </field>
         <field name="created">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Created</property>
             <property name="Label">Sales_DocumentAbstract/Created.Label</property>
         </field>
@@ -126,10 +126,6 @@
             <property name="Label">Sales_IncomingCreditNote/Revision.Label</property>
         </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>

@@ -53,10 +53,6 @@
             <property name="HRef">TREEMENU</property>
         </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
@@ -142,10 +138,6 @@
             <property name="HRef">TREEMENU</property>
         </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
