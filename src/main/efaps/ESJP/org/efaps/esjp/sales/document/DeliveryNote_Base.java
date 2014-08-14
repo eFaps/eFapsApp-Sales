@@ -89,6 +89,7 @@ public abstract class DeliveryNote_Base
         connect2ProductDocumentType(_parameter, doc);
         connect2Derived(_parameter, doc);
         connect2Object(_parameter, doc);
+        connect2Terms(_parameter, doc);
 
         final File file = createReport(_parameter, doc);
         if (file != null) {
@@ -224,7 +225,7 @@ public abstract class DeliveryNote_Base
             _createdDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
         }
 
-        final String transferReason =_parameter
+        final String transferReason = _parameter
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.transferReason.name);
         if (transferReason != null && !transferReason.isEmpty()) {
             _insert.add(CISales.DeliveryNote.TransferReason, transferReason);
