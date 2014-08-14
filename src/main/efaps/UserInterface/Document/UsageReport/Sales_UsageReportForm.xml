@@ -121,6 +121,7 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_UsageReportForm.storage.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="autoComplete4Storage"
                 name="Sales_UsageReportForm.storage.UI_FIELD_AUTOCOMPLETE"

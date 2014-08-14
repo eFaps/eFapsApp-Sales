@@ -133,6 +133,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_RecievingTicketForm.storage.Label</property>
+             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="autoComplete4Storage"
                 name="Sales_ProductionReportForm.storage.UI_FIELD_AUTOCOMPLETE"
@@ -173,6 +174,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
                 name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"

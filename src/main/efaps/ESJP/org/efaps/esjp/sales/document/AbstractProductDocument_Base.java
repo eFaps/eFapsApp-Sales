@@ -482,7 +482,7 @@ public abstract class AbstractProductDocument_Base
         final String[] rows = _parameter.getParameterValues("product");
         final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
         final Instance storage = Instance.get(_parameter.getParameterValue("storageSetter"));
-        if (storage.isValid()) {
+        if (storage.isValid() && rows != null) {
             for (final String row : rows) {
                 final Map<KeyDef, Object> map2 = new HashMap<KeyDef, Object>();
                 final Instance prod = Instance.get(row);

@@ -281,6 +281,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_ReturnSlipForm.storage.Label</property>
+             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Storage"
                 name="Sales_ReturnSlipForm.storage.UI_FIELD_AUTOCOMPLETE"
@@ -626,6 +627,7 @@
              <property name="ModeView">NONE</property>
              <property name="ModeEdit">NONE</property>
              <property name="Label">Sales_ReturnSlipForm.storage.Label</property>
+             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
              <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Storage"
                 name="Sales_ReturnSlipForm.storage.UI_FIELD_AUTOCOMPLETE"
