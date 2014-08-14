@@ -40,14 +40,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
-                     method="autoComplete4Invoice"
-                     name="Sales_DeliveryNote_SelectInvoiceForm/invoice.UI_FIELD_AUTOCOMPLETE"
-                     event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
-                     method="updateFields4Invoice"
-                     name="Sales_DeliveryNote_SelectInvoiceForm/invoice.UI_FIELD_UPDATE"
-                     event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="autoComplete4Doc"
+                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type01">Sales_Invoice</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
+                <property name="Status01">*</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="updateFields4Document"
+                name="Sales_DeliveryNote_SelectDocForm.invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -59,10 +59,8 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
-                     method="getJS4SelectDocumentForm"
-                     name="Sales_DeliveryNote_SelectInvoiceForm/javaScript.UI_Field_Value"
-                     event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote" method="getJS4SelectDocumentForm"
+                name="Sales_DeliveryNote_SelectDocForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>
