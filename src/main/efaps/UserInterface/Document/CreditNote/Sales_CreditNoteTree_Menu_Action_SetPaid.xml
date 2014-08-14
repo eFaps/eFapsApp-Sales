@@ -35,8 +35,9 @@
             <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
                 <property name="Status">Paid</property>
             </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status" name="Sales_CreditNoteTree_Menu_Action_SetPaid.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_CreditNoteTree_Menu_Action_SetPaid.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Check4CreateStatus">true</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

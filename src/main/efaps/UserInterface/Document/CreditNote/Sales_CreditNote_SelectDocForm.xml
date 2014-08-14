@@ -35,16 +35,14 @@
             <property name="Label">Sales_Invoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.CreditNote"
-                method="autoComplete4Doc"
-                name="Sales_CreditNote_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Type">Sales_Invoice</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote" method="autoComplete4Doc"
+                name="Sales_CreditNote_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type01">Sales_Invoice</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
+                <property name="Status01">*</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.CreditNote"
-                method="updateFields4Document"
-                name="Sales_CreditNote_SelectDocForm.invoice.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.CreditNote" method="updateFields4Document"
+                name="Sales_CreditNote_SelectDocForm.invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -55,10 +53,8 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <trigger program="org.efaps.esjp.sales.document.CreditNote"
-                method="getJS4SelectDocumentForm"
-                name="Sales_CreditNote_SelectDocForm.javaScript.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.CreditNote" method="getJS4SelectDocumentForm"
+                name="Sales_CreditNote_SelectDocForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

@@ -43,7 +43,15 @@
         <!-- target definitions -->
         <target>
             <form>Sales_CreditNoteForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.sales.document.CreditNote" method="edit">
+                <property name="PositionType">Sales_CreditNotePosition</property>
+                <property name="JasperReport">Sales_CreditNote</property>
+                <property name="Mime">pdf</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.CreditNote" method="validate">
+                <property name="Validation">NAME</property>
+                <property name="NAME_FieldName">name4edit</property>
+            </validate>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_CreditNoteTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Check4CreateStatus">true</property>
@@ -54,7 +62,8 @@
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 
 </ui-command>
