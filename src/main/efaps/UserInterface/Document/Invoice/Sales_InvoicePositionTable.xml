@@ -49,6 +49,7 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_InvoicePosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="autoComplete4Product"
                 name="Sales_InvoicePositionTable.product.UI_FIELD_AUTOCOMPLETE"

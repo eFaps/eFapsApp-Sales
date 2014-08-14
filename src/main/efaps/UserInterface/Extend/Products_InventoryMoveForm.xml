@@ -52,6 +52,7 @@
             <property name="Attribute">Product</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.products.Product"
                 method="autoComplete4ProductsInStorage"
                 name="Products_InventoryMoveForm.product.autocomplete"

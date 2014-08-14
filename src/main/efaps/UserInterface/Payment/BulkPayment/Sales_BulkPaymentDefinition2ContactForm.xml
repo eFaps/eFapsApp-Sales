@@ -40,6 +40,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
                 name="Sales_BulkPaymentDefinition2ContactForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Key">ID</property>

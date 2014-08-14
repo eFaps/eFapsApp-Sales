@@ -32,6 +32,7 @@
         <field name="incomingInvoice">
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="autoComplete4Doc"
                 name="Sales_IncomingCreditNote_SelectDocForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"

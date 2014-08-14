@@ -67,6 +67,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="Columns">50</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDepositForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts"/>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_PaymentDepositForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDeposit"/>
         </field>

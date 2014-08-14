@@ -40,6 +40,7 @@
       <property name="Label">Sales_Order/Name.Label</property>
       <property name="ModeCreate">EDITABLE</property>
       <property name="Required">true</property>
+      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
       <trigger program="org.efaps.esjp.sales.document.OrderInbound"
                method="autoComplete4OrderInbound"
                name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Autocomplete"

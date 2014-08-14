@@ -37,6 +37,7 @@
             <property name="Label">Sales_DeliveryNote.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4DeliveryNote"
                 name="Sales_ReturnSlip_SelectDocForm.deliveryNote.UI_FIELD_AUTOCOMPLETE"

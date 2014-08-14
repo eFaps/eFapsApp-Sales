@@ -49,6 +49,7 @@
             <property name="Label">Sales_PaymentDebitCardPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4CreateDocument" name="Sales_PaymentDebitCardPaymentTable.product.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.payment.PaymentDebitCard">
                 <property name="Type">Sales_Invoice</property>
                 <property name="StatusGroup">Sales_InvoiceStatus</property>

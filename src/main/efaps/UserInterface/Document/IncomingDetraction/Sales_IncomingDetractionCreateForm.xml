@@ -19,31 +19,29 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>54eab126-4798-4362-a0eb-2a4dccf6b12d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingDetractionCreateForm</name>
-                <field name="incomingInvoice">
+        <field name="incomingInvoice">
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-            method="autoComplete4IncomingInvoice"
-            name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
-            program="org.efaps.esjp.sales.document.IncomingDetraction">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4IncomingInvoice"
+                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.IncomingDetraction">
             </trigger>
-            <trigger event="UI_FIELD_UPDATE"
-            method="updateFields4IncomingInvoice"
-            name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
-            program="org.efaps.esjp.sales.document.IncomingDetraction"
-            index="1"/>
-            <trigger event="UI_FIELD_UPDATE"
-            method="updateFields4IncomingInvoice"
-            name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
-            program="org.efaps.esjp.sales.document.IncomingDetraction"
-            index="2"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice"
+                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1" program="org.efaps.esjp.sales.document.IncomingDetraction"
+                index="1" />
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice"
+                name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2" program="org.efaps.esjp.sales.document.IncomingDetraction"
+                index="2" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -58,10 +56,8 @@
             <property name="Columns">2</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionPercent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction"
-                method="updateFields4DetractionPercent"
-                name="Sales_IncomingDetractionCreateForm.detractionPercent.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="updateFields4DetractionPercent"
+                name="Sales_IncomingDetractionCreateForm.detractionPercent.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="detractionValue">
             <property name="ModeCreate">EDITABLE</property>
@@ -80,10 +76,8 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <trigger event="UI_FIELD_VALUE"
-            method="getJavaScriptUIValue"
-            name="Sales_IncomingDetractionCreateForm.javaScript.UI_FIELD_VALUE"
-            program="org.efaps.esjp.sales.document.IncomingDetraction"/>
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
+                name="Sales_IncomingDetractionCreateForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingDetraction" />
         </field>
     </definition>
 </ui-form>

@@ -49,6 +49,7 @@
             <property name="Label">Sales_PaymentCashOutPaymentTable.createDocument.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentCashOut" method="autoComplete4CreateDocument"
                 name="Sales_PaymentCashOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type">Sales_IncomingInvoice</property>

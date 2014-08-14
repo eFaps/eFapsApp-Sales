@@ -39,6 +39,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">80</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CostSheet"
                      method="autoComplete4CostSheet"
                      name="Sales_CostSheet_SelectDocForm.costSheet.UI_FIELD_AUTOCOMPLETE"

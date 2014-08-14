@@ -34,6 +34,7 @@
         <field name="orderOutbound">
             <property name="Label">Sales_OrderOutbound.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="autoComplete4Doc"
                 name="Sales_RecievingTicket_SelectDocForm.orderOutbound.UI_FIELD_AUTOCOMPLETE"
@@ -51,6 +52,7 @@
         <field name="deliveryNote">
             <property name="Label">Sales_DeliveryNote.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="autoComplete4Doc"
                 name="Sales_RecievingTicket_SelectDocForm.deliveryNote.UI_FIELD_AUTOCOMPLETE"

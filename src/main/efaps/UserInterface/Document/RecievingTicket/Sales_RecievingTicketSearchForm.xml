@@ -41,6 +41,7 @@
             <property name="Columns">15</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_RecievingTicket/Contact.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
                 name="Sales_RecievingTicketSearchForm.contact.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.RecievingTicket">

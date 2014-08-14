@@ -32,6 +32,7 @@
         <field name="incomingInvoice">
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4IncomingInvoice" name="Sales_IncomingReminder_SelectDocForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice" name="Sales_IncomingReminder_SelectDocForm.incomingInvoice.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>

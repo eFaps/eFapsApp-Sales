@@ -30,6 +30,7 @@
             <property name="Label">Sales_Products_Kardex_OfficialReportForm.product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.products.Product" method="autoComplete4Product"
                 name="Sales_Products_Kardex_OfficialReportForm.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE"/>
         </field>
@@ -47,6 +48,7 @@
             <property name="Label">Sales_Products_Kardex_OfficialReportForm.storage.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.products.StorageGroup"
                 method="autoComplete4StorageGroup"
                 name="Sales_Products_Kardex_OfficialReportForm.storage.UI_FIELD_AUTOCOMPLETE"

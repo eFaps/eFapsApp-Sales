@@ -40,6 +40,7 @@
             <property name="Columns">15</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_IncomingExchange/Contact.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="autoComplete4Contact"
                 name="Sales_IncomingExchangeSearchForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Key">ID</property>

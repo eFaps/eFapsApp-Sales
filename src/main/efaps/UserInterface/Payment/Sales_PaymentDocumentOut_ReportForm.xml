@@ -45,6 +45,7 @@
             <property name="Label">Sales_PaymentDocument_ReportForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDocumentOut_ReportForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts"/>
         </field>
     </definition>

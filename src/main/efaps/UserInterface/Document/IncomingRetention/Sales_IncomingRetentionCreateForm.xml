@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dd989c5b-5d48-4650-963b-cd3278b8db11</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -29,24 +31,20 @@
         <field name="incomingInvoice">
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE"
-            method="autoComplete4IncomingInvoice"
-            name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
-            program="org.efaps.esjp.sales.document.IncomingRetention">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4IncomingInvoice"
+                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.IncomingRetention">
                 <property name="Status">Digitized</property>
                 <property name="Status01">Open</property>
                 <property name="Status02">Paid</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE"
-            method="updateFields4IncomingInvoice"
-            name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1"
-            program="org.efaps.esjp.sales.document.IncomingRetention"
-            index="1"/>
-            <trigger event="UI_FIELD_UPDATE"
-            method="cleanFields"
-            name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2"
-            program="org.efaps.esjp.sales.document.IncomingRetention"
-            index="2"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice"
+                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1" program="org.efaps.esjp.sales.document.IncomingRetention"
+                index="1" />
+            <trigger event="UI_FIELD_UPDATE" method="cleanFields"
+                name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_UPDATE.2" program="org.efaps.esjp.sales.document.IncomingRetention"
+                index="2" />
         </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
@@ -61,10 +59,8 @@
             <property name="Columns">2</property>
             <property name="Label">Sales_IncomingRetentionCreateForm.retentionPercent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingRetention"
-                method="updateFields4RetentionPercent"
-                name="Sales_IncomingInvoiceForm.retentionPercent.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetention" method="updateFields4RetentionPercent"
+                name="Sales_IncomingInvoiceForm.retentionPercent.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="retentionValue">
             <property name="ModeCreate">EDITABLE</property>
@@ -83,10 +79,8 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
-            <trigger event="UI_FIELD_VALUE"
-            method="getJavaScriptUIValue"
-            name="Sales_IncomingRetentionCreateForm.javaScript.UI_FIELD_VALUE"
-            program="org.efaps.esjp.sales.document.IncomingRetention"/>
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
+                name="Sales_IncomingRetentionCreateForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingRetention" />
         </field>
     </definition>
 </ui-form>
