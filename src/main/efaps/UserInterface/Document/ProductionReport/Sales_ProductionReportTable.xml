@@ -105,11 +105,11 @@
             <property name="Label">Sales_ProductionReportTable.documentType.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
-          <field name="fabricationProcess4View">
+          <field name="fabricationProcess">
             <property name="SelectAlternateOID">linkfrom[Fabrication_Process2ProductionReport#ToLink].linkto[FromLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Fabrication_Process2ProductionReport#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Fabrication_Process2ProductionReport#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
             <property name="HRef">TREE</property>
-            <property name="Label">Sales_ProductionReportTable.project.Label</property>
+            <property name="Label">Sales_ProductionReportTable.fabricationProcess.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="buttonOpenInNewWindow">

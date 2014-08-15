@@ -60,7 +60,7 @@ public abstract class IncomingReceipt_Base
     /**
      * Used to store the Revision in the Context.
      */
-    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingReceipt.RevisionKey";
+    public static final String REVISIONKEY =  IncomingReceipt.class.getName() + ".RevisionKey";
 
     /**
      * Executed from a Command execute vent to create a new Incoming Receipt.
@@ -168,8 +168,8 @@ public abstract class IncomingReceipt_Base
                         IncomingReceipt_Base.REVISIONKEY);
         Context.getThreadContext().setSessionAttribute(IncomingReceipt_Base.REVISIONKEY, null);
         final StringBuilder html = new StringBuilder();
-        html.append("<span style=\"text-align: center; display: block; width: 100%; font-size: 40px; height: 55px;\">")
-                        .append(revision).append("</span>");
+        html.append("<span style=\"text-align: center; width: 98%; font-size:40pt; height: 55px; position:absolute\">")
+            .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
     }

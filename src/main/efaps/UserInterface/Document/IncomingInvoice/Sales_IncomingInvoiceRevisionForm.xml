@@ -19,19 +19,19 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>946725c3-0d25-4e63-ac48-d45c70f3cea9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceRevisionForm</name>
-        <!-- fields -->
         <field name="revision">
             <property name="ModeCreate">READONLY</property>
             <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="showRevisionFieldValue"
                 name="Sales_IncomingInvoiceRevisionForm.revision.UI_FIELD_VALUE"

@@ -226,7 +226,7 @@ public abstract class RecievingTicket_Base
                         RecievingTicket_Base.REVISIONKEY);
         Context.getThreadContext().setSessionAttribute(RecievingTicket_Base.REVISIONKEY, null);
         final StringBuilder html = new StringBuilder();
-        html.append("<span style=\"text-align: center; display: block; width: 100%; font-size: 40px; height: 55px;\">")
+        html.append("<span style=\"text-align: center; width: 98%; font-size:40pt; height: 55px; position:absolute\">")
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;

@@ -66,7 +66,7 @@ public abstract class IncomingCreditNote_Base
     extends AbstractDocumentSum
 {
 
-    public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingCreditNote.RevisionKey";
+    public static final String REVISIONKEY = IncomingCreditNote.class.getName() + ".RevisionKey";
 
     /**
      * Method for create a new Incoming Credit Note.
@@ -233,7 +233,7 @@ public abstract class IncomingCreditNote_Base
             {
                 final Instance instance = _parameter.getInstance();
 
-                if ((instance != null && instance.isValid())
+                if (instance != null && instance.isValid()
                                 && (instance.getType().equals(CISales.AccountFundsToBeSettled.getType())
                                 || instance.getType().equals(CISales.AccountPettyCash.getType()))) {
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.AccountPettyCash2PettyCashBalance);
@@ -282,7 +282,7 @@ public abstract class IncomingCreditNote_Base
 
         final Instance instance = _parameter.getInstance();
 
-        if ((instance != null && instance.isValid())
+        if (instance != null && instance.isValid()
                         && (instance.getType().equals(CISales.AccountPettyCash.getType())
                                         || instance.getType().equals(CISales.AccountFundsToBeSettled.getType()))) {
             final StringBuilder js = new StringBuilder();

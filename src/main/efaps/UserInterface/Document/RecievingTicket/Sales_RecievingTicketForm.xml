@@ -83,6 +83,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_RecievingTicketForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_RecievingTicketForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -346,6 +347,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_RecievingTicketForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_RecievingTicketForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
