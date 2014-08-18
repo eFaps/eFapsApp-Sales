@@ -34,6 +34,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="activatePositionsCalculator"
                 name="Sales_CashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -190,6 +191,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="withoutVATFieldValue"
                 name="Sales_CashReceiptForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -272,6 +274,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CashReceipt" method="getJavaScriptUIValue"
                 name="Sales_CashReceiptForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>

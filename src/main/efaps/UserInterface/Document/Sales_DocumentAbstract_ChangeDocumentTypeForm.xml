@@ -35,6 +35,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_DocumentAbstractForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
                 name="Sales_DocumentAbstractForm.documentType.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.GenericDocumentSum">

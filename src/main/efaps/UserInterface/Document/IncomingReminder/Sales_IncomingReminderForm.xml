@@ -36,6 +36,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_IncomingReminderForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>
         <field character="Group" name="dateGroup">
@@ -83,6 +84,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingReminderForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="dropDown4DocumentType"
                     name="Sales_IncomingReminderForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -306,6 +308,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ReminderPositionTable.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>
     </definition>
@@ -321,6 +324,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_IncomingReminderForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>
         <field character="Group" name="dateGroup">
@@ -547,6 +551,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_IncomingReminderForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>
         <field character="Target" name="positionTable">
@@ -628,6 +633,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ReminderPositionTable.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
         </field>
     </definition>

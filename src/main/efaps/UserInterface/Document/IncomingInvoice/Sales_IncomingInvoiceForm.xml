@@ -39,6 +39,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="activatePositionsCalculator"
                 name="Sales_IncomingInvoiceForm.activatePositionsCalculator.UI_FIELD_VALUE"
@@ -175,6 +176,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="dropDown4DocumentType"
                 name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -194,6 +196,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="action4View">
             <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionIncomingInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
@@ -204,6 +207,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ActionDefinitionIncomingInvoice.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
                 name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.IncomingInvoice">
@@ -216,6 +220,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="dropDown4DocumentType"
                 name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -238,6 +243,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingInvoiceForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>
@@ -324,6 +330,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="withoutVATFieldValue"
                 name="Sales_IncomingInvoiceForm.withoutVAT.UI_FIELD_VALUE"
@@ -666,6 +673,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingInvoiceForm.javaScript.UI_FIELD_VALUE"
@@ -676,6 +684,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScript4TaxDocUIValue"
                 name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"
@@ -692,6 +701,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="activatePositionsCalculator"
                 name="Sales_IncomingInvoiceForm.activatePositionsCalculator.UI_FIELD_VALUE"
@@ -828,6 +838,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="dropDown4DocumentType"
                 name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -847,6 +858,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_IncomingInvoiceForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="action4View">
             <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionIncomingInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
@@ -857,6 +869,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ActionDefinitionIncomingInvoice.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
                 name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
                 program="org.efaps.esjp.sales.document.IncomingInvoice">
@@ -869,6 +882,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice" method="dropDown4DocumentType"
                 name="Sales_IncomingInvoiceForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -928,6 +942,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2IncomingInvoice#ToLink].linkto[FromLink].oid</property>
@@ -1020,6 +1035,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="withoutVATFieldValue"
                 name="Sales_IncomingInvoiceForm.withoutVAT.UI_FIELD_VALUE"
@@ -1362,6 +1378,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScriptUIValue"
                 name="Sales_IncomingInvoiceForm.javaScript.UI_FIELD_VALUE"
@@ -1372,6 +1389,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="getJavaScript4TaxDocUIValue"
                 name="Sales_IncomingInvoiceForm.taxDocJavaScript.UI_FIELD_VALUE"

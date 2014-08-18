@@ -38,6 +38,7 @@
         <field name="revenues">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountCashDeskBalancingForm.revenues.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account" method="revenuesFieldValueUI"
                 name="Sales_AccountCashDeskBalancingForm.revenues.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"></trigger>
@@ -45,6 +46,7 @@
         <field name="startAmount">
             <property name="Label">Sales_AccountCashDeskBalancingForm.startAmount.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account" method="startAmountFieldValueUI"
                 name="Sales_AccountCashDeskBalancingForm.startAmount.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE"></trigger>

@@ -30,6 +30,7 @@
         <name>Sales_IncomingExchangeSearchForm</name>
         <field name="getSetFieldValueScript">
             <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="getJSLinkField"
                 name="Sales_IncomingExchangeSearchForm.getSetFieldValueScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="link">/servlet/static/org.efaps.ui.wicket.behaviors.FieldUpdate.js</property>
@@ -54,6 +55,7 @@
         </field>
         <field name="javaScript">
             <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="getJavaScript4Search"
                 name="Sales_IncomingExchangeSearchForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>

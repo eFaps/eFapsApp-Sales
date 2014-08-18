@@ -58,6 +58,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote"
                 method="getJS4SelectDocumentForm"
                 name="Sales_IncomingCreditNote_SelectDocForm.javaScript.UI_FIELD_VALUE"

@@ -40,6 +40,7 @@
             <property name="Attribute">Storage</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Products_TransactionAbstractForm.storage.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Products_DynamicStorage</property>

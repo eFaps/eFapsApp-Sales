@@ -59,6 +59,7 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.products.Product"
                 method="autoComplete4Product"
                 name="Products_TransactionAbstractForm.product.UI_FIELD_AUTOCOMPLETE"

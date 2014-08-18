@@ -34,6 +34,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="deactivateFiltered4Invoice"
                 name="Sales_PaymentDepositForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -99,6 +100,7 @@
             <property name="Label">Sales_PaymentDepositForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
                 name="Sales_PaymentDepositForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
@@ -120,6 +122,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDeposit" method="dropDown4AccountFieldValue"
                 name="Sales_PaymentDepositForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
@@ -207,6 +210,7 @@
             </evaluate>
         </field>
         <field name="total4DiscountPay">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_PaymentDepositForm.total4DiscountPay.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>

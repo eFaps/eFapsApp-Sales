@@ -34,6 +34,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="deactivateFiltered4Invoice"
                 name="Sales_PaymentDetractionOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -105,6 +106,7 @@
             <property name="Label">Sales_PaymentDetractionOutForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
                 name="Sales_PaymentDetractionOutForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
@@ -126,6 +128,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="dropDown4AccountFieldValue"
                 name="Sales_PaymentDetractionOutForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
@@ -262,11 +265,13 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="getJavaScriptUIValue"
                 name="Sales_PaymentDetractionOutForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
         </field>
@@ -274,6 +279,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="getJavaScript4SelectableRowsValues"
                 name="Sales_PaymentDetractionOutForm.javaScript2.UI_Field_Value" event="UI_FIELD_VALUE">
                 <property name="Status">Open</property>

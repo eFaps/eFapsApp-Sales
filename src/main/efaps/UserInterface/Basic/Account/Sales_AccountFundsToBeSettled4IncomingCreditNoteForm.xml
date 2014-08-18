@@ -32,6 +32,7 @@
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -61,6 +62,7 @@
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -134,6 +136,7 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="withoutVAT">
+        <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="withoutVATFieldValue"
@@ -168,6 +171,7 @@
         </field>
         <field name="javaScript">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="getJavaScriptUIValue"
                 name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -181,6 +185,7 @@
         <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="activatePositionsCalculator"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -315,6 +320,7 @@
         <field name="withoutVAT">
             <property name="Label">Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="withoutVATFieldValue"
                 name="Sales_AccountFundsToBeSettled4IncomingCreditNoteForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
@@ -349,6 +355,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project" method="getJavaScript4ProjectUIValue"
                 name="Sales_AccountPettyCashForm.javascript.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ReadOnly">true</property>

@@ -31,6 +31,7 @@
         <!-- fields -->
         <field name="description">
             <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getDBPropertiesFieldValue"
                 name="Sales_CashFlowReportDetailMyDeskForm.description.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
@@ -39,6 +40,7 @@
         </field>
         <field name="cashFlowReport">
             <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_CashFlowReportDetailMyDeskForm.salesReport.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.CashFlowReport" >

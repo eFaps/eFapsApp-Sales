@@ -46,6 +46,7 @@
         <field name="revenues">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashBalancingForm.revenues.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="revenuesFieldValue4PettyCashUI" name="Sales_AccountPettyCashBalancingForm.revenues.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account"/>
         </field>
     </definition>

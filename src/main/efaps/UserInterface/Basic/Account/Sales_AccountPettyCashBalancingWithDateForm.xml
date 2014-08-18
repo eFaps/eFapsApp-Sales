@@ -36,6 +36,7 @@
         <field name="paymentsOid">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getStoreOIDsFieldValue"
                 name="Archives_ArchiveFileForm.archiveOID.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
@@ -75,6 +76,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashBalancingForm.revenues.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="revenuesFieldValue4PettyCashUI"
                 name="Sales_AccountPettyCashBalancingForm.revenues.UI_FIELD_VALUE"

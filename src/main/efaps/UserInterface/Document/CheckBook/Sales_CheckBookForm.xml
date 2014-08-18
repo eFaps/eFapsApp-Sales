@@ -98,6 +98,7 @@
             <property name="Phrase">$&lt;linkto[AccountLink].attribute[Name]&gt; - $&lt;linkto[AccountLink].attribute[Description]&gt;</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_CheckBook/AccountLink.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>

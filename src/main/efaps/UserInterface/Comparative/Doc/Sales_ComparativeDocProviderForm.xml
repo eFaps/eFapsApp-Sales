@@ -89,6 +89,7 @@
         </field>
         <field name="comparativeReport">
             <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_ComparativeDocProviderForm.comparativeReport.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.ComparativeReport" />

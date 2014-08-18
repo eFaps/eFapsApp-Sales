@@ -54,6 +54,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType" name="Sales_FundsToBeSettledReceiptJustificationEditForm.documentType.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
                 <property name="Type">ERP_DocumentType</property>
@@ -77,6 +78,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue4EditJustification" name="Sales_FundsToBeSettledReceiptForm.javaScript.UI_Field_Value" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"/>
         </field>
     </definition>
