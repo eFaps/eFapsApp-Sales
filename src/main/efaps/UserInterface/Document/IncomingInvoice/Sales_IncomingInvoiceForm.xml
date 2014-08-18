@@ -905,6 +905,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingInvoiceForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>

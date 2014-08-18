@@ -201,12 +201,14 @@
             <property name="Select">linkfrom[Sales_BulkPayment2PaymentDocument#ToLink].linkto[FromLink].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_BulkPayment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="bulkPaymentDoc">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_BulkPayment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Sales_PaymentDetractionOutForm.bulkPaymentDoc.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_BulkPayment</property>
@@ -221,6 +223,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_BulkPayment2PaymentDocument/OperationType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Sales_PaymentDetractionOutForm.operationType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionOperationType</property>
@@ -233,6 +236,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_BulkPayment2PaymentDocument/ServiceType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Sales_PaymentDetractionOutForm.serviceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
@@ -265,6 +269,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">

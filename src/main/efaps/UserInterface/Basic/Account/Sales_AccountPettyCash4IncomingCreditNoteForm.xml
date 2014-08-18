@@ -227,6 +227,7 @@
         <field name="documentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="dropDown4DocumentType"
                 name="Sales_AccountPettyCash4IncomingCreditNoteForm.documentType.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
@@ -277,6 +278,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_AccountPettyCash4IncomingCreditNoteForm.derived.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="autoComplete4PettyCashReceipt"
                 name="Sales_AccountPettyCash4IncomingCreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" />

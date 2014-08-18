@@ -148,6 +148,7 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_PaymentCheckForm.restAmount.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
@@ -244,6 +245,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModeEdit">HIDDEN</property>

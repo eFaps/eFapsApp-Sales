@@ -53,6 +53,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
             <property name="Label">Sales_TextModuleForm.forTypeId4Read.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.TextModule"
                 method="getTypeFieldValueUI4Read"
                 name="Sales_TextModuleForm.forTypeId.UI_FIELD_VALUE"

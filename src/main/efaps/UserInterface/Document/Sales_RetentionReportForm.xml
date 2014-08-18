@@ -58,6 +58,7 @@
         </field>
         <field name="report">
             <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
                 name="Sales_RetentionReportForm.report.UI_FIELD_VALUE" program="org.efaps.esjp.sales.report.RetentionReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.RetentionReport.FilterKey</property>
