@@ -193,6 +193,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
@@ -419,6 +420,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"

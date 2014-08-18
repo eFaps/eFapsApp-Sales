@@ -35,6 +35,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="activatePositionsCalculator"
                 name="Sales_IncomingReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -92,6 +93,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="dropDown4DocumentType"
                 name="Sales_IncomingReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -109,6 +111,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -116,6 +119,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingReceiptForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="dropDown4DocumentType"
                 name="Sales_IncomingReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -138,6 +142,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingReceiptForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="CheckCallingCommand">true</property>
@@ -269,6 +274,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="withoutVATFieldValue"
                 name="Sales_IncomingReceiptForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -382,6 +388,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="activatePositionsCalculator"
                 name="Sales_IncomingReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -414,6 +421,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getSalesPersonFieldValue"
                 name="Sales_IncomingReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
@@ -439,6 +447,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="dropDown4DocumentType"
                 name="Sales_IncomingReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -456,6 +465,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
@@ -463,6 +473,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingReceiptForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="dropDown4DocumentType"
                 name="Sales_IncomingReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -485,6 +496,7 @@
             <property name="ModeView">READONLY</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="propertyCheck"
                 name="Sales_IncomingReceiptForm.productDocumentType4View.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="CheckCallingCommand">true</property>
@@ -584,6 +596,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2IncomingReceipt#ToLink].linkto[FromLink].oid</property>
@@ -658,6 +671,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="withoutVATFieldValue"
                 name="Sales_IncomingReceiptForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -757,6 +771,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReceipt" method="getJavaScriptUIValue"
                 name="Sales_IncomingReceiptForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>

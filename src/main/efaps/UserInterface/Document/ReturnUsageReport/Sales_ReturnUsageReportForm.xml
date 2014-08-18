@@ -73,6 +73,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ReturnUsageReportForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>

@@ -105,6 +105,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ConsignmentNoteForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ConsignmentNoteForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -277,6 +278,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_ConsignmentNoteForm.javaScript.UI_Field_Value" program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>
@@ -359,6 +361,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ConsignmentNoteForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ConsignmentNoteForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ConsignmentNote">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -573,6 +576,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
                 name="Sales_ConsignmentNoteForm.javaScript.UI_Field_Value" program="org.efaps.esjp.sales.document.ConsignmentNote" />
         </field>

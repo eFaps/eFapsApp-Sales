@@ -39,6 +39,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="activatePositionsCalculator"
                 name="Sales_ReminderForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -213,6 +214,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="withoutVATFieldValue"
                 name="Sales_ReminderForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -295,6 +297,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="getJavaScriptUIValue"
                 name="Sales_ReminderForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
         </field>
@@ -309,6 +312,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="activatePositionsCalculator"
                 name="Sales_ReminderForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -483,6 +487,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="withoutVATFieldValue"
                 name="Sales_ReminderForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -565,6 +570,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="getJavaScriptUIValue"
                 name="Sales_ReminderForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
         </field>

@@ -128,6 +128,7 @@
         <field name="details">
             <property name="HideLabel">true</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RetentionCertificate"
                 method="getDetailFieldValue"
                 name="Sales_RetentionCertificateForm.details.UI_FIELD_VALUE"

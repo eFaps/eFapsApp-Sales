@@ -31,6 +31,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentExchange" method="deactivateFiltered4Invoice"
                 name="Sales_PaymentExchangeForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -124,6 +125,7 @@
             <property name="Label">Sales_PaymentExchangeForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
                 name="Sales_PaymentExchangeForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
@@ -145,6 +147,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="dropDown4AccountFieldValue" name="Sales_PaymentExchangeForm.account.UI_FIELD_VALUE"
                     program="org.efaps.esjp.sales.payment.PaymentExchange">
@@ -236,6 +239,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>
