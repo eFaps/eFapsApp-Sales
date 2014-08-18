@@ -271,6 +271,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
@@ -288,6 +289,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
@@ -452,6 +454,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2RecievingTicket#ToLink].linkto[FromLink].oid</property>
@@ -578,6 +581,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="getStorageJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.storageJavaScript.UI_FIELD_VALUE"
@@ -595,6 +599,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"

@@ -31,6 +31,7 @@
         <name>Sales_Products_SalesReportForm</name>
         <field name="description">
             <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getDBPropertiesFieldValue"
                 name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
@@ -74,6 +75,7 @@
         </field>
         <field name="salesReport">
             <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.SalesProductReport"
                 method="generateReport"
                 name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"

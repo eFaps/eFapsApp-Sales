@@ -98,6 +98,7 @@
             <property name="Phrase">$&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].type.label&gt; - $&lt;linkfrom[Sales_PettyCashBalance2OrderAbstract#FromAbstractLink].linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_PettyCashBalanceForm.order.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>

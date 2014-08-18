@@ -81,6 +81,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_UsageReportForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -165,6 +166,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"

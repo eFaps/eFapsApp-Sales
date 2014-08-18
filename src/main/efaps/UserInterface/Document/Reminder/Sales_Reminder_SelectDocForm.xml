@@ -33,12 +33,12 @@
             <property name="Label">Sales_Invoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.Reminder" method="autoComplete4Invoice" 
+            <trigger program="org.efaps.esjp.sales.document.Reminder" method="autoComplete4Invoice"
                 name="Sales_Reminder_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Status">Open</property>
                 <property name="Status01">Canceled</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.Reminder" method="updateFields4Invoice" 
+            <trigger program="org.efaps.esjp.sales.document.Reminder" method="updateFields4Invoice"
                 name="Sales_Reminder_SelectDocForm.invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="info">
@@ -50,6 +50,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="getJS4SelectDocumentForm"
                 name="Sales_Reminder_SelectDocForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>

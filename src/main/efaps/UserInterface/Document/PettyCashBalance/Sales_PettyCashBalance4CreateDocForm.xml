@@ -31,6 +31,7 @@
             <property name="Columns">60</property>
             <property name="Rows">5</property>
             <property name="Label">Sales_PettyCashBalance/Note.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

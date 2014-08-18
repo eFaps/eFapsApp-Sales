@@ -38,6 +38,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="activatePositionsCalculator"
                 name="Sales_PettyCashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -131,6 +132,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                 name="Sales_PettyCashReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -150,6 +152,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
@@ -190,6 +193,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
@@ -211,6 +215,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -246,6 +251,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="withoutVATFieldValue"
                 name="Sales_InvoiceForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -327,6 +333,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="getJavaScriptUIValue"
                 name="Sales_PettyCashReceiptForm.javaScript.UI_FIELD_VALUE"
@@ -337,6 +344,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="getJavaScriptUIValue4Receipt"
                 name="Sales_PettyCashReceiptForm.javaScript2.UI_FIELD_VALUE"
@@ -353,6 +361,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="activatePositionsCalculator"
                 name="Sales_PettyCashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -446,6 +455,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                 name="Sales_PettyCashReceiptForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -465,6 +475,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
@@ -500,6 +511,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2PettyCashReceipt#ToLink].linkto[FromLink].oid</property>
@@ -603,6 +615,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="withoutVATFieldValue"
                 name="Sales_InvoiceForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -684,6 +697,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="getJavaScriptUIValue"
                 name="Sales_PettyCashReceiptForm.javaScript.UI_FIELD_VALUE"
@@ -694,6 +708,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="getJavaScriptUIValue4Receipt"
                 name="Sales_PettyCashReceiptForm.javaScript2.UI_FIELD_VALUE"

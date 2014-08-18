@@ -35,11 +35,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="autoComplete4ProductRequest" 
+            <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="autoComplete4ProductRequest"
                 name="Sales_QuoteRequest_SelectDocForm.quotation.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                
+
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.QuoteRequest"  method="updateFields4ProductRequest" 
+            <trigger program="org.efaps.esjp.sales.document.QuoteRequest"  method="updateFields4ProductRequest"
                 name="Sales_QuoteRequest_SelectDocForm.quotation.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="info">
@@ -53,7 +53,8 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="getJS4SelectDocumentForm" 
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.QuoteRequest" method="getJS4SelectDocumentForm"
                 name="Sales_QuoteRequest_SelectDocForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
     </definition>

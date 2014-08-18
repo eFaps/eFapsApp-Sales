@@ -32,6 +32,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModePrint">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_ServiceOrderOutboundForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
         </field>
         <field character="Group" name="dategroup">
@@ -175,6 +176,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_ServiceOrderOutboundForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Invoice"/>
         </field>
         <field character="Target" name="positionTable">
@@ -304,6 +306,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ServiceOrderOutboundForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
         </field>
          <field character="Command" name="executeCalculator">

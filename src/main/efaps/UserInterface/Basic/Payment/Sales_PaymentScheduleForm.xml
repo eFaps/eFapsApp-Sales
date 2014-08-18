@@ -134,6 +134,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.PaymentSchedule"
                 method="getJavaScript4UIValue"
                 name="Sales_PaymentScheduleForm.javaScript.UI_FIELD_VALUE"

@@ -28,6 +28,7 @@
         <name>Sales_ReminderSearchForm</name>
         <field name="jsLinkField">
             <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="getJSLinkField"
                 name="Sales_ReminderSearchForm.jsLinkField.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="link">/servlet/static/org.efaps.ui.wicket.behaviors.FieldUpdate.js?</property>
@@ -51,6 +52,7 @@
         </field>
         <field name="javaScript">
             <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder" method="getJavaScript4Search"
                 name="Sales_ReminderSearchForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>

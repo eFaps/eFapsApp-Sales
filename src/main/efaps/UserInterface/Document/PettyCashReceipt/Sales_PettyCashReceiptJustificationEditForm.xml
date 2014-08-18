@@ -37,6 +37,7 @@
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">80</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Contacts_CreateContactPicker" />
             <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
                 name="Sales_AccountPettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
@@ -59,6 +60,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="dropDown4DocumentType"
                     name="Sales_PettyCashReceiptJustificationEditForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">ERP_DocumentType</property>
@@ -83,6 +85,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PettyCashReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
@@ -100,6 +103,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
                 method="getJavaScriptUIValue4EditJustification"
                 name="Sales_AccountPettyCashReceiptForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />

@@ -31,6 +31,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut" method="deactivateFiltered4Invoice"
                 name="Sales_PaymentSupplierOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
@@ -100,6 +101,7 @@
             <property name="Label">Sales_PaymentSupplierOutForm.checkbox4Invoice.Label</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
                 name="Sales_PaymentSupplierOutForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE" >
                 <property name="checked">false</property>
@@ -121,6 +123,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut" method="dropDown4AccountFieldValue"
                 name="Sales_PaymentSupplierOutForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
@@ -205,11 +208,13 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut"
                 method="getJavaScriptUIValue"
                 name="Sales_PaymentSupplierOutForm.javaScript.UI_Field_Value"

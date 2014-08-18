@@ -113,6 +113,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ReturnSlipForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ReturnSlipForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -327,6 +328,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getJavaScriptUIValue"
                 name="Sales_ReturnSlipForm.javaScript.UI_Field_Value"
@@ -417,6 +419,7 @@
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_ReturnSlipForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip" method="dropDown4ProdDocTypeFieldValue"
                 name="Sales_ReturnSlipForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_ProductDocumentType</property>
@@ -493,6 +496,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="project4View">
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2ReturnSlip#ToLink].linkto[FromLink].oid</property>
@@ -674,6 +678,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="getJavaScriptUIValue"
                 name="Sales_ReturnSlipForm.javaScript.UI_Field_Value"

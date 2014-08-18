@@ -38,6 +38,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_TransactionInternalForm.charger.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_TransactionInternalForm.charger.UI_FIELD_VALUE"
@@ -78,6 +79,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_TransactionInternalForm.payment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="dropDownFieldValue"
                 name="Sales_TransactionInternalForm.payment.UI_FIELD_VALUE"
@@ -115,6 +117,7 @@
             <property name="RowSpan">3</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
     </definition>
 </ui-form>

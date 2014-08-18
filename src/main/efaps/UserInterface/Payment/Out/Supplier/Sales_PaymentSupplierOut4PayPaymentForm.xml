@@ -32,6 +32,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentSupplierOut" method="dropDown4CreateDocuments"
                 name="Sales_PaymentSupplierOut4PayPaymentForm.createExistDocument.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Sales_DocumentSumAbstract</property>
@@ -47,6 +48,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
                 name="Sales_PaymentSupplierOut4PayPaymentForm.filterDocuments.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="checked">false</property>

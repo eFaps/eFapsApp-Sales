@@ -38,6 +38,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="activatePositionsCalculator"
                 name="Sales_QuotationForm.activatePositionsCalculator.UI_FIELD_VALUE"
@@ -268,6 +269,7 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.Quotation"
                 method="getJavaScriptUIValue"
                 name="Sales_QuotationForm.javaScript.UI_Field_Value"

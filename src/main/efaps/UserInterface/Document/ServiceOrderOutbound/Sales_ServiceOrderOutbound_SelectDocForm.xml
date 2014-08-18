@@ -54,6 +54,7 @@
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getJS4SelectDocumentForm"
                 name="Sales_ServiceOrderOutbound_SelectDocForm.javaScript.UI_Field_Value"
                 program="org.efaps.esjp.sales.document.ServiceOrderOutbound" />

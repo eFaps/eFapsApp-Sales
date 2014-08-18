@@ -92,6 +92,7 @@
             <property name="SelectAlternateOID">linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].type.label&gt; - $&lt;linkfrom[Sales_PerceptionCertificate2Document#FromLink].linkto[ToLink].attribute[Name]&gt;</property>
             <property name="HRef">TREE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
