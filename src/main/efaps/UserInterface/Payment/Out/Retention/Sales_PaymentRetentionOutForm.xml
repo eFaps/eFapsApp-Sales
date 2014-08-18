@@ -204,6 +204,7 @@
         </field>
         <field name="total4DiscountPay">
             <property name="Label">Sales_PaymentRetentionOutForm.total4DiscountPay.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>

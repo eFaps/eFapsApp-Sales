@@ -61,8 +61,8 @@
         </field>
         <field character="Target" name="documentTable">
             <property name="ModeCreate">EDITABLE</property>
-            <table>Sales_PaymentCashOut4PayPaymentTable</table>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <table>Sales_PaymentCashOut4PayPaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">ERP_DocumentAbstract</property>
             </evaluate>
