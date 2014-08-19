@@ -33,7 +33,10 @@
         </access>
         <target>
             <form>ERP_ActionDefinitionForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Create" />
+            <execute program="org.efaps.esjp.common.uiform.Create" >
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_ActionDefinitionPettyCashReceipt</property>
