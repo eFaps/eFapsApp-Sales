@@ -152,11 +152,12 @@ public abstract class IncomingInvoice_Base
     /**
      * @param _parameter Parameter as passed by the efasp API
      * @param _createdDoc created Document
+     * @param _isUpdate is it an update or not
      * @throws EFapsException on error
      */
-    protected void createUpdateTaxDoc(final Parameter _parameter,
-                                      final CreatedDoc _createdDoc,
-                                      final boolean _isUpdate)
+    public void createUpdateTaxDoc(final Parameter _parameter,
+                                   final CreatedDoc _createdDoc,
+                                   final boolean _isUpdate)
         throws EFapsException
     {
         boolean executed = false;
@@ -226,7 +227,8 @@ public abstract class IncomingInvoice_Base
         }
         if (_createdDoc.getValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE) == null && _isUpdate && !executed) {
             _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, BigDecimal.ZERO);
-            new AbstractDocumentTax(){
+            new AbstractDocumentTax()
+            {
 
                 @Override
                 protected Type getType4create4Doc(final Parameter _parameter)
@@ -243,7 +245,8 @@ public abstract class IncomingInvoice_Base
                     throws EFapsException
                 {
                     // not needed
-                }}.createUpdate4Doc(_parameter, _createdDoc);
+                }
+            }.createUpdate4Doc(_parameter, _createdDoc);
         }
     }
 
