@@ -58,6 +58,18 @@
             <property name="Attribute">Salesperson</property>
             <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
         </field>
+        <field name="rateCrossTotal4Read">
+            <property name="Align">right</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingDetraction/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="Align">right</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingDetraction/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="FilterType">STATUS</property>
