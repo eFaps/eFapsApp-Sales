@@ -210,6 +210,20 @@ public abstract class AbstractSumOnlyDocument_Base
     }
 
     /**
+     * Method to update amount.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return updatePostTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        recalculate(_parameter, false);
+        return new Return();
+    }
+
+    /**
      * Method to recalculate amount to be removed.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -283,6 +297,7 @@ public abstract class AbstractSumOnlyDocument_Base
      * Method to recalculate amounts and update document.
      *
      * @param _parameter Parameter as passed from the eFaps API.
+     * @param _exclude boolean.
      * @throws EFapsException on error.
      */
     protected void recalculate(final Parameter _parameter,
@@ -297,15 +312,26 @@ public abstract class AbstractSumOnlyDocument_Base
             final SelectBuilder selDocRate = new SelectBuilder()
                             .linkto(CISales.Document2DocumentWithAmount.FromAbstractLink)
                             .attribute(CISales.DocumentSumAbstract.Rate);
+            final SelectBuilder selDocRateCur = new SelectBuilder()
+                            .linkto(CISales.Document2DocumentWithAmount.FromAbstractLink)
+                            .attribute(CISales.DocumentSumAbstract.RateCurrencyId);
+            final SelectBuilder selDoc2DocRate = new SelectBuilder()
+                            .linkto(CISales.Document2DocumentWithAmount.ToAbstractLink)
+                            .attribute(CISales.DocumentSumAbstract.Rate);
 
             final PrintQuery print = new PrintQuery(instance);
-            print.addSelect(selDocInst, selDocRate);
+            print.addSelect(selDocInst, selDocRate, selDocRateCur, selDoc2DocRate);
             print.execute();
 
             final Instance document = print.<Instance>getSelect(selDocInst);
-            final Object[] rateObjDoc = print.<Object[]>getSelect(selDocRate);
+            Object[] rateObjDoc = print.<Object[]>getSelect(selDocRate);
+            final Instance rateCur = Instance.get(CIERP.Currency.getType(), print.<Long>getSelect(selDocRateCur));
 
             if (document != null && document.isValid()) {
+                if (Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE).equals(rateCur)) {
+                    rateObjDoc = print.<Object[]>getSelect(selDoc2DocRate);
+                }
+
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.Document2DocumentWithAmount);
                 queryBldr.addWhereAttrEqValue(CISales.Document2DocumentWithAmount.FromAbstractLink, document);
                 if (_exclude) {

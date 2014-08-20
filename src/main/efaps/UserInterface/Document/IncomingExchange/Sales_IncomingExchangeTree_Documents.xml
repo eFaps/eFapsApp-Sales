@@ -32,10 +32,10 @@
             <menu>Sales_IncomingExchangeTree_Documents_Menu</menu>
             <table>Sales_Document2DocumentWithAmountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_IncomingExchange2Invoice</property>
-                <property name="LinkFrom">FromLink</property>
-                <property name="Type01">Sales_IncomingExchange2CollectionOrder</property>
+                <property name="Type01">Sales_IncomingExchange2Invoice</property>
                 <property name="LinkFrom01">FromLink</property>
+                <property name="Type02">Sales_IncomingExchange2CollectionOrder</property>
+                <property name="LinkFrom02">FromLink</property>
             </evaluate>
         </target>
         <!-- properties -->
