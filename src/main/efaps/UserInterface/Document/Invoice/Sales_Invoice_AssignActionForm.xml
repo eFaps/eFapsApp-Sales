@@ -22,21 +22,20 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>25324a51-c11c-4c19-b606-56d82001a37f</uuid>
+    <uuid>09bc62c0-4511-45d2-853d-8e5bd4de725f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInvoice_AssignActionForm</name>
+        <name>Sales_Invoice_AssignActionForm</name>
         <field name="action">
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_IncomingInvoice_AssignActionForm.action.Label</property>
             <property name="UIType">DROPDOWN</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="getOptionListFieldValue"
-                name="Sales_IncomingInvoice_AssignActionForm.action.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="Type">Sales_ActionDefinitionIncomingInvoice</property>
+            <trigger event="UI_FIELD_VALUE" method="getOptionListFieldValue"
+                name="Sales_Invoice_AssignActionForm.action.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="Type">Sales_ActionDefinitionInvoice</property>
                 <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
                 <property name="Status">Active</property>
                 <property name="ValueSelect">oid</property>

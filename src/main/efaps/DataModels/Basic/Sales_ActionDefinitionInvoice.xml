@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,21 +20,25 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>c6db05f8-6e55-41cd-95cc-ac69b01285be</uuid>
+    <uuid>1e0d25bd-2b4b-403e-b11f-b4e52832f729</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_InvoiceTree_Menu_Action</name>
-        <childs>
-            <child>Sales_InvoiceTree_Menu_Action_Edit</child>
-            <child>Sales_InvoiceTree_Menu_Action_AssignAction</child>
-            <child>Sales_InvoiceTree_Menu_Action_Recalculate</child>
-            <child>Sales_InvoiceTree_Menu_Action_SetPaid</child>
-            <child>Sales_InvoiceTree_Menu_Action_SetReplaced</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_ActionDefinitionInvoice</name>
+        <parent>ERP_ActionDefinitionAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>ERP_ActionDefinitionStatus</typelink>
+            <sqltable>ERP_ActionDefinitionSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_ActionDefinitionInvoice.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

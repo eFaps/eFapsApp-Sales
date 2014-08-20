@@ -20,18 +20,28 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>79b31e5c-5ab0-4f8d-896f-35e60c58dc01</uuid>
+    <uuid>3ec71228-2299-4ade-abcb-6e1277479d8f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ActionDefinitionMyDesk_Menu_Action</name>
-        <childs>
-            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateIncomingInvoice</child>
-            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateInvoice</child>
-            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreatePettyCashReceipt</child>
-        </childs>
+        <name>Sales_ActionDefinitionMyDesk_Menu_Action_CreateInvoice</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>ERP_ActionDefinitionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionInvoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
-</ui-menu>
+</ui-command>

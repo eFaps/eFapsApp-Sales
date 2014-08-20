@@ -20,10 +20,12 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -40,6 +42,7 @@ import org.efaps.util.EFapsException;
 public abstract class Invoice_Base
     extends AbstractDocumentSum
 {
+
     /**
      * Method for create a new Quotation.
      *
@@ -62,9 +65,23 @@ public abstract class Invoice_Base
     }
 
     @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getCIType().getType();
+    }
+
+    @Override
     public String getTypeName4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.Invoice.getType().getName();
+        return getType4SysConf(_parameter).getName();
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.Invoice;
     }
 }
