@@ -40,14 +40,22 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
          <field name="createDocumentDocumentType">
+            <property name="FilterType">PICKLIST</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
             <property name="Phrase">$&lt;linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
         </field>
-        <field name="targetDocument">
-            <property name="SelectAlternateOID">linkto[TargetDocument].oid</property>
-            <property name="Phrase">$&lt;linkto[TargetDocument].type.label&gt; - $&lt;linkto[TargetDocument].attribute[Name]&gt;</property>
-            <property name="Label">Sales_Payment/TargetDocument.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        <field name="revision">
+            <property name="Label">Sales_PettyCashReceiptForm.revision.Label</property>
+            <property name="Select">linkto[CreateDocument].attribute[Revision]</property>
+        </field>
+        <field name="rateCrossTotal">
+            <property name="Label">Sales_PettyCashReceiptForm.rateCrossTotal.Label</property>
+            <property name="Select">linkto[CreateDocument].attribute[RateCrossTotal]</property>
+        </field>
+        <field name="status">
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].attribute[Status]</property>
+            <property name="Label">Sales_Payment/status.Label</property>
         </field>
     </definition>
 </ui-table>
