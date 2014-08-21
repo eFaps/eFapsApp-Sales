@@ -38,6 +38,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -52,6 +53,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.listener.IOnAction;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
@@ -404,9 +406,11 @@ public abstract class PettyCashBalance_Base
             final Instance docInst = multi.getCurrentInstance();
 
             final Update recUpdate = new Update(docInst);
+            boolean executeAction = false;
             if (docInst.getType().isKindOf(CISales.PettyCashReceipt.getType())) {
                 recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                 if (contactObj != null) {
+                    // legal documents
                     final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
                                     SalesSettings.INCOMINGINVOICESEQUENCE);
                     final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
@@ -414,6 +418,7 @@ public abstract class PettyCashBalance_Base
                         final String revision = numgen.getNextVal();
                         recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
                     }
+                    executeAction = true;
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
@@ -426,6 +431,11 @@ public abstract class PettyCashBalance_Base
                 }
             }
             recUpdate.execute();
+            if (executeAction) {
+                for (final IOnAction listener : Listener.get().<IOnAction>invoke(IOnAction.class)) {
+                    listener.onDocumentUpdate(_parameter, docInst);
+                }
+            }
         }
 
         final Update update = new Update(instance);

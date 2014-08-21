@@ -118,7 +118,7 @@
             <property name="Label">Sales_PettyCashBalance.targetPayments.Heading</property>
         </field>
         <field name="paymentTable" character="Target">
-            <table>Sales_PaymentTable</table>
+            <table>Sales_PettyCashBalancePaymentTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_Payment</property>
                 <property name="LinkFrom">TargetDocument</property>

@@ -33,6 +33,7 @@
             <child>Sales_PettyCashBalanceTree_Menu_Action_CreateReport</child>
             <child>Sales_PettyCashBalanceTree_Menu_Action_SetVerified</child>
             <child>Sales_PettyCashBalanceTree_Menu_Action_CreateDocument</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>
