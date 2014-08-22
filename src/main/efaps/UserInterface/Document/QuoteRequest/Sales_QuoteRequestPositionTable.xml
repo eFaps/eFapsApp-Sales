@@ -61,7 +61,7 @@
         <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">None</property>
+            <property name="ModeView">NONE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_QuoteRequestPosition/UoM.Label</property>
         </field>
