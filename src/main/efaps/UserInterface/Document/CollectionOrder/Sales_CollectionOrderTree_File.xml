@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2010 moxter.net S.A.C.
+
+  All Rights Reserved.
+  This program contains proprietary and trade secret information of
+  moxter.net S.A.C. Copyright notice is precautionary only and does not
+  evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>56603edb-7e06-4069-9766-2b5098e045b3</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_CollectionOrderTree_File</name>
+        <target>
+            <menu>Sales_CollectionOrderTree_File_Menu</menu>
+            <table>Archives_ArchiveTable</table>
+            <evaluate program="org.efaps.esjp.archives.ArchiveStructurBrowser">
+                <property name="Type">Archives_ArchiveRoot</property>
+                <property name="Type2Structure">Sales_CollectionOrder2ArchiveAbstract</property>
+                <property name="checkStructure">true</property>
+                <property name="Child_Type">Archives_ArchiveNode</property>
+                <property name="Child_LinkFrom">ParentLink</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetStructurBrowserField">name</property>
+    </definition>
+</ui-command>

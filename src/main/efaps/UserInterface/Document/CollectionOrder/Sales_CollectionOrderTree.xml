@@ -19,7 +19,9 @@
   Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (mar, 26 oct 2010) $
   Last Changed By: $Author: jorge.m.cueva $
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b8421e95-12d9-48dd-8a2e-1507779c60da</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5742 $</file-revision>
@@ -29,17 +31,35 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- targets -->
         <target>
             <menu>Sales_CollectionOrderTree_Menu</menu>
             <form>Sales_CollectionOrderForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_CollectionOrder</type>
         <childs>
             <child>Sales_CollectionOrderTree_Payment</child>
         </childs>
-        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetMode">view</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" />
+        </application-dependencies>
+        <name>Sales_CollectionOrderTree</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_CollectionOrderTree_Menu</menu>
+            <form>Sales_CollectionOrderForm</form>
+        </target>
+        <type>Sales_CollectionOrder</type>
+        <childs>
+            <child>Sales_CollectionOrderTree_Payment</child>
+            <child>Sales_CollectionOrderTree_File</child>
+        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
