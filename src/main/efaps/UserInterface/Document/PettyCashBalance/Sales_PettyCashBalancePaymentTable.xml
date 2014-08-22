@@ -39,14 +39,24 @@
             <property name="Label">Sales_Payment/CreateDocument.Label</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
         </field>
-         <field name="createDocumentDocumentType">
+        <field name="createDocumentDocumentType">
             <property name="FilterType">PICKLIST</property>
             <property name="Label">Sales_PettyCashReceiptForm.documentType.Label</property>
             <property name="Phrase">$&lt;linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
         </field>
+        <field name="contact">
+            <property name="Label">Sales_PettyCashReceiptForm.contact.Label</property>
+            <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
+            <property name="Select">linkto[CreateDocument].linkto[Contact].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+        </field>
         <field name="revision">
             <property name="Label">Sales_PettyCashReceiptForm.revision.Label</property>
             <property name="Select">linkto[CreateDocument].attribute[Revision]</property>
+        </field>
+        <field name="rateNetTotal">
+            <property name="Label">Sales_PettyCashReceiptForm.rateNetTotal.Label</property>
+            <property name="Select">linkto[CreateDocument].attribute[RateNetTotal]</property>
         </field>
         <field name="rateCrossTotal">
             <property name="Label">Sales_PettyCashReceiptForm.rateCrossTotal.Label</property>
