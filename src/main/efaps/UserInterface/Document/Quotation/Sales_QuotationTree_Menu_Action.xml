@@ -34,6 +34,7 @@
         <childs>
             <child>Sales_QuotationTree_Menu_Action_Edit</child>
             <child>Sales_QuotationTree_Menu_Action_Recalculate</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>
