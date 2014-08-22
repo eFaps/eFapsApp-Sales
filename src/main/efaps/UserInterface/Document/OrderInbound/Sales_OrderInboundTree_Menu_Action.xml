@@ -32,6 +32,7 @@
         <name>Sales_OrderInboundTree_Menu_Action</name>
         <childs>
             <child>Sales_OrderInboundTree_Menu_Action_Edit</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>
