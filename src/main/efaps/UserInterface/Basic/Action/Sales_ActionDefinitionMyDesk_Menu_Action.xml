@@ -32,6 +32,8 @@
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateIncomingInvoice</child>
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateInvoice</child>
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreatePettyCashReceipt</child>
+            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreatePaymentOrder</child>
+            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateCollectionOrder</child>
         </childs>
     </definition>
 </ui-menu>

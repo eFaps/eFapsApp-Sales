@@ -20,11 +20,12 @@
  Last Changed:    $Date: 2010-12-01 12:03:15 -0500 (mié, 01 dic 2010) $
  Last Changed By: $Author: jan@moxter.net $
 
---><numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e89316af-42c6-4df1-ae7e-7c9f9c2bb73c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 358 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CollectionOrderSequence</name>

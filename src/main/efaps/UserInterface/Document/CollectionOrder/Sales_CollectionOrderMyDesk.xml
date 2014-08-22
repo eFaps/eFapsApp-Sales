@@ -19,8 +19,9 @@
  Last Changed:    $Date: 2012-11-09 13:28:32 -0500 (vie, 09 nov 2012) $
  Last Changed By: $Author: m.aranya@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ee5acaa0-5eaa-4b86-90ff-bd7d8d44b538</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 8185 $</file-revision>
@@ -34,11 +35,9 @@
             <menu>Sales_CollectionOrderMyDesk_Menu</menu>
             <table>Sales_CollectionOrderTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_CollectionOrder</property>
+                <property name="Type">Sales_CollectionOrder</property>
             </evaluate>
         </target>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

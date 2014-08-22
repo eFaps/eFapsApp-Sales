@@ -409,7 +409,7 @@ public abstract class AbstractPaymentOut_Base
         CIType type = null;
         CIStatus status = null;
         String name = null;
-        Instance spending = Instance.get(null);
+        Instance.get(null);
         if (_difference.signum() == 1) {
             type = CISales.CollectionOrder;
             status = CISales.CollectionOrderStatus.Approved;
@@ -420,7 +420,7 @@ public abstract class AbstractPaymentOut_Base
             status = CISales.PaymentOrderStatus.Approved;
             // Sales_PaymentOrderSequence
             name = NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
-            spending = Sales.getSysConfig().getLink(SalesSettings.DEFAULTSPENDING);
+            Sales.getSysConfig().getLink(SalesSettings.DEFAULTSPENDING);
         }
 
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(), (Long) _infoDoc.get("currency"));
@@ -446,9 +446,6 @@ public abstract class AbstractPaymentOut_Base
         insert.add(CISales.DocumentSumAbstract.StatusAbstract, Status.find(status));
         insert.add(CISales.DocumentSumAbstract.Rate, rate);
         insert.add(CISales.DocumentSumAbstract.Note, generateNote4PaymentOut(_parameter));
-        if (spending != null && spending.isValid()) {
-            insert.add(CISales.PaymentOrder.SpendingLink, spending);
-        }
         insert.execute();
 
     }

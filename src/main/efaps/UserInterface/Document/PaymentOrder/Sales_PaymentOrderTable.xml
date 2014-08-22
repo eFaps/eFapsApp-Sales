@@ -19,39 +19,59 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>10eb3cf7-6b7c-44a7-9fc7-476bec1e82e5</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderTable</name>
-        <!-- fields -->
-        <field name="type">
+        <field name="name">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="ShowTypeIcon">true</property>
-            <property name="Attribute">Type</property>
-            <property name="Label">Sales_PaymentOrder/Type.Label</property>
-        </field>
-        <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_PaymentOrder/Name.Label</property>
         </field>
+        <field name="action4View">
+            <property name="Select">linkfrom[Sales_ActionDefinitionPaymentOrder2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Sales_PaymentOrderForm.action.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_PaymentOrder/Contact.Label</property>
+            <property name="HRef">TREEMENU</property>
+        </field>
         <field name="date">
-            <property name="FilterType">FREETEXT</property>
-            <property name="FilterRequired">TRUE</property>
-            <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">MONTH</property>
             <property name="Attribute">Date</property>
             <property name="Label">Sales_PaymentOrder/Date.Label</property>
+        </field>
+         <field name="dueDate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_PaymentOrder/DueDate.Label</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="Label">Sales_PaymentOrder/Status.Label</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Open</property>
         </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="Label">Sales_PaymentOrder/Note.Label</property>
+        </field>
+        <field name="creator">
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_PaymentOrder/Creator.Label</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="Label">Sales_PaymentOrder/Created.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

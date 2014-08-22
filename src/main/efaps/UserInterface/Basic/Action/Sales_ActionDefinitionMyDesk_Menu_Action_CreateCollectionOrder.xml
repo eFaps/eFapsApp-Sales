@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,30 +15,33 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8215 $
- Last Changed:    $Date: 2012-11-12 13:36:45 -0500 (lun, 12 nov 2012) $
- Last Changed By: $Author: m.aranya@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>777eca14-5f75-4e68-8690-ca5fea9e8788</uuid>
+    <uuid>34a8fd77-34fe-42c8-b75c-534b25d3b626</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8215 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderMyDesk</name>
+        <name>Sales_ActionDefinitionMyDesk_Menu_Action_CreateCollectionOrder</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_PaymentOrderMyDesk_Menu</menu>
-            <table>Sales_PaymentOrderTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_PaymentOrder</property>
-            </evaluate>
+            <form>ERP_ActionDefinitionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </execute>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionCollectionOrder</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>

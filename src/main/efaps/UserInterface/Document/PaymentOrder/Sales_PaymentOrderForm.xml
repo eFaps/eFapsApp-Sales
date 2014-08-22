@@ -19,14 +19,15 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2f9104c1-b30a-43c6-85a3-3acad6458935</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentOrderForm</name>
-        <!-- fields -->
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -55,15 +56,15 @@
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
-               method="getSalesPersonFieldValue"
-               name="Sales_PaymentOrderForm.salesperson.UI_FIELD_VALUE"
-               event="UI_FIELD_VALUE">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
+                method="getSalesPersonFieldValue"
+                name="Sales_PaymentOrderForm.salesperson.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Admin_User_Person</property>
+                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+                <property name="OrderSelect">attribute[LastName]</property>
+                <property name="WhereAttrEqValue">Status|true</property>
+                <property name="SelectCurrent">true</property>
+            </trigger>
         </field>
         <field name="salespersonLink">
             <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
@@ -83,11 +84,15 @@
             <property name="Label">Sales_PaymentOrderForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">100</property>
-            <trigger program="org.efaps.esjp.sales.document.PaymentOrder" method="autoComplete4Contact"
-                name="Sales_PaymentOrderForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.PaymentOrder" method="updateFields4Contact"
-                name="Sales_PaymentOrderForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <property name="Columns">80</property>
+            <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
+                method="autoComplete4Contact"
+                name="Sales_PaymentOrderForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
+                method="updateFields4Contact"
+                name="Sales_PaymentOrderForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -125,7 +130,6 @@
             <property name="Attribute">Modified</property>
             <property name="ModeSearch">EDITABLE</property>
         </field>
-
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
@@ -143,9 +147,9 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.CollectionOrder"
+            <trigger program="org.efaps.esjp.sales.document.PaymentOrder"
                 method="rateCurrencyFieldValueUI"
-                name="Sales_CollectionOrderForm.currencyId.UI_FIELD_VALUE"
+                name="Sales_PayementOrderForm.currencyId.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
         <field name="rateCurrencyId4View">
@@ -162,12 +166,35 @@
             <property name="Attribute">RateCrossTotal</property>
             <property name="Required">true</property>
         </field>
-        <field name="spendingLink">
-            <property name="Columns">15</property>
-            <property name="Attribute">SpendingLink</property>
+        <field name="action">
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_PaymentOrderForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="dropDownFieldValue"
+                name="Sales_PettyCashReceiptForm.action.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ActionDefinitionPaymentOrder</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                 <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+        </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionPaymentOrder2Document#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionPaymentOrder2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_PaymentOrderForm.action.Label</property>
         </field>
         <field name="note">
             <property name="Columns">80</property>

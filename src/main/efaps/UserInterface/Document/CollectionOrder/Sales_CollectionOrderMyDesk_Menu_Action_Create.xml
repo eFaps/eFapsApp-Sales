@@ -19,7 +19,9 @@
  Last Changed:    $Date: 2012-11-28 18:49:08 -0500 (mié, 28 nov 2012) $
  Last Changed By: $Author: m.aranya@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0aa24135-b292-4ec0-be05-f43b59b442cd</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 8261 $</file-revision>
@@ -29,15 +31,19 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_CollectionOrderForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.CollectionOrder">
                 <property name="StatusGroup">Sales_CollectionOrderStatus</property>
                 <property name="Status">Open</property>
+                <property name="UseNumberGenerator4Name">true</property>
+                 <!-- Sales_ActionDefinitionCollectionOrder2Document -->
+                <property name="ConnectType">7e1a28d0-bfe7-432b-afe0-c6da3a540208</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">action</property>
             </execute>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_CollectionOrder</property>
         <property name="TargetMode">create</property>
