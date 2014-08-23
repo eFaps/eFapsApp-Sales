@@ -195,6 +195,20 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>
         </field>
+         <field character="Group" name="servopTypeGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="serviceType">
+            <property name="Attribute">ServiceType</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="operationType">
+            <property name="Attribute">OperationType</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -203,6 +217,8 @@
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
+
+
         <field character="Heading" name="headingDocuments">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingDetractionForm.headingDocuments.Heading</property>
