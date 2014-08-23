@@ -627,7 +627,7 @@
             </trigger>
         </field>
         <field name="detractionGroup" character="Group">
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">4</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
         </field>
@@ -657,6 +657,20 @@
                 method="updateFields4DetractionPercent"
                 name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="detractionServiceType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.detractionServiceType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+                name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_AttributeDefinitionServiceType</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Value]</property>
+            </trigger>
         </field>
         <field name="detractionValue">
             <property name="ModeCreate">EDITABLE</property>
@@ -1363,6 +1377,20 @@
                 method="updateFields4DetractionPercent"
                 name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="detractionServiceType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_IncomingInvoiceForm.detractionServiceType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
+                name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_AttributeDefinitionServiceType</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Value]</property>
+            </trigger>
         </field>
         <field name="detractionValue">
             <property name="ModeCreate">EDITABLE</property>

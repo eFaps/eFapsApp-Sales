@@ -133,6 +133,7 @@ public abstract class AbstractDocumentTax_Base
                 update.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.NetTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+                add2createUpdate4Doc(_parameter, _createdDoc, update);
             }
 
             final Object[] rateObj = (Object[]) _createdDoc.getValue(CISales.DocumentSumAbstract.Rate.name);
@@ -155,6 +156,18 @@ public abstract class AbstractDocumentTax_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter
+     * @param _createdDoc
+     */
+    protected void add2createUpdate4Doc(final Parameter _parameter,
+                                        final CreatedDoc _createdDoc,
+                                        final Update update)
+        throws EFapsException
+    {
+
     }
 
     /**

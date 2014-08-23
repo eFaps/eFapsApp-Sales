@@ -42,6 +42,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -131,6 +132,38 @@ public abstract class IncomingDetraction_Base
         }
         return new Return();
     }
+
+    /**
+     * @param _parameter
+     * @param _createdDoc
+     */
+    @Override
+    protected void add2createUpdate4Doc(final Parameter _parameter,
+                                        final CreatedDoc _createdDoc,
+                                        final Update update)
+        throws EFapsException
+    {
+        super.add2createUpdate4Doc(_parameter, _createdDoc, update);
+        final Instance serviceInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionServiceType.name));
+        if (serviceInst.isValid()) {
+            update.add(CISales.IncomingDetraction.ServiceType, serviceInst);
+        }
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        _update.add(CISales.IncomingDetraction.ServiceType, _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingDetractionForm.serviceType.name));
+        _update.add(CISales.IncomingDetraction.OperationType, _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingDetractionForm.operationType.name));
+    }
+
 
     @Override
     protected void connectDoc(final Parameter _parameter,

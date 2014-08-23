@@ -196,6 +196,7 @@ public abstract class IncomingInvoice_Base
                     }
                     final IncomingDetraction doc = new IncomingDetraction();
                     _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, detraction);
+
                     doc.createUpdate4Doc(_parameter, _createdDoc);
                     executed = true;
                 } catch (final ParseException p) {
