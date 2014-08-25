@@ -18,11 +18,11 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.document;
 
 import java.util.List;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -30,24 +30,46 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
 
-
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: TransactionDocument_Base.java 13816 2014-08-25 21:03:42Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("8f2539fd-4e71-4f5a-bab2-6329b3dcebbf")
 @EFapsRevision("$Rev$")
 public abstract class TransactionDocument_Base
     extends AbstractProductDocument
 {
+
+    public Return accessCheck4DocumentShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.TransactionDocumentShadowAbstract);
+        attrQueryBldr.addWhereAttrNotEqValue(CISales.TransactionDocumentShadowAbstract.StatusAbstract,
+                        Status.find(CISales.TransactionDocumentShadowInStatus.Canceled),
+                        Status.find(CISales.TransactionDocumentShadowOutStatus.Canceled));
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2DocumentAbstract);
+        queryBldr.addWhereAttrEqValue(CIERP.Document2DocumentAbstract.FromAbstractLink, _parameter.getInstance());
+        queryBldr.addWhereAttrInQuery(CIERP.Document2DocumentAbstract.ToAbstractLink,
+                        attrQueryBldr.getAttributeQuery(CISales.TransactionDocumentShadowAbstract.ID));
+        final InstanceQuery query = queryBldr.getQuery();
+        if (query.executeWithoutAccessCheck().isEmpty()) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
 
     public CreatedDoc createDocumentShadow(final Parameter _parameter)
         throws EFapsException
@@ -56,7 +78,7 @@ public abstract class TransactionDocument_Base
     }
 
     public CreatedDoc createDocumentShadow(final Parameter _parameter,
-                                     final Instance _docInst)
+                                           final Instance _docInst)
         throws EFapsException
     {
         final CreatedDoc ret = new CreatedDoc();
@@ -64,8 +86,6 @@ public abstract class TransactionDocument_Base
         print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date,
                         CIERP.DocumentAbstract.Contact);
         print.execute();
-
-
 
         final Insert insert = new Insert(getType4DocCreate(_parameter));
         insert.add(CIERP.DocumentAbstract.Name, print.getAttribute(CIERP.DocumentAbstract.Name));
@@ -97,7 +117,6 @@ public abstract class TransactionDocument_Base
 
         return ret;
     }
-
 
     public Return getProducts4DocShadowFieldValue(final Parameter _parameter)
         throws EFapsException

@@ -275,8 +275,8 @@ public abstract class IncomingInvoice_Base
     {
         final CreatedDoc createdDoc = new TransactionDocument().createDocumentShadow(_parameter);
         final Insert insert = new Insert(CISales.IncomingInvoice2TransactionDocumentShadowIn);
-        insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.FromLink, createdDoc.getInstance());
-        insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.ToLink, _parameter.getInstance());
+        insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.FromLink, _parameter.getInstance());
+        insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.ToLink, createdDoc.getInstance());
         insert.execute();
 
         return new Return();
