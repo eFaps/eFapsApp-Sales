@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -21,15 +20,23 @@
  Last Changed By: $Author$
 
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9d237191-adc7-4353-9992-b36ed6dfb78b</uuid>
+    <uuid>5beb36e2-60b1-4523-83af-c4dbd663e150</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionDocumentSequence</name>
-        <format>T-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_TransactionDocumentShadowInStatus</name>
+        <parent>Sales_TransactionDocumentAbstractStatus</parent>
+        <status key="Open">
+            <description>Transaction document was open.</description>
+        </status>
+        <status key="Closed">
+            <description>The products where delivered.</description>
+        </status>
+        <status key="Canceled">
+            <description>The Delivery Note was canceled.</description>
+        </status>
     </definition>
-</numbergenerator>
+</datamodel-statusgroup>

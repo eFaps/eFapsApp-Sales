@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2013 The eFaps Team
 
@@ -21,15 +20,24 @@
  Last Changed By: $Author$
 
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>9d237191-adc7-4353-9992-b36ed6dfb78b</uuid>
+    <uuid>91c573e5-f1d1-4920-a2e7-dbccceb96691</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_TransactionDocumentSequence</name>
-        <format>T-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_TransactionDocumentShadowIn</name>
+        <parent>Sales_TransactionDocumentShadowAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_TransactionDocumentShadowInStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_TransactionDocumentShadowInStatus.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue" />
+        </attribute>
     </definition>
-</numbergenerator>
+</datamodel-type>

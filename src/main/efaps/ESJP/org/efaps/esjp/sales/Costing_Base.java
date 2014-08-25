@@ -121,7 +121,7 @@ public abstract class Costing_Base
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CISales.IncomingInvoice2RecievingTicket.ToLink);
+        print.addAttribute(CISales.Document2DocumentAbstract.ToAbstractLink);
         print.executeWithoutAccessCheck();
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);

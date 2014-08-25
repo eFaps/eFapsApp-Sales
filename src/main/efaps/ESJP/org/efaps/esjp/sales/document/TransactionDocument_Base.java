@@ -21,8 +21,20 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
+
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.ui.html.Table;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -36,5 +48,71 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public abstract class TransactionDocument_Base
     extends AbstractProductDocument
 {
+
+    public CreatedDoc createDocumentShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        return createDocumentShadow(_parameter, _parameter.getInstance());
+    }
+
+    public CreatedDoc createDocumentShadow(final Parameter _parameter,
+                                     final Instance _docInst)
+        throws EFapsException
+    {
+        final CreatedDoc ret = new CreatedDoc();
+        final PrintQuery print = new PrintQuery(_docInst);
+        print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date,
+                        CIERP.DocumentAbstract.Contact);
+        print.execute();
+
+
+
+        final Insert insert = new Insert(getType4DocCreate(_parameter));
+        insert.add(CIERP.DocumentAbstract.Name, print.getAttribute(CIERP.DocumentAbstract.Name));
+        insert.add(CIERP.DocumentAbstract.Date, print.getAttribute(CIERP.DocumentAbstract.Date));
+        insert.add(CIERP.DocumentAbstract.Contact, print.getAttribute(CIERP.DocumentAbstract.Contact));
+        addStatus2DocCreate(_parameter, insert, ret);
+        add2DocCreate(_parameter, insert, ret);
+        insert.execute();
+
+        ret.setInstance(insert.getInstance());
+
+        connect2ProductDocumentType(_parameter, ret);
+
+        final List<Position> positions = getPositions4Document(_parameter, _docInst);
+        final int i = 0;
+        for (final Position pos : positions) {
+            final Insert posIns = new Insert(getType4PositionCreate(_parameter));
+            posIns.add(CISales.PositionAbstract.PositionNumber, i + 1);
+            posIns.add(CISales.PositionAbstract.DocumentAbstractLink, ret.getInstance());
+            posIns.add(CISales.PositionAbstract.UoM, pos.getUoM());
+            posIns.add(CISales.PositionAbstract.Quantity, pos.getQuantity());
+            final String descr = pos.getDescr();
+            posIns.add(CISales.PositionAbstract.ProductDesc, descr);
+            posIns.add(CISales.PositionAbstract.Product, pos.getProdInstance());
+            posIns.execute();
+        }
+        createProductTransaction4Document(_parameter, ret.getInstance(),
+                        Instance.get(_parameter.getParameterValue("storage")));
+
+        return ret;
+    }
+
+
+    public Return getProducts4DocShadowFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance docInst = _parameter.getInstance();
+        final Return ret = new Return();
+
+        final Table table = new Table();
+        final List<Position> positions = getPositions4Document(_parameter, docInst);
+        for (final Position pos : positions) {
+            table.addRow().addColumn(pos.getQuantity().toString()).addColumn(pos.getUoM().getName())
+                            .addColumn(pos.getProdName()).addColumn(pos.getDescr());
+        }
+        ret.put(ReturnValues.SNIPLETT, table.toHtml());
+        return ret;
+    }
 
 }

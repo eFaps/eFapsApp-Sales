@@ -34,6 +34,7 @@
         <childs>
             <child>Sales_IncomingInvoiceTree_Menu_Action_Edit</child>
             <child>Sales_IncomingInvoiceTree_Menu_Action_AssignAction</child>
+            <child>Sales_IncomingInvoiceTree_Menu_Action_CreateTransDocShadow</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
             <child>Sales_IncomingInvoiceTree_Menu_Action_Recalculate</child>
             <child>Sales_IncomingInvoiceTree_Menu_Action_SetReplaced</child>

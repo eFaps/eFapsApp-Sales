@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.efaps.admin.datamodel.Attribute;
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -52,6 +54,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.admin.datamodel.StatusValue;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
@@ -858,4 +861,336 @@ public abstract class AbstractProductDocument_Base
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return description
+     * @throws EFapsException on error
+     */
+    protected String getDescription4ProductTransaction(final Parameter _parameter,
+                                                       final Instance _docInst)
+        throws EFapsException
+    {
+        return DBProperties.getProperty(_docInst.getType().getName() + ".description4ProductTransaction");
+    }
+
+    /**
+     * @param _parameter    Parameter as passed from the eFaps API
+     * @param _docInst      Instance of the document the transaction will be created for
+     * @param _storageInst  Instance of the storage the transaction will be created for
+     * @throws EFapsException on error
+     */
+    public void createProductTransaction4Document(final Parameter _parameter,
+                                                  final Instance _docInst,
+                                                  final Instance _storageInst)
+        throws EFapsException
+    {
+        final List<Position> positions = getPositions4Document(_parameter, _docInst);
+        final String transDescr = getDescription4ProductTransaction(_parameter, _docInst);
+        final PrintQuery print = new PrintQuery(_docInst);
+        print.addAttribute(CIERP.DocumentAbstract.Date);
+        print.execute();
+        final DateTime date = print.getAttribute(CIERP.DocumentAbstract.Date);
+        for (final Position pos : positions) {
+            pos.setStorageInst(_storageInst).setTransactionDescr(transDescr).setDocInst(_docInst).setDate(date);
+        }
+        createProductTransaction(_parameter, positions);
+    }
+
+    public void createProductTransaction(final Parameter _parameter,
+                                         final List<Position> _positions)
+        throws EFapsException
+    {
+
+        for (final Position pos : _positions) {
+            final Insert transInsert = new Insert(pos.getTransactionType());
+            transInsert.add(CIProducts.TransactionAbstract.Quantity, pos.getQuantity());
+            transInsert.add(CIProducts.TransactionAbstract.Storage, pos.getStorageInst());
+            transInsert.add(CIProducts.TransactionAbstract.Product, pos.getProdInstance());
+            transInsert.add(CIProducts.TransactionAbstract.UoM, pos.getUoM());
+            transInsert.add(CIProducts.TransactionAbstract.Description, pos.getTransactionDescr());
+            transInsert.add(CIProducts.TransactionAbstract.Date, pos.getDate());
+            transInsert.add(CIProducts.TransactionAbstract.Document, pos.getDocInst());
+            transInsert.executeWithoutAccessCheck();
+        }
+    }
+
+    protected List<Position> getPositions4Document(final Parameter _parameter,
+                                                   final Instance _docInst)
+        throws EFapsException
+    {
+        final List<Position> ret = new ArrayList<>();
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink, _docInst);
+        queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
+                        attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract.ID));
+        queryBldr.addOrderByAttributeAsc(CISales.PositionAbstract.PositionNumber);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.PositionAbstract.Product)
+                        .instance();
+        final SelectBuilder selProdName = SelectBuilder.get().linkto(CISales.PositionAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Name);
+        multi.addSelect(selProdInst, selProdName);
+        multi.addAttribute(CISales.PositionAbstract.Quantity, CISales.PositionAbstract.ProductDesc,
+                        CISales.PositionAbstract.UoM);
+        multi.setEnforceSorted(true);
+        multi.execute();
+        while (multi.next()) {
+            ret.add(new Position(multi.getCurrentInstance())
+                            .setProdInstance(multi.<Instance>getSelect(selProdInst))
+                            .setProdName(multi.<String>getSelect(selProdName))
+                            .setDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc))
+                            .setQuantity(multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity))
+                            .setUoM(Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))));
+        }
+        return ret;
+    }
+
+
+    public static class Position
+    {
+        private final Instance instance;
+        private Instance prodInstance;
+        private String prodName;
+        private BigDecimal quantity;
+        private String descr;
+        private UoM uoM;
+        private Instance storageInst;
+        private Instance docInst;
+
+        private DateTime date;
+        private String transactionDescr;
+
+
+        /**
+         * @param _currentInstance
+         */
+        public Position(final Instance _instance)
+        {
+            this.instance = _instance;
+        }
+
+        public Type getTransactionType()
+        {
+            Type ret = null;
+            if (getInstance().getType().isCIType(CISales.TransactionDocumentShadowInPosition)) {
+                if (isIndiviudal()) {
+                    ret = CIProducts.TransactionIndividualInbound.getType();
+                } else {
+                    ret = CIProducts.TransactionInbound.getType();
+                }
+            }
+            return ret;
+        }
+
+        public boolean isIndiviudal()
+        {
+             return getProdInstance().getType().isKindOf(CIProducts.ProductIndividualAbstract);
+        }
+
+        public String getTransactionDescr()
+        {
+            return this.transactionDescr;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #prodName}.
+         *
+         * @return value of instance variable {@link #prodName}
+         */
+        public String getProdName()
+        {
+            return this.prodName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodName}.
+         *
+         * @param _prodName value for instance variable {@link #prodName}
+         */
+        public Position setProdName(final String _prodName)
+        {
+            this.prodName = _prodName;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #quantity}.
+         *
+         * @return value of instance variable {@link #quantity}
+         */
+        public BigDecimal getQuantity()
+        {
+            return this.quantity;
+        }
+
+        /**
+         * Setter method for instance variable {@link #quantity}.
+         *
+         * @param _quantity value for instance variable {@link #quantity}
+         */
+        public Position setQuantity(final BigDecimal _quantity)
+        {
+            this.quantity = _quantity;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #descr}.
+         *
+         * @return value of instance variable {@link #descr}
+         */
+        public String getDescr()
+        {
+            return this.descr;
+        }
+
+        /**
+         * Setter method for instance variable {@link #descr}.
+         *
+         * @param _descr value for instance variable {@link #descr}
+         */
+        public Position setDescr(final String _descr)
+        {
+            this.descr = _descr;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #uoM}.
+         *
+         * @return value of instance variable {@link #uoM}
+         */
+        public UoM getUoM()
+        {
+            return this.uoM;
+        }
+
+        /**
+         * Setter method for instance variable {@link #uoM}.
+         *
+         * @param _uoM value for instance variable {@link #uoM}
+         */
+        public Position setUoM(final UoM _uoM)
+        {
+            this.uoM = _uoM;
+            return this;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #prodInstance}.
+         *
+         * @return value of instance variable {@link #prodInstance}
+         */
+        public Instance getProdInstance()
+        {
+            return this.prodInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodInstance}.
+         *
+         * @param _prodInstance value for instance variable {@link #prodInstance}
+         */
+        public Position setProdInstance(final Instance _prodInstance)
+        {
+            this.prodInstance = _prodInstance;
+            return this;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #storageInst}.
+         *
+         * @return value of instance variable {@link #storageInst}
+         */
+        public Instance getStorageInst()
+        {
+            return this.storageInst;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #storageInst}.
+         *
+         * @param _storageInst value for instance variable {@link #storageInst}
+         */
+        public Position setStorageInst(final Instance _storageInst)
+        {
+            this.storageInst = _storageInst;
+            return this;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #date}.
+         *
+         * @return value of instance variable {@link #date}
+         */
+        public DateTime getDate()
+        {
+            return this.date;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #date}.
+         *
+         * @param _date value for instance variable {@link #date}
+         */
+        public Position setDate(final DateTime _date)
+        {
+            this.date = _date;
+            return this;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         */
+        public Position setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+            return this;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #transactionDescr}.
+         *
+         * @param _transactionDescr value for instance variable {@link #transactionDescr}
+         */
+        public Position setTransactionDescr(final String _transactionDescr)
+        {
+            this.transactionDescr = _transactionDescr;
+            return this;
+        }
+    }
+
 }

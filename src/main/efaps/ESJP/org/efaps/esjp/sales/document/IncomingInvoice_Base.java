@@ -108,16 +108,12 @@ public abstract class IncomingInvoice_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        incomingInvoiceCreateTransaction(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
-        connect2ProductDocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2RecievingTicket(_parameter, createdDoc);
         registerPurchasePrices(_parameter, createdDoc);
-
         connect2Object(_parameter, createdDoc);
         createUpdateTaxDoc(_parameter, createdDoc, false);
-
         return new Return();
     }
 
@@ -264,6 +260,25 @@ public abstract class IncomingInvoice_Base
         final EditedDoc editDoc = editDoc(_parameter);
         updatePositions(_parameter, editDoc);
         createUpdateTaxDoc(_parameter, editDoc, true);
+        return new Return();
+    }
+
+    /**
+     * Create the TransactionDocument for this invoice.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createTransDocShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = new TransactionDocument().createDocumentShadow(_parameter);
+        final Insert insert = new Insert(CISales.IncomingInvoice2TransactionDocumentShadowIn);
+        insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.FromLink, createdDoc.getInstance());
+        insert.add(CISales.IncomingInvoice2TransactionDocumentShadowIn.ToLink, _parameter.getInstance());
+        insert.execute();
+
         return new Return();
     }
 
