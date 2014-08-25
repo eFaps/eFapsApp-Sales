@@ -421,6 +421,8 @@ public abstract class PettyCashReceipt_Base
     {
         final boolean deducible = evalDeducible(_parameter);
 
+        final String date = _parameter
+                        .getParameterValue(CIFormSales.Sales_PettyCashReceiptJustificationEditForm.date.name);
         final String contact = _parameter
                         .getParameterValue(CIFormSales.Sales_PettyCashReceiptJustificationEditForm.contact.name);
         final String docName = _parameter
@@ -471,6 +473,7 @@ public abstract class PettyCashReceipt_Base
             print.execute();
             update.add(CISales.PettyCashReceipt.Name, print.getSelect(nameSel) + " " + print.getSelect(posSel));
         }
+        update.add(CISales.PettyCashReceipt.Date, date);
         update.execute();
 
         final PrintQuery print = new PrintQuery(_parameter.getCallInstance());

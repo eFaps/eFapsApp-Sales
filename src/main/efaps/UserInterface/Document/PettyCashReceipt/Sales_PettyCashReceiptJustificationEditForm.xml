@@ -30,6 +30,12 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PettyCashReceiptJustificationEditForm</name>
         <!-- fields -->
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Columns">12</property>
+            <property name="Required">true</property>
+        </field>
         <field name="contact" character="Picker">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
