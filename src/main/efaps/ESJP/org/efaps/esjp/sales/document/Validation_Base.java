@@ -186,13 +186,18 @@ public abstract class Validation_Base
         final List<IWarning> ret = new ArrayList<IWarning>();
         final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
         int i = 0;
+        BigDecimal total = BigDecimal.ZERO;
         for (final Calculator calc : calcs) {
             if (!calc.isEmpty()) {
+                total = total.add(calc.getCrossPrice());
                 if (calc.getCrossPrice().compareTo(BigDecimal.ZERO) < 1) {
-                    ret.add(new AmountGreateZeroWarning().setPosition(i + 1));
+                    ret.add(new AmountGreaterZeroWarning().setPosition(i + 1));
                 }
             }
             i++;
+        }
+        if (total.compareTo(BigDecimal.ZERO) < 1) {
+            ret.add(new TotalGreaterZeroWarning());
         }
         return ret;
     }
@@ -461,13 +466,28 @@ public abstract class Validation_Base
     /**
      * Warning for amount greater zero.
      */
-    public static class AmountGreateZeroWarning
+    public static class AmountGreaterZeroWarning
         extends AbstractPositionWarning
     {
         /**
          * Constructor.
          */
-        public AmountGreateZeroWarning()
+        public AmountGreaterZeroWarning()
+        {
+            setError(true);
+        }
+    }
+
+    /**
+     * Warning for amount greater zero.
+     */
+    public static class TotalGreaterZeroWarning
+        extends AbstractWarning
+    {
+        /**
+         * Constructor.
+         */
+        public TotalGreaterZeroWarning()
         {
             setError(true);
         }
