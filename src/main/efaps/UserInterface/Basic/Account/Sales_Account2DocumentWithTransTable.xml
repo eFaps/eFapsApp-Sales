@@ -47,10 +47,18 @@
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+         <field name="revision">
+            <property name="Select">linkto[ToLinkAbstract].attribute[Revision]</property>
+            <property name="Label">Sales_DocumentAbstract/Revision.Label</property>
+        </field>
         <field name="date">
             <property name="Select">linkto[ToLinkAbstract].attribute[Date]</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="documentType">
+            <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
+            <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
         </field>
         <field name="status">
             <property name="SelectAlternateOID">linkto[ToLinkAbstract].oid</property>
