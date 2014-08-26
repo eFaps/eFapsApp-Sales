@@ -87,6 +87,26 @@ public abstract class PettyCashReceipt_Base
     }
 
     /**
+     * Create the TransactionDocument for this receipt.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createTransDocShadow(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc createdDoc = new TransactionDocument().createDocumentShadow(_parameter);
+        final Insert insert = new Insert(CISales.PettyCashReceipt2TransactionDocumentShadowIn);
+        insert.add(CISales.PettyCashReceipt2TransactionDocumentShadowIn.FromLink, _parameter.getInstance());
+        insert.add(CISales.PettyCashReceipt2TransactionDocumentShadowIn.ToLink, createdDoc.getInstance());
+        insert.execute();
+
+        return new Return();
+    }
+
+
+    /**
      * Connect Account and PettyCash.
      *
      * @param _parameter Parameter as passed from the eFaps API

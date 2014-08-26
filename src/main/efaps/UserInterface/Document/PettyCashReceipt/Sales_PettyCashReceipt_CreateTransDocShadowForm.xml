@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2014 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b129a447-1107-40ae-aa3d-75a047ae745f</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_PettyCashReceipt_CreateTransDocShadowForm</name>
+        <field name="storage">
+            <property name="Attribute">Storage</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_PettyCashReceipt_CreateTransDocShadowForm.storage.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Storage"
+                name="Sales_IncomingInvoice_CreateTransDocShadowForm.storage.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.RecievingTicket">
+                <property name="Type">Products_DynamicStorage</property>
+                <property name="StatusGroup">Products_StorageAbstractStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+        </field>
+        <field name="productDocumentType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Label">Sales_PettyCashReceipt_CreateTransDocShadowForm.productDocumentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="dropDown4ProdDocTypeFieldValue"
+                name="Sales_IncomingInvoice_CreateTransDocShadowForm.documentType.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.RecievingTicket">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">INCOMING</property>
+            </trigger>
+        </field>
+        <field character="Heading" name="productsHeading">
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_PettyCashReceipt_CreateTransDocShadowForm.productsHeading.Heading</property>
+            <property name="Level">3</property>
+        </field>
+        <field name="products">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger event="UI_FIELD_VALUE" method="getProducts4DocShadowFieldValue"
+                name="Sales_IncomingInvoice_CreateTransDocShadowForm.products.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.TransactionDocument">
+            </trigger>
+        </field>
+    </definition>
+</ui-form>
