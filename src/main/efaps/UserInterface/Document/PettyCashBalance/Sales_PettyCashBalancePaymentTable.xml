@@ -65,7 +65,7 @@
         <field name="status">
             <property name="SelectAlternateOID">linkto[CreateDocument].oid</property>
             <property name="Select">linkto[CreateDocument].attribute[Status]</property>
-            <property name="Label">Sales_Payment/status.Label</property>
+            <property name="Label">Sales_Payment/Status.Label</property>
         </field>
     </definition>
 </ui-table>

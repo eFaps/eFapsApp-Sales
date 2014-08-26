@@ -36,7 +36,7 @@
         </field>
         <field name="contact">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">SD_Sales_OrderOutboundTable.contact.Label</property>
+            <property name="Label">Sales_ServiceOrderOutboundTable.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
         </field>
         <field name="date">
@@ -63,7 +63,7 @@
         </field>
         <field name="currencyName">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">SD_Sales_OrderOutboundTable.currencyName.Label</property>
+            <property name="Label">Sales_ServiceOrderOutboundTable.currencyName.Label</property>
             <property name="Select">linkto[RateCurrencyId].attribute[Name]</property>
         </field>
         <field name="vendorLink">

@@ -33,7 +33,7 @@
         <!-- fields -->
         <field name="product" character="Picker">
             <property name="Width">2</property>
-            <property name="Label">GyG_EntryBOM/Product.Label</property>
+            <property name="Label">Sales_Products_ProductPriceHistoryForm.product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
