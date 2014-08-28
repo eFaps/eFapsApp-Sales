@@ -19,20 +19,22 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>880fbe9f-0c38-4b8a-9a93-56bcfe18f70b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RetentionCertificateTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_RetentionCertificateTree_Menu_Action_Edit</child>
             <child>Sales_RetentionCertificateTree_Menu_Action_CreateReport</child>
             <child>Sales_RetentionCertificateTree_Menu_Action_Checkout</child>
+            <child>Sales_RetentionCertificateTree_Menu_Action_SetCanceled</child>
+            <child>Sales_RetentionCertificateTree_Menu_Action_SetClosed</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>

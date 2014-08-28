@@ -85,10 +85,9 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">READONLY</property>
+        </field>
+        <field name="crossTotal">
+            <property name="Attribute">CrossTotal</property>
         </field>
         <field name="headingSupplier" character="Heading">
             <property name="Level">2</property>

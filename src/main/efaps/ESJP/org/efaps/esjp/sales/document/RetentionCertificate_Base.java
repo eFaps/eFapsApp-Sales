@@ -23,23 +23,32 @@ package org.efaps.esjp.sales.document;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
 import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
 
+import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Checkin;
+import org.efaps.db.Context;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
@@ -59,7 +68,7 @@ import org.slf4j.LoggerFactory;
 @EFapsUUID("02d5a390-516e-43d4-8d46-ca9c6599146a")
 @EFapsRevision("$Rev$")
 public abstract class RetentionCertificate_Base
-    extends AbstractDocumentSum
+    extends AbstractSumOnlyDocument
 {
 
     /**
@@ -67,7 +76,7 @@ public abstract class RetentionCertificate_Base
      */
     protected static final Logger LOG = LoggerFactory.getLogger(RetentionCertificate_Base.class);
 
-
+    protected static final String REQKEY =  RetentionCertificate.class.getName();
 
     /**
      * Method for create a new Quotation.
@@ -116,6 +125,70 @@ public abstract class RetentionCertificate_Base
             }
         };
         return multi.execute(_parameter);
+    }
+
+
+    public Return insertPostTrigger4Rel(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> values = (HashMap<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        final Attribute attr = _parameter.getInstance().getType().getAttribute("FromLink");
+        updateSum(_parameter, Instance.get(CISales.RetentionCertificate.getType(),
+                        (Long)((Object[]) values.get(attr))[0]));
+        return new Return();
+    }
+
+    public Return updatePostTrigger4Rel(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Map<?, ?> values = (HashMap<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
+        final Attribute attr = _parameter.getInstance().getType().getAttribute("FromLink");
+        updateSum(_parameter, Instance.get(CISales.RetentionCertificate.getType(),
+                        (Long)((Object[]) values.get(attr))[0]));
+        return new Return();
+    }
+
+    public Return deletePreTrigger4Rel(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selCInst = SelectBuilder.get()
+                        .linkto(CISales.RetentionCertificate2PaymentRetentionOut.FromLink)
+                        .instance();
+        print.addSelect(selCInst);
+        print.execute();
+        Context.getThreadContext().setRequestAttribute(REQKEY, print.getSelect(selCInst));
+        return new Return();
+    }
+
+    public Return deletePostTrigger4Rel(final Parameter _parameter)
+        throws EFapsException
+    {
+        updateSum(_parameter,  (Instance) Context.getThreadContext().getRequestAttribute(REQKEY));
+        return new Return();
+    }
+
+    protected void updateSum(final Parameter _parameter,
+                             final Instance _certInst)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, _certInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2PaymentRetentionOut.ToLink)
+                        .attribute(CISales.PaymentRetentionOut.Amount);
+        multi.addSelect(sel);
+        multi.execute();
+        BigDecimal total = BigDecimal.ZERO;
+
+        while (multi.next()) {
+            total = total.add(multi.<BigDecimal>getSelect(sel));
+        }
+        if (_certInst != null && _certInst.isValid()) {
+            final Update update = new Update(_certInst);
+            update.add(CISales.RetentionCertificate.CrossTotal, total);
+            update.execute();
+        }
     }
 
     /**

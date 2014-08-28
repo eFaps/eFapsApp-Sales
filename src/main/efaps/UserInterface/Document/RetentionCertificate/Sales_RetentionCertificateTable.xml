@@ -28,7 +28,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RetentionCertificateTable</name>
-        <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -53,9 +52,9 @@
             <property name="Attribute">Date</property>
             <property name="Label">Sales_DocumentAbstract/Date.Label</property>
         </field>
-        <field name="vendorLink">
-            <property name="Attribute">Salesperson</property>
-            <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
+       <field name="crossTotal">
+            <property name="Attribute">CrossTotal</property>
+            <property name="Label">Sales_RetentionCertificate/CrossTotal.Label</property>
         </field>
         <field name="status">
             <property name="FilterType">PICKLIST</property>

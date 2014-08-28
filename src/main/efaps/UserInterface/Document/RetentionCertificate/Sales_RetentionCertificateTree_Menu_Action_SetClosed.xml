@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,29 +22,29 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>409a1a05-2fb8-441c-ad9c-2e1821332cc1</uuid>
+    <uuid>a2694e01-b2d8-493e-952e-99f8a46c80ec</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificateTree_Menu_Action_Edit</name>
+        <name>Sales_RetentionCertificateTree_Menu_Action_SetClosed</name>
         <access>
-            <role>Sales_RetentionCertificate</role>
             <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <form>Sales_RetentionCertificateForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Sales_RetentionCertificateTree_Menu_Action_Edit.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Closed</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_RetentionCertificateTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
-             </trigger>
+            </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>
