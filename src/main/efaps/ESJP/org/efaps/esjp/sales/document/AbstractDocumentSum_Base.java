@@ -660,6 +660,14 @@ public abstract class AbstractDocumentSum_Base
         return super.getJavaScript4Positions(_parameter, _instances).append("executeCalculator();");
     }
 
+    @Override
+    protected StringBuilder getJavaScript4Positions(final Parameter _parameter,
+                                                    final Instance _instance)
+        throws EFapsException
+    {
+        return super.getJavaScript4Positions(_parameter, _instance).append("executeCalculator();");
+    }
+
 
     /**
      * Update the form after change of rate currency.
