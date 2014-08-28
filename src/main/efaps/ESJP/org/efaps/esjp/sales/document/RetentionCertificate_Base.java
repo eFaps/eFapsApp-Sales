@@ -44,6 +44,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -132,6 +133,11 @@ public abstract class RetentionCertificate_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @throws EFapsException on error
+     * @return Return containing the report
+     */
     public Return createReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -150,13 +156,21 @@ public abstract class RetentionCertificate_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @throws EFapsException on error
+     * @return new Report instance
+     */
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new RetentionCertificateReport();
     }
 
-    public class RetentionCertificateReport
+    /**
+     * Report class.
+     */
+    public static class RetentionCertificateReport
         extends AbstractDynamicReport
     {
 
@@ -165,7 +179,7 @@ public abstract class RetentionCertificate_Base
             throws EFapsException
         {
             final DRDataSource dataSource = new DRDataSource("type", "name", "date", "rateNetTotal", "rateCrossTotal",
-                            "rateCurrency");
+                            "rateCurrency", "taxAmount");
 
             final QueryBuilder attQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
             attQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, _parameter
@@ -189,12 +203,15 @@ public abstract class RetentionCertificate_Base
             multi.execute();
 
             while (multi.next()) {
+                final DocTaxInfo taxdoc = AbstractDocumentTax.getDocTaxInfo(_parameter, multi.getCurrentInstance());
+                ;
                 dataSource.add(multi.getSelect(selTypelabel),
                                 multi.getAttribute(CISales.DocumentSumAbstract.Name),
                                 multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date).toDate(),
                                 multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal),
                                 multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal),
-                                multi.getSelect(selCurrencylabel));
+                                multi.getSelect(selCurrencylabel),
+                                taxdoc.getPaymentAmount());
             }
             return dataSource;
         }
@@ -216,17 +233,21 @@ public abstract class RetentionCertificate_Base
                                             .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.Date"),
                                             "date", DynamicReports.type.dateType()),
                             DynamicReports.col.column(
-                                            DBProperties.getProperty("org.efaps.esjp.sales.document.RetentionCertificate.RateNetTotal"),
+                                            DBProperties.getProperty(RetentionCertificate.class.getName()
+                                                            + ".RateNetTotal"),
                                             "rateNetTotal", DynamicReports.type.bigDecimalType()),
-                            DynamicReports.col.column(
-                                            DBProperties
-                                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.RateCrossTotal"),
+                            DynamicReports.col.column(DBProperties
+                                                            .getProperty(RetentionCertificate.class.getName()
+                                                                            + ".RateCrossTotal"),
                                             "rateCrossTotal", DynamicReports.type.bigDecimalType()),
-                            DynamicReports.col
-                                            .column(DBProperties
-                                                            .getProperty("org.efaps.esjp.sales.document.RetentionCertificate.RateCurrency"),
+                            DynamicReports.col.column(DBProperties.getProperty(RetentionCertificate.class.getName()
+                                                                            + ".RateCurrency"),
                                                             "rateCurrency", DynamicReports.type.stringType())
-                                            .setFixedColumns(3));
+                                            .setFixedColumns(3),
+                            DynamicReports.col.column(DBProperties.getProperty(RetentionCertificate.class.getName()
+                                                            + ".TaxAmount"),
+                                            "taxAmount", DynamicReports.type.bigDecimalType())
+                            .setFixedColumns(3));
 
         }
     }

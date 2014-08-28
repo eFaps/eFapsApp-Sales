@@ -411,6 +411,11 @@ public abstract class AbstractDocumentTax_Base
         private BigDecimal taxAmount = BigDecimal.ZERO;
 
         /**
+         * Amount of the tax payed.
+         */
+        private BigDecimal paymentAmount = null;
+
+        /**
          * The amount expressed in percent.
          */
         private BigDecimal percent = BigDecimal.ZERO;
@@ -660,6 +665,45 @@ public abstract class AbstractDocumentTax_Base
         public void setInitialized(final boolean _initialized)
         {
             this.initialized = _initialized;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #paymentAmount}.
+         *
+         * @return value of instance variable {@link #paymentAmount}
+         */
+        public BigDecimal getPaymentAmount()
+            throws EFapsException
+        {
+            if (this.paymentAmount == null) {
+                this.paymentAmount = BigDecimal.ZERO;
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PaymentDetractionOut);
+                attrQueryBldr.addType(CISales.PaymentRetentionOut);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
+                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, getDocInstance());
+                queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument,
+                                attrQueryBldr.getAttributeQuery(CISales.PaymentDocumentAbstract.ID));
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selAmount = SelectBuilder.get().linkto(CISales.Payment.TargetDocument)
+                                .attribute(CISales.PaymentDocumentAbstract.Amount);
+                multi.addSelect(selAmount);
+                multi.execute();
+                while (multi.next()) {
+                    this.paymentAmount = this.paymentAmount.add(multi.<BigDecimal>getSelect(selAmount));
+                }
+            }
+            return this.paymentAmount;
+        }
+
+        /**
+         * Setter method for instance variable {@link #paymentAmount}.
+         *
+         * @param _paymentAmount value for instance variable {@link #paymentAmount}
+         */
+        public void setPaymentAmount(final BigDecimal _paymentAmount)
+        {
+            this.paymentAmount = _paymentAmount;
         }
     }
 }
