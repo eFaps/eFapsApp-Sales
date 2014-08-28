@@ -3,7 +3,9 @@
 <suite name="Suite" parallel="false">
     <test name="CITests">
         <parameter name="baseFolder" value="../../../main/efaps"></parameter>
-         <packages>
+        <parameter name="ciClass" value="org.efaps.esjp.ci.CISales"/>
+        <parameter name="regex4TypeLabelExclude" value=".*|/Flag.Label|/Group.Label|/Company.Label"/>
+        <packages>
             <package name="org.efaps.tests.ci.*"></package>
         </packages>
     </test>
