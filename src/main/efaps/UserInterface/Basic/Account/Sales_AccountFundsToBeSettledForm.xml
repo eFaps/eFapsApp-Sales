@@ -95,6 +95,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Employee</property>
         </field>
+        <field name="reasonLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">ReasonLink</property>
+        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -192,6 +197,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Employee</property>
+        </field>
+        <field name="reasonLink">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">ReasonLink</property>
         </field>
     </definition>
 </ui-form>

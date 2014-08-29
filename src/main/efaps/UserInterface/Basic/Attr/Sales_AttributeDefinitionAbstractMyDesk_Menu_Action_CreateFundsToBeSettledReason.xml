@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2014 The eFaps Team
 
@@ -21,21 +20,23 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4920c757-2e10-49e3-b15c-25c7fb0a56fd</uuid>
+    <uuid>3227f689-93a5-4a73-906f-0774746f3860</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action</name>
-        <childs>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateOperationType</child>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateServiceType</child>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_Create_PaymentOrderType</child>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateTransferReason</child>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateFinancialInstitute</child>
-            <child>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateFundsToBeSettledReason</child>
-        </childs>
+        <name>Sales_AttributeDefinitionAbstractMyDesk_Menu_Action_CreateFundsToBeSettledReason</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>ERP_AttributeDefinitionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_AttributeDefinitionFundsToBeSettledReason</property>
+        <property name="TargetMode">create</property>
     </definition>
-</ui-menu>
+</ui-command>
