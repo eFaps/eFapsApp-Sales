@@ -19,21 +19,20 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>6988cd7d-ded0-4306-86e6-0bcfe71db4eb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Edit</child>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Recalculate</child>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Closed</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
-
 </ui-menu>

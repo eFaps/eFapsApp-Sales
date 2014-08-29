@@ -34,6 +34,17 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCash</name>
         <parent>Sales_AccountAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_AccountPettyCashStatus</typelink>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_AccountPettyCash.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
+        </attribute>
         <trigger program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"
             name="Sales_AccountPettyCash.ACCESSCHECK"
             event="ACCESSCHECK" />

@@ -81,12 +81,8 @@
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
         </field>
-        <field name="active">
-            <property name="Attribute">Active</property>
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeSearch">EDITABLE</property>
-            <property name="Required">true</property>
+        <field name="status">
+            <property name="Attribute">Status</property>
         </field>
         <field name="financialInstitute">
             <property name="Attribute">FinancialInstitute</property>

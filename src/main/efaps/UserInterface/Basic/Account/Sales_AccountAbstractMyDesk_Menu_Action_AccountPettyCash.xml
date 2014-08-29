@@ -41,7 +41,10 @@
         </access>
         <target>
             <form>Sales_AccountPettyCashForm</form>
-            <execute program="org.efaps.esjp.sales.Account" method="create"/>
+            <execute program="org.efaps.esjp.sales.Account" method="create">
+                <property name="StatusGroup">Sales_AccountPettyCashStatus</property>
+                <property name="Status">Active</property>
+            </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_AccountPettyCash</property>
@@ -67,6 +70,8 @@
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
+                <property name="StatusGroup">Sales_AccountPettyCashStatus</property>
+                <property name="Status">Active</property>
             </execute>
         </target>
         <property name="Target">modal</property>

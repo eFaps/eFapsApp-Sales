@@ -33,6 +33,17 @@
         <name>Sales_AccountCashDesk</name>
         <parent>Sales_AccountAbstract</parent>
         <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_AccountCashDeskStatus</typelink>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_AccountCashDesk.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
+        </attribute>
+        <attribute>
             <name>Activation</name>
             <type>BitEnum</type>
             <className>org.efaps.esjp.sales.util.Sales$AccountCDActivation</className>

@@ -23,32 +23,28 @@
 
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>f8add5f9-ffbf-43e5-8816-3dec7b6610f1</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountCashDesk</name>
-    <access>
-        <role>Sales_Admin</role>
-    </access>
-
-    <!-- target definitions -->
-    <target>
-      <form>Sales_AccountAbstractForm</form>
-      <execute program="org.efaps.esjp.common.uiform.Create"/>
-    </target>
-    <!-- properties -->
-    <property name="Target">modal</property>
-    <property name="TargetCreateType">Sales_AccountCashDesk</property>
-    <property name="TargetMode">create</property>
-    <property name="WindowHeight">460</property>
-    <property name="WindowWidth">515</property>
-  </definition>
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f8add5f9-ffbf-43e5-8816-3dec7b6610f1</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountAbstractMyDesk_Menu_Action_AccountCashDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_AccountAbstractForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
+                <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
+                <property name="Status">Active</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_AccountCashDesk</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
+    </definition>
 </ui-command>

@@ -19,16 +19,15 @@
  Last Changed:    $Date: 2013-10-22 17:30:57 -0500 (mar, 22 oct 2013) $
  Last Changed By: $Author: sara.landa@efaps.org $
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ab2a8cb5-3f62-4b30-9565-aa413627d142</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 10643 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettledMyDesk_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_AccountAbstractMyDesk_Menu_Action_AccountFundsToBeSettled</child>
             <child>Sales_AccountAbstractMyDesk_Menu_Action_Delete</child>

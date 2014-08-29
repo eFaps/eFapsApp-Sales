@@ -56,6 +56,16 @@
             <key>Verified</key>
         </status>
 
+         <status group="Sales_AccountPettyCashStatus">
+            <key>Active</key>
+            <key>Inactive</key>
+        </status>
+
+        <status group="Sales_AccountFundsToBeSettledStatus">
+            <key>Open</key>
+            <key>Closed</key>
+        </status>
+
         <role>Sales_PettyCash</role>
     </definition>
 

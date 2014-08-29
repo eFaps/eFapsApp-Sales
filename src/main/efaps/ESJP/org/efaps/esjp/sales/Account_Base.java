@@ -94,7 +94,16 @@ public abstract class Account_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Create create = new Create();
+        final Create create = new Create() {
+            @Override
+            protected void add2basicInsert(final Parameter _parameter,
+                                           final Insert _insert)
+                throws EFapsException
+            {
+                super.add2basicInsert(_parameter, _insert);
+                _insert.add(CISales.AccountAbstract.Name, getDocName4Create(_parameter));
+            }
+        };
         final Instance instance = create.basicInsert(_parameter);
         final CreatedDoc createdDoc = new  CreatedDoc(instance);
         connect2Object(_parameter, createdDoc);
@@ -828,36 +837,6 @@ public abstract class Account_Base
         return null;
     }
 
-    public Return accessCheck4Active(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-
-        Return ret = new Return();
-        final Instance accountInst = _parameter.getInstance();
-
-        if (accountInst.isValid()) {
-            final PrintQuery print = new PrintQuery(accountInst);
-            print.addAttribute(CISales.AccountAbstract.Active);
-            print.execute();
-
-            final boolean active = print.<Boolean>getAttribute(CISales.AccountAbstract.Active) == null
-                                                ? false : print.<Boolean>getAttribute(CISales.AccountAbstract.Active);
-
-            if (active) {
-                if (props.containsKey("AccessCheck4SystemConfiguration")) {
-                    if ("true".equalsIgnoreCase((String) props.get("AccessCheck4SystemConfiguration"))) {
-                        ret = check4SystemConfiguration(_parameter);
-                    }
-                } else {
-                    ret.put(ReturnValues.TRUE, true);
-                }
-            }
-        }
-
-        return ret;
-    }
-
     public Return getAmount4FieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -958,13 +937,14 @@ public abstract class Account_Base
                 insert.execute();
             }
             final Update update = new Update(instance);
-            update.add(CISales.AccountAbstract.Active, false);
+            update.add(CISales.AccountFundsToBeSettled.Status,
+                            Status.find(CISales.AccountFundsToBeSettledStatus.Closed));
             update.execute();
         }
 
         if (instance != null && CISales.AccountPettyCash.getType().equals(instance.getType())) {
             final Update update = new Update(instance);
-            update.add(CISales.AccountAbstract.Active, false);
+            update.add(CISales.AccountPettyCash.Status, Status.find(CISales.AccountPettyCashStatus.Inactive));
             update.execute();
         }
 

@@ -19,20 +19,32 @@
  Last Changed:    $Date: 2010-10-26 12:36:23 -0500 (Tue, 26 Oct 2010) $
  Last Changed By: $Author: jorge.m.cueva $
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>160db897-5510-4356-b4c0-5c2de18d2236</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev: 5740 $</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountFundsToBeSettled</name>
         <parent>Sales_AccountAbstract</parent>
         <attribute>
-          <name>Employee</name>
-          <type>String</type>
-          <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
-          <sqlcolumn>EMPLOYEE</sqlcolumn>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_AccountFundsToBeSettledStatus</typelink>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_AccountFundsToBeSettled.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
+        </attribute>
+        <attribute>
+            <name>Employee</name>
+            <type>String</type>
+            <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
+            <sqlcolumn>EMPLOYEE</sqlcolumn>
         </attribute>
         <attribute>
             <name>Date</name>
@@ -47,7 +59,7 @@
             <sqlcolumn>DUEDATE</sqlcolumn>
         </attribute>
         <trigger event="ACCESSCHECK"
-                name="Sales_AccountFundsToBeSettled.ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+            name="Sales_AccountFundsToBeSettled.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
 </datamodel-type>

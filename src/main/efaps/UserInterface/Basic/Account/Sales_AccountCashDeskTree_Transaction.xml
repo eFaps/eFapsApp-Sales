@@ -40,9 +40,7 @@
                 <property name="LinkFrom">Account</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="DefaultSelected">true</property>
     </definition>
 </ui-command>

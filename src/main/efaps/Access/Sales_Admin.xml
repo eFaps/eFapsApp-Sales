@@ -372,6 +372,22 @@
             <key>Closed</key>
             <key>Canceled</key>
         </status>
+
+         <status group="Sales_AccountCashDeskStatus">
+            <key>Active</key>
+            <key>Inactive</key>
+        </status>
+
+         <status group="Sales_AccountPettyCashStatus">
+            <key>Active</key>
+            <key>Inactive</key>
+        </status>
+
+        <status group="Sales_AccountFundsToBeSettledStatus">
+            <key>Open</key>
+            <key>Closed</key>
+        </status>
+
         <role>Sales_Admin</role>
     </definition>
 </access-set>

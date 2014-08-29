@@ -185,6 +185,36 @@
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="action">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="dropDownFieldValue"
+                name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ActionDefinitionFundsToBeSettledReceipt</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+        </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
             <property name="Label">Sales_FundsToBeSettledReceiptForm.headingPositon.Heading</property>
@@ -451,7 +481,7 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.projects.Project"
                 method="autoComplete4Project"
-                name="Sales_PettyCashReceiptForm.project.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_FundsToBeSettledReceiptForm.project.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
                 <property name="Status">Closed</property>
@@ -507,6 +537,36 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="action">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="dropDownFieldValue"
+                name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ActionDefinitionFundsToBeSettledReceipt</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+        </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field character="Heading" name="headingPositon">

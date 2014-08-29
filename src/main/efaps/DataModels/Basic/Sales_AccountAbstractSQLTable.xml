@@ -29,7 +29,6 @@
     <uuid>dc0d911e-d5c6-469d-a17a-207be1db8b99</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountAbstractSQLTable</name>
@@ -42,7 +41,7 @@
             <column name="DESCR"        type="STRING_SHORT"                 length="255"/>
             <column name="CURRENCYID"   type="INTEGER"/>
             <column name="AMOUNT"       type="DECIMAL"                      length="15" scale="4"/>
-            <column name="ACTIVE"       type="BOOLEAN" />
+            <column name="STATUS"       type="INTEGER"      not-null="true"/>
             <column name="ACTIVATION"   type="INTEGER" />
             <column name="FININSTID"    type="INTEGER" />
             <column name="AUTOMATION"   type="INTEGER" />

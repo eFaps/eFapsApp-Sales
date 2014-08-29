@@ -44,6 +44,5 @@
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
-        <property name="DefaultSelected">true</property>
     </definition>
 </ui-command>

@@ -37,7 +37,11 @@
         </access>
         <target>
             <form>Sales_AccountFundsToBeSettledForm</form>
-            <execute program="org.efaps.esjp.sales.Account" method="create"/>
+            <execute program="org.efaps.esjp.sales.Account" method="create">
+                <property name="UseNumberGenerator4Name">true</property>
+                <property name="StatusGroup">Sales_AccountFundsToBeSettledStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_AccountFundsToBeSettled</property>
@@ -63,6 +67,9 @@
                 <property name="ConnectCurrentLink">ToLink</property>
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
+                <property name="UseNumberGenerator4Name">true</property>
+                <property name="StatusGroup">Sales_AccountFundsToBeSettledStatus</property>
+                <property name="Status">Open</property>
             </execute>
         </target>
         <property name="Target">modal</property>

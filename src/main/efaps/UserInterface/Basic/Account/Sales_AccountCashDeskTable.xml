@@ -15,33 +15,23 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 8589 $
- Last Changed:    $Date: 2013-01-22 14:07:32 -0500 (Tue, 22 Jan 2013) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d42b074d-8abc-438d-8e03-7d06e65c97d6</uuid>
+    <uuid>b9501a45-3893-494f-a5da-305a821b22ba</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8589 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountPettyCashTable</name>
-        <!-- fields -->
-        <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="Label">Sales_AccountAbstract/Type.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
+        <name>Sales_AccountCashDeskTable</name>
         <field name="name">
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_AccountAbstract/Name.Label</property>
-        </field>
-        <field name="amount">
-            <property name="Attribute">AmountAbstract</property>
-            <property name="Label">Sales_AccountAbstract/Amount.Label</property>
         </field>
         <field name="currencyLink">
             <property name="Attribute">CurrencyLink</property>
@@ -57,7 +47,7 @@
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">Active</property>
-            <property name="Label">Sales_AccountPettyCash/Status.Label</property>
+            <property name="Label">Sales_AccountCashDesk/Status.Label</property>
         </field>
     </definition>
 </ui-table>

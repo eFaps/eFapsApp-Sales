@@ -76,7 +76,7 @@
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Sales_AccountAbstract.RANGE_VALUE" event="RANGE_VALUE">
+                name="Sales_AccountAbstract.CurrencyLink.RANGE_VALUE" event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
             </trigger>
@@ -87,12 +87,15 @@
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
             <sqlcolumn>AMOUNT</sqlcolumn>
         </attribute>
-        <attribute>
-            <name>Active</name>
-            <type>Boolean</type>
+       <attribute>
+            <name>StatusAbstract</name>
+            <type>Status</type>
+            <typelink>Sales_AccountAbstractStatus</typelink>
             <sqltable>Sales_AccountAbstractSQLTable</sqltable>
-            <sqlcolumn>ACTIVE</sqlcolumn>
-            <defaultvalue>true</defaultvalue>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_AccountAbstract.StatusAbstract.RANGE_VALUE" event="RANGE_VALUE">
+            </trigger>
         </attribute>
         <attribute>
             <name>ActInt</name>

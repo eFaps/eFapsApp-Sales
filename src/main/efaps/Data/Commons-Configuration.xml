@@ -49,7 +49,8 @@ Sales_ComparativeDocProvider=d7de1a94-fa29-4c4e-8468-5fb6fd6d8565
 Sales_ServiceRequest=56c05868-0110-49b7-9282-c14749b949c4
 Sales_CollectionOrder=e89316af-42c6-4df1-ae7e-7c9f9c2bb73c
 Sales_PaymentOrder=f15f6031-c5d3-4bf8-89f4-a7a1b244d22e
-Sales_PettyCashBalance=18f8d376-aea6-4739-9389-2d560b0b086a]]></value>
+Sales_PettyCashBalance=18f8d376-aea6-4739-9389-2d560b0b086a
+Sales_AccountFundsToBeSettled=d4b2f225-5fbe-4cdb-9948-e1327a96d539]]></value>
         </attribute>
     </definition>
 </common-systemconfiguration>
