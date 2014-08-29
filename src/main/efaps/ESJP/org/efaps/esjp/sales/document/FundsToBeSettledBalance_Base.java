@@ -21,6 +21,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -30,12 +31,12 @@ import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -50,9 +51,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
@@ -82,8 +82,26 @@ public abstract class FundsToBeSettledBalance_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
+        final Instance balanceInst = createPettyCashBalanceDoc(_parameter);
 
+        final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2Report(final Parameter _parameter,
+                              final CreatedDoc _createdDoc,
+                              final StandartReport _report)
+        throws EFapsException
+    {
+        super.add2Report(_parameter, _createdDoc, _report);
         final PrintQuery printAmount = new PrintQuery(_parameter.getCallInstance());
         printAmount.addAttribute(CISales.AccountFundsToBeSettled.Name, CISales.AccountFundsToBeSettled.AmountAbstract);
         printAmount.execute();
@@ -92,33 +110,8 @@ public abstract class FundsToBeSettledBalance_Base
         if (amount == null) {
             amount = BigDecimal.ZERO;
         }
-
-        final Instance balanceInst = createPettyCashBalanceDoc(_parameter);
-
-        final PrintQuery print2 = new PrintQuery(balanceInst);
-        print2.addAttribute(CISales.FundsToBeSettledBalance.Name);
-        print2.execute();
-        final String nameBalance = print2.<String>getAttribute(CISales.FundsToBeSettledBalance.Name);
-
-        _parameter.put(ParameterValues.INSTANCE, balanceInst);
-
-        final StandartReport report = new StandartReport();
-        report.getJrParameters().put("AccName", accName);
-        report.getJrParameters().put("AmountPettyCash", amount);
-
-        final SystemConfiguration config = ERP.getSysConfig();
-        if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            if (companyName != null && !companyName.isEmpty()) {
-                report.getJrParameters().put("CompanyName", companyName);
-            }
-        }
-
-        final String fileName = DBProperties.getProperty("Sales_FundsToBeSettledBalance.Label") + "_" + nameBalance;
-        report.setFileName(fileName);
-        ret = report.execute(_parameter);
-
-        return ret;
+        _report.getJrParameters().put("AccName", accName);
+        _report.getJrParameters().put("AmountPettyCash", amount);
     }
 
     /**
@@ -128,7 +121,7 @@ public abstract class FundsToBeSettledBalance_Base
      * @return instance of new PettyCashBalance, null if not created
      * @throws EFapsException on error
      */
-    protected Instance createPettyCashBalanceDoc(final Parameter _parameter)
+    public Instance createPettyCashBalanceDoc(final Parameter _parameter)
         throws EFapsException
     {
         Instance ret = null;
@@ -153,7 +146,11 @@ public abstract class FundsToBeSettledBalance_Base
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
         BigDecimal startAmount = BigDecimal.ZERO;
         try {
-            startAmount = (BigDecimal) formater.parse(startAmountStr);
+            if (startAmountStr == null) {
+                startAmount = startAmountOrig;
+            } else {
+                startAmount = (BigDecimal) formater.parse(startAmountStr);
+            }
         } catch (final ParseException e) {
             throw new EFapsException(Account_Base.class, "ParseException", e);
         }
@@ -289,6 +286,93 @@ public abstract class FundsToBeSettledBalance_Base
     {
         return new DateTime().toLocalTime().toString();
     }
+
+    public Return createDoc4Account(final Parameter _parameter)
+        throws EFapsException
+    {
+        createDoc4Account(_parameter, _parameter.getInstance());
+        return new Return();
+    }
+
+    /**
+     * Created document CollectionOrder/PaymentOrder.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @throws EFapsException on error.
+     */
+    public void createDoc4Account(final Parameter _parameter,
+                                  final Instance _docInst)
+        throws EFapsException
+    {
+        final SelectBuilder selAccInst = new SelectBuilder()
+                        .linkfrom(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance.ToLink)
+                        .linkto(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance.FromLink).instance();
+
+        final PrintQuery print = new PrintQuery(_docInst);
+        print.addAttribute(CISales.DocumentSumAbstract.Rate,
+                        CISales.DocumentSumAbstract.CurrencyId,
+                        CISales.DocumentSumAbstract.RateCurrencyId,
+                        CISales.DocumentSumAbstract.CrossTotal);
+        print.addSelect(selAccInst);
+        print.execute();
+
+        Type type = null;
+        Type relation = null;
+        Type bal2orderType = null;
+        String name = null;
+        Status status = null;
+
+        final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+        final Instance accountInst = print.<Instance>getSelect(selAccInst);
+        if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
+            type = CISales.CollectionOrder.getType();
+            name = new Naming().fromNumberGenerator(_parameter, type.getName());
+            status = Status.find(CISales.CollectionOrderStatus.Open);
+            relation = CISales.AccountFundsToBeSettled2CollectionOrder.getType();
+            bal2orderType = CISales.FundsToBeSettledBalance2CollectionOrder.getType();
+        } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
+            type = CISales.PaymentOrder.getType();
+            name = new Naming().fromNumberGenerator(_parameter, type.getName());
+            status = Status.find(CISales.PaymentOrderStatus.Open);
+            relation = CISales.AccountFundsToBeSettled2PaymentOrder.getType();
+            bal2orderType = CISales.FundsToBeSettledBalance2PaymentOrder.getType();
+        }
+        if (type != null && accountInst != null && accountInst.isValid()) {
+            final Insert insert = new Insert(type);
+            insert.add(CISales.DocumentSumAbstract.Name, name);
+            insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
+            insert.add(CISales.DocumentSumAbstract.DueDate, new DateTime());
+            insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
+            insert.add(CISales.DocumentSumAbstract.RateCrossTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.RateNetTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.NetTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
+            insert.add(CISales.DocumentSumAbstract.CurrencyId,
+                            print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+            insert.add(CISales.DocumentSumAbstract.RateCurrencyId,
+                            print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+            insert.add(CISales.DocumentSumAbstract.Rate,
+                            print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate));
+            insert.add(CISales.DocumentSumAbstract.StatusAbstract, status);
+            insert.add(CISales.DocumentSumAbstract.Note,
+                            _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                                            CISales.DocumentSumAbstract.Note.name)));
+            insert.execute();
+
+            final Insert relInsert = new Insert(relation);
+            relInsert.add(CISales.AccountFundsToBeSettled2Document.FromLinkAbstract, accountInst);
+            relInsert.add(CISales.AccountFundsToBeSettled2Document.ToLinkAbstract, insert.getInstance());
+            relInsert.execute();
+
+            final Insert relInsert2 = new Insert(bal2orderType);
+            relInsert2.add(CISales.FundsToBeSettledBalance2OrderAbstract.FromAbstractLink, _docInst);
+            relInsert2.add(CISales.FundsToBeSettledBalance2OrderAbstract.ToAbstractLink, insert.getInstance());
+            relInsert2.execute();
+        }
+    }
+
 
     /**
      * Method for verify a FundsToBeSettledBalance.

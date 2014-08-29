@@ -46,11 +46,11 @@
                 <property name="Mime">pdf</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
-            <trigger program="org.efaps.esjp.sales.Account" method="accessCheck4Active"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
                 name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
-                <property name="AccessCheck4SystemConfiguration">true</property>
-                <property name="WithDate">false</property>
+                <property name="Status">Active</property>
             </trigger>
         </target>
         <!-- properties -->

@@ -20,20 +20,27 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>6988cd7d-ded0-4306-86e6-0bcfe71db4eb</uuid>
+    <uuid>6d911a51-7605-48d5-b7b9-a900592510e6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Menu_Action</name>
-        <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Init</child>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Edit</child>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Recalculate</child>
-            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Closed</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_AccountFundsToBeSettledTree_Documents</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+        </access>
+        <target>
+            <table>Sales_Account2DocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_AccountFundsToBeSettled2Document</property>
+                <property name="LinkFrom">FromLinkAbstract</property>
+            </evaluate>
+        </target>
+        <!-- properties -->
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>

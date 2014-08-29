@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -69,6 +70,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.sales.document.FundsToBeSettledBalance;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -91,6 +93,11 @@ public abstract class Account_Base
      */
     protected static final String CACHEKEY = Account.class.getName() + ".CasheKey";
 
+    /**
+     * @param _parameter Parametes as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -110,6 +117,35 @@ public abstract class Account_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parametes as passed by the eFaps API
+     * @return file
+     * @throws EFapsException on error
+     */
+    public Return initFundsToBeSettled(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final FundsToBeSettledBalance ftbs = new FundsToBeSettledBalance();
+
+        final Instance balanceInst = ftbs.createPettyCashBalanceDoc(_parameter);
+
+        final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
+        ftbs.createDoc4Account(_parameter, balanceInst);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parametes as passed by the eFaps API
+     * @return new empty Return
+     * @throws EFapsException  on error
+     */
     public Return insertPostTrigger4Acc2Doc(final Parameter _parameter)
         throws EFapsException
     {

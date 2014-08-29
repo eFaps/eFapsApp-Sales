@@ -19,25 +19,29 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a1bff8eb-a547-49d8-bd32-4cf422d2045e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_FundsToBeSettledBalance</name>
         <parent>Sales_AccountBalance</parent>
-
         <attribute>
             <name>Status</name>
             <type>Status</type>
             <typelink>Sales_FundsToBeSettledBalanceStatus</typelink>
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
-            <trigger event="RANGE_VALUE" name="Sales_FundsToBeSettledBalance.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <trigger event="RANGE_VALUE"
+                name="Sales_FundsToBeSettledBalance.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_FundsToBeSettledBalance.ACCESSCHECK" program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"/>
+        <trigger event="ACCESSCHECK"
+            name="Sales_FundsToBeSettledBalance.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
 </datamodel-type>
