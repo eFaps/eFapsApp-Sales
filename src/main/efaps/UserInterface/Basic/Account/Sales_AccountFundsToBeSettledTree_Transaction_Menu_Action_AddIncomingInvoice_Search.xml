@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,18 +20,19 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1c1682b9-0d9f-4a3c-bbf7-830785e13414</uuid>
+    <uuid>f761da21-d4c8-4b7a-a0c6-b07bacd3ed84</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action</name>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingInvoice_Search</name>
+        <default>
+            <command>Sales_IncomingInvoiceSearch</command>
+        </default>
         <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateIncomingCreditNote</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingInvoice</child>
+            <child>Sales_IncomingInvoiceSearch</child>
         </childs>
     </definition>
-</ui-menu>
+</ui-search>

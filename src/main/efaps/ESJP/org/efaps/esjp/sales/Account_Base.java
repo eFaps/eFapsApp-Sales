@@ -187,16 +187,58 @@ public abstract class Account_Base
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.Account2DocumentAbstract.FromLinkAbstract)
+        final SelectBuilder selAccInst = SelectBuilder.get().linkto(CISales.Account2DocumentAbstract.FromLinkAbstract)
                         .instance();
-        print.addSelect(selInst);
+        final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.Account2DocumentAbstract.ToLinkAbstract)
+                        .instance();
+        print.addSelect(selAccInst, selDocInst);
         print.executeWithoutAccessCheck();
-        final Integer pos = getMaxPosition(_parameter, print.<Instance>getSelect(selInst));
+        final Instance accInst = print.<Instance>getSelect(selAccInst);
+        final Instance docInst = print.<Instance>getSelect(selDocInst);
+        createTransaction(_parameter, accInst, docInst);
 
+        final Integer pos = getMaxPosition(_parameter, accInst);
         final Update update = new Update(_parameter.getInstance());
         update.add(CISales.Account2DocumentAbstract.Position, pos + 1);
         update.executeWithoutTrigger();
         return new Return();
+    }
+
+
+    /**
+     * Create the transaction for the PettyCash.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _createdDoc doc the transaction is connected to
+     * @throws EFapsException on error
+     */
+    protected void createTransaction(final Parameter _parameter,
+                                     final Instance _accInst,
+                                     final Instance _docInst)
+        throws EFapsException
+    {
+        if (_docInst.getType().isCIType(CISales.IncomingInvoice)) {
+            final PrintQuery print = new PrintQuery(_docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.RateCurrencyId,
+                            CISales.DocumentSumAbstract.Note, CISales.DocumentSumAbstract.RateCrossTotal);
+            print.execute();
+            final Insert payInsert = new Insert(CISales.Payment);
+            payInsert.add(CISales.Payment.Date, print.getAttribute(CISales.DocumentSumAbstract.Date));
+            payInsert.add(CISales.Payment.CreateDocument, _docInst);
+            payInsert.execute();
+
+            final Insert transInsert = new Insert(CISales.TransactionOutbound);
+            transInsert.add(CISales.TransactionOutbound.Amount,
+                            print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+            transInsert.add(CISales.TransactionOutbound.CurrencyId,
+                            print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+            transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
+            transInsert.add(CISales.TransactionOutbound.Account, _accInst);
+            transInsert.add(CISales.TransactionOutbound.Description,
+                            print.getAttribute(CISales.DocumentSumAbstract.Note));
+            transInsert.add(CISales.TransactionOutbound.Date, print.getAttribute(CISales.DocumentSumAbstract.Date));
+            transInsert.execute();
+        }
     }
 
     /**

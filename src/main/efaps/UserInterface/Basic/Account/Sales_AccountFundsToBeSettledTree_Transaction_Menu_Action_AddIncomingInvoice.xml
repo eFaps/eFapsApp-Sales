@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,18 +20,24 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1c1682b9-0d9f-4a3c-bbf7-830785e13414</uuid>
+    <uuid>ff1f0df9-04e0-4692-a17e-2e13af915208</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action</name>
-        <childs>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateIncomingCreditNote</child>
-            <child>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingInvoice</child>
-        </childs>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingInvoice</name>
+        <target>
+            <search>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_AddIncomingInvoice_Search</search>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="ConnectType">Sales_AccountFundsToBeSettled2IncomingInvoice</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="RecievingTicketStatus">Open</property>
     </definition>
-</ui-menu>
+</ui-command>

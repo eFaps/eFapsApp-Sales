@@ -243,6 +243,9 @@ public abstract class FundsToBeSettledBalance_Base
                     } else if (docInst.getType().equals(CISales.IncomingCreditNote.getType())) {
                         rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingCreditNote);
                         status = Status.find(CISales.IncomingCreditNoteStatus.Paid);
+                    } else if (docInst.getType().equals(CISales.IncomingInvoice.getType())) {
+                        rel2Insert = new Insert(CISales.FundsToBeSettledBalance2IncomingInvoice);
+                        status = Status.find(CISales.IncomingInvoiceStatus.Paid);
                     }
                     if (rel2Insert != null && status != null) {
                         rel2Insert.add(CISales.Document2DocumentAbstract.FromAbstractLink, balanceInst);
@@ -306,6 +309,7 @@ public abstract class FundsToBeSettledBalance_Base
      * Created document CollectionOrder/PaymentOrder.
      *
      * @param _parameter Parameter as passed from the eFaps API.
+     * @param _docInst
      * @throws EFapsException on error.
      */
     public void createDoc4Account(final Parameter _parameter,

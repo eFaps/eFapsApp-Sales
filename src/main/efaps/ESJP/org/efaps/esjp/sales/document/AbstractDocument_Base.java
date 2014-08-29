@@ -1167,7 +1167,7 @@ public abstract class AbstractDocument_Base
                         ? _parameter.getInstance() : _parameter.getCallInstance();
         js.append("<script type=\"text/javascript\">\n")
                         .append("require([\"dojo/ready\"], function(ready){ready(1500, function(){\n");
-        if (instance != null && instance.isValid()) {
+        if (instance != null && instance.isValid() && instance.getType().isKindOf(CIERP.DocumentAbstract)) {
             final SelectBuilder selContactId = new SelectBuilder()
                             .linkto(CISales.DocumentSumAbstract.Contact).id();
             final SelectBuilder selContactName = new SelectBuilder()
@@ -1180,9 +1180,10 @@ public abstract class AbstractDocument_Base
             final String contactName = print.<String>getSelect(selContactName);
 
             js.append(getSetFieldValue(0, "contact", String.valueOf(contactId), contactName)).append("\n");
-            if (status != null) {
-                js.append(getSetFieldValue(0, "status",Long.valueOf(status.getId()).toString()));
-            }
+        }
+
+        if (status != null) {
+            js.append(getSetFieldValue(0, "status", Long.valueOf(status.getId()).toString()));
         }
         js.append(" })});").append("</script>");
         final Return retVal = new Return();
