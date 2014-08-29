@@ -62,10 +62,9 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
-import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
@@ -128,16 +127,54 @@ public abstract class Account_Base
         final Return ret = new Return();
         final FundsToBeSettledBalance ftbs = new FundsToBeSettledBalance();
 
-        final Instance balanceInst = ftbs.createPettyCashBalanceDoc(_parameter);
+        final Instance balanceInst = ftbs.createBalanceDoc(_parameter);
 
         final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
         ftbs.createDoc4Account(_parameter, balanceInst);
 
-        final File file = createReport(_parameter, createdDoc);
+        final File file = ftbs.createReport(_parameter, createdDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parametes as passed by the eFaps API
+     * @return file
+     * @throws EFapsException on error
+     */
+    public Return setClosed(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final Instance instance = _parameter.getInstance();
+        if (instance != null && CISales.AccountFundsToBeSettled.getType().equals(instance.getType())) {
+            final FundsToBeSettledBalance ftbs = new FundsToBeSettledBalance();
+            final Parameter parameter = ParameterUtil.clone(_parameter, (Object) null);
+            ParameterUtil.setParmeterValue(parameter, "startAmount", "0");
+            final Instance balanceInst = ftbs.createBalanceDoc(parameter);
+            final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
+            ftbs.createDoc4Account(parameter, balanceInst);
+
+            final File file = ftbs.createReport(parameter, createdDoc);
+            if (file != null) {
+                ret.put(ReturnValues.VALUES, file);
+                ret.put(ReturnValues.TRUE, true);
+            }
+            final Update update = new Update(instance);
+            update.add(CISales.AccountFundsToBeSettled.Status,
+                            Status.find(CISales.AccountFundsToBeSettledStatus.Closed));
+            update.execute();
+        }
+
+        if (instance != null && CISales.AccountPettyCash.getType().equals(instance.getType())) {
+            final Update update = new Update(instance);
+            update.add(CISales.AccountPettyCash.Status, Status.find(CISales.AccountPettyCashStatus.Inactive));
+            update.execute();
+        }
+
         return ret;
     }
 
@@ -914,77 +951,6 @@ public abstract class Account_Base
         }
 
         return ret;
-    }
-
-    public Return setClosed(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Instance instance = _parameter.getInstance();
-
-        if (instance != null && CISales.AccountFundsToBeSettled.getType().equals(instance.getType())) {
-            final BigDecimal value = getAmount4TransactionAccount(_parameter);
-
-            Type type = null;
-            String name = null;
-            Status status = null;
-            if (value.signum() == 1) {
-                type = CISales.CollectionOrder.getType();
-                name = new Naming().fromNumberGenerator(_parameter, type.getName());
-                status = Status.find(CISales.CollectionOrderStatus.Open);
-            } else if (value.signum() == -1) {
-                type = CISales.PaymentOrder.getType();
-                name = new Naming().fromNumberGenerator(_parameter, type.getName());
-                status = Status.find(CISales.PaymentOrderStatus.Open);
-            }
-            if (type != null && name != null && status != null) {
-                final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CISales.AccountAbstract.CurrencyLink);
-                print.execute();
-
-                final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(),
-                                print.<Long>getAttribute(CISales.AccountAbstract.CurrencyLink));
-                final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
-
-                final PriceUtil util = new PriceUtil();
-                final BigDecimal[] rates = util.getExchangeRate(new DateTime(), rateCurrInst);
-                final BigDecimal pay = value.compareTo(BigDecimal.ZERO) == 0 ? BigDecimal.ZERO : value
-                                .setScale(8, BigDecimal.ROUND_HALF_UP).divide(rates[0], BigDecimal.ROUND_HALF_UP)
-                                .setScale(2, BigDecimal.ROUND_HALF_UP);
-
-                final CurrencyInst cur = new CurrencyInst(rateCurrInst);
-                final Object[] rate = new Object[] { cur.isInvert() ? BigDecimal.ONE : rates[1],
-                                cur.isInvert() ? rates[1] : BigDecimal.ONE };
-
-                final Insert insert = new Insert(type);
-                insert.add(CISales.DocumentSumAbstract.Name, name);
-                insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
-                insert.add(CISales.DocumentSumAbstract.DueDate, new DateTime());
-                insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
-                insert.add(CISales.DocumentSumAbstract.RateCrossTotal, value);
-                insert.add(CISales.DocumentSumAbstract.RateNetTotal, value);
-                insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
-                insert.add(CISales.DocumentSumAbstract.CrossTotal, pay);
-                insert.add(CISales.DocumentSumAbstract.NetTotal, pay);
-                insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
-                insert.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst.getId());
-                insert.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst.getId());
-                insert.add(CISales.DocumentSumAbstract.Rate, rate);
-                insert.add(CISales.DocumentSumAbstract.StatusAbstract, status);
-                insert.execute();
-            }
-            final Update update = new Update(instance);
-            update.add(CISales.AccountFundsToBeSettled.Status,
-                            Status.find(CISales.AccountFundsToBeSettledStatus.Closed));
-            update.execute();
-        }
-
-        if (instance != null && CISales.AccountPettyCash.getType().equals(instance.getType())) {
-            final Update update = new Update(instance);
-            update.add(CISales.AccountPettyCash.Status, Status.find(CISales.AccountPettyCashStatus.Inactive));
-            update.execute();
-        }
-
-        return new Return();
     }
 
     public Return downloadLiquidation(final Parameter _parameter)

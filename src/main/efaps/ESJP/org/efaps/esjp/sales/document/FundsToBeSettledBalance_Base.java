@@ -83,7 +83,7 @@ public abstract class FundsToBeSettledBalance_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Instance balanceInst = createPettyCashBalanceDoc(_parameter);
+        final Instance balanceInst = createBalanceDoc(_parameter);
 
         final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
 
@@ -114,6 +114,14 @@ public abstract class FundsToBeSettledBalance_Base
         _report.getJrParameters().put("AmountPettyCash", amount);
     }
 
+    @Override
+    public File createReport(final Parameter _parameter,
+                             final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        return super.createReport(_parameter, _createdDoc);
+    }
+
     /**
      * Internal method to create a PettyCashBalance.
      *
@@ -121,7 +129,7 @@ public abstract class FundsToBeSettledBalance_Base
      * @return instance of new PettyCashBalance, null if not created
      * @throws EFapsException on error
      */
-    public Instance createPettyCashBalanceDoc(final Parameter _parameter)
+    public Instance createBalanceDoc(final Parameter _parameter)
         throws EFapsException
     {
         Instance ret = null;

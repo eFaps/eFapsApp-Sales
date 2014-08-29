@@ -32,7 +32,10 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="initFundsToBeSettled" program="org.efaps.esjp.sales.Account" />
+            <execute method="initFundsToBeSettled" program="org.efaps.esjp.sales.Account" >
+                <property name="JasperReport">Sales_FundsToBeSettledBalance</property>
+                <property name="Mime">pdf</property>
+            </execute>
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>
