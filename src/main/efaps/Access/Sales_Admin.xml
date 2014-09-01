@@ -64,6 +64,7 @@
         <type>Sales_IncomingCreditNote</type>
         <type>Sales_IncomingExchange</type>
         <type>Sales_IncomingInvoice</type>
+        <type>Sales_IncomingProfServReceipt</type>
         <type>Sales_IncomingReceipt</type>
         <type>Sales_IncomingReminder</type>
         <type>Sales_Invoice</type>
@@ -386,6 +387,14 @@
         <status group="Sales_AccountFundsToBeSettledStatus">
             <key>Open</key>
             <key>Closed</key>
+        </status>
+
+        <status group="Sales_IncomingProfServReceiptStatus">
+            <key>Digitized</key>
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Canceled</key>
         </status>
 
         <role>Sales_Admin</role>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,24 +22,14 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+    <uuid>d224ae7e-b2bf-49dd-8266-22b3f8d8c69e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
+        <name>Sales_IncomingProfServReceiptTree_Position_Menu</name>
         <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingProfServReceiptMyDesk</child>
-            <child>Sales_IncomingCreditMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
-            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
-            <child>Sales_IncomingRetentionCertificateMyDesk</child>
+            <child>Sales_IncomingProfServReceiptTree_Position_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

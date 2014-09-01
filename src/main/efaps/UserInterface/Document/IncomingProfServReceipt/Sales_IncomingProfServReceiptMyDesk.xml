@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,26 +20,27 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+    <uuid>18824541-35f6-4fd5-af42-79c433f67502</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
-        <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingProfServReceiptMyDesk</child>
-            <child>Sales_IncomingCreditMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
-            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
-            <child>Sales_IncomingRetentionCertificateMyDesk</child>
-        </childs>
+        <name>Sales_IncomingProfServReceiptMyDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
+        </access>
+        <target>
+            <menu>Sales_IncomingProfServReceiptMyDesk_Menu</menu>
+            <table>Sales_IncomingProfServReceiptTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_IncomingProfServReceipt</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>

@@ -242,12 +242,6 @@ public interface SalesSettings
     String SERIALNUMBERS = "org.efaps.sales.SerialNumbers";
 
     /**
-     * Link.
-     * The DocumentType used for Recibo Honorarios.
-     */
-    String PROFSERVDOCTYP = "org.efaps.sales.DocumentType4ProfessionalService";
-
-    /**
      * Boolean.
      * Activate the reservation trigger mechanism on transactions.
      */

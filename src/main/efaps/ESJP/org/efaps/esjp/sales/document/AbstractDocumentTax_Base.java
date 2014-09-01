@@ -705,5 +705,16 @@ public abstract class AbstractDocumentTax_Base
         {
             this.paymentAmount = _paymentAmount;
         }
+
+
+        public boolean isProfServRetention()
+        {
+            return false;
+        }
+
+        public boolean isProfServInsurance()
+        {
+            return false;
+        }
     }
 }

@@ -63,8 +63,7 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
+import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -315,16 +314,16 @@ public abstract class RetentionReport_Base
                                 date.withTimeAtStartOfDay().plusDays(1));
             }
 
-            final Instance docTypeInst = Sales.getSysConfig().getLink(SalesSettings.PROFSERVDOCTYP);
-            if (docTypeInst != null && docTypeInst.isValid()) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
-                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentType.DocumentTypeLink, docTypeInst);
-                _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID,
-                                attrQueryBldr.getAttributeQuery(CISales.Document2DocumentType.DocumentLink));
-            } else {
-                RetentionReport_Base.LOG.error("Missing or invalid SystemConfiguration for report: {}",
-                                SalesSettings.PROFSERVDOCTYP);
-            }
+            final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.DocumentType);
+            docTypeAttrQueryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration,
+                            DocTypeConfiguration.PROFESSIONALSERVICE);
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
+            attrQueryBldr.addWhereAttrNotInQuery(CISales.Document2DocumentType.DocumentTypeLink,
+                            docTypeAttrQueryBldr.getAttributeQuery(CIERP.DocumentType.ID));
+            _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.Document2DocumentType.DocumentLink));
+
         }
 
         @Override

@@ -72,6 +72,7 @@ import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERP.DocTypeActivation;
+import org.efaps.esjp.erp.util.ERP.DocTypeConfiguration;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Payment;
 import org.efaps.esjp.sales.Payment_Base;
@@ -112,8 +113,8 @@ public abstract class AbstractDocumentSum_Base
     {
         final Return ret = new Return();
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-        if ((field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter))
-                        || (field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter))) {
+        if (field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter)
+                        || field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -1639,8 +1640,17 @@ public abstract class AbstractDocumentSum_Base
                     final DocTypeActivation pDAct = ERP.DocTypeActivation.valueOf(activation);
                     pactivt.add(pDAct);
                 }
-                if(!pactivt.isEmpty()) {
+                if (!pactivt.isEmpty()) {
                     _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Activation, pactivt.toArray());
+                }
+                final Map<Integer, String> configurations = analyseProperty(_parameter, "Configuration");
+                final List<DocTypeConfiguration> configs = new ArrayList<DocTypeConfiguration>();
+                for (final String configuration : configurations.values()) {
+                    final DocTypeConfiguration config = ERP.DocTypeConfiguration.valueOf(configuration);
+                    configs.add(config);
+                }
+                if (!configs.isEmpty()) {
+                    _queryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration, configs.toArray());
                 }
             };
         };
