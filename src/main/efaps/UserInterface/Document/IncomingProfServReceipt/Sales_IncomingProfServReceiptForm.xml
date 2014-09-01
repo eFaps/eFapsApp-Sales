@@ -181,8 +181,8 @@
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
-                <property name="Regex4DefaultValue">01 - .*</property>
-                <property name="Activation">TAX</property>
+                <property name="Regex4DefaultValue">02 - .*</property>
+                <property name="Configuration">PROFESSIONALSERVICE</property>
             </trigger>
         </field>
         <field name="documentType4View">
@@ -304,7 +304,7 @@
             <table>Sales_IncomingProfServReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingProfServReceiptPosition</property>
-                <property name="LinkFrom">IncomingProfServReceipt</property>
+                <property name="LinkFrom">IncomingProfServReceiptLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -420,7 +420,7 @@
             <table>Sales_IncomingProfServReceiptRatePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingProfServReceiptPosition</property>
-                <property name="LinkFrom">IncomingProfServReceipt</property>
+                <property name="LinkFrom">IncomingProfServReceiptLink</property>
             </evaluate>
         </field>
         <field name="rateNetTotal4Read">
@@ -484,80 +484,13 @@
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt">
             </trigger>
         </field>
-        <field character="Group" name="perceptionGroup">
+         <field character="Group" name="retentionGroup">
             <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <trigger event="UI_ACCESSCHECK"
                 method="configCheck"
-                name="Sales_IncomingProfServReceiptForm.perceptionGroup.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
-            </trigger>
-        </field>
-        <field name="perceptionCheckbox">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="HideLabel">true</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.perceptionCheckbox.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
-            <property name="UIType">CHECKBOX</property>
-            <trigger event="UI_ACCESSCHECK"
-                method="configCheck"
-                name="Sales_IncomingProfServReceiptForm.perceptionCheckbox.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
-            </trigger>
-            <trigger event="UI_FIELD_VALUE"
-                method="getPeceptionCheckBoxValue"
-                name="Sales_IncomingProfServReceiptForm.perceptionCheckbox.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-        </field>
-        <field name="perceptionPercent">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Columns">2</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.perceptionPercent.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_FIELD_UPDATE"
-                method="updateFields4PerceptionPercent"
-                name="Sales_IncomingProfServReceiptForm.perceptionPercent.UI_FIELD_UPDATE"
-                program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-            <trigger event="UI_ACCESSCHECK"
-                method="configCheck"
-                name="Sales_IncomingProfServReceiptForm.perceptionPercent.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
-            </trigger>
-            <trigger event="UI_FIELD_VALUE"
-                method="getPeceptionPercentValue"
-                name="Sales_IncomingProfServReceiptForm.perceptionPercent.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-        </field>
-        <field name="perceptionValue">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.perceptionValue.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingProfServReceiptForm.perceptionValue.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
-            </trigger>
-            <trigger event="UI_FIELD_VALUE" method="getPeceptionValue" name="Sales_IncomingProfServReceiptForm.perceptionValue.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-        </field>
-        <field character="Group" name="retentionGroup">
-            <property name="GroupCount">3</property>
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">READONLY</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingProfServReceiptForm.retentionGroup.UI_ACCESSCHECK"
+                name="Sales_IncomingProfServReceiptForm.retentionGroup.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateRetention</property>
@@ -571,12 +504,9 @@
             <property name="Label">Sales_IncomingProfServReceiptForm.retentionCheckbox.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingProfServReceiptForm.retentionCheckbox.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
-            </trigger>
-            <trigger event="UI_FIELD_VALUE" method="getRetentionCheckBoxValue" name="Sales_IncomingProfServReceiptForm.retentionCheckbox.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="getRetentionCheckBoxValue"
+                name="Sales_IncomingProfServReceiptForm.retentionCheckbox.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
         <field name="retentionPercent">
@@ -586,15 +516,14 @@
             <property name="Columns">2</property>
             <property name="Label">Sales_IncomingProfServReceiptForm.retentionPercent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RetentionPercent" name="Sales_IncomingProfServReceiptForm.retentionPercent.UI_FIELD_UPDATE"
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4RetentionPercent"
+                name="Sales_IncomingProfServReceiptForm.retentionPercent.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-            <trigger event="UI_FIELD_VALUE" method="getRetentionPercentValue" name="Sales_IncomingProfServReceiptForm.retentionPercent.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="getRetentionPercentValue"
+                name="Sales_IncomingProfServReceiptForm.retentionPercent.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingProfServReceiptForm.retentionPercent.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
-            </trigger>
         </field>
         <field name="retentionValue">
             <property name="ModeCreate">EDITABLE</property>
@@ -602,63 +531,54 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingProfServReceiptForm.retentionValue.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getRetentionValue" name="Sales_IncomingProfServReceiptForm.retentionValue.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="getRetentionValue"
+                name="Sales_IncomingProfServReceiptForm.retentionValue.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_IncomingProfServReceiptForm.retentionValue.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
-            </trigger>
         </field>
-        <field character="Group" name="detractionGroup">
-            <property name="GroupCount">4</property>
+        <field character="Group" name="insuranceGroup">
+            <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
         </field>
-        <field name="detractionCheckbox">
+        <field name="insuranceCheckbox">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="HideLabel">true</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.detractionCheckbox.Label</property>
+            <property name="Label">Sales_IncomingProfServReceiptForm.insuranceCheckbox.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
-            <trigger event="UI_FIELD_VALUE" method="getDetractionCheckBoxValue" name="Sales_IncomingProfServReceiptForm.detractionCheckbox.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="getInsuranceCheckBoxValue"
+                name="Sales_IncomingProfServReceiptForm.detractionCheckbox.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
-        <field name="detractionPercent">
+        <field name="insurancePercent">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.detractionPercent.Label</property>
+            <property name="Label">Sales_IncomingProfServReceiptForm.insurancePercent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getDetractionPercentValue" name="Sales_IncomingProfServReceiptForm.detractionPercent.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="getInsurancePercentValue"
+                name="Sales_IncomingProfServReceiptForm.insurancePercent.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4DetractionPercent" name="Sales_IncomingProfServReceiptForm.detractionPercent.UI_FIELD_UPDATE"
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4InsurancePercent"
+                name="Sales_IncomingProfServReceiptForm.insurancePercent.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
-        <field name="detractionServiceType">
+        <field name="insuranceValue">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.detractionServiceType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue" name="Sales_IncomingProfServReceiptForm.detractionServiceType.UI_FIELD_VALUE"
-                program="org.efaps.esjp.common.uiform.Field">
-                <property name="Type">Sales_AttributeDefinitionServiceType</property>
-                <property name="ValueSelect">oid</property>
-                <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
-                <property name="OrderSelect">attribute[Value]</property>
-            </trigger>
-        </field>
-        <field name="detractionValue">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.detractionValue.Label</property>
+            <property name="Label">Sales_IncomingProfServReceiptForm.insuranceValue.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getDetractionValue" name="Sales_IncomingProfServReceiptForm.detractionValue.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="getInsuranceValue"
+                name="Sales_IncomingProfServReceiptForm.insuranceValue.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
         <field name="javaScript">
@@ -667,7 +587,8 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_IncomingProfServReceiptForm.javaScript.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
+                name="Sales_IncomingProfServReceiptForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
         <field name="taxDocJavaScript">
@@ -676,8 +597,9 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScript4TaxDocUIValue" name="Sales_IncomingProfServReceiptForm.taxDocJavaScript.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
+            <trigger event="UI_FIELD_VALUE" method="getJavaScript4TaxDocUIValue"
+                name="Sales_IncomingProfServReceiptForm.taxDocJavaScript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.IncomingInvoice" />
         </field>
     </definition>
     <definition>
@@ -982,7 +904,7 @@
             <table>Sales_IncomingProfServReceiptPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingProfServReceiptPosition</property>
-                <property name="LinkFrom">IncomingProfServReceipt</property>
+                <property name="LinkFrom">IncomingProfServReceiptLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -1079,7 +1001,7 @@
             <table>Sales_IncomingProfServReceiptRatePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_IncomingProfServReceiptPosition</property>
-                <property name="LinkFrom">IncomingProfServReceipt</property>
+                <property name="LinkFrom">IncomingProfServReceiptLink</property>
             </evaluate>
         </field>
         <field name="rateNetTotal4Read">
@@ -1214,7 +1136,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
-            <property name="Label">Sales_IncomingProfServReceiptForm.detractionPercent.Label</property>
+            <property name="Label">Sales_IncomingProfServReceiptForm.insurancePercent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="getInsurancePercentValue"
@@ -1225,7 +1147,6 @@
                 name="Sales_IncomingProfServReceiptForm.insurancePercent.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.document.IncomingProfServReceipt" />
         </field>
-
         <field name="insuranceValue">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>

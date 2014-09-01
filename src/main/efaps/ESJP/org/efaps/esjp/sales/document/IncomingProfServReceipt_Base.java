@@ -96,6 +96,23 @@ public abstract class IncomingProfServReceipt_Base
         return new Return();
     }
 
+    /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        createUpdateTaxDoc(_parameter, editDoc, true);
+        return new Return();
+    }
+
+
     @Override
     protected void add2DocCreate(final Parameter _parameter,
                                  final Insert _insert,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2009 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,31 +22,20 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4eea184c-c9b3-4776-b211-495e8386d2dd</uuid>
+    <uuid>035fecc7-a5d6-46b8-ad45-7f6b0c17bd2c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingProfServReceiptTree_Menu_Action_Edit</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
-            <role>Sales_IncomingDocument</role>
-        </access>
+        <name>Sales_IncomingProfServReceiptSearch</name>
         <target>
-            <form>Sales_IncomingProfServReceiptForm</form>
-            <execute method="edit" program="org.efaps.esjp.sales.document.IncomingProfServReceipt">
-                <property name="PositionType">Sales_IncomingProfServReceiptPosition</property>
-            </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_IncomingProfServReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Check4CreateStatus">true</property>
-            </trigger>
+            <form>Sales_IncomingProfServReceiptSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Sales_IncomingProfServReceipt</property>
+                <property name="ExpandChildTypes">true</property>
+            </evaluate>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
+        <property name="TargetMode">search</property>
     </definition>
 </ui-command>
