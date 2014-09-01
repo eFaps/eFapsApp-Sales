@@ -142,22 +142,21 @@ public abstract class IncomingProfServReceipt_Base
                                    final boolean _isUpdate)
         throws EFapsException
     {
-        boolean executed = false;
         if ("false".equalsIgnoreCase(ParameterUtil.getParameterValue(_parameter,
                         CIFormSales.Sales_IncomingProfServReceiptForm.headingTaxDoc.name,
                         CIFormSales.Sales_IncomingProfServReceiptForm.headingTaxDoc4Edit.name,
                         CIFormSales.Sales_IncomingProfServReceiptForm.headingTaxDoc4EditCollapsed.name))) {
-
-            final String perceptionValueStr = _parameter
-                            .getParameterValue(CIFormSales.Sales_IncomingProfServReceiptForm.perceptionValue.name);
-            if (perceptionValueStr != null && !perceptionValueStr.isEmpty()) {
+            final boolean isRetention = "true".equalsIgnoreCase(_parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingProfServReceiptForm.retentionCheckbox.name));
+            final String retentionValueStr = _parameter
+                            .getParameterValue(CIFormSales.Sales_IncomingProfServReceiptForm.retentionValue.name);
+            if (retentionValueStr != null && !retentionValueStr.isEmpty()) {
                 final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                 try {
-                    final BigDecimal perception = (BigDecimal) formatter.parse(perceptionValueStr);
-                    final IncomingPerceptionCertificate doc = new IncomingPerceptionCertificate();
-                    _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, perception);
+                    final BigDecimal retention = (BigDecimal) formatter.parse(retentionValueStr);
+                    final IncomingProfServRetention doc = new IncomingProfServRetention();
+                    _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, retention);
                     doc.createUpdate4Doc(_parameter, _createdDoc);
-                    executed = true;
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
@@ -168,47 +167,31 @@ public abstract class IncomingProfServReceipt_Base
             if (isInsurance) {
                 final DecimalFormat formatter = NumberFormatter.get().getFormatter();
                 try {
-                    final String insuranceValueStr = _parameter
-                                    .getParameterValue(CIFormSales.Sales_IncomingProfServReceiptForm.insuranceValue.name);
+                    final String insuranceValueStr = _parameter.getParameterValue(
+                                    CIFormSales.Sales_IncomingProfServReceiptForm.insuranceValue.name);
                     final BigDecimal detraction;
                     if (insuranceValueStr != null && !insuranceValueStr.isEmpty()) {
                         detraction = (BigDecimal) formatter.parse(insuranceValueStr);
                     } else {
                         detraction = BigDecimal.ZERO;
                     }
-                    final IncomingDetraction doc = new IncomingDetraction();
+                    final IncomingProfServInsurance doc = new IncomingProfServInsurance();
                     _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, detraction);
-
                     doc.createUpdate4Doc(_parameter, _createdDoc);
-                    executed = true;
                 } catch (final ParseException p) {
                     throw new EFapsException(IncomingInvoice.class, "Perception.ParseException", p);
                 }
             }
-
-        }
-        if (_createdDoc.getValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE) == null && _isUpdate && !executed) {
-            _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, BigDecimal.ZERO);
-            new AbstractDocumentTax()
-            {
-
-                @Override
-                protected Type getType4create4Doc(final Parameter _parameter)
-                    throws EFapsException
-                {
-                    // just any type so that the evaluation will fail
-                    return CISales.DeliveryNote.getType();
-                }
-
-                @Override
-                protected void connectDoc(final Parameter _parameter,
-                                          final CreatedDoc _origDoc,
-                                          final CreatedDoc _taxDoc)
-                    throws EFapsException
-                {
-                    // not needed
-                }
-            }.createUpdate4Doc(_parameter, _createdDoc);
+            final DocTaxInfo docTaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _createdDoc.getInstance());
+            if (!isInsurance) {
+                docTaxInfo.cleanByType(CISales.IncomingProfServInsurance);
+            }
+            if (!isRetention) {
+                docTaxInfo.cleanByType(CISales.IncomingProfServRetention);
+            }
+        } else {
+            final DocTaxInfo docTaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _createdDoc.getInstance());
+            docTaxInfo.clean4TaxDocInst(null);
         }
     }
 
@@ -290,7 +273,7 @@ public abstract class IncomingProfServReceipt_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isProfServRetention()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent());
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent(CISales.IncomingProfServRetention));
         }
         return retVal;
     }
@@ -306,7 +289,7 @@ public abstract class IncomingProfServReceipt_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isProfServInsurance()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent());
+            retVal.put(ReturnValues.VALUES,doctaxInfo.getPercent(CISales.IncomingProfServInsurance));
         }
         return retVal;
     }
@@ -322,7 +305,7 @@ public abstract class IncomingProfServReceipt_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isProfServRetention()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount(CISales.IncomingProfServRetention));
         }
         return retVal;
     }
@@ -338,7 +321,7 @@ public abstract class IncomingProfServReceipt_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isProfServInsurance()) {
-            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount(CISales.IncomingProfServInsurance));
         }
         return retVal;
     }
@@ -428,7 +411,7 @@ public abstract class IncomingProfServReceipt_Base
                                 .divide(new BigDecimal(100), BigDecimal.ROUND_HALF_UP));
                 final String insuranceStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
                                 .format(detraction);
-                _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.detractionValue.name, insuranceStr);
+                _map.put(CIFormSales.Sales_IncomingProfServReceiptForm.insuranceValue.name, insuranceStr);
             } catch (final ParseException e) {
                 LOG.error("Catched parsing error", e);
             }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,20 +20,28 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ad3fc382-57d4-4b39-ad31-3b5c6199186d</uuid>
+    <uuid>e6e14c82-4a1a-4c37-93d8-7621a7b9d30a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingProfServReceiptTree_Menu_Action</name>
-        <childs>
-            <child>Sales_IncomingProfServReceiptTree_Menu_Action_Edit</child>
-            <child>Sales_IncomingProfServReceiptTree_Menu_Action_SetCanceled</child>
-            <child>Sales_IncomingProfServReceiptTree_Menu_Action_SetPaid</child>
-            <child>Sales_DocumentAbstractTree_Menu_Action_ChangeDocumentType</child>
-            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
-        </childs>
+        <name>Sales_IncomingProfServRetention2IncomingProfServReceipt</name>
+        <parent>Sales_IncomingDocumentTax2Document</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_IncomingProfServRetention</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_IncomingProfServReceipt</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
-</ui-menu>
+</datamodel-type>

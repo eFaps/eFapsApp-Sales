@@ -39,6 +39,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -91,24 +92,13 @@ public abstract class AbstractDocumentTax_Base
         CreatedDoc ret = null;
         final Type type = getType4create4Doc(_parameter);
         final DocTaxInfo docTaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _createdDoc.getInstance());
-        if (docTaxInfo.isValid() && !docTaxInfo.isKindOf(type)) {
-            final Delete delete = new Delete(docTaxInfo.getRelInstance());
-            delete.execute();
-
-            final Update tDupdate = new Update(docTaxInfo.getTaxDocInstance());
-            tDupdate.add(CISales.DocumentSumAbstract.StatusAbstract, Status.find(
-                            docTaxInfo.getTaxDocInstance().getType().getStatusAttribute().getLink().getUUID(),
-                            "Canceled"));
-            tDupdate.executeWithoutAccessCheck();
-        }
 
         final BigDecimal value = (BigDecimal) _createdDoc.getValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE);
         if (value.compareTo(BigDecimal.ZERO) > 0) {
             ret = new CreatedDoc();
-
             final Update update;
             if (docTaxInfo.isValid() && docTaxInfo.isKindOf(type)) {
-                update = new Update(docTaxInfo.getTaxDocInstance());
+                update = new Update(docTaxInfo.getTaxDocInstance(type));
             } else {
                 update = new Insert(type);
                 final PrintQuery print = new PrintQuery(_createdDoc.getInstance());
@@ -154,6 +144,7 @@ public abstract class AbstractDocumentTax_Base
             if (update instanceof Insert) {
                 connectDoc(_parameter, _createdDoc, ret);
             }
+            docTaxInfo.clean4TaxDocInst(update.getInstance());
         }
         return ret;
     }
@@ -267,22 +258,46 @@ public abstract class AbstractDocumentTax_Base
             ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
                             .append(formater.format(doctaxInfo.getTaxAmount()))
                             .append("\">");
-        } else if (((FieldValue) uiObject).getDisplay().equals(Display.READONLY)) {
+        } else if (((FieldValue) uiObject).getDisplay().equals(Display.READONLY)
+                        || ((FieldValue) uiObject).getDisplay().equals(Display.NONE)) {
             if (!doctaxInfo.isValid()) {
                 ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"));
             } else {
                 if (doctaxInfo.isDetraction()) {
                     ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
-                                + ".IncomingDetractionSmallLabel"));
+                                + ".IncomingDetractionSmallLabel"))
+                        .append(": ").append(formater.format(doctaxInfo.getTaxAmount())).append(" (")
+                        .append(formater.format(doctaxInfo.getPercent())).append("%)");
                 } else if (doctaxInfo.isRetention()) {
                     ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
-                                + ".IncomingRetentionSmallLabel"));
+                                + ".IncomingRetentionSmallLabel"))
+                        .append(": ").append(formater.format(doctaxInfo.getTaxAmount())).append(" (")
+                        .append(formater.format(doctaxInfo.getPercent())).append("%)");
                 } else if (doctaxInfo.isPerception()) {
                     ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
-                                + ".IncomingPerceptionCertificateSmallLabel"));
+                                + ".IncomingPerceptionCertificateSmallLabel"))
+                        .append(": ").append(formater.format(doctaxInfo.getTaxAmount())).append(" (")
+                        .append(formater.format(doctaxInfo.getPercent())).append("%)");
                 }
-                ret.append(": ").append(formater.format(doctaxInfo.getTaxAmount())).append(" (")
-                .append(formater.format(doctaxInfo.getPercent())).append("%)");
+
+                if (doctaxInfo.isProfServRetention()) {
+                    ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                    + ".IncomingProfServRetentionSmallLabel"))
+                            .append(": ")
+                            .append(formater.format(doctaxInfo.getTaxAmount(CISales.IncomingProfServRetention)))
+                            .append(" (")
+                            .append(formater.format(doctaxInfo.getPercent(CISales.IncomingProfServRetention)))
+                            .append("%)");
+                }
+                if (doctaxInfo.isProfServInsurance()) {
+                    ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName()
+                                    + ".IncomingProfServInsuranceSmallLabel"))
+                        .append(": ")
+                        .append(formater.format(doctaxInfo.getTaxAmount(CISales.IncomingProfServInsurance)))
+                        .append(" (")
+                        .append(formater.format(doctaxInfo.getPercent(CISales.IncomingProfServInsurance)))
+                        .append("%)");
+                }
             }
         } else {
             ret.append("-");
@@ -364,12 +379,17 @@ public abstract class AbstractDocumentTax_Base
                 final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
                 final BigDecimal percent = new BigDecimal(100).setScale(8).divide(crossTotal, BigDecimal.ROUND_HALF_UP)
                                .multiply(taxAmount);
-                final DocTaxInfo docTaxInfo = new DocTaxInfo(docInstance);
-                mapping.put(docInstance, docTaxInfo);
-                docTaxInfo.setRelInstance(relInstance);
-                docTaxInfo.setTaxDocInstance(taxDocInstance);
-                docTaxInfo.setTaxAmount(taxAmount);
-                docTaxInfo.setPercent(percent);
+                final DocTaxInfo docTaxInfo;
+                if (mapping.containsKey(docInstance)) {
+                    docTaxInfo = mapping.get(docInstance);
+                } else {
+                    docTaxInfo  = new DocTaxInfo(docInstance);
+                    mapping.put(docInstance, docTaxInfo);
+                }
+                docTaxInfo.addRelInstance(relInstance);
+                docTaxInfo.addTaxDocInstance(taxDocInstance);
+                docTaxInfo.addTaxAmount(taxDocInstance, taxAmount);
+                docTaxInfo.addPercent(taxDocInstance, percent);
                 docTaxInfo.setInitialized(true);
             }
             for (final Instance inst : CollectionUtils.subtract(instances, validInstances)) {
@@ -393,12 +413,12 @@ public abstract class AbstractDocumentTax_Base
         /**
          * Instance of the DocTax.
          */
-        private Instance taxDocInstance;
+        private final List<Instance> taxDocInstances = new ArrayList<>();
 
         /**
          * Instance of the relation.
          */
-        private Instance relInstance;
+        private final List<Instance> relInstances = new ArrayList<>();
 
         /**
          * initialized or not.
@@ -408,7 +428,12 @@ public abstract class AbstractDocumentTax_Base
         /**
          * Amount of tax.
          */
-        private BigDecimal taxAmount = BigDecimal.ZERO;
+        private final Map<Instance, BigDecimal> tax2Amount = new HashMap<>();
+
+        /**
+         * Amount of tax.
+         */
+        private final Map<Instance, BigDecimal> tax2Percent = new HashMap<>();
 
         /**
          * Amount of the tax payed.
@@ -416,16 +441,111 @@ public abstract class AbstractDocumentTax_Base
         private BigDecimal paymentAmount = null;
 
         /**
-         * The amount expressed in percent.
-         */
-        private BigDecimal percent = BigDecimal.ZERO;
-
-        /**
          * @param _docInst instance of teh docuemnt the info belong to
          */
         public DocTaxInfo(final Instance _docInst)
         {
             this.docInstance = _docInst;
+        }
+
+        /**
+         * @param _taxDocInst instance to be retained, if null all will be removed
+         * @throws EFapsException on error
+         */
+        public void clean4TaxDocInst(final Instance _taxDocInst)
+            throws EFapsException
+        {
+            if (_taxDocInst == null
+                            || _taxDocInst.getType().isKindOf(CISales.IncomingPerceptionCertificate)
+                            || _taxDocInst.getType().isKindOf(CISales.IncomingRetention)
+                            || _taxDocInst.getType().isKindOf(CISales.IncomingDetraction)) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+                queryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.docInstance);
+                if (_taxDocInst != null) {
+                    queryBldr.addWhereAttrNotEqValue(CISales.IncomingDocumentTax2Document.FromAbstractLink,
+                                    _taxDocInst);
+                }
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selDocTaxInst = SelectBuilder.get().linkto(
+                                CISales.IncomingDocumentTax2Document.FromAbstractLink).instance();
+                multi.addSelect(selDocTaxInst);
+                multi.execute();
+                while (multi.next()) {
+                    final Instance docTaxInst = multi.getSelect(selDocTaxInst);
+
+                    final Update update = new Update(docTaxInst);
+                    update.add(CISales.DocumentSumAbstract.StatusAbstract, Status.find(
+                                    docTaxInst.getType().getStatusAttribute().getLink().getUUID(),
+                                    "Canceled"));
+                    update.executeWithoutAccessCheck();
+
+                    new Delete(multi.getCurrentInstance()).executeWithoutAccessCheck();
+                }
+            }
+        }
+
+        /**
+         * @param _ciTYpe tyep to be removed
+         */
+        public void cleanByType(final CIType _ciTYpe)
+            throws EFapsException
+        {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(_ciTYpe);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.docInstance);
+            queryBldr.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink,
+                            attrQueryBldr.getAttributeQuery("ID"));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocTaxInst = SelectBuilder.get().linkto(
+                            CISales.IncomingDocumentTax2Document.FromAbstractLink).instance();
+            multi.addSelect(selDocTaxInst);
+            multi.execute();
+            while (multi.next()) {
+                final Instance docTaxInst = multi.getSelect(selDocTaxInst);
+
+                final Update update = new Update(docTaxInst);
+                update.add(CISales.DocumentSumAbstract.StatusAbstract, Status.find(
+                                docTaxInst.getType().getStatusAttribute().getLink().getUUID(),
+                                "Canceled"));
+                update.executeWithoutAccessCheck();
+                new Delete(multi.getCurrentInstance()).executeWithoutAccessCheck();
+            }
+        }
+
+        /**
+         * @param _type
+         * @return
+         */
+        public Instance getTaxDocInstance(final Type _type)
+        {
+            Instance ret = null;
+            for (final Instance taxDocInst : this.taxDocInstances) {
+                if (taxDocInst.isValid() && taxDocInst.getType().isKindOf(_type)) {
+                    ret = taxDocInst;
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * @param _taxDocInstance
+         * @param _percent
+         */
+        public void addPercent(final Instance _taxDocInstance,
+                               final BigDecimal _percent)
+        {
+            this.tax2Percent.put(_taxDocInstance, _percent);
+        }
+
+        /**
+         * @param _taxDocInstance
+         * @param _taxAmount
+         */
+        public void addTaxAmount(final Instance _taxDocInstance,
+                                 final BigDecimal _taxAmount)
+        {
+            this.tax2Amount.put(_taxDocInstance, _taxAmount);
         }
 
         /**
@@ -449,13 +569,16 @@ public abstract class AbstractDocumentTax_Base
                                 .attribute(CISales.DocumentSumAbstract.CrossTotal);
                 multi.addSelect(selDocTaxInst, selDocTaxCrossTotal, selDocCrossTotal);
                 multi.execute();
-                if (multi.next()) {
-                    this.relInstance = multi.getCurrentInstance();
-                    this.taxDocInstance = multi.getSelect(selDocTaxInst);
-                    this.taxAmount = multi.getSelect(selDocTaxCrossTotal);
+                while (multi.next()) {
+                    this.relInstances.add(multi.getCurrentInstance());
+                    final Instance taxDocInst = multi.<Instance>getSelect(selDocTaxInst);
+                    final BigDecimal taxAmount = multi.<BigDecimal>getSelect(selDocTaxCrossTotal);
+                    this.taxDocInstances.add(taxDocInst);
+                    this.tax2Amount.put(taxDocInst, taxAmount);
                     final BigDecimal crossTotal = multi.getSelect(selDocCrossTotal);
-                    this.percent = new BigDecimal(100).setScale(8).divide(crossTotal, BigDecimal.ROUND_HALF_UP)
-                                    .multiply(this.taxAmount);
+                    final BigDecimal percent = new BigDecimal(100).setScale(8).divide(crossTotal, BigDecimal.ROUND_HALF_UP)
+                                    .multiply(taxAmount);
+                    this.tax2Percent.put(taxDocInst, percent);
                 }
                 this.initialized = true;
             }
@@ -471,10 +594,24 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.taxDocInstance != null
-                            && this.taxDocInstance.getType().isKindOf(CISales.IncomingPerceptionCertificate.getType());
+            return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingPerceptionCertificate);
         }
 
+
+        protected boolean hasType(final CIType _type) {
+            return hasType(_type.getType());
+        }
+
+        protected boolean hasType(final Type _type) {
+            boolean ret = false;
+            for (final Instance taxDocInst : this.taxDocInstances) {
+                ret = taxDocInst.isValid() && taxDocInst.getType().isKindOf(_type);
+                if (ret) {
+                    break;
+                }
+            }
+            return ret;
+        }
         /**
          * @return true if valid else false
          * @throws EFapsException on error
@@ -483,8 +620,7 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.docInstance != null && this.docInstance.isValid() && this.taxDocInstance != null
-                            && this.taxDocInstance.isValid();
+            return this.docInstance != null && this.docInstance.isValid() && !this.taxDocInstances.isEmpty();
         }
 
         /**
@@ -497,8 +633,7 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.taxDocInstance != null
-                            && this.taxDocInstance.getType().isKindOf(_type);
+            return !this.taxDocInstances.isEmpty() && hasType(_type);
         }
 
         /**
@@ -511,8 +646,7 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.taxDocInstance != null
-                            && this.taxDocInstance.getType().isKindOf(CISales.IncomingRetention.getType());
+            return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingRetention);
         }
 
         /**
@@ -525,8 +659,7 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.taxDocInstance != null
-                            && this.taxDocInstance.getType().isKindOf(CISales.IncomingDetraction.getType());
+            return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingDetraction);
         }
 
         /**
@@ -553,27 +686,14 @@ public abstract class AbstractDocumentTax_Base
         }
 
         /**
-         * Getter method for the instance variable {@link #taxDocInstance}.
-         *
-         * @return value of instance variable {@link #taxDocInstance}
-         * @throws EFapsException on error
-         */
-        public Instance getTaxDocInstance()
-            throws EFapsException
-        {
-            initialize();
-            return this.taxDocInstance;
-        }
-
-        /**
          * Setter method for instance variable {@link #taxDocInstance}.
          *
          * @param _taxDocInstance value for instance variable
          *            {@link #taxDocInstance}
          */
-        public void setTaxDocInstance(final Instance _taxDocInstance)
+        public void addTaxDocInstance(final Instance _taxDocInstance)
         {
-            this.taxDocInstance = _taxDocInstance;
+            this.taxDocInstances.add(_taxDocInstance);
         }
 
         /**
@@ -586,17 +706,23 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.taxAmount;
+            return this.tax2Amount.size() == 1 ? this.tax2Amount.values().iterator().next() : BigDecimal.ZERO;
+        }
+
+        public BigDecimal getTaxAmount(final Instance _taxDocInst)
+            throws EFapsException
+        {
+            initialize();
+            return this.tax2Amount.get(_taxDocInst);
         }
 
         /**
-         * Setter method for instance variable {@link #taxAmount}.
-         *
-         * @param _taxAmount value for instance variable {@link #taxAmount}
+         * @param _incomingprofservretention
+         * @return
          */
-        public void setTaxAmount(final BigDecimal _taxAmount)
+        public BigDecimal getTaxAmount(final CIType _citype) throws EFapsException
         {
-            this.taxAmount = _taxAmount;
+            return getTaxAmount(getTaxDocInstance(_citype));
         }
 
         /**
@@ -609,30 +735,24 @@ public abstract class AbstractDocumentTax_Base
             throws EFapsException
         {
             initialize();
-            return this.percent;
+            return this.tax2Percent.size() == 1 ? this.tax2Percent.values().iterator().next() : BigDecimal.ZERO;
         }
 
-        /**
-         * Setter method for instance variable {@link #percent}.
-         *
-         * @param _percent value for instance variable {@link #percent}
-         */
-        public void setPercent(final BigDecimal _percent)
-        {
-            this.percent = _percent;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #relInstane}.
-         *
-         * @return value of instance variable {@link #relInstane}
-         * @throws EFapsException on error
-         */
-        public Instance getRelInstance()
+        public BigDecimal getPercent(final Instance _taxDocInst)
             throws EFapsException
         {
             initialize();
-            return this.relInstance;
+            return this.tax2Percent.get(_taxDocInst);
+        }
+
+
+        /**
+         * @param _incomingprofservretention
+         * @return
+         */
+        public BigDecimal getPercent(final CIType _citype) throws EFapsException
+        {
+            return getPercent(getTaxDocInstance(_citype));
         }
 
         /**
@@ -640,11 +760,10 @@ public abstract class AbstractDocumentTax_Base
          *
          * @param _relInstance value for instance variable {@link #relInstance}
          */
-        public void setRelInstance(final Instance _relInstance)
+        public void addRelInstance(final Instance _relInstance)
         {
-            this.relInstance = _relInstance;
+            this.relInstances.add(_relInstance);
         }
-
 
         /**
          * Getter method for the instance variable {@link #initialized}.
@@ -655,7 +774,6 @@ public abstract class AbstractDocumentTax_Base
         {
             return this.initialized;
         }
-
 
         /**
          * Setter method for instance variable {@link #initialized}.
@@ -671,6 +789,7 @@ public abstract class AbstractDocumentTax_Base
          * Getter method for the instance variable {@link #paymentAmount}.
          *
          * @return value of instance variable {@link #paymentAmount}
+         * @throws EFapsException on error
          */
         public BigDecimal getPaymentAmount()
             throws EFapsException
@@ -706,15 +825,39 @@ public abstract class AbstractDocumentTax_Base
             this.paymentAmount = _paymentAmount;
         }
 
-
+        /**
+         * @return true if of this type
+         * @throws EFapsException on error
+         */
         public boolean isProfServRetention()
+            throws EFapsException
         {
-            return false;
+            initialize();
+            return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingProfServRetention);
         }
 
+        /**
+         * @return true if of this type
+         * @throws EFapsException on error
+         */
         public boolean isProfServInsurance()
+            throws EFapsException
         {
-            return false;
+            initialize();
+            return !this.taxDocInstances.isEmpty() && hasType(CISales.IncomingProfServInsurance);
         }
+
+        /**
+         * @param _incomingprofservretention
+         * @return
+         */
+        public Instance getTaxDocInstance(final CIType _citype)
+        {
+            return getTaxDocInstance(_citype.getType());
+        }
+
+
+
+
     }
 }

@@ -88,8 +88,8 @@ public abstract class PaymentRetentionOut_Base
             final Instance inst = Instance.get(createDocument);
             if (inst.isValid()) {
                 final DocTaxInfo docTaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, inst);
-                if (docTaxInfo.isValid()) {
-                    final Update update = new Update(docTaxInfo.getTaxDocInstance());
+                if (docTaxInfo.isValid() && docTaxInfo.isRetention()) {
+                    final Update update = new Update(docTaxInfo.getTaxDocInstance(CISales.IncomingRetention.getType()));
                     update.add(CISales.IncomingRetention.StatusAbstract,
                                     Status.find(CISales.IncomingRetentionStatus.Paid));
                     update.executeWithoutAccessCheck();
