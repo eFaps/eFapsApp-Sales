@@ -41,6 +41,7 @@
             <child>Sales_AccountFundsToBeSettledTree_Transaction</child>
             <child>Sales_AccountFundsToBeSettledTree_DocumentsWithTrans</child>
             <child>Sales_AccountFundsToBeSettledTree_Documents</child>
+            <child>Sales_AccountFundsToBeSettledTree_File</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

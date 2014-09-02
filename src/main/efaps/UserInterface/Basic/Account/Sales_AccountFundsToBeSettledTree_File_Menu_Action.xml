@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2010 moxter.net S.A.C.
+
+  All Rights Reserved.
+? This program contains proprietary and trade secret information of
+? moxter.net S.A.C. Copyright notice is precautionary only and does not
+? evidence any actual or intended publication of such program.
+
+  Author:          moxter.net S.A.C.
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+
+    <uuid>26a634ab-4478-4f1a-b214-53c127216972</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AccountFundsToBeSettledTree_File_Menu_Action</name>
+        <childs>
+            <child>Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot</child>
+        </childs>
+    </definition>
+</ui-menu>
