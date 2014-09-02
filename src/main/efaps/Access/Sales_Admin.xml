@@ -45,6 +45,7 @@
         <access-type>grant</access-type>
 
         <type>Contacts_Contact</type>
+        <type>Sales_AccountFundsToBeSettled</type>
         <type>Sales_BulkPayment</type>
         <type>Sales_CashDeskBalance</type>
         <type>Sales_CashReceipt</type>
