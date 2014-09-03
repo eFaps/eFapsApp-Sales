@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2003 - 2014 The eFaps Team
 
@@ -22,18 +20,16 @@
   Last Changed By: $Author$
 
 -->
-
-<user-role  xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>bfb313f1-db28-4f0f-9b47-ddd28e2c99e7</uuid>
+<user-role xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>0188c5b3-ed54-4e08-9fab-4c4f6d587379</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-    <description>Role for the Administration of PettyCash</description>
+    <description>Role that a User of a PettyCash must have to actually have access to it.</description>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCash</name>
+        <name>Sales_PettyCash_User</name>
         <status>true</status>
         <global>true</global>
     </definition>
 </user-role>
-

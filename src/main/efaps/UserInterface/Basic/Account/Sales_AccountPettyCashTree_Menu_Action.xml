@@ -29,7 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree_Menu_Action</name>
         <childs>
-            <child>Sales_AccountAbstractTree_Menu_Action_Edit</child>
+            <child>Sales_AccountPettyCashTree_Menu_Action_Edit</child>
             <child>Sales_AccountAbstractTree_Menu_Action_Recalculate</child>
             <child>Sales_AccountPettyCashTree_Menu_Action_Closed</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>

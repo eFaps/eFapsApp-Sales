@@ -32,11 +32,10 @@
         </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
         <access>
-            <role>Sales_Accounting</role>
             <role>Sales_Admin</role>
-            <role>Sales_IncomingDocument</role>
+            <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCash4IncomingCreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create4Account">
@@ -51,7 +50,6 @@
                 <property name="NAME_ValidateContact">true</property>
             </validate>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_IncomingCreditNote</property>
         <property name="TargetMode">create</property>
@@ -66,11 +64,10 @@
         </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreateIncomingCreditNote</name>
         <access>
-            <role>Sales_Accounting</role>
             <role>Sales_Admin</role>
-            <role>Sales_IncomingDocument</role>
+            <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCash4IncomingCreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingCreditNote" method="create4Account">

@@ -31,6 +31,7 @@
         <access>
             <role>Sales_Admin</role>
             <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
         </access>
         <target>
             <table>Sales_Account2DocumentTable</table>

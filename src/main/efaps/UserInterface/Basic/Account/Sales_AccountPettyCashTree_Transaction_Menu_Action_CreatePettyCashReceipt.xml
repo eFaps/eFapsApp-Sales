@@ -36,8 +36,9 @@
         </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
         <access>
-            <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
         </access>
         <target>
             <form>Sales_PettyCashReceiptForm</form>
@@ -76,8 +77,9 @@
         </profiles>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
         <access>
-            <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
         </access>
         <target>
             <form>Sales_PettyCashReceiptForm</form>

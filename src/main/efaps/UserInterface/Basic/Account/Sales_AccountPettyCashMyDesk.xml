@@ -19,16 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>a4d661a2-0684-40c3-b7ae-e8bd87834b36</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>a4d661a2-0684-40c3-b7ae-e8bd87834b36</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashMyDesk</name>
         <access>
             <role>Sales_Admin</role>
+            <role>Sales_PettyCash_User</role>
+            <role>Sales_PettyCash</role>
         </access>
         <target>
             <menu>Sales_AccountPettyCashMyDesk_Menu</menu>
@@ -38,8 +41,6 @@
                 <property name="ExpandChildTypes">true</property>
             </evaluate>
         </target>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

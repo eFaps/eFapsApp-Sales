@@ -35,10 +35,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing</name>
         <access>
-            <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_AccountPettyCashBalancingForm</form>
             <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="create">
@@ -53,7 +52,6 @@
                 <property name="Status">Active</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
         <property name="TargetCreateType">Sales_PettyCashBalance</property>

@@ -20,16 +20,25 @@
  Last Changed By: $Author$
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>84683661-a4b0-46ab-9d1e-9dda7cb02adf</uuid>
+    <uuid>a1b2c4dc-34cd-4fb0-b0c2-b020fc75cc49</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountPettyCashTree_Menu</name>
-        <childs>
-            <child>Sales_AccountPettyCashTree_Menu_Action</child>
-        </childs>
+        <name>Sales_AccountPettyCashTree_Menu_Action_Edit</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+        </access>
+        <target>
+            <form>Sales_AccountPettyCashForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Edit" />
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
-</ui-menu>
+</ui-command>

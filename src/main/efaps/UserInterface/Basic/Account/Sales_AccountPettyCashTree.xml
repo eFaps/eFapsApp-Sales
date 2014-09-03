@@ -32,8 +32,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AccountPettyCashTree</name>
         <access>
-            <role>Sales_PettyCash</role>
             <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
         </access>
         <target>
             <menu>Sales_AccountPettyCashTree_Menu</menu>

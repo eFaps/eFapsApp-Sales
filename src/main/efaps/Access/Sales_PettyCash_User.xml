@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
   Copyright 2010 moxter.net S.A.C.
 
@@ -15,16 +13,14 @@
   Last Changed By: $Author$
 
 -->
-
 <access-set xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>2184c034-b49e-4d13-b396-cf6739e14e6c</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>c296fc05-0be6-4a43-bf7d-74bc946b109f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PettyCash</name>
-
+        <name>Sales_PettyCash_User</name>
         <access-type>show</access-type>
         <access-type>read</access-type>
         <access-type>modify</access-type>
@@ -33,7 +29,6 @@
         <access-type>create</access-type>
         <access-type>statusBoost</access-type>
         <access-type>statusModify</access-type>
-        <access-type>delete</access-type>
 
         <type>Sales_AccountPettyCash</type>
         <type>Sales_PettyCashReceipt</type>
@@ -43,21 +38,14 @@
 
         <status group="Sales_PettyCashReceiptStatus">
             <key>Open</key>
-            <key>Closed</key>
         </status>
 
         <status group="Sales_PettyCashBalanceStatus">
             <key>Open</key>
-            <key>Closed</key>
-            <key>Verified</key>
         </status>
 
-         <status group="Sales_AccountPettyCashStatus">
+        <status group="Sales_AccountPettyCashStatus">
             <key>Active</key>
-            <key>Inactive</key>
         </status>
-        <role>Sales_PettyCash</role>
     </definition>
 </access-set>
-
-
