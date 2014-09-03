@@ -23,8 +23,7 @@
 
 -->
 
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8bebec0b-772a-4fb6-bc75-03c28d8d201e</uuid>
     <file-application>eFapsApp-Sales</file-application>
@@ -45,6 +44,7 @@
             <child>Sales_AccountPettyCashTree_Transaction</child>
             <child>Sales_AccountPettyCashTree_DocumentsWithTrans</child>
             <child>Sales_AccountPettyCashTree_Documents</child>
+            <child>Admin_Access_Access4Object</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
