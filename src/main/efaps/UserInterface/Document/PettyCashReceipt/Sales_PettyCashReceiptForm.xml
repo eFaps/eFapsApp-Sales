@@ -715,5 +715,17 @@
                 name="Sales_PettyCashReceiptForm.javaScript2.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
         </field>
+        <field name="javascript3">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE"
+                method="getJavaScript4ProjectUIValue"
+                name="Sales_AccountPettyCashForm.javascript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.projects.Project">
+                <property name="ReadOnly">true</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
