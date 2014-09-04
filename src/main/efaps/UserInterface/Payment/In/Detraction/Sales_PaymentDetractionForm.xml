@@ -195,6 +195,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDetractionForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Sales_PaymentDetractionPicker4Documents"/>
         </field>
          <field character="Heading" name="headingPayment">

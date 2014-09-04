@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2c255daa-2bf7-4856-ba13-fbf3d2f873ea</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -184,6 +186,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDepositOutForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Sales_PaymentDepositOutPicker4Documents"/>
         </field>
          <field character="Heading" name="headingPayment">
@@ -200,7 +203,7 @@
             </evaluate>
         </field>
         <field name="total4DiscountPay">
-        <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_PaymentDepositOutForm.total4DiscountPay.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">NONE</property>

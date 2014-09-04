@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>7adaf3d6-3ea0-4a44-a9ee-9825a8dbfc5d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -30,9 +32,10 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue"  index="0">
                 <property name="Status">Approved</property>
             </execute>
+            <execute method="callAction" program="org.efaps.esjp.sales.document.PaymentOrder" index="1"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_PaymentOrderTree_Menu_Action_SetApproved.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="Check4CreateStatus">true</property>

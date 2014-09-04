@@ -38,6 +38,7 @@
         <type>Sales_PaymentOrder</type>
         <childs>
             <child>Sales_PaymentOrderTree_Payment</child>
+            <child>Sales_PaymentOrderTree_Doc</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
@@ -58,6 +59,7 @@
         <type>Sales_PaymentOrder</type>
         <childs>
             <child>Sales_PaymentOrderTree_Payment</child>
+            <child>Sales_PaymentOrderTree_Doc</child>
             <child>Sales_PaymentOrderTree_File</child>
         </childs>
         <property name="Target">content</property>

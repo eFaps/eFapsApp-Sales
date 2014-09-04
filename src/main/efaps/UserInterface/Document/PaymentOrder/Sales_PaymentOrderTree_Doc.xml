@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,29 +15,30 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 5742 $
- Last Changed:    $Date: 2010-10-26 13:57:23 -0500 (mar, 26 oct 2010) $
- Last Changed By: $Author: jorge.m.cueva $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>34b89fbd-5cfb-4d30-bce8-68ec4f65c56a</uuid>
+    <uuid>5a9fd593-854a-4006-9ece-cd19aa0a70a8</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5742 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentOrderTree_Menu_Action_Edit</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_PaymentOrderTree_Doc</name>
         <target>
-            <form>Sales_PaymentOrderForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit"/>
+            <table>Sales_Document2DocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom01">FromAbstractLink</property>
+                <property name="Type02">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom02">ToAbstractLink</property>
+            </evaluate>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">400</property>
-        <property name="WindowWidth">950</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Label">Sales_DocumentAbstractTree_Doc.Label</property>
     </definition>
 </ui-command>
