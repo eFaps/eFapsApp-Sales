@@ -31,7 +31,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Kernel-Configuration</name>
             <attribute>
-                <key>org.efaps.kernel.AccessCheck4Object</key>
+                <key>org.efaps.kernel.AccessCheck4Object01</key>
                 <value><![CDATA[Sales_AccountPettyCash.Role.SimpleAccess4Type=Administration;Sales_Admin;Sales_PettyCash
 Sales_AccountPettyCash.AccessSets=Sales_PettyCash_User
 Sales_AccountPettyCash.Person.InRole=Sales_PettyCash_User]]></value>
