@@ -50,6 +50,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -60,6 +61,8 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 /**
@@ -73,6 +76,12 @@ import org.joda.time.DateTime;
 public abstract class PettyCashBalance_Base
     extends AbstractDocumentSum
 {
+
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(PettyCashBalance.class);
+
     /**
      * Method for create a new petty Cash Balance.
      *
@@ -304,7 +313,8 @@ public abstract class PettyCashBalance_Base
         Type bal2orderType = null;
         String name = null;
         Status status = null;
-
+        Instance actDefInst = null;
+        CIType actDef2doc = null;
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         final Instance accountInst = print.<Instance>getSelect(selAccInst);
         if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
@@ -313,12 +323,16 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountPettyCash2CollectionOrder.getType();
             bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4COLORDPC);
+            actDef2doc = CISales.ActionDefinitionCollectionOrder2Document;
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
             name = new Naming().fromNumberGenerator(_parameter, type.getName());
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC);
+            actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
             final Insert insert = new Insert(type);
@@ -353,6 +367,16 @@ public abstract class PettyCashBalance_Base
             relInsert2.add(CISales.PettyCashBalance2OrderAbstract.FromAbstractLink, _parameter.getInstance());
             relInsert2.add(CISales.PettyCashBalance2OrderAbstract.ToAbstractLink, insert.getInstance());
             relInsert2.execute();
+
+            if (actDefInst.isValid()) {
+                final Insert actDef2DocInsert = new Insert(actDef2doc);
+                actDef2DocInsert.add(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract, actDefInst);
+                actDef2DocInsert.add(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, insert.getInstance());
+                actDef2DocInsert.execute();
+            } else {
+                LOG.error("Missing or wrong Configuration Links for ActionDefinition: '{}', '{}'",
+                                SalesSettings.ACTDEF4COLORDPC, SalesSettings.ACTDEF4PAYORDPC);
+            }
         }
         return new Return();
     }

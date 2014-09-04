@@ -74,7 +74,8 @@
             <trigger event="UI_FIELD_VALUE" method="dropDown4AccountFieldValue"
                 name="Sales_PaymentInternalForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentInternal">
                 <property name="Type">Sales_AccountCashDesk</property>
-                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
+                <property name="Status">Active</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
                 <property name="Activation">CASH</property>
             </trigger>
