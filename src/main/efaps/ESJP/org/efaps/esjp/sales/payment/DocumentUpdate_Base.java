@@ -33,8 +33,8 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.EventDefinition;
 import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -98,7 +98,11 @@ public abstract class DocumentUpdate_Base
         throws EFapsException
     {
         final Type statusType = _docInst.getType().getStatusAttribute().getLink();
-        return Status.find(statusType.getUUID(), "Paid");
+        Status ret = Status.find(statusType.getUUID(), "Paid");
+        if (ret == null) {
+            ret = Status.find(statusType.getUUID(), "Closed");
+        }
+        return ret;
     }
 
     /**
@@ -173,7 +177,7 @@ public abstract class DocumentUpdate_Base
     public Return renew(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
 
         final Instance instance = _parameter.getInstance();
 
