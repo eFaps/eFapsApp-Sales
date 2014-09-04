@@ -614,13 +614,10 @@ public abstract class AbstractDocumentSum_Base
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
                 add2Map4UpdateField(_parameter, map, calcList, cal);
-                list.add(map);
-                retVal.put(ReturnValues.VALUES, list);
             }
-        } else {
-            list.add(map);
-            retVal.put(ReturnValues.VALUES, list);
         }
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
 
