@@ -571,17 +571,12 @@ public abstract class Calculator_Base
                     targetPrice = targetPrice.add(_netUnitPrice.multiply(factor));
                 }
             }
-
-            if (targetPrice.compareTo(_netUnitPrice) == 0) {
-                this.productCrossUnitPrice = this.productNetUnitPrice;
-            } else {
-                if (this.productCrossUnitPrice == null) {
-                    this.productCrossUnitPrice = getNewPrice();
-                }
-                this.productCrossUnitPrice.setCurrentPrice(targetPrice);
-                this.productCrossUnitPrice.setOrigPrice(targetPrice);
-                this.productCrossUnitPrice.setBasePrice(targetPrice.multiply(getProductPrice().getBaseRate()));
+            if (this.productCrossUnitPrice == null) {
+                this.productCrossUnitPrice = getNewPrice();
             }
+            this.productCrossUnitPrice.setCurrentPrice(targetPrice);
+            this.productCrossUnitPrice.setOrigPrice(targetPrice);
+            this.productCrossUnitPrice.setBasePrice(targetPrice.multiply(getProductPrice().getBaseRate()));
         }
     }
 
@@ -741,16 +736,12 @@ public abstract class Calculator_Base
                                     .divide(BigDecimal.ONE.add(factor), BigDecimal.ROUND_HALF_UP)));
                 }
             }
-            if (targetPrice.compareTo(_crossUnitPrice) == 0) {
-                this.productNetUnitPrice = this.productCrossUnitPrice;
-            } else {
-                if (this.productNetUnitPrice == null) {
-                    this.productNetUnitPrice = getNewPrice();
-                }
-                this.productNetUnitPrice.setCurrentPrice(targetPrice);
-                this.productNetUnitPrice.setOrigPrice(targetPrice);
-                this.productNetUnitPrice.setBasePrice(targetPrice.multiply(this.productNetUnitPrice.getBaseRate()));
+            if (this.productNetUnitPrice == null) {
+                this.productNetUnitPrice = getNewPrice();
             }
+            this.productNetUnitPrice.setCurrentPrice(targetPrice);
+            this.productNetUnitPrice.setOrigPrice(targetPrice);
+            this.productNetUnitPrice.setBasePrice(targetPrice.multiply(this.productNetUnitPrice.getBaseRate()));
         }
     }
 
