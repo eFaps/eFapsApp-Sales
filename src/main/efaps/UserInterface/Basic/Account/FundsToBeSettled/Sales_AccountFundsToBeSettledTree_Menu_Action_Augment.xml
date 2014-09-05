@@ -22,36 +22,42 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7cd7246d-0fad-49b9-9da9-269bfa49964b</uuid>
+    <uuid>383ebf5c-1380-4378-9a1c-9b630819da78</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountFundsToBeSettledTree_Menu_Action_Init</name>
+        <name>Sales_AccountFundsToBeSettledTree_Menu_Action_Augment</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="initFundsToBeSettled" program="org.efaps.esjp.sales.Account" >
+            <form>Sales_AccountFundsToBeSettledAugmentForm</form>
+            <execute method="augmentFundsToBeSettled" program="org.efaps.esjp.sales.Account">
                 <property name="JasperReport">Sales_FundsToBeSettledBalance</property>
                 <property name="Mime">pdf</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Init.UI_ACCESSCHECK.1"
-                event="UI_ACCESSCHECK"
-                index="1">
+            <trigger event="UI_ACCESSCHECK" index="1" method="configCheck"
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Augment.UI_ACCESSCHECK.1"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.AccountFundsToBeSettledPermitAugment</property>
+            </trigger>
+            <trigger event="UI_ACCESSCHECK" index="2" method="check4Status"
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Augment.UI_ACCESSCHECK.2"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.Account"
-                method="accessCheck4initFunds"
-                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Init.UI_ACCESSCHECK.2"
-                event="UI_ACCESSCHECK"
-                index="2">
+            <trigger event="UI_ACCESSCHECK" index="3" method="accessCheck4initFunds"
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Augment.UI_ACCESSCHECK.3"
+                program="org.efaps.esjp.sales.Account">
+                <property name="Inverse">true</property>
             </trigger>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>

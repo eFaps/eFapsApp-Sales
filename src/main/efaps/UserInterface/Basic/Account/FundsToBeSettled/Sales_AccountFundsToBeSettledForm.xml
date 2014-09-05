@@ -72,7 +72,6 @@
         <field name="amount">
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
             <property name="Required">true</property>
         </field>
@@ -176,8 +175,8 @@
         <field name="amount">
             <property name="Columns">40</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">AmountAbstract</property>
+            <property name="Required">true</property>
         </field>
         <field name="amountCurrent">
             <property name="Columns">40</property>

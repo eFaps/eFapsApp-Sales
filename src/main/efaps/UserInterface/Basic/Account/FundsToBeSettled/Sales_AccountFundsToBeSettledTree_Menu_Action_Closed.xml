@@ -37,6 +37,12 @@
                 <property name="JasperReport">Sales_FundsToBeSettledBalance</property>
                 <property name="Mime">pdf</property>
             </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Closed.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>

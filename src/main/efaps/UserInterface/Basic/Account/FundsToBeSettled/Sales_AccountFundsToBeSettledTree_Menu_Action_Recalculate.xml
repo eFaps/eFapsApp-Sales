@@ -19,8 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>bf62bd5d-c7c5-4f9c-82f9-694046376a0b</uuid>
     <file-application>eFapsApp-Accounting</file-application>
     <file-revision>$Rev$</file-revision>
@@ -31,7 +32,13 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="reCalculateAccounts" program="org.efaps.esjp.sales.Transaction"/>
+            <execute method="reCalculateAccounts" program="org.efaps.esjp.sales.Transaction" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_AccountFundsToBeSettledTree_Menu_Action_Recalculate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <property name="AskUser">true</property>
         <property name="Submit">true</property>

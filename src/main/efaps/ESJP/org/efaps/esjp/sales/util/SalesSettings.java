@@ -267,4 +267,9 @@ public interface SalesSettings
      */
     String ACTDEF4PAYORDPC = "org.efaps.sales.ActDef4PaymentOrder4PettyCashBalance";
 
+    /**
+     * Boolean.
+     * Permit the augmentation for FundstoBeSettled..
+     */
+    String PERMITAUGMENT4FUNDSTBS = "org.efaps.sales.AccountFundsToBeSettledPermitAugment";
 }

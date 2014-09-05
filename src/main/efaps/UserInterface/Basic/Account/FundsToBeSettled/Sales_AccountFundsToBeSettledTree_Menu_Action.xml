@@ -30,6 +30,7 @@
         <name>Sales_AccountFundsToBeSettledTree_Menu_Action</name>
         <childs>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Init</child>
+            <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Augment</child>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Edit</child>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Recalculate</child>
             <child>Sales_AccountFundsToBeSettledTree_Menu_Action_Closed</child>

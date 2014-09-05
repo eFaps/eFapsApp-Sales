@@ -145,6 +145,52 @@ public abstract class Account_Base
      * @return file
      * @throws EFapsException on error
      */
+    public Return augmentFundsToBeSettled(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+
+        final FundsToBeSettledBalance ftbs = new FundsToBeSettledBalance();
+
+        final Instance balanceInst = ftbs.createBalanceDoc(_parameter);
+
+        final CreatedDoc createdDoc = new CreatedDoc(balanceInst);
+        ftbs.createDoc4Account(_parameter, balanceInst);
+
+        final File file = ftbs.createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return file
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4initFunds(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance);
+        queryBldr.addWhereAttrEqValue(CISales.AccountFundsToBeSettled2FundsToBeSettledBalance.FromLink,
+                        _parameter.getInstance());
+
+        final boolean access = queryBldr.getQuery().execute().isEmpty();
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+
+        if (!inverse && access || inverse && !access) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parametes as passed by the eFaps API
+     * @return file
+     * @throws EFapsException on error
+     */
     public Return setClosed(final Parameter _parameter)
         throws EFapsException
     {
