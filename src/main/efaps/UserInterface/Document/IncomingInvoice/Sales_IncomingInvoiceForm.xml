@@ -670,6 +670,8 @@
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Value]</property>
+                <property name="StatusGroup">ERP_AttributeDefinitionStatus</property>
+                <property name="Status">Active</property>
             </trigger>
         </field>
         <field name="detractionValue">
@@ -1347,7 +1349,7 @@
             </trigger>
         </field>
         <field name="detractionGroup" character="Group">
-            <property name="GroupCount">3</property>
+            <property name="GroupCount">4</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
         </field>
@@ -1390,6 +1392,8 @@
                 <property name="ValueSelect">oid</property>
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Value]</property>
+                <property name="StatusGroup">ERP_AttributeDefinitionStatus</property>
+                <property name="Status">Active</property>
             </trigger>
         </field>
         <field name="detractionValue">
