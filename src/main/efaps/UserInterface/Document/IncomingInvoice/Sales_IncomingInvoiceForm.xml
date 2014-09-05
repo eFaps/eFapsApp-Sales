@@ -534,6 +534,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
+            <property name="Align">right</property>
             <property name="Label">Sales_IncomingInvoiceForm.perceptionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -555,6 +556,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.perceptionValue.Label</property>
             <property name="Columns">4</property>
+            <property name="Align">right</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
@@ -597,6 +599,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
+            <property name="Align">right</property>
             <property name="Label">Sales_IncomingInvoiceForm.retentionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -617,7 +620,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.retentionValue.Label</property>
-             <property name="Columns">4</property>
+            <property name="Columns">4</property>
+            <property name="Align">right</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.retentionValue.UI_FIELD_VALUE"
@@ -650,6 +654,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
+            <property name="Align">right</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -666,6 +671,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionValue.Label</property>
             <property name="Columns">4</property>
+            <property name="Align">right</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.detractionValue.UI_FIELD_VALUE"
@@ -1259,6 +1265,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
+            <property name="Align">right</property>
             <property name="Label">Sales_IncomingInvoiceForm.perceptionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -1280,6 +1287,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.perceptionValue.Label</property>
             <property name="Columns">4</property>
+            <property name="Align">right</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
@@ -1322,6 +1330,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
+            <property name="Align">right</property>
             <property name="Label">Sales_IncomingInvoiceForm.retentionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -1343,6 +1352,7 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingInvoiceForm.retentionValue.Label</property>
             <property name="Columns">4</property>
+            <property name="Align">right</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.retentionValue.UI_FIELD_VALUE"
@@ -1375,6 +1385,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Columns">2</property>
+            <property name="Align">right</property>
             <property name="Label">Sales_IncomingInvoiceForm.detractionPercent.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
@@ -1392,6 +1403,7 @@
             <property name="Label">Sales_IncomingInvoiceForm.detractionValue.Label</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <property name="Columns">4</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.detractionValue.UI_FIELD_VALUE"
                 method="getDetractionValue" event="UI_FIELD_VALUE"/>
