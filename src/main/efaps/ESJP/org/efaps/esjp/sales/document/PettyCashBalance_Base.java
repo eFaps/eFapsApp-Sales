@@ -52,6 +52,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnAction;
@@ -317,13 +318,15 @@ public abstract class PettyCashBalance_Base
         CIType actDef2doc = null;
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         final Instance accountInst = print.<Instance>getSelect(selAccInst);
+        final CurrencyInst currencyInst = CurrencyInst.get(print.<Long>getAttribute(
+                        CISales.DocumentSumAbstract.RateCurrencyId));
         if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
             type = CISales.CollectionOrder.getType();
             name = new Naming().fromNumberGenerator(_parameter, type.getName());
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountPettyCash2CollectionOrder.getType();
             bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4COLORDPC);
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4COLORDPC + "." + currencyInst.getUUID());
             actDef2doc = CISales.ActionDefinitionCollectionOrder2Document;
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
@@ -331,7 +334,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC);
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC+ "." + currencyInst.getUUID());
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
