@@ -29,5 +29,16 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AttributeDefinitionFinancialInstitute</name>
         <parent>ERP_AttributeDefinitionMappingAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>ERP_AttributeDefinitionStatus</typelink>
+            <sqltable>ERP_AttributeDefinitionSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.StatusValue"
+                name="Sales_AttributeDefinitionFinancialInstitute.Status.RANGE_VALUE"
+                event="RANGE_VALUE">
+            </trigger>
+        </attribute>
     </definition>
 </datamodel-type>
