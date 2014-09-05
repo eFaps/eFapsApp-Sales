@@ -223,27 +223,7 @@ public abstract class IncomingInvoice_Base
             }
         }
         if (_createdDoc.getValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE) == null && _isUpdate && !executed) {
-            _createdDoc.addValue(AbstractDocumentTax_Base.TAXAMOUNTVALUE, BigDecimal.ZERO);
-            new AbstractDocumentTax()
-            {
-
-                @Override
-                protected Type getType4create4Doc(final Parameter _parameter)
-                    throws EFapsException
-                {
-                    // just any type so that the evaluation will fail
-                    return CISales.DeliveryNote.getType();
-                }
-
-                @Override
-                protected void connectDoc(final Parameter _parameter,
-                                          final CreatedDoc _origDoc,
-                                          final CreatedDoc _taxDoc)
-                    throws EFapsException
-                {
-                    // not needed
-                }
-            }.createUpdate4Doc(_parameter, _createdDoc);
+            AbstractDocumentTax.getDocTaxInfo(_parameter, _createdDoc.getInstance()).clean4TaxDocInst(null);
         }
     }
 
@@ -731,6 +711,35 @@ public abstract class IncomingInvoice_Base
             retVal.put(ReturnValues.VALUES, doctaxInfo.getTaxAmount());
         }
         return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return value for the checkbox
+     * @throws EFapsException on error
+     */
+    public Return getDetractionServiceType(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Field field = new Field()
+        {
+
+            @Override
+            protected void updatePositionList(final Parameter _parameter,
+                                              final List<DropDownPosition> _values)
+                throws EFapsException
+            {
+                super.updatePositionList(_parameter, _values);
+                final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
+                if (doctaxInfo.isDetraction()) {
+                    final Instance inst = doctaxInfo.getDetractionTypeInst();
+                    for (final DropDownPosition pos : _values) {
+                        pos.setSelected(pos.getValue().equals(inst.getOid()));
+                    }
+                }
+            }
+        };
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**
