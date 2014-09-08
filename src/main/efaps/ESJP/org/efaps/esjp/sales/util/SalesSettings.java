@@ -272,4 +272,10 @@ public interface SalesSettings
      * Permit the augmentation for FundstoBeSettled..
      */
     String PERMITAUGMENT4FUNDSTBS = "org.efaps.sales.AccountFundsToBeSettledPermitAugment";
+
+    /**
+     * Boolean.
+     * Permit the augmentation for FundstoBeSettled..
+     */
+    String PERMITPARTIAL4PETTYCASH = "org.efaps.sales.AccountPettyCashPermitPartial";
 }

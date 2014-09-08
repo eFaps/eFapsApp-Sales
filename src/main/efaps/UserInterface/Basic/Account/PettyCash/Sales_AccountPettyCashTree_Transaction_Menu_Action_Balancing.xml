@@ -45,12 +45,24 @@
                 <property name="Mime">pdf</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK.1"
+                event="UI_ACCESSCHECK"
+                index="1">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.AccountPettyCashPermitPartial</property>
+                <property name="Inverse">true</property>
+            </trigger>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
-                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+                name="Sales_AccountPettyCashTree_Transaction_Menu_Action_Balancing.UI_ACCESSCHECK.2"
+                event="UI_ACCESSCHECK"
+                 index="2">
                 <property name="Status">Active</property>
             </trigger>
+
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
