@@ -64,7 +64,8 @@
                 name="Sales_ConciliationForm.account.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
                 <property name="Type">Sales_AccountCashDesk</property>
-                <property name="WhereAttrEqValue">Active|true</property>
+                <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
+                <property name="Status">Active</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
             </trigger>
         </field>

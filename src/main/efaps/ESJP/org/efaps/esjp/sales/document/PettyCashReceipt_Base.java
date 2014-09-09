@@ -53,7 +53,9 @@ import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Transaction;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -391,7 +393,7 @@ public abstract class PettyCashReceipt_Base
                             .linkfrom(CISales.ActionDefinitionPettyCashReceipt2Document.ToLink)
                             .linkto(CISales.ActionDefinitionPettyCashReceipt2Document.FromLink).instance();
             print.addSelect(selContInst, selContName, selActionInst);
-            print.addAttribute(CISales.PettyCashReceipt.Name);
+            print.addAttribute(CISales.PettyCashReceipt.Name, CISales.PettyCashReceipt.Date);
 
             if (print.execute()) {
                 final Instance contInst = print.<Instance>getSelect(selContInst);
@@ -420,6 +422,11 @@ public abstract class PettyCashReceipt_Base
                         .append(getSetFieldValue(0,
                                     CIFormSales.Sales_PettyCashReceiptJustificationEditForm.name4create.name, name));
                 }
+                final DateTime date = print.getAttribute(CISales.PettyCashReceipt.Date);
+                js.append(getSetFieldValue(0,
+                                CIFormSales.Sales_PettyCashReceiptJustificationEditForm.date.name + "_eFapsDate",
+                                DateUtil.getDate4Parameter(date)));
+
                 final Instance actionInst = print.<Instance>getSelect(selActionInst);
                 if (actionInst != null && actionInst.isValid()) {
                     js.append(getSetFieldValue(0, CIFormSales.Sales_PettyCashReceiptJustificationEditForm.action.name,

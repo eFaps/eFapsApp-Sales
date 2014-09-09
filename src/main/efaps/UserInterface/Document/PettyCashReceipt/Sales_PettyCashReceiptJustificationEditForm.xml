@@ -35,8 +35,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Columns">12</property>
             <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">Sales_PettyCashReceipt/Date.Label</property>
         </field>
-        <field name="contact" character="Picker">
+        <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_AccountPettyCashReceiptForm.contact.Label</property>
@@ -84,6 +86,7 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeSearch">EDITABLE</property>
             <property name="Label">Sales_AccountPettyCashReceiptJustificationEditForm.name.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="action">
             <property name="ModeCreate">EDITABLE</property>
