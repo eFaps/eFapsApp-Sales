@@ -39,6 +39,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -53,6 +54,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
+import org.efaps.esjp.erp.listener.IOnAction;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
@@ -436,6 +438,9 @@ public abstract class FundsToBeSettledBalance_Base
                 }
             }
             recUpdate.execute();
+            for (final IOnAction listener : Listener.get().<IOnAction>invoke(IOnAction.class)) {
+                listener.onDocumentUpdate(_parameter, docInst);
+            }
         }
 
         final Update update = new Update(instance);

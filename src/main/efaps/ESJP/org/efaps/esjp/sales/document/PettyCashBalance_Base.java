@@ -433,7 +433,6 @@ public abstract class PettyCashBalance_Base
             final Instance docInst = multi.getCurrentInstance();
 
             final Update recUpdate = new Update(docInst);
-            boolean executeAction = false;
             if (docInst.getType().isKindOf(CISales.PettyCashReceipt.getType())) {
                 recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                 if (contactObj != null) {
@@ -445,7 +444,6 @@ public abstract class PettyCashBalance_Base
                         final String revision = numgen.getNextVal();
                         recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
                     }
-                    executeAction = true;
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
@@ -458,13 +456,10 @@ public abstract class PettyCashBalance_Base
                 }
             }
             recUpdate.execute();
-            if (executeAction) {
-                for (final IOnAction listener : Listener.get().<IOnAction>invoke(IOnAction.class)) {
-                    listener.onDocumentUpdate(_parameter, docInst);
-                }
+            for (final IOnAction listener : Listener.get().<IOnAction>invoke(IOnAction.class)) {
+                listener.onDocumentUpdate(_parameter, docInst);
             }
         }
-
         final Update update = new Update(instance);
         update.add(CISales.PettyCashBalance.Status, Status.find(CISales.PettyCashBalanceStatus.Verified));
         update.execute();
