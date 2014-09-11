@@ -50,6 +50,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.Naming;
@@ -311,7 +312,7 @@ public abstract class FundsToBeSettledBalance_Base
      * Created document CollectionOrder/PaymentOrder.
      *
      * @param _parameter Parameter as passed from the eFaps API.
-     * @param _docInst
+     * @param _docInst  Instance of the Document
      * @throws EFapsException on error.
      */
     public void createDoc4Account(final Parameter _parameter,
@@ -335,7 +336,7 @@ public abstract class FundsToBeSettledBalance_Base
         Type bal2orderType = null;
         String name = null;
         Status status = null;
-
+        CIType actionRelType = null;
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         final Instance accountInst = print.<Instance>getSelect(selAccInst);
         if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
@@ -344,12 +345,14 @@ public abstract class FundsToBeSettledBalance_Base
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountFundsToBeSettled2CollectionOrder.getType();
             bal2orderType = CISales.FundsToBeSettledBalance2CollectionOrder.getType();
+            actionRelType = CISales.ActionDefinitionCollectionOrder2Document;
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
             name = new Naming().fromNumberGenerator(_parameter, type.getName());
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountFundsToBeSettled2PaymentOrder.getType();
             bal2orderType = CISales.FundsToBeSettledBalance2PaymentOrder.getType();
+            actionRelType = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
             final Insert insert = new Insert(type);
@@ -384,6 +387,14 @@ public abstract class FundsToBeSettledBalance_Base
             relInsert2.add(CISales.FundsToBeSettledBalance2OrderAbstract.FromAbstractLink, _docInst);
             relInsert2.add(CISales.FundsToBeSettledBalance2OrderAbstract.ToAbstractLink, insert.getInstance());
             relInsert2.execute();
+
+            final Instance actionInst = Instance.get(_parameter.getParameterValue("action"));
+            if (actionInst.isValid()) {
+                final Insert actionRelInsert = new Insert(actionRelType);
+                actionRelInsert.add(CIERP.ActionDefinition2DocumentAbstract.FromLinkAbstract, actionInst);
+                actionRelInsert.add(CIERP.ActionDefinition2DocumentAbstract.ToLinkAbstract, insert.getInstance());
+                actionRelInsert.execute();
+            }
         }
     }
 

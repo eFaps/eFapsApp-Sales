@@ -30,7 +30,7 @@
         <name>Sales_AccountFundsToBeSettledClosedForm</name>
         <field name="amountIn">
             <property name="Columns">12</property>
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountIn.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
@@ -42,7 +42,7 @@
         </field>
         <field name="amountOut">
             <property name="Columns">12</property>
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.amountOut.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
@@ -54,13 +54,66 @@
         </field>
         <field name="result">
             <property name="Columns">12</property>
-            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="Label">Sales_AccountAbstractForm.result.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
             <trigger program="org.efaps.esjp.sales.Account"
                 method="getAmount4FieldValue"
                 name="Sales_AccountFundsToBeSettledClosedForm.result.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
+        </field>
+        <field name="action">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_PaymentOrderForm.action.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_AccountFundsToBeSettledClosedForm.action.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ActionDefinitionPaymentOrder</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.Account"
+                method="accessCheck4Order"
+                name="Sales_AccountFundsToBeSettledClosedForm.action.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <property name="Inverse">true</property>
+            </trigger>
+        </field>
+         <field name="action">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_CollectionOrderForm.action.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_AccountFundsToBeSettledClosedForm.action2.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ActionDefinitionCollectionOrder</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.Account"
+                method="accessCheck4Order"
+                name="Sales_AccountFundsToBeSettledClosedForm.action2.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+             </trigger>
+        </field>
+        <field name="note">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_PaymentOrder/Note.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">70</property>
+            <property name="Rows">5</property>
+            <property name="Required">true</property>
         </field>
     </definition>
 </ui-form>

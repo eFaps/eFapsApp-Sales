@@ -32,6 +32,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
+            <form>Sales_AccountFundsToBeSettledInitForm</form>
             <execute method="initFundsToBeSettled" program="org.efaps.esjp.sales.Account" >
                 <property name="JasperReport">Sales_FundsToBeSettledBalance</property>
                 <property name="Mime">pdf</property>
@@ -50,8 +51,7 @@
                 index="2">
             </trigger>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
     </definition>
 </ui-command>

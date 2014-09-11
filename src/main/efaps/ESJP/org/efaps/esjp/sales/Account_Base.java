@@ -164,6 +164,7 @@ public abstract class Account_Base
         }
         return ret;
     }
+
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return file
@@ -185,6 +186,28 @@ public abstract class Account_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return file
+     * @throws EFapsException on error
+     */
+    public Return accessCheck4Order(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final BigDecimal amount = getAmount4TransactionAccount(_parameter);
+
+        final boolean access = amount.compareTo(BigDecimal.ZERO) > 0;
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+
+        if (!inverse && access || inverse && !access) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+
 
     /**
      * @param _parameter Parametes as passed by the eFaps API
