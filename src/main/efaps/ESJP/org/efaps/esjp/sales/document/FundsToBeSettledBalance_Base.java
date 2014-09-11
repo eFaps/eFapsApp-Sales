@@ -360,11 +360,11 @@ public abstract class FundsToBeSettledBalance_Base
             insert.add(CISales.DocumentSumAbstract.Date, new DateTime());
             insert.add(CISales.DocumentSumAbstract.DueDate, new DateTime());
             insert.add(CISales.DocumentSumAbstract.Salesperson, Context.getThreadContext().getPerson().getId());
-            insert.add(CISales.DocumentSumAbstract.RateCrossTotal, crossTotal);
-            insert.add(CISales.DocumentSumAbstract.RateNetTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.RateCrossTotal, crossTotal.abs());
+            insert.add(CISales.DocumentSumAbstract.RateNetTotal, crossTotal.abs());
             insert.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
-            insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
-            insert.add(CISales.DocumentSumAbstract.NetTotal, crossTotal);
+            insert.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal.abs());
+            insert.add(CISales.DocumentSumAbstract.NetTotal, crossTotal.abs());
             insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
             insert.add(CISales.DocumentSumAbstract.CurrencyId,
                             print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
