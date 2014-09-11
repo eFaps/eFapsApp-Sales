@@ -33,6 +33,61 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <name>Sales_TransactionAbstractTable_MONTH</name>
+        <!-- fields -->
+        <field name="type">
+            <property name="Attribute">Type</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Products_StorageAbstract/Type.Label</property>
+            <property name="ShowTypeIcon">true</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="Label">Sales_TransactionAbstract/Description.Label</property>
+        </field>
+        <field name="date">
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_TransactionAbstract/Date.Label</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">Amount</property>
+            <property name="Label">Sales_TransactionAbstract/Amount.Label</property>
+        </field>
+        <field name="currency">
+            <property name="Select">linkto[CurrencyId].attribute[Name]</property>
+            <property name="Label">Sales_TransactionAbstract.currency.Label</property>
+        </field>
+        <field name="account">
+            <property name="SelectAlternateOID">linkto[Account].oid</property>
+            <property name="Select">linkto[Account].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_TransactionAbstract/Account.Label</property>
+        </field>
+        <field name="pettyCashReceiptLink">
+            <property name="Select">linkto[Payment].linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]</property>
+            <property name="Label">Sales_TransactionAbstract/pettyCashReceiptLink.Label</property>
+        </field>
+        <field name="payment">
+            <property name="SelectAlternateOID">linkto[Payment].oid</property>
+            <property name="Select">linkto[Payment].type.label</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_TransactionAbstract/Payment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
         <name>Sales_TransactionAbstractTable_MONTH</name>
         <!-- fields -->
         <field name="type">
@@ -74,6 +129,17 @@
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_TransactionAbstract/Payment.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="pettyCashReceiptLink">
+            <property name="Select">linkto[Payment].linkto[CreateDocument].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]</property>
+            <property name="Label">Sales_TransactionAbstract/pettyCashReceiptLink.Label</property>
+        </field>
+        <field name="projectLink">
+            <property name="SelectAlternateOID">linkto[Payment].linkto[CreateDocument].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].oid</property>
+            <property name="Select">linkto[Payment].linkto[CreateDocument].linkfrom[Projects_Project2DocumentAbstract#ToAbstract].linkto[FromAbstract].attribute[Name]</property>
+            <property name="Label">Sales_TransactionAbstract.project.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
     </definition>
 </ui-table>
