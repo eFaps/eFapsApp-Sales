@@ -57,7 +57,7 @@
             <property name="ModeSearch">READONLY</property>
         </field>
         <field name="documentType">
-            <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
+            <property name="Select">linkto[ToLinkAbstract].linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
             <property name="Label">Sales_IncomingInvoiceTable.documentType.Label</property>
         </field>
         <field name="status">
