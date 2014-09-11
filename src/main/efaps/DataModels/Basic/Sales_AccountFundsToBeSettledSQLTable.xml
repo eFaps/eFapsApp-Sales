@@ -32,10 +32,11 @@
         <database>
             <table-name>T_SALESACCFUNDS</table-name>
             <parent-table>T_SALESACC</parent-table>
-            <column name="EMPLOYEE" type="STRING_SHORT" length="256" />
-            <column name="DATE"     type="DATETIME" />
-            <column name="DUEDATE"  type="DATETIME" />
-            <column name="REASONID" type="INTEGER"/>
+            <column name="EMPLOYEE"     type="STRING_SHORT" length="256" />
+            <column name="EMPLOYEEID"   type="INTEGER"/>
+            <column name="DATE"         type="DATETIME" />
+            <column name="DUEDATE"      type="DATETIME" />
+            <column name="REASONID"     type="INTEGER"/>
         </database>
     </definition>
 </datamodel-sqltable>

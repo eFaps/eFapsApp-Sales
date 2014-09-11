@@ -76,6 +76,9 @@
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
+         <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <profiles>
             <profile name="projects"/>
         </profiles>
@@ -126,6 +129,68 @@
             <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_AccountFundsToBeSettledForm.project.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+         <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_AccountFundsToBeSettledTable</name>
+        <field name="name">
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_AccountAbstract/Name.Label</property>
+        </field>
+        <field name="reasonLink">
+            <property name="Select">linkto[ReasonLink].attribute[Value]</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/ReasonLink.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="employee">
+            <property name="SelectAlternateOID">linkto[EmployeeLink].oid</property>
+            <property name="Phrase">$&lt;linkto[EmployeeLink].attribute[Number]&gt; - $&lt;linkto[EmployeeLink].attribute[LastName]&gt; $&lt;linkto[EmployeeLink].attribute[SecondLastName]&gt;, $&lt;linkto[EmployeeLink].attribute[FirstName]&gt;</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/Employee.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="amount">
+            <property name="Attribute">AmountAbstract</property>
+            <property name="Label">Sales_AccountAbstract/Amount.Label</property>
+        </field>
+        <field name="currencyLink">
+            <property name="Attribute">CurrencyLink</property>
+            <property name="Label">Sales_AccountAbstract/CurrencyLink.Label</property>
+        </field>
+        <field name="description">
+            <property name="Attribute">Description</property>
+            <property name="Label">Sales_AccountAbstract/Description.Label</property>
+        </field>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/Date.Label</property>
+        </field>
+        <field name="duedate">
+            <property name="Attribute">DueDate</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/DueDate.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="FilterType">STATUS</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">Open</property>
+            <property name="Label">Sales_AccountFundsToBeSettled/Status.Label</property>
+        </field>
+        <field name="project">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2FundsToBeSettled#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_AccountFundsToBeSettledForm.project.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>

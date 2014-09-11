@@ -27,6 +27,9 @@
     <file-revision>$Rev: 5740 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <name>Sales_AccountFundsToBeSettled</name>
         <parent>Sales_AccountAbstract</parent>
         <attribute>
@@ -45,6 +48,65 @@
             <type>String</type>
             <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
             <sqlcolumn>EMPLOYEE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Date</name>
+            <type>Date</type>
+            <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
+            <sqlcolumn>DATE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>DueDate</name>
+            <type>Date</type>
+            <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
+            <sqlcolumn>DUEDATE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ReasonLink</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionFundsToBeSettledReason</typelink>
+            <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
+            <sqlcolumn>REASONID</sqlcolumn>
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_AccountFundsToBeSettled.ReasonLink.RANGE_VALUE" event="RANGE_VALUE">
+                <property name="Value">Value</property>
+                <property name="Type">Sales_AttributeDefinitionFundsToBeSettledReason</property>
+            </trigger>
+        </attribute>
+        <trigger event="ACCESSCHECK"
+            name="Sales_AccountFundsToBeSettled.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <name>Sales_AccountFundsToBeSettled</name>
+        <parent>Sales_AccountAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_AccountFundsToBeSettledStatus</typelink>
+            <sqltable>Sales_AccountAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_AccountFundsToBeSettled.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
+        </attribute>
+        <attribute>
+            <name>Employee</name>
+            <type>String</type>
+            <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
+            <sqlcolumn>EMPLOYEE</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>EmployeeLink</name>
+            <type>Link</type>
+            <typelink>HumanResource_EmployeeAbstract</typelink>
+            <sqltable>Sales_AccountFundsToBeSettledSQLTable</sqltable>
+            <sqlcolumn>EMPLOYEEID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Date</name>
