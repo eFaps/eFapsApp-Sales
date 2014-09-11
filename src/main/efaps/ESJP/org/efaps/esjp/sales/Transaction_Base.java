@@ -260,6 +260,28 @@ public abstract class Transaction_Base
     }
 
     /**
+     *
+     * @param _parameter Parameters as passed from eFaps
+     * @return Return
+     * @throws EFapsException on error
+     */
+    public Return updateTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder accSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
+        print.addSelect(accSel);
+        if (print.execute()) {
+            final Instance accInst = print.<Instance>getSelect(accSel);
+            if (accInst != null && accInst.isValid()) {
+                reCalculateAccounts(_parameter, accInst);
+            }
+        }
+        return new Return();
+    }
+
+
+    /**
      * Add or subtract from the Inventory.
      *
      * @param _parameter Parameters as passed from eFaps
@@ -333,8 +355,8 @@ public abstract class Transaction_Base
 
         final Instance docInst = Instance.get(print.<String>getSelect(sel));
         final Instance accInst = print.<Instance>getSelect(selAcc);
-        if (docInst.isValid() && (accInst != null && !accInst.getType().equals(CISales.AccountPettyCash.getType()))
-                        && (accInst != null && !accInst.getType().equals(CISales.AccountFundsToBeSettled.getType()))) {
+        if (docInst.isValid() && accInst != null && !accInst.getType().equals(CISales.AccountPettyCash.getType())
+                        && accInst != null && !accInst.getType().equals(CISales.AccountFundsToBeSettled.getType())) {
             _parameter.put(ParameterValues.INSTANCE, docInst);
             final DocumentUpdate docUpdate = new DocumentUpdate() {
                 @Override
@@ -371,7 +393,6 @@ public abstract class Transaction_Base
                 ret.put(ReturnValues.TRUE, true);
             }
         }
-
         return ret;
     }
 
@@ -386,9 +407,25 @@ public abstract class Transaction_Base
     public Return reCalculateAccounts(final Parameter _parameter)
         throws EFapsException
     {
+        return reCalculateAccounts(_parameter, _parameter.getInstance());
+    }
+
+    /**
+     * Method is called from a transaction to recalculate all values for the
+     * accounts.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param  _accInst instance of the account
+     * @return empty Return
+     * @throws EFapsException on error
+     */
+    public Return reCalculateAccounts(final Parameter _parameter,
+                                      final Instance _accInst)
+        throws EFapsException
+    {
         BigDecimal sumTotal = BigDecimal.ZERO;
         final QueryBuilder queryBldr = new QueryBuilder(CISales.TransactionAbstract);
-        queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, _parameter.getInstance().getId());
+        queryBldr.addWhereAttrEqValue(CISales.TransactionAbstract.Account, _accInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
         multi.addAttribute(CISales.TransactionAbstract.Amount);
         multi.execute();
@@ -404,7 +441,7 @@ public abstract class Transaction_Base
         }
 
         final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Balance);
-        queryBldr2.addWhereAttrEqValue(CISales.Balance.Account, _parameter.getInstance().getId());
+        queryBldr2.addWhereAttrEqValue(CISales.Balance.Account, _accInst);
         final InstanceQuery accQuery = queryBldr2.getQuery();
         accQuery.execute();
         while (accQuery.next()) {
@@ -424,7 +461,7 @@ public abstract class Transaction_Base
         final FieldValue value = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         if (value.getDisplay().equals(Display.READONLY)) {
             String dec = (String) value.getValue();
-            if (dec == null || (dec != null && dec.contains("null"))) {
+            if (dec == null || dec != null && dec.contains("null")) {
                 dec = "";
             }
             js.append(dec);
@@ -432,7 +469,7 @@ public abstract class Transaction_Base
             js.append(value.getValue());
         }
         retVal.put(ReturnValues.VALUES, js.toString());
-    return retVal;
+        return retVal;
     }
 
     public Return getTable4TransactionFieldValueUI(final Parameter _parameter)
@@ -657,7 +694,7 @@ public abstract class Transaction_Base
             String ret = "";
             for (final String account : this.accounts) {
                 if (account != null) {
-                    ret = ret.isEmpty() ? account : (ret +  " -> " + account);
+                    ret = ret.isEmpty() ? account : ret +  " -> " + account;
                 }
             }
             return ret;

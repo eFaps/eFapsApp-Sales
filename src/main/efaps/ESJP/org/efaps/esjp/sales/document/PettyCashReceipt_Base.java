@@ -51,7 +51,6 @@ import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
-import org.efaps.esjp.sales.Transaction;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
@@ -174,15 +173,10 @@ public abstract class PettyCashReceipt_Base
             final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionOutbound);
             transQueryBldr.addWhereAttrEqValue(CISales.TransactionOutbound.Payment, payQuery.getCurrentValue());
             final MultiPrintQuery multi = transQueryBldr.getPrint();
-            final SelectBuilder accSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
-            final SelectBuilder curSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
-            multi.addSelect(accSel, curSel);
             multi.addAttribute(CISales.TransactionOutbound.Amount);
             multi.executeWithoutAccessCheck();
             if (multi.next()) {
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                final Instance accountInst = multi.<Instance>getSelect(accSel);
-                final Instance currencyInst = multi.<Instance>getSelect(curSel);
                 final BigDecimal newAmount = (BigDecimal) _editedDoc
                                 .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
                 if (newAmount.compareTo(amount) != 0) {
@@ -194,7 +188,6 @@ public abstract class PettyCashReceipt_Base
                     update.add(CISales.TransactionOutbound.Description,
                                     _editedDoc.getValue(CISales.DocumentSumAbstract.Note.name));
                     update.execute();
-                    new Transaction().updateBalance(_parameter, accountInst, currencyInst, newAmount.subtract(amount));
                 }
             }
         }

@@ -741,12 +741,11 @@ public abstract class Account_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return setAmountCurrentFieldValueUI(final Parameter _parameter)
+    public Return getAmountCurrentFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance inst = _parameter.getInstance();
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Balance);
-        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, inst.getId());
+        queryBldr.addWhereAttrEqValue(CISales.Balance.Account, _parameter.getInstance());
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder curSel = new SelectBuilder().linkto(CISales.Balance.Currency)
                         .attribute(CIERP.Currency.Symbol);

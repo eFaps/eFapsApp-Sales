@@ -82,7 +82,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="Label">Sales_AccountAbstractForm.amountCurrent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="setAmountCurrentFieldValueUI"
+            <trigger event="UI_FIELD_VALUE" method="getAmountCurrentFieldValueUI"
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
         </field>
@@ -185,7 +185,7 @@
             <property name="ModeCreate">NONE</property>
             <property name="Label">Sales_AccountAbstractForm.amountCurrent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="setAmountCurrentFieldValueUI"
+            <trigger event="UI_FIELD_VALUE" method="getAmountCurrentFieldValueUI"
                 name="Sales_AccountAbstractForm.amountCurrent.UI_FIELD_VALUE" program="org.efaps.esjp.sales.Account">
             </trigger>
         </field>

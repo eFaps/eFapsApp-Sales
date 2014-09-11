@@ -334,7 +334,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC+ "." + currencyInst.getUUID());
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC + "." + currencyInst.getUUID());
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
@@ -398,9 +398,26 @@ public abstract class PettyCashBalance_Base
             queryBldr.addWhereAttrEqValue(CISales.PettyCashBalance2OrderAbstract.FromAbstractLink,
                             _parameter.getInstance());
             final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
+            query.executeWithoutAccessCheck();
             if (!query.next()) {
-                ret.put(ReturnValues.TRUE, true);
+                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.REQUIREBOOKED4PETTYCASHPAYMENT)) {
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashReceipt);
+                    attrQueryBldr.addWhereAttrNotEqValue(CISales.PettyCashReceipt.Status,
+                                    Status.find(CISales.PettyCashReceiptStatus.Booked));
+
+                    final QueryBuilder chQueryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+                    chQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink,
+                                    _parameter.getInstance());
+                    chQueryBldr.addWhereAttrInQuery(CISales.Document2DocumentAbstract.ToAbstractLink,
+                                    attrQueryBldr.getAttributeQuery(CISales.PettyCashReceipt.ID));
+                    final InstanceQuery chQuery = chQueryBldr.getQuery();
+                    chQuery.executeWithoutAccessCheck();
+                    if (!chQuery.next()) {
+                        ret.put(ReturnValues.TRUE, true);
+                    }
+                } else {
+                    ret.put(ReturnValues.TRUE, true);
+                }
             }
         }
         return ret;
