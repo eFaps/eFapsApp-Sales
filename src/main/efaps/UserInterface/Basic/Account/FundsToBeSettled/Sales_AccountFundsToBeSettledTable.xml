@@ -159,6 +159,10 @@
             <property name="Label">Sales_AccountFundsToBeSettled/Employee.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="responsible">
+            <property name="Attribute">Employee</property>
+            <property name="Label">Sales_AccountFundsToBeSettledForm.responsible.Label</property>
+        </field>
         <field name="amount">
             <property name="Attribute">AmountAbstract</property>
             <property name="Label">Sales_AccountAbstract/Amount.Label</property>

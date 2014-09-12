@@ -407,6 +407,13 @@
             <property name="ModeEdit">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="responsible">
+            <property name="Columns">40</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Attribute">Employee</property>
+            <property name="Label">Sales_AccountFundsToBeSettledForm.responsible.Label</property>
+        </field>
         <field name="reasonLink">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
