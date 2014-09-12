@@ -50,7 +50,6 @@ import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
-import org.efaps.esjp.sales.Transaction;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
 import org.efaps.util.EFapsException;
 
@@ -103,7 +102,7 @@ public abstract class FundsToBeSettledReceipt_Base
     }
 
     /**
-     * Create the transaction for the PettyCash.
+     * Create the transaction for this Receipt
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _createdDoc doc the transaction is connected to
@@ -113,69 +112,23 @@ public abstract class FundsToBeSettledReceipt_Base
                                      final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Insert payInsert = new Insert(CISales.Payment);
-        payInsert.add(CISales.Payment.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
-        payInsert.add(CISales.Payment.CreateDocument, _createdDoc.getInstance());
-        payInsert.execute();
-
-        final Insert transInsert = new Insert(CISales.TransactionOutbound);
-        transInsert.add(CISales.TransactionOutbound.Amount,
-                        _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name));
-        transInsert.add(CISales.TransactionOutbound.CurrencyId,
-                        _createdDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
-        transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
-        transInsert.add(CISales.TransactionOutbound.Account, _parameter.getInstance());
-        transInsert.add(CISales.TransactionOutbound.Description,
-                        _createdDoc.getValue(CISales.DocumentSumAbstract.Note.name));
-        transInsert.add(CISales.TransactionOutbound.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
-        transInsert.execute();
+        // PettyCashReceipt has the same functionalities so use them there
+        new PettyCashReceipt().createTransaction(_parameter, _createdDoc);
     }
 
     /**
-     * Update the transaction for the PettyCash.
+     * Update the transaction for this Receipt.
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _editedDoc doc the transaction is connected to
-     * @param _prevAmount previous amount
      * @throws EFapsException on error
      */
     protected void updateTransaction(final Parameter _parameter,
                                      final EditedDoc _editedDoc)
         throws EFapsException
     {
-        // get the payment
-        final QueryBuilder payQueryBldr = new QueryBuilder(CISales.Payment);
-        payQueryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _editedDoc.getInstance());
-        final InstanceQuery payQuery = payQueryBldr.getQuery();
-        payQuery.executeWithoutAccessCheck();
-        if (payQuery.next()) {
-            final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionOutbound);
-            transQueryBldr.addWhereAttrEqValue(CISales.TransactionOutbound.Payment, payQuery.getCurrentValue());
-            final MultiPrintQuery multi = transQueryBldr.getPrint();
-            final SelectBuilder accSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.Account).instance();
-            final SelectBuilder curSel = SelectBuilder.get().linkto(CISales.TransactionAbstract.CurrencyId).instance();
-            multi.addSelect(accSel, curSel);
-            multi.addAttribute(CISales.TransactionOutbound.Amount);
-            multi.executeWithoutAccessCheck();
-            if (multi.next()) {
-                final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                final Instance accountInst = multi.<Instance>getSelect(accSel);
-                final Instance currencyInst = multi.<Instance>getSelect(curSel);
-                final BigDecimal newAmount = (BigDecimal) _editedDoc
-                                .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
-                if (newAmount.compareTo(amount) != 0) {
-                    final Update update = new Update(multi.getCurrentInstance());
-                    update.add(CISales.TransactionOutbound.Amount,
-                                    _editedDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name));
-                    update.add(CISales.TransactionOutbound.CurrencyId,
-                                    _editedDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
-                    update.add(CISales.TransactionOutbound.Description,
-                                    _editedDoc.getValue(CISales.DocumentSumAbstract.Note.name));
-                    update.execute();
-                    new Transaction().updateBalance(_parameter, accountInst, currencyInst, newAmount.subtract(amount));
-                }
-            }
-        }
+        // PettyCashReceipt has the same functionalities so use them there
+        new PettyCashReceipt().updateTransaction(_parameter, _editedDoc);
     }
 
     /**
@@ -186,7 +139,7 @@ public abstract class FundsToBeSettledReceipt_Base
         throws EFapsException
     {
         String ret = _parameter.getParameterValue("name4create");
-        if (ret == null || (ret != null && ret.isEmpty())) {
+        if (ret == null || ret != null && ret.isEmpty()) {
             final PrintQuery print = new PrintQuery(_parameter.getInstance());
             print.addAttribute(CISales.AccountFundsToBeSettled.Name);
             print.execute();
@@ -246,7 +199,7 @@ public abstract class FundsToBeSettledReceipt_Base
                                 .getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptForm.name4create.name);
                 final String contact = _parameter
                                 .getParameterValue(CIFormSales.Sales_FundsToBeSettledReceiptForm.contact.name);
-                if ((name != null && !name.isEmpty()) || (contact != null && !contact.isEmpty())) {
+                if (name != null && !name.isEmpty() || contact != null && !contact.isEmpty()) {
                     ret.add(new EvaluateNotDeducibleDocWarning());
                 } else {
                     final Iterator<IWarning> iterator = _ret.iterator();

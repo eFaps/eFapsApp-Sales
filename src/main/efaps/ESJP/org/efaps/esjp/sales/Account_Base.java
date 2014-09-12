@@ -65,6 +65,7 @@ import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Create;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
@@ -271,6 +272,18 @@ public abstract class Account_Base
         update.add(CISales.Account2DocumentAbstract.Position, pos + 1);
         update.executeWithoutTrigger();
         return new Return();
+    }
+
+
+    public CurrencyInst getCurrencyInst(final Parameter _parameter,
+                                        final Instance _accInst)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_accInst);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.AccountAbstract.CurrencyLink).instance();
+        print.addSelect(sel);
+        print.execute();
+        return CurrencyInst.get(print.<Instance>getSelect(sel));
     }
 
 

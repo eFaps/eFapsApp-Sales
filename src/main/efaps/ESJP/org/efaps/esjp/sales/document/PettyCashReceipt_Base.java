@@ -48,7 +48,10 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.AbstractWarning;
+import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.IWarning;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.Validation_Base.InvalidNameWarning;
@@ -102,7 +105,6 @@ public abstract class PettyCashReceipt_Base
         insert.add(CISales.PettyCashReceipt2TransactionDocumentShadowIn.FromLink, _parameter.getInstance());
         insert.add(CISales.PettyCashReceipt2TransactionDocumentShadowIn.ToLink, createdDoc.getInstance());
         insert.execute();
-
         return new Return();
     }
 
@@ -135,23 +137,81 @@ public abstract class PettyCashReceipt_Base
                                      final CreatedDoc _createdDoc)
         throws EFapsException
     {
+        createTransaction(_parameter, _createdDoc, _parameter.getInstance());
+    }
+
+    /**
+     * Create the transaction for the related account.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _createdDoc doc the transaction is connected to
+     * @param _accInst instcane of the account
+     * @throws EFapsException on error
+     */
+    protected void createTransaction(final Parameter _parameter,
+                                     final CreatedDoc _createdDoc,
+                                     final Instance _accInst)
+        throws EFapsException
+    {
+        final CurrencyInst accCurrencyInst = new Account().getCurrencyInst(_parameter, _accInst);
+
+        final DateTime date = new DateTime(_createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
+
         final Insert payInsert = new Insert(CISales.Payment);
-        payInsert.add(CISales.Payment.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
+        payInsert.add(CISales.Payment.Date, date);
         payInsert.add(CISales.Payment.CreateDocument, _createdDoc.getInstance());
         payInsert.execute();
 
+        final Object amount = evaluateAmount4Transaction(_parameter, _createdDoc, accCurrencyInst, date);
+
         final Insert transInsert = new Insert(CISales.TransactionOutbound);
-        transInsert.add(CISales.TransactionOutbound.Amount,
-                        _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name));
-        transInsert.add(CISales.TransactionOutbound.CurrencyId,
-                        _createdDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
+        transInsert.add(CISales.TransactionOutbound.Amount, amount);
+        transInsert.add(CISales.TransactionOutbound.CurrencyId, accCurrencyInst.getInstance());
         transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
-        transInsert.add(CISales.TransactionOutbound.Account, _parameter.getInstance());
+        transInsert.add(CISales.TransactionOutbound.Account, _accInst);
         transInsert.add(CISales.TransactionOutbound.Description,
                         _createdDoc.getValue(CISales.DocumentSumAbstract.Note.name));
         transInsert.add(CISales.TransactionOutbound.Date, _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name));
         transInsert.execute();
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _createdDoc doc the transaction is connected to
+     * @param _accCurrencyInst instcane of the account
+     * @param _date date
+     * @return amount
+     * @throws EFapsException on error
+     */
+    protected Object evaluateAmount4Transaction(final Parameter _parameter,
+                                                final CreatedDoc _createdDoc,
+                                                final CurrencyInst _accCurrencyInst,
+                                                final DateTime _date)
+        throws EFapsException
+    {
+        final CurrencyInst rateCurrencyInst = CurrencyInst.get(_createdDoc
+                        .getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
+        final CurrencyInst currencyInst = CurrencyInst.get(_createdDoc
+                        .getValue(CISales.DocumentSumAbstract.CurrencyId.name));
+
+        // evaluate if the amount must be changed to the currency of the account
+        Object ret;
+        if (_accCurrencyInst.getInstance().equals(rateCurrencyInst.getInstance())) {
+            ret = _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
+        } else if (_accCurrencyInst.getInstance().equals(currencyInst.getInstance())) {
+            ret = _createdDoc.getValue(CISales.DocumentSumAbstract.CrossTotal.name);
+        } else {
+            final Currency currency = new Currency();
+            final RateInfo[] rateInfos = currency.evaluateRateInfos(_parameter, _date, rateCurrencyInst.getInstance(),
+                            _accCurrencyInst.getInstance());
+            final BigDecimal rate = rateInfos[2].getRate();
+            final BigDecimal rateAmount = (BigDecimal) _createdDoc
+                            .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
+            ret = rateAmount.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(2, BigDecimal.ROUND_HALF_UP);
+        }
+        return ret;
+    }
+
 
     /**
      * Update the transaction for the PettyCash.
@@ -173,18 +233,22 @@ public abstract class PettyCashReceipt_Base
             final QueryBuilder transQueryBldr = new QueryBuilder(CISales.TransactionOutbound);
             transQueryBldr.addWhereAttrEqValue(CISales.TransactionOutbound.Payment, payQuery.getCurrentValue());
             final MultiPrintQuery multi = transQueryBldr.getPrint();
+            final SelectBuilder selAccInst = SelectBuilder.get().linkto(CISales.TransactionOutbound.Account).instance();
+            multi.addSelect(selAccInst);
             multi.addAttribute(CISales.TransactionOutbound.Amount);
             multi.executeWithoutAccessCheck();
             if (multi.next()) {
+                final Instance accInst = multi.getSelect(selAccInst);
+                final CurrencyInst accCurrencyInst = new Account().getCurrencyInst(_parameter, accInst);
+                final DateTime date = new DateTime(_editedDoc.getValue(CISales.DocumentSumAbstract.Date.name));
+
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount);
-                final BigDecimal newAmount = (BigDecimal) _editedDoc
-                                .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
+                final BigDecimal newAmount = (BigDecimal) evaluateAmount4Transaction(_parameter, _editedDoc,
+                                accCurrencyInst, date);
                 if (newAmount.compareTo(amount) != 0) {
                     final Update update = new Update(multi.getCurrentInstance());
-                    update.add(CISales.TransactionOutbound.Amount,
-                                    _editedDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name));
-                    update.add(CISales.TransactionOutbound.CurrencyId,
-                                    _editedDoc.getValue(CISales.DocumentSumAbstract.RateCurrencyId.name));
+                    update.add(CISales.TransactionOutbound.Amount, newAmount);
+                    update.add(CISales.TransactionOutbound.CurrencyId, accCurrencyInst.getInstance());
                     update.add(CISales.TransactionOutbound.Description,
                                     _editedDoc.getValue(CISales.DocumentSumAbstract.Note.name));
                     update.execute();
