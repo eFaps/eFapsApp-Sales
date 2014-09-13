@@ -36,7 +36,7 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">view</property>
-        <property name="TargetShowRetentionBoxes">true</property>
+        <property name="TargetShowCheckBoxes">true</property>
         <property name="NoUpdateAfterCOMMAND">true</property>
         <property name="WindowHeight">500</property>
         <property name="WindowWidth">800</property>
