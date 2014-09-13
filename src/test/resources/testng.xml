@@ -5,6 +5,7 @@
         <parameter name="baseFolder" value="../../../main/efaps"></parameter>
         <parameter name="ciClass" value="org.efaps.esjp.ci.CISales"/>
         <parameter name="regex4TypeLabelExclude" value=".*|/Flag.Label|/Group.Label|/Company.Label"/>
+        <parameter name="regex4MenuLabelExclude" value=".*_Menu.Label$"/>
         <packages>
             <package name="org.efaps.tests.ci.*"></package>
         </packages>
