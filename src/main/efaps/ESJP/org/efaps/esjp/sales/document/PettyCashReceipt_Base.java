@@ -202,8 +202,8 @@ public abstract class PettyCashReceipt_Base
             ret = _createdDoc.getValue(CISales.DocumentSumAbstract.CrossTotal.name);
         } else {
             final Currency currency = new Currency();
-            final RateInfo[] rateInfos = currency.evaluateRateInfos(_parameter, _date, rateCurrencyInst.getInstance(),
-                            _accCurrencyInst.getInstance());
+            final RateInfo[] rateInfos = currency.evaluateRateInfos(_parameter, _date, _accCurrencyInst.getInstance(),
+                            rateCurrencyInst.getInstance());
             final BigDecimal rate = rateInfos[2].getRate();
             final BigDecimal rateAmount = (BigDecimal) _createdDoc
                             .getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);

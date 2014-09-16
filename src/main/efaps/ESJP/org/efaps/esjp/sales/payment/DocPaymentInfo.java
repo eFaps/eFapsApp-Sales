@@ -34,16 +34,15 @@ import org.efaps.db.Instance;
  */
 @EFapsUUID("e59d7d3e-21ed-45f3-addc-02672734ad80")
 @EFapsRevision("$Rev$")
-public class DocWithPayment
-    extends DocWithPayment_Base
+public class DocPaymentInfo
+    extends DocPaymentInfo_Base
 {
 
     /**
      * @param _docInst Instance of the document
      */
-    public DocWithPayment(final Instance _docInst)
+    public DocPaymentInfo(final Instance _docInst)
     {
        super(_docInst);
     }
-
 }

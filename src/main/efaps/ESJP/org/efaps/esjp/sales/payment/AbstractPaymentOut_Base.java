@@ -302,7 +302,7 @@ public abstract class AbstractPaymentOut_Base
                     final BigDecimal amount = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
 
                     final CurrencyInst curr = new CurrencyInst(print.<Instance>getSelect(selCur));
-                    final String valueCrossTotal = curr.getSymbol() + " " + getTwoDigitsformater().format(amount);
+                    final String valueCrossTotal = curr.getSymbol() + " " + NumberFormatter.get().getTwoDigitsFormatter().format(amount);
                     map.put("crossTotal4Read", valueCrossTotal);
                     list.add(map);
                 }
@@ -617,7 +617,7 @@ public abstract class AbstractPaymentOut_Base
                                         .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                         final CurrencyInst curr = new CurrencyInst(multi.<Instance>getSelect(selCur));
                         choice.append(" - ").append(curr.getSymbol()).append(" ")
-                            .append(getTwoDigitsformater().format(amount));
+                            .append(NumberFormatter.get().getTwoDigitsFormatter().format(amount));
                     }
 
                     final Map<String, String> map = new HashMap<String, String>();
@@ -785,78 +785,21 @@ public abstract class AbstractPaymentOut_Base
         final BigDecimal payAmount = parseBigDecimal(payAmountStr);
         final BigDecimal payAmountDesc = parseBigDecimal(payAmountDescStr);
 
-        map.put("paymentAmount", getTwoDigitsformater().format(amount.subtract(payAmountDesc)));
-        map.put("paymentAmountDesc", getTwoDigitsformater().format(payAmountDesc));
+        map.put("paymentAmount", NumberFormatter.get().getTwoDigitsFormatter().format(amount.subtract(payAmountDesc)));
+        map.put("paymentAmountDesc",  NumberFormatter.get().getTwoDigitsFormatter().format(payAmountDesc));
         final BigDecimal recalculatePos = getSum4Positions(_parameter, true)
                         .subtract(payAmount).add(amount.subtract(payAmountDesc));
         BigDecimal total4DiscountPay = BigDecimal.ZERO;
         if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-            map.put("amount", getTwoDigitsformater().format(recalculatePos));
+            map.put("amount",  NumberFormatter.get().getTwoDigitsFormatter().format(recalculatePos));
         } else {
             total4DiscountPay = getAmount4Pay(_parameter).abs().subtract(recalculatePos);
         }
-        map.put("total4DiscountPay", getTwoDigitsformater().format(total4DiscountPay));
+        map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(total4DiscountPay));
         list.add(map);
 
         final Return ret = new Return();
         ret.put(ReturnValues.VALUES, list);
         return ret;
-    }
-
-    @Override
-    public DocumentInfo getNewDocumentInfo(final Instance _instance)
-        throws EFapsException
-    {
-        return new DocumentInfoOut(_instance);
-    }
-
-    public class DocumentInfoOut
-        extends AbstractPaymentDocument.DocumentInfo
-    {
-
-        public DocumentInfoOut(final Instance _instance)
-            throws EFapsException
-        {
-            super(_instance);
-        }
-
-        @Override
-        protected BigDecimal getRateCrossTotal4Query()
-            throws EFapsException
-        {
-            BigDecimal ret = BigDecimal.ZERO;
-
-            if (getInstance().isValid() && getInstance().getType().equals(CISales.IncomingInvoice.getType())) {
-                final InstanceQuery query = getPaymentDerivedDocument();
-                query.execute();
-                while (query.next()) {
-                    if (query.getCurrentValue().getType().equals(CISales.IncomingCreditNote.getType())) {
-                        ret = ret.add(compareDocs(query.getCurrentValue()).negate());
-                    } else if (query.getCurrentValue().getType().equals(CISales.IncomingReminder.getType())) {
-                        ret = ret.add(compareDocs(query.getCurrentValue()));
-                    }
-                }
-            }
-
-            return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
-        }
-
-        @Override
-        protected String getInfoOriginal()
-            throws EFapsException
-        {
-            final BigDecimal totPay = getRateTotalPayments();
-            final BigDecimal ret = getRateTotal4TaxDocumentType(CISales.IncomingRetention2IncomingInvoice);
-            final BigDecimal det = getRateTotal4TaxDocumentType(CISales.IncomingDetraction2IncomingInvoice);
-
-            final StringBuilder strBldr = new StringBuilder();
-
-            strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
-                            .append(getTwoDigitsformater().format(totPay)).append(" / ")
-                            .append(getTwoDigitsformater().format(det)).append(" / ")
-                            .append(getTwoDigitsformater().format(ret)).append(" - ").append(getRateSymbol());
-
-            return strBldr.toString();
-        }
     }
 }

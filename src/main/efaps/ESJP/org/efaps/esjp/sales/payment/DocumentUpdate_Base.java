@@ -135,7 +135,7 @@ public abstract class DocumentUpdate_Base
                                                 final Instance _docInst)
         throws EFapsException
     {
-        final DocWithPayment doc = new DocWithPayment(_docInst);
+        final DocPaymentInfo doc = new DocPaymentInfo(_docInst);
         return doc.isPaid();
     }
 

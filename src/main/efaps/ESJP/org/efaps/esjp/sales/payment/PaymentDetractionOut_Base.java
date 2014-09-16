@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -197,7 +196,7 @@ public abstract class PaymentDetractionOut_Base
         final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
         BigDecimal total = BigDecimal.ZERO;
         while (multi.next()) {
-            final DocumentInfo docInfo = getNewDocumentInfo(multi.getCurrentInstance());
+            final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, multi.getCurrentInstance());
             final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
             final Instance docInstance = multi.<Instance>getSelect(selDocInstance);
             final String docName = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
@@ -211,16 +210,16 @@ public abstract class PaymentDetractionOut_Base
 
                 map.put(new KeyDefStr("createDocument"), new String[] { docInstance.getOid(), docName });
                 map.put(new KeyDefStr("createDocumentContact"), docContactName);
-                map.put(new KeyDefStr("createDocumentDesc"), docInfo.getInfoOriginal());
-                map.put(new KeyDefStr("payment4Pay"), getTwoDigitsformater()
+                map.put(new KeyDefStr("createDocumentDesc"), docInfo.getInfoField());
+                map.put(new KeyDefStr("payment4Pay"),  NumberFormatter.get().getTwoDigitsFormatter()
                                 .format(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)));
                 map.put(new KeyDefStr("paymentRate"), NumberFormatter.get().getFormatter(0, 3)
                                 .format(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)[1]));
-                map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), docInfo.getCurrencyInst().isInvert());
+             //   map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), docInfo.getCurrencyInstance().isInvert());
                 map.put(new KeyDefStr("paymentAmount"),
                                 NumberFormatter.get().getZeroDigitsFormatter().format(crossTotal));
-                map.put(new KeyDefStr("paymentDiscount"), getTwoDigitsformater().format(BigDecimal.ZERO));
-                map.put(new KeyDefStr("paymentAmountDesc"), getTwoDigitsformater().format(BigDecimal.ZERO));
+                map.put(new KeyDefStr("paymentDiscount"),  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
+                map.put(new KeyDefStr("paymentAmountDesc"),  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
                 map.put(new KeyDefStr("detractionDoc"), multi.getCurrentInstance().getOid());
                 total = total.add(crossTotal.setScale(0, BigDecimal.ROUND_HALF_UP));
             }
@@ -240,8 +239,8 @@ public abstract class PaymentDetractionOut_Base
                             .append(getTableAddNewRowsScript(_parameter, "paymentTable", strValues,
                                             getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
         }
-        js.append(getSetFieldValue(0, "amount", getTwoDigitsformater().format(total)))
-            .append(getSetFieldValue(0, "total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO)))
+        js.append(getSetFieldValue(0, "amount",  NumberFormatter.get().getTwoDigitsFormatter().format(total)))
+            .append(getSetFieldValue(0, "total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO)))
             .append("</script>\n");
         return js;
     }
@@ -286,16 +285,9 @@ public abstract class PaymentDetractionOut_Base
                 ret = ret.add(parseBigDecimal(amount4Pay));
             }
         }
-        js.append(getSetFieldValue(0, "amount",  getTwoDigitsformater().format(ret)));
+        js.append(getSetFieldValue(0, "amount",   NumberFormatter.get().getTwoDigitsFormatter().format(ret)));
         retVal.put(ReturnValues.SNIPLETT, js.toString());
         return retVal;
-    }
-
-    @Override
-    public DocumentInfo getNewDocumentInfo(final Instance _instance)
-        throws EFapsException
-    {
-        return new DocumentDetractionInfoOut(_instance);
     }
 
     @Override
@@ -315,33 +307,32 @@ public abstract class PaymentDetractionOut_Base
         final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
                         _parameter.getParameterValue("account"));
         if (docInstance.isValid() && accInstance.isValid()) {
-            final AccountInfo accInfo = new AccountInfo(accInstance);
-            final DocumentInfo docInfo = getNewDocumentInfo(docInstance);
-            docInfo.setAccountInfo(accInfo);
-            docInfo.setRateOptional(getRateObject(_parameter));
+            final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInstance);
+            docInfo.setAccountInst(accInstance);
+            docInfo.setRateTarget(getRateObject(_parameter));
 
             final BigDecimal total4Doc = docInfo.getCrossTotal();
-            final BigDecimal payments4Doc = docInfo.getTotalPayments();
+            final BigDecimal payments4Doc = docInfo.getPaid();
             final BigDecimal amount4PayDoc = total4Doc.subtract(payments4Doc);
 
-            map.put("createDocument", docInfo.getOid());
+            map.put("createDocument", docInfo.getInstance().getOid());
             map.put("detractionDoc", docInfo.getInstance().getOid());
             map.put("createDocumentContact", docInfo.getContactName());
-            map.put("createDocumentDesc", docInfo.getInfoOriginal());
-            map.put("payment4Pay", getTwoDigitsformater().format(amount4PayDoc));
-            map.put("paymentAmount", getTwoDigitsformater().format(amount4PayDoc));
-            map.put("paymentAmountDesc", getTwoDigitsformater().format(BigDecimal.ZERO));
-            map.put("paymentDiscount", getTwoDigitsformater().format(BigDecimal.ZERO));
-            map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
-            map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
+            map.put("createDocumentDesc", docInfo.getInfoField());
+            map.put("payment4Pay",  NumberFormatter.get().getTwoDigitsFormatter().format(amount4PayDoc));
+            map.put("paymentAmount",  NumberFormatter.get().getTwoDigitsFormatter().format(amount4PayDoc));
+            map.put("paymentAmountDesc",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
+            map.put("paymentDiscount",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
+         //   map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
+         //   map.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + docInfo.getCurrencyInst().isInvert());
             final BigDecimal update = parseBigDecimal(_parameter.getParameterValues("paymentAmount")[selected]);
             final BigDecimal totalPay4Position = getSum4Positions(_parameter, true).subtract(update).add(amount4PayDoc);
             if (Context.getThreadContext().getSessionAttribute(AbstractPaymentDocument_Base.CHANGE_AMOUNT) == null) {
-                map.put("amount", getTwoDigitsformater().format(totalPay4Position));
-                map.put("total4DiscountPay", getTwoDigitsformater().format(BigDecimal.ZERO));
+                map.put("amount",  NumberFormatter.get().getTwoDigitsFormatter().format(totalPay4Position));
+                map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
             } else {
                 final BigDecimal amount = parseBigDecimal(_parameter.getParameterValue("amount"));
-                map.put("total4DiscountPay", getTwoDigitsformater().format(amount.subtract(totalPay4Position)));
+                map.put("total4DiscountPay",  NumberFormatter.get().getTwoDigitsFormatter().format(amount.subtract(totalPay4Position)));
             }
             list.add(map);
         }
@@ -351,61 +342,4 @@ public abstract class PaymentDetractionOut_Base
         return retVal;
     }
 
-    public class DocumentDetractionInfoOut
-        extends AbstractPaymentOut.DocumentInfoOut
-    {
-
-        public DocumentDetractionInfoOut(final Instance _instance)
-            throws EFapsException
-        {
-            super(_instance);
-        }
-
-        @Override
-        protected BigDecimal getCrossTotal()
-            throws EFapsException
-        {
-            // TODO Auto-generated method stub
-            return super.getCrossTotal().setScale(0, BigDecimal.ROUND_HALF_UP);
-        }
-
-        @Override
-        protected String getInfoOriginal()
-            throws EFapsException
-        {
-            final StringBuilder strBldr = new StringBuilder();
-            if (CISales.IncomingDetraction.getType().equals(getInstance().getType())) {
-                strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
-                    .append(getTwoDigitsformater().format(getDocCrossTotal()))
-                    .append(" - ").append(getRateSymbol());
-            } else {
-                strBldr.append(super.getInfoOriginal());
-            }
-
-            return strBldr.toString();
-        }
-
-        @Override
-        protected String getOid()
-            throws EFapsException
-        {
-            String ret = getInstance().getOid();
-
-            if (CISales.IncomingDetraction.getType().equals(getInstance().getType())) {
-                final SelectBuilder selDoc = new SelectBuilder()
-                                .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink).instance();
-
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
-                queryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.FromLink, getInstance());
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addSelect(selDoc);
-                multi.execute();
-                while (multi.next()) {
-                    ret = multi.<Instance>getSelect(selDoc).getOid();
-                }
-            }
-
-            return ret;
-        }
-    }
 }

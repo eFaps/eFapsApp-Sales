@@ -38,7 +38,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -159,60 +158,4 @@ public abstract class AbstractPaymentIn_Base
         return ret;
     }
 
-    @Override
-    public DocumentInfo getNewDocumentInfo(final Instance _instance)
-        throws EFapsException
-    {
-        return new DocumentInfoIn(_instance);
-    }
-
-    public class DocumentInfoIn
-        extends AbstractPaymentDocument.DocumentInfo
-    {
-
-        public DocumentInfoIn(final Instance _instance)
-            throws EFapsException
-        {
-            super(_instance);
-        }
-
-        @Override
-        protected BigDecimal getRateCrossTotal4Query()
-            throws EFapsException
-        {
-            BigDecimal ret = BigDecimal.ZERO;
-
-            if (getInstance().isValid() && getInstance().getType().equals(CISales.Invoice.getType())) {
-                final InstanceQuery query = getPaymentDerivedDocument();
-                query.execute();
-                while (query.next()) {
-                    if (query.getCurrentValue().getType().equals(CISales.CreditNote.getType())) {
-                        ret = ret.add(compareDocs(query.getCurrentValue()).negate());
-                    } else if (query.getCurrentValue().getType().equals(CISales.Reminder.getType())) {
-                        ret = ret.add(compareDocs(query.getCurrentValue()));
-                    }
-                }
-            }
-
-            return ret.setScale(2, BigDecimal.ROUND_HALF_UP);
-        }
-
-        @Override
-        protected String getInfoOriginal()
-            throws EFapsException
-        {
-            final BigDecimal totPay = getRateTotalPayments();
-            final BigDecimal ret = getRateTotal4TaxDocumentType(null);
-            final BigDecimal det = getRateTotal4TaxDocumentType(null);
-
-            final StringBuilder strBldr = new StringBuilder();
-
-            strBldr.append(getTwoDigitsformater().format(getRateCrossTotal())).append(" / ")
-                            .append(getTwoDigitsformater().format(totPay)).append(" / ")
-                            .append(getTwoDigitsformater().format(det)).append(" / ")
-                            .append(getTwoDigitsformater().format(ret)).append(" - ").append(getRateSymbol());
-
-            return strBldr.toString();
-        }
-    }
 }
