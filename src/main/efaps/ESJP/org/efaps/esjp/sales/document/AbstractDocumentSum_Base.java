@@ -735,7 +735,7 @@ public abstract class AbstractDocumentSum_Base
             js.append(getSetFieldValue(0, "rateCurrencyData", rateInfos[1].getRateUIFrmt()))
                 .append(getSetFieldValue(0, "rate", rateInfos[1].getRateUIFrmt()))
                 .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
-                                Boolean.toString(rateInfos[1].getCurrencyInst().isInvert())))
+                                Boolean.toString(rateInfos[1].isInvert())))
                 .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
 
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
@@ -821,7 +821,7 @@ public abstract class AbstractDocumentSum_Base
         js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
             .append(getSetFieldValue(0, "rate", rateInfo.getRateUIFrmt()))
             .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
-                            Boolean.toString(rateInfo.getCurrencyInst().isInvert())));
+                            Boolean.toString(rateInfo.isInvert())));
 
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
@@ -893,7 +893,7 @@ public abstract class AbstractDocumentSum_Base
         js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
                         .append(getSetFieldValue(0, "rate", rateInfo.getRateUIFrmt()))
             .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
-                        Boolean.toString(rateInfo.getCurrencyInst().isInvert())))
+                        Boolean.toString(rateInfo.isInvert())))
                         .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
 
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());

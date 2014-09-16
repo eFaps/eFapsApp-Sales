@@ -1789,7 +1789,7 @@ public abstract class AbstractDocument_Base
                 if (rate != null && rate instanceof Object[]) {
                     final Currency currency = new Currency();
                     rateInfo  = currency.evaluateRateInfo(_parameter, (Object[]) rate);
-                    currencyInst = rateInfo.getCurrencyInst();
+                    currencyInst = rateInfo.getCurrencyInstObj();
                 }
             }
         }
@@ -1799,7 +1799,7 @@ public abstract class AbstractDocument_Base
             final String date = _parameter.getParameterValue("date_eFapsDate");
             final RateInfo[] rates = currency.evaluateRateInfos(_parameter, date, _currentInst, _newInst);
             rateInfo = rates[2];
-            currencyInst = rates[1].getCurrencyInst();
+            currencyInst = rates[1].getCurrencyInstObj();
         }
         if (rateInfo != null) {
             js.append(getSetFieldValue(0, "rateCurrencyData", getRateUIFrmt(_parameter, rateInfo)))

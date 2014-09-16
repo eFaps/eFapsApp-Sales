@@ -42,6 +42,8 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.document.AbstractDocumentTax;
+import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -78,9 +80,9 @@ public abstract class DocPaymentInfo_Base
     private RateInfo rateInfo;
 
     /**
-     * rate that will be applied at the document.
+     * rate applied at the document.
      */
-    private Object[] rateTarget;
+    private RateInfo rateInfo4Account;
 
     /**
      * Is this instance initialized (the data retrieved).
@@ -230,16 +232,58 @@ public abstract class DocPaymentInfo_Base
     {
         initialize();
         BigDecimal ret = BigDecimal.ZERO;
-        if (getAccountInfo().getCurrencyInstance().equals(getCurrencyInstance())) {
-            ret = ret.add(getCrossTotal());
-        } else if (getAccountInfo().getCurrencyInstance().equals(getRateCurrencyInstance())) {
+        if (getAccountInfo().getCurrencyInstance().equals(getRateCurrencyInstance())) {
             ret = ret.add(getRateCrossTotal());
         } else {
-            final RateInfo[] rateInfos = new Currency().evaluateRateInfos(getParameter(),
-                            getDate(), getRateCurrencyInstance(), getAccountInfo().getCurrencyInstance());
-            ret = ret.add(getRateCrossTotal().divide(rateInfos[2].getRate(), BigDecimal.ROUND_HALF_UP));
+            ret = ret.add(getRateCrossTotal().divide(getRateInfo4Account().getRate(), BigDecimal.ROUND_HALF_UP));
         }
         return ret;
+    }
+
+    /**
+     * @return the paid amount in the account currency
+     * @throws EFapsException on error
+     */
+    public BigDecimal getPaid4Account()
+        throws EFapsException
+    {
+        initialize();
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final PayPos pos : this.payPos) {
+            // the currency of the PaymentDocument is the same as the ratcurrency
+            if (getAccountInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
+                ret = ret.add(pos.getAmount());
+            } else {
+                ret = ret.add(pos.getAmount().divide(getRateInfo4Account().getRate(), BigDecimal.ROUND_HALF_UP));
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Getter method for the instance variable {@link #rateInfo}.
+     *
+     * @return value of instance variable {@link #rateInfo}
+     * @throws EFapsException on error
+     */
+    public RateInfo getRateInfo4Account()
+        throws EFapsException
+    {
+        if (this.rateInfo4Account == null) {
+            this.rateInfo4Account = new Currency().evaluateRateInfos(getParameter(),
+                        getDate(), getRateCurrencyInstance(), getAccountInfo().getCurrencyInstance())[2];
+        }
+        return this.rateInfo4Account;
+    }
+
+    /**
+     * Setter method for instance variable {@link #rateInfo4Account}.
+     *
+     * @param _rateInfo4Account value for instance variable {@link #rateInfo4Account}
+     */
+    public void setRateInfo4Account(final RateInfo _rateInfo4Account)
+    {
+        this.rateInfo4Account = _rateInfo4Account;
     }
 
     /**
@@ -349,28 +393,6 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
-     * @return the paid amount in the account currency
-     * @throws EFapsException on error
-     */
-    public BigDecimal getPaid4Account()
-        throws EFapsException
-    {
-        initialize();
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final PayPos pos : this.payPos) {
-            // the currency of the PaymentDocument is the same as the ratcurrency
-            if (getAccountInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
-                ret = ret.add(pos.getAmount());
-            } else {
-                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(getParameter(),
-                                getDate(), pos.getCurrencyInstance(), getAccountInfo().getCurrencyInstance());
-                ret = ret.add(pos.getAmount().divide(rateInfos[2].getRate(), BigDecimal.ROUND_HALF_UP));
-            }
-        }
-        return ret;
-    }
-
-    /**
      * @param _accInst instance of the account
      * @throws EFapsException on error
      *
@@ -382,32 +404,14 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
-     * Getter method for the instance variable {@link #rateTarget}.
-     *
-     * @return value of instance variable {@link #rateTarget}
-     */
-    public Object[] getRateTarget()
-    {
-        return this.rateTarget;
-    }
-
-    /**
-     * Setter method for instance variable {@link #rateTarget}.
-     *
-     * @param _rateTarget value for instance variable {@link #rateTarget}
-     */
-    public void setRateTarget(final Object[] _rateTarget)
-    {
-        this.rateTarget = _rateTarget;
-    }
-
-    /**
      * Getter method for the instance variable {@link #name}.
      *
      * @return value of instance variable {@link #name}
      */
     public String getName()
+        throws EFapsException
     {
+        initialize();
         return this.name;
     }
 
@@ -438,9 +442,12 @@ public abstract class DocPaymentInfo_Base
      * Getter method for the instance variable {@link #accountInfo}.
      *
      * @return value of instance variable {@link #accountInfo}
+     * @throws EFapsException on error
      */
     public AccountInfo getAccountInfo()
+        throws EFapsException
     {
+        initialize();
         return this.accountInfo;
     }
 
@@ -519,24 +526,13 @@ public abstract class DocPaymentInfo_Base
      * Getter method for the instance variable {@link #rateInfo}.
      *
      * @return value of instance variable {@link #rateInfo}
-     */
-    public RateInfo getRateInfo()
-    {
-        return this.rateInfo;
-    }
-
-    /**
-     * Getter method for the instance variable {@link #rateInfo}.
-     *
-     * @return value of instance variable {@link #rateInfo}
      * @throws EFapsException on error
      */
-    public RateInfo getRateInfo4Account()
+    public RateInfo getRateInfo()
         throws EFapsException
     {
-        final RateInfo[] rateInfos = new Currency().evaluateRateInfos(getParameter(),
-                        getDate(), getRateCurrencyInstance(), getAccountInfo().getCurrencyInstance());
-        return rateInfos[2];
+        initialize();
+        return this.rateInfo;
     }
 
     /**
@@ -555,7 +551,9 @@ public abstract class DocPaymentInfo_Base
      * @return value of instance variable {@link #date}
      */
     public DateTime getDate()
+        throws EFapsException
     {
+        initialize();
         return this.date;
     }
 
@@ -568,6 +566,18 @@ public abstract class DocPaymentInfo_Base
     {
         this.date = _date;
     }
+
+    /**
+     * @return DoctaxInfo for this document
+     * @throws EFapsException on error
+     */
+    public DocTaxInfo getDocTaxInfo()
+        throws EFapsException
+    {
+        initialize();
+        return AbstractDocumentTax.getDocTaxInfo(getParameter(), getInstance());
+    }
+
 
     @Override
     public String toString()

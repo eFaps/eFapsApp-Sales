@@ -309,7 +309,6 @@ public abstract class PaymentDetractionOut_Base
         if (docInstance.isValid() && accInstance.isValid()) {
             final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInstance);
             docInfo.setAccountInst(accInstance);
-            docInfo.setRateTarget(getRateObject(_parameter));
 
             final BigDecimal total4Doc = docInfo.getCrossTotal();
             final BigDecimal payments4Doc = docInfo.getPaid();
