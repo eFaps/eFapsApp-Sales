@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2014 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>ca8e4908-a7bd-4fbd-991b-8c59b333d815</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_SwapCreatePayForm</name>
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+         <field name="createDocument">
+            <property name="Label">Sales_SwapCollectTable.document.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="autoComplete4Document"
+                name="Sales_SwapCollectTable.document.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_IncomingInvoice</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_IncomingReceipt</property>
+                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
+                <property name="Status01">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="updateFields4CreateDocument"
+                name="Sales_SwapCollectTable.document.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+             </trigger>
+        </field>
+         <field name="createInfo">
+            <property name="Label">Sales_SwapCollectTable.document.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+
+         <field character="Heading" name="collectHeading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_SwapForm.collectHeading.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field character="Target" name="collectTable">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_SwapCollectTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_DocumentSumAbstract</property>
+            </evaluate>
+        </field>
+         <field name="total">
+            <property name="Label">Sales_SwapCollectTable.document.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+    </definition>
+</ui-form>

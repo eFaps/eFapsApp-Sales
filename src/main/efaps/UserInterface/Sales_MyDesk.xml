@@ -43,6 +43,7 @@
             <child>Sales_PaymentAbstractMyDesk</child>
             <child>Sales_PaymentAbstractOutMyDesk</child>
             <child>Sales_DocumentsPaymentsTaxMyDesk</child>
+            <child>Sales_SwapMyDesk</child>
             <child>Sales_ScheduleMyDesk</child>
             <child>Sales_ReportMyDesk</child>
             <child>Sales_CashFlowMyDesk</child>

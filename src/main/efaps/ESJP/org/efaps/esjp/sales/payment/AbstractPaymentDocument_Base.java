@@ -390,7 +390,7 @@ public abstract class AbstractPaymentDocument_Base
     public Return pickerMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
-        final MultiPrint mulit = new MultiPrint(){
+        final MultiPrint mulit = new MultiPrint() {
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
                                          final QueryBuilder _queryBldr)
@@ -444,8 +444,8 @@ public abstract class AbstractPaymentDocument_Base
         final Map<String, Object> ret = new HashMap<>();
 
         final DecimalFormat frmt = _docInfo.getFormatter();
-        final BigDecimal total4Doc = _docInfo.getCrossTotal4Account();
-        final BigDecimal payments4Doc = _docInfo.getPaid4Account();
+        final BigDecimal total4Doc = _docInfo.getCrossTotal4Target();
+        final BigDecimal payments4Doc = _docInfo.getPaid4Target();
         final BigDecimal amount4PayDoc;
         final BigDecimal paymentDiscount;
         final BigDecimal paymentAmountDesc;
@@ -469,8 +469,8 @@ public abstract class AbstractPaymentDocument_Base
         ret.put("paymentAmount", frmt.format(amount4PayDoc));
         ret.put("paymentAmountDesc", frmt.format(paymentAmountDesc));
         ret.put("paymentDiscount", frmt.format(paymentDiscount));
-        ret.put("paymentRate", _docInfo.getRateInfo4Account().getRateUIFrmt());
-        ret.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Account().isInvert());
+        ret.put("paymentRate", _docInfo.getRateInfo4Target().getRateUIFrmt());
+        ret.put("paymentRate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Target().isInvert());
         return ret;
     }
 
@@ -518,7 +518,6 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         final List<Map<String, Object>> list = new ArrayList<>();
-        new HashMap<>();
         final int selected = getSelectedRow(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("createDocument")[selected]);
         final Instance accInstance = Instance.get(CISales.AccountCashDesk.getType(),
@@ -532,11 +531,11 @@ public abstract class AbstractPaymentDocument_Base
                                 .parse(_parameter.getParameterValues("paymentRate")[selected]);
                 final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInstance);
                 docInfo.setAccountInst(accInstance);
-                docInfo.getRateInfo4Account().setRate(rate);
-                docInfo.getRateInfo4Account().setRateUI(rateUI);
+                docInfo.getRateInfo4Target().setRate(rate);
+                docInfo.getRateInfo4Target().setRateUI(rateUI);
 
                 list.add(getPositionUpdateMap(_parameter, docInfo, false));
-                getSumUpdateMap(_parameter, list, true);
+                list.add(getSumUpdateMap(_parameter, list, true));
             } catch (final ParseException e) {
                 LOG.error("Catched ParseException", e);
             }

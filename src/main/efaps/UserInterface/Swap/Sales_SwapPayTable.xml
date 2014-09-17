@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2009 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4ed1448e-9dc4-4efe-a173-30a3a383c56d</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_SwapPayTable</name>
+        <field name="document">
+            <property name="Label">Sales_SwapCollectTable.document.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="autoComplete4Document"
+                name="Sales_SwapCollectTable.document.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_IncomingInvoice</property>
+                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Status">Open</property>
+                <property name="Type01">Sales_IncomingReceipt</property>
+                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
+                <property name="Status01">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="updateFields4Document"
+                name="Sales_SwapCollectTable.document.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+             </trigger>
+        </field>
+        <field name="contact">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/Contact.Label</property>
+        </field>
+        <field name="crossTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/CrossTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="netTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/NetTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="rateCrossTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/RateCrossTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="rateNetTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/RateNetTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="rate">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_Payment/Rate.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="updateFields4Rate"
+                name="Sales_SwapCollectTable.rate.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="rate_eFapsRateInverted">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="partial">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/NetTotal.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="updateFields4Partial"
+                name="Sales_SwapCollectTable.partial.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+             </trigger>
+        </field>
+        <field name="status">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_DocumentSumAbstract/Status.Label</property>
+        </field>
+    </definition>
+</ui-table>

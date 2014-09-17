@@ -82,7 +82,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * rate applied at the document.
      */
-    private RateInfo rateInfo4Account;
+    private RateInfo rateInfo4Target;
 
     /**
      * Is this instance initialized (the data retrieved).
@@ -104,17 +104,29 @@ public abstract class DocPaymentInfo_Base
      */
     private Instance rateCurrencyInstance;
 
-    private AccountInfo accountInfo;
+    /**
+     * Account Info.
+     */
+    private TargetInfo targetInfo;
 
     /**
      * Name of the document.
      */
     private String name;
 
+    /**
+     * Name of the contact related.
+     */
     private String contactName;
 
+    /**
+     * Parameter as passed by the eFaps API.
+     */
     private Parameter parameter;
 
+    /**
+     * date of the document.
+     */
     private DateTime date;
 
     /**
@@ -173,6 +185,23 @@ public abstract class DocPaymentInfo_Base
                 final BigDecimal amount = multi.<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
                 this.payPos.add(new PayPos(dateTmp, amount, curInst));
             }
+
+            final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+            swapQueryBldr.setOr(true);
+            swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromAbstractLink, this.instance);
+            swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToAbstractLink, this.instance);
+
+            final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
+            swapMulti.addAttribute(CISales.Document2Document4Swap.Amount);
+            final SelectBuilder selCur3 = new SelectBuilder()
+                            .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
+            swapMulti.addSelect(selCur3);
+            swapMulti.executeWithoutAccessCheck();
+            while (swapMulti.next()) {
+                final Instance curInst = swapMulti.getSelect(selCur3);
+                final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
+                this.payPos.add(new PayPos(this.date, amount, curInst));
+            }
             this.initialized = true;
         }
     }
@@ -227,15 +256,15 @@ public abstract class DocPaymentInfo_Base
      * @return the cross total in the currency of the account
      * @throws EFapsException on error
      */
-    public BigDecimal getCrossTotal4Account()
+    public BigDecimal getCrossTotal4Target()
         throws EFapsException
     {
         initialize();
         BigDecimal ret = BigDecimal.ZERO;
-        if (getAccountInfo().getCurrencyInstance().equals(getRateCurrencyInstance())) {
+        if (getTargetInfo().getCurrencyInstance().equals(getRateCurrencyInstance())) {
             ret = ret.add(getRateCrossTotal());
         } else {
-            ret = ret.add(getRateCrossTotal().divide(getRateInfo4Account().getRate(), BigDecimal.ROUND_HALF_UP));
+            ret = ret.add(getRateCrossTotal().divide(getRateInfo4Target().getRate(), BigDecimal.ROUND_HALF_UP));
         }
         return ret;
     }
@@ -244,17 +273,17 @@ public abstract class DocPaymentInfo_Base
      * @return the paid amount in the account currency
      * @throws EFapsException on error
      */
-    public BigDecimal getPaid4Account()
+    public BigDecimal getPaid4Target()
         throws EFapsException
     {
         initialize();
         BigDecimal ret = BigDecimal.ZERO;
         for (final PayPos pos : this.payPos) {
             // the currency of the PaymentDocument is the same as the ratcurrency
-            if (getAccountInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
+            if (getTargetInfo().getCurrencyInstance().equals(pos.getCurrencyInstance())) {
                 ret = ret.add(pos.getAmount());
             } else {
-                ret = ret.add(pos.getAmount().divide(getRateInfo4Account().getRate(), BigDecimal.ROUND_HALF_UP));
+                ret = ret.add(pos.getAmount().divide(getRateInfo4Target().getRate(), BigDecimal.ROUND_HALF_UP));
             }
         }
         return ret;
@@ -266,14 +295,14 @@ public abstract class DocPaymentInfo_Base
      * @return value of instance variable {@link #rateInfo}
      * @throws EFapsException on error
      */
-    public RateInfo getRateInfo4Account()
+    public RateInfo getRateInfo4Target()
         throws EFapsException
     {
-        if (this.rateInfo4Account == null) {
-            this.rateInfo4Account = new Currency().evaluateRateInfos(getParameter(),
-                        getDate(), getRateCurrencyInstance(), getAccountInfo().getCurrencyInstance())[2];
+        if (this.rateInfo4Target == null) {
+            this.rateInfo4Target = new Currency().evaluateRateInfos(getParameter(),
+                        getDate(), getRateCurrencyInstance(), getTargetInfo().getCurrencyInstance())[2];
         }
-        return this.rateInfo4Account;
+        return this.rateInfo4Target;
     }
 
     /**
@@ -281,9 +310,9 @@ public abstract class DocPaymentInfo_Base
      *
      * @param _rateInfo4Account value for instance variable {@link #rateInfo4Account}
      */
-    public void setRateInfo4Account(final RateInfo _rateInfo4Account)
+    public void setRateInfo4Target(final RateInfo _rateInfo4Account)
     {
-        this.rateInfo4Account = _rateInfo4Account;
+        this.rateInfo4Target = _rateInfo4Account;
     }
 
     /**
@@ -397,16 +426,28 @@ public abstract class DocPaymentInfo_Base
      * @throws EFapsException on error
      *
      */
+    public void setTargetDocInst(final Instance _accInst)
+        throws EFapsException
+    {
+        this.targetInfo = new TargetDocInfo(_accInst);
+    }
+
+    /**
+     * @param _accInst instance of the account
+     * @throws EFapsException on error
+     *
+     */
     public void setAccountInst(final Instance _accInst)
         throws EFapsException
     {
-        this.accountInfo = new AccountInfo(_accInst);
+        this.targetInfo = new AccountInfo(_accInst);
     }
 
     /**
      * Getter method for the instance variable {@link #name}.
      *
      * @return value of instance variable {@link #name}
+     * @throws EFapsException on error
      */
     public String getName()
         throws EFapsException
@@ -444,11 +485,11 @@ public abstract class DocPaymentInfo_Base
      * @return value of instance variable {@link #accountInfo}
      * @throws EFapsException on error
      */
-    public AccountInfo getAccountInfo()
+    public TargetInfo getTargetInfo()
         throws EFapsException
     {
         initialize();
-        return this.accountInfo;
+        return this.targetInfo;
     }
 
     /**
@@ -458,7 +499,7 @@ public abstract class DocPaymentInfo_Base
      */
     public void setAccountInfo(final AccountInfo _accountInfo)
     {
-        this.accountInfo = _accountInfo;
+        this.targetInfo = _accountInfo;
     }
 
     /**
@@ -478,16 +519,16 @@ public abstract class DocPaymentInfo_Base
         objects.add(currInst.getISOCode());
 
         String key;
-        if (currInst.getInstance().equals(getAccountInfo().getCurrencyInstance())) {
+        if (currInst.getInstance().equals(getTargetInfo().getCurrencyInstance())) {
             key = ".InfoField";
         } else {
             key = ".InfoField4Account";
-            objects.add(getCrossTotal4Account());
-            objects.add(getPaid4Account());
+            objects.add(getCrossTotal4Target());
+            objects.add(getPaid4Target());
             objects.add(BigDecimal.ZERO);
             objects.add(BigDecimal.ZERO);
-            objects.add(getAccountInfo().getCurrencyInst().getSymbol());
-            objects.add(getAccountInfo().getCurrencyInst().getISOCode());
+            objects.add(getTargetInfo().getCurrencyInst().getSymbol());
+            objects.add(getTargetInfo().getCurrencyInst().getISOCode());
         }
         return DBProperties.getFormatedDBProperty(DocPaymentInfo.class.getName() + key, objects.toArray());
     }
@@ -549,6 +590,7 @@ public abstract class DocPaymentInfo_Base
      * Getter method for the instance variable {@link #date}.
      *
      * @return value of instance variable {@link #date}
+     * @throws EFapsException on error
      */
     public DateTime getDate()
         throws EFapsException
@@ -565,6 +607,26 @@ public abstract class DocPaymentInfo_Base
     public void setDate(final DateTime _date)
     {
         this.date = _date;
+    }
+
+    /**
+     * Setter method for instance variable {@link #crossTotal}.
+     *
+     * @param _crossTotal value for instance variable {@link #crossTotal}
+     */
+    public void setCrossTotal(final BigDecimal _crossTotal)
+    {
+        this.crossTotal = _crossTotal;
+    }
+
+    /**
+     * Setter method for instance variable {@link #rateCrossTotal}.
+     *
+     * @param _rateCrossTotal value for instance variable {@link #rateCrossTotal}
+     */
+    public void setRateCrossTotal(final BigDecimal _rateCrossTotal)
+    {
+        this.rateCrossTotal = _rateCrossTotal;
     }
 
     /**
@@ -658,10 +720,7 @@ public abstract class DocPaymentInfo_Base
         }
     }
 
-    /**
-     * Account info.
-     */
-    public static class AccountInfo
+    public abstract static class TargetInfo
     {
 
         /**
@@ -679,24 +738,10 @@ public abstract class DocPaymentInfo_Base
          */
         private CurrencyInst currencyInst;
 
-        /**
-         * @param _instance insatcne of the account
-         * @throws EFapsException on error
-         */
-        public AccountInfo(final Instance _instance)
+        public TargetInfo(final Instance _instance)
             throws EFapsException
         {
             this.instance = _instance;
-            if (this.instance.isValid()) {
-                final SelectBuilder selAccCurInst = new SelectBuilder()
-                                .linkto(CISales.AccountAbstract.CurrencyLink).instance();
-                final PrintQuery print = new PrintQuery(this.instance);
-                print.addSelect(selAccCurInst);
-                print.execute();
-
-                this.currencyInstance = print.<Instance>getSelect(selAccCurInst);
-                this.currencyInst = CurrencyInst.get(this.currencyInstance);
-            }
         }
 
         /**
@@ -714,5 +759,93 @@ public abstract class DocPaymentInfo_Base
         {
             return this.currencyInst;
         }
+
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #currencyInstance}.
+         *
+         * @param _currencyInstance value for instance variable {@link #currencyInstance}
+         */
+        public void setCurrencyInstance(final Instance _currencyInstance)
+        {
+            this.currencyInstance = _currencyInstance;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #currencyInst}.
+         *
+         * @param _currencyInst value for instance variable {@link #currencyInst}
+         */
+        public void setCurrencyInst(final CurrencyInst _currencyInst)
+        {
+            this.currencyInst = _currencyInst;
+        }
     }
+
+
+    public static class TargetDocInfo
+        extends TargetInfo
+    {
+        /**
+         * /**
+         *
+         * @param _instance insatcne of the account
+         * @throws EFapsException on error
+         */
+        public TargetDocInfo(final Instance _instance)
+            throws EFapsException
+        {
+            super(_instance);
+            if (getInstance().isValid()) {
+                final SelectBuilder selAccCurInst = new SelectBuilder()
+                                .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+                final PrintQuery print = new PrintQuery(this.getInstance());
+                print.addSelect(selAccCurInst);
+                print.execute();
+                setCurrencyInstance(print.<Instance>getSelect(selAccCurInst));
+                setCurrencyInst(CurrencyInst.get(getCurrencyInstance()));
+            }
+        }
+    }
+
+    /**
+     * Account info.
+     */
+    public static class AccountInfo
+        extends TargetInfo
+    {
+        /**
+        /**
+         * @param _instance insatcne of the account
+         * @throws EFapsException on error
+         */
+        public AccountInfo(final Instance _instance)
+            throws EFapsException
+        {
+            super(_instance);
+            if (getInstance().isValid()) {
+                final SelectBuilder selAccCurInst = new SelectBuilder()
+                                .linkto(CISales.AccountAbstract.CurrencyLink).instance();
+                final PrintQuery print = new PrintQuery(this.getInstance());
+                print.addSelect(selAccCurInst);
+                print.execute();
+                setCurrencyInstance(print.<Instance>getSelect(selAccCurInst));
+                setCurrencyInst(CurrencyInst.get(getCurrencyInstance()));
+            }
+        }
+    }
+
+
 }
