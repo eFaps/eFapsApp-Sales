@@ -43,9 +43,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 
@@ -74,7 +73,7 @@ public abstract class AbstractSumOnlyDocument_Base
     {
         final CreatedDoc createdDoc = new CreatedDoc();
 
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst = Currency.getBaseCurrency();
         final Instance rateCurrInst = _parameter.getParameterValue("rateCurrencyId") == null
                         ? baseCurrInst
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
@@ -273,7 +272,7 @@ public abstract class AbstractSumOnlyDocument_Base
                 if (curInst.equals(curInst2)) {
                     amount = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                 } else {
-                    final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                    final Instance baseCurrInst = Currency.getBaseCurrency();
                     if (!curInst.equals(baseCurrInst) && curInst2.equals(baseCurrInst)) {
                         amount = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
                     } else {
@@ -328,7 +327,7 @@ public abstract class AbstractSumOnlyDocument_Base
             final Instance rateCur = Instance.get(CIERP.Currency.getType(), print.<Long>getSelect(selDocRateCur));
 
             if (document != null && document.isValid()) {
-                if (Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE).equals(rateCur)) {
+                if (Currency.getBaseCurrency().equals(rateCur)) {
                     rateObjDoc = print.<Object[]>getSelect(selDoc2DocRate);
                 }
 

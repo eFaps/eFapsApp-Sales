@@ -40,9 +40,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -197,7 +196,7 @@ public abstract class IncomingProfServInsurance_Base
             ret = print.getSelect(sel);
         } else {
             ret = _parameter.getParameterValue("rateCurrencyId") == null
-                            ? Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE)
+                            ? Currency.getBaseCurrency()
                             : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
         }
         return ret;

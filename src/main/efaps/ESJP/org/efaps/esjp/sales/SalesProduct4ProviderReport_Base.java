@@ -60,9 +60,8 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -263,7 +262,7 @@ public abstract class SalesProduct4ProviderReport_Base
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
 
-            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
@@ -462,7 +461,7 @@ public abstract class SalesProduct4ProviderReport_Base
             throws EFapsException
         {
             final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties

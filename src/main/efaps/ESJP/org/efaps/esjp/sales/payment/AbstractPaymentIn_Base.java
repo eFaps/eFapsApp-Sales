@@ -45,10 +45,9 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 
@@ -75,7 +74,7 @@ public abstract class AbstractPaymentIn_Base
 
             final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         _parameter.getParameterValue(CIFormSales.Sales_PaymentDepositWithOutDocForm.currencyLink.name));
-            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
 
             final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
 

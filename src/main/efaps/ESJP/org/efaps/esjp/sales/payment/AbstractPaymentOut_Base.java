@@ -61,6 +61,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
@@ -173,7 +174,7 @@ public abstract class AbstractPaymentOut_Base
         final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
 
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Currency.getBaseCurrency();
 
         final PrintQuery print2 = new PrintQuery(_parameter.getInstance());
         print2.addAttribute(CISales.BulkPayment.Date);
@@ -404,7 +405,7 @@ public abstract class AbstractPaymentOut_Base
                                   final BigDecimal _difference)
         throws EFapsException
     {
-        final Instance currInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance currInst = Currency.getBaseCurrency();
 
         CIType type = null;
         CIStatus status = null;

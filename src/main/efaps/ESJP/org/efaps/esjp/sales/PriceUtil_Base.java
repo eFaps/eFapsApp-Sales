@@ -181,7 +181,7 @@ public abstract class PriceUtil_Base
                     final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                                     AbstractDocument_Base.CURRENCYINST_KEY);
 
-                    final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                    final Instance baseInst = Currency.getBaseCurrency();
 
                     final BigDecimal price = multi.<BigDecimal>getAttribute(CIProducts.ProductPricelistPosition.Price);
 
@@ -266,7 +266,7 @@ public abstract class PriceUtil_Base
         throws EFapsException
     {
 
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Currency.getBaseCurrency();
         BigDecimal newRate;
         BigDecimal currentRate;
         BigDecimal newRateUI;
@@ -684,7 +684,7 @@ public abstract class PriceUtil_Base
         public ProductPrice()
             throws EFapsException
         {
-            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
             this.origCurrencyInstance = baseInst;
             this.currentCurrencyInstance = baseInst;
         }

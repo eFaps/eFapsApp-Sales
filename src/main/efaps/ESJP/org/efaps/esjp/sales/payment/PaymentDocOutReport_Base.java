@@ -44,11 +44,10 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.DateTimeUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -138,7 +137,7 @@ public abstract class PaymentDocOutReport_Base
             final BigDecimal rateCrossInv = multi
                             .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             final BigDecimal crossInv = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseCurrInst = Currency.getBaseCurrency();
             for (final PaymentOut payOut : lstPayDocs) {
                 if (!rateCurDocInst.equals(payOut.getRateCurrency())) {
                     if (!rateCurDocInst.equals(baseCurrInst)) {
@@ -229,7 +228,7 @@ public abstract class PaymentDocOutReport_Base
         report.getJrParameters().put("FromDate", from.toDate());
         report.getJrParameters().put("ToDate", to.toDate());
         report.getJrParameters().put("Mime", mime);
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst = Currency.getBaseCurrency();
 
         report.getJrParameters().put("BaseCurrency", CurrencyInst.get(baseCurrInst).getISOCode());
         final SystemConfiguration config = ERP.getSysConfig();

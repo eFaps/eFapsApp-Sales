@@ -1,4 +1,3 @@
 key,description,valueType,valueSelect,valueAttr,valueValue,linkType,linkSelect,linkAttr,linkValue
 org.efaps.sales.Currency4Invoice,This link defines the exchange rate of which currency will be displayed in the Invoices.,ERP_Currency,oid,UUID,41823aa0-a961-46cb-b04e-adc48d8eec2c,Admin_Common_SystemConfiguration,id,UUID,c9a1cbc3-fd35-4463-80d2-412422a3802f
 Currency4ProductPrice,This link defines the Currency whish is the base for Product prices.,ERP_Currency,oid,UUID,41823aa0-a961-46cb-b04e-adc48d8eec2c,Admin_Common_SystemConfiguration,id,UUID,c9a1cbc3-fd35-4463-80d2-412422a3802f
-org.efaps.sales.CurrencyBase,Base Currency used for all calculations. Meaning that e.g a invoice will always be stored in this currency.,ERP_Currency,oid,UUID,41823aa0-a961-46cb-b04e-adc48d8eec2c,Admin_Common_SystemConfiguration,id,UUID,c9a1cbc3-fd35-4463-80d2-412422a3802f

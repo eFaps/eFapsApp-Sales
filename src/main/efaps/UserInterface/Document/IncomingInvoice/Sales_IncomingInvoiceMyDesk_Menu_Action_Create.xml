@@ -68,7 +68,10 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-         <profiles>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
+        <profiles>
             <profile name="projects"/>
         </profiles>
         <name>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</name>
@@ -106,4 +109,52 @@
         <property name="TargetDefaultMenu">none</property>
     </definition>
 
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" />
+        </application-dependencies>
+         <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_IncomingInvoiceMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+            <role>Sales_IncomingDocument</role>
+        </access>
+        <target>
+            <form>Sales_IncomingInvoiceForm</form>
+            <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
+                <property name="PositionType">Sales_IncomingInvoicePosition</property>
+                <!-- Projects_ProjectService2IncomingInvoice -->
+                <property name="ConnectType">006219c0-4197-4584-9073-dd10aeca9edc</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">project</property>
+
+                <!-- Sales_HumanResource_Department2IncomingInvoice -->
+                <property name="ConnectType01">3daec8e6-f8f6-4cfc-9d0a-c6c967f97228</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">department</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
+                <property name="Validation01">NAME</property>
+                <property name="Validation02">QUANTITYGREATERZERO</property>
+                <property name="Validation03">AMOUNTGREATERZERO</property>
+                <property name="NAME_ValidateContact">true</property>
+                <property name="NAME_QueryType">Sales_IncomingInvoice</property>
+                <property name="NAME_QueryType01">Sales_IncomingReceipt</property>
+                <property name="NAME_QueryType02">Accounting_ExternalVoucher</property>
+            </validate>
+            <command>Sales_IncomingInvoice_ShowRevision</command>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_IncomingInvoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
 </ui-command>

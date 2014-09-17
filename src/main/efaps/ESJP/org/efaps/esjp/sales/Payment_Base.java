@@ -58,6 +58,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
@@ -117,7 +118,7 @@ public abstract class Payment_Base
                 Instance targetDocInst = null;
                 boolean out = false;
                 if (targetTypeId != null && !targetTypeId.isEmpty()) {
-                    final Instance baseInst =  Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                    final Instance baseInst = Currency.getBaseCurrency();
                     final Instance newInst = Instance.get(CIERP.Currency.getType(), currencies[i]);
                     final CurrencyInst currency = new CurrencyInst(newInst);
                     final PriceUtil util = new PriceUtil();
@@ -260,7 +261,7 @@ public abstract class Payment_Base
         final StringBuilder html = new StringBuilder();
 
         // Sales-Configuration
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst = Currency.getBaseCurrency();
         final DecimalFormat formater = NumberFormatter.get().getFormatter();
         final PriceUtil priceUtil = new PriceUtil();
 
@@ -509,6 +510,7 @@ public abstract class Payment_Base
         return retVal;
     }
 
+    @Override
     public Return picker4Document(final Parameter _parameter)
         throws EFapsException
     {

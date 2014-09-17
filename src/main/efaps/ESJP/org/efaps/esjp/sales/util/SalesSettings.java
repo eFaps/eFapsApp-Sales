@@ -67,12 +67,6 @@ public interface SalesSettings
     String COSTINGSTORAGEGROUP = "org.efaps.sales.CostingStorageGroup";
 
     /**
-     * OID for a Link.<br/>
-     * Base Currency for the System.
-     */
-    String CURRENCYBASE = "org.efaps.sales.CurrencyBase";
-
-    /**
      * Boolean (true/false).<br/>
      * Activate the possibility to define a minimum retail
      * price.

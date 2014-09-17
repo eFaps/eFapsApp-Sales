@@ -46,9 +46,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
@@ -85,7 +84,7 @@ public abstract class PaymentSchedule_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst = Currency.getBaseCurrency();
 
         _insert.add(CISales.PaymentSchedule.Total, getTotalFmtStr(getTotal(_parameter, null)));
         _insert.add(CISales.PaymentSchedule.CurrencyId, baseCurrInst);
@@ -293,7 +292,7 @@ public abstract class PaymentSchedule_Base
     protected BigDecimal getPaymentDocumentOut4Doc(final Instance _docInstance)
         throws EFapsException
     {
-        final Instance baseCurLink = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurLink = Currency.getBaseCurrency();
         final SelectBuilder selRateDoc = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                         .attribute(CISales.DocumentSumAbstract.Rate);
 

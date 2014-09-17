@@ -62,10 +62,9 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -485,7 +484,7 @@ public abstract class SalesReport4Account_Base
                     }
                 }
                 if (!lstPayDocs.isEmpty()) {
-                    final Instance curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                    final Instance curBase = Currency.getBaseCurrency();
                     final Iterator<PaymentInfoDocument4Report> iter = lstPayDocs.iterator();
                     while (iter.hasNext()) {
                         final PaymentInfoDocument4Report current = iter.next();

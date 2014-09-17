@@ -61,6 +61,7 @@ import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.AbstractWarning;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
@@ -425,8 +426,7 @@ public abstract class IncomingInvoice_Base
 
                         final Insert posInsert = new Insert(CIProducts.ProductPricelistPosition);
                         posInsert.add(CIProducts.ProductPricelistPosition.ProductPricelist, insert.getInstance());
-                        posInsert.add(CIProducts.ProductPricelistPosition.CurrencyId,
-                                        Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE));
+                        posInsert.add(CIProducts.ProductPricelistPosition.CurrencyId, Currency.getBaseCurrency());
                         posInsert.add(CIProducts.ProductPricelistPosition.Price, price);
                         posInsert.execute();
                     }

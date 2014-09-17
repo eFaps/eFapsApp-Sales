@@ -47,10 +47,9 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -181,7 +180,7 @@ public abstract class PaymentCheckOut_Base
             final Map<String, String> map = new HashMap<String, String>();
             map.put(CIFormSales.Sales_PaymentCheckOutForm.name.name, nameArr.toString());
 
-            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
 
             final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);
             map.put("rate", NumberFormatter.get().getFormatter(0, 3).format(rates[3]));

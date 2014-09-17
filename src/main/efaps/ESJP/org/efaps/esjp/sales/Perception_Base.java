@@ -35,6 +35,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -165,7 +166,7 @@ public abstract class Perception_Base
         if (info.isApply()) {
             Instance currenctCurInst = _calculator.getProductCrossPrice().getCurrentCurrencyInstance();
             if (currenctCurInst == null) {
-                currenctCurInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+                currenctCurInst = Currency.getBaseCurrency();
             }
             boolean min;
             if (info.getCurrencyInst().equals(currenctCurInst)) {

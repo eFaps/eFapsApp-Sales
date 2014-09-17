@@ -76,6 +76,7 @@ import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
@@ -185,7 +186,7 @@ public abstract class AbstractPaymentDocument_Base
             insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink);
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name,
                             Long.parseLong(currencyLink));
-            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseCurrInst = Currency.getBaseCurrency();
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.CurrencyLink.name,
                             baseCurrInst.getId());
@@ -196,7 +197,7 @@ public abstract class AbstractPaymentDocument_Base
             insert.add(CISales.PaymentDocumentAbstract.RateCurrencyLink, currencyLink4Account);
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.RateCurrencyLink.name,
                             Long.parseLong(currencyLink4Account));
-            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseCurrInst = Currency.getBaseCurrency();
             insert.add(CISales.PaymentDocumentAbstract.CurrencyLink, baseCurrInst.getId());
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.CurrencyLink.name,
                             baseCurrInst.getId());
@@ -1068,7 +1069,7 @@ public abstract class AbstractPaymentDocument_Base
         final Instance newInst = Instance.get(CIERP.Currency.getType(),
                         print.<Long>getAttribute(CISales.AccountCashDesk.CurrencyLink));
 
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Currency.getBaseCurrency();
 
         final Map<String, String> map = new HashMap<String, String>();
         final BigDecimal[] rates = new PriceUtil().getRates(_parameter, newInst, baseInst);

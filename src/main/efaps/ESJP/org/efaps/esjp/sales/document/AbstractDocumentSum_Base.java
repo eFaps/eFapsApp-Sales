@@ -175,7 +175,7 @@ public abstract class AbstractDocumentSum_Base
     {
         final List<Calculator> calcList = analyseTable(_parameter, null);
         _editDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst =Currency.getBaseCurrency();
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
@@ -287,7 +287,7 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         return _parameter.getParameterValue("rateCurrencyId") == null
-                        ? Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE)
+                        ?Currency.getBaseCurrency()
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
     }
 
@@ -306,7 +306,7 @@ public abstract class AbstractDocumentSum_Base
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
         createdDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst =Currency.getBaseCurrency();
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, createdDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
@@ -683,7 +683,7 @@ public abstract class AbstractDocumentSum_Base
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst =Currency.getBaseCurrency();
         if (currentInst == null) {
             currentInst = baseInst;
         }
@@ -915,7 +915,7 @@ public abstract class AbstractDocumentSum_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst =Currency.getBaseCurrency();
 
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _createdDoc);
         final Object[] rateObj = getRateObject(_parameter);
@@ -1019,7 +1019,7 @@ public abstract class AbstractDocumentSum_Base
                                    final EditedDoc _editDoc)
         throws EFapsException
     {
-        final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrInst =Currency.getBaseCurrency();
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
@@ -1148,7 +1148,7 @@ public abstract class AbstractDocumentSum_Base
             print.addSelect(selRateCurInst);
             print.execute();
 
-            final Instance baseCurrInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseCurrInst =Currency.getBaseCurrency();
             final Instance rateCurrInst = print.<Instance>getSelect(selRateCurInst);
             if (!baseCurrInst.equals(rateCurrInst)) {
 

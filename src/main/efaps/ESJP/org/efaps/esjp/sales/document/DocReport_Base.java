@@ -58,13 +58,12 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Rate;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.DateTimeUtil;
@@ -183,7 +182,7 @@ public abstract class DocReport_Base
         final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
 
-        final Instance curBase = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance curBase = Currency.getBaseCurrency();
 
         final DateTime from = DateTimeUtil.normalize(new DateTime(dateFromStr));
         final DateTime to = DateTimeUtil.normalize(new DateTime(dateToStr));
@@ -625,7 +624,7 @@ public abstract class DocReport_Base
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                                                             AbstractDocument_Base.CURRENCYINST_KEY);
         // Sales-Configuration
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Currency.getBaseCurrency();
         if (currentInst == null) {
             currentInst = baseInst;
         }

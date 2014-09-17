@@ -42,6 +42,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -373,7 +374,7 @@ public abstract class Calculator_Base
         Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
 
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Currency.getBaseCurrency();
 
         if (currInst == null) {
             currInst = baseInst;
@@ -639,7 +640,7 @@ public abstract class Calculator_Base
     protected ProductPrice getNewPrice()
         throws EFapsException
     {
-        final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseInst = Currency.getBaseCurrency();
         final ProductPrice ret = new PriceUtil().getProductPrice(getParameter());
         ret.setBaseRate(this.productPrice == null ? BigDecimal.ONE : this.productPrice.getBaseRate());
         ret.setCurrentCurrencyInstance(this.productPrice == null

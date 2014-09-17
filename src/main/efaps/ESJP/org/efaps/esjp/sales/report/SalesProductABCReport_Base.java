@@ -56,9 +56,8 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -234,7 +233,7 @@ public abstract class SalesProductABCReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            final Instance baseInst = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final TextColumnBuilder<String> productColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.report.ABC4ProductReport.ProductName"), "productName",
@@ -370,7 +369,7 @@ public abstract class SalesProductABCReport_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            final Instance baseInst =  Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseInst = Currency.getBaseCurrency();
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.report.ABC4ProviderReport.Contact"), "contactName",

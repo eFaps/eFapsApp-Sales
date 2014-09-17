@@ -71,8 +71,6 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.payment.PaymentInternal;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -185,8 +183,7 @@ public abstract class Transaction_Base
             final String name = getName4Internal(_parameter);
             final Insert docInsert = new Insert(CISales.PaymentInternal);
             docInsert.add(CISales.PaymentInternal.Name, name);
-            docInsert.add(CISales.PaymentInternal.CurrencyLink, Sales.getSysConfig()
-                            .getLink(SalesSettings.CURRENCYBASE));
+            docInsert.add(CISales.PaymentInternal.CurrencyLink, Currency.getBaseCurrency());
             docInsert.add(CISales.PaymentInternal.Amount, info.getAmount());
             docInsert.add(CISales.PaymentInternal.RateCurrencyLink, curInst.getInstance());
             docInsert.add(CISales.PaymentInternal.Rate, rateInfo.getRateObject());
@@ -201,8 +198,7 @@ public abstract class Transaction_Base
             payInsert.add(CISales.Payment.Amount, info.getAmount());
             payInsert.add(CISales.Payment.Rate, rateInfo.getRateObject());
             payInsert.add(CISales.Payment.RateCurrencyLink, curInst.getInstance());
-            payInsert.add(CISales.Payment.CurrencyLink, Sales.getSysConfig()
-                            .getLink(SalesSettings.CURRENCYBASE));
+            payInsert.add(CISales.Payment.CurrencyLink, Currency.getBaseCurrency());
             payInsert.execute();
 
             for (final Instance inst : info.getTransInst()) {

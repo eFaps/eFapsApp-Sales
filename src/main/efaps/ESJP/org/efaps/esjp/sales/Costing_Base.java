@@ -48,6 +48,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -315,7 +316,7 @@ public abstract class Costing_Base
             insert.add(CIProducts.ProductCost.Price, _transCost.getResult());
             insert.add(CIProducts.ProductCost.ValidFrom, date);
             insert.add(CIProducts.ProductCost.ValidUntil, date.plusYears(10));
-            insert.add(CIProducts.ProductCost.CurrencyLink, Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE));
+            insert.add(CIProducts.ProductCost.CurrencyLink, Currency.getBaseCurrency());
             insert.executeWithoutAccessCheck();
         }
     }

@@ -1075,7 +1075,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Instance currency4Invoice = evaluateCurrency4JavaScript(_parameter);
-        final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrency = Currency.getBaseCurrency();
 
         final StringBuilder js = new StringBuilder();
             js.append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
@@ -1279,7 +1279,7 @@ public abstract class AbstractDocument_Base
         BigDecimal[] ratesCur = null;
         if (rates != null) {
             final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseCurrency = Currency.getBaseCurrency();
             final Instance instanceDerived = getInstances4Derived(_parameter).get(0);
             boolean derived = false;
             if (instanceDerived.isValid()) {
@@ -2914,7 +2914,7 @@ public abstract class AbstractDocument_Base
                 .append("if (cn.length > 0) { ")
                 .append(" cn[0].appendChild(document.createTextNode('");
         final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-        final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+        final Instance baseCurrency = Currency.getBaseCurrency();
         if (currency4Invoice.equals(baseCurrency)) {
             js.append("1").append("'));");
         } else {
@@ -3023,7 +3023,7 @@ public abstract class AbstractDocument_Base
         BigDecimal[] ratesCur = null;
         if (rates != null) {
             final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-            final Instance baseCurrency = Sales.getSysConfig().getLink(SalesSettings.CURRENCYBASE);
+            final Instance baseCurrency = Currency.getBaseCurrency();
             final Instance instanceDerived = getInstances4Derived(_parameter).get(0);
             boolean derived = false;
             if (instanceDerived.isValid()) {
