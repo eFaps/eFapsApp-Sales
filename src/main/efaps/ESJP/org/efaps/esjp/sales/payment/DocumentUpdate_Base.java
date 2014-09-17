@@ -76,14 +76,28 @@ public abstract class DocumentUpdate_Base
         throws EFapsException
     {
         final Instance docInst = _parameter.getInstance();
+        return updateDocument(_parameter, docInst);
+    }
 
-        final Status targetStatus = getTargetStatus(_parameter, docInst);
-        if (targetStatus != null && checkStatus(_parameter, docInst)
-                        && validateDocumentCriterias(_parameter, docInst)) {
-            setStatus(_parameter, docInst, targetStatus);
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstance instance of the document
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return updateDocument(final Parameter _parameter,
+                                 final Instance _docInstance)
+        throws EFapsException
+    {
+
+        final Status targetStatus = getTargetStatus(_parameter, _docInstance);
+        if (targetStatus != null && checkStatus(_parameter, _docInstance)
+                        && validateDocumentCriterias(_parameter, _docInstance)) {
+            setStatus(_parameter, _docInstance, targetStatus);
         }
         return new Return();
     }
+
 
     /**
      * Get the Status the Document will be set to if the criteria are met.

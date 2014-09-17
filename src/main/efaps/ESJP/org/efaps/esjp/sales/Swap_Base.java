@@ -56,6 +56,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
+import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -189,9 +190,11 @@ public abstract class Swap_Base
         final Instance createInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_SwapCreateCollectForm.createDocument.name));
         final String[] docOids = _parameter.getParameterValues(CITableSales.Sales_SwapPayTable.document.name);
+        final List<Instance> docInsts = new ArrayList<>();
         if (createInst.isValid() && docOids != null) {
             final DocPaymentInfo createDocInfo = getNewDocPaymentInfo(_parameter, createInst);
             createDocInfo.setTargetDocInst(createInst);
+            docInsts.add(createInst);
             int i = 0;
             for (final String docOid : docOids) {
                 final Instance docInst = Instance.get(docOid);
@@ -211,12 +214,17 @@ public abstract class Swap_Base
                                         createDocInfo.getRateCurrencyInstance());
                         insert.add(CISales.Document2Document4Swap.Amount, partial);
                         insert.execute();
+                        docInsts.add(docInst);
                     } catch (final ParseException e) {
                         LOG.error("Catched ParseException", e);
                     }
                 }
                 i++;
             }
+        }
+
+        for (final Instance inst : docInsts) {
+            new DocumentUpdate().updateDocument(_parameter, inst);
         }
         return new Return();
     }

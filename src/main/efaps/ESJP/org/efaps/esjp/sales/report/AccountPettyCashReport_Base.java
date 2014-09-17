@@ -23,8 +23,10 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +40,7 @@ import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -51,11 +53,16 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.jasperreport.AbstractDynamicReport_Base;
+import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
+import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
@@ -157,17 +164,16 @@ public abstract class AccountPettyCashReport_Base
             return true;
         }
 
-
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final SelectBuilder selCur = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
-            final SelectBuilder selAccName = new SelectBuilder()
+            final SelectBuilder selCurInst = new SelectBuilder()
+                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
+            final SelectBuilder selAccInst = new SelectBuilder()
                             .linkfrom(CISales.Account2DocumentWithTrans.ToLinkAbstract)
                             .linkto(CISales.Account2DocumentWithTrans.FromLinkAbstract)
-                            .attribute(CISales.AccountPettyCash.Name);
+                            .instance();
             final SelectBuilder selDocTypeName = new SelectBuilder()
                             .linkfrom(CISales.Document2DocumentType.DocumentLink)
                             .linkto(CISales.Document2DocumentType.DocumentTypeLink).attribute(CIERP.DocumentType.Name);
@@ -175,28 +181,34 @@ public abstract class AccountPettyCashReport_Base
                             .linkfrom(CISales.ActionDefinitionPettyCashReceipt2Document.ToLink)
                             .linkto(CISales.ActionDefinitionPettyCashReceipt2Document.FromLink)
                             .attribute(CISales.ActionDefinitionPettyCashReceipt.Name);
-
+            final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                            .attribute(CIContacts.ContactAbstract.Name);
             final List<DocumentBean> datasource = new ArrayList<DocumentBean>();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addSelect(selAccName, selDocTypeName, selActionName, selCur);
-            multi.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name);
+            multi.addSelect(selAccInst, selDocTypeName, selActionName, selCurInst, selContactName);
+            multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
+                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name);
             multi.execute();
             while (multi.next()) {
                 BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.IncomingCreditNote.getType())) {
                     cross = cross.negate();
                 }
                 final DocumentBean bean = getBean(_parameter);
                 datasource.add(bean);
                 bean.setOid(multi.getCurrentInstance().getOid());
-                bean.setPettyCash(multi.<String>getSelect(selAccName));
+                bean.setPettyCashInstance(multi.<Instance>getSelect(selAccInst));
                 bean.setAction(multi.<String>getSelect(selActionName));
-                bean.setAmount(cross);
-                bean.setCurrency(multi.<String>getSelect(selCur));
+                bean.setCross(cross);
+                bean.setNet(cross);
+                bean.setCurrencyInstance(multi.<Instance>getSelect(selCurInst));
                 bean.setDocTypeName(multi.<String>getSelect(selDocTypeName));
                 bean.setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
+                bean.setContactName(multi.<String>getSelect(selContactName));
+                bean.setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
             chain.addComparator(new Comparator<DocumentBean>()
@@ -221,6 +233,7 @@ public abstract class AccountPettyCashReport_Base
             });
             chain.addComparator(new Comparator<DocumentBean>()
             {
+
                 @Override
                 public int compare(final DocumentBean _o1,
                                    final DocumentBean _o2)
@@ -230,7 +243,12 @@ public abstract class AccountPettyCashReport_Base
             });
             Collections.sort(datasource, chain);
 
-            return new JRBeanCollectionDataSource(datasource);
+            final Collection<Map<String, ?>> col = new ArrayList<>();
+            for (final DocumentBean bean : datasource) {
+                col.add(bean.getMap());
+            }
+
+            return new JRMapCollectionDataSource(col);
         }
 
         /**
@@ -286,13 +304,13 @@ public abstract class AccountPettyCashReport_Base
             final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.DocName"), "docName",
                             DynamicReports.type.stringType());
-            final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.Amount"), "amount",
-                            DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.Currency"), "currency",
-                            DynamicReports.type.stringType());
-
+            final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.ContactName"),
+                            "contactName",
+                            DynamicReports.type.stringType()).setWidth(150);
+            final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
+                            DBProperties.getProperty(AccountPettyCashReport.class.getName() + ".Column.Date"), "date",
+                            DateTimeDate.get());
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
                             .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new LinkExpression())
@@ -303,23 +321,29 @@ public abstract class AccountPettyCashReport_Base
             final ColumnGroupBuilder officialGroup = DynamicReports.grp.group(officialColumn).groupByDataType();
             final ColumnGroupBuilder actionGroup = DynamicReports.grp.group(actionColumn).groupByDataType();
 
-            final AggregationSubtotalBuilder<BigDecimal> amountSum = DynamicReports.sbt.sum(amountColumn);
-            final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(amountColumn);
-            final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(amountColumn);
-
             _builder.addGroup(pettyCashGroup, officialGroup, actionGroup);
             _builder.addColumn(pettyCashColumn, officialColumn, actionColumn);
-             if (showDetails()) {
-                 if (getExType().equals(ExportType.HTML)) {
-                     _builder.addColumn(linkColumn);
-                 }
-                 _builder.addColumn(docNameColumn);
-             }
-            _builder.addColumn( amountColumn, currencyColumn);
+            if (showDetails()) {
+                if (getExType().equals(ExportType.HTML)) {
+                    _builder.addColumn(linkColumn);
+                }
+                _builder.addColumn(docNameColumn, dateColumn, contactNameColumn);
+            }
+            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(currency.getName(),
+                                currency.getISOCode(), DynamicReports.type.bigDecimalType());
 
-            _builder.addSubtotalAtGroupFooter(pettyCashGroup, amountSum);
-            _builder.addSubtotalAtGroupFooter(officialGroup, amountSum2);
-            _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
+                _builder.addColumn(amountColumn);
+
+                final AggregationSubtotalBuilder<BigDecimal> amountSum = DynamicReports.sbt.sum(amountColumn);
+                final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(amountColumn);
+                final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(amountColumn);
+
+                _builder.addSubtotalAtGroupFooter(pettyCashGroup, amountSum);
+                _builder.addSubtotalAtGroupFooter(officialGroup, amountSum2);
+                _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
+            }
+
         }
 
         /**
@@ -390,28 +414,34 @@ public abstract class AccountPettyCashReport_Base
         private String typeLabel;
 
         /**
-         * Name of the AccountPettyCash.
-         */
-        private String pettyCash;
-
-        /**
          * ActionDef of the document.
          */
         private String action;
 
+        private String contactName;
+
         /**
          * Amount.
          */
-        private BigDecimal amount;
+        private BigDecimal cross;
+
+        /**
+         * Amount.
+         */
+        private BigDecimal net;
+
+        private Instance pettyCashInstance;
 
         /**
          * Currency.
          */
-        private String currency;
+        private Instance currencyInstance;
 
         private String docName;
 
         private String docTypeName;
+
+        private DateTime date;
 
         /**
          * Getter method for the instance variable {@link #pettyCash}.
@@ -419,8 +449,50 @@ public abstract class AccountPettyCashReport_Base
          * @return value of instance variable {@link #pettyCash}
          */
         public String getPettyCash()
+
         {
-            return this.pettyCash;
+            final StringBuilder ret = new StringBuilder();
+
+            try {
+                final PrintQuery print = new PrintQuery(getPettyCashInstance());
+                final SelectBuilder sel = SelectBuilder.get().linkto(CISales.AccountPettyCash.CurrencyLink).instance();
+                print.addSelect(sel);
+                print.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
+                print.execute();
+                ret.append(print.getAttribute(CISales.AccountPettyCash.Name))
+                                .append(" - ").append(print.getAttribute(CISales.AccountPettyCash.AmountAbstract))
+                                .append(CurrencyInst.get(print.getSelect(sel)).getSymbol());
+            } catch (final EFapsException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return ret.toString();
+        }
+
+        /**
+         * @return
+         */
+        public Map<String, ?> getMap()
+            throws EFapsException
+        {
+            final Map<String, Object> ret = new HashMap<>();
+            ret.put("pettyCash", getPettyCash());
+            ret.put("official", getOfficial());
+            ret.put("action", getAction());
+            ret.put("docName", getDocName());
+            ret.put("contactName", getContactName());
+            ret.put("oid", getOid());
+            ret.put("date", getDate());
+            ret.put(CurrencyInst.get(getCurrencyInstance()).getISOCode(), getCross());
+            return ret;
+        }
+
+        /**
+         * @param _select
+         */
+        public void setPettyCashInstance(final Instance _pettyCashInstance)
+        {
+            this.pettyCashInstance = _pettyCashInstance;
         }
 
         /**
@@ -438,7 +510,6 @@ public abstract class AccountPettyCashReport_Base
          */
         public void setPettyCash(final String _name)
         {
-            this.pettyCash = _name;
         }
 
         /**
@@ -493,46 +564,6 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
-         * Getter method for the instance variable {@link #amount}.
-         *
-         * @return value of instance variable {@link #amount}
-         */
-        public BigDecimal getAmount()
-        {
-            return this.amount;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #amount}.
-         *
-         * @return value of instance variable {@link #amount}
-         */
-        public void setAmount(final BigDecimal _amount)
-        {
-            this.amount = _amount;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #currency}.
-         *
-         * @return value of instance variable {@link #currency}
-         */
-        public String getCurrency()
-        {
-            return this.currency;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #currency}.
-         *
-         * @return value of instance variable {@link #currency}
-         */
-        public void setCurrency(final String _currency)
-        {
-            this.currency = _currency;
-        }
-
-        /**
          * Getter method for the instance variable {@link #oid}.
          *
          * @return value of instance variable {@link #oid}
@@ -552,7 +583,6 @@ public abstract class AccountPettyCashReport_Base
             this.oid = _oid;
         }
 
-
         /**
          * Getter method for the instance variable {@link #docName}.
          *
@@ -563,7 +593,6 @@ public abstract class AccountPettyCashReport_Base
             return this.docName;
         }
 
-
         /**
          * Setter method for instance variable {@link #docName}.
          *
@@ -572,6 +601,119 @@ public abstract class AccountPettyCashReport_Base
         public void setDocName(final String _docName)
         {
             this.docName = _docName;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #pettyCashInstance}.
+         *
+         * @return value of instance variable {@link #pettyCashInstance}
+         */
+        public Instance getPettyCashInstance()
+        {
+            return this.pettyCashInstance;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #contactName}.
+         *
+         * @return value of instance variable {@link #contactName}
+         */
+        public String getContactName()
+        {
+            return this.contactName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #contactName}.
+         *
+         * @param _contactName value for instance variable {@link #contactName}
+         */
+        public void setContactName(final String _contactName)
+        {
+            this.contactName = _contactName;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #cross}.
+         *
+         * @return value of instance variable {@link #cross}
+         */
+        public BigDecimal getCross()
+        {
+            return this.cross;
+        }
+
+        /**
+         * Setter method for instance variable {@link #cross}.
+         *
+         * @param _cross value for instance variable {@link #cross}
+         */
+        public void setCross(final BigDecimal _cross)
+        {
+            this.cross = _cross;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #net}.
+         *
+         * @return value of instance variable {@link #net}
+         */
+        public BigDecimal getNet()
+        {
+            return this.net;
+        }
+
+        /**
+         * Setter method for instance variable {@link #net}.
+         *
+         * @param _net value for instance variable {@link #net}
+         */
+        public void setNet(final BigDecimal _net)
+        {
+            this.net = _net;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #currencyInstance}.
+         *
+         * @return value of instance variable {@link #currencyInstance}
+         */
+        public Instance getCurrencyInstance()
+        {
+            return this.currencyInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #currencyInstance}.
+         *
+         * @param _currencyInstance value for instance variable
+         *            {@link #currencyInstance}
+         */
+        public void setCurrencyInstance(final Instance _currencyInstance)
+        {
+            this.currencyInstance = _currencyInstance;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #date}.
+         *
+         * @return value of instance variable {@link #date}
+         */
+        public DateTime getDate()
+        {
+            return this.date;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #date}.
+         *
+         * @param _date value for instance variable {@link #date}
+         */
+        public void setDate(final DateTime _date)
+        {
+            this.date = _date;
         }
     }
 }
