@@ -67,6 +67,9 @@
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
+         <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <profiles>
             <profile name="projects"/>
         </profiles>
@@ -110,4 +113,60 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
+
+     <definition>
+        <version-expression>(version==latest)</version-expression>
+         <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt</name>
+        <access>
+            <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_FundsToBeSettledReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="create">
+                <property name="PositionType">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="StatusGroup">Sales_FundsToBeSettledReceiptStatus</property>
+                <property name="Status">Open</property>
+                 <!-- Sales_ActionDefinitionFundsToBeSettledReceipt2Document -->
+                <property name="ConnectType">bc3d67e8-2a81-473d-9b45-15380fef53ef</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">action</property>
+                <!-- Projects_ProjectService2FundsToBeSettledReceipt -->
+                <property name="ConnectType01">2edaa579-cae0-49bd-8760-a10dbc2c6e88</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">project</property>
+
+                <!-- Sales_HumanResource_Department2FundsToBeSettledReceipt -->
+                <property name="ConnectType02">daf273fb-7045-459d-a69d-006dcf388fb0</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">department</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" method="validate">
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+            </validate>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="check4Status"
+                name="Sales_AccountFundsToBeSettledTree_Transaction_Menu_Action_CreateFundsToBeSettledReceipt.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Status">Open</property>
+            </trigger>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_FundsToBeSettledReceipt</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+
 </ui-command>

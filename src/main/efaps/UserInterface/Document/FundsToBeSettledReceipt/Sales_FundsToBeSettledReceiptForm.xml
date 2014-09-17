@@ -311,6 +311,107 @@
             <property name="Label">Sales_FundsToBeSettledReceipt/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+
+                 <field name="rate4ReadHeading" character="Heading">
+            <property name="Level">1</property>
+            <property name="Label">Sales_IncomingInvoiceForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rate4ReadHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateCurrencyId4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+         <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingInvoiceForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateHeadingPositon.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.ratePositionTable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+            <table>Sales_FundsToBeSettledReceiptRatePositionTable</table>
+             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="LinkFrom">FundsToBeSettledReceiptLink</property>
+            </evaluate>
+        </field>
+        <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/RateNetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateTaxes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+
+        <field name="paymentHeading" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.paymentHeading.Label</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+
         <field name="payment">
             <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Payment#CreateDocument].type.label&gt; - $&lt;linkfrom[Sales_Payment#CreateDocument].attribute[Date]&gt;</property>
@@ -344,6 +445,9 @@
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
+         <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <profiles>
             <profile name="projects"/>
         </profiles>
@@ -671,6 +775,106 @@
             <property name="Label">Sales_FundsToBeSettledReceipt/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+         <field name="rate4ReadHeading" character="Heading">
+            <property name="Level">1</property>
+            <property name="Label">Sales_IncomingInvoiceForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rate4ReadHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateCurrencyId4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+         <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingInvoiceForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateHeadingPositon.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.ratePositionTable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+            <table>Sales_FundsToBeSettledReceiptRatePositionTable</table>
+             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="LinkFrom">FundsToBeSettledReceiptLink</property>
+            </evaluate>
+        </field>
+        <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/RateNetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateTaxes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+
+        <field name="paymentHeading" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.paymentHeading.Label</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+
         <field name="payment">
             <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Payment#CreateDocument].type.label&gt; - $&lt;linkfrom[Sales_Payment#CreateDocument].attribute[Date]&gt;</property>
@@ -699,7 +903,505 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE"
                 method="getJavaScript4ProjectUIValue"
-                name="Sales_AccountPettyCashForm.javascript.UI_FIELD_VALUE"
+                name="Sales_AccountFundsToBeSettledForm.javascript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.projects.Project">
+                <property name="ReadOnly">true</property>
+            </trigger>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_FundsToBeSettledReceiptForm</name>
+        <field name="activatePositionsCalculator">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator"
+                name="Sales_FundsToBeSettledReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+        </field>
+        <field character="Group" name="dategroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="salesperson">
+            <property name="Attribute">Salesperson</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+            <trigger event="UI_FIELD_VALUE" method="getSalesPersonFieldValue"
+                name="Sales_FundsToBeSettledReceiptForm.salesperson.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                <property name="Type">Admin_User_Person</property>
+                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+                <property name="OrderSelect">attribute[LastName]</property>
+                <property name="WhereAttrEqValue">Status|true</property>
+                <property name="SelectCurrent">true</property>
+            </trigger>
+        </field>
+        <field name="salespersonLink">
+            <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
+            <property name="Attribute">Salesperson</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+        </field>
+        <field character="Group" name="modifyGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+        </field>
+        <field name="name4create">
+            <property name="Attribute">Name</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="ModeEdit">READONLY</property>
+        </field>
+        <field name="revision">
+            <property name="Attribute">Revision</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="accountFundsToBeSettled">
+            <property name="SelectAlternateOID">linkfrom[Sales_AccountFundsToBeSettled2FundsToBeSettledReceipt#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_AccountFundsToBeSettled2FundsToBeSettledReceipt#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_FundsToBeSettledBalanceForm.accountFundsToBeSettled.Name.Label</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="documentType">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType"
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                <property name="Type">ERP_DocumentType</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="update4DocumentType"
+                name="Sales_FundsToBeSettledReceiptForm.documentType.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+        </field>
+        <field name="documentType4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.documentType.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Label">Sales_FundsToBeSettledReceipt/Status.Label</property>
+        </field>
+        <field name="headingDepartment" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_InvoiceForm.headingDepartment.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="department">
+            <property name="Label">Sales_IncomingInvoiceForm.department.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_InvoiceForm.department.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">HumanResource_Department</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
+        </field>
+         <field name="department4View">
+            <property name="SelectAlternateOID">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].oid</property>
+            <property name="Select">linkfrom[HumanResource_Department2DocumentAbstract#ToAbstractLink].linkto[FromAbstractLink].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_IncomingInvoiceForm.department.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="headingProject" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.headingProject.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="project">
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.project.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">100</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="autoComplete4Project"
+                name="Sales_FundsToBeSettledReceiptForm.project.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="StatusGroup">Projects_ProjectServiceStatus</property>
+                <property name="Status">Closed</property>
+                <property name="MaxChoiceLength">155</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.projects.Project"
+                method="updateField4Project"
+                name="Sales_InvoiceForm.project.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="projectData">
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.projectData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="project4View">
+            <property name="SelectAlternateOID">linkfrom[Projects_ProjectService2FundsToBeSettledReceipt#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Projects_ProjectService2FundsToBeSettledReceipt#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Projects_ProjectService2FundsToBeSettledReceipt#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">50</property>
+        </field>
+        <field character="Heading" name="headingSupplier">
+            <property name="Level">2</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.headingSupplier.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="Columns">98</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
+                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt">
+                <property name="Classification">Contacts_ClassSupplier</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact"
+                name="Sales_FundsToBeSettledReceiptForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="action">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="dropDownFieldValue"
+                name="Sales_FundsToBeSettledReceiptForm.action.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ActionDefinitionFundsToBeSettledReceipt</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+        </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionFundsToBeSettledReceipt2Document#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.action.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field character="Heading" name="headingPositon">
+            <property name="Level">2</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.headingPositon.Heading</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field character="Group" name="currencyGroup">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rateCurrencyId">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI"
+                name="Sales_FundsToBeSettledReceiptForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency"
+                name="Sales_FundsToBeSettledReceiptForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rateCurrencyData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.rateCurrencyData.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="withoutVAT">
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.withoutVAT.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue"
+                name="Sales_InvoiceForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt" />
+        </field>
+        <field character="Target" name="positionTable">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <table>Sales_FundsToBeSettledReceiptPositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="LinkFrom">FundsToBeSettledReceiptLink</property>
+            </evaluate>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="RowSpan">4</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="netTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateNetTotal</property>
+        </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateTaxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
+        </field>
+        <field name="crossTotal">
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateCrossTotal</property>
+        </field>
+        <field name="netTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/NetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_FundsToBeSettledReceipt/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+         <field name="rate4ReadHeading" character="Heading">
+            <property name="Level">1</property>
+            <property name="Label">Sales_IncomingInvoiceForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rate4ReadHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateGroup" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateCurrencyId4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+         <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingInvoiceForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateHeadingPositon.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.ratePositionTable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+            <table>Sales_FundsToBeSettledReceiptRatePositionTable</table>
+             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_FundsToBeSettledReceiptPosition</property>
+                <property name="LinkFrom">FundsToBeSettledReceiptLink</property>
+            </evaluate>
+        </field>
+        <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/RateNetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateTaxes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_IncomingInvoice/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.FundsToBeSettledReceipt"
+                method="accessCheck4Rate"
+                name="Sales_FundsToBeSettledReceiptForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+
+        <field name="paymentHeading" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_FundsToBeSettledReceiptForm.paymentHeading.Label</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+
+        <field name="payment">
+            <property name="SelectAlternateOID">linkfrom[Sales_Payment#CreateDocument].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Sales_Payment#CreateDocument].type.label&gt; - $&lt;linkfrom[Sales_Payment#CreateDocument].attribute[Date]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_CashDeskBalanceForm.payment.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field character="Heading" name="targetPayments">
+            <property name="ModeEdit">NONE</property>
+            <property name="Level">2</property>
+            <property name="Label">Sales_CashDeskBalanceForm.targetPayments.Heading</property>
+        </field>
+        <field character="Target" name="paymentTable">
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_PaymentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_Payment</property>
+                <property name="LinkFroms">CreateDocument</property>
+            </evaluate>
+        </field>
+       <field name="javascript">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE"
+                method="getJavaScript4ProjectUIValue"
+                name="Sales_AccountFundsToBeSettledForm.javascript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.projects.Project">
                 <property name="ReadOnly">true</property>
             </trigger>
