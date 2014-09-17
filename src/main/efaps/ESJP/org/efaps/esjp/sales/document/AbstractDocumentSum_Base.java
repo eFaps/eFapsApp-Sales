@@ -388,7 +388,7 @@ public abstract class AbstractDocumentSum_Base
             final BigDecimal netTotal = getNetTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
                             .setScale(scale, BigDecimal.ROUND_HALF_UP);
             insert.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
-            createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, netTotal);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, netTotal);
 
             insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
 

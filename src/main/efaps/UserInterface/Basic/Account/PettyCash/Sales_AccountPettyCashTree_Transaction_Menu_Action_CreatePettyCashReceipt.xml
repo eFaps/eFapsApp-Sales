@@ -72,6 +72,9 @@
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <profiles>
             <profile name="projects"/>
         </profiles>
@@ -97,6 +100,54 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">project</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate">
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+            </validate>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_PettyCashReceipt</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_AccountPettyCashTree_Transaction_Menu_Action_CreatePettyCashReceipt</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_PettyCash</role>
+            <role>Sales_PettyCash_User</role>
+        </access>
+        <target>
+            <form>Sales_PettyCashReceiptForm</form>
+            <execute program="org.efaps.esjp.sales.document.PettyCashReceipt" method="create">
+                <property name="PositionType">Sales_PettyCashReceiptPosition</property>
+                <property name="StatusGroup">Sales_PettyCashReceiptStatus</property>
+                <property name="Status">Open</property>
+                <!-- Sales_ActionDefinitionPettyCashReceipt2Document -->
+                <property name="ConnectType">9e14e4a1-e28d-4875-8683-ee68a7985556</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">action</property>
+                <!-- Projects_ProjectService2PettyCashReceipt -->
+                <property name="ConnectType01">bd3e779c-6349-431f-82f0-5a31b036848b</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">project</property>
+                <!-- Sales_HumanResource_Department2PettyCashReceipt -->
+                <property name="ConnectType02">e5b6f9fe-df1e-4643-91f7-221e396307e2</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">department</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.PettyCashReceipt" method="validate">
                 <property name="Validation">POSITION</property>
