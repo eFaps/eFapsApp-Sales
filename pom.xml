@@ -123,6 +123,7 @@
                 <configuration>
                     <excludes>
                         <exclude>**/ci/CIArchives*.class</exclude>
+                        <exclude>**/ci/CIHumanResource*.class</exclude>
                         <exclude>**/fabrication/Process*.class</exclude>
                         <exclude>**/projects/Project*.class</exclude>
                     </excludes>
