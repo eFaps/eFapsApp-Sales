@@ -277,7 +277,6 @@ public abstract class RetentionCertificate_Base
 
             while (multi.next()) {
                 final DocTaxInfo taxdoc = AbstractDocumentTax.getDocTaxInfo(_parameter, multi.getCurrentInstance());
-                ;
                 dataSource.add(multi.getSelect(selTypelabel),
                                 multi.getAttribute(CISales.DocumentSumAbstract.Name),
                                 multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date).toDate(),

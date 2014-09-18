@@ -816,8 +816,9 @@ public abstract class AbstractDocumentTax_Base
                 queryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument,
                                 attrQueryBldr.getAttributeQuery(CISales.PaymentDocumentAbstract.ID));
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selAmount = SelectBuilder.get().linkto(CISales.Payment.TargetDocument)
-                                .attribute(CISales.PaymentDocumentAbstract.Amount);
+                final SelectBuilder selAmount = SelectBuilder.get()
+                                .linkfrom(CISales.TransactionAbstract, CISales.TransactionAbstract.Payment)
+                                .attribute(CISales.TransactionAbstract.Amount);
                 multi.addSelect(selAmount);
                 multi.execute();
                 while (multi.next()) {
