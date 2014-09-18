@@ -169,6 +169,7 @@ public abstract class AbstractSumOnlyDocument_Base
                     createdDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, crossTotal);
                 }
             }
+            addDefaults(_parameter, insert, createdDoc);
         } catch (final ParseException e) {
            throw new EFapsException("Parsing Error", e);
         }
@@ -191,6 +192,36 @@ public abstract class AbstractSumOnlyDocument_Base
 
         Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
         return createdDoc;
+    }
+
+    /**
+     * Adding values set default if not existing values.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _insert to new Insert.
+     * @param _createdDoc to createdDoc.
+     */
+    protected void addDefaults(final Parameter _parameter,
+                               final Insert _insert,
+                               final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        if (!_createdDoc.getValues().containsKey(CISales.DocumentSumAbstract.RateNetTotal.name)) {
+            _insert.add(CISales.DocumentSumAbstract.RateNetTotal, BigDecimal.ZERO);
+            _createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, BigDecimal.ZERO);
+        }
+        if (!_createdDoc.getValues().containsKey(CISales.DocumentSumAbstract.NetTotal.name)) {
+            _insert.add(CISales.DocumentSumAbstract.NetTotal, BigDecimal.ZERO);
+            _createdDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, BigDecimal.ZERO);
+        }
+        if (!_createdDoc.getValues().containsKey(CISales.DocumentSumAbstract.RateCrossTotal.name)) {
+            _insert.add(CISales.DocumentSumAbstract.RateCrossTotal, BigDecimal.ZERO);
+            _createdDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, BigDecimal.ZERO);
+        }
+        if (!_createdDoc.getValues().containsKey(CISales.DocumentSumAbstract.CrossTotal.name)) {
+            _insert.add(CISales.DocumentSumAbstract.CrossTotal, BigDecimal.ZERO);
+            _createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, BigDecimal.ZERO);
+        }
     }
 
     /**
