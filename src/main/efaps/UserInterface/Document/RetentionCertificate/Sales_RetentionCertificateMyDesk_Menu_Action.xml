@@ -34,6 +34,7 @@
         <childs>
             <child>Sales_RetentionCertificateMyDesk_Menu_Action_Create</child>
             <child>Sales_RetentionCertificateMyDesk_Menu_Action_Delete</child>
+            <child>Sales_RetentionCertificateMyDesk_Menu_Action_CreateReport</child>
         </childs>
     </definition>
 

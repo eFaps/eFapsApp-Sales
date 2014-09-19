@@ -19,31 +19,24 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>80561def-a65b-40c4-8917-b360c3c6a6f7</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>add4d2dc-b2e4-407c-827a-550ac64ce24c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificateTree_Menu_Action_CreateReport</name>
+        <name>Sales_RetentionCertificateMyDesk_Menu_Action_CreateReport</name>
         <access>
             <role>Sales_RetentionCertificate</role>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.sales.report.RetentionCertificateReport"
-                method="createReport">
-                <property name="Template">Sales_RetentionCertificateTemplate</property>
+            <execute program="org.efaps.esjp.sales.report.RetentionCertificateReport" method="createReportMultiple" >
+                <property name="TemplateDesign4XLS">Sales_RetentionCertificateReportTemplate</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Sales_RetentionCertificateTree_Menu_Action_CreateReport.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                 <property name="Status">Open</property>
-             </trigger>
         </target>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
         <property name="TargetShowFile">true</property>
         <property name="WindowHeight">600</property>
         <property name="WindowWidth">900</property>

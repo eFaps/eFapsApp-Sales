@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version last-->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_RetentionCertificateReportTemplate" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9329997f-8440-4f49-a3a9-6eaea36f2e40">
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
+    <property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="false"/>
+    <property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
+    <property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="false"/>
+    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+    <parameter name="CompanyName" class="java.lang.String"/>
+    <parameter name="CompanyTaxNum" class="java.lang.String"/>
+    <pageHeader>
+        <band height="97" splitType="Stretch">
+
+        </band>
+    </pageHeader>
+    <columnFooter>
+        <band height="45" splitType="Stretch"/>
+    </columnFooter>
+</jasperReport>
