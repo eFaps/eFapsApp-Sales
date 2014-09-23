@@ -47,9 +47,8 @@
                 <property name="Status">Open</property>
                 <property name="JasperReport">Sales_DeliveryNote</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate">
+            <validate program="org.efaps.esjp.sales.document.ReturnSlip" method="validate">
                 <property name="Validation01">QUANTITYGREATERZERO</property>
-                <property name="Validation02">QUANTITYINSTOCK</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -83,9 +82,8 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate">
+            <validate program="org.efaps.esjp.sales.document.ReturnSlip" method="validate">
                 <property name="Validation01">QUANTITYGREATERZERO</property>
-                <property name="Validation02">QUANTITYINSTOCK</property>
             </validate>
         </target>
         <property name="Target">modal</property>

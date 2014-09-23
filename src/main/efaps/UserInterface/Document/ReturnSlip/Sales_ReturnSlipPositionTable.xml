@@ -32,18 +32,18 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnSlipPositionTable</name>
-        <!-- fields -->
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_ReturnSlipPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        <field name="product">
+        <field name="product" character="Picker">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_ReturnSlipPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <picker name="Products_ProductIndividualPicker"></picker>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Product"
                 name="Sales_ReturnSlipPositionTable.product.UI_FIELD_AUTOCOMPLETE"
@@ -52,6 +52,39 @@
                 method="updateFields4Product"
                 name="Sales_ReturnSlipPositionTable.product.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Products-Configuration -->
+                <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
+                <property name="Attribute">org.efaps.products.ActivateIndividual</property>
+            </trigger>
+        </field>
+        <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
+            <property name="Select">linkto[Product].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ReturnSlipPosition/Product.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <picker name="Products_ProductIndividualPicker"></picker>
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+                method="autoComplete4Product"
+                name="Sales_ReturnSlipPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" />
+            <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
+                method="updateFields4Product"
+                name="Sales_ReturnSlipPositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Products_StorageAbstractTree_InventoryIndivual.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Products-Configuration -->
+                <property name="SystemConfig">e53cd705-e463-47dc-a400-4ace4ed72071</property>
+                <property name="Attribute">org.efaps.products.ActivateIndividual</property>
+                <property name="Inverse">true</property>
+            </trigger>
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>

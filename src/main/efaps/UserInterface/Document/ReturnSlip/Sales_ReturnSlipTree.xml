@@ -22,10 +22,8 @@
   Last Changed By: $Author$
 
 -->
-
-<ui-menu xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f092435c-f527-41e8-af3b-ec64b9f96387</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -36,17 +34,15 @@
             <role>Sales_Delivery</role>
             <role>Sales_Admin</role>
         </access>
-        <!-- targets -->
         <target>
             <menu>Sales_ReturnSlipTree_Menu</menu>
             <form>Sales_ReturnSlipForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_ReturnSlip</type>
         <childs>
             <child>Sales_ReturnSlipTree_Position</child>
+            <child>Sales_ReturnSlipTree_Transaction</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

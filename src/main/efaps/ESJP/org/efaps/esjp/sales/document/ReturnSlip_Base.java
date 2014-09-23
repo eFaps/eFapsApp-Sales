@@ -22,6 +22,7 @@ package org.efaps.esjp.sales.document;
 
 import java.io.File;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -29,6 +30,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.util.EFapsException;
 
@@ -106,5 +108,12 @@ public abstract class ReturnSlip_Base
                         evaluateStorage4PositionTrigger(_parameter));
 
         return new Return();
+    }
+
+    @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.ReturnSlip.getType();
     }
 }

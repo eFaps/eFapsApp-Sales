@@ -44,6 +44,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.FieldTable;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -237,7 +238,14 @@ public abstract class AbstractProductDocument_Base
 
             posIns.execute();
             if (individualName != null) {
-                final Insert transInsert = new Insert(CIProducts.TransactionIndividualOutbound);
+                CIType transType;
+                if (posIns.getInstance().getType().isKindOf(CISales.ReturnSlipPosition)) {
+                    transType = CIProducts.TransactionIndividualInbound;
+                } else {
+                    transType = CIProducts.TransactionIndividualOutbound;
+                }
+
+                final Insert transInsert = new Insert(transType);
                 transInsert.add(CIProducts.TransactionAbstract.Quantity, quantity[i]);
                 transInsert.add(CIProducts.TransactionAbstract.Storage,
                                 Instance.get(_parameter.getParameterValues("storage")[i]));
