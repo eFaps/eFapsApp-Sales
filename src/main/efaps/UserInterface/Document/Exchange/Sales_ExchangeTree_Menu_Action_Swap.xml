@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,33 +22,24 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4c7062f5-532f-4544-a97d-c5a0e68f944e</uuid>
+    <uuid>39353f35-3f6c-44ba-b024-a9ce6aaef653</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ExchangeTree_Documents_Menu_Action_AddExisting</name>
+        <name>Sales_ExchangeTree_Menu_Action_Swap</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <search>Sales_ExchangeTree_Documents_Menu_Action_AddExisting_Search</search>
-            <execute program="org.efaps.esjp.common.uisearch.Connect">
-                <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectChildAttribute">ToLink</property>
-                <property name="AllowMultiple">false</property>
-                <!-- Sales_Exchange2IncomingInvoice -->
-                <property name="ConnectType">79e7eca6-fff7-4f62-ab95-18c7839ee2a8</property>
-                 <!-- Sales_IncomingInvoice -->
-                <property name="ConnectChildType">491aa65f-cbc8-464c-86bc-ef19ed6302ad</property>
-                <!-- Sales_Exchange2PaymentOrder -->
-                <property name="ConnectType01">4c5b7c82-7f98-45be-8654-608be1724ebf</property>
-                 <!-- Sales_PaymentOrder -->
-                <property name="ConnectChildType01">7f8feba6-a6a6-435b-84fe-8319d0039430</property>
+            <form>Sales_SwapCreate4DocForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.Swap">
+                <property name="SwapType">Pay</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Exchange" method="validateConnectDocument" />
         </target>
         <property name="Target">modal</property>
-        <property name="TargetCmdRevise">true</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
 </ui-command>

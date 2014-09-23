@@ -32,13 +32,12 @@
             <menu>Sales_ExchangeTree_Documents_Menu</menu>
             <table>Sales_Document2DocumentWithAmountTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_Exchange2IncomingInvoice</property>
-                <property name="LinkFrom">FromLink</property>
-                <property name="Type01">Sales_Exchange2PaymentOrder</property>
-                <property name="LinkFrom01">FromLink</property>
+                <property name="Type01">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom01">FromAbstractLink</property>
+                <property name="Type02">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom02">ToAbstractLink</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

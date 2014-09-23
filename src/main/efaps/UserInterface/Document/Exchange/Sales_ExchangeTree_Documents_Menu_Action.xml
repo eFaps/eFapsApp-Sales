@@ -29,7 +29,6 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ExchangeTree_Documents_Menu_Action</name>
         <childs>
-            <child>Sales_ExchangeTree_Documents_Menu_Action_AddExisting</child>
             <child>Sales_ExchangeTree_Documents_Menu_Action_Disconnect</child>
         </childs>
     </definition>

@@ -174,5 +174,14 @@ The current company is an Agent of Retention.]]></description>
             <description><![CDATA[Boolean (true/false).
 Activate the calculation of retention.]]></description>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.Config4Swap</key>
+            <value><![CDATA[Sales_IncomingExchange.Type=Sales_Invoice
+Sales_IncomingExchange.StatusGroup=Sales_InvoiceStatus
+Sales_IncomingExchange.Status=Open
+Sales_Exchange.Type=Sales_IncomingInvoice
+Sales_Exchange.StatusGroup=Sales_IncomingInvoiceStatus
+Sales_Exchange.Status=Open]]></value>
+        </attribute>
     </definition>
 </common-systemconfiguration>
