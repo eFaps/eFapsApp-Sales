@@ -34,7 +34,6 @@
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCheck</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDeposit</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCash</child>
-            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentExchange</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardAmercianExpress</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardDiners</child>
             <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardMasterCard</child>
