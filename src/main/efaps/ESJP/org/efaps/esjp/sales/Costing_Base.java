@@ -127,7 +127,7 @@ public abstract class Costing_Base
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
         attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
-                        print.getAttribute(CISales.IncomingInvoice2RecievingTicket.ToLink));
+                        print.getAttribute(CISales.Document2DocumentAbstract.ToAbstractLink));
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
