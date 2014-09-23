@@ -238,7 +238,7 @@
             <property name="Label">Sales_ReturnSlip/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">98</property>
+            <property name="Columns">60</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Carrier"
                 name="Sales_ReturnSlipForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
@@ -588,7 +588,7 @@
             <property name="Label">Sales_ReturnSlip/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="Columns">98</property>
+            <property name="Columns">60</property>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="autoComplete4Carrier"
                 name="Sales_ReturnSlipForm.carrierLink.UI_FIELD_AUTOCOMPLETE"
