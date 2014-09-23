@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2013 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,14 +19,27 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>21f57d84-db75-433f-996e-f3645d0ab1b5</uuid>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>3c5f5794-7f4e-4ddc-afe7-991630b1f47e</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchange2Document</name>
-        <parent>Sales_Document2DocumentWithAmount</parent>
-        <purpose abstract="true" />
+        <name>Sales_IncomingExchangeTree_Menu_Action_Swap</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_SwapCreate4DocForm</form>
+            <execute program="org.efaps.esjp.sales.Swap" method="create">
+                <property name="SwapType">Collect</property>
+            </execute>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">900</property>
     </definition>
-</datamodel-type>
+</ui-command>

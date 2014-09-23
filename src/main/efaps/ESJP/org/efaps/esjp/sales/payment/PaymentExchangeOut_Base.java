@@ -24,12 +24,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
@@ -95,23 +92,6 @@ public abstract class PaymentExchangeOut_Base
             insert.execute();
 
             _createdDoc.getValues().put("connectDocument", insert.getInstance());
-        }
-    }
-
-    @Override
-    protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
-                                                             final QueryBuilder _queryBldr)
-        throws EFapsException
-    {
-        final Instance exchange = Instance.get(_parameter.getParameterValue("name"));
-        if (exchange.isValid()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Exchange2IncomingInvoice);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Exchange2IncomingInvoice.FromLink, exchange);
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Exchange2IncomingInvoice.ToLink);
-
-            _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
-        } else {
-            _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.ID, 0);
         }
     }
 }

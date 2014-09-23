@@ -1735,7 +1735,7 @@ public abstract class AbstractDocumentSum_Base
                 final Instance child = Instance.get(childOid);
                 if (callInstance.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
                     if (child.getType().equals(CISales.IncomingInvoice.getType())
-                                    && check4Relation(CISales.Exchange2IncomingInvoice.uuid, child).next()) {
+                                    && check4Relation(CISales.Document2Document4Swap.uuid, child).next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;
@@ -1746,12 +1746,12 @@ public abstract class AbstractDocumentSum_Base
                         html.append(getString4ReturnInvalidate(child));
                         break;
                     } else if (child.getType().equals(CISales.PaymentOrder.getType())
-                                    && check4Relation(CISales.Exchange2PaymentOrder.uuid, child).next()) {
+                                    && check4Relation(CISales.Document2Document4Swap.uuid, child).next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;
                     } else if (child.getType().equals(CISales.Invoice.getType())
-                                    && check4Relation(CISales.IncomingExchange2Invoice.uuid, child).next()) {
+                                    && check4Relation(CISales.Document2Document4Swap.uuid, child).next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;
@@ -1762,7 +1762,7 @@ public abstract class AbstractDocumentSum_Base
                         html.append(getString4ReturnInvalidate(child));
                         break;
                     } else if (child.getType().equals(CISales.CollectionOrder.getType())
-                                    && check4Relation(CISales.IncomingExchange2CollectionOrder.uuid, child).next()) {
+                                    && check4Relation(CISales.Document2Document4Swap.uuid, child).next()) {
                         validate = false;
                         html.append(getString4ReturnInvalidate(child));
                         break;

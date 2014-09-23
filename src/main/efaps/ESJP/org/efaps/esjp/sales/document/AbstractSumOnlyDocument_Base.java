@@ -200,6 +200,7 @@ public abstract class AbstractSumOnlyDocument_Base
      * @param _parameter Parameter as passed from the eFaps API.
      * @param _insert to new Insert.
      * @param _createdDoc to createdDoc.
+     * @throws EFapsException on error
      */
     protected void addDefaults(final Parameter _parameter,
                                final Insert _insert,

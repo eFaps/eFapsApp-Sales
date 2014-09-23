@@ -278,4 +278,11 @@ public interface SalesSettings
      * Permit the augmentation for FundstoBeSettled..
      */
     String REQUIREBOOKED4PETTYCASHPAYMENT = "org.efaps.sales.AccountPettyCashBalanceRequireBooked4Payment";
+
+    /**
+     * Properties. Can be concatenated.
+     * A mapping for AutoComplete etc.
+     */
+    String SWAPCONFIG = "org.efaps.sales.Config4Swap";
+
 }

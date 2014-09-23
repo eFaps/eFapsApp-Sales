@@ -28,6 +28,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Status;
@@ -46,17 +47,20 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
-import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -94,7 +98,14 @@ public abstract class Swap_Base
         final List<Map<String, String>> list = new ArrayList<>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
 
-        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        final QueryBuilder queryBldr;
+        if ("true".equalsIgnoreCase(getProperty(_parameter, "UseSystemConfig"))) {
+            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.SWAPCONFIG, true);
+            final String key = _parameter.getCallInstance().getType().getName();
+            queryBldr = getQueryBldrFromProperties(_parameter, props, key);
+        } else {
+            queryBldr = getQueryBldrFromProperties(_parameter);
+        }
 
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name, req + "*").setIgnoreCase(true);
@@ -187,8 +198,7 @@ public abstract class Swap_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance createInst = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_SwapCreateCollectForm.createDocument.name));
+        final Instance createInst = getTargetInstance(_parameter);
         final String[] docOids = _parameter.getParameterValues(CITableSales.Sales_SwapPayTable.document.name);
         final List<Instance> docInsts = new ArrayList<>();
         if (createInst.isValid() && docOids != null) {
@@ -239,7 +249,7 @@ public abstract class Swap_Base
     {
         final List<Map<String, Object>> list = new ArrayList<>();
         final int selected = getSelectedRow(_parameter);
-        final Instance targetInstance = Instance.get(_parameter.getParameterValue("createDocument"));
+        final Instance targetInstance = getTargetInstance(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("document")[selected]);
 
         if (docInstance.isValid() && targetInstance.isValid()) {
@@ -274,6 +284,23 @@ public abstract class Swap_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
+     * @return TargetInstance
+     * @throws EFapsException on error
+     */
+    protected Instance getTargetInstance(final Parameter _parameter)
+    {
+        final Instance ret;
+        if (_parameter.getParameterValue("createDocument") == null) {
+            ret = _parameter.getCallInstance();
+        } else {
+            ret = Instance.get(_parameter.getParameterValue("createDocument"));
+        }
+        return ret;
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing map for fieldupdate
      * @throws EFapsException on error
      */
@@ -282,7 +309,7 @@ public abstract class Swap_Base
     {
         final List<Map<String, Object>> list = new ArrayList<>();
         final int selected = getSelectedRow(_parameter);
-        final Instance targetInstance = Instance.get(_parameter.getParameterValue("createDocument"));
+        final Instance targetInstance = getTargetInstance(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("document")[selected]);
 
         if (docInstance.isValid() && targetInstance.isValid()) {
@@ -317,7 +344,6 @@ public abstract class Swap_Base
     /**
      * @param _parameter parameter as passed by the eFasp API
      * @param _docInst instance of the document the map is wanted for
-     * @param _addDocInfo add the autocomplete field also
      * @return map containing values for update
      * @throws EFapsException on error
      */
@@ -325,7 +351,7 @@ public abstract class Swap_Base
                                                        final Instance _docInst)
         throws EFapsException
     {
-        final Instance targetInstance = Instance.get(_parameter.getParameterValue("createDocument"));
+        final Instance targetInstance = getTargetInstance(_parameter);
         final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, _docInst);
         docInfo.setTargetDocInst(targetInstance);
         return getPositionUpdateMap(_parameter, docInfo);
@@ -334,7 +360,6 @@ public abstract class Swap_Base
     /**
      * @param _parameter parameter as passed by the eFasp API
      * @param _docInfo DocPaymentInfo the map is wanted for
-     * @param _addDocInfo add the autocomplete field also
      * @return map containing values for update
      * @throws EFapsException on error
      */
@@ -453,11 +478,56 @@ public abstract class Swap_Base
         return new Return().put(ReturnValues.VALUES, values);
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst  Instance of the document
+     * @return DocPaymentInfo
+     * @throws EFapsException on erro
+     */
     public DocPaymentInfo getNewDocPaymentInfo(final Parameter _parameter,
-                                               final Instance _instance)
+                                               final Instance _docInst)
         throws EFapsException
     {
-        return new DocPaymentInfo(_instance).setParameter(_parameter);
+        return new DocPaymentInfo(_docInst).setParameter(_parameter);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing map for fieldupdate
+     * @throws EFapsException on error
+     */
+    public Return getDocumentInfoFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return().put(ReturnValues.VALUES, getDocumentInfo(_parameter, _parameter.getInstance()));
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst  Instance of the document
+     * @return String for the Interface
+     * @throws EFapsException on error
+     */
+    protected String getDocumentInfo(final Parameter _parameter,
+                                     final Instance _docInst)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        final PrintQuery print = new PrintQuery(_docInst);
+        print.addAttribute(CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.Rate);
+        print.execute();
+
+        final RateInfo rateinfo = new Currency().evaluateRateInfo(_parameter,
+                        (Object[]) print.getAttribute(CISales.DocumentSumAbstract.Rate));
+        final DocPaymentInfo payInfo = getNewDocPaymentInfo(_parameter, _docInst);
+        payInfo.setTargetDocInst(_docInst);
+        payInfo.getRateInfo4Target().setRate(rateinfo.getRate());
+        payInfo.getRateInfo4Target().setRateUI(rateinfo.getRateUI());
+
+        ret.append(_docInst.getType().getLabel()).append(" ")
+                        .append(print.getAttribute(CISales.DocumentSumAbstract.Name)).append(" ")
+                        .append(payInfo.getInfoField());
+        return ret.toString();
     }
 
 }
