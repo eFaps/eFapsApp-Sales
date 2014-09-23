@@ -38,5 +38,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class Swap
     extends Swap_Base
 {
+    /**
+     * Key used for storing information during request.
+     */
+    public static final String REQUESTKEY = Swap_Base.REQUESTKEY;
 
 }

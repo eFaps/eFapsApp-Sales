@@ -237,5 +237,20 @@
             <property name="Label">Sales_IncomingExchange/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="swapHeading" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingExchangeForm.swapHeading.Heading</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="swapTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_SwapDocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">Sales_Document2Document4Swap</property>
+                <property name="LinkFrom01">FromAbstractLink</property>
+                <property name="Type02">Sales_Document2Document4Swap</property>
+                <property name="LinkFrom02">ToAbstractLink</property>
+            </evaluate>
+        </field>
     </definition>
 </ui-form>

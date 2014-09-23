@@ -33,6 +33,7 @@ import java.util.TreeMap;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.RateUI;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -79,6 +80,10 @@ import org.slf4j.LoggerFactory;
 public abstract class Swap_Base
     extends CommonDocument
 {
+    /**
+     * Key used for storing information during request.
+     */
+    protected static final String REQUESTKEY = Swap.class.getName() + ".Key4Request";
 
     /**
      * Logger for this class.
@@ -288,6 +293,7 @@ public abstract class Swap_Base
      * @throws EFapsException on error
      */
     protected Instance getTargetInstance(final Parameter _parameter)
+        throws EFapsException
     {
         final Instance ret;
         if (_parameter.getParameterValue("createDocument") == null) {
@@ -297,7 +303,6 @@ public abstract class Swap_Base
         }
         return ret;
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -530,4 +535,145 @@ public abstract class Swap_Base
         return ret.toString();
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public Return getSwapDocumentFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final SwapInfo info  = getInfos(_parameter).get(_parameter.getInstance());
+        return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDocument());
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return map wirth infos
+     * @throws EFapsException on error
+     */
+    @SuppressWarnings("unchecked")
+    protected Map<Instance, SwapInfo> getInfos(final Parameter _parameter)
+        throws EFapsException
+    {
+        Map<Instance, SwapInfo> ret;
+        if (Context.getThreadContext().containsRequestAttribute(Swap.REQUESTKEY)) {
+            ret = (Map<Instance, SwapInfo>) Context.getThreadContext().getRequestAttribute(Swap.REQUESTKEY);
+        } else {
+            ret = new HashMap<Instance, SwapInfo>();
+            final Instance callInst = _parameter.getCallInstance();
+            Context.getThreadContext().setRequestAttribute(Swap.REQUESTKEY, ret);
+            final List<Instance> detailInst = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            final MultiPrintQuery multi = new MultiPrintQuery(detailInst);
+            final SelectBuilder fromSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
+            final SelectBuilder fromInstSel = new SelectBuilder(fromSel).instance();
+            final SelectBuilder fromTypeSel = new SelectBuilder(fromSel).type().label();
+            final SelectBuilder fromNameSel = new SelectBuilder(fromSel).attribute(CISales.DocumentSumAbstract.Name);
+            final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
+            final SelectBuilder toTypeSel = new SelectBuilder(toSel).type().label();
+            final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
+            multi.addSelect(fromInstSel, fromTypeSel, toTypeSel, fromNameSel, toNameSel);
+            multi.execute();
+            while (multi.next()) {
+                final SwapInfo info = new SwapInfo();
+                final Instance fromInst = multi.getSelect(fromInstSel);
+                if (callInst.equals(fromInst)) {
+                    info.setFrom(false)
+                        .setDocType(multi.<String>getSelect(toTypeSel))
+                        .setDocName(multi.<String>getSelect(toNameSel));
+                } else {
+                    info.setFrom(true)
+                        .setDocType(multi.<String>getSelect(fromTypeSel))
+                        .setDocName(multi.<String>getSelect(fromNameSel));
+                }
+                ret.put(multi.getCurrentInstance(), info);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public Return getSwapDirectionFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final SwapInfo info  = getInfos(_parameter).get(_parameter.getInstance());
+        return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDirection());
+    }
+
+    /**
+     *Info class.
+     */
+    public static class SwapInfo
+    {
+        /**
+         * Typelabel of the document.
+         */
+        private String docType;
+
+        /**
+         * Name of the document.
+         */
+        private String docName;
+
+        /**
+         * From or to.
+         */
+        private boolean from = false;
+
+        /**
+         * @return direction string
+         */
+        public String getDirection()
+        {
+            return DBProperties.getProperty(Swap.class.getName() + ".Direction." + (this.from ? "from" : "to"));
+        }
+
+        /**
+         * @return document string
+         */
+        public String getDocument()
+        {
+            return this.docType + " " + this.docName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docType}.
+         *
+         * @param _docType value for instance variable {@link #docType}
+         * @return this for chaining
+         */
+        public SwapInfo setDocType(final String _docType)
+        {
+            this.docType = _docType;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docName}.
+         *
+         * @param _docName value for instance variable {@link #docName}
+         * @return this for chaining
+         */
+        public SwapInfo setDocName(final String _docName)
+        {
+            this.docName = _docName;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #from}.
+         *
+         * @param _from value for instance variable {@link #from}
+         * @return this for chaining
+         */
+        public SwapInfo setFrom(final boolean _from)
+        {
+            this.from = _from;
+            return this;
+        }
+    }
 }
