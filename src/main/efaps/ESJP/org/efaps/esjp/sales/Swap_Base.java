@@ -560,34 +560,10 @@ public abstract class Swap_Base
         if (Context.getThreadContext().containsRequestAttribute(Swap.REQUESTKEY)) {
             ret = (Map<Instance, SwapInfo>) Context.getThreadContext().getRequestAttribute(Swap.REQUESTKEY);
         } else {
-            ret = new HashMap<Instance, SwapInfo>();
             final Instance callInst = _parameter.getCallInstance();
+            final List<Instance> relInsts = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            ret = getSwapInfos(_parameter, callInst, relInsts);
             Context.getThreadContext().setRequestAttribute(Swap.REQUESTKEY, ret);
-            final List<Instance> detailInst = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
-            final MultiPrintQuery multi = new MultiPrintQuery(detailInst);
-            final SelectBuilder fromSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
-            final SelectBuilder fromInstSel = new SelectBuilder(fromSel).instance();
-            final SelectBuilder fromTypeSel = new SelectBuilder(fromSel).type().label();
-            final SelectBuilder fromNameSel = new SelectBuilder(fromSel).attribute(CISales.DocumentSumAbstract.Name);
-            final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
-            final SelectBuilder toTypeSel = new SelectBuilder(toSel).type().label();
-            final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
-            multi.addSelect(fromInstSel, fromTypeSel, toTypeSel, fromNameSel, toNameSel);
-            multi.execute();
-            while (multi.next()) {
-                final SwapInfo info = new SwapInfo();
-                final Instance fromInst = multi.getSelect(fromInstSel);
-                if (callInst.equals(fromInst)) {
-                    info.setFrom(false)
-                        .setDocType(multi.<String>getSelect(toTypeSel))
-                        .setDocName(multi.<String>getSelect(toNameSel));
-                } else {
-                    info.setFrom(true)
-                        .setDocType(multi.<String>getSelect(fromTypeSel))
-                        .setDocName(multi.<String>getSelect(fromNameSel));
-                }
-                ret.put(multi.getCurrentInstance(), info);
-            }
         }
         return ret;
     }
@@ -602,6 +578,46 @@ public abstract class Swap_Base
     {
         final SwapInfo info  = getInfos(_parameter).get(_parameter.getInstance());
         return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDirection());
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _callInstance instance that called and wil not be shown
+     * @param _relInsts relation instances
+     * @return map with instance
+     * @throws EFapsException on error
+     */
+    public static Map<Instance, SwapInfo> getSwapInfos(final Parameter _parameter,
+                                                       final Instance _callInstance,
+                                                       final List<Instance> _relInsts)
+        throws EFapsException
+    {
+        final Map<Instance, SwapInfo> ret = new HashMap<Instance, SwapInfo>();
+        final MultiPrintQuery multi = new MultiPrintQuery(_relInsts);
+        final SelectBuilder fromSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
+        final SelectBuilder fromInstSel = new SelectBuilder(fromSel).instance();
+        final SelectBuilder fromTypeSel = new SelectBuilder(fromSel).type().label();
+        final SelectBuilder fromNameSel = new SelectBuilder(fromSel).attribute(CISales.DocumentSumAbstract.Name);
+        final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
+        final SelectBuilder toTypeSel = new SelectBuilder(toSel).type().label();
+        final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
+        multi.addSelect(fromInstSel, fromTypeSel, toTypeSel, fromNameSel, toNameSel);
+        multi.execute();
+        while (multi.next()) {
+            final SwapInfo info = new SwapInfo();
+            final Instance fromInst = multi.getSelect(fromInstSel);
+            if (_callInstance.equals(fromInst)) {
+                info.setFrom(false)
+                    .setDocType(multi.<String>getSelect(toTypeSel))
+                    .setDocName(multi.<String>getSelect(toNameSel));
+            } else {
+                info.setFrom(true)
+                    .setDocType(multi.<String>getSelect(fromTypeSel))
+                    .setDocName(multi.<String>getSelect(fromNameSel));
+            }
+            ret.put(multi.getCurrentInstance(), info);
+        }
+        return ret;
     }
 
     /**
