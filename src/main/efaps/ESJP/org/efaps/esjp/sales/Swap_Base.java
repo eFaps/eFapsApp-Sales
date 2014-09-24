@@ -582,7 +582,19 @@ public abstract class Swap_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _callInstance instance that called and wil not be shown
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public Return getSwapDocumentFieldInstance(final Parameter _parameter)
+        throws EFapsException
+    {
+        final SwapInfo info  = getInfos(_parameter).get(_parameter.getInstance());
+        return new Return().put(ReturnValues.INSTANCE, info == null ? null : info.getDocInst());
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _callInstance instance that called and will not be shown
      * @param _relInsts relation instances
      * @return map with instance
      * @throws EFapsException on error
@@ -596,23 +608,22 @@ public abstract class Swap_Base
         final MultiPrintQuery multi = new MultiPrintQuery(_relInsts);
         final SelectBuilder fromSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
         final SelectBuilder fromInstSel = new SelectBuilder(fromSel).instance();
-        final SelectBuilder fromTypeSel = new SelectBuilder(fromSel).type().label();
         final SelectBuilder fromNameSel = new SelectBuilder(fromSel).attribute(CISales.DocumentSumAbstract.Name);
         final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
-        final SelectBuilder toTypeSel = new SelectBuilder(toSel).type().label();
+        final SelectBuilder toInstSel = new SelectBuilder(toSel).instance();
         final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
-        multi.addSelect(fromInstSel, fromTypeSel, toTypeSel, fromNameSel, toNameSel);
+        multi.addSelect(fromInstSel, toInstSel, fromNameSel, toNameSel);
         multi.execute();
         while (multi.next()) {
             final SwapInfo info = new SwapInfo();
             final Instance fromInst = multi.getSelect(fromInstSel);
             if (_callInstance.equals(fromInst)) {
                 info.setFrom(false)
-                    .setDocType(multi.<String>getSelect(toTypeSel))
+                    .setDocInstance(multi.<Instance>getSelect(toInstSel))
                     .setDocName(multi.<String>getSelect(toNameSel));
             } else {
                 info.setFrom(true)
-                    .setDocType(multi.<String>getSelect(fromTypeSel))
+                    .setDocInstance(multi.<Instance>getSelect(fromInstSel))
                     .setDocName(multi.<String>getSelect(fromNameSel));
             }
             ret.put(multi.getCurrentInstance(), info);
@@ -626,9 +637,9 @@ public abstract class Swap_Base
     public static class SwapInfo
     {
         /**
-         * Typelabel of the document.
+         * Instance of the document.
          */
-        private String docType;
+        private Instance docInst;
 
         /**
          * Name of the document.
@@ -653,18 +664,18 @@ public abstract class Swap_Base
          */
         public String getDocument()
         {
-            return this.docType + " " + this.docName;
+            return this.docInst.getType().getLabel() + " " + this.docName;
         }
 
         /**
-         * Setter method for instance variable {@link #docType}.
+         * Setter method for instance variable {@link #docInst}.
          *
-         * @param _docType value for instance variable {@link #docType}
+         * @param _docInst value for instance variable {@link #docInst}
          * @return this for chaining
          */
-        public SwapInfo setDocType(final String _docType)
+        public SwapInfo setDocInstance(final Instance _docInst)
         {
-            this.docType = _docType;
+            this.docInst = _docInst;
             return this;
         }
 
@@ -690,6 +701,16 @@ public abstract class Swap_Base
         {
             this.from = _from;
             return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
         }
     }
 }

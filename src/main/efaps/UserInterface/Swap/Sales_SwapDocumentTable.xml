@@ -44,6 +44,7 @@
             </trigger>
         </field>
         <field name="document">
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_SwapDocumentTable.document.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.Swap"
@@ -51,6 +52,10 @@
                 name="Sales_SwapDocumentTable.document.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
             </trigger>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapDocumentFieldInstance"
+                name="Sales_SwapDocumentTable.document.UI_FIELD_INSTANCE"
+                event="UI_FIELD_ALTINST"/>
         </field>
     </definition>
 </ui-table>
