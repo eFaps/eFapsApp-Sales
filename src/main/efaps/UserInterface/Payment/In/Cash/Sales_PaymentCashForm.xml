@@ -193,7 +193,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentCashForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Sales_PaymentCashPicker4Documents"/>
         </field>
         <field character="Heading" name="headingPayment">

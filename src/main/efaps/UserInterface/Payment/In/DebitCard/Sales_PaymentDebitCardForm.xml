@@ -194,7 +194,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDebitCardForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <picker name="Sales_PaymentDebitCardPicker4Documents"/>
         </field>
         <field character="Heading" name="headingPayment">
