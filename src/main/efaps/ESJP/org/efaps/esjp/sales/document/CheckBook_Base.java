@@ -22,13 +22,18 @@
 package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.util.EFapsException;
 
@@ -78,6 +83,44 @@ public abstract class CheckBook_Base
             insert.execute();
         }
         return new Return();
+    }
+
+    public Return setDeactivated(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] others = (String[]) _parameter.get(ParameterValues.OTHERS);
+
+        if (others != null) {
+            for (final String other : others) {
+                final Instance otherInst = Instance.get(other);
+                if (otherInst.isValid()) {
+                    if (containsProperty(_parameter, "Value")) {
+                        final Update update = new Update(otherInst);
+                        update.add(CISales.CheckBook2PaymentCheckOut.Value, getProperty(_parameter, "Value"));
+                        update.executeWithoutTrigger();
+                    }
+                }
+            }
+        }
+        return new Return();
+    }
+
+    public Return getMultiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint()
+        {
+
+            @Override
+            protected void add2QueryBldr(final Parameter _parameter,
+                                         final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                _queryBldr.addWhereAttrNotEqValue(CISales.CheckBook2PaymentCheckOut.ToLink, _parameter.getInstance());
+            }
+        };
+
+        return multi.execute(_parameter);
     }
 }
 

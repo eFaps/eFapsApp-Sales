@@ -165,6 +165,7 @@ public abstract class PaymentCheckOut_Base
             final QueryBuilder queryBldr = new QueryBuilder(CISales.CheckBook2PaymentCheckOut);
             queryBldr.addWhereAttrEqValue(CISales.CheckBook2PaymentCheckOut.FromLink, checkBookInst);
             queryBldr.addWhereAttrEqValue(CISales.CheckBook2PaymentCheckOut.ToLink, checkBookInst);
+            queryBldr.addWhereAttrIsNull(CISales.CheckBook2PaymentCheckOut.Value);
             queryBldr.addOrderByAttributeAsc(CISales.CheckBook2PaymentCheckOut.Number);
             queryBldr.setLimit(10);
             final MultiPrintQuery multi = queryBldr.getPrint();

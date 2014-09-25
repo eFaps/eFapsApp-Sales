@@ -42,6 +42,10 @@
             <property name="Select">linkto[ToLink].attribute[Status]</property>
             <property name="Label">Sales_CheckBook/Status.Label</property>
         </field>
+        <field name="value">
+            <property name="Attribute">Value</property>
+            <property name="Label">Sales_CheckBook/Value.Label</property>
+        </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>

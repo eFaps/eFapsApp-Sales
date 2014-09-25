@@ -49,5 +49,11 @@
             <sqltable>Sales_Document2DocumentExtendSQLTable</sqltable>
             <sqlcolumn>STRING1</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>Value</name>
+            <type>String</type>
+            <sqltable>Sales_Document2DocumentExtendSQLTable</sqltable>
+            <sqlcolumn>STRING2</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

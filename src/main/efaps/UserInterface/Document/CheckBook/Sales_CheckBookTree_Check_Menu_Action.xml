@@ -30,6 +30,7 @@
         <name>Sales_CheckBookTree_Check_Menu_Action</name>
         <childs>
             <child>Sales_CheckBookTree_Check_Menu_Action_Create</child>
+            <child>Sales_CheckBookTree_Check_Menu_Action_SetDeactivated</child>
             <child>Sales_CheckBookTree_Check_Menu_Action_Delete</child>
         </childs>
     </definition>
