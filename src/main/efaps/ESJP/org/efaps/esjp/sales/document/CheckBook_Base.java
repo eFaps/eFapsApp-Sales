@@ -21,20 +21,32 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.efaps.admin.datamodel.Status;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.QueryBuilder;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uiform.Create;
-import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.sales.Swap;
 import org.efaps.util.EFapsException;
 
 
@@ -49,6 +61,11 @@ import org.efaps.util.EFapsException;
 public abstract class CheckBook_Base
     extends CommonDocument
 {
+
+    /**
+     * Key used for storing information during request.
+     */
+    protected static final String REQUESTKEY = CheckBook.class.getName() + ".Key4Request";
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -85,6 +102,13 @@ public abstract class CheckBook_Base
         return new Return();
     }
 
+    /**
+     * Method to set value deactivated.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return setDeactivated(final Parameter _parameter)
         throws EFapsException
     {
@@ -105,22 +129,238 @@ public abstract class CheckBook_Base
         return new Return();
     }
 
-    public Return getMultiPrint(final Parameter _parameter)
+    public Return getInfoDocumentFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final MultiPrint multi = new MultiPrint()
-        {
+        final DocInfo info = getInfos(_parameter).get(_parameter.getInstance());
+        return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDocument());
+    }
 
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                _queryBldr.addWhereAttrNotEqValue(CISales.CheckBook2PaymentCheckOut.ToLink, _parameter.getInstance());
+    @SuppressWarnings("unchecked")
+    protected Map<Instance, DocInfo> getInfos(final Parameter _parameter)
+        throws EFapsException
+    {
+        Map<Instance, DocInfo> ret;
+        if (Context.getThreadContext().containsRequestAttribute(CheckBook.REQUESTKEY)) {
+            ret = (Map<Instance, DocInfo>) Context.getThreadContext().getRequestAttribute(CheckBook.REQUESTKEY);
+        } else {
+            final Instance callInst = _parameter.getCallInstance();
+            final List<Instance> relInsts = (List<Instance>) _parameter.get(ParameterValues.REQUEST_INSTANCES);
+            ret = getInfos(_parameter, callInst, relInsts);
+            Context.getThreadContext().setRequestAttribute(CheckBook.REQUESTKEY, ret);
+        }
+        return ret;
+    }
+
+    public static Map<Instance, DocInfo> getInfos(final Parameter _parameter,
+                                                  final Instance _callInstance,
+                                                  final List<Instance> _relInsts)
+        throws EFapsException
+    {
+        final Map<Instance, DocInfo> ret = new HashMap<Instance, DocInfo>();
+        final MultiPrintQuery multi = new MultiPrintQuery(_relInsts);
+        final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.CheckBook2PaymentCheckOut.ToLink);
+        final SelectBuilder toInstSel = new SelectBuilder(toSel).instance();
+        final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
+        final SelectBuilder toStatusSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.StatusAbstract);
+        final SelectBuilder toAmountSel = new SelectBuilder(toSel).attribute(CISales.PaymentDocumentIOAbstract.Amount);
+        final SelectBuilder toSymbolSel = new SelectBuilder(toSel).linkto(CISales.PaymentDocumentIOAbstract.RateCurrencyLink)
+                        .attribute(CIERP.Currency.Symbol);
+        multi.addSelect(toInstSel, toNameSel, toStatusSel, toAmountSel, toSymbolSel);
+        multi.execute();
+        while (multi.next()) {
+            DocInfo info = new DocInfo();
+            final Instance toInst = multi.getSelect(toInstSel);
+            if (!_callInstance.equals(toInst)) {
+                info.setFrom(true)
+                                .setDocInstance(multi.<Instance>getSelect(toInstSel))
+                                .setDocName(multi.<String>getSelect(toNameSel))
+                                .setStatusName(Status.get(multi.<Long>getSelect(toStatusSel)))
+                                .setAmount(multi.<BigDecimal>getSelect(toAmountSel))
+                                .setSymbol(multi.<String>getSelect(toSymbolSel));
+            } else {
+                info = null;
             }
-        };
+            ret.put(multi.getCurrentInstance(), info);
+        }
+        return ret;
+    }
 
-        return multi.execute(_parameter);
+    public Return getInfoStatusDocumentFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final DocInfo info = getInfos(_parameter).get(_parameter.getInstance());
+        return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getStatusName());
+    }
+
+    public Return getInfoValueDocumentFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final DocInfo info = getInfos(_parameter).get(_parameter.getInstance());
+        return new Return().put(ReturnValues.VALUES, info == null ? getValue(_parameter.getInstance()) : info.getAmount());
+    }
+
+    /**
+     * @return
+     */
+    protected String getValue(final Instance _instance)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_instance);
+        print.addAttribute(CISales.CheckBook2PaymentCheckOut.Value);
+        print.execute();
+
+        return print.<String>getAttribute(CISales.CheckBook2PaymentCheckOut.Value);
+    }
+
+    /**
+     *Info class.
+     */
+    public static class DocInfo
+    {
+        /**
+         * Instance of the document.
+         */
+        private Instance docInst;
+
+        /**
+         * Name of the document.
+         */
+        private String docName;
+
+        /**
+         * From or to.
+         */
+        private boolean from = false;
+
+        /**
+         * Status of the Document
+         */
+        private Status status;
+
+        /**
+         * Amount of the Document.
+         */
+        private BigDecimal amount;
+
+        /**
+         * Symbol of the Document.
+         */
+        private String symbol;
+
+        /**
+         * @return direction string
+         */
+        public String getDirection()
+        {
+            return DBProperties.getProperty(Swap.class.getName() + ".Direction." + (this.from ? "from" : "to"));
+        }
+
+        /**
+         * @return document string
+         */
+        public String getDocument()
+        {
+            return this.docInst.getType().getLabel() + " " + this.docName;
+        }
+
+        /**
+         * @return document string
+         */
+        public String getStatusName()
+        {
+            return DBProperties.getProperty(this.status.getLabelKey());
+        }
+
+        /**
+         * @return document string
+         */
+        public String getAmount()
+        {
+            return this.symbol + " " + this.amount;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         * @return this for chaining
+         */
+        public DocInfo setDocInstance(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docName}.
+         *
+         * @param _docName value for instance variable {@link #docName}
+         * @return this for chaining
+         */
+        public DocInfo setDocName(final String _docName)
+        {
+            this.docName = _docName;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #from}.
+         *
+         * @param _from value for instance variable {@link #from}
+         * @return this for chaining
+         */
+        public DocInfo setFrom(final boolean _from)
+        {
+            this.from = _from;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #status}.
+         *
+         * @param _from value for instance variable {@link #status}
+         * @return this for chaining
+         */
+        public DocInfo setStatusName(final Status _status)
+        {
+            this.status = _status;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #amount}.
+         *
+         * @param _from value for instance variable {@link #amount}
+         * @return this for chaining
+         */
+        public DocInfo setAmount(final BigDecimal _amount)
+        {
+            this.amount = _amount;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #symbol}.
+         *
+         * @param _from value for instance variable {@link #symbol}
+         * @return this for chaining
+         */
+        public DocInfo setSymbol(final String _symbol)
+        {
+            this.symbol = _symbol;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
     }
 }
 

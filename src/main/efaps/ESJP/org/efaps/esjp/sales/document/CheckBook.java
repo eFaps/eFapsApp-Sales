@@ -38,5 +38,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class CheckBook
     extends CheckBook_Base
 {
-
+    /**
+     * Key used for storing information during request.
+     */
+    public static final String REQUESTKEY = CheckBook_Base.REQUESTKEY;
 }

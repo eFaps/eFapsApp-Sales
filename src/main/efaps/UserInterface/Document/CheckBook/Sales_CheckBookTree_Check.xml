@@ -31,7 +31,7 @@
         <target>
             <menu>Sales_CheckBookTree_Check_Menu</menu>
             <table>Sales_CheckBook2PaymentCheckOutTable</table>
-            <evaluate program="org.efaps.esjp.sales.document.CheckBook" method="getMultiPrint">
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_CheckBook2PaymentCheckOut</property>
                 <property name="LinkFrom">FromLink</property>
             </evaluate>
