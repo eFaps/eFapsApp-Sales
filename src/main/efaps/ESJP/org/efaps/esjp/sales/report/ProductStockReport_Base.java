@@ -24,13 +24,16 @@ import java.awt.Color;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Formatter;
-import java.util.LinkedHashMap;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
+import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -41,9 +44,10 @@ import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.ConditionalStyleBuilder;
 import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
+import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
@@ -57,11 +61,13 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
@@ -83,10 +89,11 @@ import org.slf4j.LoggerFactory;
 public abstract class ProductStockReport_Base
     extends FilteredReport
 {
+
     /**
      * Logging instance used in this class.
      */
-    protected static final Logger LOG = LoggerFactory.getLogger(ProductStockReport.class);
+    private static final Logger LOG = LoggerFactory.getLogger(ProductStockReport.class);
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -106,14 +113,14 @@ public abstract class ProductStockReport_Base
             final ProjectFilterValue value = (ProjectFilterValue) map.get("project");
             final StringBuilder js = new StringBuilder();
             js.append("<script type=\"text/javascript\">\n")
-                .append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
-                .append(" function(ready, query, domConstruct){\n")
-                .append(" ready(1500, function(){")
-                .append("eFapsSetFieldValue(").append(0).append(",'").append("project").append("',")
-                .append("'").append(value.getObject().getOid()).append("'")
-                .append(",'").append(StringEscapeUtils.escapeEcmaScript(value.getLabel())).append("'")
-                .append(");")
-                .append("});").append("});\n</script>\n");
+                            .append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
+                            .append(" function(ready, query, domConstruct){\n")
+                            .append(" ready(1500, function(){")
+                            .append("eFapsSetFieldValue(").append(0).append(",'").append("project").append("',")
+                            .append("'").append(value.getObject().getOid()).append("'")
+                            .append(",'").append(StringEscapeUtils.escapeEcmaScript(value.getLabel())).append("'")
+                            .append(");")
+                            .append("});").append("});\n</script>\n");
             ret.put(ReturnValues.SNIPLETT, js.toString());
         }
         return ret;
@@ -139,7 +146,7 @@ public abstract class ProductStockReport_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
      */
@@ -155,7 +162,7 @@ public abstract class ProductStockReport_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing the file
      * @throws EFapsException on error
      */
@@ -179,7 +186,7 @@ public abstract class ProductStockReport_Base
     }
 
     /**
-     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _parameter Parameter as passed by the eFasp API
      * @return the report class
      * @throws EFapsException on error
      */
@@ -195,6 +202,7 @@ public abstract class ProductStockReport_Base
     public static class ProjectFilterValue
         extends FilterValue<Instance>
     {
+
         /**
          *
          */
@@ -209,7 +217,7 @@ public abstract class ProductStockReport_Base
                 final PrintQuery print = new PrintQuery(getObject());
                 print.addAttribute("Name", "Description");
                 print.execute();
-                ret = print.<String>getAttribute("Name") +  " - " + print.<String>getAttribute("Description");
+                ret = print.<String>getAttribute("Name") + " - " + print.<String>getAttribute("Description");
             } else {
                 ret = "";
             }
@@ -238,20 +246,26 @@ public abstract class ProductStockReport_Base
         }
 
         /**
-         * @param _parameter  Parameter as passed by the eFaps API
+         * @param _parameter Parameter as passed by the eFaps API
          * @return AttributeQuery used for the DataSource
          * @throws EFapsException on error
          */
         protected AttributeQuery getDocAttrQuery(final Parameter _parameter)
             throws EFapsException
         {
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+            final QueryBuilder queryBldr;
+            if (containsProperty(_parameter, "Type")) {
+                queryBldr = getQueryBldrFromProperties(_parameter);
+            } else {
+                queryBldr = new QueryBuilder(CIERP.DocumentAbstract);
+                queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.ID, _parameter.getInstance());
+            }
             return queryBldr.getAttributeQuery("ID");
         }
 
         /**
-         * @param _parameter  Parameter as passed by the eFaps API
-         * @param _queryBldr    QueryBuilder to add to
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _queryBldr QueryBuilder to add to
          * @throws EFapsException on error
          */
         protected void add2QueryBldr(final Parameter _parameter,
@@ -272,98 +286,117 @@ public abstract class ProductStockReport_Base
             }
         }
 
-
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final String colDefault = DBProperties.getProperty("org.efaps.esjp.sales.report.ProductStockReport.Stock");
-            final DRDataSource dataSource = new DRDataSource("product", "document", "quantity");
-            final Map<String, Map<String, BigDecimal>> rowMap = new LinkedHashMap<String, Map<String, BigDecimal>>();
+            final Map<String, DataBean> beans = new HashMap<>();
+            final Set<Instance> prodInsts = new HashSet<>();
+            final Set<Instance> docInsts = new HashSet<>();
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
             queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, getDocAttrQuery(_parameter));
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CISales.PositionAbstract.Quantity);
-            final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
-                            .attribute(CIProducts.ProductAbstract.Name);
-            final SelectBuilder selProdDesc = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
-                            .attribute(CIProducts.ProductAbstract.Description);
             final SelectBuilder selProdInstance = new SelectBuilder().linkto(CISales.PositionAbstract.Product)
                             .instance();
-            final SelectBuilder selDocName = new SelectBuilder()
-                            .linkto(CISales.PositionAbstract.DocumentAbstractLink)
-                            .attribute(CISales.DocumentAbstract.Name);
             final SelectBuilder selDocInst = new SelectBuilder()
                             .linkto(CISales.PositionAbstract.DocumentAbstractLink).instance();
-            multi.addSelect(selDocName, selDocInst, selProdName, selProdInstance, selProdDesc);
+            multi.addSelect(selDocInst, selProdInstance);
             multi.execute();
             while (multi.next()) {
                 final Instance prodInst = multi.<Instance>getSelect(selProdInstance);
+                prodInsts.add(prodInst);
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
+                docInsts.add(docInst);
                 final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
                 final BigDecimal quantity4Derived = getQuantity4Derived(_parameter, docInst, prodInst);
-                String prodName = multi.<String>getSelect(selProdName);
-                final String prodDesc = multi.<String>getSelect(selProdDesc);
-                prodName = prodName + " " + prodDesc;
-
-                final String docName = multi.<String>getSelect(selDocName);
-                if (rowMap.containsKey(docName)) {
-                    if (rowMap.containsKey(colDefault)) {
-                        final BigDecimal stock = getStock4Product(_parameter, prodInst);
-                        final Map<String, BigDecimal> colMap = rowMap.get(colDefault);
-                        if (!colMap.containsKey(prodName)) {
-                            colMap.put(prodName, stock);
-                            rowMap.put(colDefault, colMap);
-                        }
-                    }
-                    final Map<String, BigDecimal> colMap = rowMap.get(docName);
-                    if (colMap.containsKey(prodName)) {
-                        colMap.put(prodName, colMap.get(prodName).add(quantity.negate()).add(quantity4Derived));
-                    } else {
-                        colMap.put(prodName, quantity.negate().add(quantity4Derived));
-                    }
+                final DataBean dataBeanTmp = getDataBean().setDocInst(docInst).setProdInst(prodInst);
+                final DataBean dataBean;
+                if (beans.containsKey(dataBeanTmp.getKey())) {
+                    dataBean = beans.get(dataBeanTmp.getKey());
                 } else {
-                    final BigDecimal stock = getStock4Product(_parameter, prodInst);
-                    if (!rowMap.containsKey(colDefault)) {
-                        final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
-                        colMap.put(prodName, stock);
-                        rowMap.put(colDefault, colMap);
-                    } else {
-                        final Map<String, BigDecimal> colMap = rowMap.get(colDefault);
-                        if (!colMap.containsKey(prodName)) {
-                            colMap.put(prodName, stock);
-                            rowMap.put(colDefault, colMap);
-                        }
-                    }
-                    final Map<String, BigDecimal> colMap = new TreeMap<String, BigDecimal>();
-                    colMap.put(prodName, quantity.negate().add(quantity4Derived));
-                    rowMap.put(docName, colMap);
+                    dataBean = dataBeanTmp;
+                    beans.put(dataBeanTmp.getKey(), dataBean);
                 }
+                dataBean.addQuantity(quantity.negate().add(quantity4Derived));
+            }
+            final List<DataBean> dataSource = new ArrayList<>(beans.values());
+            final int rowQ = String.valueOf(docInsts.size()).length();
+
+            Collections.sort(dataSource, new Comparator<DataBean>()
+            {
+
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getDocName().compareTo(_o2.getDocName());
+                }
+            });
+            Instance current = null;
+            int cont = 2;
+            for (final DataBean bean : dataSource) {
+                if (!bean.getDocInst().equals(current)) {
+                    cont++;
+                    current = bean.getDocInst();
+                }
+                bean.setDocName(String.format("%0" + rowQ + "d", cont) + ". " + bean.getDocName());
             }
 
-            final int rowQ = String.valueOf(rowMap.size()).length();
-            int cont = 1;
-            for (final Entry<String, Map<String, BigDecimal>> entryRow : rowMap.entrySet()) {
-                final Formatter formatter = new Formatter();
-                final String docName = formatter.format("%0" + rowQ + "d", cont).toString() + ". " + entryRow.getKey();
-                for (final Entry<String, BigDecimal> entryCol : entryRow.getValue().entrySet()) {
-                    final String prodName = entryCol.getKey();
-                    final BigDecimal quantity = entryCol.getValue();
-                    dataSource.add(prodName, docName, quantity);
-                }
-                formatter.close();
-                cont++;
+            for (final Instance prodInst : prodInsts) {
+                final BigDecimal[] quantities = getStock4Product(_parameter, prodInst);
+                final String docName = String.format("%0" + rowQ + "d", 1) + ". " + DBProperties
+                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.Stock");
+                dataSource.add(getDataBean()
+                                .setProdInst(prodInst)
+                                .setDocName(docName)
+                                .setQuantity(quantities[0]));
+
+                final String docName2 = String.format("%0" + rowQ + "d", 2) + ". " + DBProperties
+                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.Reserved");
+                dataSource.add(getDataBean()
+                                .setProdInst(prodInst)
+                                .setDocName(docName2)
+                                .setQuantity(quantities[1]));
             }
 
-            return dataSource;
+            final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
+            chain.addComparator(new Comparator<ProductStockReport_Base.DataBean>()
+            {
+
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getProdName().compareTo(_o2.getProdName());
+                }
+            });
+            chain.addComparator(new Comparator<ProductStockReport_Base.DataBean>()
+            {
+
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getDocName().compareTo(_o2.getDocName());
+                }
+            });
+            Collections.sort(dataSource, chain);
+
+            return new JRBeanCollectionDataSource(dataSource);
+        }
+
+        protected DataBean getDataBean()
+        {
+            return new DataBean();
         }
 
         /**
          * @param _parameter Parameter as passed by the eFaps API
          * @param _docInst instance of the document
-         * @param _prodInst instance of  the product
+         * @param _prodInst instance of the product
          * @return value
          * @throws EFapsException on error
          */
@@ -414,14 +447,14 @@ public abstract class ProductStockReport_Base
         /**
          * @param _parameter Parameter as passed by the eFaps API
          * @param _prodInstance instance of the product
-         * @return value
+         * @return array with quantity, reserved
          * @throws EFapsException on error
          */
-        protected BigDecimal getStock4Product(final Parameter _parameter,
-                                              final Instance _prodInstance)
+        protected BigDecimal[] getStock4Product(final Parameter _parameter,
+                                                final Instance _prodInstance)
             throws EFapsException
         {
-            BigDecimal quantity = BigDecimal.ZERO;
+            final BigDecimal[] quantities = new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ZERO };
             final SystemConfiguration config = Sales.getSysConfig();
             final Instance storGrpInstance = config.getLink(SalesSettings.STORAGEGROUP4PRODUCTREQUESTREPORT);
 
@@ -436,16 +469,18 @@ public abstract class ProductStockReport_Base
                 queryBldr.addWhereAttrEqValue(CIProducts.Inventory.Product, _prodInstance);
                 queryBldr.addWhereAttrInQuery(CIProducts.Inventory.Storage, attrQuery);
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addAttribute(CIProducts.Inventory.Quantity);
+                multi.addAttribute(CIProducts.Inventory.Quantity, CIProducts.Inventory.Reserved);
                 multi.execute();
                 while (multi.next()) {
                     final BigDecimal quantityTmp = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Quantity);
-                    quantity = quantity.add(quantityTmp);
+                    final BigDecimal reservedTmp = multi.<BigDecimal>getAttribute(CIProducts.Inventory.Reserved);
+                    quantities[0] = quantities[0].add(quantityTmp);
+                    quantities[1] = quantities[1].add(reservedTmp);
                 }
             } else {
                 ProductStockReport_Base.LOG.warn("It's required a system configuration for Storage Group");
             }
-            return quantity;
+            return quantities;
         }
 
         @Override
@@ -460,28 +495,28 @@ public abstract class ProductStockReport_Base
             final CrosstabMeasureBuilder<BigDecimal> quantityMeasure = DynamicReports.ctab.measure("quantity",
                             BigDecimal.class, Calculation.SUM);
             if (productRow) {
-                final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("product", String.class)
+                final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("prodName", String.class)
                                 .setShowTotal(false);
                 if (ExportType.HTML.equals(getExType())) {
                     rowGroup.setHeaderWidth(250);
                 }
 
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
-                                .columnGroup("document", String.class);
+                                .columnGroup("docName", String.class);
 
                 crosstab.headerCell(DynamicReports.cmp.text(DBProperties
-                        .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell1"))
-                        .setStyle(DynamicReports.stl.style().setBold(true))).rowGroups(rowGroup)
-                        .columnGroups(columnGroup).measures(quantityMeasure);
+                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell1"))
+                                .setStyle(DynamicReports.stl.style().setBold(true))).rowGroups(rowGroup)
+                                .columnGroups(columnGroup).measures(quantityMeasure);
             } else {
-                final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("document", String.class);
+                final CrosstabRowGroupBuilder<String> rowGroup = DynamicReports.ctab.rowGroup("docName", String.class);
                 final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab
-                                .columnGroup("product", String.class).setShowTotal(false);
+                                .columnGroup("prodName", String.class).setShowTotal(false);
 
                 crosstab.headerCell(DynamicReports.cmp.text(DBProperties
-                        .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell2"))
-                        .setStyle(DynamicReports.stl.style().setBold(true))).rowGroups(rowGroup)
-                        .columnGroups(columnGroup).measures(quantityMeasure);
+                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.HeaderCell2"))
+                                .setStyle(DynamicReports.stl.style().setBold(true))).rowGroups(rowGroup)
+                                .columnGroups(columnGroup).measures(quantityMeasure);
             }
 
             final ConditionalStyleBuilder condition = DynamicReports.stl.conditionalStyle(
@@ -497,6 +532,214 @@ public abstract class ProductStockReport_Base
             quantityMeasure.setStyle(margin1Style);
 
             _builder.summary(crosstab);
+        }
+    }
+
+    public static class DataBean
+    {
+
+        private Instance prodInst;
+
+        private Instance docInst;
+
+        private String prodName;
+        private String docName;
+
+        private boolean initDoc;
+        private boolean initProd;
+
+        private BigDecimal quantity = BigDecimal.ZERO;
+
+        /**
+         * Getter method for the instance variable {@link #prodName}.
+         *
+         * @return value of instance variable {@link #prodName}
+         */
+        public String getProdName()
+        {
+            if (!isInitProd()) {
+                try {
+                    final PrintQuery print = new CachedPrintQuery(getProdInst()).setLifespan(1).setLifespanUnit(
+                                    TimeUnit.MINUTES);
+                    print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
+                    print.execute();
+                    setProdName(print.getAttribute(CIProducts.ProductAbstract.Name) + " - "
+                                    + print.getAttribute(CIProducts.ProductAbstract.Description));
+                } catch (final EFapsException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            return this.prodName;
+        }
+
+        /**
+         * @return key used for temporal caching
+         */
+        public String getKey()
+        {
+            return getProdInst().getOid() + "-" + getDocInst().getOid();
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodName}.
+         *
+         * @param _prodName value for instance variable {@link #prodName}
+         */
+        public void setProdName(final String _prodName)
+        {
+            this.prodName = _prodName;
+            setInitProd(true);
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docName}.
+         *
+         * @return value of instance variable {@link #docName}
+         */
+        public String getDocName()
+        {
+            if (!isInitDoc()) {
+                try {
+                    final PrintQuery print = new CachedPrintQuery(getDocInst()).setLifespan(1).setLifespanUnit(
+                                    TimeUnit.MINUTES);
+                    print.addAttribute(CIERP.DocumentAbstract.Name);
+                    print.execute();
+                    setDocName(print.<String>getAttribute(CIERP.DocumentAbstract.Name));
+                } catch (final EFapsException e) {
+                    LOG.error("Eroro on retrieving name", e);
+                }
+            }
+            return this.docName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docName}.
+         *
+         * @param _docName value for instance variable {@link #docName}
+         * @return this for chaining
+         */
+        public DataBean setDocName(final String _docName)
+        {
+            this.docName = _docName;
+            setInitDoc(true);
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #quantity}.
+         *
+         * @return value of instance variable {@link #quantity}
+         */
+        public BigDecimal getQuantity()
+        {
+            return this.quantity;
+        }
+
+        /**
+         * Setter method for instance variable {@link #quantity}.
+         *
+         * @param _quantity value for instance variable {@link #quantity}
+         * @return this for chaining
+         */
+        public DataBean setQuantity(final BigDecimal _quantity)
+        {
+            this.quantity = _quantity;
+            return this;
+        }
+
+        /**
+         * Setter method for instance variable {@link #quantity}.
+         *
+         * @param _quantity value for instance variable {@link #quantity}
+         */
+        public void addQuantity(final BigDecimal _quantity)
+        {
+            setQuantity(getQuantity().add(_quantity));
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         * @return this for chaining
+         */
+        public DataBean setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #prodInst}.
+         *
+         * @return value of instance variable {@link #prodInst}
+         */
+        public Instance getProdInst()
+        {
+            return this.prodInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodInst}.
+         *
+         * @param _prodInst value for instance variable {@link #prodInst}
+         * @return this for chaining
+         */
+        public DataBean setProdInst(final Instance _prodInst)
+        {
+            this.prodInst = _prodInst;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initDoc}.
+         *
+         * @return value of instance variable {@link #initDoc}
+         */
+        public boolean isInitDoc()
+        {
+            return this.initDoc;
+        }
+
+        /**
+         * Setter method for instance variable {@link #initDoc}.
+         *
+         * @param _initDoc value for instance variable {@link #initDoc}
+         */
+        public void setInitDoc(final boolean _initDoc)
+        {
+            this.initDoc = _initDoc;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #initProd}.
+         *
+         * @return value of instance variable {@link #initProd}
+         */
+        public boolean isInitProd()
+        {
+            return this.initProd;
+        }
+
+        /**
+         * Setter method for instance variable {@link #initProd}.
+         *
+         * @param _initProd value for instance variable {@link #initProd}
+         */
+        public void setInitProd(final boolean _initProd)
+        {
+            this.initProd = _initProd;
         }
     }
 }
