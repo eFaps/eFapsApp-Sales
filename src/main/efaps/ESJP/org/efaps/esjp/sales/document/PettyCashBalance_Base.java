@@ -318,7 +318,7 @@ public abstract class PettyCashBalance_Base
         CIType actDef2doc = null;
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
         final Instance accountInst = print.<Instance>getSelect(selAccInst);
-        final CurrencyInst currencyInst = CurrencyInst.get(print.<Long>getAttribute(
+        CurrencyInst.get(print.<Long>getAttribute(
                         CISales.DocumentSumAbstract.RateCurrencyId));
         if (crossTotal.compareTo(BigDecimal.ZERO) < 0) {
             type = CISales.CollectionOrder.getType();
@@ -326,7 +326,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountPettyCash2CollectionOrder.getType();
             bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4COLORDPC + "." + currencyInst.getUUID());
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4COLORDPC);
             actDef2doc = CISales.ActionDefinitionCollectionOrder2Document;
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
@@ -334,7 +334,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC + "." + currencyInst.getUUID());
+            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC);
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {

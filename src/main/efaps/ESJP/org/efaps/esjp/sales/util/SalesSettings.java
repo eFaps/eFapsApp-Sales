@@ -249,15 +249,11 @@ public interface SalesSettings
 
     /**
      * Link.
-     * Key + UUID of the Currency.
-     * ("org.efaps.sales.ActDef4CollectionOrder4PettyCashBalance.123123-15132-13132-13132-321321)
      */
     String ACTDEF4COLORDPC = "org.efaps.sales.ActDef4CollectionOrder4PettyCashBalance";
 
     /**
      * Link.
-     * Key + UUID of the Currency.
-     * ("org.efaps.sales.ActDef4PaymentOrder4PettyCashBalance.123123-15132-13132-13132-321321)
      */
     String ACTDEF4PAYORDPC = "org.efaps.sales.ActDef4PaymentOrder4PettyCashBalance";
 
