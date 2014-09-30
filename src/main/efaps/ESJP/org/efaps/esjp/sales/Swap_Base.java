@@ -103,15 +103,25 @@ public abstract class Swap_Base
         final List<Map<String, String>> list = new ArrayList<>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
 
+        final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.SWAPCONFIG, true);
+        final String propkey = _parameter.getCallInstance().getType().getName();
+
         final QueryBuilder queryBldr;
         if ("true".equalsIgnoreCase(getProperty(_parameter, "UseSystemConfig"))) {
-            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.SWAPCONFIG, true);
-            final String key = _parameter.getCallInstance().getType().getName();
-            queryBldr = getQueryBldrFromProperties(_parameter, props, key);
+            queryBldr = getQueryBldrFromProperties(_parameter, props, propkey);
         } else {
             queryBldr = getQueryBldrFromProperties(_parameter);
         }
-
+        if ("true".equalsIgnoreCase(props.getProperty(propkey + ".Filter4Contact"))) {
+            final Instance callInst = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
+            if (callInst != null && callInst.isValid()) {
+                final PrintQuery print = new PrintQuery(callInst);
+                print.addAttribute(CISales.DocumentSumAbstract.Contact);
+                print.executeWithoutAccessCheck();
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
+                                print.getAttribute(CISales.DocumentSumAbstract.Contact));
+            }
+        }
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name, req + "*").setIgnoreCase(true);
 
@@ -272,7 +282,7 @@ public abstract class Swap_Base
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
                 docInfo.setRateCrossTotal(partial);
-                final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo);
+                final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, true);
                 map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
                 list.add(map);
                 final Map<String, Object> sum = getSumUpdateMap(_parameter, list, true);
@@ -329,7 +339,7 @@ public abstract class Swap_Base
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
 
-                final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo);
+                final Map<String, Object> map = getPositionUpdateMap(_parameter, docInfo, false);
                 map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), selected);
                 list.add(map);
 
@@ -359,24 +369,26 @@ public abstract class Swap_Base
         final Instance targetInstance = getTargetInstance(_parameter);
         final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, _docInst);
         docInfo.setTargetDocInst(targetInstance);
-        return getPositionUpdateMap(_parameter, docInfo);
+        return getPositionUpdateMap(_parameter, docInfo, false);
     }
 
     /**
      * @param _parameter parameter as passed by the eFasp API
      * @param _docInfo DocPaymentInfo the map is wanted for
+     * @param _setFromUI thevalue was set from the UI and therefore most be set as is
      * @return map containing values for update
      * @throws EFapsException on error
      */
     protected Map<String, Object> getPositionUpdateMap(final Parameter _parameter,
-                                                       final DocPaymentInfo _docInfo)
+                                                       final DocPaymentInfo _docInfo,
+                                                       final boolean _setFromUI)
         throws EFapsException
     {
         final Map<String, Object> ret = new HashMap<>();
         final DecimalFormat frmt = _docInfo.getFormatter();
         final BigDecimal total4Doc = _docInfo.getCrossTotal4Target();
         final BigDecimal payments4Doc = _docInfo.getPaid4Target();
-        ret.put("partial", frmt.format(total4Doc.subtract(payments4Doc)));
+        ret.put("partial", frmt.format(_setFromUI ? total4Doc : total4Doc.subtract(payments4Doc)));
         ret.put("rate", _docInfo.getRateInfo4Target().getRateUIFrmt());
         ret.put("rate" + RateUI.INVERTEDSUFFIX, "" + _docInfo.getRateInfo4Target().isInvert());
         return ret;
