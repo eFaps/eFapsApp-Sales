@@ -106,6 +106,23 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
+         <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionIncomingExchange2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_ActionDefinitionIncomingExchange.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
+                <property name="Access">!NONE</property>
+            </trigger>
+        </field>
         <field character="Heading" name="headingContact">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingExchangeForm.headingContact.Heading</property>

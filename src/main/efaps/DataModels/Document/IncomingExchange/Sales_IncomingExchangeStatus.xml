@@ -20,41 +20,26 @@
  Last Changed By: $Author$
 
 -->
-<datamodel-statusgroup xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2801e3ef-3b5c-443a-9622-f628b87a5dac</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeStatus</name>
         <parent>Sales_DocumentStatus</parent>
         <status key="Open">
-            <description>Exchange is open. It is in the hands of the Recipient. (En cartera)</description>
+            <description>Exchange is open. It is in the hands of the Recipient. (Pendiente)</description>
         </status>
         <status key="Closed">
             <description>Exchange is closed. Everything was done. (Cancelado)</description>
         </status>
         <status key="Canceled">
-            <description>Exchange is open. (Anulado)</description>
+            <description>Exchange is canceled. (Anulado)</description>
         </status>
         <status key="Booked">
             <description>Exchange was booked. no changes possible after that.(Contabilizado)</description>
-        </status>
-
-        <status key="Discount">
-            <description>Exchange is open. (Descuento)</description>
-        </status>
-        <status key="Collection">
-            <description>Exchange is open. (Cobranza)</description>
-        </status>
-        <status key="Protest">
-            <description>Exchange is open. (Protesto)</description>
-        </status>
-        <status key="Renewed">
-            <description>Exchange is renewed. (Renovado)</description>
         </status>
     </definition>
 </datamodel-statusgroup>

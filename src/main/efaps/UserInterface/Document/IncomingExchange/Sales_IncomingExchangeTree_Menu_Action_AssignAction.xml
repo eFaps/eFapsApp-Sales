@@ -22,32 +22,35 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4972b390-b518-430c-8cd2-45b009d532a4</uuid>
+    <uuid>c5e493f3-c350-47a5-bc07-9fbdd4c21bf3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_Menu_Action_SetProtest</name>
+        <name>Sales_IncomingExchangeTree_Menu_Action_AssignAction</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
-            <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Protest</property>
-            </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_IncomingExchangeTree_Menu_Action_SetProtest.UI_ACCESSCHECK"
+            <form>Sales_IncomingExchange_AssignActionForm</form>
+            <execute method="assignAction" program="org.efaps.esjp.sales.document.IncomingExchange" />
+            <trigger event="UI_ACCESSCHECK" index="1" method="accessCheck4Action"
+                name="Sales_IncomingExchangeTree_Menu_Action_AssignAction.UI_ACCESSCHECK.1"
+                program="org.efaps.esjp.sales.document.IncomingExchange">
+                <property name="Key">Sales_IncomingExchange</property>
+                <property name="Access">EDIT</property>
+            </trigger>
+            <trigger event="UI_ACCESSCHECK"
+                index="2" method="check4Status"
+                name="Sales_IncomingExchangeTree_Menu_Action_AssignAction.UI_ACCESSCHECK.2"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Discount</property>
-                <property name="Status01">Collection</property>
-                <property name="Status02">Open</property>
-                <property name="Status03">Renewed</property>
+                <property name="Status">Open</property>
             </trigger>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionIncomingExchange2Document</property>
+        <property name="TargetConnectAttribute">ERP_ActionDefinition2DocumentAbstract/ToLinkAbstract</property>
     </definition>
 </ui-command>

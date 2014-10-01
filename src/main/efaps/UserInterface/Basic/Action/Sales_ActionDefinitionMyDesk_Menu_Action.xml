@@ -35,6 +35,7 @@
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreatePaymentOrder</child>
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateCollectionOrder</child>
             <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateFundsToBeSettledReceipt</child>
+            <child>Sales_ActionDefinitionMyDesk_Menu_Action_CreateIncomingExchange</child>
         </childs>
     </definition>
 </ui-menu>

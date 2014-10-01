@@ -22,32 +22,26 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>dbb68c68-ec1a-4b89-bec7-fdf11fe2c5eb</uuid>
+    <uuid>669882ad-5710-4965-a97d-b980ff36ef7d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingExchangeTree_Menu_Action_SetDiscount</name>
+        <name>Sales_ActionDefinitionMyDesk_Menu_Action_CreateIncomingExchange</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
-            <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Discount</property>
+            <form>ERP_ActionDefinitionForm</form>
+            <execute program="org.efaps.esjp.common.uiform.Create">
+                <property name="StatusGroup">ERP_ActionDefinitionStatus</property>
+                <property name="Status">Active</property>
             </execute>
-            <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_IncomingExchangeTree_Menu_Action_SetDiscount.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
-                <property name="Status01">Collection</property>
-                <property name="Status02">Protest</property>
-                <property name="Status03">Renewed</property>
-            </trigger>
         </target>
-        <property name="AskUser">true</property>
-        <property name="Submit">true</property>
-        <property name="SubmitSelectedRows">-1</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_ActionDefinitionIncomingExchange</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>

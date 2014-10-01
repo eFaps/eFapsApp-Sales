@@ -332,10 +332,6 @@
             <key>Closed</key>
             <key>Canceled</key>
             <key>Booked</key>
-            <key>Discount</key>
-            <key>Collection</key>
-            <key>Protest</key>
-            <key>Renewed</key>
         </status>
 
         <status group="Sales_CreditStatus">

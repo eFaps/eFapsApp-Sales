@@ -41,10 +41,6 @@
                 name="Sales_IncomingExchangeTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
-                <property name="Status01">Collection</property>
-                <property name="Status02">Discount</property>
-                <property name="Status03">Protest</property>
-                <property name="Status04">Renewed</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

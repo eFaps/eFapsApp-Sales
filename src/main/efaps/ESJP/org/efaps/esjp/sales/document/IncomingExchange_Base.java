@@ -21,10 +21,12 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
@@ -74,5 +76,26 @@ public abstract class IncomingExchange_Base
             _insert.add(CISales.IncomingExchange.EntityFinancial, entityFinancial);
             _createdDoc.getValues().put(CISales.IncomingExchange.EntityFinancial.name, entityFinancial);
         }
+    }
+
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getType4SysConf(_parameter).getName();
+    }
+
+    @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getCIType().getType();
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.IncomingExchange;
     }
 }
