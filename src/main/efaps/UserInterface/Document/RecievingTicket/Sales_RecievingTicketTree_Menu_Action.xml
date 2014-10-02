@@ -38,6 +38,7 @@
             <child>Sales_RecievingTicketTree_Menu_Action_SetCanceled</child>
             <child>Sales_RecievingTicketTree_Menu_Action_SetClosed</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
+            <child>Sales_RecievingTicketTree_Menu_Action_CreateReport</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
