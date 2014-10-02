@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.report;
 
+import java.awt.Color;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -350,7 +351,8 @@ public abstract class AccountPettyCashReport_Base
                             .setHeight(12).setWidth(25);
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
-            final ColumnGroupBuilder pettyCashGroup = DynamicReports.grp.group(pettyCashColumn).groupByDataType();
+            final ColumnGroupBuilder pettyCashGroup = DynamicReports.grp.group(pettyCashColumn).groupByDataType()
+                            .setStyle(DynamicReports.stl.style().setBackgroundColor(Color.YELLOW));
             final ColumnGroupBuilder liquidationGroup = DynamicReports.grp.group(liquidationColumn).groupByDataType();
             final ColumnGroupBuilder officialGroup = DynamicReports.grp.group(officialColumn).groupByDataType();
             final ColumnGroupBuilder actionGroup = DynamicReports.grp.group(actionColumn).groupByDataType();
