@@ -946,55 +946,11 @@ public abstract class Costing_Base
             throws EFapsException
         {
             Costing_Base.LOG.debug("Analysing Cost From Document for: {}", this);
-
             BigDecimal ret = null;
             final Instance docInstTmp = getDocInstance();
             if (docInstTmp != null && docInstTmp.isValid()) {
-                if (CISales.RecievingTicket.getType().equals(docInstTmp.getType())) {
-                    // first priority is the special relation for costing
-                    // "Sales_IncomingInvoice2RecievingTicket"
-                    final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
-                    relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
-                                    getDocInstance());
-                    final AttributeQuery relAttrQuery = relAttrQueryBldr
-                                    .getAttributeQuery(CISales.IncomingInvoice2RecievingTicket.FromLink);
-                    final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                    posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
-                                    relAttrQuery);
-                    posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInstance());
-                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                    posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                    posMulti.execute();
-                    if (posMulti.next()) {
-                        ret = posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                    }
-                    // if not found yet, try other relations
-                    if (ret == null) {
-                        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
-                        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, getDocInstance());
-                        final AttributeQuery attrQuery = attrQueryBldr
-                                        .getAttributeQuery(CISales.Document2DerivativeDocument.To);
-                        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                        queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink, attrQuery);
-                        queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInstance());
-                        final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                        multi.execute();
-                        if (multi.next()) {
-                            ret = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                        }
-                    }
-                } else if (CISales.IncomingInvoice.getType().equals(docInstTmp.getType())) {
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                    queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.DocumentAbstractLink, docInstTmp);
-                    queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInstance());
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                    multi.execute();
-                    if (multi.next()) {
-                        ret = multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                    }
-                }
+                final CostDoc costDoc = new CostDoc(docInstTmp, getProductInstance());
+                ret = costDoc.getCost();
             }
             Costing_Base.LOG.debug("Result: {} for  Cost From Document for: {}", ret, this);
             return ret == null ? BigDecimal.ZERO : ret;
@@ -1109,6 +1065,201 @@ public abstract class Costing_Base
         public String toString()
         {
             return ToStringBuilder.reflectionToString(this);
+        }
+    }
+
+
+    public static class CostDoc
+    {
+
+        private BigDecimal cost = BigDecimal.ZERO;
+
+        private boolean initialized;
+
+        private Instance baseDocInst;
+
+        private Instance costDocInst;
+
+        private Instance productInst;
+
+        /**
+         * @param _docInstTmp
+         */
+        public CostDoc(final Instance _docInst, final Instance _productInst)
+        {
+            this.baseDocInst = _docInst;
+            this.productInst = _productInst;
+        }
+
+        protected void init()
+            throws EFapsException
+        {
+            if (!this.initialized) {
+                this.initialized = true;
+                boolean found = false;
+                final SelectBuilder docInstSel = SelectBuilder.get().linkto(
+                                CISales.PositionAbstract.DocumentAbstractLink).instance();
+                if (CISales.RecievingTicket.getType().equals(getBaseDocInst().getType())) {
+                    // first priority is the special relation for costing
+                    // "Sales_IncomingInvoice2RecievingTicket"
+                    final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
+                    relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
+                                    getBaseDocInst());
+                    final AttributeQuery relAttrQuery = relAttrQueryBldr
+                                    .getAttributeQuery(CISales.IncomingInvoice2RecievingTicket.FromLink);
+                    final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                    posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
+                                    relAttrQuery);
+                    posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                    posMulti.addSelect(docInstSel);
+                    posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                    posMulti.execute();
+                    if (posMulti.next()) {
+                        found = true;
+                        setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                        setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                    }
+                    // if not found yet, try other relations
+                    if (!found) {
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+                        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, getBaseDocInst());
+                        final AttributeQuery attrQuery = attrQueryBldr
+                                        .getAttributeQuery(CISales.Document2DerivativeDocument.To);
+                        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                        queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink, attrQuery);
+                        queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+                        final MultiPrintQuery multi = queryBldr.getPrint();
+                        multi.addSelect(docInstSel);
+                        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                        multi.execute();
+                        if (multi.next()) {
+                            setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                            setCostDocInst(multi.<Instance>getSelect(docInstSel));
+                            found = true;
+                        }
+                    }
+                } else if (CISales.IncomingInvoice.getType().equals(getBaseDocInst().getType())) {
+                    final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                    queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.DocumentAbstractLink,
+                                    getBaseDocInst());
+                    queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+                    final MultiPrintQuery multi = queryBldr.getPrint();
+                    multi.addSelect(docInstSel);
+                    multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                    multi.execute();
+                    if (multi.next()) {
+                        setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                        setCostDocInst(multi.<Instance>getSelect(docInstSel));
+                        found = true;
+                    }
+                } else if (CISales.TransactionDocumentShadowIn.getType().equals(getBaseDocInst().getType())) {
+                    final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
+                    relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
+                                    getBaseDocInst());
+                    final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+                    posQueryBldr.addWhereAttrInQuery(
+                                    CISales.PositionSumAbstract.DocumentAbstractLink,
+                                    relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
+                    posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
+                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                    posMulti.addSelect(docInstSel);
+                    posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice);
+                    posMulti.execute();
+                    if (posMulti.next()) {
+                        found = true;
+                        setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                        setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    setCostDocInst(getBaseDocInst());
+                }
+            }
+        }
+
+        /**
+         * Getter method for the instance variable {@link #cost}.
+         *
+         * @return value of instance variable {@link #cost}
+         */
+        public BigDecimal getCost()
+            throws EFapsException
+        {
+            init();
+            return this.cost;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getBaseDocInst()
+        {
+            return this.baseDocInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         */
+        public void setBaseDocInst(final Instance _docInst)
+        {
+            this.baseDocInst = _docInst;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #productInst}.
+         *
+         * @return value of instance variable {@link #productInst}
+         */
+        public Instance getProductInst()
+        {
+            return this.productInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #productInst}.
+         *
+         * @param _productInst value for instance variable {@link #productInst}
+         */
+        public void setProductInst(final Instance _productInst)
+        {
+            this.productInst = _productInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #cost}.
+         *
+         * @param _cost value for instance variable {@link #cost}
+         */
+        public void setCost(final BigDecimal _cost)
+        {
+            this.cost = _cost;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #costDocInst}.
+         *
+         * @return value of instance variable {@link #costDocInst}
+         */
+        public Instance getCostDocInst() throws EFapsException
+        {
+            init();
+            return this.costDocInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #costDocInst}.
+         *
+         * @param _costDocInst value for instance variable {@link #costDocInst}
+         */
+        public void setCostDocInst(final Instance _costDocInst)
+        {
+            this.costDocInst = _costDocInst;
         }
     }
 }
