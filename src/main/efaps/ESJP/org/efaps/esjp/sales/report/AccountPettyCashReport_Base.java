@@ -190,14 +190,21 @@ public abstract class AccountPettyCashReport_Base
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addSelect(selAccInst, selDocTypeName, selActionName, selCurInst, selContactName);
             multi.addAttribute(CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.Date,
-                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name);
+                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Name,
+                            CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal);
             multi.execute();
             while (multi.next()) {
                 BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
                 BigDecimal net = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+
+                BigDecimal basecross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                BigDecimal basenet = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.IncomingCreditNote.getType())) {
                     cross = cross.negate();
                     net = net.negate();
+
+                    basecross = cross.negate();
+                    basenet = net.negate();
                 }
                 final DocumentBean bean = getBean(_parameter);
                 datasource.add(bean);
@@ -212,6 +219,8 @@ public abstract class AccountPettyCashReport_Base
                 bean.setContactName(multi.<String>getSelect(selContactName));
                 bean.setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
                 bean.setSwitch(isGroup(_parameter));
+                bean.setBaseNet(basenet);
+                bean.setBaseCross(basecross);
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
             chain.addComparator(new Comparator<DocumentBean>()
@@ -224,22 +233,24 @@ public abstract class AccountPettyCashReport_Base
                     return _o1.getPettyCash().compareTo(_o2.getPettyCash());
                 }
             });
-            chain.addComparator(new Comparator<DocumentBean>()
-            {
-
-                @Override
-                public int compare(final DocumentBean _o1,
-                                   final DocumentBean _o2)
+            if (isGroup(_parameter)) {
+                chain.addComparator(new Comparator<DocumentBean>()
                 {
-                    try {
-                        return _o1.getLiquidation().compareTo(_o2.getLiquidation());
-                    } catch (final EFapsException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
+
+                    @Override
+                    public int compare(final DocumentBean _o1,
+                                       final DocumentBean _o2)
+                    {
+                        try {
+                            return _o1.getLiquidation().compareTo(_o2.getLiquidation());
+                        } catch (final EFapsException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                        return 0;
                     }
-                    return 0;
-                }
-            });
+                });
+            }
             chain.addComparator(new Comparator<DocumentBean>()
             {
 
@@ -377,6 +388,24 @@ public abstract class AccountPettyCashReport_Base
                 _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
             }
 
+            final TextColumnBuilder<BigDecimal> baseAmountColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.BaseAmount"), "baseAmount",
+                            DynamicReports.type.bigDecimalType());
+            _builder.addColumn(baseAmountColumn);
+
+            final AggregationSubtotalBuilder<BigDecimal> amountSum = DynamicReports.sbt.sum(baseAmountColumn);
+            final AggregationSubtotalBuilder<BigDecimal> amountSum1 = DynamicReports.sbt.sum(baseAmountColumn);
+            final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(baseAmountColumn);
+            final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(baseAmountColumn);
+
+            _builder.addSubtotalAtGroupFooter(pettyCashGroup, amountSum);
+
+            if (isGroup(_parameter)) {
+                _builder.addSubtotalAtGroupFooter(liquidationGroup, amountSum1);
+            }
+
+            _builder.addSubtotalAtGroupFooter(officialGroup, amountSum2);
+            _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
         }
 
         protected boolean isGroup(final Parameter _parameter)
@@ -487,6 +516,10 @@ public abstract class AccountPettyCashReport_Base
 
         private String liquidation;
 
+        private BigDecimal baseCross;
+
+        private BigDecimal baseNet;
+
         /**
          * Getter method for the instance variable {@link #pettyCash}.
          *
@@ -547,7 +580,16 @@ public abstract class AccountPettyCashReport_Base
             ret.put("oid", getOid());
             ret.put("date", getDate());
             ret.put(CurrencyInst.get(getCurrencyInstance()).getISOCode(), getCross());
+            ret.put("baseAmount", getBaseAmount());
             return ret;
+        }
+
+        /**
+         * @return
+         */
+        private BigDecimal getBaseAmount()
+        {
+            return this.baseCross;
         }
 
         /**
@@ -800,6 +842,26 @@ public abstract class AccountPettyCashReport_Base
                 }
             }
             return this.liquidation == null ? "" : this.liquidation;
+        }
+
+        public void setBaseNet(final BigDecimal _baseNet)
+        {
+            this.baseNet = _baseNet;
+        }
+
+        public void setBaseCross(final BigDecimal _baseCross)
+        {
+            this.baseCross = _baseCross;
+        }
+
+        public BigDecimal getBaseNet()
+        {
+            return this.baseNet;
+        }
+
+        public BigDecimal getBaseCross()
+        {
+            return this.baseCross;
         }
     }
 }
