@@ -35,8 +35,10 @@
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">switch</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
             </trigger>
@@ -45,8 +47,10 @@
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">switch</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.AccountPettyCashReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.AccountPettyCashReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.AccountPettyCashReport.switch</property>
             </trigger>
         </field>
         <field name="report">

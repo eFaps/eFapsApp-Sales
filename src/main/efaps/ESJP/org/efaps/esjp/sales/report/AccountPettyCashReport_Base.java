@@ -43,6 +43,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -193,22 +194,24 @@ public abstract class AccountPettyCashReport_Base
             multi.execute();
             while (multi.next()) {
                 BigDecimal cross = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-                multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+                BigDecimal net = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.IncomingCreditNote.getType())) {
                     cross = cross.negate();
+                    net = net.negate();
                 }
                 final DocumentBean bean = getBean(_parameter);
                 datasource.add(bean);
-                bean.setOid(multi.getCurrentInstance().getOid());
+                bean.setInstance(multi.getCurrentInstance());
                 bean.setPettyCashInstance(multi.<Instance>getSelect(selAccInst));
                 bean.setAction(multi.<String>getSelect(selActionName));
                 bean.setCross(cross);
-                bean.setNet(cross);
+                bean.setNet(net);
                 bean.setCurrencyInstance(multi.<Instance>getSelect(selCurInst));
                 bean.setDocTypeName(multi.<String>getSelect(selDocTypeName));
                 bean.setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
                 bean.setContactName(multi.<String>getSelect(selContactName));
                 bean.setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
+                bean.setSwitch(isGroup(_parameter));
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
             chain.addComparator(new Comparator<DocumentBean>()
@@ -219,6 +222,22 @@ public abstract class AccountPettyCashReport_Base
                                    final DocumentBean _o2)
                 {
                     return _o1.getPettyCash().compareTo(_o2.getPettyCash());
+                }
+            });
+            chain.addComparator(new Comparator<DocumentBean>()
+            {
+
+                @Override
+                public int compare(final DocumentBean _o1,
+                                   final DocumentBean _o2)
+                {
+                    try {
+                        return _o1.getLiquidation().compareTo(_o2.getLiquidation());
+                    } catch (final EFapsException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                    return 0;
                 }
             });
             chain.addComparator(new Comparator<DocumentBean>()
@@ -294,6 +313,9 @@ public abstract class AccountPettyCashReport_Base
             final TextColumnBuilder<String> pettyCashColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.PettyCash"), "pettyCash",
                             DynamicReports.type.stringType());
+            final TextColumnBuilder<String> liquidationColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountPettyCashReport.class.getName() + ".Column.Liquidation"), "liquidation",
+                            DynamicReports.type.stringType());
             final TextColumnBuilder<String> officialColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountPettyCashReport.class.getName() + ".Column.Official"), "official",
                             DynamicReports.type.stringType());
@@ -318,11 +340,16 @@ public abstract class AccountPettyCashReport_Base
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
             final ColumnGroupBuilder pettyCashGroup = DynamicReports.grp.group(pettyCashColumn).groupByDataType();
+            final ColumnGroupBuilder liquidationGroup = DynamicReports.grp.group(liquidationColumn).groupByDataType();
             final ColumnGroupBuilder officialGroup = DynamicReports.grp.group(officialColumn).groupByDataType();
             final ColumnGroupBuilder actionGroup = DynamicReports.grp.group(actionColumn).groupByDataType();
 
-            _builder.addGroup(pettyCashGroup, officialGroup, actionGroup);
-            _builder.addColumn(pettyCashColumn, officialColumn, actionColumn);
+            _builder.addGroup(pettyCashGroup).addColumn(pettyCashColumn);
+            if (isGroup(_parameter)) {
+                _builder.addGroup(liquidationGroup).addColumn(liquidationColumn);
+            }
+            _builder.addGroup(officialGroup, actionGroup).addColumn(officialColumn, actionColumn);
+
             if (showDetails()) {
                 if (getExType().equals(ExportType.HTML)) {
                     _builder.addColumn(linkColumn);
@@ -336,14 +363,27 @@ public abstract class AccountPettyCashReport_Base
                 _builder.addColumn(amountColumn);
 
                 final AggregationSubtotalBuilder<BigDecimal> amountSum = DynamicReports.sbt.sum(amountColumn);
+                final AggregationSubtotalBuilder<BigDecimal> amountSum1 = DynamicReports.sbt.sum(amountColumn);
                 final AggregationSubtotalBuilder<BigDecimal> amountSum2 = DynamicReports.sbt.sum(amountColumn);
                 final AggregationSubtotalBuilder<BigDecimal> amountSum3 = DynamicReports.sbt.sum(amountColumn);
 
                 _builder.addSubtotalAtGroupFooter(pettyCashGroup, amountSum);
+
+                if (isGroup(_parameter)) {
+                    _builder.addSubtotalAtGroupFooter(liquidationGroup, amountSum1);
+                }
+
                 _builder.addSubtotalAtGroupFooter(officialGroup, amountSum2);
                 _builder.addSubtotalAtGroupFooter(actionGroup, amountSum3);
             }
 
+        }
+
+        protected boolean isGroup(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            return BooleanUtils.isTrue((Boolean) filter.get("switch"));
         }
 
         /**
@@ -406,7 +446,7 @@ public abstract class AccountPettyCashReport_Base
         /**
          * OID of the document.
          */
-        private String oid;
+        private Instance instance;
 
         /**
          * Label of the type.
@@ -443,6 +483,10 @@ public abstract class AccountPettyCashReport_Base
 
         private DateTime date;
 
+        private boolean isGroup;
+
+        private String liquidation;
+
         /**
          * Getter method for the instance variable {@link #pettyCash}.
          *
@@ -470,6 +514,22 @@ public abstract class AccountPettyCashReport_Base
         }
 
         /**
+         * @param _group
+         */
+        public void setSwitch(final boolean _isGroup)
+        {
+            this.isGroup = _isGroup;
+        }
+
+        /**
+         * @param _group
+         */
+        public Boolean getSwitch()
+        {
+            return this.isGroup;
+        }
+
+        /**
          * @return
          */
         public Map<String, ?> getMap()
@@ -477,6 +537,9 @@ public abstract class AccountPettyCashReport_Base
         {
             final Map<String, Object> ret = new HashMap<>();
             ret.put("pettyCash", getPettyCash());
+            if (getSwitch()) {
+                ret.put("liquidation", getLiquidation());
+            }
             ret.put("official", getOfficial());
             ret.put("action", getAction());
             ret.put("docName", getDocName());
@@ -570,7 +633,7 @@ public abstract class AccountPettyCashReport_Base
          */
         public String getOid()
         {
-            return this.oid;
+            return this.instance.getOid();
         }
 
         /**
@@ -578,9 +641,9 @@ public abstract class AccountPettyCashReport_Base
          *
          * @param _oid value for instance variable {@link #oid}
          */
-        public void setOid(final String _oid)
+        public void setInstance(final Instance _instance)
         {
-            this.oid = _oid;
+            this.instance = _instance;
         }
 
         /**
@@ -714,6 +777,29 @@ public abstract class AccountPettyCashReport_Base
         public void setDate(final DateTime _date)
         {
             this.date = _date;
+        }
+
+        public String getLiquidation()
+            throws EFapsException
+        {
+            if (this.liquidation == null && this.instance != null && this.instance.isValid()) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashBalance2PettyCashReceipt);
+                attrQueryBldr.addType(CISales.PettyCashBalance2IncomingCreditNote);
+                attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink, this.instance);
+                final AttributeQuery attrQuery =
+                                attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink);
+
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PettyCashBalance);
+                queryBldr.addWhereAttrInQuery(CISales.PettyCashBalance.ID, attrQuery);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.PettyCashBalance.Name);
+                multi.execute();
+
+                if (multi.next()) {
+                    this.liquidation = multi.<String>getAttribute(CISales.PettyCashBalance.Name);
+                }
+            }
+            return this.liquidation == null ? "" : this.liquidation;
         }
     }
 }

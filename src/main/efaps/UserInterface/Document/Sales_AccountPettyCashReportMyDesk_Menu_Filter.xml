@@ -31,7 +31,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4DateFromTo</form>
+            <form>Sales_AccountPettyCashReportFilterForm4FromToWithSwitch</form>
             <execute program="org.efaps.esjp.sales.report.AccountPettyCashReport" method="setFilter">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountPettyCashReport.FilterKey</property>
             </execute>
