@@ -33,7 +33,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -388,6 +387,9 @@ public abstract class ProductStockReport_Base
             return new JRBeanCollectionDataSource(dataSource);
         }
 
+        /**
+         * @return new DataBean
+         */
         protected DataBean getDataBean()
         {
             return new DataBean();
@@ -535,19 +537,44 @@ public abstract class ProductStockReport_Base
         }
     }
 
+    /**
+     * Bean containing the data.
+     */
     public static class DataBean
     {
-
+        /**
+         * Instance of the product.
+         */
         private Instance prodInst;
 
+        /**
+         * Instance of the document.
+         */
         private Instance docInst;
 
+        /**
+         * Name of the product.
+         */
         private String prodName;
+
+        /**
+         * Name of the document.
+         */
         private String docName;
 
+        /**
+         * Document was initialized.
+         */
         private boolean initDoc;
+
+        /**
+         * Product was initialized.
+         */
         private boolean initProd;
 
+        /**
+         * Quantity.
+         */
         private BigDecimal quantity = BigDecimal.ZERO;
 
         /**
@@ -559,15 +586,13 @@ public abstract class ProductStockReport_Base
         {
             if (!isInitProd()) {
                 try {
-                    final PrintQuery print = new CachedPrintQuery(getProdInst()).setLifespan(1).setLifespanUnit(
-                                    TimeUnit.MINUTES);
+                    final PrintQuery print = CachedPrintQuery.get4Request(getProdInst());
                     print.addAttribute(CIProducts.ProductAbstract.Name, CIProducts.ProductAbstract.Description);
                     print.execute();
                     setProdName(print.getAttribute(CIProducts.ProductAbstract.Name) + " - "
                                     + print.getAttribute(CIProducts.ProductAbstract.Description));
                 } catch (final EFapsException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Error on retrieving name", e);
                 }
             }
             return this.prodName;
@@ -601,13 +626,12 @@ public abstract class ProductStockReport_Base
         {
             if (!isInitDoc()) {
                 try {
-                    final PrintQuery print = new CachedPrintQuery(getDocInst()).setLifespan(1).setLifespanUnit(
-                                    TimeUnit.MINUTES);
+                    final PrintQuery print = CachedPrintQuery.get4Request(getDocInst());
                     print.addAttribute(CIERP.DocumentAbstract.Name);
                     print.execute();
                     setDocName(print.<String>getAttribute(CIERP.DocumentAbstract.Name));
                 } catch (final EFapsException e) {
-                    LOG.error("Eroro on retrieving name", e);
+                    LOG.error("Error on retrieving name", e);
                 }
             }
             return this.docName;

@@ -39,6 +39,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
@@ -619,16 +620,18 @@ public abstract class SalesKardexReport_Base
         /**
          * @return
          */
-        public String getProdDocType() throws EFapsException
+        public String getProdDocType()
+            throws EFapsException
         {
             if (this.prodDocType == null) {
-                final PrintQuery print = new PrintQuery(getInstance());
-                final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.Document2ProductDocumentType.DocumentLink)
+                final PrintQuery print = CachedPrintQuery.get4Request(getInstance());
+                final SelectBuilder sel = SelectBuilder.get()
+                                .linkfrom(CISales.Document2ProductDocumentType.DocumentLink)
                                 .linkto(CISales.Document2ProductDocumentType.DocumentTypeLink)
                                 .attribute(CISales.ProductDocumentType.Name);
                 print.addSelect(sel);
                 print.execute();
-                this.prodDocType =print.getSelect(sel);
+                this.prodDocType = print.getSelect(sel);
             }
             return this.prodDocType;
         }
@@ -636,10 +639,11 @@ public abstract class SalesKardexReport_Base
         /**
          * @return
          */
-        public String getDocType() throws EFapsException
+        public String getDocType()
+            throws EFapsException
         {
             if (this.docType == null) {
-                final PrintQuery print = new PrintQuery(getCostDoc().getCostDocInst());
+                final PrintQuery print = CachedPrintQuery.get4Request(getCostDoc().getCostDocInst());
                 final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.Document2DocumentType.DocumentLink)
                                 .linkto(CISales.Document2DocumentType.DocumentTypeLink)
                                 .attribute(CIERP.DocumentType.Name);
