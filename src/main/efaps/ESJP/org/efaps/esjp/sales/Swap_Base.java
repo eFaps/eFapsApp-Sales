@@ -43,6 +43,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -51,13 +52,16 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.sales.document.Validation;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
@@ -606,6 +610,55 @@ public abstract class Swap_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new SwapValidation().validate(_parameter, (AbstractDocument_Base) null);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public Return getSwapTotalFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Return().put(ReturnValues.VALUES, getSwapTotal(_parameter, _parameter.getInstance()));
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public BigDecimal getSwapTotal(final Parameter _parameter,
+                                   final Instance _docInst)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        final boolean from = "true".equalsIgnoreCase(getProperty(_parameter, "SwapFrom"));
+        final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+        swapQueryBldr.setOr(true);
+        swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromLink, _docInst);
+        swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToLink, _docInst);
+        final InstanceQuery swapQuery = swapQueryBldr.getQuery();
+        final List<Instance> relInst = swapQuery.execute();
+        if (!relInst.isEmpty()) {
+            for (final SwapInfo info : Swap_Base.getSwapInfos(_parameter, _docInst, relInst).values()) {
+                if (info.isFrom() == from) {
+                    ret = ret.add(info.getAmount());
+                }
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
      * @param _callInstance instance that called and will not be shown
      * @param _relInsts relation instances
      * @return map with instance
@@ -618,29 +671,58 @@ public abstract class Swap_Base
     {
         final Map<Instance, SwapInfo> ret = new HashMap<Instance, SwapInfo>();
         final MultiPrintQuery multi = new MultiPrintQuery(_relInsts);
-        final SelectBuilder fromSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
-        final SelectBuilder fromInstSel = new SelectBuilder(fromSel).instance();
-        final SelectBuilder fromNameSel = new SelectBuilder(fromSel).attribute(CISales.DocumentSumAbstract.Name);
-        final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
-        final SelectBuilder toInstSel = new SelectBuilder(toSel).instance();
-        final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
-        multi.addSelect(fromInstSel, toInstSel, fromNameSel, toNameSel);
+        final SelectBuilder selFrom = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink);
+        final SelectBuilder selFromInst = new SelectBuilder(selFrom).instance();
+        final SelectBuilder selFromName = new SelectBuilder(selFrom).attribute(CISales.DocumentSumAbstract.Name);
+        final SelectBuilder selTo = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink);
+        final SelectBuilder selToInst = new SelectBuilder(selTo).instance();
+        final SelectBuilder selToName = new SelectBuilder(selTo).attribute(CISales.DocumentSumAbstract.Name);
+        final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CISales.Document2Document4Swap.CurrencyLink)
+                        .instance();
+        multi.addSelect(selCurrInst, selFromInst, selToInst, selFromName, selToName);
+        multi.addAttribute(CISales.Document2Document4Swap.Amount);
         multi.execute();
         while (multi.next()) {
             final SwapInfo info = new SwapInfo();
-            final Instance fromInst = multi.getSelect(fromInstSel);
+            final Instance fromInst = multi.getSelect(selFromInst);
             if (_callInstance.equals(fromInst)) {
                 info.setFrom(false)
-                    .setDocInstance(multi.<Instance>getSelect(toInstSel))
-                    .setDocName(multi.<String>getSelect(toNameSel));
+                    .setDocInstance(multi.<Instance>getSelect(selToInst))
+                    .setDocName(multi.<String>getSelect(selToName));
             } else {
                 info.setFrom(true)
-                    .setDocInstance(multi.<Instance>getSelect(fromInstSel))
-                    .setDocName(multi.<String>getSelect(fromNameSel));
+                    .setDocInstance(multi.<Instance>getSelect(selFromInst))
+                    .setDocName(multi.<String>getSelect(selFromName));
             }
+            info.setAmount(multi.<BigDecimal>getAttribute(CISales.Document2Document4Swap.Amount));
+            info.setCurrencyInstance(multi.<Instance>getSelect(selCurrInst));
             ret.put(multi.getCurrentInstance(), info);
         }
         return ret;
+    }
+
+    /**
+     * Validation class.
+     */
+    public class SwapValidation
+        extends Validation
+    {
+        @Override
+        protected List<IWarning> validate(final Parameter _parameter,
+                                          final List<IWarning> _warnings)
+            throws EFapsException
+        {
+            final List<IWarning> ret = super.validate(_parameter, _warnings);
+
+            final BigDecimal sum = getSum4Positions(_parameter, true);
+            final Instance inst = getTargetInstance(_parameter);
+            final DocPaymentInfo createDocInfo = getNewDocPaymentInfo(_parameter, inst);
+            createDocInfo.setTargetDocInst(inst);
+            if (createDocInfo.getCrossTotal().compareTo(sum) < 0) {
+                ret.add(new SwapAmountBiggerWarning());
+            }
+            return ret;
+        }
     }
 
     /**
@@ -662,6 +744,16 @@ public abstract class Swap_Base
          * From or to.
          */
         private boolean from = false;
+
+        /**
+         * Amount.
+         */
+        private BigDecimal amount = BigDecimal.ZERO;
+
+        /**
+         * Instance of the curreny.
+         */
+        private Instance currencyInstance;
 
         /**
          * @return direction string
@@ -723,6 +815,72 @@ public abstract class Swap_Base
         public Instance getDocInst()
         {
             return this.docInst;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #from}.
+         *
+         * @return value of instance variable {@link #from}
+         */
+        public boolean isFrom()
+        {
+            return this.from;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #amount}.
+         *
+         * @return value of instance variable {@link #amount}
+         */
+        public BigDecimal getAmount()
+        {
+            return this.amount;
+        }
+
+        /**
+         * Setter method for instance variable {@link #amount}.
+         *
+         * @param _amount value for instance variable {@link #amount}
+         */
+        public void setAmount(final BigDecimal _amount)
+        {
+            this.amount = _amount;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #currencyInstance}.
+         *
+         * @return value of instance variable {@link #currencyInstance}
+         */
+        public Instance getCurrencyInstance()
+        {
+            return this.currencyInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #currencyInstance}.
+         *
+         * @param _currencyInstance value for instance variable {@link #currencyInstance}
+         */
+        public void setCurrencyInstance(final Instance _currencyInstance)
+        {
+            this.currencyInstance = _currencyInstance;
+        }
+    }
+
+    /**
+     * Warning for existing name.
+     */
+    public static class SwapAmountBiggerWarning
+        extends AbstractWarning
+    {
+        /**
+         * Constructor.
+         */
+        public SwapAmountBiggerWarning()
+        {
+            setError(true);
         }
     }
 }

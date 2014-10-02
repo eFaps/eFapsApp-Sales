@@ -253,5 +253,14 @@
                 <property name="LinkFrom02">ToAbstractLink</property>
             </evaluate>
         </field>
+        <field name="swapTotal">
+            <property name="ModeEdit">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_ExchangeForm.swapTotal.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapTotalFieldValue"
+                name="Sales_ExchangeForm.swapTotal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+        </field>
     </definition>
 </ui-form>

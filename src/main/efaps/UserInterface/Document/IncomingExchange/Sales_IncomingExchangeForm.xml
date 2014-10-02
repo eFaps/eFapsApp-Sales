@@ -193,10 +193,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="rateCurrencyFieldValueUI"
-                name="Sales_IncomingExchangeForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="updateFields4RateCurrency"
-                name="Sales_IncomingExchangeForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
+                method="rateCurrencyFieldValueUI"
+                name="Sales_IncomingExchangeForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
+                method="updateFields4RateCurrency"
+                name="Sales_IncomingExchangeForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -268,6 +272,15 @@
                 <property name="Type02">Sales_Document2Document4Swap</property>
                 <property name="LinkFrom02">ToAbstractLink</property>
             </evaluate>
+        </field>
+        <field name="swapTotal">
+            <property name="ModeEdit">NONE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.DecimalUI</property>
+            <property name="Label">Sales_IncomingExchangeForm.swapTotal.Label</property>
+            <trigger program="org.efaps.esjp.sales.Swap"
+                method="getSwapTotalFieldValue"
+                name="Sales_IncomingExchangeForm.swapTotal.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

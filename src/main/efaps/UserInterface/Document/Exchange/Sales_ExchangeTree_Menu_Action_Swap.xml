@@ -36,6 +36,9 @@
             <execute method="create" program="org.efaps.esjp.sales.Swap">
                 <property name="SwapType">Pay</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.Swap" method="validate">
+                <property name="Validation">AREYOUSURE</property>
+            </validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">create</property>
