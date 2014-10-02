@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.1.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-10-02T18:05:47 -->
+<!-- 2014-10-02T18:53:53 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_RecievingTicket" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="8a538012-3bfd-4e55-8e26-1da6e5446a36">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<parameter name="CompanyName" class="java.lang.String" isForPrompting="false"/>
@@ -27,7 +27,7 @@ linkto[Contact].attribute[Name] as contactName, status.label as status, type.lab
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="60" splitType="Stretch">
+		<band height="84" splitType="Stretch">
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
 				<reportElement x="455" y="19" width="100" height="12" uuid="40344b0e-3ac8-45e6-aa9d-a9fc609d41e9">
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -91,6 +91,13 @@ linkto[Contact].attribute[Name] as contactName, status.label as status, type.lab
 				</reportElement>
 				<text><![CDATA[Proveedor:]]></text>
 			</staticText>
+			<staticText>
+				<reportElement x="0" y="70" width="100" height="12" uuid="895f8b73-a3bd-44b9-be94-7ed4e0ce263e">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[Posiciónes:]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -102,6 +109,24 @@ linkto[Contact].attribute[Name] as contactName, status.label as status, type.lab
 				</subreportParameter>
 				<subreportExpression><![CDATA["JasperReport.Sales_RecievingTicketPosition"]]></subreportExpression>
 			</subreport>
+		</band>
+		<band height="62">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<subreport>
+				<reportElement x="0" y="22" width="555" height="40" uuid="4cf01937-782e-4186-ab28-fcfd90c9fd04"/>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportExpression><![CDATA["JasperReport.Sales_RecievingTicketTransaction"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="0" y="10" width="100" height="12" uuid="1cf59d6a-a141-410f-88f6-e1abffa88531">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<text><![CDATA[Transaciónes:]]></text>
+			</staticText>
 		</band>
 	</detail>
 </jasperReport>
