@@ -68,5 +68,10 @@
                 <property name="Type">ERP_Currency</property>
             </trigger>
         </attribute>
+        <trigger program="org.efaps.esjp.sales.Swap"
+            method="deleteOverwriteTrigger"
+            name="Sales_Document2Document4Swap.DELETE_OVERRIDE"
+            event="DELETE_OVERRIDE">
+        </trigger>
     </definition>
 </datamodel-type>

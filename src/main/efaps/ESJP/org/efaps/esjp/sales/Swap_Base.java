@@ -41,6 +41,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
+import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.InstanceQuery;
@@ -48,7 +49,9 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -632,6 +635,7 @@ public abstract class Swap_Base
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst  Instance of the document
      * @return Return containing result
      * @throws EFapsException on error
      */
@@ -655,6 +659,73 @@ public abstract class Swap_Base
             }
         }
         return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing result
+     * @throws EFapsException on error
+     */
+    public Return deleteOverwriteTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance swapRelInst = _parameter.getInstance();
+        final PrintQuery print = new PrintQuery(swapRelInst);
+        final SelectBuilder selFromStatus = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink)
+                        .status();
+        final SelectBuilder selFromInst = SelectBuilder.get().linkto(CISales.Document2Document4Swap.FromLink)
+                        .instance();
+        final SelectBuilder selToStatus = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink).status();
+        final SelectBuilder selToInst = SelectBuilder.get().linkto(CISales.Document2Document4Swap.ToLink).instance();
+        print.addSelect(selFromStatus, selFromInst, selToStatus, selToInst);
+        print.execute();
+        final Status fromStatus = print.getSelect(selFromStatus);
+        final Status toStatus = print.getSelect(selToStatus);
+        if (statusCheck4Delete(_parameter, fromStatus) && statusCheck4Delete(_parameter, toStatus)) {
+            final Instance fromInst = print.getSelect(selFromInst);
+            final Instance toInst = print.getSelect(selToInst);
+            updateStatus4Delete(_parameter, fromInst, fromStatus);
+            updateStatus4Delete(_parameter, toInst, toStatus);
+            new Delete(swapRelInst).executeWithoutTrigger();
+        }
+        return new Return();
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst instance of the document tobe updated
+     * @param _status Status to be checked
+     * @throws EFapsException on error
+     */
+    protected void updateStatus4Delete(final Parameter _parameter,
+                                       final Instance _docInst,
+                                       final Status _status)
+        throws EFapsException
+    {
+        if ("Paid".equals(_status.getKey()) || "Closed".equals(_status.getKey())) {
+            Status newStatus = null;
+            if (_status.getStatusGroup().containsKey("Open")) {
+                newStatus = _status.getStatusGroup().get("Open");
+            }
+            if (newStatus != null) {
+                final Update update = new Update(_docInst);
+                update.add(CIERP.DocumentAbstract.StatusAbstract, newStatus);
+                update.execute();
+            }
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _status Status to be checked
+     * @return true if delete is permitted
+     * @throws EFapsException on error
+     */
+    protected boolean statusCheck4Delete(final Parameter _parameter,
+                                         final Status _status)
+    {
+        // permit it if not booked
+        return !"Booked".equals(_status.getKey());
     }
 
     /**
