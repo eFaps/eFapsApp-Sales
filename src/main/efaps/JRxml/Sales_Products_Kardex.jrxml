@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-10-03T09:49:15 -->
+<!-- 2014-10-03T12:18:26 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="1750" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1710" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
@@ -50,13 +50,13 @@
 		<property name="Key" value="transOutboundQuantity"/>
 	</field>
 	<variable name="OFFSET" class="java.lang.Integer">
-		<variableExpression><![CDATA[Integer.valueOf(13)]]></variableExpression>
+		<variableExpression><![CDATA[Integer.valueOf(8)]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
 	</variable>
 	<pageHeader>
 		<band height="110">
 			<textField>
-				<reportElement x="0" y="0" width="1300" height="20" uuid="20412978-7a7c-4f8f-ae9d-6eb5e98cabb5"/>
+				<reportElement x="0" y="0" width="1680" height="20" uuid="20412978-7a7c-4f8f-ae9d-6eb5e98cabb5"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle" markup="none">
 					<font size="14" isBold="true"/>
 				</textElement>
@@ -70,11 +70,11 @@
 				<text><![CDATA[PERIODO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="20" width="1140" height="15" uuid="64bac294-d887-434b-befa-31b0339fd626"/>
+				<reportElement x="160" y="20" width="220" height="15" uuid="64bac294-d887-434b-befa-31b0339fd626"/>
 				<textFieldExpression><![CDATA[$P{Periode}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="35" width="970" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
+				<reportElement x="160" y="35" width="220" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
 				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -92,7 +92,7 @@
 				<text><![CDATA[MÉTODO DE VALUACIÓN:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="74" width="1140" height="15" uuid="93a88b04-b74d-4340-b905-2627e2ce9011"/>
+				<reportElement x="160" y="74" width="220" height="15" uuid="93a88b04-b74d-4340-b905-2627e2ce9011"/>
 				<textFieldExpression><![CDATA[$P{StorageName}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -103,7 +103,7 @@
 				<text><![CDATA[ESTABLECIMIENTO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="50" width="1080" height="24" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1">
+				<reportElement x="160" y="50" width="220" height="24" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -120,7 +120,7 @@
 				<text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACIÓN O RAZÓN SOCIAL:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="89" width="1140" height="15" uuid="939aaaee-f629-408d-b07e-fd098d2c16f1">
+				<reportElement x="160" y="89" width="220" height="15" uuid="939aaaee-f629-408d-b07e-fd098d2c16f1">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -443,8 +443,16 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="880" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
-					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean(!($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1))]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="880" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(Q" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
@@ -452,7 +460,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="980" y="0" width="100" height="12" uuid="c99026ea-ac7f-4f6f-8c49-d15bacea2342">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(F" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*G"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(J" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*K"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
@@ -467,7 +475,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="1180" y="0" width="100" height="12" uuid="be2d922e-23b3-4e97-ab37-b991a0bbed9f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),2)"]]></propertyExpression>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(M" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,Q"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
@@ -475,7 +483,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="1280" y="0" width="100" height="12" uuid="8389e165-6cb3-4b5d-b6a7-19c7ddcea5a4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(I" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*N"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
@@ -483,7 +491,16 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToTallestObject" x="1380" y="0" width="100" height="12" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+F"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-I"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} == 1)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToTallestObject" x="1380" y="0" width="100" height="12" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(P" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
@@ -491,7 +508,16 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="1480" y="0" width="100" height="12" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(H" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,M"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",(N"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+H"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} == 1)]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToTallestObject" x="1480" y="0" width="100" height="12" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,Q"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",(R"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/P"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
@@ -499,7 +525,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToTallestObject" x="1580" y="0" width="100" height="12" uuid="edcfe3e5-3356-4b71-90e7-681fd431c388">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(P" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*Q"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
