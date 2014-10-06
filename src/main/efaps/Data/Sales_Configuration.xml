@@ -185,6 +185,9 @@ Sales_IncomingExchange.Status01=Open
 Sales_IncomingExchange.Type02=Sales_Reminder
 Sales_IncomingExchange.StatusGroup02=Sales_ReminderStatus
 Sales_IncomingExchange.Status02=Open
+Sales_IncomingExchange.Type03=Sales_IncomingExchange
+Sales_IncomingExchange.StatusGroup03=Sales_IncomingExchangeStatus
+Sales_IncomingExchange.Status03=!Canceled
 Sales_IncomingExchange.Filter4Contact=true
 Sales_Exchange.Type=Sales_IncomingInvoice
 Sales_Exchange.StatusGroup=Sales_IncomingInvoiceStatus
@@ -195,6 +198,9 @@ Sales_Exchange.Status01=Open
 Sales_Exchange.Type02=Sales_IncomingReminder
 Sales_Exchange.StatusGroup02=Sales_IncomingReminderStatus
 Sales_Exchange.Status02=Open
+Sales_Exchange.Type03=Sales_Exchange
+Sales_Exchange.StatusGroup03=Sales_ExchangeStatus
+Sales_Exchange.Status03=!Canceled
 Sales_Exchange.Filter4Contact=true
 ]]></value>
         </attribute>
