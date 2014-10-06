@@ -158,7 +158,8 @@ public abstract class Swap_Base
         while (multi.next()) {
             final String name = multi.<String>getAttribute(CISales.DocumentAbstract.Name);
             final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
-            String choice = name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
+            String choice = multi.getCurrentInstance().getType().getLabel() + " - "
+                            + name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
                             Context.getThreadContext().getLocale()));
             if (showContact) {
                 choice = choice + " - " + multi.getSelect(selContactName);
@@ -285,7 +286,7 @@ public abstract class Swap_Base
         final Instance targetInstance = getTargetInstance(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("document")[selected]);
 
-        if (docInstance.isValid() && targetInstance.isValid()) {
+        if (docInstance.isValid()) {
             try {
                 final Object[] rateObj = getRateObject(_parameter, "rate", selected);
                 final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
@@ -296,7 +297,8 @@ public abstract class Swap_Base
                                 .parse(_parameter.getParameterValues("partial")[selected]);
 
                 final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInstance);
-                docInfo.setTargetDocInst(targetInstance);
+                docInfo.setTargetDocInst(targetInstance != null && targetInstance.isValid()
+                                ? targetInstance : docInstance);
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
                 docInfo.setRateCrossTotal(partial);
@@ -345,7 +347,7 @@ public abstract class Swap_Base
         final Instance targetInstance = getTargetInstance(_parameter);
         final Instance docInstance = Instance.get(_parameter.getParameterValues("document")[selected]);
 
-        if (docInstance.isValid() && targetInstance.isValid()) {
+        if (docInstance.isValid()) {
             try {
                 final Object[] rateObj = getRateObject(_parameter, "rate", selected);
                 final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
@@ -353,7 +355,8 @@ public abstract class Swap_Base
                 final BigDecimal rateUI = (BigDecimal) NumberFormatter.get().getFormatter()
                                 .parse(_parameter.getParameterValues("rate")[selected]);
                 final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInstance);
-                docInfo.setTargetDocInst(targetInstance);
+                docInfo.setTargetDocInst(targetInstance != null && targetInstance.isValid()
+                                ? targetInstance : docInstance);
                 docInfo.getRateInfo4Target().setRate(rate);
                 docInfo.getRateInfo4Target().setRateUI(rateUI);
 
