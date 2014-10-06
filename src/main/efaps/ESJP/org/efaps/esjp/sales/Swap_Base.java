@@ -40,6 +40,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -111,8 +112,15 @@ public abstract class Swap_Base
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
 
         final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.SWAPCONFIG, true);
-        final String propkey = _parameter.getCallInstance().getType().getName();
-
+        final String propkey;
+        if (_parameter.getCallInstance() != null) {
+            propkey = _parameter.getCallInstance().getType().getName();
+        } else if (_parameter.get(ParameterValues.CALL_CMD) != null) {
+            final AbstractCommand cmd = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
+            propkey = cmd.getTargetCreateType().getName();
+        } else {
+            propkey = "Unknown";
+        }
         final QueryBuilder queryBldr;
         if ("true".equalsIgnoreCase(getProperty(_parameter, "UseSystemConfig"))) {
             queryBldr = getQueryBldrFromProperties(_parameter, props, propkey);
@@ -127,6 +135,9 @@ public abstract class Swap_Base
                 print.executeWithoutAccessCheck();
                 queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
                                 print.getAttribute(CISales.DocumentSumAbstract.Contact));
+            } else if (_parameter.getParameterValue("contact") != null) {
+                final Instance inst = Instance.get(_parameter.getParameterValue("contact"));
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid()  ? inst : 0);
             }
         }
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
@@ -193,7 +204,7 @@ public abstract class Swap_Base
             final CurrencyInst currInst = CurrencyInst.get(print.getSelect(selCurrInst));
             final CurrencyInst rateCurrInst = CurrencyInst.get(print.getSelect(selRateCurrInst));
 
-            map.put("contact", print.getSelect(selContactName));
+            map.put("contact4Doc", print.getSelect(selContactName));
             map.put("crossTotal", print.getAttribute(CISales.DocumentSumAbstract.CrossTotal) + currInst.getSymbol());
             map.put("netTotal", print.getAttribute(CISales.DocumentSumAbstract.NetTotal) + currInst.getSymbol());
             map.put("rateCrossTotal",
@@ -375,7 +386,7 @@ public abstract class Swap_Base
     {
         final Instance targetInstance = getTargetInstance(_parameter);
         final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, _docInst);
-        docInfo.setTargetDocInst(targetInstance);
+        docInfo.setTargetDocInst(targetInstance == null ? _docInst : targetInstance);
         return getPositionUpdateMap(_parameter, docInfo, false);
     }
 
@@ -460,8 +471,8 @@ public abstract class Swap_Base
      * @return sum of the positions
      * @throws EFapsException on error
      */
-    protected BigDecimal getSum4Positions(final Parameter _parameter,
-                                          final boolean _includeCurrent)
+    public BigDecimal getSum4Positions(final Parameter _parameter,
+                                       final boolean _includeCurrent)
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
@@ -723,6 +734,7 @@ public abstract class Swap_Base
      */
     protected boolean statusCheck4Delete(final Parameter _parameter,
                                          final Status _status)
+        throws EFapsException
     {
         // permit it if not booked
         return !"Booked".equals(_status.getKey());

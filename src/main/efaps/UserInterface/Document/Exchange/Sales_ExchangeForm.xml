@@ -260,7 +260,9 @@
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="getSwapTotalFieldValue"
                 name="Sales_ExchangeForm.swapTotal.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <property name="SwapFrom">true</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

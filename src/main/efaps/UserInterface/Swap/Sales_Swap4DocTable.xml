@@ -37,6 +37,7 @@
                 name="Sales_Swap4DocTable.document.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.Swap">
                 <property name="UseSystemConfig">true</property>
+                <property name="ExtraParameter">contact</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE"
                 method="updateFields4Document"
@@ -44,7 +45,7 @@
                 program="org.efaps.esjp.sales.Swap">
             </trigger>
         </field>
-        <field name="contact">
+        <field name="contact4Doc">
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentSumAbstract/Contact.Label</property>
