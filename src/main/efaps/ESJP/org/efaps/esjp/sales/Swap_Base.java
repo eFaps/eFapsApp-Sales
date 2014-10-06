@@ -137,7 +137,7 @@ public abstract class Swap_Base
                                 print.getAttribute(CISales.DocumentSumAbstract.Contact));
             } else if (_parameter.getParameterValue("contact") != null) {
                 final Instance inst = Instance.get(_parameter.getParameterValue("contact"));
-                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid()  ? inst : 0);
+                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid() ? inst : 0);
             }
         }
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
@@ -160,7 +160,7 @@ public abstract class Swap_Base
             final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentAbstract.Date);
             String choice = multi.getCurrentInstance().getType().getLabel() + " - "
                             + name + " - " + date.toString(DateTimeFormat.forStyle("S-").withLocale(
-                            Context.getThreadContext().getLocale()));
+                                            Context.getThreadContext().getLocale()));
             if (showContact) {
                 choice = choice + " - " + multi.getSelect(selContactName);
             }
@@ -168,7 +168,7 @@ public abstract class Swap_Base
             map.put(EFapsKey.AUTOCOMPLETE_KEY.getKey(), multi.getAttribute(key).toString());
             map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), name);
             map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), choice);
-            tmpMap.put(name, map);
+            tmpMap.put(choice, map);
         }
         list.addAll(tmpMap.values());
         final Return retVal = new Return();
