@@ -147,34 +147,35 @@ public abstract class SalesKardexReport_Base
         }
     }
 
-    @Override
-    public void init(final JasperReport _jasperReport,
-                     final Parameter _parameter,
-                     final JRDataSource _parentSource,
-                     final Map<String, Object> _jrParameters)
+    protected void init(final JasperReport _jasperReport,
+                        final Parameter _parameter,
+                        final JRDataSource _parentSource,
+                        final Map<String, Object> _jrParameters,
+                        final Instance... _prodInsts)
         throws EFapsException
     {
         final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
-
         final DateTime dateFrom = new DateTime(_parameter
                         .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateFrom.name));
 
         final DateTime dateTo = new DateTime(_parameter
                         .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateTo.name));
+        final List<Instance> listStorage = getStorageInstList(_parameter);
+        boolean first = true;
+        for (final Instance prodInst : _prodInsts) {
+            if (first) {
+                first = false;
+            } else {
+                values.add(new HashMap<String, Object>());
+            }
 
-        final Instance product = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name));
-
-        if (product.isValid()) {
-            final List<Instance> listStorage = getStorageInstList(_parameter);
-            values.add(getInventoryValue(_parameter, product, listStorage, dateFrom));
-
+            values.add(getInventoryValue(_parameter, prodInst, listStorage, dateFrom));
             final SelectBuilder selTransDoc = new SelectBuilder().linkto(CIProducts.TransactionInOutAbstract.Document);
             final SelectBuilder selTransDocInst = new SelectBuilder(selTransDoc).instance();
             final SelectBuilder selTransDocName = new SelectBuilder(selTransDoc).attribute(CIERP.DocumentAbstract.Name);
 
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
-            queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, product);
+            queryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Product, prodInst);
             queryBldr.addWhereAttrLessValue(CIProducts.TransactionInOutAbstract.Date, dateTo.plusSeconds(1));
             queryBldr.addWhereAttrGreaterValue(CIProducts.TransactionInOutAbstract.Date, dateFrom.minusSeconds(1));
             if (!listStorage.isEmpty()) {
@@ -212,7 +213,7 @@ public abstract class SalesKardexReport_Base
                                 || multi.getCurrentInstance().getType()
                                                 .equals(CIProducts.TransactionInbound4StaticStorage.getType())) {
                     map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), quantity);
-                    addMap2DocumentTypeIn(_parameter, map, transDocInst, dateFrom, dateTo, product);
+                    addMap2DocumentTypeIn(_parameter, map, transDocInst, dateFrom, dateTo, prodInst);
                 } else {
                     map.put(Field.TRANS_OUTBOUND_QUANTITY.getKey(), quantity);
                     map.put(Field.TRANS_DOC_SERIE.getKey(), getSeriesOrNumberDocOut(_parameter, transDocName, true));
@@ -220,10 +221,41 @@ public abstract class SalesKardexReport_Base
                     addMap2DocumentTypeOut(_parameter, map, transDocInst);
                 }
                 addMap2TransactionInfo(_parameter, map, multi.getCurrentInstance());
+                add2Map4ProductInfo(_parameter, map, multi.getCurrentInstance(), prodInst);
                 values.add(map);
             }
         }
         getValues().addAll(values);
+    }
+
+    /**
+     * @param _parameter
+     * @param _map
+     * @param _currentInstance
+     * @param _prodInst
+     */
+    protected void add2Map4ProductInfo(final Parameter _parameter,
+                                       final Map<String, Object> _map,
+                                       final Instance __transactionInstance,
+                                       final Instance _prodInst)
+        throws EFapsException
+    {
+
+    }
+
+
+    @Override
+    public void init(final JasperReport _jasperReport,
+                     final Parameter _parameter,
+                     final JRDataSource _parentSource,
+                     final Map<String, Object> _jrParameters)
+        throws EFapsException
+    {
+        final Instance product = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name));
+        if (product.isValid()) {
+            init(_jasperReport, _parameter, _parentSource, _jrParameters, product);
+        }
     }
 
     /**
@@ -296,7 +328,7 @@ public abstract class SalesKardexReport_Base
         map.put(Field.TRANS_DOC_OPERATION.getKey(), "16");
         map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), actualInventory);
         map.put(Field.TRANS_INBOUND_COST.getKey(), getCost(_parameter, _product, _dateFrom.minusDays(1)));
-
+        add2Map4ProductInfo(_parameter, map, null, _product);
         return map;
     }
 
@@ -376,7 +408,8 @@ public abstract class SalesKardexReport_Base
         final TransDoc docTransIn = new TransDoc(_transDocInst, _dateFrom, _dateTo, _productInst);
         _map.put(Field.TRANS_DOC_TYPE.getKey(), docTransIn.getDocType());
         _map.put(Field.TRANS_INBOUND_COST.getKey(), docTransIn.getCostDoc().getCost());
-        _map.put(Field.TRANS_DOC_SERIE.getKey(), getSeriesOrNumberDocOut(_parameter, docTransIn.getCostDocName(), true));
+        _map.put(Field.TRANS_DOC_SERIE.getKey(),
+                        getSeriesOrNumberDocOut(_parameter, docTransIn.getCostDocName(), true));
         _map.put(Field.TRANS_DOC_NUMBER.getKey(),
                         getSeriesOrNumberDocOut(_parameter, docTransIn.getCostDocName(), false));
         _map.put(Field.TRANS_DOC_OPERATION.getKey(), docTransIn.getProdDocType());
@@ -542,12 +575,12 @@ public abstract class SalesKardexReport_Base
 
         private String uoM;
 
-        public ProductKardex(final Instance _product)
+        public ProductKardex(final Instance _prodInst)
             throws EFapsException
         {
-            this.product = _product;
+            this.product = _prodInst;
             if (getInstance().isValid()) {
-                final PrintQuery print = new PrintQuery(getInstance());
+                final PrintQuery print = CachedPrintQuery.get4Request(_prodInst);
                 print.addAttribute(CIProducts.ProductAbstract.Name,
                                 CIProducts.ProductAbstract.Description,
                                 CIProducts.ProductAbstract.Dimension);

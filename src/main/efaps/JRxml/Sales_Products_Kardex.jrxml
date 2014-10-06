@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-10-03T12:18:26 -->
+<!-- 2014-10-06T17:26:45 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="1750" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1710" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
-	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.rows" value="true"/>
-	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="false"/>
 	<property name="net.sf.jasperreports.export.xls.white.page.background" value="false"/>
-	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="false"/>
+	<property name="net.sf.jasperreports.export.xls.ignore.cell.background" value="true"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.1" value="columnHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="lastPageFooter"/>
+	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="columnFooter"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -49,9 +54,24 @@
 	<field name="transOutboundQuantity" class="java.math.BigDecimal">
 		<property name="Key" value="transOutboundQuantity"/>
 	</field>
+	<field name="prodName" class="java.lang.String">
+		<property name="Key" value="prodName"/>
+	</field>
+	<field name="prodType" class="java.lang.String">
+		<property name="Key" value="prodType"/>
+	</field>
+	<field name="prodDescr" class="java.lang.String">
+		<property name="Key" value="prodDescr"/>
+	</field>
+	<field name="prodUoM" class="java.lang.String">
+		<property name="Key" value="prodUoM"/>
+	</field>
 	<variable name="OFFSET" class="java.lang.Integer">
 		<variableExpression><![CDATA[Integer.valueOf(8)]]></variableExpression>
 		<initialValueExpression><![CDATA[]]></initialValueExpression>
+	</variable>
+	<variable name="print" class="java.lang.Boolean">
+		<variableExpression><![CDATA[new Boolean($F{transDocOperation} != null)]]></variableExpression>
 	</variable>
 	<pageHeader>
 		<band height="110">
@@ -70,11 +90,11 @@
 				<text><![CDATA[PERIODO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="20" width="220" height="15" uuid="64bac294-d887-434b-befa-31b0339fd626"/>
+				<reportElement x="160" y="20" width="260" height="15" uuid="64bac294-d887-434b-befa-31b0339fd626"/>
 				<textFieldExpression><![CDATA[$P{Periode}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="35" width="220" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
+				<reportElement x="160" y="35" width="260" height="15" uuid="a3af09ae-ca72-42f7-9010-ce6a7dd68215"/>
 				<textFieldExpression><![CDATA[$P{CompanyName}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -92,7 +112,7 @@
 				<text><![CDATA[MÉTODO DE VALUACIÓN:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="74" width="220" height="15" uuid="93a88b04-b74d-4340-b905-2627e2ce9011"/>
+				<reportElement x="160" y="74" width="260" height="15" uuid="93a88b04-b74d-4340-b905-2627e2ce9011"/>
 				<textFieldExpression><![CDATA[$P{StorageName}]]></textFieldExpression>
 			</textField>
 			<staticText>
@@ -103,7 +123,7 @@
 				<text><![CDATA[ESTABLECIMIENTO:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="50" width="220" height="24" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1">
+				<reportElement x="160" y="50" width="260" height="24" uuid="1c809187-8d77-40cb-bfe8-95111f9d30c1">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -120,7 +140,7 @@
 				<text><![CDATA[APELLIDOS Y NOMBRES, DENOMINACIÓN O RAZÓN SOCIAL:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement x="160" y="89" width="220" height="15" uuid="939aaaee-f629-408d-b07e-fd098d2c16f1">
+				<reportElement x="160" y="89" width="260" height="15" uuid="939aaaee-f629-408d-b07e-fd098d2c16f1">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -133,7 +153,7 @@
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<staticText>
-				<reportElement x="700" y="0" width="80" height="36" uuid="97e553a7-746c-469e-bf9d-76f973dd3873">
+				<reportElement x="740" y="0" width="80" height="36" uuid="97e553a7-746c-469e-bf9d-76f973dd3873">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -151,7 +171,7 @@ OPERACIÓN
 (TABLA 12)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="0" width="320" height="24" uuid="0d609019-f524-4e7b-86dc-3499d7127b00">
+				<reportElement x="420" y="0" width="320" height="24" uuid="0d609019-f524-4e7b-86dc-3499d7127b00">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -168,7 +188,7 @@ OPERACIÓN
 DOCUMENTO INTERNO O SIMILAR]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="780" y="24" width="100" height="12" uuid="377a4b89-2efa-465e-b006-19368051f22a">
+				<reportElement x="820" y="24" width="80" height="12" uuid="377a4b89-2efa-465e-b006-19368051f22a">
 					<property name="local_mesure_unity" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="local_mesure_unitheight" value="pixel"/>
@@ -180,7 +200,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[CANTIDAD]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="880" y="24" width="100" height="12" uuid="5a38680b-d874-4dfe-a21e-b75f1582606d">
+				<reportElement x="900" y="24" width="100" height="12" uuid="5a38680b-d874-4dfe-a21e-b75f1582606d">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -190,7 +210,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[COSTO UNITARIO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="980" y="24" width="100" height="12" uuid="dae64661-304b-4d5f-966a-2923296947be">
+				<reportElement x="1000" y="24" width="100" height="12" uuid="dae64661-304b-4d5f-966a-2923296947be">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -200,7 +220,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[COSTO TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1080" y="24" width="100" height="12" uuid="a26d6a6b-3391-43ae-a2e1-36d4b247086b">
+				<reportElement x="1100" y="24" width="80" height="12" uuid="a26d6a6b-3391-43ae-a2e1-36d4b247086b">
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -260,7 +280,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[COSTO TOTAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="1080" y="0" width="300" height="24" uuid="ae5a7d7d-cad7-4e57-955d-05d1ab8bd16c">
+				<reportElement x="1100" y="0" width="280" height="24" uuid="ae5a7d7d-cad7-4e57-955d-05d1ab8bd16c">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<box>
@@ -291,7 +311,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[SALDO FINAL]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="780" y="0" width="300" height="24" uuid="5cca04ed-753b-4d6e-8ea3-8b9e2bf0ecb4">
+				<reportElement x="820" y="0" width="280" height="24" uuid="5cca04ed-753b-4d6e-8ea3-8b9e2bf0ecb4">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -307,7 +327,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[ENTRADAS]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="460" y="24" width="80" height="12" uuid="d9a1940d-734e-4203-b626-a09212be35d4">
+				<reportElement x="500" y="24" width="80" height="12" uuid="d9a1940d-734e-4203-b626-a09212be35d4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -316,7 +336,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="540" y="24" width="80" height="12" uuid="3a9233de-9370-41e3-af91-e48e8c5c2c6e">
+				<reportElement x="580" y="24" width="80" height="12" uuid="3a9233de-9370-41e3-af91-e48e8c5c2c6e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -325,7 +345,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[SERIE]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="380" y="24" width="80" height="12" uuid="86687539-9fd6-42ef-826b-aa350230ed06">
+				<reportElement x="420" y="24" width="80" height="12" uuid="86687539-9fd6-42ef-826b-aa350230ed06">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -335,7 +355,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[FECHA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="620" y="24" width="80" height="12" uuid="2e5f642c-9b32-4bb2-9df9-0e2c81ac6b47">
+				<reportElement x="660" y="24" width="80" height="12" uuid="2e5f642c-9b32-4bb2-9df9-0e2c81ac6b47">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
@@ -344,7 +364,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[NÚMERO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="160" y="0" width="160" height="36" uuid="08590140-42b9-4967-bba7-f38d6f6de521">
+				<reportElement x="160" y="0" width="200" height="36" uuid="08590140-42b9-4967-bba7-f38d6f6de521">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -354,7 +374,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[DESCRIPCIÓN]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="60" y="0" width="100" height="36" uuid="9a0b8a4e-9f5b-45b2-b59c-2517bd539719">
+				<reportElement x="70" y="0" width="90" height="36" uuid="9a0b8a4e-9f5b-45b2-b59c-2517bd539719">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -364,7 +384,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[TIPO]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="0" y="0" width="60" height="36" uuid="870d656a-980a-47db-ae8d-f524cb6c8cf7">
+				<reportElement x="0" y="0" width="70" height="36" uuid="870d656a-980a-47db-ae8d-f524cb6c8cf7">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -374,7 +394,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<text><![CDATA[CÓDIGO DE LA EXISTENCIA]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="320" y="0" width="60" height="36" uuid="a861f668-4ccd-499f-a49e-fc9014fc7efb">
+				<reportElement x="360" y="0" width="60" height="36" uuid="a861f668-4ccd-499f-a49e-fc9014fc7efb">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -389,8 +409,41 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 		<band height="12">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="12" isPrintWhenDetailOverflows="true" uuid="f32abf0e-9af9-4b94-9494-c602afc77db4">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodName}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="360" y="0" width="60" height="12" isPrintWhenDetailOverflows="true" uuid="7e4bbfb2-a390-4414-b91a-63c22cd3ea1e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{prodUoM}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="160" y="0" width="200" height="12" isPrintWhenDetailOverflows="true" uuid="f988fcf3-3293-4161-bd34-e3d5bc58b903">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodDescr}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="70" y="0" width="90" height="12" isPrintWhenDetailOverflows="true" uuid="bcad915b-36c4-4ebd-a2b7-a9fc8487c7dd">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{prodType}]]></textFieldExpression>
+			</textField>
 			<textField isStretchWithOverflow="true" pattern="dd/MM/yyyy" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="380" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
+				<reportElement stretchType="RelativeToBandHeight" x="420" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
@@ -398,161 +451,143 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<textFieldExpression><![CDATA[$F{transDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="460" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
+				<reportElement stretchType="RelativeToBandHeight" x="500" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{transDocType}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="540" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
+				<reportElement stretchType="RelativeToBandHeight" x="580" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{transDocSerie}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="620" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
+				<reportElement stretchType="RelativeToBandHeight" x="660" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{transDocNumber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="700" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
+				<reportElement stretchType="RelativeToBandHeight" x="740" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textElement textAlignment="Center"/>
 				<textFieldExpression><![CDATA[$F{transDocOperation}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="780" y="0" width="100" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
+			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" x="820" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{transInboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transInboundQuantity}) != 0 ? $F{transInboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="880" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) != -1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && ($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) != -1))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{transInboundCost} != null ? $F{transInboundCost} : BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="880" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[new Boolean(!($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && !($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1))]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="880" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(Q" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
-					<printWhenExpression><![CDATA[new Boolean($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="980" y="0" width="100" height="12" uuid="c99026ea-ac7f-4f6f-8c49-d15bacea2342">
+				<reportElement stretchType="RelativeToBandHeight" x="1000" y="0" width="100" height="12" uuid="c99026ea-ac7f-4f6f-8c49-d15bacea2342">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(J" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*K"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="1080" y="0" width="100" height="12" uuid="4aac53ef-4724-4614-bd1c-64a0688dbda3">
+				<reportElement stretchType="RelativeToBandHeight" x="1100" y="0" width="80" height="12" uuid="4aac53ef-4724-4614-bd1c-64a0688dbda3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{transOutboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transOutboundQuantity}) != 0 ? $F{transOutboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="1180" y="0" width="100" height="12" uuid="be2d922e-23b3-4e97-ab37-b991a0bbed9f">
+				<reportElement stretchType="RelativeToBandHeight" x="1180" y="0" width="100" height="12" uuid="be2d922e-23b3-4e97-ab37-b991a0bbed9f">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(M" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,Q"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="1280" y="0" width="100" height="12" uuid="8389e165-6cb3-4b5d-b6a7-19c7ddcea5a4">
+				<reportElement stretchType="RelativeToBandHeight" x="1280" y="0" width="100" height="12" uuid="8389e165-6cb3-4b5d-b6a7-19c7ddcea5a4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*N"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="1380" y="0" width="100" height="12" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
+				<reportElement stretchType="RelativeToBandHeight" x="1380" y="0" width="100" height="12" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} == 1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} == 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement stretchType="RelativeToTallestObject" x="1380" y="0" width="100" height="12" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
+				<reportElement stretchType="RelativeToBandHeight" x="1380" y="0" width="100" height="12" uuid="b6dc7bfe-a554-411d-95e7-fc7c76a3f620">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(P" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
-					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} > 1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="1480" y="0" width="100" height="12" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
+				<reportElement stretchType="RelativeToBandHeight" x="1480" y="0" width="100" height="12" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} == 1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} == 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="1480" y="0" width="100" height="12" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
+				<reportElement stretchType="RelativeToBandHeight" x="1480" y="0" width="100" height="12" uuid="83274359-7dfe-4ae2-9597-ffb967761d49">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,Q"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",(R"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/P"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
-					<printWhenExpression><![CDATA[new Boolean($V{REPORT_COUNT} > 1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToTallestObject" x="1580" y="0" width="100" height="12" uuid="edcfe3e5-3356-4b71-90e7-681fd431c388">
+				<reportElement stretchType="RelativeToBandHeight" x="1580" y="0" width="100" height="12" uuid="edcfe3e5-3356-4b71-90e7-681fd431c388">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(P" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*Q"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
 				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="0" width="60" height="12" uuid="f32abf0e-9af9-4b94-9494-c602afc77db4">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="60" y="0" width="100" height="12" uuid="bcad915b-36c4-4ebd-a2b7-a9fc8487c7dd">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="160" y="0" width="160" height="12" uuid="f988fcf3-3293-4161-bd34-e3d5bc58b903">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="320" y="0" width="60" height="12" uuid="7e4bbfb2-a390-4414-b91a-63c22cd3ea1e">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

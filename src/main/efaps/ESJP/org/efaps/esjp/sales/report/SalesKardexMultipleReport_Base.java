@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.report;
 
+import java.util.List;
 import java.util.Map;
 
 import net.sf.jasperreports.engine.JRDataSource;
@@ -28,8 +29,9 @@ import net.sf.jasperreports.engine.JasperReport;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.ci.CIFormSales;
-import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.util.EFapsException;
 
 /**
@@ -44,6 +46,7 @@ import org.efaps.util.EFapsException;
 public abstract class SalesKardexMultipleReport_Base
     extends SalesKardexReport
 {
+
     @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
@@ -51,7 +54,37 @@ public abstract class SalesKardexMultipleReport_Base
                      final Map<String, Object> _jrParameters)
         throws EFapsException
     {
-        ParameterUtil.setParmeterValue(_parameter, CIFormSales.Sales_Products_Kardex_OfficialReportForm.product.name, "4159.13779");
-        super.init(_jasperReport, _parameter, _parentSource, _jrParameters);
+        final List<Instance> listStorage = getStorageInstList(_parameter);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
+        attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Storage, listStorage.toArray());
+
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductAbstract);
+        queryBldr.addWhereAttrInQuery(CIProducts.ProductAbstract.ID,
+                        attrQueryBldr.getAttributeQuery(CIProducts.TransactionInOutAbstract.Product));
+        final List<Instance> prodInsts = queryBldr.getQuery().execute();
+        super.init(_jasperReport, _parameter, _parentSource, _jrParameters,
+                        prodInsts.toArray(new Instance[prodInsts.size()]));
     }
+
+    /**
+     * @param _parameter
+     * @param _map
+     * @param _currentInstance
+     * @param _prodInst
+     * @throws EFapsException on error
+     */
+    @Override
+    protected void add2Map4ProductInfo(final Parameter _parameter,
+                                       final Map<String, Object> _map,
+                                       final Instance __transactionInstance,
+                                       final Instance _prodInst)
+        throws EFapsException
+    {
+        final ProductKardex product = new ProductKardex(_prodInst);
+        _map.put("prodName", product.getProductName());
+        _map.put("prodType", product.getProductExistType());
+        _map.put("prodDescr", product.getProductDesc());
+        _map.put("prodUoM", product.getProductUoM());
+    }
+
 }
