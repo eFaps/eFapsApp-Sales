@@ -78,6 +78,28 @@ public abstract class IncomingExchange_Base
         }
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return updateFields4CrossTotal(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Exchange().updateFields4CrossTotal(_parameter);
+    }
+
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return createCalculated(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Exchange().createCalculated(_parameter);
+    }
+
     @Override
     public String getTypeName4SysConf(final Parameter _parameter)
         throws EFapsException
