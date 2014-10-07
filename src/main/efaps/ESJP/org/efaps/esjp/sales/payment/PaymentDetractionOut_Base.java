@@ -94,8 +94,6 @@ public abstract class PaymentDetractionOut_Base
     {
         final String opTypeId = _parameter
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
-        final String servTypeId = _parameter
-                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.serviceType.name);
         final String bulkPayId = _parameter
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.bulkPaymentDoc.name);
 
@@ -105,7 +103,6 @@ public abstract class PaymentDetractionOut_Base
             insert.add(CISales.BulkPayment2PaymentDocument.FromLink, bulkPayId);
             insert.add(CISales.BulkPayment2PaymentDocument.ToLink, _createdDoc.getInstance());
             insert.add(CISales.BulkPayment2PaymentDocument.OperationType, opTypeId);
-            insert.add(CISales.BulkPayment2PaymentDocument.ServiceType, servTypeId);
             insert.execute();
         }
     }
