@@ -215,7 +215,7 @@ public abstract class Exchange_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
-    public Return validate4cCeateCalculated(final Parameter _parameter)
+    public Return validate4CreateCalculated(final Parameter _parameter)
         throws EFapsException
     {
         final Validation val = new Validation() {

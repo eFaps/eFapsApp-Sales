@@ -38,7 +38,7 @@
                 <property name="Status">Open</property>
                 <property name="SwapType">Pay</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.Exchange" method="validate4cCeateCalculated"></validate>
+            <validate program="org.efaps.esjp.sales.document.Exchange" method="validate4CreateCalculated"></validate>
         </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_Exchange</property>
