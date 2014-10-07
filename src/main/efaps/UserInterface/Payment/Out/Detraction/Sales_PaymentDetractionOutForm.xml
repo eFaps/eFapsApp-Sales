@@ -232,20 +232,7 @@
                 <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
             </trigger>
         </field>
-        <field name="serviceType">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_BulkPayment2PaymentDocument/ServiceType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_PaymentDetractionOutForm.serviceType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Sales_AttributeDefinitionServiceType</property>
-                <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
-                <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
-            </trigger>
-        </field>
-         <field name="docPicker" character="Picker">
+        <field name="docPicker" character="Picker">
             <property name="HideLabel">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDetractionOutForm.docPicker.Label</property>

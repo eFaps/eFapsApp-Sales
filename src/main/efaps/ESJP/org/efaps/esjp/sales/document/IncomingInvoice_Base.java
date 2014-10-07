@@ -52,6 +52,7 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
@@ -786,7 +787,6 @@ public abstract class IncomingInvoice_Base
         return retVal;
     }
 
-
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing maplist
@@ -806,6 +806,39 @@ public abstract class IncomingInvoice_Base
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return Return containing maplist
+     * @throws EFapsException on error
+     */
+    public Return updateFields4DetractionServiceType(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final Map<String, Object> map = new HashMap<String, Object>();
+        final Instance inst = Instance.get(_parameter.getParameterValue("detractionServiceType"));
+        final PrintQuery print = new PrintQuery(inst);
+        print.addAttribute(CIERP.AttributeDefinitionMappingAbstract.MappingKey,
+                        CIERP.AttributeDefinitionMappingAbstract.Description);
+        print.execute();
+        final String descr = print.getAttribute(CIERP.AttributeDefinitionMappingAbstract.Description);
+        if (descr.matches("[0-9]+")) {
+            map.put("detractionPercent", descr);
+            ParameterUtil.setParmeterValue(_parameter, CIFormSales.Sales_IncomingInvoiceForm.detractionPercent.name,
+                            descr);
+        }
+
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        if (calcList.size() > 0) {
+            add2Map4UpdateField(_parameter, map, calcList, null);
+        }
+
+        list.add(map);
+        retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
 
@@ -847,6 +880,9 @@ public abstract class IncomingInvoice_Base
             .append("if (node.type==='text') {")
             .append("node.disabled = _dis ? '' : 'disabled';")
             .append("}")
+            .append("});")
+            .append("query(\"select[name^=\\\"\" + _key + \"\\\"]\").forEach(function(node) {")
+            .append("node.disabled = _dis ? '' : 'disabled';")
             .append("});")
             .append("});")
             .append("}")

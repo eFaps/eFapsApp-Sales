@@ -692,6 +692,10 @@
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Value]</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4DetractionServiceType"
+                name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
@@ -1426,6 +1430,10 @@
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Value]</property>
             </trigger>
+             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                method="updateFields4DetractionServiceType"
+                name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
@@ -2160,7 +2168,7 @@
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_VALUE"
                 method="getDetractionPercentValue" event="UI_FIELD_VALUE"/>
-             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="updateFields4DetractionPercent"
                 name="Sales_IncomingInvoiceForm.detractionPercent.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE"/>
@@ -2192,6 +2200,10 @@
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Value]</property>
             </trigger>
+            <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
+                name="Sales_IncomingInvoiceForm.detractionServiceType.UI_FIELD_VALUE"
+                method="updateFields4DetractionServiceType"
+                event="UI_FIELD_UPDATE"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>

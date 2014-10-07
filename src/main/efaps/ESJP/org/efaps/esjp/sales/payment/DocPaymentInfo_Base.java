@@ -519,6 +519,9 @@ public abstract class DocPaymentInfo_Base
         objects.add(currInst.getISOCode());
 
         String key;
+        if (getTargetInfo() == null) {
+            setTargetDocInst(getInstance());
+        }
         if (currInst.getInstance().equals(getTargetInfo().getCurrencyInstance())) {
             key = ".InfoField";
         } else {
