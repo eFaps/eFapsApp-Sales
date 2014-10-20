@@ -19,29 +19,30 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>08e4fb57-1e0a-4711-bc91-9bfdce37625a</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b9a77923-e765-4cfc-aba5-732d9ee77747</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentMyDesk</name>
+        <name>Sales_BulkPaymentMyDesk_Menu_Action_CreateDetraction</name>
         <access>
             <role>Sales_Admin</role>
         </access>
+        <!-- target definitions -->
         <target>
-            <menu>Sales_BulkPaymentMyDesk_Menu</menu>
-            <table>Sales_BulkPaymentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_BulkPaymentAbstract</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
+            <form>Sales_BulkPaymentForm</form>
+            <execute method="create" program="org.efaps.esjp.sales.payment.BulkPaymentDetraction">
+                <property name="StatusGroup">Sales_BulkPaymentStatus</property>
+                <property name="Status">Open</property>
+            </execute>
         </target>
-
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_BulkPaymentDetraction</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">600</property>
+        <property name="WindowWidth">800</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

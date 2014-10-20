@@ -19,20 +19,16 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>192bbee8-e234-4442-8991-0605313ed3af</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>9a564a15-c80f-417c-9da1-9c3e0edfdedf</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentMyDesk_Menu_Action</name>
+        <name>Sales_BulkPaymentDetractionTree_PayDoc_Menu</name>
         <!-- childs -->
         <childs>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_Create</child>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_CreateDetraction</child>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_Delete</child>
+            <child>Sales_BulkPaymentDetractionTree_PayDoc_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>

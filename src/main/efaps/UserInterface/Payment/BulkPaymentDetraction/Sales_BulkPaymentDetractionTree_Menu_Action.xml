@@ -19,20 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>192bbee8-e234-4442-8991-0605313ed3af</uuid>
+--><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>eb42f487-942b-4eb5-8afd-88c0347c02a2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentMyDesk_Menu_Action</name>
+        <name>Sales_BulkPaymentDetractionTree_Menu_Action</name>
         <!-- childs -->
         <childs>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_Create</child>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_CreateDetraction</child>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_Delete</child>
+            <child>Sales_BulkPaymentDetractionTree_Menu_Action_Edit</child>
+            <child>Sales_BulkPaymentDetractionTree_Menu_Action_DownloadExcel</child>
+            <child>Sales_BulkPaymentDetractionTree_Menu_Action_DetractionReport</child>
         </childs>
     </definition>
 </ui-menu>

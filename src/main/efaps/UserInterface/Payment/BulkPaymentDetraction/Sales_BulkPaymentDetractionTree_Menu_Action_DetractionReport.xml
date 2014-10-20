@@ -15,33 +15,29 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 9115 $
+ Last Changed:    $Date: 2013-03-22 17:19:42 -0500 (vie, 22 mar 2013) $
+ Last Changed By: $Author: jan@moxter.net $
 
--->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>08e4fb57-1e0a-4711-bc91-9bfdce37625a</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>4e7e8d62-3cae-4f5e-87ad-783c6e15f3c4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 9115 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentMyDesk</name>
+        <name>Sales_BulkPaymentDetractionTree_Menu_Action_DetractionReport</name>
         <access>
             <role>Sales_Admin</role>
         </access>
+        <!-- target definitions -->
         <target>
-            <menu>Sales_BulkPaymentMyDesk_Menu</menu>
-            <table>Sales_BulkPaymentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_BulkPaymentAbstract</property>
-                <property name="ExpandChildTypes">true</property>
-            </evaluate>
+            <execute program="org.efaps.esjp.sales.payment.PaymentDetractionReport4Acquirer" method="execute">
+            </execute>
         </target>
 
         <!-- properties -->
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">hidden</property>
+        <property name="TargetShowFile">true</property>
     </definition>
+
 </ui-command>

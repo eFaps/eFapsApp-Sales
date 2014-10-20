@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2013 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
+
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e36ece90-f6b5-4f1e-8b10-5abacd89d195</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_BulkPaymentDetraction2PaymentDocument</name>
+        <parent>Sales_BulkPaymentAbstract2PaymentDocument</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_BulkPayment</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_PaymentDocumentOutAbstract</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>OperationType</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionOperationType</typelink>
+            <sqltable>Sales_BulkPayment2PaymentDocumentExtendSQLTable</sqltable>
+            <sqlcolumn>OPTYPE</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_BulkPaymentDetraction2PaymentDocument.OperationType.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.RangesValue">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Sales_AttributeDefinitionOperationType</property>
+            </trigger>
+        </attribute>
+        <attribute>
+            <name>ServiceType</name>
+            <type>LinkWithRanges</type>
+            <typelink>Sales_AttributeDefinitionServiceType</typelink>
+            <sqltable>Sales_BulkPayment2PaymentDocumentExtendSQLTable</sqltable>
+            <sqlcolumn>SERVTYPE</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_BulkPaymentDetraction2PaymentDocument.ServiceType.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.RangesValue">
+                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Type">Sales_AttributeDefinitionServiceType</property>
+            </trigger>
+        </attribute>
+        <trigger event="INSERT_POST"
+            method="connectInsertPostTrigger"
+            name="Sales_BulkPaymentDetraction2PaymentDocument.INSERT_POST"
+            program="org.efaps.esjp.sales.payment.BulkPaymentDetraction"/>
+        <trigger event="UPDATE_POST"
+            method="connectUpdatePostTrigger"
+            name="Sales_BulkPaymentDetraction2PaymentDocument.UPDATE_POST"
+            program="org.efaps.esjp.sales.payment.BulkPaymentDetraction"/>
+    </definition>
+</datamodel-type>

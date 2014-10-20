@@ -19,17 +19,14 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<datamodel-type xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>be56d0a2-8957-440f-b126-83d4b83078c6</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>db6a9828-1480-46cf-80ec-f7ec2955af5c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPayment</name>
+        <name>Sales_BulkPaymentDetraction</name>
         <parent>Sales_BulkPaymentAbstract</parent>
         <attribute>
             <name>BulkDefinitionId</name>
@@ -37,8 +34,9 @@
             <typelink>Sales_BulkPaymentDefinition</typelink>
             <sqltable>Sales_BulkPaymentSQLTable</sqltable>
             <sqlcolumn>BULKDEFID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
-                name="Sales_Payment.CurrencyId.RANGE_VALUE" event="RANGE_VALUE">
+            <trigger event="RANGE_VALUE"
+                name="Sales_BulkPaymentDetraction.BulkDefinitionId.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.RangesValue">
                 <property name="Value">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="Type">Sales_BulkPaymentDefinition</property>
             </trigger>
@@ -50,10 +48,11 @@
             <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger event="RANGE_VALUE"
-                name="Sales_BulkPayment.Status.RANGE_VALUE" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                name="Sales_BulkPaymentDetraction.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>
-        <trigger event="ACCESSCHECK" name="Sales_BulkPayment.ACCESSCHECK"
-            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
+        <trigger event="ACCESSCHECK" name="Sales_BulkPaymentDetraction.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType"/>
     </definition>
 </datamodel-type>

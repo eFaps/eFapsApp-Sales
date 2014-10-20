@@ -33,7 +33,7 @@
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_BulkPayment</typelink>
+            <typelink>Sales_BulkPaymentAbstract</typelink>
             <sqltable>ERP_Object2ObjectAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>

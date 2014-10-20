@@ -19,20 +19,14 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
--->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>192bbee8-e234-4442-8991-0605313ed3af</uuid>
+--><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>6239cecc-9815-4944-a679-957be7318f35</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentMyDesk_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_Create</child>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_CreateDetraction</child>
-            <child>Sales_BulkPaymentMyDesk_Menu_Action_Delete</child>
-        </childs>
+        <name>Sales_BulkPaymentAbstract2PaymentDocument</name>
+        <parent>ERP_Document2DocumentAbstract</parent>
+        <purpose abstract="true" />
     </definition>
-</ui-menu>
+</datamodel-type>

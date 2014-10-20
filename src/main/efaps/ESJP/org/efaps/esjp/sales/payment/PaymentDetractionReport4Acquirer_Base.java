@@ -121,7 +121,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 ret.add(companyTaxNum);
                 ret.add(companyName);
                 ret.add(getSequenceNumber(_parameter));
-                ret.add(totalAmount);
+                ret.add(this.totalAmount);
 
                 return ret;
             }
@@ -163,12 +163,12 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 final List<List<Object>> lst = new ArrayList<List<Object>>();
                 final Instance instance = _parameter.getInstance();
                 final PrintQuery print = new PrintQuery(instance);
-                print.addAttribute(CISales.BulkPayment.BulkDefinitionId);
+                print.addAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId);
                 print.execute();
 
                 final QueryBuilder queryBldrDef = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
                 queryBldrDef.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.FromLink,
-                                print.getAttribute(CISales.BulkPayment.BulkDefinitionId));
+                                print.getAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId));
                 final MultiPrintQuery multiDef = queryBldrDef.getPrint();
                 multiDef.addAttribute(CISales.BulkPaymentDefinition2Contact.ToLink,
                                 CISales.BulkPaymentDefinition2Contact.AccountNumber);
@@ -181,10 +181,10 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                     map.put(contactId, accNum);
                 }
 
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPayment2PaymentDocument);
-                attrQueryBldr.addWhereAttrEqValue(CISales.BulkPayment2PaymentDocument.FromLink, instance);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDetraction2PaymentDocument);
+                attrQueryBldr.addWhereAttrEqValue(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, instance);
                 final AttributeQuery attrQuery = attrQueryBldr
-                                .getAttributeQuery(CISales.BulkPayment2PaymentDocument.ToLink);
+                                .getAttributeQuery(CISales.BulkPaymentDetraction2PaymentDocument.ToLink);
 
                 final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.PaymentDetractionOut);
                 attrQueryBldr2.addWhereAttrInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
@@ -199,12 +199,12 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 final SelectBuilder selProvId = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
                                 .linkto(CISales.PaymentDetractionOut.Contact).id();
                 final SelectBuilder selOperType = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                                .linkfrom(CISales.BulkPayment2PaymentDocument, CISales.BulkPayment2PaymentDocument.ToLink)
-                                .linkto(CISales.BulkPayment2PaymentDocument.OperationType)
+                                .linkfrom(CISales.BulkPaymentDetraction2PaymentDocument, CISales.BulkPaymentDetraction2PaymentDocument.ToLink)
+                                .linkto(CISales.BulkPaymentDetraction2PaymentDocument.OperationType)
                                 .attribute(CISales.AttributeDefinitionOperationType.Value);
                 final SelectBuilder selServType = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                                .linkfrom(CISales.BulkPayment2PaymentDocument, CISales.BulkPayment2PaymentDocument.ToLink)
-                                .linkto(CISales.BulkPayment2PaymentDocument.ServiceType)
+                                .linkfrom(CISales.BulkPaymentDetraction2PaymentDocument, CISales.BulkPaymentDetraction2PaymentDocument.ToLink)
+                                .linkto(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType)
                                 .attribute(CISales.AttributeDefinitionOperationType.Value);
                 final SelectBuilder selDocDate = new SelectBuilder().linkto(CISales.Payment.CreateDocument)
                                 .attribute(CISales.DocumentSumAbstract.Date);
@@ -215,7 +215,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                     final List<Object> rowLst = new ArrayList<Object>();
                     final String provTaxNum = multi.<String>getSelect(selProvTaxNum);
                     final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
-                    totalAmount = totalAmount.add(amount);
+                    this.totalAmount = this.totalAmount.add(amount);
                     final Long provId = multi.<Long>getSelect(selProvId);
                     final String accNum = map.get(provId);
                     final String operType = multi.<String>getSelect(selOperType);
@@ -242,15 +242,15 @@ public abstract class PaymentDetractionReport4Acquirer_Base
         String ret = "";
         final Instance instance = _parameter.getInstance();
         final PrintQuery print = new PrintQuery(instance);
-        print.addAttribute(CISales.BulkPayment.Date,
-                        CISales.BulkPayment.DueDate);
+        print.addAttribute(CISales.BulkPaymentDetraction.Date,
+                        CISales.BulkPaymentDetraction.DueDate);
         print.execute();
-        final DateTime dateFrom = print.<DateTime>getAttribute(CISales.BulkPayment.Date);
+        final DateTime dateFrom = print.<DateTime>getAttribute(CISales.BulkPaymentDetraction.Date);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPayment);
-        queryBldr.addWhereAttrGreaterValue(CISales.BulkPayment.Date,
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPaymentDetraction);
+        queryBldr.addWhereAttrGreaterValue(CISales.BulkPaymentDetraction.Date,
                         new DateTime(dateFrom.getYear(), 1, 1, 0, 0, 0).minusSeconds(1));
-        queryBldr.addWhereAttrLessValue(CISales.BulkPayment.Date, dateFrom);
+        queryBldr.addWhereAttrLessValue(CISales.BulkPaymentDetraction.Date, dateFrom);
         final String year = new SimpleDateFormat("yy").format(dateFrom.toDate());
         final InstanceQuery query = queryBldr.getQuery();
         query.execute();

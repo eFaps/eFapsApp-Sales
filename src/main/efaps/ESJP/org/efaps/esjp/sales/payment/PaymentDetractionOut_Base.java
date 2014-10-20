@@ -81,7 +81,7 @@ public abstract class PaymentDetractionOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        connectBulkPayment2PaymentDocumentOut(_parameter, createdDoc);
+        //connectBulkPayment2PaymentDocumentOut(_parameter, createdDoc);
         updateDetractions(_parameter, createdDoc);
         executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
@@ -99,10 +99,10 @@ public abstract class PaymentDetractionOut_Base
 
         if (_createdDoc.getInstance().isValid()
                         && bulkPayId != null && !bulkPayId.isEmpty()) {
-            final Insert insert = new Insert(CISales.BulkPayment2PaymentDocument);
-            insert.add(CISales.BulkPayment2PaymentDocument.FromLink, bulkPayId);
-            insert.add(CISales.BulkPayment2PaymentDocument.ToLink, _createdDoc.getInstance());
-            insert.add(CISales.BulkPayment2PaymentDocument.OperationType, opTypeId);
+            final Insert insert = new Insert(CISales.BulkPaymentDetraction2PaymentDocument);
+            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, bulkPayId);
+            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ToLink, _createdDoc.getInstance());
+            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.OperationType, opTypeId);
             insert.execute();
         }
     }

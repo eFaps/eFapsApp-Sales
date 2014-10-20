@@ -19,15 +19,13 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
-<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4bb6f913-d2aa-4a66-af2d-7440dc74b536</uuid>
+--><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>3fd3554a-0b09-40c4-8763-6af59896ed99</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentForm</name>
+        <name>Sales_BulkPaymentDetractionForm</name>
         <!-- fields -->
         <field name="date">
             <property name="Columns">12</property>
@@ -45,8 +43,9 @@
             <property name="Required">true</property>
             <property name="Label">Sales_BulkPayment.account.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDownFieldValue"
-                name="Sales_BulkPaymentForm.accountLink.UI_FIELD_VALUE"
+            <trigger event="UI_FIELD_VALUE"
+                method="dropDownFieldValue"
+                name="Sales_BulkPaymentDetractionForm.accountLink.UI_FIELD_VALUE"
                 program="org.efaps.esjp.common.uiform.Field">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
@@ -116,7 +115,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-        <field name="reportHeading" character="Heading">
+        <field character="Heading" name="reportHeading">
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_BulkPaymentForm.reportHeading.Heading</property>
         </field>
@@ -125,7 +124,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getReport4Detail"
-                name="Sales_BulkPaymentForm.report.UI_FIELD_VALUE"
+                name="Sales_BulkPaymentDetractionForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.payment.BulkPayment"/>
         </field>
 

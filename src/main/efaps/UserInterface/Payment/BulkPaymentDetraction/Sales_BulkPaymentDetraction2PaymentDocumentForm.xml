@@ -15,19 +15,19 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 9111 $
- Last Changed:    $Date: 2013-03-22 14:00:06 -0500 (vie, 22 mar 2013) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
 
-    <uuid>a016baba-2d4d-41a9-818f-108d45dba9e1</uuid>
+    <uuid>62e5b8f2-e103-4ba7-8aed-592c89166e2f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9111 $</file-revision>
+    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPayment2PaymentDocumentForm</name>
+        <name>Sales_BulkPaymentDetraction2PaymentDocumentForm</name>
         <!-- fields -->
         <field name="type">
             <property name="Attribute">Type</property>
@@ -45,6 +45,16 @@
             <property name="Select">linkto[FromLink].attribute[Name]</property>
             <property name="Label">Sales_BulkPayment2PaymentDocumentForm.bulkPayment.Label</property>
             <property name="HRef">TREE</property>
+        </field>
+        <field name="operationType">
+            <property name="Attribute">OperationType</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+        </field>
+        <field name="serviceType">
+            <property name="Attribute">ServiceType</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field character="Group" name="createGroup">
             <property name="GroupCount">2</property>

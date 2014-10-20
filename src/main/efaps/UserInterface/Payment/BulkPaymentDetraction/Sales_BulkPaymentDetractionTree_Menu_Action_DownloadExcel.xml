@@ -15,23 +15,25 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev: 9115 $
- Last Changed:    $Date: 2013-03-22 17:19:42 -0500 (vie, 22 mar 2013) $
- Last Changed By: $Author: jan@moxter.net $
+ Revision:        $Rev$
+ Last Changed:    $Date$
+ Last Changed By: $Author$
 
 --><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4e7e8d62-3cae-4f5e-87ad-783c6e15f3c4</uuid>
+    <uuid>6acefb97-5edc-4563-ab5d-3b3de3ba5e61</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 9115 $</file-revision>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentTree_Menu_Action_DetractionReport</name>
+        <name>Sales_BulkPaymentDetractionTree_Menu_Action_DownloadExcel</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.payment.PaymentDetractionReport4Acquirer" method="execute">
+            <execute method="exportReport4Detail" program="org.efaps.esjp.sales.payment.BulkPaymentDetraction">
+                <property name="Mime">xls</property>
+                <property name="Template">Sales_BulkPaymentTemplate</property>
             </execute>
         </target>
 

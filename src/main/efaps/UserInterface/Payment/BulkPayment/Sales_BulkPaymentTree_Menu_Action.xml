@@ -32,7 +32,6 @@
         <childs>
             <child>Sales_BulkPaymentTree_Menu_Action_Edit</child>
             <child>Sales_BulkPaymentTree_Menu_Action_DownloadExcel</child>
-            <child>Sales_BulkPaymentTree_Menu_Action_DetractionReport</child>
         </childs>
     </definition>
 </ui-menu>
