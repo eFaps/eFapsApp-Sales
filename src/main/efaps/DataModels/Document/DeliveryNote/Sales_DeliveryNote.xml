@@ -54,6 +54,7 @@
                      event="RANGE_VALUE">
                 <property name="Value">Value</property>
                 <property name="Type">Sales_AttributeDefinitionTransferReason</property>
+                <property name="DefaultRegex">Venta</property>
             </trigger>
         </attribute>
         <attribute>
