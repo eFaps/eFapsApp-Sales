@@ -20,18 +20,56 @@
 
 package org.efaps.esjp.sales;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.db.PrintQuery;
+import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Channel_Base.java 8120 2012-10-26 18:21:34Z jorge.cueva@moxter.net $
+ * @version $Id: Channel_Base.java 8120 2012-10-26 18:21:34Z
+ *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("4541b746-f653-46d8-b066-9aea7e111766")
 @EFapsRevision("$Rev: 8120 $")
 public abstract class Channel_Base
+    extends AbstractCommon
 {
 
+    public Return updateFields4Condition(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final String fieldName = containsProperty(_parameter, "ConditionFieldName") ? getProperty(_parameter,
+                        "ConditionFieldName") : "condition";
+        final Instance condInst = Instance.get(_parameter.getParameterValue(fieldName));
+        if (condInst.isValid() && condInst.getType().isCIType(CISales.ChannelCondition)) {
+            final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+            final Map<String, String> map = new HashMap<String, String>();
+            final PrintQuery print = new PrintQuery(condInst);
+            print.addAttribute(CISales.ChannelCondition.QuantityDays);
+            print.execute();
+            map.put("dueDate_eFapsDate",
+                            DateUtil.getDate4Parameter(new DateTime().plusDays(print
+                                            .<Integer>getAttribute(CISales.ChannelCondition.QuantityDays))));
+            list.add(map);
+            retVal.put(ReturnValues.VALUES, list);
+        }
+        return retVal;
+    }
 }
