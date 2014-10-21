@@ -19,31 +19,28 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f21aa796-f233-41f3-b0dc-dc9fff2f4892</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingDetractionMyDesk_Menu_Action_CreatePaymentDetractionOut</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentDetractionOut4MassiveForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
+            <execute method="createMassive" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
                 <property name="JasperReport">Sales_PaymentDocumentReport</property>
                 <property name="Mime">pdf</property>
                 <property name="StatusGroup">Sales_PaymentDetractionOutStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetractionOut"/>
+            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentDetractionOut" />
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_PaymentDetractionOut</property>
         <property name="TargetMode">create</property>
@@ -54,5 +51,4 @@
         <property name="SubmitSelectedRows">-1</property>
         <property name="TargetShowFile">true</property>
     </definition>
-
 </ui-menu>

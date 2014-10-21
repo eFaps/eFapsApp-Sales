@@ -79,11 +79,24 @@ public abstract class BulkPaymentDetraction_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        // Sales-Configuration
+        createDoc(_parameter);
+        return new Return();
+    }
+
+    /**
+     * @param _parameter
+     * @return
+     */
+    public CreatedDoc createDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        final CreatedDoc ret = new CreatedDoc();
         final Instance baseInst = Currency.getBaseCurrency();
         final Insert insert = new Insert(CISales.BulkPaymentDetraction);
-        insert.add(CISales.BulkPaymentDetraction.Date, _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.date.name));
-        insert.add(CISales.BulkPaymentDetraction.Name, _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.name.name));
+        insert.add(CISales.BulkPaymentDetraction.Date,
+                        _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.date.name));
+        insert.add(CISales.BulkPaymentDetraction.Name,
+                        _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.name.name));
         insert.add(CISales.BulkPaymentDetraction.BulkDefinitionId,
                         _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.bulkDefinition.name));
         insert.add(CISales.BulkPaymentDetraction.CrossTotal, BigDecimal.ZERO);
@@ -93,11 +106,12 @@ public abstract class BulkPaymentDetraction_Base
         insert.add(CISales.BulkPaymentDetraction.RateCrossTotal, BigDecimal.ZERO);
         insert.add(CISales.BulkPaymentDetraction.RateNetTotal, BigDecimal.ZERO);
         insert.add(CISales.BulkPaymentDetraction.RateDiscountTotal, BigDecimal.ZERO);
-        insert.add(CISales.BulkPaymentDetraction.CurrencyId, baseInst.getId());
-        insert.add(CISales.BulkPaymentDetraction.RateCurrencyId, baseInst.getId());
+        insert.add(CISales.BulkPaymentDetraction.CurrencyId, baseInst);
+        insert.add(CISales.BulkPaymentDetraction.RateCurrencyId, baseInst);
         insert.add(CISales.BulkPaymentDetraction.Rate, new Object[] { 1, 1 });
-        insert.add(CISales.BulkPaymentDetraction.Status, Status.find(CISales.BulkPaymentStatus.uuid, "Open").getId());
+        insert.add(CISales.BulkPaymentDetraction.Status, Status.find(CISales.BulkPaymentStatus.Open));
         insert.execute();
+        ret.setInstance(insert.getInstance());
 
         final Insert relinsert = new Insert(CISales.BulkPayment2Account);
         relinsert.add(CISales.BulkPayment2Account.FromLink, insert.getId());
@@ -105,7 +119,7 @@ public abstract class BulkPaymentDetraction_Base
                         _parameter.getParameterValue(CIFormSales.Sales_BulkPaymentForm.account4create.name));
         relinsert.execute();
 
-        return new Return();
+        return ret;
     }
 
     public Return connectInsertPostTrigger(final Parameter _parameter)

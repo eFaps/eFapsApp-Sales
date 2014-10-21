@@ -52,6 +52,7 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
@@ -88,19 +89,48 @@ public abstract class PaymentDetractionOut_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return createMassive(final Parameter _parameter)
+        throws EFapsException
+    {
+        final String[] detractionDocs = _parameter.getParameterValues("detractionDoc");
+        final String[] paymentAmounts = _parameter.getParameterValues("paymentAmount");
+
+        if (detractionDocs != null) {
+            final BulkPaymentDetraction bulk = new BulkPaymentDetraction();
+            final Parameter bulkParameter = ParameterUtil.clone(_parameter);
+            ParameterUtil.setParmeterValue(bulkParameter, "account4create", _parameter.getParameterValues("account"));
+            final CreatedDoc bulkDoc = bulk.createDoc(bulkParameter);
+            for (int i = 0; i < paymentAmounts.length; i++) {
+                final Parameter parameter = ParameterUtil.clone(_parameter);
+                ParameterUtil.setParmeterValue(parameter, "amount", paymentAmounts[i]);
+                ParameterUtil.setParmeterValue(parameter, "paymentAmount", paymentAmounts[i]);
+                ParameterUtil.setParmeterValue(parameter, "createDocument", detractionDocs[i]);
+                ParameterUtil.setParmeterValue(parameter, "detractionDoc", detractionDocs[i]);
+                final CreatedDoc createdDoc = createDoc(parameter);
+                createPayment(parameter, createdDoc);
+                updateDetractions(parameter, createdDoc);
+                connectBulkPayment2PaymentDocumentOut(parameter, bulkDoc, createdDoc);
+                executeAutomation(parameter, createdDoc);
+            }
+        }
+        return new Return();
+    }
+
     protected void connectBulkPayment2PaymentDocumentOut(final Parameter _parameter,
+                                                         final CreatedDoc _bulkDoc,
                                                          final CreatedDoc _createdDoc)
         throws EFapsException
     {
         final String opTypeId = _parameter
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
-        final String bulkPayId = _parameter
-                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.bulkPaymentDoc.name);
-
-        if (_createdDoc.getInstance().isValid()
-                        && bulkPayId != null && !bulkPayId.isEmpty()) {
+               if (_createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.BulkPaymentDetraction2PaymentDocument);
-            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, bulkPayId);
+            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, _bulkDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ToLink, _createdDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.OperationType, opTypeId);
             insert.execute();
