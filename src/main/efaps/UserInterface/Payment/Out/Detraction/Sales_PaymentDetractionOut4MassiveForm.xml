@@ -19,7 +19,9 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ef7bbf2c-8d9e-4064-b0af-ebe783e9ef67</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -32,16 +34,20 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="deactivateFiltered4Invoice"
-                name="Sales_PaymentDetractionOut4MassiveForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="deactivateFiltered4Invoice"
+                name="Sales_PaymentDetractionOut4MassiveForm.deactivateFiltered4Invoice.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="code">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Attribute">Code</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentDetractionOut4MassiveForm.code.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck"
+                name="Sales_PaymentDetractionOut4MassiveForm.code.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocumentOut</property>
             </trigger>
@@ -55,8 +61,10 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="checkAccess4BulkPayment"
-                name="Sales_PaymentDetractionOut4MassiveForm.name.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="checkAccess4BulkPayment"
+                name="Sales_PaymentDetractionOut4MassiveForm.name.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="date">
             <property name="Columns">12</property>
@@ -64,10 +72,14 @@
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="checkAccess4BulkPayment"
-                name="Sales_PaymentDetractionOut4MassiveForm.name.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4RateCurrency"
-                name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="checkAccess4BulkPayment"
+                name="Sales_PaymentDetractionOut4MassiveForm.name.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4RateCurrency"
+                name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="date4read">
             <property name="Columns">12</property>
@@ -91,12 +103,16 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Columns">50</property>
-            <trigger program="org.efaps.esjp.contacts.Contacts" method="autoComplete4Contact"
-                name="Sales_PaymentDetractionOut4MassiveForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.contacts.Contacts"
+                method="autoComplete4Contact"
+                name="Sales_PaymentDetractionOut4MassiveForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4Contact"
-                name="Sales_PaymentDetractionOut4MassiveForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4Contact"
+                name="Sales_PaymentDetractionOut4MassiveForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">READONLY</property>
@@ -104,12 +120,16 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="checkboxFieldValue"
-                name="Sales_PaymentDetractionOut4MassiveForm.checkbox4Invoice.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="checkboxFieldValue"
+                name="Sales_PaymentDetractionOut4MassiveForm.checkbox4Invoice.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="checked">false</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="update4checkbox4Invoive"
-                name="Sales_PaymentDetractionOut4MassiveForm.checkbox4Invoice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="update4checkbox4Invoive"
+                name="Sales_PaymentDetractionOut4MassiveForm.checkbox4Invoice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
@@ -126,16 +146,20 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="dropDown4AccountFieldValue"
-                name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="dropDown4AccountFieldValue"
+                name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
                 <property name="Activation">TAX</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4RateCurrency"
-                name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4RateCurrency"
+                name="Sales_PaymentDetractionOut4MassiveForm.account.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
@@ -153,16 +177,20 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="updateFields4AbsoluteAmount"
-                name="Sales_PaymentDetractionOut4MassiveForm.amount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="updateFields4AbsoluteAmount"
+                name="Sales_PaymentDetractionOut4MassiveForm.amount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="updateButton" character="Command">
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDetractionOut4MassiveForm.updateButton.Label</property>
             <property name="CmdIcon">ACCEPT</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="recalculateAmount"
-                name="Sales_PaymentDetractionOut4MassiveForm.updateButton.UI_FIELD_CMD" event="UI_FIELD_CMD">
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="recalculateAmount"
+                name="Sales_PaymentDetractionOut4MassiveForm.updateButton.UI_FIELD_CMD"
+                event="UI_FIELD_CMD">
             </trigger>
         </field>
         <field name="status">
@@ -205,19 +233,20 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Note</property>
         </field>
-        <field name="bulkPaymentDoc">
+        <field name="bulkPaymentDefinition">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <property name="Label">Sales_BulkPayment.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_PaymentDetractionOut4MassiveForm.bulkPaymentDoc.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Sales_BulkPayment</property>
-                <property name="StatusGroup">Sales_BulkPaymentStatus</property>
-                <property name="Status">Open</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkfrom[Sales_BulkPayment2Account#FromLink].linkto[ToLink].attribute[Name]&gt;</property>
-                <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
+            <property name="Label">Sales_BulkPaymentDefinition.Label</property>
+            <property name="UIType">DROPDOWN</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_PaymentDetractionOut4MassiveForm.bulkPaymentDoc.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">Sales_BulkPaymentDefinition</property>
+                <property name="StatusGroup">Sales_BulkPaymentDefinitionStatus</property>
+                <property name="Status">Active</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
             </trigger>
         </field>
         <field name="operationType">
@@ -226,8 +255,10 @@
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_BulkPayment2PaymentDocument/OperationType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_PaymentDetractionOut4MassiveForm.operationType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="dropDownFieldValue"
+                name="Sales_PaymentDetractionOut4MassiveForm.operationType.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionOperationType</property>
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
@@ -258,16 +289,20 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="getJavaScriptUIValue"
-                name="Sales_PaymentDetractionOut4MassiveForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="getJavaScriptUIValue"
+                name="Sales_PaymentDetractionOut4MassiveForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="javaScript2">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut" method="getJavaScript4SelectableRowsValues"
-                name="Sales_PaymentDetractionOut4MassiveForm.javaScript2.UI_Field_Value" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDetractionOut"
+                method="getJavaScript4SelectableRowsValues"
+                name="Sales_PaymentDetractionOut4MassiveForm.javaScript2.UI_Field_Value"
+                event="UI_FIELD_VALUE">
                 <property name="Status">Open</property>
             </trigger>
         </field>

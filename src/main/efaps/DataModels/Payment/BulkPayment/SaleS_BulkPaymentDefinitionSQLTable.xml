@@ -19,12 +19,13 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>050bffe6-f32b-4105-93c0-366217b48592</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <specification />
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_BulkPaymentDefinitionSQLTable</name>
@@ -36,13 +37,13 @@
             <column name="TYPEID"   not-null="true" type="INTEGER" />
             <column name="NAME"     not-null="true" type="STRING_SHORT" length="128" />
             <column name="DESCR"    not-null="true" type="STRING_SHORT" length="256" />
-            <column name="ACTIVE"                   type="BOOLEAN" />
+            <column name="STATUS"   not-null="true" type="INTEGER" />
             <column name="CREATOR"  not-null="true" type="INTEGER" />
             <column name="CREATED"  not-null="true" type="DATETIME" />
             <column name="MODIFIER" not-null="true" type="INTEGER" />
             <column name="MODIFIED" not-null="true" type="DATETIME" />
-            <foreign name="T_SALESBULKPAYDEF_FK_COMPANYID"  key="COMPANYID"     reference="T_USERABSTRACT(ID)"/>
-            <foreign name="T_SALESBULKPAYDEF_FK_CRTR"       key="CREATOR"  reference="T_USERPERSON(ID)" />
+            <foreign name="T_SALESBULKPAYDEF_FK_COMPANYID"  key="COMPANYID" reference="T_USERABSTRACT(ID)"/>
+            <foreign name="T_SALESBULKPAYDEF_FK_CRTR"       key="CREATOR"   reference="T_USERPERSON(ID)" />
             <foreign name="T_SALESBULKPAYDEF_FK_MDFR"       key="MODIFIER"  reference="T_USERPERSON(ID)" />
         </database>
     </definition>

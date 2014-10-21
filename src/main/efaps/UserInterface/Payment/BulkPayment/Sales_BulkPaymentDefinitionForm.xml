@@ -41,8 +41,8 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>
-        <field name="active">
-            <property name="Attribute">Active</property>
+        <field name="status">
+            <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeCreate">EDITABLE</property>
         </field>

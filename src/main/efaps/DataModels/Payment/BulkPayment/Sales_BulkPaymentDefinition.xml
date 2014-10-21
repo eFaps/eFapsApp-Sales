@@ -63,12 +63,16 @@
             <sqltable>Sales_BulkPaymentDefinitionSQLTable</sqltable>
             <sqlcolumn>DESCR</sqlcolumn>
         </attribute>
-         <attribute>
-            <name>Active</name>
-            <type>Boolean</type>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_BulkPaymentDefinitionStatus</typelink>
             <sqltable>Sales_BulkPaymentDefinitionSQLTable</sqltable>
-            <sqlcolumn>ACTIVE</sqlcolumn>
-            <defaultvalue>true</defaultvalue>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_BulkPaymentDefinition.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
         </attribute>
         <attribute>
             <name>Creator</name>
