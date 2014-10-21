@@ -125,7 +125,7 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="getReport4Detail"
                 name="Sales_BulkPaymentDetractionForm.report.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.payment.BulkPayment"/>
+                program="org.efaps.esjp.sales.payment.BulkPaymentDetraction"/>
         </field>
 
     </definition>

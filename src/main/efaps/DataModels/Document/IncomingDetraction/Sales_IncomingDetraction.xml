@@ -47,7 +47,7 @@
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
                      name="Sales_IncomingDetraction.OperationType.RANGE_VALUE"
                      event="RANGE_VALUE">
-                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Value">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="Type">Sales_AttributeDefinitionOperationType</property>
             </trigger>
         </attribute>
@@ -60,7 +60,7 @@
             <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
                      name="Sales_IncomingDetraction.ServiceType.RANGE_VALUE"
                      event="RANGE_VALUE">
-                <property name="Value">$&lt;Value&gt; - $&lt;Description&gt;</property>
+                <property name="Value">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="Type">Sales_AttributeDefinitionServiceType</property>
             </trigger>
         </attribute>

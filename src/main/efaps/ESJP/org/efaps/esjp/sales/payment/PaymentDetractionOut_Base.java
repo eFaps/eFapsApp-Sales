@@ -110,6 +110,7 @@ public abstract class PaymentDetractionOut_Base
                 ParameterUtil.setParmeterValue(parameter, "paymentAmount", paymentAmounts[i]);
                 ParameterUtil.setParmeterValue(parameter, "createDocument", detractionDocs[i]);
                 ParameterUtil.setParmeterValue(parameter, "detractionDoc", detractionDocs[i]);
+                addParameter2DocValues(parameter, detractionDocs[i]);
                 final CreatedDoc createdDoc = createDoc(parameter);
                 createPayment(parameter, createdDoc);
                 updateDetractions(parameter, createdDoc);
@@ -120,6 +121,27 @@ public abstract class PaymentDetractionOut_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter
+     */
+    private void addParameter2DocValues(final Parameter _parameter,
+                                        final String _detractionDoc)
+        throws EFapsException
+    {
+        final Instance detractionDoc = Instance.get(_detractionDoc);
+        if (detractionDoc.isValid()) {
+            final SelectBuilder selContact = new SelectBuilder().linkto(CISales.IncomingDetraction.Contact).oid();
+            final SelectBuilder selServiceId = new SelectBuilder().linkto(CISales.IncomingDetraction.ServiceType).id();
+
+            final PrintQuery print = new PrintQuery(detractionDoc);
+            print.addSelect(selContact, selServiceId);
+            print.execute();
+
+            ParameterUtil.setParmeterValue(_parameter, "contact", print.<String>getSelect(selContact));
+            ParameterUtil.setParmeterValue(_parameter, "serviceType", print.<Long>getSelect(selServiceId).toString());
+        }
+    }
+
     protected void connectBulkPayment2PaymentDocumentOut(final Parameter _parameter,
                                                          final CreatedDoc _bulkDoc,
                                                          final CreatedDoc _createdDoc)
@@ -127,11 +149,15 @@ public abstract class PaymentDetractionOut_Base
     {
         final String opTypeId = _parameter
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOut4MassiveForm.operationType.name);
+
+        final String serTypeId = _parameter.getParameterValue("serviceType");
+
         if (_createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.BulkPaymentDetraction2PaymentDocument);
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, _bulkDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ToLink, _createdDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.OperationType, opTypeId);
+            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType, serTypeId);
             insert.execute();
         }
     }
