@@ -93,7 +93,6 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>

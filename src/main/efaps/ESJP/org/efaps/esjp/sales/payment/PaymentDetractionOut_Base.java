@@ -122,7 +122,9 @@ public abstract class PaymentDetractionOut_Base
     }
 
     /**
-     * @param _parameter
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _detractionDoc detraction document
+     * @throws EFapsException on error
      */
     private void addParameter2DocValues(final Parameter _parameter,
                                         final String _detractionDoc)
@@ -138,7 +140,8 @@ public abstract class PaymentDetractionOut_Base
             print.execute();
 
             ParameterUtil.setParmeterValue(_parameter, "contact", print.<String>getSelect(selContact));
-            ParameterUtil.setParmeterValue(_parameter, "serviceType", print.<Long>getSelect(selServiceId).toString());
+            ParameterUtil.setParmeterValue(_parameter, "serviceType",
+                            String.valueOf(print.<Long>getSelect(selServiceId)));
         }
     }
 
