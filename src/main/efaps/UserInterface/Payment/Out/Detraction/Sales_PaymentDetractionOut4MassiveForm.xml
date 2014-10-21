@@ -261,7 +261,6 @@
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_AttributeDefinitionOperationType</property>
                 <property name="Phrase">$&lt;attribute[Value]&gt; - $&lt;attribute[Description]&gt;</property>
-                <property name="emptyValue">org.efaps.esjp.sales.payment.PaymentDetractionOut.EmptyValue</property>
             </trigger>
         </field>
         <field character="Heading" name="headingPayment">

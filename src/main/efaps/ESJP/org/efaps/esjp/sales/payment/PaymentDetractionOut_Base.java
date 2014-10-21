@@ -82,7 +82,6 @@ public abstract class PaymentDetractionOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        //connectBulkPayment2PaymentDocumentOut(_parameter, createdDoc);
         updateDetractions(_parameter, createdDoc);
         executeAutomation(_parameter, createdDoc);
         final Return ret = createReportDoc(_parameter, createdDoc);
@@ -128,7 +127,7 @@ public abstract class PaymentDetractionOut_Base
     {
         final String opTypeId = _parameter
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
-               if (_createdDoc.getInstance().isValid()) {
+        if (_createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.BulkPaymentDetraction2PaymentDocument);
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, _bulkDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ToLink, _createdDoc.getInstance());
