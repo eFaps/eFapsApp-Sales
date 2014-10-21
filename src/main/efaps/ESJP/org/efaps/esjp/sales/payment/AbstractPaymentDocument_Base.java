@@ -578,15 +578,18 @@ public abstract class AbstractPaymentDocument_Base
     {
         BigDecimal ret = BigDecimal.ZERO;
         final String[] paymentAmounts = _parameter.getParameterValues("paymentAmount");
-        final int selected = getSelectedRow(_parameter);
-        for (int i = 0; i < paymentAmounts.length; i++) {
-            try {
-                if (!_includeCurrent && selected != i || _includeCurrent) {
-                    ret = ret.add((BigDecimal) NumberFormatter.get().getFormatter().parse(paymentAmounts[i]));
+        if (paymentAmounts != null) {
+            final int selected = getSelectedRow(_parameter);
+            for (int i = 0; i < paymentAmounts.length; i++) {
+                try {
+                    if (!_includeCurrent && selected != i || _includeCurrent) {
+                        ret = ret.add((BigDecimal) NumberFormatter.get().getFormatter().parse(paymentAmounts[i]));
+                    }
+                } catch (final ParseException e) {
+                    // only show that error during debug,
+                    // because it is likely that the user did just used invalid strings
+                    LOG.debug("Catched ParseException", e);
                 }
-            } catch (final ParseException e) {
-                // only show that error during debug, because it is likely that the user did just used invalid strings
-                LOG.debug("Catched ParseException", e);
             }
         }
         return ret;
