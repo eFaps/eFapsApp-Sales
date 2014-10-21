@@ -126,7 +126,7 @@ public abstract class PaymentDetractionOut_Base
         throws EFapsException
     {
         final String opTypeId = _parameter
-                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOutForm.operationType.name);
+                        .getParameterValue(CIFormSales.Sales_PaymentDetractionOut4MassiveForm.operationType.name);
         if (_createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.BulkPaymentDetraction2PaymentDocument);
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, _bulkDoc.getInstance());
