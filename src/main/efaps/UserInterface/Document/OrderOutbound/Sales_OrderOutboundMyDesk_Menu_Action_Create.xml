@@ -47,8 +47,10 @@
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
-                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation">POSITION</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">QUANTITYGREATERZERO</property>
+                <property name="Validation03">DUPLICATEDPOSITION</property>
             </validate>
         </target>
         <!-- properties -->
