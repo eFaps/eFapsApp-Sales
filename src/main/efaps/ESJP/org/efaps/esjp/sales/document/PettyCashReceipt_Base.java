@@ -45,7 +45,9 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.Currency;
@@ -81,6 +83,7 @@ public abstract class PettyCashReceipt_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        setValue4ContactPicker(_parameter);
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
@@ -108,6 +111,19 @@ public abstract class PettyCashReceipt_Base
         return new Return();
     }
 
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     */
+    protected void setValue4ContactPicker(final Parameter _parameter)
+    {
+        final String contactpicker = _parameter
+                        .getParameterValue(CIFormSales.Sales_PettyCashReceiptForm.contactPicker.name);
+        if (contactpicker != null) {
+            ParameterUtil.setParmeterValue(_parameter, CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+                            contactpicker);
+        }
+    }
 
     /**
      * Connect Account and PettyCash.
@@ -343,6 +359,7 @@ public abstract class PettyCashReceipt_Base
     public Return validate(final Parameter _parameter)
         throws EFapsException
     {
+        setValue4ContactPicker(_parameter);
         final Validation validation = new Validation()
         {
             @Override
@@ -377,12 +394,20 @@ public abstract class PettyCashReceipt_Base
             InterfaceUtils.appendScript4FieldUpdate(map, getSetFieldReadOnlyScript(_parameter,
                         CIFormSales.Sales_PettyCashReceiptForm.contact.name,
                         CIFormSales.Sales_PettyCashReceiptForm.name4create.name));
+            final StringBuilder js = new StringBuilder().append("query(\".eFapsPickerLink\").forEach(function(node) {")
+                            .append("node.style.display='none';")
+                            .append("});");
+            InterfaceUtils.appendScript4FieldUpdate(map,
+                            InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY));
         } else {
             InterfaceUtils.appendScript4FieldUpdate(map, getSetFieldReadOnlyScript(_parameter,
-                            null,
-                            false,
-                            CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+                            null, false, CIFormSales.Sales_PettyCashReceiptForm.contact.name,
                             CIFormSales.Sales_PettyCashReceiptForm.name4create.name));
+            final StringBuilder js = new StringBuilder().append("query(\".eFapsPickerLink\").forEach(function(node) {")
+                            .append("node.style.display='';")
+                            .append("});");
+            InterfaceUtils.appendScript4FieldUpdate(map,
+                            InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY));
         }
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
@@ -422,10 +447,14 @@ public abstract class PettyCashReceipt_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter,
-                        getSetFieldReadOnlyScript(_parameter,
-                        CIFormSales.Sales_PettyCashReceiptForm.contact.name,
-                        CIFormSales.Sales_PettyCashReceiptForm.name4create.name), true, 1500));
+        final StringBuilder js = new StringBuilder().append("query(\".eFapsPickerLink\").forEach(function(node) {")
+                        .append("node.style.display='none';")
+                        .append("});");
+        final StringBuilder bldr = InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY)
+                        .append(getSetFieldReadOnlyScript(_parameter,
+                                        CIFormSales.Sales_PettyCashReceiptForm.contact.name,
+                                        CIFormSales.Sales_PettyCashReceiptForm.name4create.name));
+        ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, bldr, true, 1500));
         return ret;
     }
 

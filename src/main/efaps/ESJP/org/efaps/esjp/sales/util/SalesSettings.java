@@ -276,6 +276,12 @@ public interface SalesSettings
     String REQUIREBOOKED4PETTYCASHPAYMENT = "org.efaps.sales.AccountPettyCashBalanceRequireBooked4Payment";
 
     /**
+     * Boolean.
+     * Permit the augmentation for FundstoBeSettled..
+     */
+    String ACTIVATEPICKER4PETTYCASHRECIPT = "org.efaps.sales.PettyCashReceiptActivateContactPicker";
+
+    /**
      * Properties. Can be concatenated.
      * A mapping for AutoComplete etc.
      */
