@@ -26,20 +26,17 @@
 <ui-menu xmlns="http://www.efaps.org/xsd"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>0b66666c-6f13-40ae-9794-b06ed647f3f6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_DeliveryNoteTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_DeliveryNoteTree_Menu_Action_Edit</child>
             <child>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</child>
+            <child>Sales_DeliveryNoteTree_Menu_Action_SetClosed</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
         </childs>
     </definition>
-
 </ui-menu>
