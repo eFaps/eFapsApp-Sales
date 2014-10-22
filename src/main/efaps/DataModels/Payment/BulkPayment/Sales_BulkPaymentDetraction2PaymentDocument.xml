@@ -71,6 +71,10 @@
             method="connectInsertPostTrigger"
             name="Sales_BulkPaymentDetraction2PaymentDocument.INSERT_POST"
             program="org.efaps.esjp.sales.payment.BulkPaymentDetraction"/>
+        <trigger event="INSERT_POST"
+            method="connectInsertPostTrigger4UpdateServiceType"
+            name="Sales_BulkPaymentDetraction2PaymentDocument.INSERT_POST.1"
+            program="org.efaps.esjp.sales.payment.BulkPaymentDetraction" index="1"/>
         <trigger event="UPDATE_POST"
             method="connectUpdatePostTrigger"
             name="Sales_BulkPaymentDetraction2PaymentDocument.UPDATE_POST"

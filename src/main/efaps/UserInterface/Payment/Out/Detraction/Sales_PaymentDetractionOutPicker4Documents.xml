@@ -30,11 +30,9 @@
         <target>
             <table>Sales_PaymentDetractionOutPicker4DocumentsTable</table>
             <evaluate method="pickerMultiPrint" program="org.efaps.esjp.sales.payment.PaymentDetractionOut">
-               <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+               <property name="Type">Sales_IncomingDetraction</property>
+                <property name="StatusGroup">Sales_IncomingDetractionStatus</property>
                 <property name="Status">Open</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
             </evaluate>
             <trigger event="UI_PICKER" method="picker4Document"
                 name="Sales_PaymentDetractionOutPicker4Documents.UI_PICKER"

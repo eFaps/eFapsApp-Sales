@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,16 +19,21 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7564fcdc-b6bf-475e-820e-7e313deadd16</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e5c55d6c-8fd2-4ddd-9474-72bb6a1af1eb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentDetractionTree_PayDoc_Menu_Action</name>
-        <!-- childs -->
-        <childs>
-            <child>Sales_BulkPaymentDetractionTree_PayDoc_Menu_Action_AddExisting</child>
-        </childs>
+        <name>Sales_PaymentDocumentDetractionOutSearch</name>
+        <target>
+            <form>Sales_PaymentDetractionOutSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.sales.payment.BulkPaymentDetraction" method="search4BulkPaymentDetraction">
+                <property name="Type">Sales_PaymentDetractionOut</property>
+                <property name="ExpandChildTypes">true</property>
+            </evaluate>
+        </target>
+        <property name="TargetMode">search</property>
     </definition>
-</ui-menu>
+</ui-command>

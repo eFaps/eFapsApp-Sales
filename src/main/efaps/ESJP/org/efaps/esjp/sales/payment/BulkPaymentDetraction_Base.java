@@ -59,6 +59,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.uisearch.Search;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.util.EFapsException;
@@ -122,6 +123,41 @@ public abstract class BulkPaymentDetraction_Base
         return ret;
     }
 
+    public Return connectInsertPostTrigger4UpdateServiceType(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Instance instance = _parameter.getInstance();
+        if (instance.getType().isKindOf(CISales.BulkPaymentDetraction2PaymentDocument.getType())) {
+            final SelectBuilder selPayDocDet = new SelectBuilder()
+                                .linkto(CISales.BulkPaymentDetraction2PaymentDocument.ToLink).instance();
+            final PrintQuery print = new PrintQuery(instance);
+            print.addSelect(selPayDocDet);
+            print.executeWithoutAccessCheck();
+
+            final SelectBuilder selPaymentDoc = new SelectBuilder()
+                            .linkfrom(CISales.Payment, CISales.Payment.TargetDocument)
+                            .linkto(CISales.Payment.CreateDocument).instance();
+
+            final PrintQuery print2 = new PrintQuery(print.<Instance>getSelect(selPayDocDet));
+            print2.addSelect(selPaymentDoc);
+            print2.executeWithoutAccessCheck();
+
+            final SelectBuilder selServiceId = new SelectBuilder().linkto(CISales.IncomingDetraction.ServiceType).id();
+
+            if (print2.getSelect(selPaymentDoc) instanceof Instance
+                            && CISales.IncomingDetraction.getType().equals(print2.<Instance>getSelect(selPaymentDoc))) {
+                final PrintQuery print3 = new PrintQuery(print2.<Instance>getSelect(selPaymentDoc));
+                print3.addSelect(selServiceId);
+                print3.executeWithoutAccessCheck();
+
+                final Update update = new Update(instance);
+                update.add(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType, print3.getSelect(selServiceId));
+                update.executeWithoutTrigger();
+            }
+        }
+        return new Return();
+    }
+
     public Return connectInsertPostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -137,13 +173,15 @@ public abstract class BulkPaymentDetraction_Base
     }
 
     protected void updateTotal(final Parameter _parameter,
-                               final Instance _instance) throws EFapsException
+                               final Instance _instance)
+        throws EFapsException
     {
         Instance instance;
         BigDecimal total = BigDecimal.ZERO;
         if (_instance.getType().isKindOf(CISales.BulkPaymentDetraction2PaymentDocument.getType())) {
             final PrintQuery print = new PrintQuery(_instance);
-            final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.BulkPaymentDetraction2PaymentDocument.FromLink).instance();
+            final SelectBuilder selInst = SelectBuilder.get()
+                            .linkto(CISales.BulkPaymentDetraction2PaymentDocument.FromLink).instance();
             print.addSelect(selInst);
             print.executeWithoutAccessCheck();
             instance = print.getSelect(selInst);
@@ -362,6 +400,27 @@ public abstract class BulkPaymentDetraction_Base
             ret.put(ReturnValues.SNIPLETT, html.toString());
             ret.put(ReturnValues.TRUE, true);
         }
+
+        return ret;
+    }
+
+    public Return search4BulkPaymentDetraction(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Search()
+        {
+            @Override
+            protected void add2QueryBuilder(final Parameter _parameter,
+                                            final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDetraction2PaymentDocument);
+                final AttributeQuery attrQuery =
+                                attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDetraction2PaymentDocument.ToLink);
+
+                _queryBldr.addWhereAttrNotInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
+            }
+        }.execute(_parameter);
 
         return ret;
     }
