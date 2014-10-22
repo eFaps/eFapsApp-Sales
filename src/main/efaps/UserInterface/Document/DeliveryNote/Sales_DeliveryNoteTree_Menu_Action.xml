@@ -37,6 +37,7 @@
             <child>Sales_DeliveryNoteTree_Menu_Action_SetCanceled</child>
             <child>Sales_DeliveryNoteTree_Menu_Action_SetClosed</child>
             <child>Sales_DocumentAbstractTree_Menu_Action_ChangeProductDocumentType</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>
