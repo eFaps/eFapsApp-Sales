@@ -23,9 +23,11 @@ package org.efaps.esjp.sales.document;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -76,6 +78,8 @@ public abstract class Validation_Base
     {
         /** Basic validation for Positions.*/
         POSITION,
+        /** Basic validation for Positions.*/
+        DUPLICATEDPOSITION,
         /** Validate Quantity in Stock. */
         QUANTITYINSTOCK,
         /** Validate that Quantity is greater than zero. */
@@ -112,6 +116,9 @@ public abstract class Validation_Base
             switch (val) {
                 case POSITION:
                     warnings.addAll(validatePositions(_parameter, _doc));
+                    break;
+                case DUPLICATEDPOSITION:
+                    warnings.addAll(validateDuplicatedPositions(_parameter, _doc));
                     break;
                 case QUANTITYINSTOCK:
                     warnings.addAll(validateQuantityInStorage(_parameter, _doc));
@@ -167,6 +174,32 @@ public abstract class Validation_Base
             final Instance prodInst = Instance.get(product[i]);
             if (!prodInst.isValid()) {
                 ret.add(new PositionWarning().setPosition(i + 1));
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Validate that the positions are valid.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validateDuplicatedPositions(final Parameter _parameter,
+                                                      final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.PositionAbstract.Product.name));
+        final Set<Instance> prods = new HashSet<>();
+        for (int i = 0; i < getPositionsCount(_parameter); i++) {
+            final Instance prodInst = Instance.get(product[i]);
+            if (prods.contains(prodInst)) {
+                ret.add(new DuplicatedPositionWarning().setPosition(i + 1));
+            } else {
+                prods.add(prodInst);
             }
         }
         return ret;
@@ -432,6 +465,13 @@ public abstract class Validation_Base
         }
     }
 
+    /**
+     * Warning for duplicated position.
+     */
+    public static class DuplicatedPositionWarning
+        extends AbstractPositionWarning
+    {
+    }
 
     /**
      * Warning for not enough Stock.
