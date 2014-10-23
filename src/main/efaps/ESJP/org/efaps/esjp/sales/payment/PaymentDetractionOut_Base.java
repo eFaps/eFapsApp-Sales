@@ -150,12 +150,14 @@ public abstract class PaymentDetractionOut_Base
     {
         final String opTypeId = _parameter
                         .getParameterValue(CIFormSales.Sales_PaymentDetractionOut4MassiveForm.operationType.name);
+        final String serTypeId = _parameter.getParameterValue("serviceType");
 
         if (_createdDoc.getInstance().isValid()) {
             final Insert insert = new Insert(CISales.BulkPaymentDetraction2PaymentDocument);
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, _bulkDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ToLink, _createdDoc.getInstance());
             insert.add(CISales.BulkPaymentDetraction2PaymentDocument.OperationType, opTypeId);
+            insert.add(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType, serTypeId);
             insert.execute();
         }
     }
