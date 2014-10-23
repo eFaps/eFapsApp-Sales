@@ -132,12 +132,14 @@ public abstract class PaymentDetractionOut_Base
         final Instance detractionDoc = Instance.get(_parameter.getParameterValue("detractionDoc"));
         if (detractionDoc.isValid()) {
             final SelectBuilder selContact = new SelectBuilder().linkto(CISales.IncomingDetraction.Contact).oid();
+            final SelectBuilder selServiceId = new SelectBuilder().linkto(CISales.IncomingDetraction.ServiceType).id();
 
             final PrintQuery print = new PrintQuery(detractionDoc);
-            print.addSelect(selContact);
+            print.addSelect(selContact, selServiceId);
             print.execute();
 
             ParameterUtil.setParmeterValue(_parameter, "contact", print.<String>getSelect(selContact));
+            ParameterUtil.setParmeterValue(_parameter, "serviceType", String.valueOf(print.<Long>getSelect(selServiceId)));
         }
     }
 
