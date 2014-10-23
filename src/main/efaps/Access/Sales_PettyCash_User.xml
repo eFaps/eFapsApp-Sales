@@ -47,5 +47,7 @@
         <status group="Sales_AccountPettyCashStatus">
             <key>Active</key>
         </status>
+
+        <role>Sales_PettyCash_User</role>
     </definition>
 </access-set>
