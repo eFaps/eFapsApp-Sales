@@ -44,6 +44,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
@@ -52,7 +53,6 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.RateUI;
-import org.efaps.admin.datamodel.ui.UIInterface;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.EventType;
 import org.efaps.admin.event.Parameter;
@@ -2502,6 +2502,7 @@ public abstract class AbstractDocument_Base
      * @param _parameter as passed from eFaps API.
      * @param _calculators with the values.
      * @return StringBuilder.
+     * @throws EFapsException on error
      */
     protected StringBuilder addFields4RateCurrency(final Parameter _parameter,
                                                    final List<Calculator> _calculators)
@@ -2511,18 +2512,31 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Render a checkbox to disable the application of taxes used by Forms
-     * during billing.
-     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
-     * @return Html sniplett
+     * @return boolean value
+     * @throws EFapsException on error
      */
     public Return withoutVATFieldValue(final Parameter _parameter)
+        throws EFapsException
     {
         final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, "<input " + UIInterface.EFAPSTMPTAG
-                        + " type=\"checkbox\" name=\"withoutVAT\" value=\"true\" />");
-        ret.put(ReturnValues.TRUE, true);
+        final TargetMode mode = (TargetMode) _parameter.get(ParameterValues.ACCESSMODE);
+        if (TargetMode.EDIT.equals(mode)) {
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            print.addAttribute(CISales.DocumentSumAbstract.Taxes);
+            print.execute();
+            final Taxes taxes = print.getAttribute(CISales.DocumentSumAbstract.Taxes);
+            ret.put(ReturnValues.VALUES, taxes == null || taxes.getEntries().isEmpty());
+        } else if (TargetMode.CREATE.equals(mode)) {
+            if (containsProperty(_parameter, "DefaultValue")) {
+                ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(getProperty(_parameter, "DefaultValue")));
+            } else {
+                final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
+                                SalesSettings.WITHOUTTAXCONFIG, true);
+                final String value = props.getProperty(getTypeName4SysConf(_parameter), "false");
+                ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(value));
+            }
+        }
         return ret;
     }
 

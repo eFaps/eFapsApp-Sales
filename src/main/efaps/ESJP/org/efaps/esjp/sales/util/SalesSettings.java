@@ -287,4 +287,10 @@ public interface SalesSettings
      */
     String SWAPCONFIG = "org.efaps.sales.Config4Swap";
 
+    /**
+     * Properties. Can be concatenated.
+     * A mapping for AutoComplete etc.
+     */
+    String WITHOUTTAXCONFIG = "org.efaps.sales.Config4WithoutTax";
+
 }
