@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-10-06T17:26:45 -->
+<!-- 2014-10-28T15:25:22 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="1750" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1710" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
@@ -409,9 +409,10 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 		<band height="12">
 			<property name="local_mesure_unitheight" value="pixel"/>
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="0" y="0" width="70" height="12" isPrintWhenDetailOverflows="true" uuid="f32abf0e-9af9-4b94-9494-c602afc77db4">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
@@ -424,18 +425,20 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				</reportElement>
 				<textFieldExpression><![CDATA[$F{prodUoM}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="160" y="0" width="200" height="12" isPrintWhenDetailOverflows="true" uuid="f988fcf3-3293-4161-bd34-e3d5bc58b903">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{prodDescr}]]></textFieldExpression>
 			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+			<textField isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" isPrintRepeatedValues="false" x="70" y="0" width="90" height="12" isPrintWhenDetailOverflows="true" uuid="bcad915b-36c4-4ebd-a2b7-a9fc8487c7dd">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.print.keep.full.text" value="true"/>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
