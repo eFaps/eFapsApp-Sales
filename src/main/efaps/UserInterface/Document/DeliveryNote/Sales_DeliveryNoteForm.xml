@@ -224,6 +224,14 @@
             <property name="Attribute">VehicleBrand</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4VehicleBrand"
+                name="Sales_DeliveryNoteForm.vehicleBrand.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="arrivalGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -249,6 +257,14 @@
             <property name="Attribute">VehicleLicencePlate</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4VehicleLicencePlate"
+                name="Sales_DeliveryNoteForm.vehicleLicencePlate.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="carrierGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -278,6 +294,14 @@
             <property name="Attribute">VehicleDriverInfo</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4VehicleDriverInfo"
+                name="Sales_DeliveryNoteForm.vehicleDriverInfo.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="storageGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -612,10 +636,18 @@
                 <property name="HasDownArrow">true</property>
             </trigger>
         </field>
-        <field name="vehicleBrand">
+         <field name="vehicleBrand">
             <property name="Attribute">VehicleBrand</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4VehicleBrand"
+                name="Sales_DeliveryNoteForm.vehicleBrand.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="arrivalGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -642,6 +674,14 @@
             <property name="Attribute">VehicleLicencePlate</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4VehicleLicencePlate"
+                name="Sales_DeliveryNoteForm.vehicleLicencePlate.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="carrierGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -661,7 +701,7 @@
                 <property name="Classification">Contacts_ClassCarrier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
-                method="updateFields4Contact"
+                method="updateFields4Carrier"
                 name="Sales_DeliveryNoteForm.carrierLink.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" >
                 <property name="FieldName">carrierData</property>
@@ -671,6 +711,14 @@
             <property name="Attribute">VehicleDriverInfo</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="autoComplete4VehicleDriverInfo"
+                name="Sales_DeliveryNoteForm.vehicleDriverInfo.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="ExtraParameter">carrierLink</property>
+                <property name="Required">false</property>
+                <property name="HasDownArrow">true</property>
+            </trigger>
         </field>
         <field name="storageGroup" character="Group">
             <property name="GroupCount">2</property>

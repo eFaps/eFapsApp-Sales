@@ -248,6 +248,78 @@ public abstract class DeliveryNote_Base
     }
 
     /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return return containing default value for create mode
+     * @throws EFapsException on error
+     */
+    public Return updateFields4Carrier(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Contacts()
+        {
+
+            @SuppressWarnings("unchecked")
+            @Override
+            protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                                 final Instance _instance,
+                                                 final Map<String, Object> _map)
+                throws EFapsException
+            {
+                final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassCarrier);
+                queryBldr.addWhereAttrEqValue(CIContacts.ClassCarrier.ContactLink, _instance);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttributeSet(CIContacts.ClassCarrier.CarrierSet.name);
+                multi.addAttributeSet(CIContacts.ClassCarrier.DriverSet.name);
+                multi.execute();
+                if (multi.next()) {
+                    final Map<String, Object> dataCarrier = multi
+                                    .getAttributeSet(CIContacts.ClassCarrier.CarrierSet.name);
+                    final Map<String, Object> dataDriver = multi
+                                    .getAttributeSet(CIContacts.ClassCarrier.DriverSet.name);
+                    if (dataCarrier == null) {
+                        _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleBrand.name, "");
+                        _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleLicencePlate.name, "");
+                    } else {
+                        final List<String> make = (ArrayList<String>) dataCarrier.get("Make");
+                        final List<String> registration = (ArrayList<String>) dataCarrier.get("Registration");
+                        final List<Boolean> defaults = (ArrayList<Boolean>) dataCarrier.get("DefaultSelected");
+                        int i = 0;
+                        boolean sel = false;
+                        for (final Boolean bol : defaults) {
+                            if (bol) {
+                                sel = true;
+                                break;
+                            }
+                            i++;
+                        }
+                        _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleBrand.name,
+                                        make.isEmpty() || !sel ? "" : make.get(i));
+                        _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleLicencePlate.name,
+                                        registration.isEmpty() || !sel ? "" : registration.get(i));
+                    }
+                    if (dataDriver == null) {
+                        _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name, "");
+                    } else {
+                        final ArrayList<String> license = (ArrayList<String>) dataDriver.get("License");
+                        final List<Boolean> defaults = (ArrayList<Boolean>) dataDriver.get("DefaultSelected");
+                        int i = 0;
+                        boolean sel = false;
+                        for (final Boolean bol : defaults) {
+                            if (bol) {
+                                sel = true;
+                                break;
+                            }
+                            i++;
+                        }
+                        _map.put(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name,
+                                        license.isEmpty() || !sel ? "" : license.get(i));
+                    }
+                }
+            }
+        }.updateFields4Contact(_parameter);
+    }
+
+    /**
      * Used by the AutoCompleteField used in the select contact.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -520,5 +592,145 @@ public abstract class DeliveryNote_Base
         throws EFapsException
     {
         return CISales.DeliveryNote.getType().getName();
+    }
+
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4VehicleBrand(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        boolean all = false;
+        if (input.isEmpty() || "*".equals(input)) {
+            all = true;
+        }
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassCarrier);
+            queryBldr.addWhereAttrEqValue(CIContacts.ClassCarrier.ContactLink, carrierInst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttributeSet(CIContacts.ClassCarrier.CarrierSet.name);
+            multi.addAttributeSet(CIContacts.ClassCarrier.DriverSet.name);
+            multi.execute();
+            if (multi.next()) {
+                final Map<String, Object> dataCarrier = multi
+                                .getAttributeSet(CIContacts.ClassCarrier.CarrierSet.name);
+
+                if (dataCarrier != null) {
+                    @SuppressWarnings("unchecked")
+                    final List<String> values = (ArrayList<String>) dataCarrier.get("Make");
+                    for (final String val : values) {
+                        if (all || StringUtils.startsWithIgnoreCase(val, input)) {
+                            final Map<String, String> map = new HashMap<String, String>();
+                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
+                            list.add(map);
+                        }
+                    }
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4VehicleLicencePlate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        boolean all = false;
+        if (input.isEmpty() || "*".equals(input)) {
+            all = true;
+        }
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassCarrier);
+            queryBldr.addWhereAttrEqValue(CIContacts.ClassCarrier.ContactLink, carrierInst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttributeSet(CIContacts.ClassCarrier.CarrierSet.name);
+            multi.execute();
+            if (multi.next()) {
+                final Map<String, Object> dataCarrier = multi
+                                .getAttributeSet(CIContacts.ClassCarrier.CarrierSet.name);
+
+                if (dataCarrier != null) {
+                    @SuppressWarnings("unchecked")
+                    final List<String> values = (ArrayList<String>) dataCarrier.get("Registration");
+                    for (final String val : values) {
+                        if (all || StringUtils.startsWithIgnoreCase(val, input)) {
+                            final Map<String, String> map = new HashMap<String, String>();
+                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
+                            list.add(map);
+                        }
+                    }
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return map list for auto-complete.
+     * @throws EFapsException on error.
+     */
+    public Return autoComplete4VehicleDriverInfo(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String input = (String) _parameter.get(ParameterValues.OTHERS);
+        boolean all = false;
+        if (input.isEmpty() || "*".equals(input)) {
+            all = true;
+        }
+
+        final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
+
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(CIContacts.ClassCarrier);
+            queryBldr.addWhereAttrEqValue(CIContacts.ClassCarrier.ContactLink, carrierInst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttributeSet(CIContacts.ClassCarrier.DriverSet.name);
+            multi.execute();
+            if (multi.next()) {
+                final Map<String, Object> dataCarrier = multi
+                                .getAttributeSet(CIContacts.ClassCarrier.DriverSet.name);
+
+                if (dataCarrier != null) {
+                    @SuppressWarnings("unchecked")
+                    final List<String> values = (ArrayList<String>) dataCarrier.get("License");
+                    for (final String val : values) {
+                        if (all || StringUtils.startsWithIgnoreCase(val, input)) {
+                            final Map<String, String> map = new HashMap<String, String>();
+                            map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), val);
+                            list.add(map);
+                        }
+                    }
+                }
+            }
+        }
+        ret.put(ReturnValues.VALUES, list);
+        return ret;
     }
 }
