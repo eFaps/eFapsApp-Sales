@@ -47,10 +47,11 @@
                 <property name="JasperReport">Sales_DeliveryNote</property>
                 <property name="Mime">pdf</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate">
+            <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
                 <property name="Validation">POSITION</property>
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
+                <property name="Validation03">DUPLICATEDPOSITION</property>
             </validate>
         </target>
         <property name="Target">modal</property>

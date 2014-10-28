@@ -45,6 +45,10 @@
                 <property name="PositionType">Sales_OrderInboundPosition</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
+            <validate program="org.efaps.esjp.sales.document.OrderInbound" method="validate">
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">DUPLICATEDPOSITION</property>
+            </validate>
         </target>
 
         <!-- properties -->

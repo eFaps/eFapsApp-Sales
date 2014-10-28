@@ -49,6 +49,7 @@
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">DUPLICATEDPOSITION</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -81,6 +82,7 @@
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">DUPLICATEDPOSITION</property>
             </validate>
         </target>
         <property name="Target">modal</property>
