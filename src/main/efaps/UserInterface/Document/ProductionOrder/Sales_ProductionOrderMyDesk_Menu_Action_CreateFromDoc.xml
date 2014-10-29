@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
+ Author:          The eFasp Team
  Revision:        $Rev$
  Last Changed:    $Date$
  Last Changed By: $Author$
@@ -22,24 +22,24 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>748c5a38-807e-4bd2-8a8f-3ad1adfa2f18</uuid>
+    <uuid>ca9aa0d0-fc12-425c-a644-55d32016dcd4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductionOrderMyDesk</name>
+        <name>Sales_ProductionOrderMyDesk_Menu_Action_CreateFromDoc</name>
         <access>
-            <role>Sales_Salesman</role>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_ProductionOrderMyDesk_Menu</menu>
-            <table>Sales_DocumentAbstractTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_ProductionOrder</property>
-            </evaluate>
+            <form>Sales_ProductionOrder_SelectDocForm</form>
+            <command>Sales_ProductionOrderMyDesk_Menu_Action_CreateFromDoc2</command>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetCmdRevise">true</property>
     </definition>
 </ui-command>
