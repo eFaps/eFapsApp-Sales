@@ -34,7 +34,7 @@
         </access>
         <target>
             <menu>Sales_ProductionOrderMyDesk_Menu</menu>
-            <table>Sales_DocumentAbstractTable</table>
+            <table>Sales_ProductionOrderTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_ProductionOrder</property>
             </evaluate>

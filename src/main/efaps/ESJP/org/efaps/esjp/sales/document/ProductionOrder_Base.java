@@ -20,10 +20,12 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -48,8 +50,16 @@ public abstract class ProductionOrder_Base
         throws EFapsException
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
+        connect2Derived(_parameter, createdDoc);
         createPositions(_parameter, createdDoc);
         executeProcess(_parameter, createdDoc);
         return new Return();
+    }
+
+    @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return CISales.ProductionOrder.getType();
     }
 }

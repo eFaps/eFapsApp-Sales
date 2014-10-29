@@ -19,7 +19,8 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e53e5a95-0edf-4067-a17d-02e34acfca45</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -93,16 +94,9 @@
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">READONLY</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="Required">true</property>
         </field>
         <field character="Heading" name="headingPosition">
             <property name="Level">2</property>
@@ -115,8 +109,8 @@
             <property name="ModeEdit">NONE</property>
             <table>Sales_ProductionOrderPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_ProductionOrderPosition</property>
-                <property name="LinkFroms">ProductionOrderLink</property>
+                <property name="Type">Sales_ProductionOrderPosition</property>
+                <property name="LinkFrom">ProductionOrderLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -125,6 +119,17 @@
             <property name="ModeEdit">NONE</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.ProductionOrder"
+                method="getJavaScriptUIValue"
+                name="Sales_ProductionOrderForm.javaScript.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
     </definition>
 </ui-form>

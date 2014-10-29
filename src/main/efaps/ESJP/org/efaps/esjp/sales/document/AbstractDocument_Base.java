@@ -85,6 +85,7 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
@@ -1060,7 +1061,7 @@ public abstract class AbstractDocument_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT,
                         InterfaceUtils.wrappInScriptTag(_parameter, getJavaScript4SelectDoc(_parameter)
-                                        + getJavaScript4Doc(_parameter), true, 0));
+                                        + getJavaScript4Doc(_parameter), true, 1500));
         return retVal;
     }
 
@@ -1077,10 +1078,7 @@ public abstract class AbstractDocument_Base
         final Instance currency4Invoice = evaluateCurrency4JavaScript(_parameter);
         final Instance baseCurrency = Currency.getBaseCurrency();
 
-        final StringBuilder js = new StringBuilder();
-            js.append("require([\"dojo/ready\", \"dojo/query\",\"dojo/dom-construct\"],")
-            .append(" function(ready, query, domConstruct){\n")
-            .append(" ready(1500, function(){")
+        final StringBuilder js = new StringBuilder()
             .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
             .append("var pN = dojo.query('.eFapsContentDiv')[0];\n");
 
@@ -1131,8 +1129,7 @@ public abstract class AbstractDocument_Base
                     .append(getJavaScript4Positions(_parameter, instCall));
             }
         }
-        js.append("});").append("});\n");
-        return js.toString();
+        return InterfaceUtils.wrapInDojoRequire(_parameter, js, DojoLibs.QUERY, DojoLibs.DOMCONSTRUCT).toString();
     }
 
     /**
@@ -1547,13 +1544,35 @@ public abstract class AbstractDocument_Base
                                                       final Instance... _instances)
         throws EFapsException
     {
-        final Map<Integer, String> relTypes = analyseProperty(_parameter, "RelationType");
-        final Map<Integer, String> linkFroms = analyseProperty(_parameter, "RelationLinkFrom");
-        final Map<Integer, String> linkTos = analyseProperty(_parameter, "RelationLinkTo");
-        final Map<Integer, String> types = analyseProperty(_parameter, "DerivedType");
-        final Map<Integer, String> statusGrps = analyseProperty(_parameter, "DerivedStatusGrp");
-        final Map<Integer, String> status = analyseProperty(_parameter, "DerivedStatus");
-        final Map<Integer, String> substracts = analyseProperty(_parameter, "RelationSubstracts");
+        final Map<Integer, String> relTypes;
+        final Map<Integer, String> linkFroms;
+        final Map<Integer, String> linkTos;
+        final Map<Integer, String> types;
+        final Map<Integer, String> statusGrps;
+        final Map<Integer, String> status;
+        final Map<Integer, String> substracts;
+
+        if (containsProperty(_parameter, "RelationType")) {
+            relTypes = analyseProperty(_parameter, "RelationType");
+            linkFroms = analyseProperty(_parameter, "RelationLinkFrom");
+            linkTos = analyseProperty(_parameter, "RelationLinkTo");
+            types = analyseProperty(_parameter, "DerivedType");
+            statusGrps = analyseProperty(_parameter, "DerivedStatusGrp");
+            status = analyseProperty(_parameter, "DerivedStatus");
+            substracts = analyseProperty(_parameter, "RelationSubstracts");
+        } else {
+            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.CREATEFROMCONFIG,
+                            true);
+            final String baseKey = getTypeName4SysConf(_parameter);
+            relTypes = analyseProperty(_parameter, props, baseKey + ".RelationType");
+            linkFroms = analyseProperty(_parameter, props, baseKey + ".RelationLinkFrom");
+            linkTos = analyseProperty(_parameter, props, baseKey + ".RelationLinkTo");
+            types = analyseProperty(_parameter, props, baseKey + ".DerivedType");
+            statusGrps = analyseProperty(_parameter, props, baseKey + ".DerivedStatusGrp");
+            status = analyseProperty(_parameter, props, baseKey + ".DerivedStatus");
+            substracts = analyseProperty(_parameter, props, baseKey + ".RelationSubstracts");
+        }
+
         final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         final List<Map<KeyDef, Object>> lstRemove = new ArrayList<Map<KeyDef, Object>>();
         for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {

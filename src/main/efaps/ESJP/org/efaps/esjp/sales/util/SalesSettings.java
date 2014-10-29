@@ -293,4 +293,10 @@ public interface SalesSettings
      */
     String WITHOUTTAXCONFIG = "org.efaps.sales.Config4WithoutTax";
 
+    /**
+     * Properties. Can be concatenated.
+     * A mapping for AutoComplete etc.
+     */
+    String CREATEFROMCONFIG = "org.efaps.sales.Config4CreateFrom";
+
 }
