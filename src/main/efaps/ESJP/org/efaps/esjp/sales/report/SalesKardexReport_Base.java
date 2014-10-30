@@ -147,6 +147,14 @@ public abstract class SalesKardexReport_Base
         }
     }
 
+    /**
+     * @param _jasperReport new JasperReport.
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _parentSource parent source.
+     * @param _jrParameters jasper parameters.
+     * @param _prodInsts Instances of the products.
+     * @throws EFapsException on error
+     */
     protected void init(final JasperReport _jasperReport,
                         final Parameter _parameter,
                         final JRDataSource _parentSource,
@@ -628,17 +636,17 @@ public abstract class SalesKardexReport_Base
     public class TransDoc
     {
 
-        private final Instance instance;
+        protected final Instance instance;
 
-        private  final ProductKardex product;
+        protected  final ProductKardex product;
 
-        private CostDoc costDoc;
+        protected CostDoc costDoc;
 
-        private String costDocName;
+        protected String costDocName;
 
-        private String prodDocType;
+        protected String prodDocType;
 
-        private String docType;
+        protected String docType;
 
         public TransDoc(final Instance _transDocInst,
                         final DateTime _dateFrom,

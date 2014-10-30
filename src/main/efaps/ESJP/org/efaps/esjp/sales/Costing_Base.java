@@ -1069,28 +1069,54 @@ public abstract class Costing_Base
     }
 
 
+    /**
+     * TODO comment!
+     *
+     * @author The eFaps Team
+     * @version $Id$
+     */
     public static class CostDoc
     {
 
+        /**
+         * BigDecimal cost.
+         */
         private BigDecimal cost = BigDecimal.ZERO;
 
+        /**
+         * Boolean (true/false).
+         */
         private boolean initialized;
 
+        /**
+         * Instance of the Document.
+         */
         private Instance baseDocInst;
 
+        /**
+         * Instance of the Costing Document.
+         */
         private Instance costDocInst;
 
+        /**
+         * Instance of the product.
+         */
         private Instance productInst;
 
         /**
-         * @param _docInstTmp
+         * @param _docInst Instance of the document.
+         * @param _productInst Instance of the product.
          */
-        public CostDoc(final Instance _docInst, final Instance _productInst)
+        public CostDoc(final Instance _docInst,
+                       final Instance _productInst)
         {
             this.baseDocInst = _docInst;
             this.productInst = _productInst;
         }
 
+        /**
+         * @throws EFapsException on error.
+         */
         protected void init()
             throws EFapsException
         {
@@ -1158,9 +1184,8 @@ public abstract class Costing_Base
                     relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
                                     getBaseDocInst());
                     final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                    posQueryBldr.addWhereAttrInQuery(
-                                    CISales.PositionSumAbstract.DocumentAbstractLink,
-                                    relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
+                    posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
+                                relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
                     posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
                     final MultiPrintQuery posMulti = posQueryBldr.getPrint();
                     posMulti.addSelect(docInstSel);
@@ -1174,15 +1199,31 @@ public abstract class Costing_Base
                     }
                 }
                 if (!found) {
+                    found = analyze();
+                }
+                if (!found) {
                     setCostDocInst(getBaseDocInst());
                 }
             }
         }
 
         /**
+         * @return boolean (true/false).
+         *
+         * @throws EFapsException on error.
+         */
+        protected boolean analyze()
+            throws EFapsException
+        {
+            // TODO Auto-generated method stub
+            return false;
+        }
+
+        /**
          * Getter method for the instance variable {@link #cost}.
          *
-         * @return value of instance variable {@link #cost}
+         * @return value of instance variable {@link #cost}.
+         * @throws EFapsException on error.
          */
         public BigDecimal getCost()
             throws EFapsException
@@ -1244,9 +1285,11 @@ public abstract class Costing_Base
         /**
          * Getter method for the instance variable {@link #costDocInst}.
          *
-         * @return value of instance variable {@link #costDocInst}
+         * @return value of instance variable {@link #costDocInst}.
+         * @throws EFapsException on error.
          */
-        public Instance getCostDocInst() throws EFapsException
+        public Instance getCostDocInst()
+            throws EFapsException
         {
             init();
             return this.costDocInst;
