@@ -129,6 +129,11 @@ public abstract class CheckBook_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
     public Return getInfoDocumentFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -136,6 +141,11 @@ public abstract class CheckBook_Base
         return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getDocument());
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return mapping of infos
+     * @throws EFapsException on error.
+     */
     @SuppressWarnings("unchecked")
     protected Map<Instance, DocInfo> getInfos(final Parameter _parameter)
         throws EFapsException
@@ -152,6 +162,13 @@ public abstract class CheckBook_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _callInstance instance calling
+     * @param _relInsts relation instances
+     * @return mapping of infos
+     * @throws EFapsException on error.
+     */
     public static Map<Instance, DocInfo> getInfos(final Parameter _parameter,
                                                   final Instance _callInstance,
                                                   final List<Instance> _relInsts)
@@ -162,9 +179,11 @@ public abstract class CheckBook_Base
         final SelectBuilder toSel = SelectBuilder.get().linkto(CISales.CheckBook2PaymentCheckOut.ToLink);
         final SelectBuilder toInstSel = new SelectBuilder(toSel).instance();
         final SelectBuilder toNameSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.Name);
-        final SelectBuilder toStatusSel = new SelectBuilder(toSel).attribute(CISales.DocumentSumAbstract.StatusAbstract);
+        final SelectBuilder toStatusSel = new SelectBuilder(toSel)
+                        .attribute(CISales.DocumentSumAbstract.StatusAbstract);
         final SelectBuilder toAmountSel = new SelectBuilder(toSel).attribute(CISales.PaymentDocumentIOAbstract.Amount);
-        final SelectBuilder toSymbolSel = new SelectBuilder(toSel).linkto(CISales.PaymentDocumentIOAbstract.RateCurrencyLink)
+        final SelectBuilder toSymbolSel = new SelectBuilder(toSel).linkto(
+                        CISales.PaymentDocumentIOAbstract.RateCurrencyLink)
                         .attribute(CIERP.Currency.Symbol);
         multi.addSelect(toInstSel, toNameSel, toStatusSel, toAmountSel, toSymbolSel);
         multi.execute();
@@ -186,22 +205,34 @@ public abstract class CheckBook_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return mapping of infos
+     * @throws EFapsException on error.
+     */
     public Return getInfoStatusDocumentFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final DocInfo info = getInfos(_parameter).get(_parameter.getInstance());
         return new Return().put(ReturnValues.VALUES, info == null ? "" : info.getStatusName());
     }
-
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return mapping of infos
+     * @throws EFapsException on error.
+     */
     public Return getInfoValueDocumentFieldValue(final Parameter _parameter)
         throws EFapsException
     {
         final DocInfo info = getInfos(_parameter).get(_parameter.getInstance());
-        return new Return().put(ReturnValues.VALUES, info == null ? getValue(_parameter.getInstance()) : info.getAmount());
+        return new Return().put(ReturnValues.VALUES,
+                        info == null ? getValue(_parameter.getInstance()) : info.getAmount());
     }
 
     /**
-     * @return
+     * @param _instance Instance
+     * @return value
+     * @throws EFapsException on error
      */
     protected String getValue(final Instance _instance)
         throws EFapsException
@@ -209,7 +240,6 @@ public abstract class CheckBook_Base
         final PrintQuery print = new PrintQuery(_instance);
         print.addAttribute(CISales.CheckBook2PaymentCheckOut.Value);
         print.execute();
-
         return print.<String>getAttribute(CISales.CheckBook2PaymentCheckOut.Value);
     }
 
@@ -234,7 +264,7 @@ public abstract class CheckBook_Base
         private boolean from = false;
 
         /**
-         * Status of the Document
+         * Status of the Document.
          */
         private Status status;
 
@@ -319,7 +349,7 @@ public abstract class CheckBook_Base
         /**
          * Setter method for instance variable {@link #status}.
          *
-         * @param _from value for instance variable {@link #status}
+         * @param _status value for instance variable {@link #status}
          * @return this for chaining
          */
         public DocInfo setStatusName(final Status _status)
@@ -331,7 +361,7 @@ public abstract class CheckBook_Base
         /**
          * Setter method for instance variable {@link #amount}.
          *
-         * @param _from value for instance variable {@link #amount}
+         * @param _amount value for instance variable {@link #amount}
          * @return this for chaining
          */
         public DocInfo setAmount(final BigDecimal _amount)
@@ -343,7 +373,7 @@ public abstract class CheckBook_Base
         /**
          * Setter method for instance variable {@link #symbol}.
          *
-         * @param _from value for instance variable {@link #symbol}
+         * @param _symbol value for instance variable {@link #symbol}
          * @return this for chaining
          */
         public DocInfo setSymbol(final String _symbol)
