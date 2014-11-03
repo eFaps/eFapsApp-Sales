@@ -47,6 +47,9 @@ public abstract class SalesKardexMultipleReport_Base
     extends SalesKardexReport
 {
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void init(final JasperReport _jasperReport,
                      final Parameter _parameter,
@@ -67,16 +70,12 @@ public abstract class SalesKardexMultipleReport_Base
     }
 
     /**
-     * @param _parameter
-     * @param _map
-     * @param _currentInstance
-     * @param _prodInst
-     * @throws EFapsException on error
+     * {@inheritDoc}
      */
     @Override
     protected void add2Map4ProductInfo(final Parameter _parameter,
                                        final Map<String, Object> _map,
-                                       final Instance __transactionInstance,
+                                       final Instance _transInstance,
                                        final Instance _prodInst)
         throws EFapsException
     {

@@ -233,18 +233,23 @@ public abstract class SalesKardexReport_Base
                 values.add(map);
             }
         }
+        if (_prodInsts != null && _prodInsts.length > 1)
+        {
+            values.add(new HashMap<String, Object>());
+        }
         getValues().addAll(values);
     }
 
     /**
-     * @param _parameter
-     * @param _map
-     * @param _currentInstance
-     * @param _prodInst
+     * @param _parameter        Parameter as passed by the eFaps API
+     * @param _map              map to add to
+     * @param _transInstance    instance of the transaction
+     * @param _prodInst         instance of the product
+     * @throws EFapsException on error
      */
     protected void add2Map4ProductInfo(final Parameter _parameter,
                                        final Map<String, Object> _map,
-                                       final Instance __transactionInstance,
+                                       final Instance _transInstance,
                                        final Instance _prodInst)
         throws EFapsException
     {
@@ -267,12 +272,14 @@ public abstract class SalesKardexReport_Base
     }
 
     /**
-     * @param _parameter
-     * @param _currentInstance
+     * @param _parameter        Parameter as passed by the eFaps API
+     * @param _map              map to add to
+     * @param _transInstance    instance of the transaction
+     * @throws EFapsException on error
      */
     protected void addMap2TransactionInfo(final Parameter _parameter,
                                           final Map<String, Object> _map,
-                                          final Instance _transaction)
+                                          final Instance _transInstance)
         throws EFapsException
     {
         // to be implemented
@@ -413,7 +420,7 @@ public abstract class SalesKardexReport_Base
                                          final Instance _productInst)
         throws EFapsException
     {
-        final TransDoc docTransIn = new TransDoc(_transDocInst, _dateFrom, _dateTo, _productInst);
+        final TransDoc docTransIn = getTransDoc(_parameter, _transDocInst, _dateFrom, _dateTo, _productInst);
         _map.put(Field.TRANS_DOC_TYPE.getKey(), docTransIn.getDocType());
         _map.put(Field.TRANS_INBOUND_COST.getKey(), docTransIn.getCostDoc().getCost());
         _map.put(Field.TRANS_DOC_SERIE.getKey(),
@@ -571,6 +578,19 @@ public abstract class SalesKardexReport_Base
     {
         return _from.toString(DateTimeFormat.shortDate()) + " - " + _to.toString(DateTimeFormat.shortDate());
     }
+
+
+    protected TransDoc getTransDoc(final Parameter _parameter,
+                                   final Instance _transDocInst,
+                                   final DateTime _dateFrom,
+                                   final DateTime _dateTo,
+                                   final Instance _product)
+        throws EFapsException
+    {
+        return new TransDoc(_transDocInst, _dateFrom, _dateTo, _product);
+    }
+
+
 
     public class ProductKardex
     {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-11-03T12:03:11 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="1750" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1710" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
+<!-- 2014-11-03T12:43:06 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="2150" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2110" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.remove.empty.space.between.columns" value="true"/>
@@ -12,16 +12,7 @@
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.keep.first.band.2" value="pageHeader"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.3" value="pageFooter"/>
 	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.4" value="lastPageFooter"/>
-	<property name="net.sf.jasperreports.export.xls.exclude.origin.band.5" value="columnFooter"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="Periode" class="java.lang.String"/>
 	<parameter name="CompanyName" class="java.lang.String"/>
 	<parameter name="CompanyTaxNum" class="java.lang.String"/>
@@ -403,6 +394,52 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				</textElement>
 				<text><![CDATA[CÓDIGO DE LA UNIDAD DE MEDIDA]]></text>
 			</staticText>
+			<staticText>
+				<reportElement mode="Transparent" x="1680" y="0" width="300" height="24" backcolor="#FFFFFF" uuid="a542aaba-8104-4fce-842f-8b5eae68e95e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COSTOS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1680" y="24" width="100" height="12" uuid="37d025f2-be2b-466d-b3bf-a9b456d5ece4">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ENTRADAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1780" y="24" width="100" height="12" uuid="30985fca-2f36-4a7c-9772-7aedb118969b">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SALIDAS]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="1880" y="24" width="100" height="12" uuid="acda623d-9ef0-4d71-8ca2-a52a3a13b5af">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
@@ -631,6 +668,85 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToBandHeight" x="1680" y="0" width="100" height="12" uuid="cf2dde70-544d-428b-ab5e-9f8a9e01dc4b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(L" + ($V{REPORT_COUNT} + $V{OFFSET} - 1 ) +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[!$V{print}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToBandHeight" x="1780" y="0" width="100" height="12" uuid="cca20cf1-36c3-483e-ab99-ebf3d979081d">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(O" + ($V{REPORT_COUNT} + $V{OFFSET} - 1)  +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[!$V{print}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToBandHeight" x="1880" y="0" width="100" height="12" uuid="74f919b1-acbc-4bd7-8ea9-ad7e6785c9b3">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(R" + ($V{REPORT_COUNT} + $V{OFFSET} - 1)  +",2)"]]></propertyExpression>
+					<printWhenExpression><![CDATA[!$V{print}]]></printWhenExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
+	<columnFooter>
+		<band height="36">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToBandHeight" x="1680" y="0" width="100" height="12" uuid="f58e7862-048d-4549-af69-ad01e6d256ab">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(S" + ($V{OFFSET} + 1) +":S" + ($V{REPORT_COUNT} + $V{OFFSET}) + ")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToBandHeight" x="1780" y="0" width="100" height="12" uuid="80ddc827-760c-4e49-bfdd-ba023d4489f7">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(T" + ($V{OFFSET} + 1) +":T" + ($V{REPORT_COUNT} + $V{OFFSET}) + ")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00">
+				<reportElement stretchType="RelativeToBandHeight" x="1880" y="0" width="100" height="12" uuid="46d79723-43e0-4fd1-8612-efb6c7d9223b">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=SUM(U" + ($V{OFFSET} + 1) +":U" + ($V{REPORT_COUNT} + $V{OFFSET}) + ")"]]></propertyExpression>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="10" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="1580" y="0" width="100" height="12" uuid="e5459fbe-2009-4f47-a884-9aa3daddc74b">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font size="9" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ TOTALES:]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
 </jasperReport>
