@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-11-03T12:43:06 -->
+<!-- 2014-11-03T12:56:31 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="2150" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="2110" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" whenResourceMissingType="Empty" isIgnorePagination="true" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
@@ -388,6 +388,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<reportElement x="360" y="0" width="60" height="36" uuid="a861f668-4ccd-499f-a49e-fc9014fc7efb">
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.export.xls.freeze.row.edge" value="Bottom"/>
 				</reportElement>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="8" isBold="true"/>
@@ -459,6 +460,7 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="360" y="0" width="60" height="12" isPrintWhenDetailOverflows="true" uuid="7e4bbfb2-a390-4414-b91a-63c22cd3ea1e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="net.sf.jasperreports.export.xls.freeze.column.edge" value="Right"/>
 				</reportElement>
 				<textElement>
 					<font size="8"/>
