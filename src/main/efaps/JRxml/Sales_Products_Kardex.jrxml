@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-10-28T15:25:22 -->
+<!-- 2014-11-03T12:03:11 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_Products_Kardex" language="groovy" pageWidth="1750" pageHeight="595" orientation="Landscape" whenNoDataType="AllSectionsNoDetail" columnWidth="1710" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="211f7fce-bf6d-422c-abbf-de7ca27904a4">
 	<property name="net.sf.jasperreports.export.xls.detect.cell.type" value="true"/>
 	<property name="net.sf.jasperreports.export.xls.ignore.cell.border" value="true"/>
@@ -423,6 +423,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 				<reportElement stretchType="RelativeToBandHeight" x="360" y="0" width="60" height="12" isPrintWhenDetailOverflows="true" uuid="7e4bbfb2-a390-4414-b91a-63c22cd3ea1e">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{prodUoM}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
@@ -450,35 +453,45 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<property name="local_mesure_unitheight" value="pixel"/>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transDate}.toDate()]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="500" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transDocType}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="580" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transDocSerie}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="660" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transDocNumber}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement stretchType="RelativeToBandHeight" x="740" y="0" width="80" height="12" uuid="4433f7ca-abbd-4bc0-849a-a8e81972c354">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transDocOperation}]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="" isBlankWhenNull="true">
@@ -486,32 +499,40 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transInboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transInboundQuantity}) != 0 ? $F{transInboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
 				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[new Boolean($V{print} && ($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) != -1))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && ($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) > -1))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transInboundCost} != null ? $F{transInboundCost} : BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" forecolor="#000000" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<printWhenExpression><![CDATA[new Boolean($V{print} && !($F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1))]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} == 1 && ($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) == 0))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
-				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
+				<reportElement stretchType="RelativeToBandHeight" x="900" y="0" width="100" height="12" forecolor="#000000" uuid="a2b6932c-1c4e-4710-879e-1d934b9a07be">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(Q" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",2)"]]></propertyExpression>
-					<printWhenExpression><![CDATA[new Boolean($V{print} && $F{transInboundCost}.compareTo(BigDecimal.ZERO) == -1 && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
+					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} > 1 && ($F{transInboundCost} == null || $F{transInboundCost}.compareTo(BigDecimal.ZERO) < 1 ))]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -520,7 +541,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(J" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*K"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -528,7 +551,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{transOutboundQuantity} != null && BigDecimal.ZERO.compareTo($F{transOutboundQuantity}) != 0 ? $F{transOutboundQuantity} : BigDecimal.ZERO]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -537,7 +562,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(M" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,0,Q"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"),2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -546,7 +573,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(M" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*N"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -554,7 +583,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} == 1)]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
@@ -563,7 +594,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(P" + ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+J"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"-M"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -571,7 +604,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} == 1)]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -580,7 +615,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(IF(L" + ($V{REPORT_COUNT} + $V{OFFSET}) +"=0,Q"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +",(R"+ ($V{REPORT_COUNT} + $V{OFFSET} - 1) +"+L"+ ($V{REPORT_COUNT} + $V{OFFSET}) +")/P"+ ($V{REPORT_COUNT} + $V{OFFSET}) +"),2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[new Boolean($V{print} && $V{REPORT_COUNT} > 1)]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 			<textField isStretchWithOverflow="true" pattern="#,##0.00">
@@ -589,7 +626,9 @@ DOCUMENTO INTERNO O SIMILAR]]></text>
 					<propertyExpression name="net.sf.jasperreports.export.xls.formula"><![CDATA["=ROUND(P" + ($V{REPORT_COUNT} + $V{OFFSET}) +"*Q"+ ($V{REPORT_COUNT} + $V{OFFSET}) +",2)"]]></propertyExpression>
 					<printWhenExpression><![CDATA[$V{print}]]></printWhenExpression>
 				</reportElement>
-				<textElement textAlignment="Right"/>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
 				<textFieldExpression><![CDATA[Integer.valueOf(0)]]></textFieldExpression>
 			</textField>
 		</band>
