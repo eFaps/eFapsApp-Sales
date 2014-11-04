@@ -31,6 +31,7 @@
         <name>Sales_PettyCashBalanceTree_Menu_Action_SetVerified</name>
         <access>
             <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
         </access>
         <target>
             <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="verify"/>

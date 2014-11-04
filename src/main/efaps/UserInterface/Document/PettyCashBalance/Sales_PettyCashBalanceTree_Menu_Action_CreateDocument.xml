@@ -30,6 +30,7 @@
         <name>Sales_PettyCashBalanceTree_Menu_Action_CreateDocument</name>
         <access>
             <role>Sales_PettyCash</role>
+            <role>Sales_Admin</role>
         </access>
         <target>
             <form>Sales_PettyCashBalance4CreateDocForm</form>
