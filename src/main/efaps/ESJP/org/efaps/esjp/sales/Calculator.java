@@ -21,6 +21,7 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -41,23 +42,24 @@ import org.efaps.util.EFapsException;
 public class Calculator
     extends Calculator_Base
 {
+
     /**
      * Needed for serialization.
      */
     private static final long serialVersionUID = 1L;
 
     /**
-     * @param _parameter            Parameter  parameter as passe dfrom the eFaps API
-     * @param _calc                 calculator
-     * @param _oid                  oid of the product
-     * @param _quantity             quantity
-     * @param _unitPrice            unit price
-     * @param _discount             discount
-     * @param _priceFromDB          must the price set from DB
-     * @param _config               config to be used
+     * @param _parameter Parameter parameter as passe dfrom the eFaps API
+     * @param _calc calculator
+     * @param _oid oid of the product
+     * @param _quantity quantity
+     * @param _unitPrice unit price
+     * @param _discount discount
+     * @param _priceFromDB must the price set from DB
+     * @param _config config to be used
      * @throws EFapsException on error
      */
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     public Calculator(final Parameter _parameter,
                       final Calculator _calc,
                       final String _oid,
@@ -67,19 +69,19 @@ public class Calculator
                       final boolean _priceFromDB,
                       final ICalculatorConfig _config)
         throws EFapsException
-    { //CHECKSTYLE:ON
+    { // CHECKSTYLE:ON
         super(_parameter, _calc, _oid, _quantity, _unitPrice, _discount, _priceFromDB, _config);
     }
 
     /**
-     * @param _parameter            Parameter  parameter as passed from the eFaps API
-     * @param _calc                 calculator
-     * @param _prodInstance         Instance of the product
-     * @param _quantity             quantity
-     * @param _unitPrice            unit price
-     * @param _discount             discount
-     * @param _priceFromDB          must the price set from DB
-     * @param _config               config to be used
+     * @param _parameter Parameter parameter as passed from the eFaps API
+     * @param _calc calculator
+     * @param _prodInstance Instance of the product
+     * @param _quantity quantity
+     * @param _unitPrice unit price
+     * @param _discount discount
+     * @param _priceFromDB must the price set from DB
+     * @param _config config to be used
      * @throws EFapsException on error
      */
     // CHECKSTYLE:OFF
@@ -107,8 +109,8 @@ public class Calculator
     }
 
     /**
-     * @param _parameter  Parameter  parameter as passed from the eFaps API
-     * @param _config    config to be used
+     * @param _parameter Parameter parameter as passed from the eFaps API
+     * @param _config config to be used
      * @throws EFapsException on error
      */
     public Calculator(final Parameter _parameter,
@@ -116,5 +118,57 @@ public class Calculator
         throws EFapsException
     {
         super(_parameter, _config);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    public static BigDecimal getCrossTotal(final Parameter _parameter,
+                                           final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return Calculator_Base.getCrossTotal(_parameter, _calcList);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    public static BigDecimal getNetTotal(final Parameter _parameter,
+                                         final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return Calculator_Base.getNetTotal(_parameter, _calcList);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    public static BigDecimal getBaseCrossTotal(final Parameter _parameter,
+                                               final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return Calculator_Base.getBaseCrossTotal(_parameter, _calcList);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    public static BigDecimal getPerceptionTotal(final Parameter _parameter,
+                                                final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        return Calculator_Base.getPerceptionTotal(_parameter, _calcList);
     }
 }

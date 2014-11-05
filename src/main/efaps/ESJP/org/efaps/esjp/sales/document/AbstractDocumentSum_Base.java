@@ -1456,11 +1456,7 @@ public abstract class AbstractDocumentSum_Base
                                        final List<Calculator> _calcList)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calc : _calcList) {
-            ret = ret.add(calc.getCrossPrice());
-        }
-        return ret;
+        return Calculator.getCrossTotal(_parameter, _calcList);
     }
 
     /**
@@ -1506,11 +1502,7 @@ public abstract class AbstractDocumentSum_Base
                                      final List<Calculator> _calcList)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calc : _calcList) {
-            ret = ret.add(calc.getNetPrice());
-        }
-        return ret;
+        return Calculator.getNetTotal(_parameter, _calcList);
     }
 
     /**
@@ -1525,11 +1517,7 @@ public abstract class AbstractDocumentSum_Base
                                            final List<Calculator> _calcList)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calculator : _calcList) {
-            ret = ret.add(calculator.getProductCrossPrice().getBasePrice());
-        }
-        return ret;
+        return Calculator.getBaseCrossTotal(_parameter, _calcList);
     }
 
     /**
@@ -1607,11 +1595,7 @@ public abstract class AbstractDocumentSum_Base
                                            final List<Calculator> _calcList)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ZERO;
-        for (final Calculator calc : _calcList) {
-            ret = ret.add(calc.getPerception());
-        }
-        return ret;
+        return Calculator.getPerceptionTotal(_parameter, _calcList);
     }
 
     /**

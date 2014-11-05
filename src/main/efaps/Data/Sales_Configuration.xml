@@ -126,12 +126,12 @@
             <description>Company should be setted.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.PriceList4Calculator</key>
-            <value>Sales_Invoice=0eefc758-0be6-4c40-8cf9-a4f88986f76e
-Sales_Receipt=0eefc758-0be6-4c40-8cf9-a4f88986f76e
-Sales_IncomingInvoice=d0aec333-157e-4f6a-bb8c-ea31f2706d40
-Sales_OrderOutbound=d0aec333-157e-4f6a-bb8c-ea31f2706d40
-Sales_IncomingReceipt=d0aec333-157e-4f6a-bb8c-ea31f2706d40
+            <key>org.efaps.sales.Config4Calculator</key>
+            <value>Sales_Invoice.PRICELIST=0eefc758-0be6-4c40-8cf9-a4f88986f76e
+Sales_Receipt.PRICELIST=0eefc758-0be6-4c40-8cf9-a4f88986f76e
+Sales_IncomingInvoice.PRICELIST=d0aec333-157e-4f6a-bb8c-ea31f2706d40
+Sales_OrderOutbound.PRICELIST=d0aec333-157e-4f6a-bb8c-ea31f2706d40
+Sales_IncomingReceipt.PRICELIST=d0aec333-157e-4f6a-bb8c-ea31f2706d40
 Sales_IncomingCreditNote=
 Sales_IncomingReminder=
 Sales_CreditNote=

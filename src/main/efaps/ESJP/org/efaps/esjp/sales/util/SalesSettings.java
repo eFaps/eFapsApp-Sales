@@ -39,264 +39,269 @@ public interface SalesSettings
      * OID for a Link.<br/>
      * Default Currency for the Form like Invoice etc..
      */
-    String CURRENCY4INVOICE = "org.efaps.sales.Currency4Invoice";
+    String BASE = "org.efaps.sales.";
+
+    /**
+     * OID for a Link.<br/>
+     * Default Currency for the Form like Invoice etc..
+     */
+    String CURRENCY4INVOICE = SalesSettings.BASE + "Currency4Invoice";
 
     /**
      * Integer.
      * max number of transaction that will be analyzed at once before committing.
      */
-    String COSTINGMAXTRANSACTION = "org.efaps.sales.CostingMaxTransaction";
+    String COSTINGMAXTRANSACTION = SalesSettings.BASE + "CostingMaxTransaction";
 
     /**
      * Boolean.
      * Allows to activate/deactivate the costing mechanisms.
      */
-    String ACTIVATECOSTING = "org.efaps.sales.ActivateCosting";
+    String ACTIVATECOSTING = SalesSettings.BASE + "ActivateCosting";
 
     /**
      * Boolean.
      * Allows to activate/deactivate the registering of the prices during a purchase.
      */
-    String ACTIVATEREGPURPRICE = "org.efaps.sales.ActivateRegisterOfPuchasePrice";
+    String ACTIVATEREGPURPRICE = SalesSettings.BASE + "ActivateRegisterOfPuchasePrice";
 
     /**
      * Link.
      * Storage Group that is used as a filter for using only the transactions
      * that belong to the given StorageGroup, if not present the calculation is over all Storages.
      */
-    String COSTINGSTORAGEGROUP = "org.efaps.sales.CostingStorageGroup";
+    String COSTINGSTORAGEGROUP = SalesSettings.BASE + "CostingStorageGroup";
 
     /**
      * Boolean (true/false).<br/>
      * Activate the possibility to define a minimum retail
      * price.
      */
-    String MINRETAILPRICE = "org.efaps.sales.ActivateMinRetailPrice";
+    String MINRETAILPRICE = SalesSettings.BASE + "ActivateMinRetailPrice";
 
     /**
      * Boolean (true/false).<br/>
      * Do the product prices include already the tax, or
      * must it be added? (Crossprice or netprice)
      */
-    String PRODPRICENET = "org.efaps.sales.ProductPriceIsNetPrice";
+    String PRODPRICENET = SalesSettings.BASE + "ProductPriceIsNetPrice";
 
     /**
      * Link to a default warehouse instance.
      */
-    String DEFAULTTAXCAT4PRODUCT = "org.efaps.sales.DefaultTaxCategory4Product";
+    String DEFAULTTAXCAT4PRODUCT = SalesSettings.BASE + "DefaultTaxCategory4Product";
 
     /**
      * Boolean (true/false).<br/>
      * Activate the UserInterface for Sales Channel.
      */
-    String CHANNELSALES = "org.efaps.sales.ActivateSalesChannel";
+    String CHANNELSALES = SalesSettings.BASE + "ActivateSalesChannel";
 
     /**
      * Boolean (true/false).<br/>
      * Activate the UserInterface for Buying Route.
      */
-    String CHANNELBUY = "org.efaps.sales.ActivateBuyingRoute";
+    String CHANNELBUY = SalesSettings.BASE + "ActivateBuyingRoute";
 
     /**
      * UUID's. <br/>
      * UUID of the documents to pay. Incoming Invoice like default.
      */
-    String PAYABLEDOCS = "org.efaps.sales.PayableDocuments";
+    String PAYABLEDOCS = SalesSettings.BASE + "PayableDocuments";
 
     /**
      * Boolean (true/false).<br/>
      * The current company is an Agent of Perception.
      */
-    String ISPERCEPTIONAGENT = "org.efaps.sales.IsPerceptionAgent";
+    String ISPERCEPTIONAGENT = SalesSettings.BASE + "IsPerceptionAgent";
 
     /**
      * Boolean (true/false).<br/>
      * Activate the calculation of Perception.
      */
-    String ACTIVATEPERCEPTION = "org.efaps.sales.ActivatePerception";
+    String ACTIVATEPERCEPTION = SalesSettings.BASE + "ActivatePerception";
 
     /**
      * Boolean (true/false).<br/>
      * The current company is an Agent of Retention.
      */
-    String ISRETENTIONAGENT = "org.efaps.sales.IsRetentionAgent";
+    String ISRETENTIONAGENT = SalesSettings.BASE + "IsRetentionAgent";
 
     /**
      * Boolean (true/false).<br/>
      * Activate the calculation of retention.
      */
-    String ACTIVATERETENTION = "org.efaps.sales.ActivateRetention";
+    String ACTIVATERETENTION = SalesSettings.BASE + "ActivateRetention";
 
     /**
      * Boolean (true/false).<br/>
      * Activate the show variable.
      */
-    String ACTIVATECODE4PAYMENTDOCUMENT = "org.efaps.sales.ActivateCode4PaymentDocument";
+    String ACTIVATECODE4PAYMENTDOCUMENT = SalesSettings.BASE + "ActivateCode4PaymentDocument";
 
 
     /**
      * Boolean (true/false).<br/>
      * Activate the show variable.
      */
-    String ACTIVATECODE4PAYMENTDOCUMENTOUT = "org.efaps.sales.ActivateCode4PaymentDocumentOut";
+    String ACTIVATECODE4PAYMENTDOCUMENTOUT = SalesSettings.BASE + "ActivateCode4PaymentDocumentOut";
 
     /**
      * UUID of the Sequence to payments document.
      */
-    String SEQUENCE4PAYMENTDOCUMENT = "org.efaps.sales.NumberGenerator4PaymentDocument";
+    String SEQUENCE4PAYMENTDOCUMENT = SalesSettings.BASE + "NumberGenerator4PaymentDocument";
 
     /**
      * UUID of the Sequence to payments document out.
      */
-    String SEQUENCE4PAYMENTDOCUMENTOUT = "org.efaps.sales.NumberGenerator4PaymentDocumentOut";
+    String SEQUENCE4PAYMENTDOCUMENTOUT = SalesSettings.BASE + "NumberGenerator4PaymentDocumentOut";
 
     /**
      * UUID of the Sequence to payments document report.
      */
-    String ACTIVATEPRINTREPORT4PAYMENTDOCUMENT = "org.efaps.sales.ActivatePrintReport4PaymentDocument";
+    String ACTIVATEPRINTREPORT4PAYMENTDOCUMENT = SalesSettings.BASE + "ActivatePrintReport4PaymentDocument";
 
     /**
      * UUID of the Sequence to Incoming Credit Note.
      */
-    String INCOMINGCREDITNOTESEQUENCE = "org.efaps.sales.IncomingCreditNoteSequence";
+    String INCOMINGCREDITNOTESEQUENCE = SalesSettings.BASE + "IncomingCreditNoteSequence";
 
     /**
      * UUID of the Sequence to Incoming Reminder.
      */
-    String INCOMINGREMINDERSEQUENCE = "org.efaps.sales.IncomingReminderSequence";
+    String INCOMINGREMINDERSEQUENCE = SalesSettings.BASE + "IncomingReminderSequence";
 
     /**
      * UUID of the Sequence to Incoming Credit Note.
      */
-    String RECIEVINGTICKETSEQUENCE = "org.efaps.sales.RecievingTicketSequence";
+    String RECIEVINGTICKETSEQUENCE = SalesSettings.BASE + "RecievingTicketSequence";
 
     /**
      * UUID of the Sequence to Incoming Receipt.
      */
-    String INCOMINGRECEIPTSEQUENCE = "org.efaps.sales.IncomingReceiptSequence";
+    String INCOMINGRECEIPTSEQUENCE = SalesSettings.BASE + "IncomingReceiptSequence";
 
     /**
      * UUID of the Sequence to Incoming Receipt.
      */
-    String INCOMINGINVOICESEQUENCE = "org.efaps.sales.IncomingInvoiceSequence";
+    String INCOMINGINVOICESEQUENCE = SalesSettings.BASE + "IncomingInvoiceSequence";
 
     /**
      *  OID default productDocumentType to usage report.
      */
-    String PRODUCTDOCUMENTTYPE4USAGEREPORT = "org.efaps.sales.ProductDocumentType4UsageReport";
+    String PRODUCTDOCUMENTTYPE4USAGEREPORT = SalesSettings.BASE + "ProductDocumentType4UsageReport";
 
     /**
      *  OID default productDocumentType to return usage report.
      */
-    String PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT = "org.efaps.sales.ProductDocumentType4ReturnUsageReport";
+    String PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT = SalesSettings.BASE + "ProductDocumentType4ReturnUsageReport";
 
     /**
      *  OID default productDocumentType to return usage report.
      */
-    String STORAGEGROUP4PRODUCTREQUESTREPORT = "org.efaps.sales.StorageGroup4ProductRequestReport";
+    String STORAGEGROUP4PRODUCTREQUESTREPORT = SalesSettings.BASE + "StorageGroup4ProductRequestReport";
 
     /**
      * OID default to insert spending into PaymentOrder.
      */
-    String DEFAULTSPENDING = "org.efaps.sales.DefaultSpending";
+    String DEFAULTSPENDING = SalesSettings.BASE + "DefaultSpending";
 
     /**
      * Default amount to validate generated payment order or collection order.
      */
-    String DEFAULTSAMOUNT4CREATEDDOC = "org.efaps.sales.DefaultAmount4CreatedDoc";
-
-    /**
-     * Properties.<br/>
-     * Can be concatenated.<br/>
-     * Set a Price List for a Type used to Calculator. Used for Sales Documents.
-     */
-    String PRICELIST4CALCULATOR = "org.efaps.sales.PriceList4Calculator";
+    String DEFAULTSAMOUNT4CREATEDDOC = SalesSettings.BASE + "DefaultAmount4CreatedDoc";
 
     /**
      * Listing seperated by LineBreak<br/>
      * Default addresses used as the departure point in delivery note.
      */
-    String DEFAULTDEPARTUREPOINTS = "org.efaps.sales.DefaultDeparturePoints";
+    String DEFAULTDEPARTUREPOINTS = SalesSettings.BASE + "DefaultDeparturePoints";
 
     /**
      * Listing seperated by LineBreak<br/>
      * Default addresses used as the departure point in delivery note.
      */
-    String DEFAULTARRIVALPOINTS = "org.efaps.sales.DefaultArrivalPoints";
+    String DEFAULTARRIVALPOINTS = SalesSettings.BASE + "DefaultArrivalPoints";
 
     /**
      * Properties. Can be concatenated;
      */
-    String AUTOCOMPLETE4PRODUCT = "org.efaps.sales.AutoComplete4Product";
+    String AUTOCOMPLETE4PRODUCT = SalesSettings.BASE + "AutoComplete4Product";
 
     /**
      * Properties. Can be concatenated.
      * A mapping like: Sales_Invoice=001;002;003
      */
-    String SERIALNUMBERS = "org.efaps.sales.SerialNumbers";
+    String SERIALNUMBERS = SalesSettings.BASE + "SerialNumbers";
 
     /**
      * Boolean.
      * Activate the reservation trigger mechanism on transactions.
      */
-    String ACTIVATETRANSTRIG4RES = "org.efaps.sales.ActivateTransactionTrigger4Reservation";
+    String ACTIVATETRANSTRIG4RES = SalesSettings.BASE + "ActivateTransactionTrigger4Reservation";
 
     /**
      * Link.
      * The Conciliation used for Automation Mechanism.
      */
-    String CONCIL4AUTO = "org.efaps.sales.Conciliation4Automation";
+    String CONCIL4AUTO = SalesSettings.BASE + "Conciliation4Automation";
 
     /**
      * Link.
      */
-    String ACTDEF4COLORDPC = "org.efaps.sales.ActDef4CollectionOrder4PettyCashBalance";
+    String ACTDEF4COLORDPC = SalesSettings.BASE + "ActDef4CollectionOrder4PettyCashBalance";
 
     /**
      * Link.
      */
-    String ACTDEF4PAYORDPC = "org.efaps.sales.ActDef4PaymentOrder4PettyCashBalance";
+    String ACTDEF4PAYORDPC = SalesSettings.BASE + "ActDef4PaymentOrder4PettyCashBalance";
 
     /**
      * Boolean.
      * Permit the augmentation for FundstoBeSettled..
      */
-    String PERMITAUGMENT4FUNDSTBS = "org.efaps.sales.AccountFundsToBeSettledPermitAugment";
+    String PERMITAUGMENT4FUNDSTBS = SalesSettings.BASE + "AccountFundsToBeSettledPermitAugment";
 
     /**
      * Boolean.
      * Permit the augmentation for FundstoBeSettled..
      */
-    String PERMITPARTIAL4PETTYCASH = "org.efaps.sales.AccountPettyCashPermitPartial";
+    String PERMITPARTIAL4PETTYCASH = SalesSettings.BASE + "AccountPettyCashPermitPartial";
 
     /**
      * Boolean.
      * Permit the augmentation for FundstoBeSettled..
      */
-    String REQUIREBOOKED4PETTYCASHPAYMENT = "org.efaps.sales.AccountPettyCashBalanceRequireBooked4Payment";
+    String REQUIREBOOKED4PETTYCASHPAYMENT = SalesSettings.BASE + "AccountPettyCashBalanceRequireBooked4Payment";
 
     /**
      * Boolean.
      * Permit the augmentation for FundstoBeSettled..
      */
-    String ACTIVATEPICKER4PETTYCASHRECIPT = "org.efaps.sales.PettyCashReceiptActivateContactPicker";
+    String ACTIVATEPICKER4PETTYCASHRECIPT = SalesSettings.BASE + "PettyCashReceiptActivateContactPicker";
 
     /**
      * Properties. Can be concatenated.
      * A mapping for AutoComplete etc.
      */
-    String SWAPCONFIG = "org.efaps.sales.Config4Swap";
+    String SWAPCONFIG = SalesSettings.BASE + "Config4Swap";
 
     /**
      * Properties. Can be concatenated.
      * A mapping for AutoComplete etc.
      */
-    String WITHOUTTAXCONFIG = "org.efaps.sales.Config4WithoutTax";
+    String WITHOUTTAXCONFIG = SalesSettings.BASE + "Config4WithoutTax";
 
     /**
      * Properties. Can be concatenated.
      * A mapping for AutoComplete etc.
      */
-    String CREATEFROMCONFIG = "org.efaps.sales.Config4CreateFrom";
+    String CREATEFROMCONFIG = SalesSettings.BASE + "Config4CreateFrom";
+
+    /**
+     * Properties. Can be concatenated.
+     * A mapping for AutoComplete etc.
+     */
+    String CALCULATORCONFIG = SalesSettings.BASE + "Config4Calculator";
 
 }

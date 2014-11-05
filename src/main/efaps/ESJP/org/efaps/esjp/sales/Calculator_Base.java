@@ -55,11 +55,13 @@ import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: Calculator_Base.java 14047 2014-09-17 17:21:35Z jan@moxter.net
+ *          $
  */
 @EFapsUUID("a9ce907c-0e76-44f9-8dbe-2fdfe2893ae0")
 @EFapsRevision("$Rev$")
@@ -67,6 +69,12 @@ public abstract class Calculator_Base
     extends AbstractCommon
     implements Serializable
 {
+
+    public enum Keys
+    {
+        PRICELIST, CROSSTOTAL
+    }
+
     /**
      * Needed for serialization.
      */
@@ -156,6 +164,7 @@ public abstract class Calculator_Base
 
     /**
      * Constructor used to instantiate an empty calculator.
+     *
      * @throws EFapsException on error
      */
     public Calculator_Base()
@@ -168,9 +177,11 @@ public abstract class Calculator_Base
     }
 
     /**
-     * Constructor used to instantiate an empty calculator with long decimal config.
-     * @param _parameter            Parameter  parameter as passed from the eFaps API
-     * @param _config               Config for this Calculator
+     * Constructor used to instantiate an empty calculator with long decimal
+     * config.
+     *
+     * @param _parameter Parameter parameter as passed from the eFaps API
+     * @param _config Config for this Calculator
      * @throws EFapsException on error
      */
     public Calculator_Base(final Parameter _parameter,
@@ -183,7 +194,7 @@ public abstract class Calculator_Base
         setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     public Calculator_Base(final Parameter _parameter,
                            final Calculator _calc,
                            final Instance _prodInstance,
@@ -193,7 +204,7 @@ public abstract class Calculator_Base
                            final boolean _priceFromDB,
                            final ICalculatorConfig _config)
         throws EFapsException
-    //CHECKSTYLE:ON
+    // CHECKSTYLE:ON
     {
         this.parameter = _parameter;
         this.empty = false;
@@ -239,9 +250,9 @@ public abstract class Calculator_Base
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
-                this.taxCatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
+                this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && _config.isIncludeMinRetail(_parameter)) {
-                    this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
                 this.taxCatId = 0;
@@ -260,19 +271,18 @@ public abstract class Calculator_Base
         this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
     }
 
-
     /**
-     * @param _parameter            Parameter  parameter as passed from the eFaps API
-     * @param _calc                 calculator
-     * @param _oid                  oid of the product
-     * @param _quantity             quantity
-     * @param _unitPrice            unit price
-     * @param _discount             discount
-     * @param _priceFromDB          must the price set from DB
-     * @param _config               Config for this Calculator
+     * @param _parameter Parameter parameter as passed from the eFaps API
+     * @param _calc calculator
+     * @param _oid oid of the product
+     * @param _quantity quantity
+     * @param _unitPrice unit price
+     * @param _discount discount
+     * @param _priceFromDB must the price set from DB
+     * @param _config Config for this Calculator
      * @throws EFapsException on error
      */
-    //CHECKSTYLE:OFF
+    // CHECKSTYLE:OFF
     public Calculator_Base(final Parameter _parameter,
                            final Calculator _calc,
                            final String _oid,
@@ -282,7 +292,7 @@ public abstract class Calculator_Base
                            final boolean _priceFromDB,
                            final ICalculatorConfig _config)
         throws EFapsException
-    //CHECKSTYLE:ON
+    // CHECKSTYLE:ON
     {
         this.parameter = _parameter;
         this.empty = false;
@@ -328,9 +338,9 @@ public abstract class Calculator_Base
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
-                this.taxCatId = print.<Long> getAttribute(CISales.ProductAbstract.TaxCategory);
+                this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
                 if (_config != null && _config.isIncludeMinRetail(_parameter)) {
-                    this.minProductPrice =  new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
                 this.taxCatId = 0;
@@ -350,8 +360,36 @@ public abstract class Calculator_Base
     }
 
     /**
+     * @param _key key to be retrieved
+     * @return the value for the key
+     * @throws EFapsException on error
+     */
+    protected String getConfig(final Keys _key)
+        throws EFapsException
+    {
+        return getConfig(_key, null);
+    }
+
+    /**
+     * @param _key key to be retrieved
+     * @param _default dafeult value
+     * @return the value for the key
+     * @throws EFapsException on error
+     */
+    protected String getConfig(final Keys _key,
+                               final String _default)
+        throws EFapsException
+    {
+        final Properties props = Sales.getSysConfig()
+                        .getAttributeValueAsProperties(SalesSettings.CALCULATORCONFIG, true);
+        final String keyStr = getTypeName() + "." + _key.name();
+        return _default == null ? props.getProperty(keyStr) : props.getProperty(keyStr, _default);
+    }
+
+    /**
      *
      * Get the name of the field that contains the date.
+     *
      * @param _parameter Parmeter as passed by the eFaps API
      * @return name of the date field
      */
@@ -420,18 +458,15 @@ public abstract class Calculator_Base
     protected UUID getPriceListUUID()
         throws EFapsException
     {
-        final Properties props = Sales.getSysConfig()
-                        .getAttributeValueAsProperties(SalesSettings.PRICELIST4CALCULATOR, true);
-        final String type = props.getProperty(this.typeName);
+        final String uuid = getConfig(Keys.PRICELIST);
         UUID ret = null;
-        if (type != null) {
-            if (isUUID(type)) {
-                ret = UUID.fromString(type);
+        if (uuid != null) {
+            if (isUUID(uuid)) {
+                ret = UUID.fromString(uuid);
             }
         } else {
             ret = CIProducts.ProductPricelistRetail.uuid;
         }
-
         return ret;
     }
 
@@ -445,13 +480,12 @@ public abstract class Calculator_Base
         return Type.get(getPriceListUUID());
     }
 
-
     /**
      * @return the UUID of the type used for the minimum pricelist
      */
     protected UUID getMinPriceListUUID()
     {
-        return  CIProducts.ProductPricelistMinRetail.uuid;
+        return CIProducts.ProductPricelistMinRetail.uuid;
     }
 
     /**
@@ -505,7 +539,8 @@ public abstract class Calculator_Base
     /**
      * Setter method for instance variable {@link #perceptionProduct}.
      *
-     * @param _perceptionProduct value for instance variable {@link #perceptionProduct}
+     * @param _perceptionProduct value for instance variable
+     *            {@link #perceptionProduct}
      */
     public void setPerceptionProduct(final boolean _perceptionProduct)
     {
@@ -551,7 +586,8 @@ public abstract class Calculator_Base
     /**
      * Setter method for instance variable {@link #productNetUnitPrice}.
      *
-     * @param _netUnitPrice value for instance variable {@link #productNetUnitPrice}
+     * @param _netUnitPrice value for instance variable
+     *            {@link #productNetUnitPrice}
      * @throws EFapsException on error
      */
     public void setNetUnitPrice(final BigDecimal _netUnitPrice)
@@ -566,7 +602,7 @@ public abstract class Calculator_Base
         if (this.taxCatId > 0) {
             final List<Tax> taxesTmp = getTaxes();
             BigDecimal targetPrice = _netUnitPrice;
-            for (final Tax tax: taxesTmp) {
+            for (final Tax tax : taxesTmp) {
                 final BigDecimal factor = tax.getFactor();
                 if (factor.compareTo(BigDecimal.ONE) != 0) {
                     targetPrice = targetPrice.add(_netUnitPrice.multiply(factor));
@@ -652,6 +688,7 @@ public abstract class Calculator_Base
 
     /**
      * To be used by implementation to be able to pass Parameter.
+     *
      * @return null
      */
     protected Parameter getParameter()
@@ -1057,8 +1094,9 @@ public abstract class Calculator_Base
     }
 
     /**
-     * calculate the product price with discount, but calculate the tax after the discount
-     * when the factor is different of 1, because the discount price has to be rounded before.
+     * calculate the product price with discount, but calculate the tax after
+     * the discount when the factor is different of 1, because the discount
+     * price has to be rounded before.
      *
      * @return @return discount price for the product, depending the tax factor.
      * @throws EFapsException on error
@@ -1100,18 +1138,17 @@ public abstract class Calculator_Base
         return this.minProductPrice;
     }
 
-
     /**
      * Setter method for instance variable {@link #minProductPrice}.
      *
-     * @param _minProductPrice value for instance variable {@link #minProductPrice}
+     * @param _minProductPrice value for instance variable
+     *            {@link #minProductPrice}
      */
 
     public void setMinProductPrice(final ProductPrice _minProductPrice)
     {
         this.minProductPrice = _minProductPrice;
     }
-
 
     /**
      * Get the cross price formated with the given formater.
@@ -1495,5 +1532,89 @@ public abstract class Calculator_Base
     public String getTypeName()
     {
         return this.typeName;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    protected static BigDecimal getNetTotal(final Parameter _parameter,
+                                            final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calc : _calcList) {
+            ret = ret.add(calc.getNetPrice());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    protected static BigDecimal getCrossTotal(final Parameter _parameter,
+                                              final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        String crossTotal = "";
+        if (!_calcList.isEmpty()) {
+            crossTotal = _calcList.get(0).getConfig(Keys.CROSSTOTAL, "default");
+        }
+        switch (crossTotal) {
+            case "NetTotalPlusTax":
+                ret = Calculator.getNetTotal(_parameter, _calcList);
+                for (final Calculator calc : _calcList) {
+                    for (final BigDecimal amount : calc.getTaxesAmounts().values()) {
+                        ret = ret.add(amount);
+                    }
+                }
+                break;
+            default:
+                for (final Calculator calc : _calcList) {
+                    ret = ret.add(calc.getCrossPrice());
+                }
+                break;
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    protected static BigDecimal getBaseCrossTotal(final Parameter _parameter,
+                                                  final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calc : _calcList) {
+            ret = ret.add(calc.getProductCrossPrice().getBasePrice());
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _calcList List of calculator
+     * @return crossTotal
+     * @throws EFapsException on error
+     */
+    protected static BigDecimal getPerceptionTotal(final Parameter _parameter,
+                                                   final List<Calculator> _calcList)
+        throws EFapsException
+    {
+        BigDecimal ret = BigDecimal.ZERO;
+        for (final Calculator calc : _calcList) {
+            ret = ret.add(calc.getPerception());
+        }
+        return ret;
     }
 }
