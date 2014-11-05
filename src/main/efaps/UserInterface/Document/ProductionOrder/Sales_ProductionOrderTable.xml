@@ -30,9 +30,22 @@
         <name>Sales_ProductionOrderTable</name>
         <field name="name">
             <property name="Attribute">Name</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
-             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_DocumentAbstract/Type.Label</property>
+            <property name="Label">Sales_ProductionOrder/Name.Label</property>
+             <property name="HRef">TREE</property>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_ProductionOrder/Contact.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductionOrderTable.contact.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+            </trigger>
         </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
@@ -40,16 +53,16 @@
             <property name="FilterBase">DATABASE</property>
             <property name="FilterDefault">WEEK</property>
             <property name="Attribute">Date</property>
-            <property name="Label">Sales_DocumentAbstract/Date.Label</property>
+            <property name="Label">Sales_ProductionOrder/Date.Label</property>
         </field>
         <field name="vendorLink">
             <property name="Attribute">Salesperson</property>
-            <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
+            <property name="Label">Sales_ProductionOrder/Salesperson.Label</property>
         </field>
         <field name="status">
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
-            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+            <property name="Label">Sales_ProductionOrder/Status.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>

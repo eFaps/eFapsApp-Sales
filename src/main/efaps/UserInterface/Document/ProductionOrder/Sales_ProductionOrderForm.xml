@@ -101,6 +101,62 @@
         <field name="name">
             <property name="Attribute">Name</property>
         </field>
+        <field character="Heading" name="headingClient">
+            <property name="Level">2</property>
+            <property name="Label">Sales_ProductionOrderForm.headingClient.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductionOrderForm.headingClient.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+            </trigger>
+        </field>
+        <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_ProductionOrder/Contact.Label</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="Columns">98</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductionOrderForm.contact.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                method="autoComplete4Contact"
+                name="Sales_ProductionOrderForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts">
+                <property name="Classification">Contacts_ClassClient</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Contact"
+                name="Sales_ProductionOrderForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.ProductionOrder"/>
+        </field>
+        <field name="contactData">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_IncomingReminderForm.contactData.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductionOrderForm.contactData.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+            </trigger>
+        </field>
         <field character="Heading" name="headingPosition">
             <property name="Level">2</property>
             <property name="Label">Sales_ProductionOrderForm.headingPosition.Heading</property>
