@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-11-05T13:47:34 -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentCheckOutReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dee989e2-f9c3-4cb9-acdf-f5e86b39ebd9">
+<!-- 2014-11-05T15:22:11 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentCheckOutReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="dee989e2-f9c3-4cb9-acdf-f5e86b39ebd9">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
 	<import value="org.joda.time.DateTime"/>
 	<parameter name="INSTANCE" class="Object">
@@ -138,9 +138,9 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="81" splitType="Stretch">
+		<band height="30" splitType="Stretch">
 			<subreport>
-				<reportElement x="0" y="0" width="555" height="60" isPrintWhenDetailOverflows="true" uuid="23f7d9e2-5b6f-4338-bf13-7907ce262c80"/>
+				<reportElement x="0" y="0" width="555" height="30" isPrintWhenDetailOverflows="true" uuid="23f7d9e2-5b6f-4338-bf13-7907ce262c80"/>
 				<subreportParameter name="INSTANCE">
 					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
 				</subreportParameter>
@@ -148,9 +148,49 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 				<subreportExpression><![CDATA["Sales_PaymentCheckOutDocumentsReport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
+		<band height="49">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="40" uuid="9e458b0f-362e-4a79-8ab5-5b1da6e2a501">
+					<property name="local_mesure_unitx" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["/home/janmoxter/Workspaces/eFaps/accounting/src/main/efaps/JRxml/Accounting_Sales_PaymentDocumentTransactionReport.jrxml"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="89" y="24" width="100" height="30" uuid="be704c74-0963-4242-a3da-1fefc8e1e56a"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Firma]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="200" y="24" width="100" height="30" uuid="1981ee59-2db1-4520-9e9c-baffb152fc73"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[Nombres]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="300" y="24" width="100" height="30" uuid="ad698b9d-14b7-4181-bb99-3092ad5f4470"/>
+				<box>
+					<topPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[DNI]]></text>
+			</staticText>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch"/>
