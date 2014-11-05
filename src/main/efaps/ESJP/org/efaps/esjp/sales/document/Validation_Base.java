@@ -80,6 +80,8 @@ public abstract class Validation_Base
         POSITION,
         /** Basic validation for Positions.*/
         DUPLICATEDPOSITION,
+        /** Validate that only one product is selected.*/
+        ONLYONEPRODUCT,
         /** Validate Quantity in Stock. */
         QUANTITYINSTOCK,
         /** Validate that Quantity is greater than zero. */
@@ -119,6 +121,9 @@ public abstract class Validation_Base
                     break;
                 case DUPLICATEDPOSITION:
                     warnings.addAll(validateDuplicatedPositions(_parameter, _doc));
+                    break;
+                case ONLYONEPRODUCT:
+                    warnings.addAll(validateOnlyOneProduct(_parameter, _doc));
                     break;
                 case QUANTITYINSTOCK:
                     warnings.addAll(validateQuantityInStorage(_parameter, _doc));
@@ -200,6 +205,32 @@ public abstract class Validation_Base
                 ret.add(new DuplicatedPositionWarning().setPosition(i + 1));
             } else {
                 prods.add(prodInst);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Validate that the positions are valid.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validateOnlyOneProduct(final Parameter _parameter,
+                                                 final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.PositionAbstract.Product.name));
+        Instance currentProdInst = null;
+        for (int i = 0; i < getPositionsCount(_parameter); i++) {
+            final Instance prodInst = Instance.get(product[i]);
+            if (currentProdInst == null) {
+                currentProdInst = prodInst;
+            } else if (!currentProdInst.equals(prodInst)){
+                ret.add(new OnlyOneProductWarning());
             }
         }
         return ret;
@@ -555,5 +586,20 @@ public abstract class Validation_Base
     public static class AreYouSureWarning
         extends AbstractWarning
     {
+    }
+
+    /**
+     * Warning for amount greater zero.
+     */
+    public static class OnlyOneProductWarning
+        extends AbstractWarning
+    {
+        /**
+         * Constructor.
+         */
+        public OnlyOneProductWarning()
+        {
+            setError(true);
+        }
     }
 }
