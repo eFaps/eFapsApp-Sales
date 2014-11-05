@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
+<!-- 2014-11-05T13:47:58 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentCheckOutDocumentsReport" pageWidth="555" pageHeight="842" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="f44e14de-78bf-4dbb-aa8c-fb285ef3c00d">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<import value="org.joda.time.DateTime"/>
+	<parameter name="INSTANCE" class="Object">
+		<parameterDescription><![CDATA[]]></parameterDescription>
+		<defaultValueExpression><![CDATA["5905.636"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="eFaps">
+		<![CDATA[query type Sales_Payment where TargetDocument = $P!{INSTANCE} select attribute[Amount] as amount,linkto[CreateDocument].attribute[Name] as docName, linkto[CreateDocument].attribute[Date] as dateDoc, linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol] as docCurrencySymb, linkto[CreateDocument].attribute[Rate].label as docRate, linkto[CreateDocument].linkto[Contact].attribute[Name] as docContactName, linkto[CreateDocument].type.label as docType, linkto[CreateDocument].attribute[RateCrossTotal] as docCrossTotal,  linkto[CreateDocument].attribute[Date] as docDate]]>
+	</queryString>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<field name="docName" class="java.lang.String"/>
+	<field name="docRate" class="java.math.BigDecimal"/>
+	<field name="docContactName" class="java.lang.String"/>
+	<field name="docCurrencySymb" class="java.lang.String"/>
+	<field name="docType" class="java.lang.String"/>
+	<field name="docCrossTotal" class="java.math.BigDecimal"/>
+	<field name="docDate" class="org.joda.time.DateTime"/>
+	<columnHeader>
+		<band height="12" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<staticText>
+				<reportElement x="0" y="0" width="50" height="12" uuid="50fa8da3-ddf7-47de-95e9-1c508a47fa8f">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tipo]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="50" y="0" width="84" height="12" uuid="647505b8-2b84-48ef-8b35-2c5bd43c9184">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[No]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="134" y="0" width="50" height="12" uuid="26cc1070-7e23-4675-920e-956969890c72">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="184" y="0" width="170" height="12" uuid="ada57911-8824-4126-a98a-25fceb8fbf95">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Contacto]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="354" y="0" width="50" height="12" uuid="d46734e4-4ac2-4c50-b14a-fd5d464cdc18">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Total]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="404" y="0" width="50" height="12" uuid="36332076-c7dd-4a69-b021-b2c755e433c6">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Cambio]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="454" y="0" width="50" height="12" uuid="faeec4e3-da56-4bbf-901e-a7b33cec7973">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Moneda]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="504" y="0" width="50" height="12" uuid="b86a83a4-c308-485d-9e2b-ecbf2a3cd136">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Importe]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="12" splitType="Stretch">
+			<property name="local_mesure_unitheight" value="pixel"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+			<textField>
+				<reportElement x="0" y="0" width="50" height="12" uuid="62222cda-6c5c-4f58-9295-d2d0b1885341">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docType}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="50" y="0" width="84" height="12" uuid="9ba9dd32-2d3e-4ddc-bdd5-545d99d4781a">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="184" y="0" width="170" height="12" uuid="b3429a32-6557-49b7-abf9-d4afd332dc7a">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docContactName}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#" isBlankWhenNull="false">
+				<reportElement mode="Transparent" x="354" y="0" width="50" height="12" forecolor="#000000" backcolor="#FFFFFF" uuid="f66ebaa9-68c6-453c-95c3-7587f31f30bb">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="8" isBold="false" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docCrossTotal}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.###;(#,##0.###-)">
+				<reportElement x="404" y="0" width="50" height="12" uuid="4e1d6fbb-eaad-482c-8517-2ec3a6344a4f">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docRate}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="454" y="0" width="50" height="12" uuid="81e33491-dd82-406d-99db-d80a00ff8778">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docCurrencySymb}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00#">
+				<reportElement x="504" y="0" width="50" height="12" uuid="e854da3a-4196-472d-8e14-dad4d83294bd">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Right">
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="134" y="0" width="50" height="12" uuid="1982391f-876e-4918-a46d-40d05553def0">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="8"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{docDate}.toDate()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

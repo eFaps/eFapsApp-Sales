@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-11-05T12:13:47 -->
+<!-- 2014-11-05T13:47:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentCheckOutReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="dee989e2-f9c3-4cb9-acdf-f5e86b39ebd9">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SD - 9999"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
+	<import value="org.joda.time.DateTime"/>
 	<parameter name="INSTANCE" class="Object">
 		<parameterDescription><![CDATA[]]></parameterDescription>
-		<defaultValueExpression><![CDATA["5905.688"]]></defaultValueExpression>
+		<defaultValueExpression><![CDATA["5905.636"]]></defaultValueExpression>
 	</parameter>
 	<parameter name="CompanyName" class="java.lang.String">
 		<defaultValueExpression><![CDATA["Empresa que usa este sistema"]]></defaultValueExpression>
@@ -18,7 +19,7 @@
 linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[AccountLink].linkto[FinancialInstitute].attribute[Value] as financialInstitute]]>
 	</queryString>
 	<field name="name" class="java.lang.String"/>
-	<field name="date" class="java.lang.String"/>
+	<field name="date" class="org.joda.time.DateTime"/>
 	<field name="contactName" class="java.lang.String"/>
 	<field name="note" class="java.lang.String"/>
 	<field name="issued" class="java.lang.String"/>
@@ -137,7 +138,16 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="125" splitType="Stretch"/>
+		<band height="81" splitType="Stretch">
+			<subreport>
+				<reportElement x="0" y="0" width="555" height="60" isPrintWhenDetailOverflows="true" uuid="23f7d9e2-5b6f-4338-bf13-7907ce262c80"/>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["Sales_PaymentCheckOutDocumentsReport.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>
