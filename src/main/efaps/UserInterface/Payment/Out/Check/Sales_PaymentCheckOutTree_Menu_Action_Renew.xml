@@ -22,30 +22,19 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b80d84d8-68a5-418d-8381-a7398821c3ff</uuid>
+    <uuid>528b5f38-0438-47eb-b7eb-b276e69bf5d9</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentCheckOut</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_PaymentCheckOutTree_Menu_Action_Renew</name>
         <target>
-            <form>Sales_PaymentCheckOutForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCheckOut">
-                <property name="JasperReport">Sales_PaymentCheckOutReport</property>
-                <property name="Mime">pdf</property>
-                <property name="StatusGroup">Sales_PaymentCheckOutStatus</property>
-                <property name="Status">Open</property>
+            <execute method="renew" program="org.efaps.esjp.sales.payment.DocumentUpdate">
+                <property name="NoDataSource">true</property>
             </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentCheckOut" />
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_PaymentCheckOut</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">800</property>
-        <property name="WindowWidth">1200</property>
+        <property name="Target">hidden</property>
         <property name="TargetShowFile">true</property>
+        <property name="Label">Sales_PaymentDocumentTree_Renew.Label</property>
     </definition>
 </ui-command>

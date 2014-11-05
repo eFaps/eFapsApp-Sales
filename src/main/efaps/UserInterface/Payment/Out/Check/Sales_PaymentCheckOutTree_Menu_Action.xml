@@ -19,17 +19,18 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>448988de-2aca-4f15-b358-5710767c9d44</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentCheckOutTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_PaymentCheckOutTree_Menu_Action_Edit</child>
-            <child>Sales_PaymentDocumentTree_Renew</child>
+            <child>Sales_PaymentCheckOutTree_Menu_Action_Renew</child>
             <child>Sales_PaymentCheckOutTree_Menu_Action_SetCanceled</child>
             <child>Sales_PaymentDocumentCheckout</child>
             <child>Sales_PaymentCheckOutTree_Menu_Action_PayPayment</child>

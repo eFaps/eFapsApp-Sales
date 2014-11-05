@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.6.2.final using JasperReports Library version 5.5.1  -->
-<!-- 2014-11-05T15:22:11 -->
+<!-- 2014-11-05T16:45:24 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentCheckOutReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="dee989e2-f9c3-4cb9-acdf-f5e86b39ebd9">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
 	<import value="org.joda.time.DateTime"/>
@@ -35,7 +35,7 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 		<band splitType="Stretch"/>
 	</background>
 	<pageHeader>
-		<band height="76" splitType="Stretch">
+		<band height="84" splitType="Stretch">
 			<staticText>
 				<reportElement x="0" y="20" width="70" height="20" uuid="eff25323-dde3-4212-9fc4-71386e79652e">
 					<printWhenExpression><![CDATA[$P{CompanyTaxNum} != null]]></printWhenExpression>
@@ -65,34 +65,41 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 				<textFieldExpression><![CDATA[$P{CompanyTaxNum}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="0" y="46" width="555" height="30" uuid="ab2cd04e-b66c-4a78-8d8e-0148cf4b17f6"/>
+				<reportElement x="0" y="46" width="555" height="14" uuid="ab2cd04e-b66c-4a78-8d8e-0148cf4b17f6"/>
 				<textElement textAlignment="Center">
 					<font size="12" isBold="true"/>
 				</textElement>
 				<textFieldExpression><![CDATA["Voucher " + ($F{code} == null ? "" : $F{code})]]></textFieldExpression>
 			</textField>
+			<textField pattern="MMMM - yyyy">
+				<reportElement x="0" y="60" width="554" height="19" uuid="952e7738-0c4e-4765-8b15-47f48a49b6cf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="147" splitType="Stretch">
+		<band height="139" splitType="Stretch">
 			<textField>
 				<reportElement x="100" y="0" width="100" height="20" uuid="a365a162-d720-477a-9f7a-77ab08204ece"/>
 				<textFieldExpression><![CDATA[$F{name}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="0" y="0" width="100" height="20" uuid="fe495f28-b223-47f1-bd86-74e41f5b2d4b"/>
-				<text><![CDATA[Cheque:]]></text>
+				<text><![CDATA[Nº Cheque:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="340" y="0" width="100" height="20" uuid="8ec7ba35-0170-4f23-8212-21c1adb9dccd"/>
+				<reportElement x="454" y="0" width="100" height="20" uuid="8ec7ba35-0170-4f23-8212-21c1adb9dccd"/>
+				<box leftPadding="2"/>
 				<textFieldExpression><![CDATA[$F{amount}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement x="240" y="0" width="50" height="20" uuid="2cf2ca05-675f-4112-b21a-2641e8e5eb2f"/>
+				<reportElement x="370" y="0" width="50" height="20" uuid="2cf2ca05-675f-4112-b21a-2641e8e5eb2f"/>
 				<text><![CDATA[Importe:]]></text>
 			</staticText>
 			<textField>
-				<reportElement x="290" y="0" width="50" height="20" uuid="6274ba3b-5e63-47b8-83a5-5ea65f1893ab"/>
+				<reportElement x="420" y="0" width="34" height="20" uuid="6274ba3b-5e63-47b8-83a5-5ea65f1893ab"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$F{currencySymbol}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -133,7 +140,22 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 			</textField>
 			<staticText>
 				<reportElement x="0" y="100" width="100" height="20" uuid="041d62d0-e5e6-42b1-bfa1-034bfd2196fc"/>
-				<text><![CDATA[Nro Cuenta:]]></text>
+				<text><![CDATA[Nº Cuenta:]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="250" y="0" width="100" height="19" uuid="496b7c64-f36f-4eb8-91fa-cf76275ade43"/>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="200" y="0" width="50" height="20" uuid="8d3b8045-1543-45f1-ae2f-7acc7ea1c895"/>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="124" width="99" height="14" uuid="617e2014-c6b7-4f2c-a358-2fbe0fb706d3"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Documentos:]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
@@ -148,7 +170,7 @@ linkfrom[Sales_CheckBook2PaymentCheckOut#ToLink].linkto[FromLink].linkto[Account
 				<subreportExpression><![CDATA["Sales_PaymentCheckOutDocumentsReport.jasper"]]></subreportExpression>
 			</subreport>
 		</band>
-		<band height="49">
+		<band height="43">
 			<subreport>
 				<reportElement x="0" y="0" width="555" height="40" uuid="9e458b0f-362e-4a79-8ab5-5b1da6e2a501">
 					<property name="local_mesure_unitx" value="pixel"/>
