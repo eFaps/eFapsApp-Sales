@@ -19,8 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>ef82486c-ff27-4f1e-b41b-92375e9e69a1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -35,15 +36,15 @@
             <menu>Sales_RetentionCertificateMyDesk_Menu</menu>
             <table>Sales_RetentionCertificateTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_RetentionCertificate</property>
+                <property name="Type">Sales_RetentionCertificate</property>
             </evaluate>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_RetentionCertificateMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck" name="Sales_RetentionCertificateMyDesk.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.IsRetentionAgent</property>
             </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>
