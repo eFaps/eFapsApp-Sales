@@ -50,7 +50,8 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: RetentionCertificate_Base.java 14072 2014-09-19 17:33:57Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("02d5a390-516e-43d4-8d46-ca9c6599146a")
 @EFapsRevision("$Rev$")
@@ -63,7 +64,10 @@ public abstract class RetentionCertificate_Base
      */
     protected static final Logger LOG = LoggerFactory.getLogger(RetentionCertificate_Base.class);
 
-    protected static final String REQKEY =  RetentionCertificate.class.getName();
+    /**
+     * Key used for temp caching.
+     */
+    protected static final String REQKEY = RetentionCertificate.class.getName();
 
     /**
      * Method for create a new Quotation.
@@ -89,24 +93,25 @@ public abstract class RetentionCertificate_Base
     {
         final MultiPrint multi = new MultiPrint()
         {
+
             @Override
             protected void add2QueryBldr(final Parameter _parameter,
                                          final QueryBuilder _queryBldr)
                 throws EFapsException
             {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                                CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
+                                CISales.RetentionCertificate2IncomingRetention.ToLink);
                 _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID, attrQuery);
 
                 final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate);
-                attrQueryBldr2.addWhereAttrEqValue(CISales.RetentionCertificate.ID, _parameter.getInstance().getId());
+                attrQueryBldr2.addWhereAttrEqValue(CISales.RetentionCertificate.ID, _parameter.getInstance());
                 final AttributeQuery attrQuery2 = attrQueryBldr2
                                 .getAttributeQuery(CISales.RetentionCertificate.Contact);
 
-                final QueryBuilder attrQueryBldr3 = new QueryBuilder(CISales.PaymentRetentionOut);
-                attrQueryBldr3.addWhereAttrInQuery(CISales.PaymentRetentionOut.Contact, attrQuery2);
-                final AttributeQuery attrQuery3 = attrQueryBldr3.getAttributeQuery(CISales.PaymentRetentionOut.ID);
+                final QueryBuilder attrQueryBldr3 = new QueryBuilder(CISales.IncomingRetention);
+                attrQueryBldr3.addWhereAttrInQuery(CISales.IncomingRetention.Contact, attrQuery2);
+                final AttributeQuery attrQuery3 = attrQueryBldr3.getAttributeQuery(CISales.IncomingRetention.ID);
 
                 _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery3);
             }
@@ -114,33 +119,47 @@ public abstract class RetentionCertificate_Base
         return multi.execute(_parameter);
     }
 
-
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return insertPostTrigger4Rel(final Parameter _parameter)
         throws EFapsException
     {
         final Map<?, ?> values = (HashMap<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
         final Attribute attr = _parameter.getInstance().getType().getAttribute("FromLink");
         updateSum(_parameter, Instance.get(CISales.RetentionCertificate.getType(),
-                        (Long)((Object[]) values.get(attr))[0]));
+                        (Long) ((Object[]) values.get(attr))[0]));
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return updatePostTrigger4Rel(final Parameter _parameter)
         throws EFapsException
     {
         final Map<?, ?> values = (HashMap<?, ?>) _parameter.get(ParameterValues.NEW_VALUES);
         final Attribute attr = _parameter.getInstance().getType().getAttribute("FromLink");
         updateSum(_parameter, Instance.get(CISales.RetentionCertificate.getType(),
-                        (Long)((Object[]) values.get(attr))[0]));
+                        (Long) ((Object[]) values.get(attr))[0]));
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return deletePreTrigger4Rel(final Parameter _parameter)
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         final SelectBuilder selCInst = SelectBuilder.get()
-                        .linkto(CISales.RetentionCertificate2PaymentRetentionOut.FromLink)
+                        .linkto(CISales.RetentionCertificate2IncomingRetention.FromLink)
                         .instance();
         print.addSelect(selCInst);
         print.execute();
@@ -148,22 +167,32 @@ public abstract class RetentionCertificate_Base
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
     public Return deletePostTrigger4Rel(final Parameter _parameter)
         throws EFapsException
     {
-        updateSum(_parameter,  (Instance) Context.getThreadContext().getRequestAttribute(REQKEY));
+        updateSum(_parameter, (Instance) Context.getThreadContext().getRequestAttribute(REQKEY));
         return new Return();
     }
 
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @param _certInst instance of teh certificate to be updated
+     * @throws EFapsException on error
+     */
     protected void updateSum(final Parameter _parameter,
                              final Instance _certInst)
         throws EFapsException
     {
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
-        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink, _certInst);
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink, _certInst);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2PaymentRetentionOut.ToLink)
-                        .attribute(CISales.PaymentRetentionOut.Amount);
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2IncomingRetention.ToLink)
+                        .attribute(CISales.IncomingRetention.CrossTotal);
         multi.addSelect(sel);
         multi.execute();
         BigDecimal total = BigDecimal.ZERO;
@@ -180,6 +209,7 @@ public abstract class RetentionCertificate_Base
 
     /**
      * Fieldvalue for the Detail of the RetentionCertificate.
+     *
      * @param _parameter Parameter as passed from eFaps API.
      * @throws EFapsException on error
      * @return Return containing html snipplet

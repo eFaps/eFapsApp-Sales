@@ -34,8 +34,9 @@
             <property name="TargetShowCheckBoxes">true</property>
             <property name="ModeEdit">READONLY</property>
             <table>Sales_RetentionCertificateDocumentSelectTable</table>
-            <evaluate method="documentMultiPrint" program="org.efaps.esjp.sales.document.RetentionCertificate">
-                <property name="Types">Sales_PaymentRetentionOut</property>
+            <evaluate method="documentMultiPrint"
+                program="org.efaps.esjp.sales.document.RetentionCertificate">
+                <property name="Type">Sales_IncomingRetention</property>
             </evaluate>
         </field>
     </definition>

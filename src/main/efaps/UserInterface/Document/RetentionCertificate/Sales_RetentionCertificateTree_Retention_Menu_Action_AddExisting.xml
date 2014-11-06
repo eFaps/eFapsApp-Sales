@@ -19,14 +19,15 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8c211ca1-b220-4ab4-909b-af0fdd5f2d5c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RetentionCertificateTree_Retention_Menu_Action_AddExisting</name>
-        <!-- target definition -->
         <access>
             <role>Sales_RetentionCertificate</role>
             <role>Sales_Admin</role>
@@ -34,12 +35,11 @@
         <target>
             <form>Sales_RetentionCertificateDocumentSelectForm</form>
             <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectType">Sales_RetentionCertificate2IncomingRetention</property>
                 <property name="ConnectChildAttribute">ToLink</property>
                 <property name="ConnectParentAttribute">FromLink</property>
-                <property name="ConnectType">Sales_RetentionCertificate2PaymentRetentionOut</property>
             </execute>
         </target>
-
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">1200</property>

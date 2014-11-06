@@ -19,41 +19,41 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>43376e69-87a9-41e9-990c-ae5740dbc214</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_RetentionCertificate2PaymentOutTable</name>
+        <name>Sales_RetentionCertificate2IncomingRetentionTable</name>
         <!-- fields -->
         <field name="name">
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[ToLink].oid</property>
             <property name="Select">linkto[ToLink].attribute[Name]</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+            <property name="Label">Sales_IncomingRetention/Name.Label</property>
         </field>
         <field name="contact">
             <property name="Select">linkto[ToLink].linkto[Contact].attribute[Name]</property>
-            <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
+            <property name="Label">Sales_IncomingRetention/Contact.Label</property>
         </field>
         <field name="date">
             <property name="Select">linkto[ToLink].attribute[Date]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract/Date.Label</property>
+            <property name="Label">Sales_IncomingRetention/Date.Label</property>
         </field>
         <field name="status">
             <property name="Select">linkto[ToLink].attribute[StatusAbstract]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract/StatusAbstract.Label</property>
+            <property name="Label">Sales_IncomingRetention/StatusAbstract.Label</property>
         </field>
-        <field name="amount">
-            <property name="Select">linkto[ToLink].attribute[Amount]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract/Amount.Label</property>
+        <field name="rateCrossTotal">
+            <property name="Select">linkto[ToLink].attribute[RateCrossTotal]</property>
+            <property name="Label">Sales_IncomingRetention/RateCrossTotal.Label</property>
         </field>
-        <field name="currencyLink">
-            <property name="Select">linkto[ToLink].linkto[RateCurrencyLink].attribute[Name]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract.Currency.Label</property>
+        <field name="rateCurrencyLink">
+            <property name="Select">linkto[ToLink].linkto[RateCurrencyId].attribute[Name]</property>
+            <property name="Label">Sales_IncomingRetention/RateCurrencyId.Label</property>
         </field>
     </definition>
 </ui-table>

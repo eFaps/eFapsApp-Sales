@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.report;
 
 import java.io.File;
@@ -58,13 +57,13 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * Report used to analyze retention for documents
- * by grouping them by month and contact.
+ * Report used to analyze retention for documents by grouping them by month and
+ * contact.
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: RetentionCertificateReport_Base.java 14072 2014-09-19 17:33:57Z
+ *          m.aranya@moxter.net $
  */
 @EFapsUUID("b02e955e-4cb7-4c01-bec0-4bc69a8f8789")
 @EFapsRevision("$Rev$")
@@ -161,8 +160,6 @@ public abstract class RetentionCertificateReport_Base
         return new DynRetentionCertificateReport(this);
     }
 
-
-
     /**
      * Report class.
      */
@@ -190,15 +187,16 @@ public abstract class RetentionCertificateReport_Base
             final DRDataSource dataSource = new DRDataSource("type", "name", "date", "rateNetTotal", "rateCrossTotal",
                             "rateCurrency", "taxAmount");
 
-            final QueryBuilder attQueryBldr = new QueryBuilder(CISales.RetentionCertificate2PaymentRetentionOut);
-            attQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2PaymentRetentionOut.FromLink,
+            final QueryBuilder attQueryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+            attQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink,
                             getInstances(_parameter));
             final AttributeQuery attQuery = attQueryBldr
-                            .getAttributeQuery(CISales.RetentionCertificate2PaymentRetentionOut.ToLink);
+                            .getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink);
 
-            final QueryBuilder payAttrQueryBldr = new QueryBuilder(CISales.Payment);
-            payAttrQueryBldr.addWhereAttrInQuery(CISales.Payment.TargetDocument, attQuery);
-            final AttributeQuery payAttrQuery = payAttrQueryBldr.getAttributeQuery(CISales.Payment.CreateDocument);
+            final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingRetention2IncomingInvoice);
+            relAttrQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention2IncomingInvoice.FromLink, attQuery);
+            final AttributeQuery payAttrQuery = relAttrQueryBldr
+                            .getAttributeQuery(CISales.IncomingRetention2IncomingInvoice.ToLink);
 
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
             queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, payAttrQuery);

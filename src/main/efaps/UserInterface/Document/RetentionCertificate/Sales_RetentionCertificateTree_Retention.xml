@@ -34,9 +34,9 @@
         </access>
         <target>
             <menu>Sales_RetentionCertificateTree_Retention_Menu</menu>
-            <table>Sales_RetentionCertificate2PaymentOutTable</table>
+            <table>Sales_RetentionCertificate2IncomingRetentionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_RetentionCertificate2PaymentRetentionOut</property>
+                <property name="Type">Sales_RetentionCertificate2IncomingRetention</property>
                 <property name="LinkFrom">FromLink</property>
             </evaluate>
         </target>
