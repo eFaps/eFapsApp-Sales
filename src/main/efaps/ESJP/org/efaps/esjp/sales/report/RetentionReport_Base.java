@@ -313,15 +313,15 @@ public abstract class RetentionReport_Base
                 _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date,
                                 date.withTimeAtStartOfDay().plusDays(1));
             }
-
+            // exclude professional service receipts
             final QueryBuilder docTypeAttrQueryBldr = new QueryBuilder(CIERP.DocumentType);
-            docTypeAttrQueryBldr.addWhereAttrEqValue(CIERP.DocumentType.Configuration,
+            docTypeAttrQueryBldr.addWhereAttrNotEqValue(CIERP.DocumentType.Configuration,
                             DocTypeConfiguration.PROFESSIONALSERVICE);
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentType);
-            attrQueryBldr.addWhereAttrNotInQuery(CISales.Document2DocumentType.DocumentTypeLink,
+            attrQueryBldr.addWhereAttrInQuery(CISales.Document2DocumentType.DocumentTypeLink,
                             docTypeAttrQueryBldr.getAttributeQuery(CIERP.DocumentType.ID));
-            _queryBldr.addWhereAttrNotInQuery(CIERP.DocumentAbstract.ID,
+            _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID,
                             attrQueryBldr.getAttributeQuery(CISales.Document2DocumentType.DocumentLink));
 
         }
@@ -373,7 +373,7 @@ public abstract class RetentionReport_Base
             final TextColumnBuilder<BigDecimal> retentionColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Retention"), "retention",
                             DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> percentColumn=  DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<BigDecimal> percentColumn =  DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Percent"), "percent",
                             DynamicReports.type.bigDecimalType());
 
