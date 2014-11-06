@@ -559,7 +559,8 @@
             <property name="HideLabel">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
-            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_IncomingReminderForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="withoutVATFieldValue"
+                name="Sales_IncomingReminderForm.withoutVAT.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
@@ -572,7 +573,7 @@
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="RowSpan">3</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -588,11 +589,22 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">CrossTotal</property>
         </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateTaxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
+        </field>
         <field name="netTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingReminder/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">READONLY</property>
@@ -622,12 +634,42 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="accessCheck4Rate"
+                name="Sales_IncomingReminderForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.headingPosition.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="accessCheck4Rate"
+                name="Sales_IncomingReminderForm.rateHeadingPosition.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="accessCheck4Rate"
+                name="Sales_IncomingReminderForm.ratePositionTable.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+            <table>Sales_IncomingReminderRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_IncomingReminderPosition</property>
+                <property name="LinkFrom">IncomingReminder</property>
+            </evaluate>
         </field>
         <field name="rateNetTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingReminder/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="accessCheck4Rate"
+                name="Sales_IncomingReminderForm.rateTaxes.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">READONLY</property>
@@ -641,7 +683,8 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ReminderPositionTable.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.IncomingReminder"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="getJavaScriptUIValue"
+                name="Sales_ReminderPositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
         </field>
     </definition>
 </ui-form>

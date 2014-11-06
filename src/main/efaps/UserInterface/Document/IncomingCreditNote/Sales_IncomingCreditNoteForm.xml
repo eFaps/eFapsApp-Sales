@@ -250,7 +250,7 @@
         <field name="note">
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="RowSpan">3</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -602,6 +602,13 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">NetTotal</property>
         </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateTaxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
+        </field>
         <field name="crossTotal">
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">READONLY</property>
@@ -613,6 +620,10 @@
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingCreditNote/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">READONLY</property>
@@ -642,12 +653,42 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="accessCheck4Rate"
+                name="Sales_IncomingInvoiceForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_IncomingCreditNoteForm.headingPosition.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="accessCheck4Rate"
+                name="Sales_IncomingCreditNoteForm.rateHeadingPosition.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="accessCheck4Rate"
+                name="Sales_IncomingCreditNoteForm.ratePositionTable.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+            <table>Sales_IncomingCreditNoteRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_IncomingCreditNotePosition</property>
+                <property name="LinkFrom">IncomingCreditNote</property>
+            </evaluate>
         </field>
         <field name="rateNetTotal4Read">
             <property name="ModeEdit">READONLY</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_IncomingCreditNote/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingCreditNote" method="accessCheck4Rate"
+                name="Sales_IncomingCreditNoteForm.rateTaxes.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">READONLY</property>
