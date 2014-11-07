@@ -23,10 +23,10 @@ package org.efaps.esjp.sales.report;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,13 +36,16 @@ import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
 import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
-import org.efaps.admin.datamodel.Type;
+import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -52,7 +55,6 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
-import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -65,6 +67,7 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -73,7 +76,8 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: SalesReport4Account_Base.java 14090 2014-09-23 19:51:05Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("d095f1fb-9286-4f93-a030-715873826dca")
 @EFapsRevision("$Rev$")
@@ -98,7 +102,7 @@ public abstract class SalesReport4Account_Base
     private ReportKey reportKey = ReportKey.IN;
 
     /**
-     * @param _parameter    Parameter as passed by the eFasp API
+     * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
      */
@@ -207,11 +211,7 @@ public abstract class SalesReport4Account_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final DRDataSource dataSource = new DRDataSource("docOID", "docType", "docCreated", "docDate", "docName",
-                            "docContactName", "docDueDate", "docCrossTotal", "docPayment", "docDifference",
-                            "docRateCurrency", "docRateObject");
-
-            final List<Map<String, Object>> lst = new ArrayList<Map<String, Object>>();
+            final List<DataBean> dataSource = new ArrayList<>();
 
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
 
@@ -228,83 +228,70 @@ public abstract class SalesReport4Account_Base
                             CISales.DocumentSumAbstract.Name,
                             CISales.DocumentSumAbstract.DueDate,
                             CISales.DocumentSumAbstract.Rate,
-                            CISales.DocumentSumAbstract.CrossTotal);
+                            CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.CurrencyId,
+                            CISales.DocumentSumAbstract.RateCurrencyId,
+                            CISales.DocumentSumAbstract.RateCrossTotal,
+                            CISales.DocumentSumAbstract.Revision);
 
             final SelectBuilder selContactInst = new SelectBuilder()
-                                    .linkto(CISales.DocumentSumAbstract.Contact).instance();
+                            .linkto(CISales.DocumentSumAbstract.Contact).instance();
+            final SelectBuilder selStatus = new SelectBuilder().status().label();
             final SelectBuilder selContactName = new SelectBuilder()
-                                    .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
+                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
 
-            final SelectBuilder selRateCurInst = new SelectBuilder()
-                                    .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-
-            multi.addSelect(selContactInst, selContactName, selRateCurInst);
+            multi.addSelect(selContactInst, selContactName, selStatus);
             multi.execute();
             while (multi.next()) {
-                final Object[] rate = multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
-                final Instance rateCurDocInst = multi.<Instance>getSelect(selRateCurInst);
-                final CurrencyInst rateCurInst = new CurrencyInst(rateCurDocInst);
-                final DateTime created = multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created);
-                final DateTime date = multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date);
-                final DateTime dueDate = multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate);
-                final String name = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
-                final String contactName = multi.<String>getSelect(selContactName);
-                final BigDecimal crossTotal = multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                final BigDecimal payment = getPayments4Document(_parameter, multi.getCurrentInstance());
-
-                final Map<String, Object> map = new HashMap<String, Object>();
-
-                map.put("docOID", multi.getCurrentInstance().getOid());
-                map.put("docType", multi.getCurrentInstance().getType().getLabel());
-                map.put("docCreated", created);
-                map.put("docDate", date);
-                map.put("docName", name);
-                map.put("docContactName", contactName);
-                map.put("docDueDate", dueDate);
-                map.put("docCrossTotal", crossTotal);
-                map.put("docPayment", payment);
-                map.put("docDifference", crossTotal.subtract(payment));
-                map.put("docRateCurrency", rateCurInst.getISOCode());
-                map.put("docRateObject", rateCurInst.isInvert() ? rate[1] : rate[0]);
-                lst.add(map);
+                final DataBean dataBean = new DataBean()
+                        .setDocInst(multi.getCurrentInstance())
+                        .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
+                        .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                        .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
+                        .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                        .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
+                        .setDocStatus(multi.<String>getSelect(selStatus))
+                        .setRate(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
+                        .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
+                                    multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal))
+                        .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
+                                    multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                dataSource.add(dataBean);
             }
 
-            Collections.sort(lst, new Comparator<Map<String, Object>>()
+            final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
+            chain.addComparator(new Comparator<DataBean>()
             {
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    final DateTime date1 = (DateTime) _o1.get("docDate");
-                    final DateTime date2 = (DateTime) _o2.get("docDate");
-                    final int ret;
-                    if (date1.equals(date2)) {
-                        final String contact1 = (String) _o1.get("docContactName");
-                        final String contact2 = (String) _o2.get("docContactName");
-                        ret = contact1.compareTo(contact2);
-                    } else {
-                        ret = date1.compareTo(date2);
-                    }
-                    return ret;
-                }
-            });
 
-            for (final Map<String, Object> map : lst) {
-                dataSource.add(map.get("docOID"),
-                                map.get("docType"),
-                                map.get("docCreated"),
-                                map.get("docDate"),
-                                map.get("docName"),
-                                map.get("docContactName"),
-                                map.get("docDueDate"),
-                                map.get("docCrossTotal"),
-                                map.get("docPayment"),
-                                map.get("docDifference"),
-                                map.get("docRateCurrency"),
-                                map.get("docRateObject"));
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
+                                    ? _o1.getDocCreated().compareTo(_o2.getDocCreated())
+                                    : _o1.getDocDate().compareTo(_o2.getDocDate());
+                }
+            }
+                            );
+            chain.addComparator(new Comparator<DataBean>()
+            {
+
+                @Override
+                public int compare(final DataBean _o1,
+                                   final DataBean _o2)
+                {
+                    return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                }
+            }
+                            );
+            Collections.sort(dataSource, chain);
+            final Collection<Map<String, ?>> col = new ArrayList<>();
+            for (final DataBean bean : dataSource) {
+                col.add(bean.getMap());
             }
 
-            return dataSource;
+            return new JRMapCollectionDataSource(col);
+
         }
 
         /**
@@ -353,11 +340,15 @@ public abstract class SalesReport4Account_Base
         {
             final boolean showDetails = Boolean.parseBoolean(getProperty(_parameter, "ShowDetails"));
 
+            final String filter = Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
+                            ? "docCreated"
+                            : "docDate";
+
             final TextColumnBuilder<DateTime> monthColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "FilterDate1"), "docDate",
+                            this.filteredReport.getLabel(_parameter, "FilterDate1"), filter,
                             DateTimeMonth.get());
             final TextColumnBuilder<DateTime> yearColumn = AbstractDynamicReport_Base.column(
-                            this.filteredReport.getLabel(_parameter, "FilterDate2"), "docDate",
+                            this.filteredReport.getLabel(_parameter, "FilterDate2"), filter,
                             DateTimeYear.get());
             final TextColumnBuilder<DateTime> dateColumn = AbstractDynamicReport_Base.column(
                             this.filteredReport.getLabel(_parameter, "Created"), "docDate",
@@ -374,6 +365,9 @@ public abstract class SalesReport4Account_Base
             final TextColumnBuilder<String> nameColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "Name"), "docName",
                             DynamicReports.type.stringType());
+            final TextColumnBuilder<String> revisionColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Revision"), "docRevision",
+                            DynamicReports.type.stringType());
 
             final TextColumnBuilder<String> contactNameColumn = DynamicReports.col.column(
                             this.filteredReport.getLabel(_parameter, "ContactName"), "docContactName",
@@ -383,25 +377,9 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "DueDate"), "docDueDate",
                             DateTimeDate.get());
 
-            final TextColumnBuilder<BigDecimal> crossTotalColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "CrossTotal"), "docCrossTotal",
-                            DynamicReports.type.bigDecimalType());
-
-            final TextColumnBuilder<BigDecimal> paymentColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Payment"), "docPayment",
-                            DynamicReports.type.bigDecimalType());
-
-            final TextColumnBuilder<BigDecimal> differenceColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "Difference"), "docDifference",
-                            DynamicReports.type.bigDecimalType());
-
-            final TextColumnBuilder<String> rateCurrencyColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "RateCurrency"), "docRateCurrency",
+            final TextColumnBuilder<String> docStatusColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Status"), "docStatus",
                             DynamicReports.type.stringType());
-
-            final TextColumnBuilder<BigDecimal> rateObjectColumn = DynamicReports.col.column(
-                            this.filteredReport.getLabel(_parameter, "RateObject"), "docRateObject",
-                            DynamicReports.type.bigDecimalType());
 
             final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
@@ -415,102 +393,73 @@ public abstract class SalesReport4Account_Base
 
             _builder.addColumn(yearColumn, monthColumn);
 
+            final List<ColumnGridComponentBuilder> gridList = new ArrayList<>();
             if (getExType().equals(ExportType.HTML)) {
                 _builder.addColumn(linkColumn);
+                gridList.add(linkColumn);
             }
+
+            gridList.add(typeColumn);
+            gridList.add(createdColumn);
+            gridList.add(dateColumn);
+            gridList.add(nameColumn);
+            if (Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)) {
+                gridList.add(revisionColumn);
+            }
+            gridList.add(contactNameColumn);
+            gridList.add(dueDateColumn);
+            gridList.add(docStatusColumn);
+
+            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                final TextColumnBuilder<BigDecimal> crossColumn = DynamicReports.col.column(
+                                this.filteredReport.getLabel(_parameter, "crossTotal"),
+                                "crossTotal_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
+                final TextColumnBuilder<BigDecimal> payColumn = DynamicReports.col.column(
+                                this.filteredReport.getLabel(_parameter, "payed"),
+                                "payed_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
+                final TextColumnBuilder<BigDecimal> result = crossColumn.subtract(payColumn);
+                result.setTitle(this.filteredReport.getLabel(_parameter, "result"));
+
+                final ColumnTitleGroupBuilder titelGroup = DynamicReports.grid.titleGroup(currency.getName(),
+                                crossColumn, payColumn, result);
+                gridList.add(titelGroup);
+                _builder.addColumn(crossColumn, payColumn, result);
+                if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
+                    final TextColumnBuilder<BigDecimal> rateColumn = DynamicReports.col.column(
+                                    this.filteredReport.getLabel(_parameter, "rate"),
+                                    "rate_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
+                    _builder.addColumn(rateColumn);
+                    titelGroup.add(rateColumn);
+                }
+
+                final AggregationSubtotalBuilder<BigDecimal> crossTotal = DynamicReports.sbt.sum(crossColumn);
+                final AggregationSubtotalBuilder<BigDecimal> payTotal = DynamicReports.sbt.sum(payColumn);
+                final AggregationSubtotalBuilder<BigDecimal> resultTotal = DynamicReports.sbt.sum(result);
+                final AggregationSubtotalBuilder<BigDecimal> crossTotal2 = DynamicReports.sbt.sum(crossColumn);
+                final AggregationSubtotalBuilder<BigDecimal> payTotal2 = DynamicReports.sbt.sum(payColumn);
+                final AggregationSubtotalBuilder<BigDecimal> resultTotal2 = DynamicReports.sbt.sum(result);
+                _builder.addSubtotalAtGroupFooter(monthGroup, crossTotal);
+                _builder.addSubtotalAtGroupFooter(monthGroup, payTotal);
+                _builder.addSubtotalAtGroupFooter(monthGroup, resultTotal);
+                _builder.addSubtotalAtGroupFooter(yearGroup, crossTotal2);
+                _builder.addSubtotalAtGroupFooter(yearGroup, payTotal2);
+                _builder.addSubtotalAtGroupFooter(yearGroup, resultTotal2);
+            }
+
+            _builder.columnGrid(gridList.toArray(new ColumnGridComponentBuilder[gridList.size()]));
+
             _builder.addColumn(typeColumn.setFixedWidth(120),
-                                createdColumn,
-                                dateColumn,
-                                nameColumn.setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(140),
-                                contactNameColumn.setFixedWidth(200),
-                                dueDateColumn,
-                                crossTotalColumn,
-                                paymentColumn,
-                                differenceColumn,
-                                rateCurrencyColumn.setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(70),
-                                rateObjectColumn);
+                            createdColumn,
+                            dateColumn,
+                            nameColumn.setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(140),
+                            revisionColumn,
+                            contactNameColumn.setFixedWidth(200),
+                            dueDateColumn,
+                            docStatusColumn);
             if (!showDetails) {
                 _builder.setShowColumnValues(false);
             }
             _builder.groupBy(yearGroup, monthGroup);
-        }
-
-        /**
-         * Method to obtains totals of the payments relations to document.
-         *
-         * @param _parameter    Parameter as passed by the eFaps API
-         * @param _docInst      Instance of the payment
-         * @return value of the payments
-         * @throws EFapsException on error
-         */
-        protected BigDecimal getPayments4Document(final Parameter _parameter,
-                                                  final Instance _docInst)
-            throws EFapsException
-        {
-            BigDecimal ret = BigDecimal.ZERO;
-
-            if (_docInst.isValid()) {
-                final SelectBuilder sel = new SelectBuilder().linkto(CISales.Payment.TargetDocument);
-                final SelectBuilder selTypePay = new SelectBuilder(sel).type();
-                final SelectBuilder selRatePay = new SelectBuilder(sel)
-                                .attribute(CISales.PaymentDocumentAbstract.Rate);
-                final SelectBuilder selRateCurPay = new SelectBuilder(sel)
-                                .linkto(CISales.PaymentDocumentAbstract.RateCurrencyLink).instance();
-
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
-                queryBldr.addWhereAttrEqValue(CISales.Payment.CreateDocument, _docInst);
-                final MultiPrintQuery multi = queryBldr.getPrint();
-                multi.addSelect(selTypePay, selRatePay, selRateCurPay);
-                multi.addAttribute(CISales.Payment.Amount);
-                multi.execute();
-
-                final List<PaymentInfoDocument4Report> lstPayDocs = new ArrayList<PaymentInfoDocument4Report>();
-                while (multi.next()) {
-                    final Type type = multi.<Type>getSelect(selTypePay);
-                    if (type.isKindOf(CISales.PaymentDocumentIOAbstract.getType())) {
-                        final Instance rateCurInst = multi.<Instance>getSelect(selRateCurPay);
-                        final Object[] ratePay = multi.<Object[]>getSelect(selRatePay);
-                        final BigDecimal amount = multi.<BigDecimal>getAttribute(CISales.Payment.Amount);
-
-                        final PaymentInfoDocument4Report payInfo = new PaymentInfoDocument4Report();
-                        payInfo.setAmount(amount);
-                        payInfo.setCurrency(rateCurInst);
-                        payInfo.setRate(ratePay);
-                        payInfo.setDocument(_docInst);
-                        lstPayDocs.add(payInfo);
-                    }
-                }
-                if (!lstPayDocs.isEmpty()) {
-                    final Instance curBase = Currency.getBaseCurrency();
-                    final Iterator<PaymentInfoDocument4Report> iter = lstPayDocs.iterator();
-                    while (iter.hasNext()) {
-                        final PaymentInfoDocument4Report current = iter.next();
-                        if (current.getCurrDocument() != null
-                                        && current.getCurrency() != null) {
-                            if (current.getCurrDocument().equals(curBase)
-                                            && current.getCurrency().equals(curBase)) {
-                                ret = ret.add(current.getAmount());
-                            } else if (current.getCurrDocument().equals(curBase)
-                                            && !current.getCurrency().equals(curBase)) {
-                                final Object[] rates = current.getRate();
-                                final BigDecimal amountPay = current.getAmount();
-                                final BigDecimal rate = ((BigDecimal) rates[1]).divide((BigDecimal) rates[0], 12,
-                                                BigDecimal.ROUND_HALF_UP);
-                                ret = ret.add(amountPay.multiply(rate));
-                            } else {
-                                final Object[] rates = current.getRate();
-                                final BigDecimal amountPay = current.getAmount();
-                                final BigDecimal rate = ((BigDecimal) rates[0]).divide((BigDecimal) rates[1], 12,
-                                                BigDecimal.ROUND_HALF_UP);
-                                ret = ret.add(amountPay.multiply(rate));
-                            }
-                        }
-                    }
-                }
-
-            }
-
-            return ret;
         }
     }
 
@@ -543,118 +492,278 @@ public abstract class SalesReport4Account_Base
         }
     }
 
-    /**
-     * TODO comment!
-     *
-     * @author The eFaps Team
-     * @version $Id$
-     */
-    public static class PaymentInfoDocument4Report
+    public static class DataBean
     {
 
-        /**
-         * amount of the pay.
-         */
-        private BigDecimal amount;
+        private Instance docInst;
 
-        /**
-         * currency of the pay.
-         */
-        private Instance currency;
+        private DateTime docCreated;
 
-        /**
-         * rate of the pay.
-         */
+        private DateTime docDate;
+
+        private DateTime docDueDate;
+
+        private String docName;
+
+        private String docRevision;
+
+        private String docStatus;
+
+        private String docContactName;
+
+        private final Map<Long, BigDecimal> cross = new HashMap<>();
+
+        private final Map<Long, BigDecimal> payments = new HashMap<>();
+
         private Object[] rate;
 
         /**
-         * Instance of the document.
+         * @return
          */
-        private Instance document;
-
-
-        /**
-         * class.
-         */
-        public PaymentInfoDocument4Report()
+        public Map<String, ?> getMap()
+            throws EFapsException
         {
+            if (this.payments.isEmpty()) {
+                evalPayments();
+            }
+            final Map<String, Object> ret = new HashMap<>();
+            ret.put("docOID", getDocInst().getOid());
+            ret.put("docType", getDocInst().getType().getLabel());
+            ret.put("docCreated", getDocCreated());
+            ret.put("docDate", getDocDate());
+            ret.put("docName", getDocName());
+            ret.put("docRevision", getDocRevision());
+            ret.put("docStatus", getDocStatus());
+            ret.put("docContactName", getDocContactName());
+            ret.put("docDueDate", getDocDueDate());
 
+            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                if (this.cross.containsKey(currency.getInstance().getId())) {
+                    ret.put("crossTotal_" + currency.getISOCode(), this.cross.get(currency.getInstance().getId()));
+                    ret.put("payed_" + currency.getISOCode(), this.payments.get(currency.getInstance().getId()));
+                    if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
+                        ret.put("rate_" + currency.getISOCode(), currency.isInvert() ? getRate()[1] : getRate()[0]);
+                    }
+                }
+            }
+            return ret;
+        }
+
+        public DataBean addCross(final Long currencyId,
+                                 final BigDecimal _cross)
+        {
+            this.cross.put(currencyId, _cross);
+            return this;
         }
 
         /**
-         * @param _document to the document.
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
          */
-        protected void setDocument(final Instance _document)
+        public Instance getDocInst()
         {
-            this.document = _document;
+            return this.docInst;
         }
 
         /**
-         * @param _amount to the amount pay.
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
          */
-        protected void setAmount(final BigDecimal _amount)
+        public DataBean setDocInst(final Instance _docInst)
         {
-            this.amount = _amount;
+            this.docInst = _docInst;
+            return this;
         }
 
         /**
-         * @param _currency to the currency pay.
+         * Getter method for the instance variable {@link #docCreated}.
+         *
+         * @return value of instance variable {@link #docCreated}
          */
-        protected void setCurrency(final Instance _currency)
+        public DateTime getDocCreated()
         {
-            this.currency = _currency;
+            return this.docCreated;
         }
 
         /**
-         * @param _rate to the rate pay.
+         * Setter method for instance variable {@link #docCreated}.
+         *
+         * @param _docCreated value for instance variable {@link #docCreated}
          */
-        protected void setRate(final Object[] _rate)
+        public DataBean setDocCreated(final DateTime _docCreated)
         {
-            this.rate = _rate;
+            this.docCreated = _docCreated;
+            return this;
         }
 
         /**
-         * @return the amount
+         * Getter method for the instance variable {@link #docDate}.
+         *
+         * @return value of instance variable {@link #docDate}
          */
-        protected BigDecimal getAmount()
+        public DateTime getDocDate()
         {
-            return this.amount;
+            return this.docDate;
         }
 
         /**
-         * @return the rateCurrency
+         * Setter method for instance variable {@link #docDate}.
+         *
+         * @param _docDate value for instance variable {@link #docDate}
          */
-        protected Instance getCurrency()
+        public DataBean setDocDate(final DateTime _docDate)
         {
-            return this.currency;
+            this.docDate = _docDate;
+            return this;
         }
 
         /**
-         * @return the rate
+         * Getter method for the instance variable {@link #docDueDate}.
+         *
+         * @return value of instance variable {@link #docDueDate}
          */
-        protected Object[] getRate()
+        public DateTime getDocDueDate()
+        {
+            return this.docDueDate;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docDueDate}.
+         *
+         * @param _docDueDate value for instance variable {@link #docDueDate}
+         */
+        public DataBean setDocDueDate(final DateTime _docDueDate)
+        {
+            this.docDueDate = _docDueDate;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docName}.
+         *
+         * @return value of instance variable {@link #docName}
+         */
+        public String getDocName()
+        {
+            return this.docName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docName}.
+         *
+         * @param _docName value for instance variable {@link #docName}
+         */
+        public DataBean setDocName(final String _docName)
+        {
+            this.docName = _docName;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docContactName}.
+         *
+         * @return value of instance variable {@link #docContactName}
+         */
+        public String getDocContactName()
+        {
+            return this.docContactName == null ? "" : this.docContactName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docContactName}.
+         *
+         * @param _docContactName value for instance variable
+         *            {@link #docContactName}
+         */
+        public DataBean setDocContactName(final String _docContactName)
+        {
+            this.docContactName = _docContactName;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #rate}.
+         *
+         * @return value of instance variable {@link #rate}
+         */
+        public Object[] getRate()
         {
             return this.rate;
         }
 
         /**
-         * @return Instance to the currency of the document.
-         * @throws EFapsException on error.
+         * Setter method for instance variable {@link #rate}.
+         *
+         * @param _rate value for instance variable {@link #rate}
          */
-        protected Instance getCurrDocument()
+        public DataBean setRate(final Object[] _rate)
+        {
+            this.rate = _rate;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docRevision}.
+         *
+         * @return value of instance variable {@link #docRevision}
+         */
+        public String getDocRevision()
+        {
+            return this.docRevision;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docRevision}.
+         *
+         * @param _docRevision value for instance variable {@link #docRevision}
+         */
+        public DataBean setDocRevision(final String _docRevision)
+        {
+            this.docRevision = _docRevision;
+            return this;
+        }
+
+        /**
+         * Method to obtains totals of the payments relations to document.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _docInst Instance of the payment
+         * @return value of the payments
+         * @throws EFapsException on error
+         */
+        protected void evalPayments()
             throws EFapsException
         {
-            Instance ret = null;
-            if (this.document != null && this.document.isValid()) {
-                final SelectBuilder selRateCur = new SelectBuilder()
-                                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).instance();
-                final PrintQuery print = new PrintQuery(this.document);
-                print.addSelect(selRateCur);
-                print.execute();
-
-                ret = print.<Instance>getSelect(selRateCur);
+            if (getDocInst().isValid()) {
+                final DocPaymentInfo docPayInfo = new DocPaymentInfo(getDocInst());
+                setDocContactName(docPayInfo.getContactName());
+                setDocName(docPayInfo.getName());
+                this.payments.put(Currency.getBaseCurrency().getId(), docPayInfo.getPaid());
+                this.payments.put(docPayInfo.getRateCurrencyInstance().getId(), docPayInfo.getRatePaid());
             }
-            return ret;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docStatus}.
+         *
+         * @return value of instance variable {@link #docStatus}
+         */
+        public String getDocStatus()
+        {
+            return this.docStatus;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docStatus}.
+         *
+         * @param _docStatus value for instance variable {@link #docStatus}
+         */
+        public DataBean setDocStatus(final String _docStatus)
+        {
+            this.docStatus = _docStatus;
+            return this;
         }
     }
 }
