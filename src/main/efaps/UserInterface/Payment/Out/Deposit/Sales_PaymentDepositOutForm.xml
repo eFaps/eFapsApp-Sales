@@ -120,7 +120,7 @@
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;linkto[CurrencyLink].attribute[Name]&gt;</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt; - $&lt;linkto[CurrencyLink].attribute[Symbol]&gt;</property>
                 <property name="Activation">DEPOSIT</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4RateCurrency"
