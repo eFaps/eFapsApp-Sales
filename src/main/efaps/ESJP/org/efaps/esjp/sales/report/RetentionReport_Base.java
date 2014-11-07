@@ -36,6 +36,7 @@ import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
 import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.definition.ReportParameters;
@@ -386,6 +387,17 @@ public abstract class RetentionReport_Base
                 _builder.addColumn(linkColumn);
             }
 
+            final ColumnTitleGroupBuilder docTitelGroup = DynamicReports.grid.titleGroup(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".TitelGroup.doc"),
+                                typeColumn, revisionColumn, nameColumn, dateColumn, rateCrossTotalColumn,
+                                rateSymbolColumn, crossTotalColumn, paymentColumn, statusColumn);
+
+            final ColumnTitleGroupBuilder retTitelGroup = DynamicReports.grid.titleGroup(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".TitelGroup.ret"),
+                            retPaymentColumn, percentPaymentColumn, retentionColumn, percentColumn);
+
+            _builder.columnGrid(docTitelGroup, retTitelGroup);
+
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactNameColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
@@ -397,7 +409,8 @@ public abstract class RetentionReport_Base
 
             _builder.addColumn(monthColumn, contactNameColumn, typeColumn, revisionColumn, nameColumn,
                             dateColumn, rateCrossTotalColumn, rateSymbolColumn, crossTotalColumn, paymentColumn,
-                            retPaymentColumn, percentPaymentColumn, statusColumn, retentionColumn, percentColumn);
+                            statusColumn,
+                            retPaymentColumn, percentPaymentColumn, retentionColumn, percentColumn);
             _builder.addSubtotalAtGroupFooter(contactGroup, crossTotalSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, paymentSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, retentionPaymentSum);
