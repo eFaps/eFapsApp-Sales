@@ -217,7 +217,7 @@ public abstract class RetentionCertificateReport_Base
                                 multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal),
                                 multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal),
                                 multi.getSelect(selCurrencylabel),
-                                taxdoc.getPaymentAmount());
+                                taxdoc.getTaxAmount());
             }
             return dataSource;
         }

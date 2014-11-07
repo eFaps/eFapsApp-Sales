@@ -62,7 +62,8 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: RetentionBookReport_Base.java 14384 2014-11-07 01:41:00Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("2b4204b9-3211-43fc-9e9e-c754482fe7d8")
 @EFapsRevision("$Rev$")
@@ -184,22 +185,15 @@ public abstract class RetentionBookReport_Base
                             selContactName, selContactTaxNumber);
             multi.execute();
 
-            final SelectBuilder selDocType = SelectBuilder.get()
-                                .linkfrom(CISales.Document2DocumentType.DocumentLink)
-                                .linkto(CISales.Document2DocumentType.DocumentTypeLink)
-                                .attribute(CIERP.DocumentType.Name);
             while (multi.next()) {
                 final DataBean bean = new DataBean();
-                final PrintQuery print = new PrintQuery(multi.<Instance>getSelect(selDocInst));
-                print.addSelect(selDocType);
-                print.execute();
 
-                bean.setCertName(multi.<String>getSelect(selCertName))
+                bean.setDocInst(multi.<Instance>getSelect(selDocInst))
+                                .setCertName(multi.<String>getSelect(selCertName))
                                 .setCertAmount(multi.<BigDecimal>getSelect(selCertAmount))
                                 .setDocName(multi.<String>getSelect(selDocName))
                                 .setDate(multi.<DateTime>getSelect(selDocDate))
                                 .setDocTotal(multi.<BigDecimal>getSelect(selDocTotal))
-                                .setDocType(print.<String>getSelect(selDocType))
                                 .setContactName(multi.<String>getSelect(selContactName))
                                 .setContactTaxNumber(multi.<String>getSelect(selContactTaxNumber));
                 datasource.add(bean);
@@ -318,6 +312,7 @@ public abstract class RetentionBookReport_Base
     {
 
         private DateTime date;
+        private Instance docInst;
         private String docType;
         private String type;
         private BigDecimal certAmount;
@@ -411,7 +406,18 @@ public abstract class RetentionBookReport_Base
          * @return value of instance variable {@link #docType}
          */
         public String getDocType()
+            throws EFapsException
         {
+            if (this.docType == null) {
+                final SelectBuilder selDocType = SelectBuilder.get()
+                                .linkfrom(CISales.Document2DocumentType.DocumentLink)
+                                .linkto(CISales.Document2DocumentType.DocumentTypeLink)
+                                .attribute(CIERP.DocumentType.Name);
+                final PrintQuery print = new PrintQuery(getDocInst());
+                print.addSelect(selDocType);
+                print.execute();
+                this.docType = print.getSelect(selDocType);
+            }
             return this.docType;
         }
 
@@ -453,6 +459,11 @@ public abstract class RetentionBookReport_Base
          */
         public String getType()
         {
+            if (this.type == null) {
+                if (getDocInst().getType().isCIType(CISales.IncomingInvoice)) {
+                    this.type = "Compra";
+                }
+            }
             return this.type;
         }
 
@@ -551,6 +562,27 @@ public abstract class RetentionBookReport_Base
                 }
             }
             return ret;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         */
+        public DataBean setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+            return this;
         }
     }
 }
