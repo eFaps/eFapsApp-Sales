@@ -19,23 +19,17 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>b7412c18-09c0-4360-892a-a9abb20f3a8d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingRetentionTable</name>
-        <!-- fields -->
-        <field name="type">
-            <property name="Attribute">Type</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_DocumentAbstract/Type.Label</property>
-            <property name="ShowTypeIcon">true</property>
-        </field>
         <field name="name">
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DocumentAbstract/Name.Label</property>
         </field>
@@ -74,6 +68,12 @@
             <property name="FilterType">PICKLIST</property>
             <property name="Attribute">StatusAbstract</property>
             <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+        </field>
+        <field name="retentionCertificate">
+            <property name="SelectAlternateOID">linkfrom[Sales_RetentionCertificate2IncomingRetention#ToLink].linkto[FromLink].oid</property>
+            <property name="HRef">TREE</property>
+            <property name="Select">linkfrom[Sales_RetentionCertificate2IncomingRetention#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Sales_RetentionCertificate.Label</property>
         </field>
         <field name="buttonOpenInNewWindow">
             <icon>eFapsActionNewWindow</icon>
