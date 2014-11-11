@@ -242,13 +242,14 @@ public abstract class AccountPettyCashReport_Base
                     public int compare(final DocumentBean _o1,
                                        final DocumentBean _o2)
                     {
+                        int ret = 0;
                         try {
-                            return _o1.getLiquidation().compareTo(_o2.getLiquidation());
+                            ret =  _o1.getLiquidation().compareTo(_o2.getLiquidation());
                         } catch (final EFapsException e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-                        return 0;
+                        return ret;
                     }
                 });
             }
