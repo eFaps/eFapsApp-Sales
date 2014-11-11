@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2010 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -22,32 +22,24 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f9df04cf-6d50-42c7-8da5-09f9a071cb69</uuid>
+    <uuid>774998c7-dfe9-4e27-b617-4b453ced1d8b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentRetentionOut</name>
+        <name>Sales_IncomingRetentionTree_Payment</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
-            <form>Sales_PaymentRetentionOutForm</form>
-            <execute method="create" program="org.efaps.esjp.sales.payment.PaymentRetentionOut">
-                <property name="JasperReport">Sales_PaymentDocumentReport</property>
-                <property name="Mime">pdf</property>
-                <property name="StatusGroup">Sales_PaymentRetentionOutStatus</property>
-                <property name="Status">Open</property>
-            </execute>
-            <validate method="validatePaymentDocument" program="org.efaps.esjp.sales.payment.PaymentRetentionOut" />
+            <table>Sales_PaymentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Types">Sales_Payment</property>
+                <property name="LinkFroms">CreateDocument</property>
+            </evaluate>
         </target>
-        <!-- properties -->
-        <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_PaymentRetentionOut</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">800</property>
-        <property name="TargetShowFile">true</property>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>

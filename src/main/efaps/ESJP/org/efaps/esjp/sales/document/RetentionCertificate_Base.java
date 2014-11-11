@@ -30,6 +30,7 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -203,6 +204,7 @@ public abstract class RetentionCertificate_Base
         if (_certInst != null && _certInst.isValid()) {
             final Update update = new Update(_certInst);
             update.add(CISales.RetentionCertificate.CrossTotal, total);
+            update.add(CISales.RetentionCertificate.RateCrossTotal, total);
             update.execute();
         }
     }
@@ -218,5 +220,12 @@ public abstract class RetentionCertificate_Base
         throws EFapsException
     {
         return new RetentionCertificateReport().generateReport(_parameter);
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.RetentionCertificate;
     }
 }

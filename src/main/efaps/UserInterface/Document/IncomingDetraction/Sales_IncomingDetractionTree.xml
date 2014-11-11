@@ -35,7 +35,9 @@
             <form>Sales_IncomingDetractionForm</form>
         </target>
         <type>Sales_IncomingDetraction</type>
-        <!-- properties -->
+        <childs>
+            <child>Sales_IncomingDetractionTree_Payment</child>
+        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

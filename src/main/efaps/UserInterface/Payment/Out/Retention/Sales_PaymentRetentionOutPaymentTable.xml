@@ -55,24 +55,9 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.payment.PaymentRetentionOut" method="autoComplete4CreateDocument"
                 name="Sales_PaymentRetentionOutPaymentTable.createDocument.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
+                <property name="Type">Sales_IncomingRetention</property>
+                <property name="StatusGroup">Sales_IncomingRetentionStatus</property>
                 <property name="Status">Open</property>
-                <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_OrderOutbound</property>
-                <property name="StatusGroup02">Sales_OrderOutboundStatus</property>
-                <property name="Status02">Open</property>
-                <property name="Type03">Sales_Quotation</property>
-                <property name="StatusGroup03">Sales_QuotationStatus</property>
-                <property name="Status03">Open</property>
-                <property name="Type04">Sales_PaymentOrder</property>
-                <property name="StatusGroup04">Sales_PaymentOrderStatus</property>
-                <property name="Status04">Approved</property>
-                <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
-                <property name="Status05">Open</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
                 <property name="ShowRevision">true</property>

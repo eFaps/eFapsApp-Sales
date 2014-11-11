@@ -29,42 +29,37 @@
     <uuid>0370fa3a-6733-4481-841a-645d0e78e54f</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_IncomingInvoiceTree_Menu</menu>
             <form>Sales_IncomingInvoiceForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_IncomingInvoice</type>
         <childs>
             <child>Sales_IncomingInvoiceTree_Position</child>
             <child>Sales_IncomingInvoiceTree_Doc</child>
+            <child>Sales_IncomingInvoiceTree_Payment</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
             <application name="eFapsApp-Archives" />
         </application-dependencies>
         <name>Sales_IncomingInvoiceTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_IncomingInvoiceTree_Menu</menu>
             <form>Sales_IncomingInvoiceForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_IncomingInvoice</type>
         <childs>
             <child>Sales_IncomingInvoiceTree_Position</child>
             <child>Sales_IncomingInvoiceTree_Doc</child>
+            <child>Sales_IncomingInvoiceTree_Payment</child>
             <child>Sales_IncomingInvoiceTree_File</child>
         </childs>
         <!-- properties -->
