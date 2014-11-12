@@ -34,7 +34,7 @@
         <target>
             <execute method="exportReport" program="org.efaps.esjp.sales.report.AccountCashDeskBookReport">
                 <property name="Mime">xls</property>
-                <property name="Template">Sales_Products_SalesReportTemplate</property>
+                <!-- <property name="Template">Sales_Products_SalesReportTemplate</property> -->
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
