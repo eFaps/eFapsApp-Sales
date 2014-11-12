@@ -21,6 +21,7 @@
 package org.efaps.esjp.sales.report;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,10 +30,12 @@ import java.util.Map;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.VariableBuilder;
 import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
 import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
@@ -143,6 +146,9 @@ public abstract class AccountCashDeskBookReport_Base
     public static class DynAccountCashDeskBookReport
         extends AbstractDynamicReport
     {
+        protected VariableBuilder<BigDecimal> inSum;
+        protected VariableBuilder<BigDecimal> outSum;
+
         /**
          * variable to report.
          */
@@ -169,9 +175,11 @@ public abstract class AccountCashDeskBookReport_Base
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
             add2QueryBldr(_parameter, queryBldr);
             final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.TransactionAbstract.Date);
+            multi.addAttribute(CISales.TransactionAbstract.Date,
+                            CISales.TransactionAbstract.Amount);
             multi.addSelect(selPaymentDocInst, selDocInst);
             multi.execute();
+            BigDecimal total = BigDecimal.ZERO;
             while (multi.next()) {
                 final DocumentBean bean = getBean(_parameter);
                 datasource.add(bean);
@@ -181,6 +189,13 @@ public abstract class AccountCashDeskBookReport_Base
                 final Instance payDocInst = multi.<Instance>getSelect(selPaymentDocInst);
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 getValues4Instances(_parameter, bean, payDocInst, docInst);
+                if (CISales.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
+                    bean.setIn(multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount));
+                } else {
+                    bean.setOut(multi.<BigDecimal>getAttribute(CISales.TransactionAbstract.Amount));
+                }
+                total = total.add(bean.getIn().add(bean.getOut().negate()));
+                bean.setBalance(total);
             }
             final ComparatorChain<DocumentBean> chain = new ComparatorChain<DocumentBean>();
             chain.addComparator(new Comparator<DocumentBean>() {
@@ -286,6 +301,15 @@ public abstract class AccountCashDeskBookReport_Base
             final TextColumnBuilder<String> descriptionColumn = DynamicReports.col.column(DBProperties
                             .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.Description"),
                             "description", DynamicReports.type.stringType());
+            final TextColumnBuilder<BigDecimal> inColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.In"), "in",
+                            DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<BigDecimal> outColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.Out"), "out",
+                            DynamicReports.type.bigDecimalType());
+            final TextColumnBuilder<BigDecimal> balanceColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(AccountCashDeskBookReport.class.getName() + ".Column.Balance"), "balance",
+                            DynamicReports.type.bigDecimalType());
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
@@ -296,7 +320,13 @@ public abstract class AccountCashDeskBookReport_Base
                 _builder.addColumn(linkColumn);
             }
 
-            _builder.addColumn(dateColumn, voucherColumn, typeColumn, numDocColumn, contactColumn, descriptionColumn);
+            _builder.addColumn(dateColumn, voucherColumn, typeColumn, numDocColumn, contactColumn, descriptionColumn,
+                            inColumn, outColumn, balanceColumn);
+
+            final AggregationSubtotalBuilder<BigDecimal> totalInSum = DynamicReports.sbt.sum(inColumn);
+            final AggregationSubtotalBuilder<BigDecimal> totalOutSum = DynamicReports.sbt.sum(outColumn);
+
+            _builder.addSubtotalAtColumnFooter(totalInSum, totalOutSum);
         }
 
         /**
@@ -389,6 +419,21 @@ public abstract class AccountCashDeskBookReport_Base
          * Description of the transaction.
          */
         private String description;
+
+        /**
+         * In of the transaction.
+         */
+        private BigDecimal in = BigDecimal.ZERO;
+
+        /**
+         * Out of the transaction.
+         */
+        private BigDecimal out = BigDecimal.ZERO;
+
+        /**
+         * Balance of the transaction.
+         */
+        private BigDecimal balance;
 
         /**
          * Getter method for the instance variable {@link #oid}.
@@ -528,6 +573,66 @@ public abstract class AccountCashDeskBookReport_Base
         public void setDescription(final String _description)
         {
             this.description = _description;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #in}.
+         *
+         * @return value of instance variable {@link #in}
+         */
+        public BigDecimal getIn()
+        {
+            return this.in;
+        }
+
+        /**
+         * Setter method for instance variable {@link #in}.
+         *
+         * @param _date value for instance variable {@link #in}
+         */
+        public void setIn(final BigDecimal _in)
+        {
+            this.in = _in;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #out}.
+         *
+         * @return value of instance variable {@link #out}
+         */
+        public BigDecimal getOut()
+        {
+            return this.out;
+        }
+
+        /**
+         * Setter method for instance variable {@link #out}.
+         *
+         * @param _date value for instance variable {@link #out}
+         */
+        public void setOut(final BigDecimal _out)
+        {
+            this.out = _out;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #balance}.
+         *
+         * @return value of instance variable {@link #balance}
+         */
+        public BigDecimal getBalance()
+        {
+            return this.balance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #balance}.
+         *
+         * @param _date value for instance variable {@link #balance}
+         */
+        public void setBalance(final BigDecimal _balance)
+        {
+            this.balance = _balance;
         }
     }
 }
