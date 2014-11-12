@@ -31,7 +31,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>ERP_ReportFilterForm4DateFromToType</form>
+            <form>ERP_ReportFilterForm4DateFromTo</form>
             <execute method="setFilter" program="org.efaps.esjp.sales.report.AccountCashDeskBookReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.AccountCashDeskBookReport.FilterKey</property>
             </execute>
