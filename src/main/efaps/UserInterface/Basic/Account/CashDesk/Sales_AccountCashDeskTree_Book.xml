@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2010 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -21,26 +19,22 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
--->
-
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>993b8f92-5922-48b2-abe2-f775d009d7fe</uuid>
+--><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>724f210e-a4c3-4ccb-8a7a-cac989b28e07</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AccountCashDeskTree</name>
+        <name>Sales_AccountCashDeskTree_Book</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
         <target>
-            <menu>Sales_AccountCashDeskTree_Menu</menu>
-            <form>Sales_AccountCashDeskForm</form>
+            <menu>Sales_AccountCashDeskTree_Book_Menu</menu>
+            <form>Sales_AccountCashDeskBookReportForm</form>
         </target>
-        <type>Sales_AccountCashDesk</type>
-        <childs>
-            <child>Sales_AccountCashDeskTree_Transaction</child>
-            <child>Sales_AccountCashDeskTree_Book</child>
-        </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
     </definition>
-</ui-menu>
+</ui-command>
