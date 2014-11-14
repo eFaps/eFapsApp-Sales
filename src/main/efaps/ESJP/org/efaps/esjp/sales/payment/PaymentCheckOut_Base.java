@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -147,18 +148,20 @@ public abstract class PaymentCheckOut_Base
             final PrintQuery print = new PrintQuery(checkBookInst);
             final SelectBuilder selAcc = SelectBuilder.get().linkto(CISales.CheckBook.AccountLink);
             final SelectBuilder selAccInst = new SelectBuilder(selAcc).instance();
-            final SelectBuilder selAccName = new SelectBuilder(selAcc).attribute(CISales.AccountCashDesk.Name);
             final SelectBuilder selCurrInst = new SelectBuilder(selAcc).linkto(CISales.AccountCashDesk.CurrencyLink)
                             .instance();
-            final SelectBuilder selCurrName = new SelectBuilder(selAcc).linkto(CISales.AccountCashDesk.CurrencyLink)
-                            .attribute(CIERP.Currency.Name);
-            print.addSelect(selAccInst, selAccName, selCurrInst, selCurrName);
+            print.addSelect(selAccInst, selCurrInst);
             print.execute();
 
-            final String accName = print.<String>getSelect(selAccName);
-            final String currName = print.<String>getSelect(selCurrName);
+            final String msgPhrase = getProperty(_parameter, "MsgPhrase", "Sales_AccountMsgPhrase4Payment");
             final Instance accInst = print.<Instance>getSelect(selAccInst);
             final Instance newInst = print.<Instance>getSelect(selCurrInst);
+
+            final PrintQuery accPrint = new PrintQuery(accInst);
+            accPrint.addMsgPhrase(msgPhrase);
+            accPrint.execute();
+
+            final String label = accPrint.getMsgPhrase(msgPhrase);
 
             final StringBuilder nameArr = new StringBuilder().append("new Array('0'");
 
@@ -189,8 +192,8 @@ public abstract class PaymentCheckOut_Base
 
             final StringBuilder accArr = new StringBuilder()
                     .append("new Array('").append(accInst.getId()).append("'")
-                    .append(",'").append(accInst.getId()).append("','").append(accName).append(" - ")
-                    .append(currName)
+                    .append(",'").append(accInst.getId()).append("','")
+                    .append(StringEscapeUtils.unescapeEcmaScript(label))
                     .append("'").append(")");
             map.put(CIFormSales.Sales_PaymentCheckOutForm.account.name, accArr.toString());
             list.add(map);
