@@ -24,7 +24,9 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -67,5 +69,12 @@ public abstract class ProductionReport_Base
         createTransaction4PositionTrigger(_parameter, CIProducts.TransactionInbound.getType(),
                         evaluateStorage4PositionTrigger(_parameter));
         return new Return();
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.ProductionReport;
     }
 }

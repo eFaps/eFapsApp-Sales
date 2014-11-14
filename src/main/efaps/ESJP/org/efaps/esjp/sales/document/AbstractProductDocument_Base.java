@@ -562,7 +562,7 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         super.add2JavaScript4Postions(_parameter, _values, _noEscape);
-        final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+        final Instance defaultStorageInst = getDefaultStorage(_parameter);
         if (defaultStorageInst.isValid()) {
             for (final Map<KeyDef, Object> map : _values) {
                 final Instance prodInst = Instance.get(((String[]) map.get(new KeyDefStr("product")))[0]);

@@ -44,8 +44,6 @@ import org.efaps.esjp.admin.datamodel.StatusValue;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
-import org.efaps.esjp.products.util.Products;
-import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -230,7 +228,7 @@ public abstract class Reservation_Base
     {
         super.add2UpdateField4Product(_parameter, _map, _prodInst);
         if (!_map.containsKey(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name)) {
-            final Instance defaultStorageInst = Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+            final Instance defaultStorageInst = getDefaultStorage(_parameter);;
             if (defaultStorageInst != null && defaultStorageInst.isValid()) {
                 _map.put(CITableSales.Sales_DeliveryNotePositionTable.quantityInStock.name,
                         getStock4ProductInStorage(_parameter, _prodInst, defaultStorageInst));

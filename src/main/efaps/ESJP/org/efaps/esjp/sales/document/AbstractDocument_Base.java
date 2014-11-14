@@ -97,6 +97,7 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
+import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.products.util.ProductsSettings;
@@ -2269,7 +2270,14 @@ public abstract class AbstractDocument_Base
     protected Type getType4SysConf(final Parameter _parameter)
         throws EFapsException
     {
-        return CISales.DocumentAbstract.getType();
+        return getCIType().getType();
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.DocumentAbstract;
     }
 
     // new methods for abstraction
@@ -2641,14 +2649,14 @@ public abstract class AbstractDocument_Base
     /**
      * Get the default storage.
      * @param _parameter Parameter as passed by the eFaps API
+     * @return instance of a storage
      * @throws EFapsException on error
      */
     protected Instance getDefaultStorage(final Parameter _parameter)
         throws EFapsException
     {
-        return Products.getSysConfig().getLink(ProductsSettings.DEFAULTWAREHOUSE);
+        return Storage.getDefaultStorage(_parameter, getTypeName4SysConf(_parameter));
     }
-
 
     /**
      * Get a rate Object from the User Interface.
