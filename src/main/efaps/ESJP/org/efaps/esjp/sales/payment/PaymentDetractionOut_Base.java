@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -84,7 +85,13 @@ public abstract class PaymentDetractionOut_Base
         createPayment(_parameter, createdDoc);
         updateDetractions(_parameter, createdDoc);
         executeAutomation(_parameter, createdDoc);
-        final Return ret = createReportDoc(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+
         return ret;
     }
 

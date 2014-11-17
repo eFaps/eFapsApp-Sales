@@ -211,7 +211,7 @@ public abstract class Transaction_Base
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Name.name, name);
             createdDoc.getValues().put("accountName", info.getAccountName());
             createdDoc.getValues().put("accountCurrencyName", curInst.getName());
-            final File file = (File) internal.createReportDoc(_parameter, createdDoc).get(ReturnValues.VALUES);
+            final File file = internal.createReport(_parameter, createdDoc);
             if (file != null) {
                 files.add(file);
             }

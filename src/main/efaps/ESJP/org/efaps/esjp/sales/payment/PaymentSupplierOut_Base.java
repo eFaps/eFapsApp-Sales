@@ -20,8 +20,11 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.io.File;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
@@ -51,7 +54,13 @@ public abstract class PaymentSupplierOut_Base
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
-        final Return ret = createReportDoc(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+
         return ret;
     }
 

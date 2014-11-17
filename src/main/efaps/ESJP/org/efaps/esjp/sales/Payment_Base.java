@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales;
 
+import java.io.File;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -95,7 +96,7 @@ public abstract class Payment_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        Return ret = new Return();
+        final Return ret = new Return();
         Instance docInst = null;
         if (_parameter.getInstance() != null) {
             docInst = _parameter.getInstance();
@@ -205,7 +206,11 @@ public abstract class Payment_Base
                                 accounts[i]);
                 transIns.execute();
 
-                ret = createReportDoc(_parameter, createdDoc);
+                final File file = createReport(_parameter, createdDoc);
+                if (file != null) {
+                    ret.put(ReturnValues.VALUES, file);
+                    ret.put(ReturnValues.TRUE, true);
+                }
             }
         }
         return ret;

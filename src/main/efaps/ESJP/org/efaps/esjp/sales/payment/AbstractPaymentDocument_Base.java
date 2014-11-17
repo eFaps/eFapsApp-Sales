@@ -21,9 +21,6 @@
 package org.efaps.esjp.sales.payment;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -55,7 +52,6 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIAttribute;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
-import org.efaps.db.Checkin;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -80,15 +76,12 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
-import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
 import org.efaps.esjp.sales.document.Conciliation;
-import org.efaps.esjp.sales.document.Invoice;
 import org.efaps.esjp.sales.listener.IOnPayment;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.AccountAutomation;
@@ -1309,74 +1302,55 @@ public abstract class AbstractPaymentDocument_Base
         // to be implemented
     }
 
-    public Return createReportDoc(final Parameter _parameter,
-                                  final CreatedDoc _createdDoc)
+    @Override
+    public File createReport(final Parameter _parameter,
+                             final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        Return ret = new Return();
-
+        File file = null;
         if (getActive4GenerateReport(_parameter)) {
-            final StandartReport report = new StandartReport();
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            _parameter.put(ParameterValues.INSTANCE, _createdDoc.getInstance());
-            Object name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Code.name);
+            final Object name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Code.name);
             if (name == null) {
-                name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Name.name);
+                _createdDoc.getValues().put(CIERP.DocumentAbstract.Name.name, name);
             }
-
-            final String fileName = DBProperties.getProperty(_createdDoc.getInstance().getType().getName() + ".Label")
-                            + (name == null ? "" : "_" + name);
-            report.setFileName(fileName);
-            final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
-                            .attribute(CIERP.Currency.Name);
-
-            if (_createdDoc.getValues().containsKey("accountName")) {
-                report.getJrParameters().put("accountName", _createdDoc.getValues().get("accountName"));
-                report.getJrParameters().put("accountCurrencyName", _createdDoc.getValues().get("accountCurrencyName"));
-            } else {
-                report.getJrParameters().put("accountName",
-                                getSelectString4AttributeAccount((String) _createdDoc.getValues()
-                                                .get(CISales.TransactionAbstract.Account.name),
-                                                null, CISales.AccountCashDesk.Name));
-                report.getJrParameters().put("accountCurrencyName",
-                                getSelectString4AttributeAccount((String) _createdDoc.getValues()
-                                                .get(CISales.TransactionAbstract.Account.name), selCurName, null));
-            }
-            final SystemConfiguration config = ERP.getSysConfig();
-            if (config != null) {
-                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-                final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
-
-                if (companyName != null && companyTaxNumb != null && !companyName.isEmpty()
-                                && !companyTaxNumb.isEmpty()) {
-                    report.getJrParameters().put("CompanyName", companyName);
-                    report.getJrParameters().put("CompanyTaxNum", companyTaxNumb);
-                }
-            }
-
-            if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
-                report.getJrParameters().put("ClientOrSupplier", DBProperties.getProperty(
-                                "org.efaps.esjp.sales.payment.AbstractDocumentOutPaymentSupplier.Label"));
-            } else if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
-                report.getJrParameters().put("ClientOrSupplier", DBProperties.getProperty(
-                                "org.efaps.esjp.sales.payment.AbstractDocumentInPaymentClient.Label"));
-            }
-
-            addParameter4Report(_parameter, _createdDoc, report);
-            ret = report.execute(_parameter);
-            ret.put(ReturnValues.TRUE, true);
-
-            try {
-                final File file = (File) ret.get(ReturnValues.VALUES);
-                final InputStream input = new FileInputStream(file);
-                final Checkin checkin = new Checkin(_createdDoc.getInstance());
-                checkin.execute(fileName + "." + properties.get("Mime"), input, ((Long) file.length()).intValue());
-            } catch (final FileNotFoundException e) {
-                throw new EFapsException(Invoice.class, "create.FileNotFoundException", e);
-            }
+            file = super.createReport(_parameter, _createdDoc);
         }
-        return ret;
+        return file;
     }
+
+    @Override
+    protected void add2Report(final Parameter _parameter,
+                              final CreatedDoc _createdDoc,
+                              final StandartReport _report)
+        throws EFapsException
+    {
+        super.add2Report(_parameter, _createdDoc, _report);
+        final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
+                        .attribute(CIERP.Currency.Name);
+
+        if (_createdDoc.getValues().containsKey("accountName")) {
+            _report.getJrParameters().put("accountName", _createdDoc.getValues().get("accountName"));
+            _report.getJrParameters().put("accountCurrencyName", _createdDoc.getValues().get("accountCurrencyName"));
+        } else {
+            _report.getJrParameters().put("accountName",
+                            getSelectString4AttributeAccount((String) _createdDoc.getValues()
+                                            .get(CISales.TransactionAbstract.Account.name),
+                                            null, CISales.AccountCashDesk.Name));
+            _report.getJrParameters().put("accountCurrencyName",
+                            getSelectString4AttributeAccount((String) _createdDoc.getValues()
+                                            .get(CISales.TransactionAbstract.Account.name), selCurName, null));
+        }
+
+        if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
+            _report.getJrParameters().put("ClientOrSupplier", DBProperties.getProperty(
+                            "org.efaps.esjp.sales.payment.AbstractDocumentOutPaymentSupplier.Label"));
+        } else if (_parameter.getInstance().getType().isKindOf(CISales.PaymentDocumentAbstract.getType())) {
+            _report.getJrParameters().put("ClientOrSupplier", DBProperties.getProperty(
+                            "org.efaps.esjp.sales.payment.AbstractDocumentInPaymentClient.Label"));
+        }
+    }
+
+
 
     protected String getSelectString4AttributeAccount(final String _accountId,
                                                       final SelectBuilder _select,

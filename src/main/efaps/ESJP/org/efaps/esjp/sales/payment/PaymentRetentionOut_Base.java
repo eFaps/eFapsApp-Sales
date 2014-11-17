@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,6 +31,7 @@ import java.util.Map;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -71,7 +73,13 @@ public abstract class PaymentRetentionOut_Base
         createPayment(_parameter, createdDoc);
         closeRetention(_parameter);
         executeAutomation(_parameter, createdDoc);
-        final Return ret = createReportDoc(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+
         return ret;
     }
 

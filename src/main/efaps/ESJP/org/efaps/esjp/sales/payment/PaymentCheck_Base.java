@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.payment;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,7 +66,12 @@ public abstract class PaymentCheck_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPayment(_parameter, createdDoc);
         executeAutomation(_parameter, createdDoc);
-        final Return ret = createReportDoc(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         return ret;
     }
 
@@ -98,7 +104,12 @@ public abstract class PaymentCheck_Base
     {
         final CreatedDoc createdDoc = getCreateDoc2addPayment(_parameter);
         createPayment(_parameter, createdDoc);
-        final Return ret = createReportDoc(_parameter, createdDoc);
+        final Return ret = new Return();
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
         return ret;
     }
 
