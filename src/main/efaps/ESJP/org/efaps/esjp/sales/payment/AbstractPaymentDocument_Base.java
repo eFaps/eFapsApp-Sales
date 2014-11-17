@@ -1319,14 +1319,13 @@ public abstract class AbstractPaymentDocument_Base
             final StandartReport report = new StandartReport();
             final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
             _parameter.put(ParameterValues.INSTANCE, _createdDoc.getInstance());
-            Object name = _createdDoc.getValues().get(
-                            getFieldName4Attribute(_parameter, CISales.PaymentDocumentAbstract.Code.name));
+            Object name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Code.name);
             if (name == null) {
                 name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Name.name);
             }
 
             final String fileName = DBProperties.getProperty(_createdDoc.getInstance().getType().getName() + ".Label")
-                            + "_" + name;
+                            + (name == null ? "" : "_" + name);
             report.setFileName(fileName);
             final SelectBuilder selCurName = new SelectBuilder().linkto(CISales.AccountCashDesk.CurrencyLink)
                             .attribute(CIERP.Currency.Name);
