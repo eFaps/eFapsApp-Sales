@@ -368,12 +368,14 @@ public abstract class RetentionReport_Base
             final TextColumnBuilder<BigDecimal> retPaymentColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.RetentionPayment"),
                             "retentionPayment", DynamicReports.type.bigDecimalType());
-            final TextColumnBuilder<BigDecimal> percentPaymentColumn = DynamicReports.col.column(DBProperties
-                            .getProperty(RetentionReport.class.getName() + ".Column.PercenPayment"), "percentPayment",
-                            DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<BigDecimal> retentionColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Retention"), "retention",
                             DynamicReports.type.bigDecimalType());
+
+            final TextColumnBuilder<BigDecimal> retentionCalcColumn = crossTotalColumn.subtract(paymentColumn)
+                            .setTitle(DBProperties.getProperty(RetentionReport.class.getName()
+                                            + ".Column.RetentionCalc"));
+
             final TextColumnBuilder<BigDecimal> percentColumn =  DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Percent"), "percent",
                             DynamicReports.type.bigDecimalType());
@@ -394,7 +396,7 @@ public abstract class RetentionReport_Base
 
             final ColumnTitleGroupBuilder retTitelGroup = DynamicReports.grid.titleGroup(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".TitelGroup.ret"),
-                            retPaymentColumn, percentPaymentColumn, retentionColumn, percentColumn);
+                            retentionColumn, retentionCalcColumn, retPaymentColumn, percentColumn);
 
             _builder.columnGrid(docTitelGroup, retTitelGroup);
 
@@ -409,8 +411,7 @@ public abstract class RetentionReport_Base
 
             _builder.addColumn(monthColumn, contactNameColumn, typeColumn, revisionColumn, nameColumn,
                             dateColumn, rateCrossTotalColumn, rateSymbolColumn, crossTotalColumn, paymentColumn,
-                            statusColumn,
-                            retPaymentColumn, percentPaymentColumn, retentionColumn, percentColumn);
+                            statusColumn, retentionColumn, retentionCalcColumn, retPaymentColumn, percentColumn);
             _builder.addSubtotalAtGroupFooter(contactGroup, crossTotalSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, paymentSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, retentionPaymentSum);
