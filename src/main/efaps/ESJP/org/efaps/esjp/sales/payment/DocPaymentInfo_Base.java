@@ -169,6 +169,7 @@ public abstract class DocPaymentInfo_Base
             this.rateCurrencyInstance = print.getSelect(selRateCurInst);
             this.contactName = print.getSelect(selContactName);
 
+            //check normal payments
             final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
             queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
                             this.instance.getId());
@@ -186,6 +187,7 @@ public abstract class DocPaymentInfo_Base
                 this.payPos.add(new PayPos(dateTmp, amount, curInst));
             }
 
+            // check swap
             final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
             swapQueryBldr.setOr(true);
             swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromAbstractLink, this.instance);
@@ -203,6 +205,28 @@ public abstract class DocPaymentInfo_Base
                 this.payPos.add(new PayPos(this.date, amount, curInst));
             }
             this.initialized = true;
+
+            // check related taxdocs
+            final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+            attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.instance);
+
+            final QueryBuilder taxQueryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
+            taxQueryBldr.addWhereAttrInQuery(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
+                            attrTaxQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink));
+            final MultiPrintQuery taxMulti = taxQueryBldr.getPrint();
+            taxMulti.addAttribute(CIERP.Document2PaymentDocumentAbstract.Date,
+                            CIERP.Document2PaymentDocumentAbstract.Amount);
+            final SelectBuilder taxSelCur = new SelectBuilder().linkto(
+                            CIERP.Document2PaymentDocumentAbstract.CurrencyLink).oid();
+            taxMulti.addSelect(taxSelCur);
+            taxMulti.executeWithoutAccessCheck();
+            while (taxMulti.next()) {
+                final Instance curInst = Instance.get(taxMulti.<String>getSelect(taxSelCur));
+                final DateTime dateTmp = taxMulti.<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+                final BigDecimal amount = taxMulti
+                                .<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+                this.payPos.add(new PayPos(dateTmp, amount, curInst));
+            }
         }
     }
 

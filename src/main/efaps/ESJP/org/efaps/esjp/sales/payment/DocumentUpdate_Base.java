@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -60,7 +61,8 @@ import org.efaps.util.EFapsException;
  * to it. e.g change the Status when a invoice was payed completely.
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DocumentUpdate_Base.java 14061 2014-09-17 23:29:50Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("46709cec-7b85-4630-9e2c-517db66ce2d0")
 @EFapsRevision("$Rev$")
@@ -89,15 +91,40 @@ public abstract class DocumentUpdate_Base
                                  final Instance _docInstance)
         throws EFapsException
     {
-
-        final Status targetStatus = getTargetStatus(_parameter, _docInstance);
-        if (targetStatus != null && checkStatus(_parameter, _docInstance)
-                        && validateDocumentCriterias(_parameter, _docInstance)) {
-            setStatus(_parameter, _docInstance, targetStatus);
+        for (final Instance instance : getInstances(_parameter, _docInstance)) {
+            final Status targetStatus = getTargetStatus(_parameter, instance);
+            if (targetStatus != null && checkStatus(_parameter, instance)
+                            && validateDocumentCriterias(_parameter, instance)) {
+                setStatus(_parameter, instance, targetStatus);
+            }
         }
         return new Return();
     }
 
+    /**
+     * Provides the possiblity to Update also related Documents by adding them to the list.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInstance instance of the document
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    protected List<Instance> getInstances(final Parameter _parameter,
+                                          final Instance _docInstance)
+        throws EFapsException
+    {
+        final List<Instance> ret = new ArrayList<>();
+        ret.add(_docInstance);
+
+        if (_docInstance.getType().isKindOf(CISales.DocumentSumTaxAbstract)) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
+            attrQueryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.FromAbstractLink, _docInstance);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DocumentAbstract);
+            queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID,
+                            attrQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink));
+            ret.addAll(queryBldr.getQuery().executeWithoutAccessCheck());
+        }
+        return ret;
+    }
 
     /**
      * Get the Status the Document will be set to if the criteria are met.
@@ -231,7 +258,7 @@ public abstract class DocumentUpdate_Base
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentExchangeOut");
         } else if (instance.getType().getUUID().equals(CISales.PaymentRetentionOut.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentRetentionOut");
-        }  else if (instance.getType().getUUID().equals(CISales.PaymentSupplierOut.uuid)) {
+        } else if (instance.getType().getUUID().equals(CISales.PaymentSupplierOut.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentSupplierOut");
         }
         return ret;
@@ -282,9 +309,9 @@ public abstract class DocumentUpdate_Base
         final StandartReport report = new StandartReport();
         report.setFileName(name);
 
-        final QueryBuilder attrQueryBldr =  new QueryBuilder(CISales.Payment);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Payment);
         attrQueryBldr.addWhereAttrEqValue(CISales.Payment.TargetDocument, _instance.getId());
-        final AttributeQuery attrQuery =  attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Payment.ID);
 
         final SelectBuilder selAccName = new SelectBuilder().linkto(CISales.TransactionAbstract.Account)
                         .attribute(CISales.AccountAbstract.Name);
@@ -296,7 +323,7 @@ public abstract class DocumentUpdate_Base
         final MultiPrintQuery multi = queryBldr2.getPrint();
         multi.addSelect(selAccName, selAccCurName);
         multi.execute();
-        if (multi.next()){
+        if (multi.next()) {
             accName = multi.<String>getSelect(selAccName);
             accCurName = multi.<String>getSelect(selAccCurName);
         }
