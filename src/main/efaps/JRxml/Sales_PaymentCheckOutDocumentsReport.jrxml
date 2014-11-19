@@ -18,7 +18,7 @@
 		<defaultValueExpression><![CDATA["5905.636"]]></defaultValueExpression>
 	</parameter>
 	<queryString language="eFaps">
-		<![CDATA[query type Sales_Payment where TargetDocument = $P!{INSTANCE} select attribute[Amount] as amount,linkto[CreateDocument].attribute[Name] as docName, linkto[CreateDocument].attribute[Date] as dateDoc, linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol] as docCurrencySymb, linkto[CreateDocument].attribute[Rate].label as docRate, linkto[CreateDocument].linkto[Contact].attribute[Name] as docContactName, linkto[CreateDocument].type.label as docType, linkto[CreateDocument].attribute[RateCrossTotal] as docCrossTotal,  linkto[CreateDocument].attribute[Date] as docDate]]>
+		<![CDATA[query type Sales_Payment where TargetDocument == $P!{INSTANCE} select attribute[Amount] as amount,linkto[CreateDocument].attribute[Name] as docName, linkto[CreateDocument].attribute[Date] as dateDoc, linkto[CreateDocument].linkto[RateCurrencyId].attribute[Symbol] as docCurrencySymb, linkto[CreateDocument].attribute[Rate].label as docRate, linkto[CreateDocument].linkto[Contact].attribute[Name] as docContactName, linkto[CreateDocument].type.label as docType, linkto[CreateDocument].attribute[RateCrossTotal] as docCrossTotal,  linkto[CreateDocument].attribute[Date] as docDate]]>
 	</queryString>
 	<field name="amount" class="java.math.BigDecimal"/>
 	<field name="docName" class="java.lang.String"/>
