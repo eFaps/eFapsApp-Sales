@@ -19,15 +19,19 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d447aeea-5faf-4820-b99c-080924afc94d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductionOrderStatus</name>
         <parent>Sales_DocumentStatus</parent>
+        <status key="Digitized">
+            <description>ProductionOrder was digitized and is still editable. (Digitado)</description>
+        </status>
         <status key="Open">
             <description>The products where not delivered yet.</description>
         </status>

@@ -31,6 +31,8 @@
         <childs>
             <child>Sales_ProductionOrderTree_Menu_Action_Edit</child>
             <child>Sales_ProductionOrderTree_Menu_Action_SetCanceled</child>
+            <child>Sales_ProductionOrderTree_Menu_Action_SetOpen</child>
+            <child>Sales_ProductionOrderTree_Menu_Action_SetClosed</child>
             <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>

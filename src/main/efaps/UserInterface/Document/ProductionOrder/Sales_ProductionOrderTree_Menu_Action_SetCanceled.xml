@@ -39,6 +39,7 @@
                 name="Sales_ProductionOrderTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
+                <property name="Status01">Digitized</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>
