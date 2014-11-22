@@ -877,7 +877,7 @@ public abstract class IncomingInvoice_Base
             .append("function deac(_key, _dis) {\n")
             .append("require([\"dojo/query\"], function(query){\n")
             .append("query(\"input[name^=\\\"\" + _key + \"\\\"]\").forEach(function(node) {")
-            .append("if (node.type==='text') {")
+            .append("if (node.type==='text' || node.type === 'number') {")
             .append("node.disabled = _dis ? '' : 'disabled';")
             .append("}")
             .append("});")
