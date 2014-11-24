@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -206,9 +207,10 @@ public abstract class DocPaymentInfo_Base
             }
             this.initialized = true;
 
-            // check related taxdocs
-            final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDocumentTax2Document);
-            attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDocumentTax2Document.ToAbstractLink, this.instance);
+            // check related taxdocs for detraction, for detraction the payment for detraction will be included
+            final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
+            attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToAbstractLink,
+                            this.instance);
 
             final QueryBuilder taxQueryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
             taxQueryBldr.addWhereAttrInQuery(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
@@ -225,6 +227,37 @@ public abstract class DocPaymentInfo_Base
                 final DateTime dateTmp = taxMulti.<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
                 final BigDecimal amount = taxMulti
                                 .<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+                this.payPos.add(new PayPos(dateTmp, amount, curInst));
+            }
+
+            // check related taxdocs for retention. For retention the emission
+            // of a certificate counts as payment
+            final QueryBuilder attrTaxQueryBldr2 = new QueryBuilder(CISales.IncomingRetention2IncomingInvoice);
+            attrTaxQueryBldr2.addWhereAttrEqValue(CISales.IncomingRetention2IncomingInvoice.ToAbstractLink,
+                            this.instance);
+
+            final QueryBuilder certQueryBldr = new QueryBuilder(CISales.RetentionCertificate);
+            certQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate.Status,
+                            Status.find(CISales.RetentionCertificateStatus.Closed));
+
+            final QueryBuilder certQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+            certQueryBldr2.addWhereAttrInQuery(CISales.RetentionCertificate2IncomingRetention.FromLink,
+                            certQueryBldr.getAttributeQuery(CISales.RetentionCertificate.ID));
+
+            final QueryBuilder retQueryBldr = new QueryBuilder(CISales.IncomingRetention);
+            retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
+                            certQueryBldr2.getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink));
+            retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
+                            attrTaxQueryBldr2.getAttributeQuery(CISales.IncomingRetention2IncomingInvoice.FromLink));
+            final MultiPrintQuery retMulti = retQueryBldr.getPrint();
+            retMulti.addAttribute(CISales.IncomingRetention.CrossTotal, CISales.IncomingRetention.Date);
+            final SelectBuilder retSelCur = new SelectBuilder().linkto(CISales.IncomingRetention.CurrencyId).instance();
+            retMulti.addSelect(retSelCur);
+            retMulti.executeWithoutAccessCheck();
+            while (retMulti.next()) {
+                final Instance curInst = retMulti.getSelect(retSelCur);
+                final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
+                final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
                 this.payPos.add(new PayPos(dateTmp, amount, curInst));
             }
         }
