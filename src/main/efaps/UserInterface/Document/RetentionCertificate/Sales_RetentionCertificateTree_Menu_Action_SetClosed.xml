@@ -34,9 +34,11 @@
             <role>Sales_IncomingDocument</role>
         </access>
         <target>
-            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue" index="0">
                 <property name="Status">Closed</property>
             </execute>
+            <execute method="updateRelatedDocuments" program="org.efaps.esjp.sales.document.RetentionCertificate"
+                index="1"/>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_RetentionCertificateTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">

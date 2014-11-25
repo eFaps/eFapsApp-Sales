@@ -42,6 +42,7 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.report.RetentionCertificateReport;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
@@ -221,6 +222,31 @@ public abstract class RetentionCertificate_Base
     {
         return new RetentionCertificateReport().generateReport(_parameter);
     }
+
+    /**
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new empty Return
+     * @throws EFapsException on error
+     */
+    public Return updateRelatedDocuments(final Parameter _parameter)
+        throws EFapsException
+    {
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+        queryBldr.addWhereAttrEqValue(CISales.RetentionCertificate2IncomingRetention.FromLink, _parameter.getInstance());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder sel = SelectBuilder.get().linkto(CISales.RetentionCertificate2IncomingRetention.ToLink)
+                        .instance();
+        multi.addSelect(sel);
+        multi.execute();
+
+        while (multi.next()) {
+            final Instance inst = multi.getSelect(sel);
+            new DocumentUpdate().updateDocument(_parameter, inst);
+        }
+        return new Return();
+    }
+
+
 
     @Override
     public CIType getCIType()
