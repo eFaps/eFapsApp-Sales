@@ -168,7 +168,6 @@
                     <suiteXmlFiles>
                         <suiteXmlFile>${basedir}/src/test/resources/testng.xml</suiteXmlFile>
                     </suiteXmlFiles>
-                    <forkCount>0</forkCount>
                 </configuration>
             </plugin>
         </plugins>
