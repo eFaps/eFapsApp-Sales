@@ -25,12 +25,12 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.VariableBuilder;
 import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
@@ -41,9 +41,9 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -59,6 +59,8 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.erp.util.ERP;
+import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -108,14 +110,22 @@ public abstract class AccountCashDeskBookReport_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String mime = (String) props.get("Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
         dyRp.setFileName(getDBProperty(_parameter, ".FileName"));
+
+        final Map<String, Object> params = new HashMap<String, Object>();
+        final SystemConfiguration config = ERP.getSysConfig();
+        if (config != null) {
+            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+            if (companyName != null && !companyName.isEmpty()) {
+                params.put("CompanyName", companyName);
+            }
+        }
+        dyRp.setParameters(params);
         File file = null;
-        if ("xls".equalsIgnoreCase(mime)) {
+        if ("xls".equalsIgnoreCase(getProperty(_parameter, "Mime"))) {
             file = dyRp.getExcel(_parameter);
-        } else if ("pdf".equalsIgnoreCase(mime)) {
+        } else if ("pdf".equalsIgnoreCase(getProperty(_parameter, "Mime"))) {
             file = dyRp.getPDF(_parameter);
         }
         ret.put(ReturnValues.VALUES, file);
@@ -123,6 +133,13 @@ public abstract class AccountCashDeskBookReport_Base
         return ret;
     }
 
+    /**
+     * Method to obtains DBProperties.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _key Value show DBProperties.
+     * @return String to DBProperties.
+     */
     protected static String getDBProperty(final Parameter _parameter,
                                           final String _key)
     {
@@ -146,9 +163,6 @@ public abstract class AccountCashDeskBookReport_Base
     public static class DynAccountCashDeskBookReport
         extends AbstractDynamicReport
     {
-        protected VariableBuilder<BigDecimal> inSum;
-        protected VariableBuilder<BigDecimal> outSum;
-
         /**
          * variable to report.
          */
@@ -270,11 +284,19 @@ public abstract class AccountCashDeskBookReport_Base
                 final DateTime date = (DateTime) filter.get("dateFrom");
                 _queryBldr.addWhereAttrGreaterValue(CISales.TransactionAbstract.Date,
                                 date.withTimeAtStartOfDay().minusSeconds(1));
+                if (getParameters() != null) {
+                    final String dateStr = date.toString("dd/MM/YY");
+                    getParameters().put("DateFrom", dateStr);
+                }
             }
             if (filter.containsKey("dateTo")) {
                 final DateTime date = (DateTime) filter.get("dateTo");
                 _queryBldr.addWhereAttrLessValue(CISales.TransactionAbstract.Date,
                                 date.withTimeAtStartOfDay().plusDays(1));
+                if (getParameters() != null) {
+                    final String dateStr = date.toString("dd/MM/YY");
+                    getParameters().put("DateTo", dateStr);
+                }
             }
         }
 
