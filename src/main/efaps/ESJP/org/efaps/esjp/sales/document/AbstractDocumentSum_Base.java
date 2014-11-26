@@ -683,7 +683,7 @@ public abstract class AbstractDocumentSum_Base
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
                         AbstractDocument_Base.CURRENCYINST_KEY);
-        final Instance baseInst =Currency.getBaseCurrency();
+        final Instance baseInst = Currency.getBaseCurrency();
         if (currentInst == null) {
             currentInst = baseInst;
         }
@@ -702,7 +702,8 @@ public abstract class AbstractDocumentSum_Base
             for (final Calculator calculator : calculators) {
                 final Map<String, Object> map2 = new HashMap<String, Object>();
                 if (!calculator.isEmpty()) {
-                    calculator.applyRate(newInst, rateInfos[2].getRate());
+                    calculator.applyRate(newInst, RateInfo.getRate(_parameter, rateInfos[2],
+                                    getTypeName4SysConf(_parameter)));
                     map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
                                     getTypeName4SysConf(_parameter))));
                     map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
@@ -732,8 +733,10 @@ public abstract class AbstractDocumentSum_Base
                                     getPerceptionTotalFmtStr(_parameter, calculators)));
                 }
             }
-            js.append(getSetFieldValue(0, "rateCurrencyData", rateInfos[1].getRateUIFrmt()))
-                .append(getSetFieldValue(0, "rate", rateInfos[1].getRateUIFrmt()))
+            js.append(getSetFieldValue(0, "rateCurrencyData",  RateInfo.getRateUIFrmt(_parameter, rateInfos[1],
+                            getTypeName4SysConf(_parameter))))
+                .append(getSetFieldValue(0, "rate", RateInfo.getRateUIFrmt(_parameter, rateInfos[1],
+                                getTypeName4SysConf(_parameter))))
                 .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
                                 Boolean.toString(rateInfos[1].isInvert())))
                 .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
@@ -862,7 +865,8 @@ public abstract class AbstractDocumentSum_Base
                 final InstanceQuery query = qlb.getQuery();
                 query.execute();
                 if (!query.next()) {
-                    calculator.applyRate(newInst, rateInfo.getRate());
+                    calculator.applyRate(newInst, RateInfo.getRate(_parameter, rateInfo,
+                                    getTypeName4SysConf(_parameter)));
                 }
                 map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
                                 getTypeName4SysConf(_parameter))));
