@@ -27,8 +27,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -416,7 +418,7 @@ public abstract class SalesReport4Account_Base
             gridList.add(dueDateColumn);
             gridList.add(docStatusColumn);
 
-            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+            for (final CurrencyInst currency : getCurrencyInst4Report(_parameter)) {
                 final TextColumnBuilder<BigDecimal> crossColumn = DynamicReports.col.column(
                                 this.filteredReport.getLabel(_parameter, "crossTotal"),
                                 "crossTotal_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
@@ -466,6 +468,27 @@ public abstract class SalesReport4Account_Base
                 _builder.setShowColumnValues(false);
             }
             _builder.groupBy(yearGroup, monthGroup);
+        }
+
+        /**
+         * @return
+         */
+        public Set<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
+            throws EFapsException
+        {
+            Set<CurrencyInst> ret = new HashSet<>();
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            if (filter.containsKey("currency")) {
+                final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
+                if (currency.isValid()) {
+                    ret.add(new CurrencyInst(currency));
+                } else {
+                    ret = CurrencyInst.getAvailable();
+                }
+            } else {
+                ret = CurrencyInst.getAvailable();
+            }
+            return ret;
         }
     }
 
