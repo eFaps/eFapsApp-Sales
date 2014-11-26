@@ -49,14 +49,17 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">contact</property>
                 <property name="Field04">switch</property>
+                <property name="Field05">currency</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Contact</property>
                 <property name="FilterType04">Boolean</property>
+                <property name="FilterType05">Currency</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03"></property>
                 <property name="FilterDefault04">true</property>
+                <property name="FilterDefault05"></property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.report.SalesReport4Account" method="getFilterFieldValue"
                 name="Sales_PaymentDocumentOut_Report4AccountForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE"
@@ -66,10 +69,12 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">contact</property>
                 <property name="Field04">switch</property>
+                <property name="Field05">currency</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SalesReport4Account.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SalesReport4Account.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.SalesReport4Account.contact</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.SalesReport4Account.switch</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.SalesReport4Account.currency</property>
             </trigger>
         </field>
         <field name="salesReport">

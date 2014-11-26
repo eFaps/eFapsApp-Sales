@@ -322,6 +322,12 @@ public abstract class SalesReport4Account_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contact);
                 }
             }
+            if (filter.containsKey("currency")) {
+                final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
+                if (currency.isValid()) {
+                    _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currency);
+                }
+            }
             _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());

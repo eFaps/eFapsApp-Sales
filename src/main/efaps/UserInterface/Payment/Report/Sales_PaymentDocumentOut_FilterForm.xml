@@ -63,5 +63,20 @@
                 name="Sales_PaymentDocumentOut_FilterForm.contact.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />
         </field>
+        <field name="currency">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">Sales_PaymentDocumentOut_FilterForm.currency.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_PaymentDocumentOut_FilterForm.currency.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="Type">ERP_Currency</property>
+                <property name="ValueSelect">oid</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
