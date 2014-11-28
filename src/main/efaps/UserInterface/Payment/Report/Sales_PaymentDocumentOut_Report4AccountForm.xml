@@ -127,6 +127,8 @@
                 <property name="Status106">!Canceled</property>
                 <property name="StatusGroup107">Sales_IncomingCreditStatus</property>
                 <property name="Status107">!Canceled</property>
+                <property name="StatusGroup108">Sales_PaymentOrderStatus</property>
+                <property name="Status108">!Closed</property>
             </trigger>
         </field>
     </definition>
