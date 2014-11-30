@@ -37,6 +37,7 @@
             <child>Sales_RetentionReportMyDesk</child>
             <child>Sales_RetentionBookReportMyDesk</child>
             <child>Sales_AccountPettyCashReportMyDesk</child>
+            <child>Sales_DocumentSumReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
