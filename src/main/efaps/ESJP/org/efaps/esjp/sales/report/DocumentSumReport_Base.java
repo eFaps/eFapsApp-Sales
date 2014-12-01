@@ -98,6 +98,9 @@ public abstract class DocumentSumReport_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(DocumentSumReport.class);
 
+    /**
+     * DataBean list.
+     */
     private List<? extends DataBean> data;
 
     @Override
@@ -164,7 +167,8 @@ public abstract class DocumentSumReport_Base
                     series = seriesMap.get(value.getType());
                 } else {
                     series = new HashMap<>();
-                    columsChart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED).setGap(5);
+                    columsChart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
+                                    .setGap(5).setWidth(650).setHeight(400);
                     columsChart.setTitle(value.getType().getLabel());
                     columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
 
@@ -235,6 +239,11 @@ public abstract class DocumentSumReport_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return list of DataBeans
+     * @throws EFapsException on error
+     */
     protected List<? extends DataBean> getData(final Parameter _parameter)
         throws EFapsException
     {
@@ -292,6 +301,11 @@ public abstract class DocumentSumReport_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return list of types for the report
+     * @throws EFapsException on error
+     */
     protected List<Type> getTypeList(final Parameter _parameter)
         throws EFapsException
     {
@@ -311,6 +325,7 @@ public abstract class DocumentSumReport_Base
                 break;
             }
         }
+        LOG.debug("Found types: {}", ret);
         return ret;
     }
 
@@ -325,14 +340,20 @@ public abstract class DocumentSumReport_Base
         return new DynDocumentSumReport(this);
     }
 
+    /**
+     * Dynamic Report.
+     */
     public static class DynDocumentSumReport
         extends AbstractDynamicReport
     {
 
+        /**
+         * Report this DynamicReport is betted in.
+         */
         private final DocumentSumReport_Base sumReport;
 
         /**
-         * @param _documentSumReport_Base
+         * @param _sumReport report
          */
         public DynDocumentSumReport(final DocumentSumReport_Base _sumReport)
         {
@@ -377,7 +398,7 @@ public abstract class DocumentSumReport_Base
 
             final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                             DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
-                            + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(), "BASE",
+                                            + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(), "BASE",
                             BigDecimal.class, Calculation.SUM);
             crosstab.addMeasure(amountMeasure);
 

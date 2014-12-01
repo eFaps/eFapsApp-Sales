@@ -30,7 +30,9 @@ import java.util.Map.Entry;
 import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
@@ -127,6 +129,10 @@ public abstract class DocumentSumGroupedByDate_Base
             for (int i = 1; i < _types.length; i++) {
                 queryBldr.addType(_types[i]);
             }
+        }
+        final List<Status> statuslist = getStatusListFromProperties(new Parameter(), _props);
+        if (!statuslist.isEmpty()) {
+            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract, statuslist.toArray());
         }
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, _start.withTimeAtStartOfDay()
                         .minusMinutes(1));
