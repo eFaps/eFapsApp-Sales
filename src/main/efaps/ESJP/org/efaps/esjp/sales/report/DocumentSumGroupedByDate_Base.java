@@ -162,9 +162,8 @@ public abstract class DocumentSumGroupedByDate_Base
             }
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
             final DataBean bean = dateGroupmap.get(getPartial(dateTime, _dateGourp));
-            bean.addAmount(multi.getCurrentInstance().getType(), "BASE", rateTotal);
-            bean.addAmount(multi.getCurrentInstance().getType(), CurrencyInst.get(rateCurInst).getISOCode(),
-                            total);
+            bean.addAmount(multi.getCurrentInstance().getType(), "BASE", total);
+            bean.addAmount(multi.getCurrentInstance().getType(), CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
         }
         return new ArrayList<>(dateGroupmap.values());
     }
