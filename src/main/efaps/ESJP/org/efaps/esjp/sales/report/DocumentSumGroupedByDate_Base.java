@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Type;
@@ -49,7 +50,8 @@ import org.joda.time.Partial;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DocumentSumGroupedByDate_Base.java 14547 2014-11-30 22:44:37Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("e7448d39-68b9-45b3-b63b-f9a911040358")
 @EFapsRevision("$Rev$")
@@ -102,10 +104,11 @@ public abstract class DocumentSumGroupedByDate_Base
     public List<? extends DataBean> getDataBeans(final DateTime _start,
                                                  final DateTime _end,
                                                  final DateGroup _dateGourp,
+                                                 final Properties _props,
                                                  final Type... _types)
         throws EFapsException
     {
-
+        final Properties props = _props == null ? new Properties() : _props;
         final Map<Partial, DataBean> dateGroupmap = new HashMap<>();
         Partial startPartial = getPartial(_start, _dateGourp);
         final Partial endPartial = getPartial(_end, _dateGourp);
@@ -132,19 +135,30 @@ public abstract class DocumentSumGroupedByDate_Base
         final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                         .instance();
         multi.addSelect(selRateCurInst);
-        multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal,
-                        CISales.DocumentSumAbstract.RateCrossTotal,
+        multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
+                        CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.RateNetTotal,
                         CISales.DocumentSumAbstract.Date);
         multi.execute();
         while (multi.next()) {
             final DateTime dateTime = multi.getAttribute(CISales.DocumentSumAbstract.Date);
-            final BigDecimal crossTotal = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-            final BigDecimal rateCrossTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            BigDecimal total;
+            BigDecimal rateTotal;
+            if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total"))) {
+                total = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
+                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+            } else {
+                total = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+            }
+            if ("true".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Negate"))) {
+                total = total.negate();
+                rateTotal = rateTotal.negate();
+            }
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
             final DataBean bean = dateGroupmap.get(getPartial(dateTime, _dateGourp));
-            bean.addAmount(multi.getCurrentInstance().getType(), "BASE", crossTotal);
+            bean.addAmount(multi.getCurrentInstance().getType(), "BASE", rateTotal);
             bean.addAmount(multi.getCurrentInstance().getType(), CurrencyInst.get(rateCurInst).getISOCode(),
-                            rateCrossTotal);
+                            total);
         }
         return new ArrayList<>(dateGroupmap.values());
     }

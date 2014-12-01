@@ -304,4 +304,8 @@ public interface SalesSettings
      */
     String CALCULATORCONFIG = SalesSettings.BASE + "Config4Calculator";
 
+    /**
+     * Properties. Can be concatenated.
+     */
+    String DOCSUMREPORT = SalesSettings.BASE + "DocumentSumReport";
 }

@@ -28,10 +28,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Set;
+import java.util.UUID;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -52,12 +56,17 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
+import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.DataBean;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueBean;
+import org.efaps.esjp.sales.util.Sales;
+import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.dojo.charting.Axis;
 import org.efaps.esjp.ui.html.dojo.charting.ColumnsChart;
 import org.efaps.esjp.ui.html.dojo.charting.Data;
@@ -75,7 +84,8 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DocumentSumReport_Base.java 14547 2014-11-30 22:44:37Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("19c0ee49-3942-4872-9e7d-de1f0d73b446")
 @EFapsRevision("$Rev$")
@@ -87,7 +97,30 @@ public abstract class DocumentSumReport_Base
      * Logging instance used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(DocumentSumReport.class);
+
     private List<? extends DataBean> data;
+
+    @Override
+    public Return getTypeFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> values = new ArrayList<>();
+        final Map<String, Object> filter = getFilterMap(_parameter);
+        final Set<Long> selected = new HashSet<>();
+        if (filter.containsKey("type")) {
+            final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+            selected.addAll(filters.getObject());
+        }
+        final List<Type> types = getTypeList(_parameter);
+        for (final Type type : types) {
+            final DropDownPosition dropdown = new DropDownPosition(type.getId(), type.getLabel());
+            dropdown.setSelected(selected.contains(type.getId()));
+            values.add(dropdown);
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, new Field().getInputField(_parameter, values, ListType.CHECKBOX));
+        return ret;
+    }
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -117,8 +150,7 @@ public abstract class DocumentSumReport_Base
 
         final Map<Type, ColumnsChart> carts = new HashMap<>();
         final Map<Type, Map<String, Serie<Data>>> seriesMap = new HashMap<>();
-        final Axis axis = new Axis().setName("x");
-
+        final Axis xAxis = new Axis().setName("x");
         for (final DataBean bean : dataBeans) {
 
             if (!xmap.containsKey(bean.getPartial())) {
@@ -144,22 +176,23 @@ public abstract class DocumentSumReport_Base
                     }
                     final Serie<Data> baseSerie = new Serie<Data>();
                     series.put("BASE", baseSerie);
-                    baseSerie.setName("BASE");
+                    baseSerie.setName(DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
+                                    + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
                     columsChart.addSerie(baseSerie);
-                    columsChart.addAxis(axis);
+                    columsChart.addAxis(xAxis);
                     carts.put(value.getType(), columsChart);
                     seriesMap.put(value.getType(), series);
                 }
 
                 for (final Entry<String, BigDecimal> entry : value.getAmounts().entrySet()) {
                     final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
-                    final Data data = new Data().setSimple(false);
+                    final Data dataTmp = new Data().setSimple(false);
                     final Serie<Data> serie = series.get(entry.getKey());
-                    serie.addData(data);
-                    final BigDecimal y = value.getAmounts().get(entry.getKey());
-                    data.setXValue(xmap.get(bean.getPartial()));
-                    data.setYValue(y);
-                    data.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + bean.getPartial());
+                    serie.addData(dataTmp);
+                    final BigDecimal y = value.getAmounts().get(entry.getKey()).abs();
+                    dataTmp.setXValue(xmap.get(bean.getPartial()));
+                    dataTmp.setYValue(y);
+                    dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + bean.getPartial());
                 }
             }
         }
@@ -170,15 +203,13 @@ public abstract class DocumentSumReport_Base
             map.put("text", Util.wrap4String(entry.getKey()));
             labels.add(map);
         }
-        axis.setLabels(Util.mapCollectionToObjectArray(labels));
+        xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
         for (final ColumnsChart chart : carts.values()) {
             html = html + "<div style=\"float:left\">" + chart.getHtmlSnipplet() + "</div>";
         }
         ret.put(ReturnValues.SNIPLETT, html);
         return ret;
     }
-
-
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -222,9 +253,65 @@ public abstract class DocumentSumReport_Base
             } else {
                 end = new DateTime();
             }
-            this.data = ds.getDataBeans(start, end, DocumentSumGroupedByDate_Base.DateGroup.MONTH);
+            final List<Type> typeList;
+            if (filter.containsKey("type")) {
+                typeList = new ArrayList<>();
+                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+                for (final Long typeid : filters.getObject()) {
+                    typeList.add(Type.get(typeid));
+                }
+            } else {
+                typeList = getTypeList(_parameter);
+            }
+            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT,
+                            true);
+            this.data = ds.getDataBeans(start, end, DocumentSumGroupedByDate_Base.DateGroup.MONTH, props,
+                            typeList.toArray(new Type[typeList.size()]));
         }
         return this.data;
+    }
+
+    @Override
+    protected Object getDefaultValue(final Parameter _parameter,
+                                     final String _field,
+                                     final String _type,
+                                     final String _default)
+        throws EFapsException
+    {
+        Object ret;
+        if ("Type".equalsIgnoreCase(_type)) {
+            final Set<Long> set = new HashSet<>();
+            final List<Type> types = getTypeList(_parameter);
+            for (final Type type : types) {
+                set.add(type.getId());
+            }
+            ret = new TypeFilterValue().setObject(set);
+        } else {
+            ret = super.getDefaultValue(_parameter, _field, _type, _default);
+        }
+        return ret;
+    }
+
+    protected List<Type> getTypeList(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<Type> ret = new ArrayList<>();
+        final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT, true);
+        final String key = "TYPE";
+        for (int i = 1; i < 100; i++) {
+            final String keyTmp = key + String.format("%02d", i);
+            if (props.containsKey(keyTmp)) {
+                final String typeStr = props.getProperty(keyTmp);
+                if (isUUID(typeStr)) {
+                    ret.add(Type.get(UUID.fromString(typeStr)));
+                } else {
+                    ret.add(Type.get(typeStr));
+                }
+            } else {
+                break;
+            }
+        }
+        return ret;
     }
 
     /**
@@ -289,8 +376,9 @@ public abstract class DocumentSumReport_Base
             }
 
             final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                            CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
-                            "BASE", BigDecimal.class, Calculation.SUM);
+                            DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
+                            + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(), "BASE",
+                            BigDecimal.class, Calculation.SUM);
             crosstab.addMeasure(amountMeasure);
 
             final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("type", String.class)

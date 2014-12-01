@@ -38,10 +38,13 @@
                 <property name="ReportField">report</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">type</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Type</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">TODAY</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.2"
@@ -49,8 +52,10 @@
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">type</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocumentSumReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocumentSumReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.DocumentSumReport.type</property>
             </trigger>
         </field>
         <field name="report">
