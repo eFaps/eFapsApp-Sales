@@ -26,6 +26,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -553,6 +554,93 @@ public abstract class AbstractProductDocument_Base
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         }
         return retVal;
+    }
+
+    @Override
+    public Return getJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        retVal.put(ReturnValues.SNIPLETT,
+                        InterfaceUtils.wrappInScriptTag(_parameter, getJavaScript4SelectDoc(_parameter)
+                                        + getJavaScript4Doc(_parameter) + getJavaScript4SelectedItems(_parameter),
+                                        true, 1500));
+        return retVal;
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return a Javascript for selected items
+     * @throws EFapsException on error
+     */
+    protected StringBuilder getJavaScript4SelectedItems(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder js = new StringBuilder();
+        final List<Instance> instances = getSelectedInstances(_parameter);
+        if (!instances.isEmpty()) {
+            final Type type = instances.get(0).getType();
+            if (type.isKindOf(CIProducts.InventoryAbstract)) {
+                final Collection<Map<KeyDef, Object>> values = new ArrayList<>();
+                final MultiPrintQuery multi = new MultiPrintQuery(instances);
+                final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryAbstract.Product);
+                final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+                final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+                final SelectBuilder selProdDescr = new SelectBuilder(selProd)
+                                .attribute(CIProducts.ProductAbstract.Description);
+                final SelectBuilder selProdDim = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Dimension);
+                final SelectBuilder selProdDefUoM = new SelectBuilder(selProd)
+                                .attribute(CIProducts.ProductAbstract.DefaultUoM);
+                final SelectBuilder selStorageInst = SelectBuilder.get().linkto(CIProducts.InventoryAbstract.Storage).instance();
+                multi.addSelect(selProdInst, selProdName, selProdDescr, selProdDim, selProdDefUoM, selStorageInst);
+                multi.addAttribute(CIProducts.InventoryAbstract.Quantity);
+
+                multi.execute();
+
+                final DecimalFormat frmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+
+                while (multi.next()) {
+                    final Instance prodInst = multi.<Instance>getSelect(selProdInst);
+
+                    final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
+                    map.put(new KeyDefStr("product"), new String[] { prodInst.getOid(),
+                                    multi.<String>getSelect(selProdName) });
+                    map.put(new KeyDefStr("productDesc"), multi.<String>getSelect(selProdDescr));
+                    final Dimension dim = Dimension.get(multi.<Long>getSelect(selProdDim));
+                    final Long defUoMId = multi.<Long>getSelect(selProdDefUoM);
+                    final Long uomId;
+                    if (defUoMId != null) {
+                        final UoM uom = Dimension.getUoM(defUoMId);
+                        if (uom.getNumerator() == 1 && uom.getDenominator() == 1) {
+                            uomId = uom.getId();
+                        } else {
+                            uomId = dim.getBaseUoM().getId();
+                        }
+                    } else {
+                        uomId = dim.getBaseUoM().getId();
+                    }
+                    map.put(new KeyDefStr("uoM"), getUoMFieldStr(uomId, dim.getId()));
+                    map.put(new KeyDefFrmt("quantity", frmt),
+                                    multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+
+                    final Instance storageInst = multi.getSelect(selStorageInst);
+                    final String quantityInStock = getStock4ProductInStorage(_parameter, prodInst, storageInst);
+                    map.put(new KeyDefStr("quantityInStock"), quantityInStock);
+                    map.put(new KeyDefStr("storage"), storageInst.getOid());
+                    values.add(map);
+                }
+
+                final Set<String> noEscape = new HashSet<String>();
+                noEscape.add("uoM");
+
+                final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
+
+                js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
+                                    .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                                                    getOnCompleteScript(_parameter), false, false, noEscape));
+            }
+        }
+        return js;
     }
 
     @Override

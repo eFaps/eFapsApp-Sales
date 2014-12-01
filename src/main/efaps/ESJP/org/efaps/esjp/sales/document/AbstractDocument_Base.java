@@ -1757,13 +1757,13 @@ public abstract class AbstractDocument_Base
             if (selectedDoc.length > 1) {
                 for (int i = 0; i < selectedDoc.length; i++) {
                     final Instance instance = Instance.get(selectedDoc[i]);
-                    if (instance.isValid()) {
+                    if (instance.isValid() && instance.getType().isKindOf(CISales.DocumentAbstract)) {
                         ret.add(instance);
                     }
                 }
             } else {
                 final Instance instance = Instance.get(selectedDoc[0]);
-                if (instance.isValid()) {
+                if (instance.isValid() && instance.getType().isKindOf(CISales.DocumentAbstract)) {
                     ret.add(instance);
                 }
             }
