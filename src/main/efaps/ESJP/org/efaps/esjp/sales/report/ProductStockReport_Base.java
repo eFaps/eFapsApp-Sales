@@ -256,8 +256,23 @@ public abstract class ProductStockReport_Base
             if (containsProperty(_parameter, "Type")) {
                 queryBldr = getQueryBldrFromProperties(_parameter);
             } else {
-                queryBldr = new QueryBuilder(CIERP.DocumentAbstract);
-                queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.ID, _parameter.getInstance());
+                final PrintQuery print = new PrintQuery(_parameter.getInstance());
+                print.addAttribute(CIERP.DocumentAbstract.StatusAbstract);
+                print.execute();
+
+                final QueryBuilder prodQueryBldr = new QueryBuilder(CISales.PositionAbstract);
+                prodQueryBldr.addWhereAttrEqValue(CISales.PositionAbstract.DocumentAbstractLink,
+                                _parameter.getInstance());
+
+                final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionAbstract);
+                posQueryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
+                                prodQueryBldr.getAttributeQuery(CISales.PositionAbstract.Product));
+
+                queryBldr = new QueryBuilder(_parameter.getInstance().getType());
+                queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract,
+                                print.getAttribute(CIERP.DocumentAbstract.StatusAbstract));
+                queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID,
+                                posQueryBldr.getAttributeQuery(CISales.PositionAbstract.DocumentAbstractLink));
             }
             return queryBldr.getAttributeQuery("ID");
         }
@@ -634,7 +649,7 @@ public abstract class ProductStockReport_Base
                     LOG.error("Error on retrieving name", e);
                 }
             }
-            return this.docName;
+            return this.docName == null ? "" : this.docName;
         }
 
         /**
