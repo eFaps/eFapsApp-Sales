@@ -54,6 +54,7 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
@@ -178,7 +179,10 @@ public abstract class RetentionReport_Base
                             .linkfrom(CISales.IncomingRetention2IncomingInvoice.ToLink)
                             .linkto(CISales.IncomingRetention2IncomingInvoice.FromLink)
                             .attribute(CISales.IncomingRetention.CrossTotal);
-            multi.addSelect(selContactName, selRateCurSymbol, selRetAmount);
+            final SelectBuilder selRetentionInst = SelectBuilder.get()
+                            .linkfrom(CISales.IncomingRetention2IncomingInvoice.ToLink)
+                            .linkto(CISales.IncomingRetention2IncomingInvoice.FromLink).instance();
+            multi.addSelect(selContactName, selRateCurSymbol, selRetAmount, selRetentionInst);
             multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Revision,
                             CISales.DocumentAbstract.Date, CISales.DocumentSumAbstract.CrossTotal,
                             CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentAbstract.StatusAbstract);
@@ -199,6 +203,7 @@ public abstract class RetentionReport_Base
                 bean.setStatusLabel(Status.get(multi.<Long>getAttribute(CISales.DocumentAbstract.StatusAbstract))
                                 .getLabel());
                 bean.addRetention(multi.<BigDecimal>getSelect(selRetAmount));
+                bean.setRetentionRet(multi.<Instance>getSelect(selRetentionInst));
             }
 
             analyzePayments(_parameter, inst2bean);
@@ -371,10 +376,9 @@ public abstract class RetentionReport_Base
             final TextColumnBuilder<BigDecimal> retentionColumn = DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Retention"), "retention",
                             DynamicReports.type.bigDecimalType());
-
-            final TextColumnBuilder<BigDecimal> retentionCalcColumn = crossTotalColumn.subtract(paymentColumn)
-                            .setTitle(DBProperties.getProperty(RetentionReport.class.getName()
-                                            + ".Column.RetentionCalc"));
+            final TextColumnBuilder<BigDecimal> retentionRetColumn = DynamicReports.col.column(DBProperties
+                            .getProperty(RetentionReport.class.getName() + ".Column.RetentionRet"), "retentionRet",
+                            DynamicReports.type.bigDecimalType());
 
             final TextColumnBuilder<BigDecimal> percentColumn =  DynamicReports.col.column(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".Column.Percent"), "percent",
@@ -396,7 +400,7 @@ public abstract class RetentionReport_Base
 
             final ColumnTitleGroupBuilder retTitelGroup = DynamicReports.grid.titleGroup(DBProperties
                             .getProperty(RetentionReport.class.getName() + ".TitelGroup.ret"),
-                            retentionColumn, retentionCalcColumn, retPaymentColumn, percentColumn);
+                            retentionColumn, retentionRetColumn, retPaymentColumn, percentColumn);
 
             _builder.columnGrid(docTitelGroup, retTitelGroup);
 
@@ -411,7 +415,7 @@ public abstract class RetentionReport_Base
 
             _builder.addColumn(monthColumn, contactNameColumn, typeColumn, revisionColumn, nameColumn,
                             dateColumn, rateCrossTotalColumn, rateSymbolColumn, crossTotalColumn, paymentColumn,
-                            statusColumn, retentionColumn, retentionCalcColumn, retPaymentColumn, percentColumn);
+                            statusColumn, retentionColumn, retentionRetColumn, retPaymentColumn, percentColumn);
             _builder.addSubtotalAtGroupFooter(contactGroup, crossTotalSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, paymentSum);
             _builder.addSubtotalAtGroupFooter(contactGroup, retentionPaymentSum);
@@ -540,6 +544,11 @@ public abstract class RetentionReport_Base
          * Status label.
          */
         private String statusLabel;
+
+        /**
+         * BigDecimal retentionRet.
+         */
+        private BigDecimal retentionRet = BigDecimal.ZERO;
 
         /**
          * Getter method for the instance variable {@link #name}.
@@ -846,6 +855,16 @@ public abstract class RetentionReport_Base
         }
 
         /**
+         * Getter method for the instance variable {@link #retention}.
+         *
+         * @return value of instance variable {@link #retention}
+         */
+        public BigDecimal getRetentionRet()
+        {
+            return this.retentionRet;
+        }
+
+        /**
          * Setter method for instance variable {@link #retention}.
          *
          * @param _retention value for instance variable {@link #retention}
@@ -853,6 +872,32 @@ public abstract class RetentionReport_Base
         public void setRetention(final BigDecimal _retention)
         {
             this.retention = _retention;
+        }
+
+        /**
+         * Setter method for instance variable {@link #retention}.
+         *
+         * @param _retention value for instance variable {@link #retention}
+         */
+        public void setRetentionRet(final Instance _retentionRet)
+            throws EFapsException
+        {
+            if (_retentionRet != null && _retentionRet.isValid()) {
+                final SelectBuilder selStatusRetCer = new SelectBuilder()
+                                .linkfrom(CISales.RetentionCertificate2IncomingRetention,
+                                                CISales.RetentionCertificate2IncomingRetention.ToLink)
+                                .linkto(CISales.RetentionCertificate2IncomingRetention.FromLink)
+                                .attribute(CISales.RetentionCertificate.Status);
+
+                final PrintQuery print = new PrintQuery(_retentionRet);
+                print.addSelect(selStatusRetCer);
+                print.execute();
+
+                if (Status.find(CISales.RetentionCertificateStatus.Closed)
+                                .equals(Status.get(print.<Long>getSelect(selStatusRetCer)))) {
+                    this.retentionRet = getRetention();
+                }
+            }
         }
 
         /**
