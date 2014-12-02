@@ -254,6 +254,7 @@
         </status>
 
         <status group="Sales_ProductionOrderStatus">
+            <key>Digitized</key>
             <key>Open</key>
             <key>Closed</key>
             <key>Canceled</key>
