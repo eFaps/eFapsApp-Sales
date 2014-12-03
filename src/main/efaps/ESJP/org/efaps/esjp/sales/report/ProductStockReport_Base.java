@@ -132,14 +132,15 @@ public abstract class ProductStockReport_Base
      */
     @Override
     protected Object getFilterValue(final Parameter _parameter,
-                                    final Field _field)
+                                    final Field _field,
+                                    final Map<String, Object> _oldFilter)
     {
         final Object obj;
         final String val = _parameter.getParameterValue(_field.getName());
         if ("project".equals(_field.getName())) {
             obj = new ProjectFilterValue().setObject(Instance.get(val));
         } else {
-            obj = super.getFilterValue(_parameter, _field);
+            obj = super.getFilterValue(_parameter, _field, _oldFilter);
         }
         return obj;
     }

@@ -65,6 +65,7 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.DataBean;
+import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueBean;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -326,7 +327,14 @@ public abstract class DocumentSumReport_Base
             }
             final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT,
                             true);
-            this.data = ds.getDataBeans(start, end, DocumentSumGroupedByDate_Base.DateGroup.MONTH, props,
+            DocumentSumGroupedByDate_Base.DateGroup dateGroup;
+            if (filter.containsKey("dateGroup")) {
+                dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
+            } else {
+                dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
+            }
+
+            this.data = ds.getDataBeans(start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
         }
         return this.data;

@@ -62,5 +62,15 @@
                 program="org.efaps.esjp.sales.report.DocumentSumReport" >
             </trigger>
         </field>
+         <field name="dateGroup">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocumentSumReport.dateGroup</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocumentSumReport" >
+                <property name="Enum">org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base$DateGroup</property>
+            </trigger>
+        </field>
     </definition>
 </ui-form>
