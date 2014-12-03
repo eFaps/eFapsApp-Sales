@@ -151,10 +151,10 @@ public abstract class DocumentSumGroupedByDate_Base
             BigDecimal rateTotal;
             if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total"))) {
                 total = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
-                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
             } else {
                 total = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
             }
             if ("true".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Negate"))) {
                 total = total.negate();
