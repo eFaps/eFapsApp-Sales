@@ -34,13 +34,16 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -171,5 +174,27 @@ public abstract class PaymentRetentionOut_Base
                                         NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO)));
         return js;
     }
+
+    @Override
+    public Return getJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final String accountStr = _parameter
+                        .getParameterValue(CIFormSales.Sales_IncomingRetention4PaymentRetentionForm.account.name);
+        final StringBuilder js = new StringBuilder();
+        js.append(getSetDropDownScript(_parameter, CIFormSales.Sales_PaymentRetentionOutForm.account.name, accountStr));
+
+        final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute(
+                        CIFormSales.Sales_IncomingRetention4PaymentRetentionForm.storeOIDs.name);
+        if (oids != null) {
+            js.append(getJavaScript4Positions(_parameter,
+                            new AccountInfo(Instance.get(CISales.AccountCashDesk.getType(), accountStr)),
+                            getDocInstances(_parameter, oids)));
+        }
+        ret.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 1500));
+        return ret;
+    }
+
 
 }
