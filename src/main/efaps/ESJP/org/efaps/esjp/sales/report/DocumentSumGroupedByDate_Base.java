@@ -63,9 +63,10 @@ public abstract class DocumentSumGroupedByDate_Base
 
     public enum DateGroup
     {
-        WEEK(DurationFieldType.weeks()),
 
-        MONTH(DurationFieldType.months());
+        MONTH(DurationFieldType.months()),
+        WEEK(DurationFieldType.weeks()),
+        DAY(DurationFieldType.days());
 
         private final DurationFieldType fieldType;
 
@@ -99,6 +100,10 @@ public abstract class DocumentSumGroupedByDate_Base
             ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year(),
                             DateTimeFieldType.monthOfYear() },
                             new int[] { _date.getYear(), _date.getMonthOfYear() });
+        } else if (DurationFieldType.days().equals(_fieldType)) {
+            ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year(),
+                            DateTimeFieldType.monthOfYear(),  DateTimeFieldType.dayOfMonth() },
+                            new int[] { _date.getYear(), _date.getMonthOfYear(), _date.getDayOfMonth() });
         }
         return ret;
     }
