@@ -55,6 +55,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
@@ -127,6 +128,41 @@ public abstract class DocumentSumReport_Base
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing the file
+     * @throws EFapsException on error
+     */
+    public Return getCurrencyFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> values = new ArrayList<>();
+        final Map<String, Object> filterMap = getFilterMap(_parameter);
+        Object current = null;
+        if (filterMap.containsKey("currency")) {
+            final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+            current = filter.getObject();
+        }
+        for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+            final DropDownPosition dropdown = new DropDownPosition(currency.getInstance().getOid(), currency.getName());
+            dropdown.setSelected(currency.getInstance().equals(current));
+            values.add(dropdown);
+        }
+        values.add(new DropDownPosition("-", "-"));
+        Collections.sort(values, new Comparator<DropDownPosition>()
+        {
+            @Override
+            public int compare(final DropDownPosition _o1,
+                               final DropDownPosition _o2)
+            {
+                return String.valueOf(_o1.getOrderValue()).compareTo(String.valueOf(_o2.getOrderValue()));
+            }
+        });
+        final Return ret = new Return();
+        ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values));
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
      */
@@ -171,18 +207,32 @@ public abstract class DocumentSumReport_Base
                                     .setGap(5).setWidth(650).setHeight(400);
                     columsChart.setTitle(value.getType().getLabel());
                     columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
-
-                    for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                    CurrencyInst selected = null;
+                    final Map<String, Object> filterMap = getFilterMap(_parameter);
+                    if (filterMap.containsKey("currency")) {
+                        final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+                        if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
+                            selected = CurrencyInst.get(filter.getObject());
+                        }
+                    }
+                    if (selected == null) {
+                        for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                            final Serie<Data> serie = new Serie<Data>();
+                            serie.setName(currency.getName());
+                            series.put(currency.getISOCode(), serie);
+                            columsChart.addSerie(serie);
+                        }
+                        final Serie<Data> baseSerie = new Serie<Data>();
+                        series.put("BASE", baseSerie);
+                        baseSerie.setName(DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
+                                        + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
+                        columsChart.addSerie(baseSerie);
+                    } else {
                         final Serie<Data> serie = new Serie<Data>();
-                        serie.setName(currency.getName());
-                        series.put(currency.getISOCode(), serie);
+                        serie.setName(selected.getName());
+                        series.put(selected.getISOCode(), serie);
                         columsChart.addSerie(serie);
                     }
-                    final Serie<Data> baseSerie = new Serie<Data>();
-                    series.put("BASE", baseSerie);
-                    baseSerie.setName(DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
-                                    + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
-                    columsChart.addSerie(baseSerie);
                     columsChart.addAxis(xAxis);
                     carts.put(value.getType(), columsChart);
                     seriesMap.put(value.getType(), series);
@@ -192,11 +242,13 @@ public abstract class DocumentSumReport_Base
                     final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
                     final Data dataTmp = new Data().setSimple(false);
                     final Serie<Data> serie = series.get(entry.getKey());
-                    serie.addData(dataTmp);
-                    final BigDecimal y = value.getAmounts().get(entry.getKey()).abs();
-                    dataTmp.setXValue(xmap.get(bean.getPartial()));
-                    dataTmp.setYValue(y);
-                    dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + bean.getPartial());
+                    if (serie != null) {
+                        serie.addData(dataTmp);
+                        final BigDecimal y = value.getAmounts().get(entry.getKey()).abs();
+                        dataTmp.setXValue(xmap.get(bean.getPartial()));
+                        dataTmp.setYValue(y);
+                        dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + bean.getPartial());
+                    }
                 }
             }
         }
@@ -388,20 +440,32 @@ public abstract class DocumentSumReport_Base
             throws EFapsException
         {
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
-
-            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+            final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
+            CurrencyInst selected = null;
+            if (filterMap.containsKey("currency")) {
+                final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+                if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
+                    selected = CurrencyInst.get(filter.getObject());
+                }
+            }
+            if (selected == null) {
+                for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                    final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
+                                    currency.getSymbol(),
+                                    currency.getISOCode(), BigDecimal.class, Calculation.SUM);
+                    crosstab.addMeasure(amountMeasure);
+                }
                 final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                currency.getSymbol(),
-                                currency.getISOCode(), BigDecimal.class, Calculation.SUM);
+                                DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
+                                                + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(), "BASE",
+                                BigDecimal.class, Calculation.SUM);
+                crosstab.addMeasure(amountMeasure);
+            } else {
+                final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
+                                selected.getSymbol(),
+                                selected.getISOCode(), BigDecimal.class, Calculation.SUM);
                 crosstab.addMeasure(amountMeasure);
             }
-
-            final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                            DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
-                                            + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(), "BASE",
-                            BigDecimal.class, Calculation.SUM);
-            crosstab.addMeasure(amountMeasure);
-
             final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("type", String.class)
                             .setHeaderWidth(150);
             crosstab.addRowGroup(rowTypeGroup);
@@ -422,6 +486,17 @@ public abstract class DocumentSumReport_Base
              * setValueAxisFormat(DynamicReports.cht.axisFormat().setLabel("Stock"
              * )); _builder.addSummary(chart);
              */
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #sumReport}.
+         *
+         * @return value of instance variable {@link #sumReport}
+         */
+        public DocumentSumReport_Base getSumReport()
+        {
+            return this.sumReport;
         }
     }
 
