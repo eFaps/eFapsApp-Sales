@@ -374,8 +374,10 @@ public abstract class AbstractSumOnlyDocument_Base
 
                 BigDecimal rateAmount = BigDecimal.ZERO;
                 while (multi.next()) {
-                    rateAmount = rateAmount
-                                    .add(multi.<BigDecimal>getAttribute(CISales.Document2DocumentWithAmount.Amount));
+                    final BigDecimal tmp = multi.getAttribute(CISales.Document2DocumentWithAmount.Amount);
+                    if (tmp != null) {
+                        rateAmount = rateAmount.add(tmp);
+                    }
                 }
                 final BigDecimal rate = ((BigDecimal) rateObjDoc[0])
                                 .divide((BigDecimal) rateObjDoc[1], 12, BigDecimal.ROUND_HALF_UP);
