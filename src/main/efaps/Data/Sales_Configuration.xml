@@ -215,5 +215,10 @@ Sales_CreditNote.Negate=true
 Sales_Invoice.Total=NET
             ]]></value>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.payment.Config4Rate</key>
+            <value><![CDATA[Sales_PaymentRetentionOut=false]]>
+            </value>
+        </attribute>
     </definition>
 </common-systemconfiguration>
