@@ -306,7 +306,7 @@ public abstract class AbstractDocumentSum_Base
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
         createdDoc.addValue(AbstractDocument_Base.CALCULATORS_VALUE, calcList);
-        final Instance baseCurrInst =Currency.getBaseCurrency();
+        final Instance baseCurrInst = Currency.getBaseCurrency();
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, createdDoc);
 
         final Object[] rateObj = getRateObject(_parameter);
