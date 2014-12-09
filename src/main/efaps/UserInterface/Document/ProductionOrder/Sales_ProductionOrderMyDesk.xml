@@ -27,6 +27,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_ProductionOrderMyDesk</name>
         <access>
             <role>Sales_Salesman</role>
@@ -38,6 +41,35 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_ProductionOrder</property>
             </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="fabrication"/>
+        </profiles>
+        <name>Sales_ProductionOrderMyDesk</name>
+        <access>
+            <role>Sales_Salesman</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <menu>Sales_ProductionOrderMyDesk_Menu</menu>
+            <table>Sales_ProductionOrderTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_ProductionOrder</property>
+            </evaluate>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ProductionOrderMyDesk.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                 <!-- Fabrication-Configuration -->
+                <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrderShowDetail</property>
+                <property name="Inverse">true</property>
+            </trigger>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
