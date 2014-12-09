@@ -117,8 +117,8 @@ public abstract class ProductStockReport_Base
                             .append(" ready(1500, function(){")
                             .append("eFapsSetFieldValue(").append(0).append(",'").append("project").append("',")
                             .append("'").append(value.getObject().getOid()).append("'")
-                            .append(",'").append(StringEscapeUtils.escapeEcmaScript(value.getLabel())).append("'")
-                            .append(");")
+                            .append(",'").append(StringEscapeUtils.escapeEcmaScript(value.getLabel(_parameter)))
+                            .append("'").append(");")
                             .append("});").append("});\n</script>\n");
             ret.put(ReturnValues.SNIPLETT, js.toString());
         }
@@ -200,7 +200,7 @@ public abstract class ProductStockReport_Base
      * FilterClass.
      */
     public static class ProjectFilterValue
-        extends FilterValue<Instance>
+        extends AbstractFilterValue<Instance>
     {
 
         /**
@@ -209,7 +209,7 @@ public abstract class ProductStockReport_Base
         private static final long serialVersionUID = 1L;
 
         @Override
-        public String getLabel()
+        public String getLabel(final Parameter _parameter)
             throws EFapsException
         {
             String ret;
