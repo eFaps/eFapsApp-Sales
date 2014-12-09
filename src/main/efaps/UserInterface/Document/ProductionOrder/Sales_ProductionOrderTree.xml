@@ -19,27 +19,24 @@
   Last Changed:    $Date$
   Last Changed By: $Author$
 
---><ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c8fb4c3e-6411-45ee-a27a-1a5c34fcef71</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ProductionOrderTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_ProductionOrderTree_Menu</menu>
             <form>Sales_ProductionOrderForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_ProductionOrder</type>
         <childs>
             <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_ProductionOrderTree_Position</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>
