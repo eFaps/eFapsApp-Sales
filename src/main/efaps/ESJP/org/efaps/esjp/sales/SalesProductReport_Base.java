@@ -318,7 +318,7 @@ public abstract class SalesProductReport_Base
             }
             if (filter.containsKey("type")) {
                 _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
-                                ((TypeFilterValue) filter.get("type")).getObject());
+                                ((TypeFilterValue) filter.get("type")).getObject().toArray());
             }
             _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
