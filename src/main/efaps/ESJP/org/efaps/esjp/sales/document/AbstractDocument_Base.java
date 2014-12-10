@@ -1915,14 +1915,15 @@ public abstract class AbstractDocument_Base
      * @param _legend       legend to be presented
      * @throws EFapsException on error
      */
-    protected void add4Individual(final Parameter _parameter,
-                                  final Instance _prodInst,
-                                  final ProductIndividual _individual,
-                                  final Map<String, Object> _map,
-                                  final String _key,
-                                  final String _legend)
+    public StringBuilder add4Individual(final Parameter _parameter,
+                                        final Instance _prodInst,
+                                        final ProductIndividual _individual,
+                                        final Map<String, Object> _map,
+                                        final String _key,
+                                        final String _legend)
         throws EFapsException
     {
+        final StringBuilder js = new StringBuilder();
         if (_individual != null && !ProductIndividual.NONE.equals(_individual)) {
             // TODO make configurable from properties
             final String fieldName = "individual";
@@ -1942,8 +1943,7 @@ public abstract class AbstractDocument_Base
                     quantity = 1;
                     break;
             }
-            final StringBuilder js = new StringBuilder()
-                .append("require([\"dojo/query\", \"dojo/dom\",\"dojo/dom-construct\",\"dojo/number\"],")
+            js.append("require([\"dojo/query\", \"dojo/dom\",\"dojo/dom-construct\",\"dojo/number\"],")
                 .append(" function(query, dom, domConstruct,number){")
                 .append("var ind = query(\"[name='").append(fieldName).append("']\")[0];")
                 .append("if (typeof(ind)!=='undefined') {")
@@ -2004,6 +2004,7 @@ public abstract class AbstractDocument_Base
 
             InterfaceUtils.appendScript4FieldUpdate(_map, js);
         }
+        return js;
     }
 
     /**

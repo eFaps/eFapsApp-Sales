@@ -351,7 +351,7 @@ public abstract class ProductStockReport_Base
                 }
             });
             Instance current = null;
-            int cont = 2;
+            int cont = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATERESERVATIONS) ? 2 : 1;
             for (final DataBean bean : dataSource) {
                 if (!bean.getDocInst().equals(current)) {
                     cont++;
@@ -368,13 +368,14 @@ public abstract class ProductStockReport_Base
                                 .setProdInst(prodInst)
                                 .setDocName(docName)
                                 .setQuantity(quantities[0]));
-
-                final String docName2 = String.format("%0" + rowQ + "d", 2) + ". " + DBProperties
-                                .getProperty("org.efaps.esjp.sales.report.ProductStockReport.Reserved");
-                dataSource.add(getDataBean()
-                                .setProdInst(prodInst)
-                                .setDocName(docName2)
-                                .setQuantity(quantities[1]));
+                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATERESERVATIONS)) {
+                    final String docName2 = String.format("%0" + rowQ + "d", 2) + ". " + DBProperties
+                                    .getProperty("org.efaps.esjp.sales.report.ProductStockReport.Reserved");
+                    dataSource.add(getDataBean()
+                                    .setProdInst(prodInst)
+                                    .setDocName(docName2)
+                                    .setQuantity(quantities[1]));
+                }
             }
 
             final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();

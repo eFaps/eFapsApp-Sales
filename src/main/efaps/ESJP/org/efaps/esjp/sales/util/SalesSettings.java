@@ -241,6 +241,13 @@ public interface SalesSettings
     String ACTIVATETRANSTRIG4RES = SalesSettings.BASE + "ActivateTransactionTrigger4Reservation";
 
     /**
+     * Boolean.
+     * Activate reservations .
+     */
+    String ACTIVATERESERVATIONS = SalesSettings.BASE + "ActivateReservation";
+
+
+    /**
      * Link.
      * The Conciliation used for Automation Mechanism.
      */
