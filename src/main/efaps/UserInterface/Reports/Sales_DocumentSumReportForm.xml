@@ -50,7 +50,7 @@
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">TODAY</property>
                 <property name="FilterDefault04">-</property>
-                <property name="FilterDefault05">org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base$DateGroup</property>
+                <property name="FilterDefault05">org.efaps.esjp.sales.report.InventoryReport$Valuation</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.2"

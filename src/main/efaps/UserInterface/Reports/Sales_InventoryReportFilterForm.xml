@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2014 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+  Revision:        $Rev$
+  Last Changed:    $Date$
+  Last Changed By: $Author$
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>949fe696-af9e-42f0-8e01-a1cd9fadbae4</uuid>
+    <file-application>eFapsApp-Commons</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_InventoryReportFilterForm</name>
+        <field name="date">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.InventoryReport.date</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.erp.FilteredReport" />
+        </field>
+        <field name="storageGroup">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.InventoryReport.storageGroup</property>
+            <trigger program="org.efaps.esjp.erp.FilteredReport"
+                method="getInstanceFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Products_WarehouseGroup_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4StorageGroup"
+                 name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.products.StorageGroup">
+                <property name="Type">Products_StorageGroupAbstract</property>
+            </trigger>
+        </field>
+        <field name="storage">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.InventoryReport.storage</property>
+            <trigger program="org.efaps.esjp.erp.FilteredReport"
+                method="getInstanceFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                 <property name="Products_Warehouse_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4Storage"
+                 name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.products.Storage">
+                <property name="Type">Products_DynamicStorage</property>
+            </trigger>
+        </field>
+
+         <field name="valuation">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.InventoryReport.valuation</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.InventoryReport" >
+                <property name="Enum">org.efaps.esjp.sales.report.InventoryReport_Base$Valuation</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>
