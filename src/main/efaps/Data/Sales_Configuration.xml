@@ -211,6 +211,7 @@ TYPE02=Sales_IncomingInvoice
 TYPE03=Sales_IncomingReceipt
 TYPE04=Sales_Receipt
 TYPE05=Sales_CreditNote
+TYPE06=Sales_OrderOutbound
 Sales_CreditNote.Negate=true
 Sales_Invoice.Total=NET
             ]]></value>
