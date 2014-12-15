@@ -96,6 +96,12 @@ public abstract class DocumentSumReport_Base
     extends FilteredReport
 {
 
+    public enum GROUP
+    {
+        NONE, CONTACT;
+    }
+
+
     /**
      * Logging instance used in this class.
      */
@@ -459,6 +465,8 @@ public abstract class DocumentSumReport_Base
                 listener.prepend2ColumnDefinition(_parameter, _builder, crosstab);
             }
 
+
+
             final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
             CurrencyInst selected = null;
             if (filterMap.containsKey("currency")) {
@@ -467,6 +475,16 @@ public abstract class DocumentSumReport_Base
                     selected = CurrencyInst.get(filter.getObject());
                 }
             }
+
+            if (filterMap.containsKey("contactGroup")) {
+                final Boolean contactBool = (Boolean) filterMap.get("contactGroup");
+                if (contactBool != null && contactBool) {
+                    final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
+                                    String.class).setHeaderWidth(150);
+                    crosstab.addRowGroup(contactGroup);
+                }
+            }
+
             if (selected == null) {
                 for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                     final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(

@@ -44,6 +44,7 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.erp.CurrencyInst;
@@ -172,7 +173,9 @@ public abstract class DocumentSumGroupedByDate_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                         .instance();
-        multi.addSelect(selRateCurInst);
+        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                        .attribute(CIContacts.ContactAbstract.Name);
+        multi.addSelect(selContactName, selRateCurInst);
         multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.RateNetTotal,
                         CISales.DocumentSumAbstract.Date);
@@ -195,6 +198,7 @@ public abstract class DocumentSumGroupedByDate_Base
             }
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
             map.put("docInstance", multi.getCurrentInstance());
+            map.put("contact", multi.getSelect(selContactName));
             map.put("partial", getPartial(dateTime, _dateGourp).toString());
             map.put("type", multi.getCurrentInstance().getType().getLabel());
             map.put("BASE", total);
