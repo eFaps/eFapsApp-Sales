@@ -27,6 +27,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.IEsjpListener;
+import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.util.EFapsException;
 
@@ -35,7 +36,8 @@ import org.efaps.util.EFapsException;
  * against the eFaps Database like Autocompletes or MultiPrints.
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: IOnDocumentSumReport.java 14626 2014-12-15 21:15:17Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("b7b529ac-e62d-4efd-8db5-01c69ead37ad")
 @EFapsRevision("$Rev$")
@@ -69,6 +71,14 @@ public interface IOnDocumentSumReport
      */
     void add2ValueList(final Parameter _parameter,
                        final ValueList _ret)
+        throws EFapsException;
+
+    /**
+     * @param _parameter
+     * @param _queryBldr
+     */
+    void add2QueryBuilder(Parameter _parameter,
+                          QueryBuilder _queryBldr)
         throws EFapsException;
 
 }

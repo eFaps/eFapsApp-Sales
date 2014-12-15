@@ -58,6 +58,8 @@ import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
@@ -314,7 +316,17 @@ public abstract class DocumentSumReport_Base
         throws EFapsException
     {
         if (this.valueList == null) {
-            final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
+            final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate()
+            {
+                @Override
+                protected void add2QueryBuilder(final Parameter _parameter,
+                                                final QueryBuilder _queryBldr)
+                    throws EFapsException
+                {
+                    super.add2QueryBuilder(_parameter, _queryBldr);
+                    DocumentSumReport_Base.this.add2QueryBuilder(_parameter, _queryBldr);
+                }
+            };
             final Map<String, Object> filter = getFilterMap(_parameter);
             final DateTime start;
             final DateTime end;
@@ -351,6 +363,25 @@ public abstract class DocumentSumReport_Base
                             typeList.toArray(new Type[typeList.size()]));
         }
         return this.valueList;
+    }
+
+    protected void add2QueryBuilder(final Parameter _parameter,
+                                    final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        final Map<String, Object> filter = getFilterMap(_parameter);
+
+        if (filter.containsKey("contact")) {
+            final InstanceFilterValue filterValue = (InstanceFilterValue) filter.get("contact");
+            if (filterValue != null && filterValue.getObject().isValid()) {
+                _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, filterValue.getObject());
+            }
+        }
+
+        for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                        IOnDocumentSumReport.class)) {
+            listener.add2QueryBuilder(_parameter, _queryBldr);
+        }
     }
 
     @Override
@@ -465,8 +496,6 @@ public abstract class DocumentSumReport_Base
                 listener.prepend2ColumnDefinition(_parameter, _builder, crosstab);
             }
 
-
-
             final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
             CurrencyInst selected = null;
             if (filterMap.containsKey("currency")) {
@@ -511,6 +540,7 @@ public abstract class DocumentSumReport_Base
                             String.class);
 
             crosstab.addColumnGroup(columnGroup);
+            crosstab.setCellWidth(200);
 
             for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
                             IOnDocumentSumReport.class)) {

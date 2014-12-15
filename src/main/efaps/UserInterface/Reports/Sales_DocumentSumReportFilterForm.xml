@@ -30,7 +30,7 @@
         <profiles>
             <profile name="eFaps"/>
         </profiles>
-        <name>Sales_DocumentSumReporFilterForm</name>
+        <name>Sales_DocumentSumReportFilterForm</name>
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
@@ -54,6 +54,22 @@
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocumentSumReport" >
+            </trigger>
+        </field>
+        <field name="contact">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocumentSumReport.contact</property>
+            <trigger program="org.efaps.esjp.erp.FilteredReport"
+                method="getInstanceFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                 <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4Contact"
+                 name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.contacts.Contacts">
             </trigger>
         </field>
         <field name="currency">
@@ -89,7 +105,7 @@
         <profiles>
             <profile name="projects"/>
         </profiles>
-        <name>Sales_DocumentSumReporFilterForm</name>
+        <name>Sales_DocumentSumReportFilterForm</name>
         <field name="dateFrom">
             <property name="ModeEdit">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
@@ -113,6 +129,38 @@
             <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocumentSumReport" >
+            </trigger>
+        </field>
+        <field name="contact">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocumentSumReport.contact</property>
+            <trigger program="org.efaps.esjp.erp.FilteredReport"
+                method="getInstanceFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                 <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4Contact"
+                 name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.contacts.Contacts">
+            </trigger>
+        </field>
+         <field name="project">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocumentSumReport.project</property>
+            <trigger program="org.efaps.esjp.erp.FilteredReport"
+                method="getInstanceFieldValue"
+                name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                 <property name="Projects_ProjectService_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                 method="autoComplete4Project"
+                 name="Products_InventoryReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                 program="org.efaps.esjp.projects.Project">
             </trigger>
         </field>
         <field name="currency">

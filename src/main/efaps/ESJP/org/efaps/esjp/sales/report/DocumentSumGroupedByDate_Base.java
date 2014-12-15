@@ -22,7 +22,6 @@ package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +32,6 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -170,6 +168,9 @@ public abstract class DocumentSumGroupedByDate_Base
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, _start.withTimeAtStartOfDay()
                         .minusMinutes(1));
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, _end.withTimeAtStartOfDay().plusDays(1));
+
+        add2QueryBuilder(_parameter, queryBldr);
+
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                         .instance();
@@ -211,6 +212,13 @@ public abstract class DocumentSumGroupedByDate_Base
             listener.add2ValueList(_parameter, ret);
         }
         return ret;
+    }
+
+    protected void add2QueryBuilder(final Parameter _parameter,
+                                    final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // tobe used by
     }
 
     public static class ValueList
@@ -259,7 +267,6 @@ public abstract class DocumentSumGroupedByDate_Base
             }
             return ret;
         }
-
 
         public Set<Instance> getDocInstances()
         {
@@ -373,136 +380,6 @@ public abstract class DocumentSumGroupedByDate_Base
         public void setTypes(final Set<Type> _types)
         {
             this.types = _types;
-        }
-    }
-
-    public static class XValueBean
-    {
-
-        private final Map<String, BigDecimal> amounts = new HashMap<>();
-
-        private Type type;
-
-        public XValueBean addAmount(final String _currISO,
-                                    final BigDecimal _amount)
-        {
-            BigDecimal amount;
-            if (this.amounts.containsKey(_currISO)) {
-                amount = this.amounts.get(_currISO);
-            } else {
-                amount = BigDecimal.ZERO;
-            }
-            this.amounts.put(_currISO, amount.add(_amount));
-            return this;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #type}.
-         *
-         * @return value of instance variable {@link #type}
-         */
-        public Type getType()
-        {
-            return this.type;
-        }
-
-        /**
-         * Setter method for instance variable {@link #type}.
-         *
-         * @param _type value for instance variable {@link #type}
-         */
-        public XValueBean setType(final Type _type)
-        {
-            this.type = _type;
-            return this;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #amounts}.
-         *
-         * @return value of instance variable {@link #amounts}
-         */
-        public Map<String, BigDecimal> getAmounts()
-        {
-            return this.amounts;
-        }
-    }
-
-    public static class XDataBean
-    {
-
-        private Partial partial = new Partial();
-
-        private final Map<Type, XValueBean> values = new HashMap<>();
-
-        public XDataBean addAmount(final Type _type,
-                                   final String _currISO,
-                                   final BigDecimal _amount)
-        {
-            XValueBean value;
-            if (this.values.containsKey(_type)) {
-                value = this.values.get(_type);
-            } else {
-                value = new XValueBean().setType(_type);
-                this.values.put(_type, value);
-            }
-            value.addAmount(_currISO, _amount);
-            return this;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #partial}.
-         *
-         * @return value of instance variable {@link #partial}
-         */
-        public Partial getPartial()
-        {
-            return this.partial;
-        }
-
-        /**
-         * Setter method for instance variable {@link #partial}.
-         *
-         * @param _partial value for instance variable {@link #partial}
-         * @return this used for chaining
-         */
-        public XDataBean setPartial(final Partial _partial)
-        {
-            this.partial = _partial;
-            return this;
-        }
-
-        @Override
-        public String toString()
-        {
-            return ToStringBuilder.reflectionToString(this);
-        }
-
-        /**
-         * @param _datasource
-         */
-        public void add2MapCollection(final Collection<Map<String, ?>> _datasource)
-            throws EFapsException
-        {
-            for (final XValueBean value : getValues().values()) {
-                final Map<String, Object> map = new HashMap<>();
-                _datasource.add(map);
-                map.put("group", getPartial().toString());
-                map.put("type", value.getType().getLabel());
-                for (final Entry<String, BigDecimal> entry : value.getAmounts().entrySet()) {
-                    map.put(entry.getKey(), entry.getValue());
-                }
-            }
-        }
-
-        /**
-         * Getter method for the instance variable {@link #values}.
-         *
-         * @return value of instance variable {@link #values}
-         */
-        public Map<Type, XValueBean> getValues()
-        {
-            return this.values;
         }
     }
 }

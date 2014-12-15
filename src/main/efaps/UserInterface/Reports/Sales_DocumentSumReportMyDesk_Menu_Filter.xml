@@ -33,7 +33,7 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_DocumentSumReporFilterForm</form>
+            <form>Sales_DocumentSumReportFilterForm</form>
             <execute method="setFilter" program="org.efaps.esjp.sales.report.DocumentSumReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
             </execute>
