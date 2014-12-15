@@ -24,17 +24,22 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.Set;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -42,6 +47,7 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
@@ -61,20 +67,34 @@ public abstract class DocumentSumGroupedByDate_Base
     extends AbstractCommon
 {
 
+    /**
+     * Grouping.
+     */
     public enum DateGroup
     {
-
+        /** Month. */
         MONTH(DurationFieldType.months()),
+        /** Week. */
         WEEK(DurationFieldType.weeks()),
+        /** Day. */
         DAY(DurationFieldType.days());
 
+        /**
+         * Fieldtype.
+         */
         private final DurationFieldType fieldType;
 
+        /**
+         * @param _fieldType fieldType
+         */
         private DateGroup(final DurationFieldType _fieldType)
         {
             this.fieldType = _fieldType;
         }
 
+        /**
+         * @return the fieldType
+         */
         public DurationFieldType getFieldType()
         {
             return this.fieldType;
@@ -102,27 +122,34 @@ public abstract class DocumentSumGroupedByDate_Base
                             new int[] { _date.getYear(), _date.getMonthOfYear() });
         } else if (DurationFieldType.days().equals(_fieldType)) {
             ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year(),
-                            DateTimeFieldType.monthOfYear(),  DateTimeFieldType.dayOfMonth() },
+                            DateTimeFieldType.monthOfYear(), DateTimeFieldType.dayOfMonth() },
                             new int[] { _date.getYear(), _date.getMonthOfYear(), _date.getDayOfMonth() });
         }
         return ret;
     }
 
-    public List<? extends DataBean> getDataBeans(final DateTime _start,
-                                                 final DateTime _end,
-                                                 final DateGroup _dateGourp,
-                                                 final Properties _props,
-                                                 final Type... _types)
+    public ValueList getValueList(final Parameter _parameter,
+                                  final DateTime _start,
+                                  final DateTime _end,
+                                  final DateGroup _dateGourp,
+                                  final Properties _props,
+                                  final Type... _types)
         throws EFapsException
     {
+        final ValueList ret = new ValueList();
+        ret.setStart(_start);
+        ret.setEnd(_end);
+        ret.setDateGourp(_dateGourp);
+        CollectionUtils.addAll(ret.getTypes(), _types);
+
         final Properties props = _props == null ? new Properties() : _props;
-        final Map<Partial, DataBean> dateGroupmap = new HashMap<>();
+
         Partial startPartial = getPartial(_start, _dateGourp);
         final Partial endPartial = getPartial(_end, _dateGourp);
 
         while (!startPartial.isAfter(endPartial)) {
-            final DataBean bean = new DataBean().setPartial(startPartial);
-            dateGroupmap.put(startPartial, bean);
+            // final DataBean bean = new DataBean().setPartial(startPartial);
+            // dateGroupmap.put(startPartial, bean);
             startPartial = startPartial.withFieldAdded(_dateGourp.getFieldType(), 1);
         }
 
@@ -151,6 +178,7 @@ public abstract class DocumentSumGroupedByDate_Base
                         CISales.DocumentSumAbstract.Date);
         multi.execute();
         while (multi.next()) {
+            final Map<String, Object> map = new HashMap<>();
             final DateTime dateTime = multi.getAttribute(CISales.DocumentSumAbstract.Date);
             BigDecimal total;
             BigDecimal rateTotal;
@@ -166,22 +194,193 @@ public abstract class DocumentSumGroupedByDate_Base
                 rateTotal = rateTotal.negate();
             }
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
-            final DataBean bean = dateGroupmap.get(getPartial(dateTime, _dateGourp));
-            bean.addAmount(multi.getCurrentInstance().getType(), "BASE", total);
-            bean.addAmount(multi.getCurrentInstance().getType(), CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
+            map.put("docInstance", multi.getCurrentInstance());
+            map.put("partial", getPartial(dateTime, _dateGourp).toString());
+            map.put("type", multi.getCurrentInstance().getType().getLabel());
+            map.put("BASE", total);
+            map.put(CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
+            ret.add(map);
         }
-        return new ArrayList<>(dateGroupmap.values());
+
+        for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                        IOnDocumentSumReport.class)) {
+            listener.add2ValueList(_parameter, ret);
+        }
+        return ret;
     }
 
-    public static class ValueBean
+    public static class ValueList
+        extends ArrayList<Map<String, Object>>
+    {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        private DateTime start;
+        private DateTime end;
+        private DateGroup dateGourp;
+        private Properties props;
+        private Set<Type> types = new HashSet<>();
+
+        public ValueList groupBy(final String... _keys)
+        {
+            final Map<String, Map<String, Object>> tmpMap = new HashMap<>();
+            final ValueList ret = new ValueList();
+            final Iterator<Map<String, Object>> iter = iterator();
+            while (iter.hasNext()) {
+                final Map<String, Object> map = iter.next();
+                String key = "";
+                for (final String keyTmp : _keys) {
+                    key = key + map.get(keyTmp);
+                }
+                Map<String, Object> newMap;
+                if (tmpMap.containsKey(key)) {
+                    newMap = tmpMap.get(key);
+                    for (final Entry<String, Object> entry : map.entrySet()) {
+                        if (entry.getValue() instanceof BigDecimal) {
+                            if (newMap.containsKey(entry.getKey())) {
+                                newMap.put(entry.getKey(), ((BigDecimal) newMap.get(entry.getKey()))
+                                                .add((BigDecimal) entry.getValue()));
+                            } else {
+                                newMap.put(entry.getKey(), entry.getValue());
+                            }
+                        }
+                    }
+                } else {
+                    newMap = map;
+                    tmpMap.put(key, newMap);
+                    ret.add(newMap);
+                }
+            }
+            return ret;
+        }
+
+
+        public Set<Instance> getDocInstances()
+        {
+            final Set<Instance> ret = new HashSet<>();
+            final Iterator<Map<String, Object>> iter = iterator();
+            while (iter.hasNext()) {
+                final Map<String, Object> map = iter.next();
+                final Instance docInstance = (Instance) map.get("docInstance");
+                if (docInstance != null && docInstance.isValid()) {
+                    ret.add(docInstance);
+                }
+            }
+            return ret;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #start}.
+         *
+         * @return value of instance variable {@link #start}
+         */
+        public DateTime getStart()
+        {
+            return this.start;
+        }
+
+        /**
+         * Setter method for instance variable {@link #start}.
+         *
+         * @param _start value for instance variable {@link #start}
+         */
+        public void setStart(final DateTime _start)
+        {
+            this.start = _start;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #end}.
+         *
+         * @return value of instance variable {@link #end}
+         */
+        public DateTime getEnd()
+        {
+            return this.end;
+        }
+
+        /**
+         * Setter method for instance variable {@link #end}.
+         *
+         * @param _end value for instance variable {@link #end}
+         */
+        public void setEnd(final DateTime _end)
+        {
+            this.end = _end;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #dateGourp}.
+         *
+         * @return value of instance variable {@link #dateGourp}
+         */
+        public DateGroup getDateGourp()
+        {
+            return this.dateGourp;
+        }
+
+        /**
+         * Setter method for instance variable {@link #dateGourp}.
+         *
+         * @param _dateGourp value for instance variable {@link #dateGourp}
+         */
+        public void setDateGourp(final DateGroup _dateGourp)
+        {
+            this.dateGourp = _dateGourp;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #props}.
+         *
+         * @return value of instance variable {@link #props}
+         */
+        public Properties getProps()
+        {
+            return this.props;
+        }
+
+        /**
+         * Setter method for instance variable {@link #props}.
+         *
+         * @param _props value for instance variable {@link #props}
+         */
+        public void setProps(final Properties _props)
+        {
+            this.props = _props;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #types}.
+         *
+         * @return value of instance variable {@link #types}
+         */
+        public Set<Type> getTypes()
+        {
+            return this.types;
+        }
+
+        /**
+         * Setter method for instance variable {@link #types}.
+         *
+         * @param _types value for instance variable {@link #types}
+         */
+        public void setTypes(final Set<Type> _types)
+        {
+            this.types = _types;
+        }
+    }
+
+    public static class XValueBean
     {
 
         private final Map<String, BigDecimal> amounts = new HashMap<>();
 
         private Type type;
 
-        public ValueBean addAmount(final String _currISO,
-                                   final BigDecimal _amount)
+        public XValueBean addAmount(final String _currISO,
+                                    final BigDecimal _amount)
         {
             BigDecimal amount;
             if (this.amounts.containsKey(_currISO)) {
@@ -208,7 +407,7 @@ public abstract class DocumentSumGroupedByDate_Base
          *
          * @param _type value for instance variable {@link #type}
          */
-        public ValueBean setType(final Type _type)
+        public XValueBean setType(final Type _type)
         {
             this.type = _type;
             return this;
@@ -225,22 +424,22 @@ public abstract class DocumentSumGroupedByDate_Base
         }
     }
 
-    public static class DataBean
+    public static class XDataBean
     {
 
         private Partial partial = new Partial();
 
-        private final Map<Type, ValueBean> values = new HashMap<>();
+        private final Map<Type, XValueBean> values = new HashMap<>();
 
-        public DataBean addAmount(final Type _type,
-                                  final String _currISO,
-                                  final BigDecimal _amount)
+        public XDataBean addAmount(final Type _type,
+                                   final String _currISO,
+                                   final BigDecimal _amount)
         {
-            ValueBean value;
+            XValueBean value;
             if (this.values.containsKey(_type)) {
                 value = this.values.get(_type);
             } else {
-                value = new ValueBean().setType(_type);
+                value = new XValueBean().setType(_type);
                 this.values.put(_type, value);
             }
             value.addAmount(_currISO, _amount);
@@ -261,8 +460,9 @@ public abstract class DocumentSumGroupedByDate_Base
          * Setter method for instance variable {@link #partial}.
          *
          * @param _partial value for instance variable {@link #partial}
+         * @return this used for chaining
          */
-        public DataBean setPartial(final Partial _partial)
+        public XDataBean setPartial(final Partial _partial)
         {
             this.partial = _partial;
             return this;
@@ -280,7 +480,7 @@ public abstract class DocumentSumGroupedByDate_Base
         public void add2MapCollection(final Collection<Map<String, ?>> _datasource)
             throws EFapsException
         {
-            for (final ValueBean value : getValues().values()) {
+            for (final XValueBean value : getValues().values()) {
                 final Map<String, Object> map = new HashMap<>();
                 _datasource.add(map);
                 map.put("group", getPartial().toString());
@@ -296,7 +496,7 @@ public abstract class DocumentSumGroupedByDate_Base
          *
          * @return value of instance variable {@link #values}
          */
-        public Map<Type, ValueBean> getValues()
+        public Map<Type, XValueBean> getValues()
         {
             return this.values;
         }

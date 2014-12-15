@@ -47,6 +47,7 @@ import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
+import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -55,6 +56,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.uiform.Field;
@@ -64,9 +66,9 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.NumberFormatter;
-import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.DataBean;
+import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.DateGroup;
-import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueBean;
+import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.dojo.charting.Axis;
@@ -78,7 +80,6 @@ import org.efaps.esjp.ui.html.dojo.charting.Serie;
 import org.efaps.esjp.ui.html.dojo.charting.Util;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
-import org.joda.time.Partial;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,7 +104,7 @@ public abstract class DocumentSumReport_Base
     /**
      * DataBean list.
      */
-    private List<? extends DataBean> data;
+    private ValueList valueList;
 
     @Override
     public Return getTypeFieldValue(final Parameter _parameter)
@@ -150,6 +151,7 @@ public abstract class DocumentSumReport_Base
         values.add(new DropDownPosition("-", "-"));
         Collections.sort(values, new Comparator<DropDownPosition>()
         {
+
             @Override
             public int compare(final DropDownPosition _o1,
                                final DropDownPosition _o2)
@@ -174,87 +176,92 @@ public abstract class DocumentSumReport_Base
         final AbstractDynamicReport dyRp = getReport(_parameter);
         String html = dyRp.getHtmlSnipplet(_parameter);
 
-        final List<? extends DataBean> dataBeans = getData(_parameter);
-        Collections.sort(this.data, new Comparator<DataBean>()
+        final ValueList values = getData(_parameter).groupBy("partial", "type");
+
+        final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
+        chain.addComparator(new Comparator<Map<String, Object>>()
         {
 
             @Override
-            public int compare(final DataBean _arg0,
-                               final DataBean _arg1)
+            public int compare(final Map<String, Object> _o1,
+                               final Map<String, Object> _o2)
             {
-                return _arg0.getPartial().compareTo(_arg1.getPartial());
+                return 0;
             }
+
         });
+        Collections.sort(values, chain);
+
         int x = 0;
-        final Map<Partial, Integer> xmap = new LinkedHashMap<>();
+        final Map<String, Integer> xmap = new LinkedHashMap<>();
 
-        final Map<Type, ColumnsChart> carts = new HashMap<>();
-        final Map<Type, Map<String, Serie<Data>>> seriesMap = new HashMap<>();
+        final Map<String, ColumnsChart> carts = new HashMap<>();
+        final Map<String, Map<String, Serie<Data>>> seriesMap = new HashMap<>();
         final Axis xAxis = new Axis().setName("x");
-        for (final DataBean bean : dataBeans) {
+        for (final Map<String, Object> map : values) {
 
-            if (!xmap.containsKey(bean.getPartial())) {
-                xmap.put(bean.getPartial(), x++);
+            if (!xmap.containsKey(map.get("partial"))) {
+                xmap.put((String) map.get("partial"), x++);
             }
-            for (final ValueBean value : bean.getValues().values()) {
-                final ColumnsChart columsChart;
-                final Map<String, Serie<Data>> series;
-                if (carts.containsKey(value.getType())) {
-                    columsChart = carts.get(value.getType());
-                    series = seriesMap.get(value.getType());
-                } else {
-                    series = new HashMap<>();
-                    columsChart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
-                                    .setGap(5).setWidth(650).setHeight(400);
-                    columsChart.setTitle(value.getType().getLabel());
-                    columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
-                    CurrencyInst selected = null;
-                    final Map<String, Object> filterMap = getFilterMap(_parameter);
-                    if (filterMap.containsKey("currency")) {
-                        final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
-                        if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
-                            selected = CurrencyInst.get(filter.getObject());
-                        }
+
+            final ColumnsChart columsChart;
+            final Map<String, Serie<Data>> series;
+            if (carts.containsKey(map.get("type"))) {
+                columsChart = carts.get(map.get("type"));
+                series = seriesMap.get(map.get("type"));
+            } else {
+                series = new HashMap<>();
+                columsChart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
+                                .setGap(5).setWidth(650).setHeight(400);
+                columsChart.setTitle((String) map.get("type"));
+                columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
+                CurrencyInst selected = null;
+                final Map<String, Object> filterMap = getFilterMap(_parameter);
+                if (filterMap.containsKey("currency")) {
+                    final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
+                    if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
+                        selected = CurrencyInst.get(filter.getObject());
                     }
-                    if (selected == null) {
-                        for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                            final Serie<Data> serie = new Serie<Data>();
-                            serie.setName(currency.getName());
-                            series.put(currency.getISOCode(), serie);
-                            columsChart.addSerie(serie);
-                        }
-                        final Serie<Data> baseSerie = new Serie<Data>();
-                        series.put("BASE", baseSerie);
-                        baseSerie.setName(DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
-                                        + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
-                        columsChart.addSerie(baseSerie);
-                    } else {
+                }
+                if (selected == null) {
+                    for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                         final Serie<Data> serie = new Serie<Data>();
-                        serie.setName(selected.getName());
-                        series.put(selected.getISOCode(), serie);
+                        serie.setName(currency.getName());
+                        series.put(currency.getISOCode(), serie);
                         columsChart.addSerie(serie);
                     }
-                    columsChart.addAxis(xAxis);
-                    carts.put(value.getType(), columsChart);
-                    seriesMap.put(value.getType(), series);
+                    final Serie<Data> baseSerie = new Serie<Data>();
+                    series.put("BASE", baseSerie);
+                    baseSerie.setName(DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
+                                    + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
+                    columsChart.addSerie(baseSerie);
+                } else {
+                    final Serie<Data> serie = new Serie<Data>();
+                    serie.setName(selected.getName());
+                    series.put(selected.getISOCode(), serie);
+                    columsChart.addSerie(serie);
                 }
+                columsChart.addAxis(xAxis);
+                carts.put((String) map.get("type"), columsChart);
+                seriesMap.put((String) map.get("type"), series);
+            }
 
-                for (final Entry<String, BigDecimal> entry : value.getAmounts().entrySet()) {
-                    final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
-                    final Data dataTmp = new Data().setSimple(false);
-                    final Serie<Data> serie = series.get(entry.getKey());
-                    if (serie != null) {
-                        serie.addData(dataTmp);
-                        final BigDecimal y = value.getAmounts().get(entry.getKey()).abs();
-                        dataTmp.setXValue(xmap.get(bean.getPartial()));
-                        dataTmp.setYValue(y);
-                        dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + bean.getPartial());
-                    }
+            for (final Entry<String, Object> entry : map.entrySet()) {
+                final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
+                final Data dataTmp = new Data().setSimple(false);
+                final Serie<Data> serie = series.get(entry.getKey());
+                if (serie != null) {
+                    serie.addData(dataTmp);
+                    final BigDecimal y = ((BigDecimal) entry.getValue()).abs();
+                    dataTmp.setXValue(xmap.get(map.get("partial")));
+                    dataTmp.setYValue(y);
+                    dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + map.get("partial"));
                 }
             }
+
         }
         final List<Map<String, Object>> labels = new ArrayList<>();
-        for (final Entry<Partial, Integer> entry : xmap.entrySet()) {
+        for (final Entry<String, Integer> entry : xmap.entrySet()) {
             final Map<String, Object> map = new HashMap<>();
             map.put("value", entry.getValue());
             map.put("text", Util.wrap4String(entry.getKey()));
@@ -297,10 +304,10 @@ public abstract class DocumentSumReport_Base
      * @return list of DataBeans
      * @throws EFapsException on error
      */
-    protected List<? extends DataBean> getData(final Parameter _parameter)
+    protected ValueList getData(final Parameter _parameter)
         throws EFapsException
     {
-        if (this.data == null) {
+        if (this.valueList == null) {
             final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
             final Map<String, Object> filter = getFilterMap(_parameter);
             final DateTime start;
@@ -328,16 +335,16 @@ public abstract class DocumentSumReport_Base
             final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT,
                             true);
             DocumentSumGroupedByDate_Base.DateGroup dateGroup;
-            if (filter.containsKey("dateGroup")) {
+            if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
 
-            this.data = ds.getDataBeans(start, end, dateGroup, props,
+            this.valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
         }
-        return this.data;
+        return this.valueList;
     }
 
     @Override
@@ -424,22 +431,20 @@ public abstract class DocumentSumReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final List<? extends DataBean> data = this.sumReport.getData(_parameter);
-            Collections.sort(data, new Comparator<DataBean>()
+            final ValueList values = getSumReport().getData(_parameter);
+            final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
+            chain.addComparator(new Comparator<Map<String, Object>>()
             {
 
                 @Override
-                public int compare(final DataBean _arg0,
-                                   final DataBean _arg1)
+                public int compare(final Map<String, Object> _o1,
+                                   final Map<String, Object> _o2)
                 {
-                    return _arg0.getPartial().compareTo(_arg1.getPartial());
+                    return 0;
                 }
             });
-            final Collection<Map<String, ?>> datasource = new ArrayList<>();
-            for (final DataBean bean : data) {
-                bean.add2MapCollection(datasource);
-            }
-            return new JRMapCollectionDataSource(datasource);
+            Collections.sort(values, chain);
+            return new JRMapCollectionDataSource((Collection) values);
         }
 
         @Override
@@ -448,6 +453,12 @@ public abstract class DocumentSumReport_Base
             throws EFapsException
         {
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
+
+            for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                            IOnDocumentSumReport.class)) {
+                listener.prepend2ColumnDefinition(_parameter, _builder, crosstab);
+            }
+
             final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
             CurrencyInst selected = null;
             if (filterMap.containsKey("currency")) {
@@ -465,8 +476,8 @@ public abstract class DocumentSumReport_Base
                 }
                 final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                 DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
-                                                + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(), "BASE",
-                                BigDecimal.class, Calculation.SUM);
+                                                + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
+                                "BASE", BigDecimal.class, Calculation.SUM);
                 crosstab.addMeasure(amountMeasure);
             } else {
                 final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
@@ -478,24 +489,17 @@ public abstract class DocumentSumReport_Base
                             .setHeaderWidth(150);
             crosstab.addRowGroup(rowTypeGroup);
 
-            final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab.columnGroup("group",
+            final CrosstabColumnGroupBuilder<String> columnGroup = DynamicReports.ctab.columnGroup("partial",
                             String.class);
 
             crosstab.addColumnGroup(columnGroup);
 
+            for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                            IOnDocumentSumReport.class)) {
+                listener.add2ColumnDefinition(_parameter, _builder, crosstab);
+            }
             _builder.addSummary(crosstab);
-
-            /*
-             * final BarChartBuilder chart = DynamicReports.cht.barChart()
-             * .setCategory(groupColumn)
-             * .series(DynamicReports.cht.serie(amountColumn
-             * ).setSeries(typeColumn)) .setSeriesOrderType(OrderType.ASCENDING)
-             * .
-             * setValueAxisFormat(DynamicReports.cht.axisFormat().setLabel("Stock"
-             * )); _builder.addSummary(chart);
-             */
         }
-
 
         /**
          * Getter method for the instance variable {@link #sumReport}.
