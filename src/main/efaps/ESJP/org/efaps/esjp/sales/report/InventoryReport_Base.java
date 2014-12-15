@@ -28,7 +28,11 @@ import java.util.Set;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
 import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
+import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.definition.ReportParameters;
 
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -47,6 +51,7 @@ import org.efaps.esjp.products.Cost_Base.CostBean;
 import org.efaps.esjp.products.Inventory;
 import org.efaps.esjp.products.Inventory_Base.InventoryBean;
 import org.efaps.esjp.products.reports.InventoryReport;
+import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -139,6 +144,16 @@ public abstract class InventoryReport_Base
                             "currency", DynamicReports.type.stringType());
 
             if (!isEvaluateCost(_parameter)) {
+                if (getExType().equals(ExportType.HTML)) {
+                    final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
+                                    "http://www.efaps.org", "efapslink")
+                                    .addParameter(EmbeddedLink.JASPER_PARAMETERKEY, new DocLinkExpression())
+                                    .setHeight(12).setWidth(25);
+                    final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement)
+                                    .setTitle("");
+                    _builder.addColumn(linkColumn);
+                }
+
                 _builder.addColumn(docNameColumn, docDateColumn, docCreatedColumn,
                                 costColumn, totalColumn, currencyColumn);
             }
@@ -226,6 +241,17 @@ public abstract class InventoryReport_Base
             }
             return ret;
         }
+
+        public String getDocOID()
+        {
+            String ret = null;
+            if (getCostBean() != null && getCostBean() instanceof SalesCostBean) {
+                final Instance inst = ((SalesCostBean) getCostBean()).getDocInst();
+                ret = inst != null && inst.isValid() ? inst.getOid() : null;
+            }
+            return ret;
+        }
+
     }
 
     public static class SalesCost
@@ -268,11 +294,12 @@ public abstract class InventoryReport_Base
                                     .linkto(CISales.IncomingInvoicePosition.CurrencyId).instance();
                     final SelectBuilder selDoc = SelectBuilder.get()
                                     .linkto(CISales.IncomingInvoicePosition.DocumentAbstractLink);
+                    final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
                     final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Name);
                     final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Date);
                     final SelectBuilder selDocCreate = new SelectBuilder(selDoc)
                                     .attribute(CISales.DocumentAbstract.Created);
-                    multi.addSelect(selCurInst, selDocName, selDocDate, selDocCreate);
+                    multi.addSelect(selCurInst, selDocInst, selDocName, selDocDate, selDocCreate);
                     multi.addAttribute(CISales.IncomingInvoicePosition.DiscountNetUnitPrice);
                     multi.execute();
                     if (multi.next()) {
@@ -283,6 +310,7 @@ public abstract class InventoryReport_Base
                         bean.setProductInstance(prodInst);
                         bean.setCurrencyInstance(curInst);
                         bean.setCost(cost);
+                        bean.setDocInst(multi.<Instance>getSelect(selDocInst));
                         bean.setDocName(multi.<String>getSelect(selDocName));
                         bean.setDate(multi.<DateTime>getSelect(selDocDate));
                         bean.setCreated(multi.<DateTime>getSelect(selDocCreate));
@@ -318,6 +346,7 @@ public abstract class InventoryReport_Base
     public static class SalesCostBean
         extends CostBean
     {
+        private Instance docInst;
 
         private String docName;
 
@@ -384,6 +413,59 @@ public abstract class InventoryReport_Base
         {
             this.created = _created;
         }
+
+
+        /**
+         * Getter method for the instance variable {@link #docInst}.
+         *
+         * @return value of instance variable {@link #docInst}
+         */
+        public Instance getDocInst()
+        {
+            return this.docInst;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #docInst}.
+         *
+         * @param _docInst value for instance variable {@link #docInst}
+         */
+        public void setDocInst(final Instance _docInst)
+        {
+            this.docInst = _docInst;
+        }
     }
+
+
+    /**
+     * Expression used to render a link for the UserInterface.
+     */
+    public static class DocLinkExpression
+        extends AbstractComplexExpression<EmbeddedLink>
+    {
+
+        /**
+         * Needed for serialization.
+         */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * Costructor.
+         */
+        public DocLinkExpression()
+        {
+            addExpression(DynamicReports.field("docOID", String.class));
+        }
+
+        @Override
+        public EmbeddedLink evaluate(final List<?> _values,
+                                     final ReportParameters _reportParameters)
+        {
+            final String oid = (String) _values.get(0);
+            return EmbeddedLink.getJasperLink(oid);
+        }
+    }
+
 
 }
