@@ -21,6 +21,9 @@
 package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -271,50 +274,54 @@ public abstract class InventoryReport_Base
                 ret = super.getCosts(_parameter, _date, _prodInsts);
             } else {
                 ret = new HashMap<>();
-                for (final Instance prodInst : _prodInsts) {
-                    final QueryBuilder posAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                    posAttrQueryBldr.addType(CISales.IncomingReceiptPosition);
-                    posAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, prodInst);
 
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.IncomingInvoice);
-                    attrQueryBldr.addType(CISales.IncomingReceipt);
-                    attrQueryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, posAttrQueryBldr.getAttributeQuery(
-                                                    CISales.IncomingInvoicePosition.DocumentAbstractLink));
-                    attrQueryBldr.addOrderByAttributeDesc(CISales.IncomingInvoice.Created);
-                    attrQueryBldr.setLimit(1);
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                queryBldr.addType(CISales.IncomingReceiptPosition);
+                queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, (Object[]) _prodInsts);
 
-                    final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                    queryBldr.addType(CISales.IncomingReceiptPosition);
-                    queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, prodInst);
-                    queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
-                                    attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selCurInst = SelectBuilder.get()
+                                .linkto(CISales.IncomingInvoicePosition.CurrencyId).instance();
+                final SelectBuilder selDoc = SelectBuilder.get()
+                                .linkto(CISales.IncomingInvoicePosition.DocumentAbstractLink);
+                final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
+                final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Name);
+                final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Date);
+                final SelectBuilder selDocCreate = new SelectBuilder(selDoc)
+                                .attribute(CISales.DocumentAbstract.Created);
+                final SelectBuilder selProdInst = SelectBuilder.get().linkto(CISales.IncomingInvoicePosition.Product)
+                                .instance();
+                multi.addSelect(selCurInst, selDocInst, selDocName, selDocDate, selDocCreate, selProdInst);
+                multi.addAttribute(CISales.IncomingInvoicePosition.DiscountNetUnitPrice);
+                multi.execute();
+                final List<SalesCostBean> beans = new ArrayList<>();
+                while (multi.next()) {
+                    final Instance curInst = multi.getSelect(selCurInst);
+                    final BigDecimal cost = multi
+                                    .getAttribute(CISales.IncomingInvoicePosition.DiscountNetUnitPrice);
+                    final SalesCostBean bean = new SalesCostBean();
+                    bean.setProductInstance(multi.<Instance>getSelect(selProdInst));
+                    bean.setCurrencyInstance(curInst);
+                    bean.setCost(cost);
+                    bean.setDocInst(multi.<Instance>getSelect(selDocInst));
+                    bean.setDocName(multi.<String>getSelect(selDocName));
+                    bean.setDate(multi.<DateTime>getSelect(selDocDate));
+                    bean.setCreated(multi.<DateTime>getSelect(selDocCreate));
+                    beans.add(bean);
+                }
+                Collections.sort(beans, new Comparator<SalesCostBean>()
+                {
 
-                    final MultiPrintQuery multi = queryBldr.getPrint();
-                    final SelectBuilder selCurInst = SelectBuilder.get()
-                                    .linkto(CISales.IncomingInvoicePosition.CurrencyId).instance();
-                    final SelectBuilder selDoc = SelectBuilder.get()
-                                    .linkto(CISales.IncomingInvoicePosition.DocumentAbstractLink);
-                    final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
-                    final SelectBuilder selDocName = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Name);
-                    final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Date);
-                    final SelectBuilder selDocCreate = new SelectBuilder(selDoc)
-                                    .attribute(CISales.DocumentAbstract.Created);
-                    multi.addSelect(selCurInst, selDocInst, selDocName, selDocDate, selDocCreate);
-                    multi.addAttribute(CISales.IncomingInvoicePosition.DiscountNetUnitPrice);
-                    multi.execute();
-                    if (multi.next()) {
-                        final Instance curInst = multi.getSelect(selCurInst);
-                        final BigDecimal cost = multi
-                                        .getAttribute(CISales.IncomingInvoicePosition.DiscountNetUnitPrice);
-                        final SalesCostBean bean = new SalesCostBean();
-                        bean.setProductInstance(prodInst);
-                        bean.setCurrencyInstance(curInst);
-                        bean.setCost(cost);
-                        bean.setDocInst(multi.<Instance>getSelect(selDocInst));
-                        bean.setDocName(multi.<String>getSelect(selDocName));
-                        bean.setDate(multi.<DateTime>getSelect(selDocDate));
-                        bean.setCreated(multi.<DateTime>getSelect(selDocCreate));
-                        ret.put(prodInst, bean);
+                    @Override
+                    public int compare(final SalesCostBean _arg0,
+                                       final SalesCostBean _arg1)
+                    {
+                        return _arg1.getDate().compareTo(_arg0.getDate());
+                    }
+                });
+                for (final SalesCostBean bean : beans) {
+                    if (!ret.containsKey(bean.getProductInstance())) {
+                        ret.put(bean.getProductInstance(), bean);
                     }
                 }
             }
