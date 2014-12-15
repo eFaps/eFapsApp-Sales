@@ -241,8 +241,8 @@ public abstract class ProfServReceiptReport_Base
             throws EFapsException
         {
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
-            if (filter.containsKey("contact") && filter.get("contact") instanceof ContactFilterValue) {
-                final Instance contactInst = ((ContactFilterValue) filter.get("contact")).getObject();
+            if (filter.containsKey("contact") && filter.get("contact") instanceof InstanceFilterValue) {
+                final Instance contactInst = ((InstanceFilterValue) filter.get("contact")).getObject();
                 if (contactInst.isValid()) {
                     _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contactInst);
                 }

@@ -319,7 +319,7 @@ public abstract class SalesReport4Account_Base
                 dateTo = new DateTime();
             }
             if (filter.containsKey("contact")) {
-                final Instance contact = ((ContactFilterValue) filter.get("contact")).getObject();
+                final Instance contact = ((InstanceFilterValue) filter.get("contact")).getObject();
                 if (contact.isValid()) {
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contact);
                 }
