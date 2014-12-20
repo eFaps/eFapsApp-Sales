@@ -45,13 +45,19 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.util.EFapsException;
+import org.joda.time.Chronology;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeFieldType;
+import org.joda.time.DurationField;
 import org.joda.time.DurationFieldType;
 import org.joda.time.Partial;
+import org.joda.time.field.ScaledDurationField;
+import org.joda.time.format.DateTimeFormatter;
+import org.joda.time.format.DateTimeFormatterBuilder;
 
 /**
  * TODO comment!
@@ -66,11 +72,18 @@ public abstract class DocumentSumGroupedByDate_Base
     extends AbstractCommon
 {
 
+
     /**
      * Grouping.
      */
     public enum DateGroup
     {
+        /** Year. */
+        YEAR(DurationFieldType.years()),
+        /** Half of a year. */
+        HALFYEAR(JodaTimeUtils.halfYears()),
+        /** Quarter of a year. */
+        QUARTER(JodaTimeUtils.quarters()),
         /** Month. */
         MONTH(DurationFieldType.months()),
         /** Week. */
@@ -98,8 +111,32 @@ public abstract class DocumentSumGroupedByDate_Base
         {
             return this.fieldType;
         }
-
     }
+
+
+    public static final DurationFieldType Quarters = new DurationFieldType("quarters")
+    {
+
+        private static final long serialVersionUID = -8167713675442491871L;
+
+        @Override
+        public DurationField getField(final Chronology chronology)
+        {
+            return new ScaledDurationField(chronology.months(), Quarters, 3);
+        }
+    };
+
+    public static final DurationFieldType HalfYears = new DurationFieldType("halfyear")
+    {
+
+        private static final long serialVersionUID = -8167713675442491872L;
+
+        @Override
+        public DurationField getField(final Chronology chronology)
+        {
+            return new ScaledDurationField(chronology.months(), HalfYears, 6);
+        }
+    };
 
     public Partial getPartial(final DateTime _date,
                               final DateGroup _dateGourp)
@@ -123,6 +160,33 @@ public abstract class DocumentSumGroupedByDate_Base
             ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year(),
                             DateTimeFieldType.monthOfYear(), DateTimeFieldType.dayOfMonth() },
                             new int[] { _date.getYear(), _date.getMonthOfYear(), _date.getDayOfMonth() });
+        } else if (DurationFieldType.years().equals(_fieldType)) {
+            ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year() },
+                            new int[] { _date.getYear() });
+        } else if (JodaTimeUtils.halfYears().equals(_fieldType)) {
+            ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year(), JodaTimeUtils.halfYearOfYear()},
+                            new int[] { _date.getYear(), _date.get(JodaTimeUtils.halfYearOfYear()) });
+        } else if (JodaTimeUtils.quarters().equals(_fieldType)) {
+            ret = new Partial(new DateTimeFieldType[] { DateTimeFieldType.year(), JodaTimeUtils.quarterOfYear() },
+                            new int[] { _date.getYear(), _date.get(JodaTimeUtils.quarterOfYear()) });
+        }
+        return ret;
+    }
+
+    public DateTimeFormatter getDateTimeFormatter(final DateGroup _dateGourp)
+    {
+        return getDateTimeFormatter(_dateGourp.getFieldType());
+    }
+
+    public DateTimeFormatter getDateTimeFormatter(final DurationFieldType _fieldType)
+    {
+        DateTimeFormatter ret = null;
+        if (JodaTimeUtils.halfYears().equals(_fieldType)) {
+            ret = new DateTimeFormatterBuilder().appendYear(4, 4).appendLiteral("-S")
+                            .appendDecimal(JodaTimeUtils.halfYearOfYear(), 1, 1).toFormatter();
+        } else if (JodaTimeUtils.quarters().equals(_fieldType)) {
+            ret = new DateTimeFormatterBuilder().appendYear(4, 4).appendLiteral("-Q")
+                            .appendDecimal(JodaTimeUtils.quarterOfYear(), 1, 1).toFormatter();
         }
         return ret;
     }
@@ -145,6 +209,8 @@ public abstract class DocumentSumGroupedByDate_Base
 
         Partial startPartial = getPartial(_start, _dateGourp);
         final Partial endPartial = getPartial(_end, _dateGourp);
+        final DateTimeFormatter dateTimeFormatter = getDateTimeFormatter(_dateGourp);
+
 
         while (!startPartial.isAfter(endPartial)) {
             // final DataBean bean = new DataBean().setPartial(startPartial);
@@ -200,7 +266,7 @@ public abstract class DocumentSumGroupedByDate_Base
             final Instance rateCurInst = multi.getSelect(selRateCurInst);
             map.put("docInstance", multi.getCurrentInstance());
             map.put("contact", multi.getSelect(selContactName));
-            map.put("partial", getPartial(dateTime, _dateGourp).toString());
+            map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
             map.put("type", multi.getCurrentInstance().getType().getLabel());
             map.put("BASE", total);
             map.put(CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
