@@ -49,7 +49,7 @@
                 <property name="Field05">currency</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
-                <property name="FilterType03">Contact</property>
+                <property name="FilterType03">Instance</property>
                 <property name="FilterType04">Boolean</property>
                 <property name="FilterType05">Currency</property>
                 <property name="FilterDefault01">MONTH:-1</property>
