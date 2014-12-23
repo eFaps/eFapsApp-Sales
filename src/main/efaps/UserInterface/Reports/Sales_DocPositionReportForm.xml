@@ -22,22 +22,22 @@
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>d768495d-e621-43df-919a-22a8a77b340f</uuid>
+    <uuid>a3073c87-826a-4349-8928-bce6ecceccfc</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
-            <profile name="eFaps"/>
+            <profile name="eFaps" />
         </profiles>
-        <name>Sales_DocumentSumReportForm</name>
+        <name>Sales_DocPositionReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
-                name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.1"
-                program="org.efaps.esjp.sales.report.DocumentSumReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
+                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
                 <property name="ReportField">report</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
@@ -46,6 +46,7 @@
                 <property name="Field05">currency</property>
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
+                <property name="Field08">typeGroup</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -53,18 +54,20 @@
                 <property name="FilterType05">Currency</property>
                 <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Boolean</property>
+                <property name="FilterType08">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03">TODAY</property>
+                <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault07">false</property>
+                <property name="FilterDefault08">false</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
-                name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.2"
-                program="org.efaps.esjp.sales.report.DocumentSumReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
+                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.2"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
@@ -72,13 +75,15 @@
                 <property name="Field05">currency</property>
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.report.DocumentSumReport.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.report.DocumentSumReport.dateTo</property>
-                <property name="DBProperty03">org.efaps.esjp.sales.report.DocumentSumReport.type</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.DocumentSumReport.contact</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.DocumentSumReport.currency</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.DocumentSumReport.dateGroup</property>
-                <property name="DBProperty07">org.efaps.esjp.sales.report.DocumentSumReport.contactGroup</property>
+                <property name="Field08">typeGroup</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.DocPositionReport.contact</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.DocPositionReport.currency</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.DocumentSumReport.typeGroup</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
@@ -86,35 +91,24 @@
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
-                name="Sales_DocumentSumReportForm.report.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.DocumentSumReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">!Replaced</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup02">Accounting_ExternalVoucherStatus</property>
-                <property name="Status02">!Replaced</property>
-
+                name="Sales_DocPositionReportForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
             </trigger>
         </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
-         <profiles>
-            <profile name="projects"/>
+        <profiles>
+            <profile name="projects" />
         </profiles>
-        <name>Sales_DocumentSumReportForm</name>
+        <name>Sales_DocPositionReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
-                name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.1"
-                program="org.efaps.esjp.sales.report.DocumentSumReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
+            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter" name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
                 <property name="ReportField">report</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
@@ -125,6 +119,7 @@
                 <property name="Field07">dateGroup</property>
                 <property name="Field08">contactGroup</property>
                 <property name="Field09">projectGroup</property>
+                <property name="Field10">typeGroup</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -134,6 +129,7 @@
                 <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Boolean</property>
                 <property name="FilterType09">Boolean</property>
+                <property name="FilterType10">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">TODAY</property>
@@ -143,12 +139,12 @@
                 <property name="FilterDefault07">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault08">false</property>
                 <property name="FilterDefault09">false</property>
+                <property name="FilterDefault10">false</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
-            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
-                name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.2"
-                program="org.efaps.esjp.sales.report.DocumentSumReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
+            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue" name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.2"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
@@ -158,15 +154,17 @@
                 <property name="Field07">dateGroup</property>
                 <property name="Field08">contactGroup</property>
                 <property name="Field09">projectGroup</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.report.DocumentSumReport.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.report.DocumentSumReport.dateTo</property>
-                <property name="DBProperty03">org.efaps.esjp.sales.report.DocumentSumReport.type</property>
-                <property name="DBProperty04">org.efaps.esjp.sales.report.DocumentSumReport.contact</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.DocumentSumReport.project</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.DocumentSumReport.currency</property>
-                <property name="DBProperty07">org.efaps.esjp.sales.report.DocumentSumReport.dateGroup</property>
-                <property name="DBProperty08">org.efaps.esjp.sales.report.DocumentSumReport.contactGroup</property>
-                <property name="DBProperty09">org.efaps.esjp.sales.report.DocumentSumReport.projectGroup</property>
+                <property name="Field10">typeGroup</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.DocPositionReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.DocPositionReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.DocPositionReport.type</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.DocPositionReport.contact</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.DocPositionReport.project</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.DocPositionReport.currency</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
+                <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.projectGroup</property>
+                <property name="DBProperty10">org.efaps.esjp.sales.report.DocumentSumReport.typeGroup</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Projects_ProjectService_Select">attribute[Name]</property>
             </trigger>
@@ -175,18 +173,9 @@
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger event="UI_FIELD_VALUE" method="generateReport"
-                name="Sales_DocumentSumReportForm.report.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.report.DocumentSumReport">
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">!Replaced</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup02">Accounting_ExternalVoucherStatus</property>
-                <property name="Status02">!Replaced</property>
+                name="Sales_DocPositionReportForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
             </trigger>
         </field>
     </definition>

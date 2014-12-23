@@ -48,6 +48,7 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -61,15 +62,12 @@ import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
-import org.efaps.esjp.common.uiform.Field;
-import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
-import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
-import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.DateGroup;
+import org.efaps.esjp.sales.report.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -114,63 +112,7 @@ public abstract class DocumentSumReport_Base
      */
     private ValueList valueList;
 
-    @Override
-    public Return getTypeFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final List<DropDownPosition> values = new ArrayList<>();
-        final Map<String, Object> filter = getFilterMap(_parameter);
-        final Set<Long> selected = new HashSet<>();
-        if (filter.containsKey("type")) {
-            final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
-            selected.addAll(filters.getObject());
-        }
-        final List<Type> types = getTypeList(_parameter);
-        for (final Type type : types) {
-            final DropDownPosition dropdown = new DropDownPosition(type.getId(), type.getLabel());
-            dropdown.setSelected(selected.contains(type.getId()));
-            values.add(dropdown);
-        }
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, new Field().getInputField(_parameter, values, ListType.CHECKBOX));
-        return ret;
-    }
 
-    /**
-     * @param _parameter Parameter as passed by the eFasp API
-     * @return Return containing the file
-     * @throws EFapsException on error
-     */
-    public Return getCurrencyFieldValue(final Parameter _parameter)
-        throws EFapsException
-    {
-        final List<DropDownPosition> values = new ArrayList<>();
-        final Map<String, Object> filterMap = getFilterMap(_parameter);
-        Object current = null;
-        if (filterMap.containsKey("currency")) {
-            final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
-            current = filter.getObject();
-        }
-        for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-            final DropDownPosition dropdown = new DropDownPosition(currency.getInstance().getOid(), currency.getName());
-            dropdown.setSelected(currency.getInstance().equals(current));
-            values.add(dropdown);
-        }
-        values.add(new DropDownPosition("-", "-"));
-        Collections.sort(values, new Comparator<DropDownPosition>()
-        {
-
-            @Override
-            public int compare(final DropDownPosition _o1,
-                               final DropDownPosition _o2)
-            {
-                return String.valueOf(_o1.getOrderValue()).compareTo(String.valueOf(_o2.getOrderValue()));
-            }
-        });
-        final Return ret = new Return();
-        ret.put(ReturnValues.SNIPLETT, new Field().getDropDownField(_parameter, values));
-        return ret;
-    }
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -405,31 +347,26 @@ public abstract class DocumentSumReport_Base
         return ret;
     }
 
-    /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return list of types for the report
-     * @throws EFapsException on error
-     */
-    protected List<Type> getTypeList(final Parameter _parameter)
+    @Override
+    protected Properties getProperties4TypeList(final Parameter _parameter)
         throws EFapsException
     {
-        final List<Type> ret = new ArrayList<>();
-        final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT, true);
-        final String key = "TYPE";
-        for (int i = 1; i < 100; i++) {
-            final String keyTmp = key + String.format("%02d", i);
-            if (props.containsKey(keyTmp)) {
-                final String typeStr = props.getProperty(keyTmp);
-                if (isUUID(typeStr)) {
-                    ret.add(Type.get(UUID.fromString(typeStr)));
-                } else {
-                    ret.add(Type.get(typeStr));
-                }
+        Properties ret = null;
+        if (containsProperty(_parameter, "SystemConfig")) {
+            final String sysConfstr = getProperty(_parameter, "SystemConfig");
+            final SystemConfiguration config;
+            if (isUUID(sysConfstr)) {
+                config = SystemConfiguration.get(UUID.fromString(sysConfstr));
             } else {
-                break;
+                config = SystemConfiguration.get(sysConfstr);
+            }
+            if (config != null) {
+                ret = config.getAttributeValueAsProperties(getProperty(_parameter, "ConfigAttribute"), true);
             }
         }
-        LOG.debug("Found types: {}", ret);
+        if (ret == null) {
+            ret = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT, true);
+        }
         return ret;
     }
 

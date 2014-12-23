@@ -32,20 +32,21 @@ import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.efaps.admin.datamodel.Dimension;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.Partial;
@@ -55,12 +56,11 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DocumentSumGroupedByDate_Base.java 14547 2014-11-30 22:44:37Z
- *          jan@moxter.net $
+ * @version $Id$
  */
-@EFapsUUID("e7448d39-68b9-45b3-b63b-f9a911040358")
+@EFapsUUID("e852be19-7290-4d0f-ba41-85ea3287372e")
 @EFapsRevision("$Rev$")
-public abstract class DocumentSumGroupedByDate_Base
+public abstract class DocPositionGroupedByDate_Base
     extends AbstractGroupedByDate
 {
 
@@ -72,6 +72,8 @@ public abstract class DocumentSumGroupedByDate_Base
                                   final Type... _types)
         throws EFapsException
     {
+        final boolean showAmount = false;
+
         final ValueList ret = new ValueList();
         ret.setStart(_start);
         ret.setEnd(_end);
@@ -88,64 +90,113 @@ public abstract class DocumentSumGroupedByDate_Base
             startPartial = startPartial.withFieldAdded(_dateGourp.getFieldType(), 1);
         }
 
-        final QueryBuilder queryBldr;
+        final QueryBuilder attrQueryBldr;
         if (_types == null || _types.length == 0) {
-            queryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
+            attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
         } else {
-            queryBldr = new QueryBuilder(_types[0]);
+            attrQueryBldr = new QueryBuilder(_types[0]);
             for (int i = 1; i < _types.length; i++) {
-                queryBldr.addType(_types[i]);
+                attrQueryBldr.addType(_types[i]);
             }
         }
         final List<Status> statuslist = getStatusListFromProperties(new Parameter(), _props);
         if (!statuslist.isEmpty()) {
-            queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.StatusAbstract, statuslist.toArray());
+            attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statuslist.toArray());
         }
-        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, _start.withTimeAtStartOfDay()
+        attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentAbstract.Date, _start.withTimeAtStartOfDay()
                         .minusMinutes(1));
-        queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, _end.withTimeAtStartOfDay().plusDays(1));
+        attrQueryBldr.addWhereAttrLessValue(CISales.DocumentAbstract.Date, _end.withTimeAtStartOfDay().plusDays(1));
+
+        final QueryBuilder queryBldr;
+        if (showAmount) {
+            queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+        } else {
+            queryBldr = new QueryBuilder(CISales.PositionAbstract);
+        }
+        queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
+                        attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
 
         add2QueryBuilder(_parameter, queryBldr);
 
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selRateCurInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                        .instance();
-        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+        final SelectBuilder selDoc = SelectBuilder.get().linkto(CISales.PositionAbstract.DocumentAbstractLink);
+        final SelectBuilder selDocInst = new SelectBuilder(selDoc).instance();
+        final SelectBuilder selDocDate = new SelectBuilder(selDoc).attribute(CISales.DocumentAbstract.Date);
+        final SelectBuilder selDocContactName = new SelectBuilder(selDoc).linkto(CISales.DocumentAbstract.Contact)
                         .attribute(CIContacts.ContactAbstract.Name);
-        multi.addSelect(selContactName, selRateCurInst);
-        multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
-                        CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.RateNetTotal,
-                        CISales.DocumentSumAbstract.Date);
+        final SelectBuilder selProd = SelectBuilder.get().linkto(CISales.PositionAbstract.Product);
+        final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+        final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
+        final SelectBuilder selProdUoM = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.DefaultUoM);
+
+        multi.addSelect(selDocInst, selDocDate, selProdInst, selDocContactName, selProdName, selProdDescr, selProdUoM);
+        multi.addAttribute(CISales.PositionAbstract.UoM, CISales.PositionAbstract.Quantity);
+        SelectBuilder selRateCurInst = null;
+        if (showAmount) {
+            selRateCurInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.RateCurrencyId).instance();
+            multi.addSelect(selRateCurInst);
+            multi.addAttribute(CISales.PositionSumAbstract.CrossPrice, CISales.PositionSumAbstract.RateCrossPrice,
+                            CISales.PositionSumAbstract.NetPrice, CISales.PositionSumAbstract.RateNetPrice);
+        }
         multi.execute();
         while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
             final Map<String, Object> map = new HashMap<>();
-            final DateTime dateTime = multi.getAttribute(CISales.DocumentSumAbstract.Date);
-            BigDecimal total;
-            BigDecimal rateTotal;
-            if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total"))) {
-                total = multi.getAttribute(CISales.DocumentSumAbstract.NetTotal);
-                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
-            } else {
-                total = multi.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-                rateTotal = multi.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            }
-            if ("true".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Negate"))) {
-                total = total.negate();
-                rateTotal = rateTotal.negate();
-            }
-            final Instance rateCurInst = multi.getSelect(selRateCurInst);
-            map.put("docInstance", multi.getCurrentInstance());
-            map.put("contact", multi.getSelect(selContactName));
-            map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
-            map.put("type", multi.getCurrentInstance().getType().getLabel());
-            map.put("BASE", total);
-            map.put(CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
-            ret.add(map);
-        }
+            final DateTime dateTime = multi.getSelect(selDocDate);
 
-        for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
-                        IOnDocumentSumReport.class)) {
-            listener.add2ValueList(_parameter, ret);
+            if (showAmount) {
+                BigDecimal total;
+                BigDecimal rateTotal;
+                if ("NET".equals(props.getProperty(docInst.getType().getName() + ".Total"))) {
+                    total = multi.getAttribute(CISales.PositionSumAbstract.NetPrice);
+                    rateTotal = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                } else {
+                    total = multi.getAttribute(CISales.PositionSumAbstract.CrossPrice);
+                    rateTotal = multi.getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
+                }
+                if ("true".equals(props.getProperty(docInst.getType().getName() + ".Negate"))) {
+                    total = total.negate();
+                    rateTotal = rateTotal.negate();
+                }
+                final Instance rateCurInst = multi.getSelect(selRateCurInst);
+                map.put(CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
+                map.put("BASE", total);
+            }
+            BigDecimal quantity = multi.getAttribute(CISales.PositionAbstract.Quantity);
+            final UoM uom = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM));
+
+            String uoMStr = "";
+            final Long defaultUoMID = multi.<Long>getSelect(selProdUoM);
+            if (defaultUoMID != null) {
+                final UoM defaultUoM = Dimension.getUoM(defaultUoMID);
+                uoMStr = defaultUoM.getName();
+                if (defaultUoM.equals(uom)) {
+                    map.put("quantity", quantity);
+                } else {
+                    quantity = quantity.multiply(new BigDecimal(uom.getNumerator()))
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP);
+                    quantity = quantity.multiply(new BigDecimal(defaultUoM.getDenominator()))
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(defaultUoM.getNumerator()), BigDecimal.ROUND_HALF_UP);
+                }
+            } else {
+                uoMStr = uom.getDimension().getBaseUoM().getName();
+                if (!uom.equals(uom.getDimension().getBaseUoM())) {
+                    quantity = quantity.multiply(new BigDecimal(uom.getNumerator()))
+                                    .setScale(8, BigDecimal.ROUND_HALF_UP)
+                                    .divide(new BigDecimal(uom.getDenominator()), BigDecimal.ROUND_HALF_UP);
+                }
+                map.put("quantity", quantity);
+            }
+            map.put("docInstance", docInst);
+            map.put("contact", multi.getSelect(selDocContactName));
+            map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
+            map.put("type", docInst.getType().getLabel());
+            map.put("product", multi.getSelect(selProdName) + " - " + multi.getSelect(selProdDescr)
+                            + " [" + uoMStr + "]");
+            ret.add(map);
         }
         return ret;
     }
@@ -162,8 +213,8 @@ public abstract class DocumentSumGroupedByDate_Base
     {
 
         /**
-         *
-         */
+     *
+     */
         private static final long serialVersionUID = 1L;
         private DateTime start;
         private DateTime end;

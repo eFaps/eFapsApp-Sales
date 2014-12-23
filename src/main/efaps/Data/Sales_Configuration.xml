@@ -206,12 +206,12 @@ Sales_Exchange.Filter4Contact=true
         </attribute>
         <attribute>
             <key>org.efaps.sales.DocumentSumReport</key>
-            <value><![CDATA[TYPE01=Sales_Invoice
-TYPE02=Sales_IncomingInvoice
-TYPE03=Sales_IncomingReceipt
-TYPE04=Sales_Receipt
-TYPE05=Sales_CreditNote
-TYPE06=Sales_OrderOutbound
+            <value><![CDATA[Type01=Sales_Invoice
+Type02=Sales_IncomingInvoice
+Type03=Sales_IncomingReceipt
+Type04=Sales_Receipt
+Type05=Sales_CreditNote
+Type06=Sales_OrderOutbound
 Sales_CreditNote.Negate=true
 Sales_Invoice.Total=NET
             ]]></value>
@@ -224,6 +224,18 @@ Sales_Invoice.Total=NET
          <attribute>
             <key>org.efaps.sales.ActivateReservation</key>
             <value>true</value>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.DocPositionReport</key>
+            <value><![CDATA[Type01=Sales_Invoice
+Type02=Sales_IncomingInvoice
+Type03=Sales_IncomingReceipt
+Type04=Sales_Receipt
+Type05=Sales_CreditNote
+Type06=Sales_OrderOutbound
+Sales_CreditNote.Negate=true
+Sales_Invoice.Total=NET
+            ]]></value>
         </attribute>
     </definition>
 </common-systemconfiguration>
