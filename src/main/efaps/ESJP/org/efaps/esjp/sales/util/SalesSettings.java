@@ -320,4 +320,10 @@ public interface SalesSettings
      * Properties. Can be concatenated.
      */
     String DOCPOSREPORT = SalesSettings.BASE + "DocPositionReport";
+
+    /**
+     * Properties. Can be concatenated.
+     */
+    String DOCSITUATIONREPORT = SalesSettings.BASE + "DocSituationReport";
+
 }

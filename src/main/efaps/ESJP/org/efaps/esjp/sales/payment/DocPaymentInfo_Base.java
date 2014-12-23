@@ -23,7 +23,11 @@ package org.efaps.esjp.sales.payment;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
@@ -147,119 +151,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         if (!this.initialized) {
-            final PrintQuery print = new PrintQuery(this.instance);
-            final SelectBuilder selContactName = new SelectBuilder()
-                            .linkto(CISales.DocumentAbstract.Contact).attribute(CIContacts.Contact.Name);
-
-            final SelectBuilder selCurInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.CurrencyId)
-                            .instance();
-            final SelectBuilder selRateCurInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                            .instance();
-            print.addSelect(selCurInst, selRateCurInst, selContactName);
-            print.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date,
-                            CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Rate,
-                            CISales.DocumentSumAbstract.CrossTotal);
-            print.executeWithoutAccessCheck();
-            this.crossTotal = print.getAttribute(CISales.DocumentSumAbstract.CrossTotal);
-            this.rateCrossTotal = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-            this.name = print.getAttribute(CISales.DocumentSumAbstract.Name);
-            this.date = print.getAttribute(CISales.DocumentAbstract.Date);
-            setRateInfo(new Currency().evaluateRateInfo(getParameter(),
-                            print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)));
-            this.currencyInstance = print.getSelect(selCurInst);
-            this.rateCurrencyInstance = print.getSelect(selRateCurInst);
-            this.contactName = print.getSelect(selContactName);
-
-            //check normal payments
-            final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
-            queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
-                            this.instance.getId());
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Date,
-                            CIERP.Document2PaymentDocumentAbstract.Amount);
-            final SelectBuilder selCur2 = new SelectBuilder().linkto(
-                            CIERP.Document2PaymentDocumentAbstract.CurrencyLink).oid();
-            multi.addSelect(selCur2);
-            multi.executeWithoutAccessCheck();
-            while (multi.next()) {
-                final Instance curInst = Instance.get(multi.<String>getSelect(selCur2));
-                final DateTime dateTmp = multi.<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
-                final BigDecimal amount = multi.<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
-                this.payPos.add(new PayPos(dateTmp, amount, curInst));
-            }
-
-            // check swap
-            final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
-            swapQueryBldr.setOr(true);
-            swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromAbstractLink, this.instance);
-            swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToAbstractLink, this.instance);
-
-            final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
-            swapMulti.addAttribute(CISales.Document2Document4Swap.Amount);
-            final SelectBuilder selCur3 = new SelectBuilder()
-                            .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
-            swapMulti.addSelect(selCur3);
-            swapMulti.executeWithoutAccessCheck();
-            while (swapMulti.next()) {
-                final Instance curInst = swapMulti.getSelect(selCur3);
-                final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
-                this.payPos.add(new PayPos(this.date, amount, curInst));
-            }
-            this.initialized = true;
-
-            // check related taxdocs for detraction, for detraction the payment for detraction will be included
-            final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
-            attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToAbstractLink,
-                            this.instance);
-
-            final QueryBuilder taxQueryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
-            taxQueryBldr.addWhereAttrInQuery(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
-                            attrTaxQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink));
-            final MultiPrintQuery taxMulti = taxQueryBldr.getPrint();
-            taxMulti.addAttribute(CIERP.Document2PaymentDocumentAbstract.Date,
-                            CIERP.Document2PaymentDocumentAbstract.Amount);
-            final SelectBuilder taxSelCur = new SelectBuilder().linkto(
-                            CIERP.Document2PaymentDocumentAbstract.CurrencyLink).oid();
-            taxMulti.addSelect(taxSelCur);
-            taxMulti.executeWithoutAccessCheck();
-            while (taxMulti.next()) {
-                final Instance curInst = Instance.get(taxMulti.<String>getSelect(taxSelCur));
-                final DateTime dateTmp = taxMulti.<DateTime>getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
-                final BigDecimal amount = taxMulti
-                                .<BigDecimal>getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
-                this.payPos.add(new PayPos(dateTmp, amount, curInst));
-            }
-
-            // check related taxdocs for retention. For retention the emission
-            // of a certificate counts as payment
-            final QueryBuilder attrTaxQueryBldr2 = new QueryBuilder(CISales.IncomingRetention2IncomingInvoice);
-            attrTaxQueryBldr2.addWhereAttrEqValue(CISales.IncomingRetention2IncomingInvoice.ToAbstractLink,
-                            this.instance);
-
-            final QueryBuilder certQueryBldr = new QueryBuilder(CISales.RetentionCertificate);
-            certQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate.Status,
-                            Status.find(CISales.RetentionCertificateStatus.Closed));
-
-            final QueryBuilder certQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
-            certQueryBldr2.addWhereAttrInQuery(CISales.RetentionCertificate2IncomingRetention.FromLink,
-                            certQueryBldr.getAttributeQuery(CISales.RetentionCertificate.ID));
-
-            final QueryBuilder retQueryBldr = new QueryBuilder(CISales.IncomingRetention);
-            retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
-                            certQueryBldr2.getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink));
-            retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
-                            attrTaxQueryBldr2.getAttributeQuery(CISales.IncomingRetention2IncomingInvoice.FromLink));
-            final MultiPrintQuery retMulti = retQueryBldr.getPrint();
-            retMulti.addAttribute(CISales.IncomingRetention.CrossTotal, CISales.IncomingRetention.Date);
-            final SelectBuilder retSelCur = new SelectBuilder().linkto(CISales.IncomingRetention.CurrencyId).instance();
-            retMulti.addSelect(retSelCur);
-            retMulti.executeWithoutAccessCheck();
-            while (retMulti.next()) {
-                final Instance curInst = retMulti.getSelect(retSelCur);
-                final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
-                final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
-                this.payPos.add(new PayPos(dateTmp, amount, curInst));
-            }
+            DocPaymentInfo.initialize(getParameter(), this);
         }
     }
 
@@ -701,10 +593,289 @@ public abstract class DocPaymentInfo_Base
     }
 
 
+    /**
+     * Setter method for instance variable {@link #currencyInstance}.
+     *
+     * @param _currencyInstance value for instance variable {@link #currencyInstance}
+     */
+    public void setCurrencyInstance(final Instance _currencyInstance)
+    {
+        this.currencyInstance = _currencyInstance;
+    }
+
+    /**
+     * Setter method for instance variable {@link #rateCurrencyInstance}.
+     *
+     * @param _rateCurrencyInstance value for instance variable {@link #rateCurrencyInstance}
+     */
+    public void setRateCurrencyInstance(final Instance _rateCurrencyInstance)
+    {
+        this.rateCurrencyInstance = _rateCurrencyInstance;
+    }
+
+    /**
+     * Setter method for instance variable {@link #initialized}.
+     *
+     * @param _initialized value for instance variable {@link #initialized}
+     */
+    public void setInitialized(final boolean _initialized)
+    {
+        this.initialized = _initialized;
+    }
+
     @Override
     public String toString()
     {
         return ToStringBuilder.reflectionToString(this);
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @return mapping for infos to related instance
+     */
+    protected static Map<Instance, DocPaymentInfo_Base> getInfoMap(final Parameter _parameter,
+                                                                   final DocPaymentInfo_Base... _infos)
+    {
+        final Map<Instance, DocPaymentInfo_Base> ret = new HashMap<>();
+        for (final DocPaymentInfo_Base info : _infos) {
+            ret.put(info.getInstance(), info);
+        }
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @throws EFapsException on error
+     */
+    protected static void initBaseDoc(final Parameter _parameter,
+                                      final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+    
+        final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<Instance>(instance2info.keySet()));
+        final SelectBuilder selContactName = new SelectBuilder()
+                        .linkto(CISales.DocumentAbstract.Contact).attribute(CIContacts.Contact.Name);
+        final SelectBuilder selCurInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.CurrencyId)
+                        .instance();
+        final SelectBuilder selRateCurInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .instance();
+        multi.addSelect(selCurInst, selRateCurInst, selContactName);
+        multi.addAttribute(CISales.DocumentAbstract.Name, CISales.DocumentAbstract.Date,
+                        CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Rate,
+                        CISales.DocumentSumAbstract.CrossTotal);
+        multi.executeWithoutAccessCheck();
+    
+        while (multi.next()) {
+            final DocPaymentInfo_Base info = instance2info.get(multi.getCurrentInstance());
+            info.setCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
+            info.setRateCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+            info.setName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name));
+            info.setDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
+            info.setRateInfo(new Currency().evaluateRateInfo(info.getParameter(),
+                            multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)));
+            info.setCurrencyInstance(multi.<Instance>getSelect(selCurInst));
+            info.setRateCurrencyInstance(multi.<Instance>getSelect(selRateCurInst));
+            info.setContactName(multi.<String>getSelect(selContactName));
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @throws EFapsException on error
+     */
+    protected static void initPayments(final Parameter _parameter,
+                                       final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+    
+        // check normal payments
+        final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
+        queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
+                        instance2info.keySet().toArray());
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIERP.Document2PaymentDocumentAbstract.Date,
+                        CIERP.Document2PaymentDocumentAbstract.Amount);
+        final SelectBuilder selCurInst = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
+        final SelectBuilder selDocInst = new SelectBuilder().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.FromAbstractLink).instance();
+        multi.addSelect(selCurInst, selDocInst);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
+            final DocPaymentInfo_Base info = instance2info.get(docInst);
+            final Instance curInst = multi.getSelect(selCurInst);
+            final DateTime dateTmp = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+            final BigDecimal amount = multi.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+            info.payPos.add(new PayPos(dateTmp, amount, curInst));
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @throws EFapsException on error
+     */
+    protected static void initDetraction(final Parameter _parameter,
+                                         final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+    
+        // check related taxdocs for detraction, for detraction the payment for detraction will be included
+        final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
+        attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToAbstractLink,
+                        instance2info.keySet().toArray());
+    
+        final QueryBuilder taxQueryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
+        taxQueryBldr.addWhereAttrInQuery(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
+                        attrTaxQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink));
+        final MultiPrintQuery taxMulti = taxQueryBldr.getPrint();
+        taxMulti.addAttribute(CIERP.Document2PaymentDocumentAbstract.Date,
+                        CIERP.Document2PaymentDocumentAbstract.Amount);
+        final SelectBuilder selTaxCurInst = SelectBuilder.get().linkto(
+                        CIERP.Document2PaymentDocumentAbstract.CurrencyLink).instance();
+        final SelectBuilder selDocInst = SelectBuilder.get()
+                        .linkto(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink)
+                        .linkfrom(CISales.IncomingDetraction2IncomingInvoice.FromLink)
+                        .linkto(CISales.IncomingDetraction2IncomingInvoice.ToLink).instance();
+        taxMulti.addSelect(selTaxCurInst, selDocInst);
+        taxMulti.executeWithoutAccessCheck();
+        while (taxMulti.next()) {
+            final Instance docInst = taxMulti.getSelect(selDocInst);
+            final DocPaymentInfo_Base info = instance2info.get(docInst);
+            final Instance curInst = taxMulti.getSelect(selTaxCurInst);
+            final DateTime dateTmp = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Date);
+            final BigDecimal amount = taxMulti.getAttribute(CIERP.Document2PaymentDocumentAbstract.Amount);
+            info.payPos.add(new PayPos(dateTmp, amount, curInst));
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @throws EFapsException on error
+     */
+    protected static void initRetention(final Parameter _parameter,
+                                        final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+    
+        // check related taxdocs for retention. For retention the emission
+        // of a certificate counts as payment
+        final QueryBuilder attrTaxQueryBldr2 = new QueryBuilder(CISales.IncomingRetention2IncomingInvoice);
+        attrTaxQueryBldr2.addWhereAttrEqValue(CISales.IncomingRetention2IncomingInvoice.ToAbstractLink,
+                        instance2info.keySet().toArray());
+    
+        final QueryBuilder certQueryBldr = new QueryBuilder(CISales.RetentionCertificate);
+        certQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate.Status,
+                        Status.find(CISales.RetentionCertificateStatus.Closed));
+    
+        final QueryBuilder certQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
+        certQueryBldr2.addWhereAttrInQuery(CISales.RetentionCertificate2IncomingRetention.FromLink,
+                        certQueryBldr.getAttributeQuery(CISales.RetentionCertificate.ID));
+    
+        final QueryBuilder retQueryBldr = new QueryBuilder(CISales.IncomingRetention);
+        retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
+                        certQueryBldr2.getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink));
+        retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
+                        attrTaxQueryBldr2.getAttributeQuery(CISales.IncomingRetention2IncomingInvoice.FromLink));
+        final MultiPrintQuery retMulti = retQueryBldr.getPrint();
+        retMulti.addAttribute(CISales.IncomingRetention.CrossTotal, CISales.IncomingRetention.Date);
+        final SelectBuilder retSelCur = new SelectBuilder().linkto(CISales.IncomingRetention.CurrencyId).instance();
+        final SelectBuilder selDocInst = SelectBuilder.get()
+                        .linkfrom(CISales.IncomingRetention2IncomingInvoice.FromLink)
+                        .linkto(CISales.IncomingRetention2IncomingInvoice.ToLink).instance();
+        retMulti.addSelect(retSelCur, selDocInst);
+        retMulti.executeWithoutAccessCheck();
+        while (retMulti.next()) {
+            final Instance docInst = retMulti.getSelect(selDocInst);
+            final DocPaymentInfo_Base info = instance2info.get(docInst);
+            final Instance curInst = retMulti.getSelect(retSelCur);
+            final DateTime dateTmp = retMulti.getAttribute(CISales.IncomingRetention.Date);
+            final BigDecimal amount = retMulti.getAttribute(CISales.IncomingRetention.CrossTotal);
+            info.payPos.add(new PayPos(dateTmp, amount, curInst));
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @throws EFapsException on error
+     */
+    protected static void initSwap(final Parameter _parameter,
+                                   final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
+    
+        // check related taxdocs for retention. For retention the emission
+        // of a certificate counts as payment
+        // check swap
+        final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
+        swapQueryBldr.setOr(true);
+        swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromAbstractLink,
+                        instance2info.keySet().toArray());
+        swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.ToAbstractLink,
+                        instance2info.keySet().toArray());
+        final Set<Instance> verifySet = new HashSet<>();
+        final MultiPrintQuery swapMulti = swapQueryBldr.getPrint();
+        swapMulti.addAttribute(CISales.Document2Document4Swap.Amount);
+        final SelectBuilder selCur3 = new SelectBuilder()
+                        .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
+        final SelectBuilder selDocFromInst = SelectBuilder.get()
+                        .linkto(CISales.Document2Document4Swap.FromAbstractLink).instance();
+        final SelectBuilder selDocToInst = SelectBuilder.get()
+                        .linkto(CISales.Document2Document4Swap.ToAbstractLink).instance();
+        swapMulti.addSelect(selCur3, selDocFromInst, selDocToInst);
+        swapMulti.executeWithoutAccessCheck();
+        while (swapMulti.next()) {
+            if (!verifySet.contains(swapMulti.getCurrentInstance())) {
+                verifySet.add(swapMulti.getCurrentInstance());
+    
+                final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
+                final Instance docToInst = swapMulti.getSelect(selDocToInst);
+    
+                if (instance2info.containsKey(docFromInst)) {
+                    final DocPaymentInfo_Base info = instance2info.get(docFromInst);
+                    final Instance curInst = swapMulti.getSelect(selCur3);
+                    final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
+                    info.payPos.add(new PayPos(info.date, amount, curInst));
+                }
+    
+                if (instance2info.containsKey(docToInst)) {
+                    final DocPaymentInfo_Base info = instance2info.get(docToInst);
+                    final Instance curInst = swapMulti.getSelect(selCur3);
+                    final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
+                    info.payPos.add(new PayPos(info.date, amount, curInst));
+                }
+            }
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos infos to be initialized with the base information
+     * @throws EFapsException on error
+     */
+    protected static void initialize(final Parameter _parameter,
+                                     final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo.initBaseDoc(_parameter, _infos);
+        DocPaymentInfo.initPayments(_parameter, _infos);
+        DocPaymentInfo.initDetraction(_parameter, _infos);
+        DocPaymentInfo.initRetention(_parameter, _infos);
+        DocPaymentInfo.initSwap(_parameter, _infos);
+        for (final DocPaymentInfo_Base info : _infos) {
+            info.setInitialized(true);
+        }
     }
 
     /**

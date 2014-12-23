@@ -20,9 +20,11 @@
 
 package org.efaps.esjp.sales.payment;
 
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -43,8 +45,49 @@ public class DocPaymentInfo
      */
     public DocPaymentInfo(final Instance _docInst)
     {
-       super(_docInst);
+        super(_docInst);
     }
 
+    public static void initialize(final Parameter _parameter,
+                                  final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo_Base.initialize(_parameter, _infos);
+    }
+
+    public static void initBaseDoc(final Parameter _parameter,
+                                   final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo_Base.initBaseDoc(_parameter, _infos);
+    }
+
+    public static void initPayments(final Parameter _parameter,
+                                    final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo_Base.initPayments(_parameter, _infos);
+    }
+
+    public static void initDetraction(final Parameter _parameter,
+                                      final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo_Base.initDetraction(_parameter, _infos);
+    }
+
+    protected static void initRetention(final Parameter _parameter,
+                                        final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo_Base.initRetention(_parameter, _infos);
+    }
+
+    protected static void initSwap(final Parameter _parameter,
+                                   final DocPaymentInfo_Base... _infos)
+        throws EFapsException
+    {
+        DocPaymentInfo_Base.initSwap(_parameter, _infos);
+    }
 
 }

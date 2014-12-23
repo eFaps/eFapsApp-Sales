@@ -237,5 +237,18 @@ Sales_CreditNote.Negate=true
 Sales_Invoice.Total=NET
             ]]></value>
         </attribute>
+         <attribute>
+            <key>org.efaps.sales.DocSituationReport</key>
+            <value><![CDATA[Type01=Sales_Invoice
+Type02=Sales_IncomingInvoice
+StatusGroup01=Sales_InvoiceStatus
+Status01=Open
+StatusGroup02=Sales_InvoiceStatus
+Status02=Digitized
+StatusGroup03=Sales_IncomingInvoiceStatus
+Status03=Open
+StatusGroup04=Sales_IncomingInvoiceStatus
+Status04=Digitized]]></value>
+        </attribute>
     </definition>
 </common-systemconfiguration>

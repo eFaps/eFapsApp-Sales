@@ -178,8 +178,7 @@ public abstract class DocPositionReport_Base
             } else {
                 typeList = getTypeList(_parameter);
             }
-            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT,
-                            true);
+            final Properties props = getProperties4TypeList(_parameter);
             DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();

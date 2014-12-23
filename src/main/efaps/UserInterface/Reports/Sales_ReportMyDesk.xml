@@ -40,6 +40,7 @@
             <child>Sales_AccountPettyCashSummaryReportMyDesk</child>
             <child>Sales_DocumentSumReportMyDesk</child>
             <child>Sales_DocPositionReportMyDesk</child>
+            <child>Sales_DocSituationReportMyDesk</child>
             <child>Sales_InventoryReportMyDesk</child>
         </childs>
     </definition>
