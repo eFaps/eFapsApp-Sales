@@ -126,6 +126,7 @@
                         <exclude>**/ci/CIHumanResource*.class</exclude>
                         <exclude>**/fabrication/Process*.class</exclude>
                         <exclude>**/projects/Project*.class</exclude>
+                        <exclude>**/humanresource/Employee*.class</exclude>
                     </excludes>
                 </configuration>
             </plugin>
