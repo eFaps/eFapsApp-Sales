@@ -20,13 +20,18 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.Map;
+
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -83,5 +88,17 @@ public abstract class Invoice_Base
         throws EFapsException
     {
         return CISales.Invoice;
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
+            InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance));
+        }
     }
 }

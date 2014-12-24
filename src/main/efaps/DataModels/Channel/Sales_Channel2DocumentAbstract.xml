@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>945e4aca-df1e-4a5c-8191-e3c2acac8ddd</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -27,7 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Channel2DocumentAbstract</name>
         <parent>Sales_Channel2ObjectAbstract</parent>
-        <purpose abstract="true"/>
+        <purpose abstract="true" />
         <attribute>
             <name>ToAbstractLink</name>
             <type>Link</type>

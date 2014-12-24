@@ -326,4 +326,9 @@ public interface SalesSettings
      */
     String DOCSITUATIONREPORT = SalesSettings.BASE + "DocSituationReport";
 
+    /**
+     * Boolean.
+     */
+    String INVOICEACTIVATECONDITION = SalesSettings.BASE + "Invoice.ActivateCondition";
+
 }

@@ -615,9 +615,34 @@ public abstract class AbstractDocument_Base
             {
                 return AbstractDocument_Base.this.getFieldValue4Contact(_instance);
             }
+
+            @Override
+            protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                                 final Instance _contactInstance,
+                                                 final Map<String, Object> _map)
+                throws EFapsException
+            {
+                super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+                AbstractDocument_Base.this.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+            }
         };
         return contacts.updateFields4Contact(_parameter);
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _contactInstance instance of the contact
+     * @param _map  map to be added to
+     * @throws EFapsException on error
+     */
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        //To be used from implementation
+    }
+
 
     protected void add2QueryBldr(final Parameter _parameter,
                                  final QueryBuilder _queryBldr)

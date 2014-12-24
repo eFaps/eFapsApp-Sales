@@ -22,24 +22,24 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4a9c0701-a46d-494c-bfc8-09b2a20bed0b</uuid>
+    <uuid>74552bef-1282-4be2-af52-2fa914ddaa17</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelSalesChannel2Document</name>
+        <name>Sales_ChannelCondition2Invoice</name>
         <parent>Sales_Channel2DocumentAbstract</parent>
-        <attribute>
+         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_ChannelSalesChannel</typelink>
+            <typelink>Sales_ChannelCondition</typelink>
             <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
         <attribute>
             <name>ToLink</name>
             <type>Link</type>
-            <typelink>ERP_DocumentAbstract</typelink>
+            <typelink>Sales_Invoice</typelink>
             <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
             <sqlcolumn>TOID</sqlcolumn>
         </attribute>
