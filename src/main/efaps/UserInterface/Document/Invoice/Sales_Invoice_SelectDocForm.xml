@@ -51,6 +51,14 @@
                 method="updateFields4Document"
                 name="Sales_Invoice_SelectDocForm.deliveryNote.UI_Field_Update"
                 event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Invoice_SelectDocForm.deliveryNote.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Invoice.CreateFromDeliveryNote</property>
+            </trigger>
         </field>
         <field name="quotation">
             <property name="Label">Sales_Quotation.Label</property>

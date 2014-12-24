@@ -331,4 +331,9 @@ public interface SalesSettings
      */
     String INVOICEACTIVATECONDITION = SalesSettings.BASE + "Invoice.ActivateCondition";
 
+    /**
+     * Boolean.
+     */
+    String INVOICEFROMDELIVERYNOTE = SalesSettings.BASE + "Invoice.CreateFromDeliveryNote";
+
 }

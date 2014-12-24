@@ -20,21 +20,35 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.AttributeQuery;
+import org.efaps.db.Context;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
+import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
@@ -100,5 +114,80 @@ public abstract class Invoice_Base
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
             InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance));
         }
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4DeliveryNote(_parameter, _contactInstance));
+        }
+    }
+
+    /**
+     * @param _parameter Parameter from the eFaps API.
+     *  @param _instance instance
+     * @return new Return.
+     * @throws EFapsException on error.
+     *
+     */
+    protected StringBuilder getJS4DeliveryNote(final Parameter _parameter,
+                                               final Instance _instance)
+        throws EFapsException
+    {
+        final List<Instance> selInstances = getInstances4Derived(_parameter);
+        final Parameter paraClone = ParameterUtil.clone(_parameter);
+        ParameterUtil.setProperty(paraClone, "FieldName", CIFormSales.Sales_InvoiceForm.deliveryNotes.name);
+
+        final StringBuilder ret = new StringBuilder();
+        final Field field = new Field();
+        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
+        queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status,
+                        Status.find(CISales.DeliveryNoteStatus.Open));
+
+        if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
+            queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Contact, _instance);
+        } else if (_instance.getType().isKindOf(CISales.OrderOutbound.getType())
+                        || _instance.getType().isKindOf(CISales.ServiceOrderOutbound.getType())) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _instance);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.To);
+            queryBldr.addWhereAttrInQuery(CISales.DeliveryNote.ID, attrQuery);
+        }
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.DeliveryNote.Name, CISales.DeliveryNote.Date);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CISales.DeliveryNote.Name);
+            final DateTime date = multi.<DateTime>getAttribute(CISales.DeliveryNote.Date);
+            final String option = name + " "
+                            + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
+            final DropDownPosition dropDown = field
+                            .getDropDownPosition(paraClone, multi.getCurrentInstance().getOid(), option);
+            if (selInstances.contains(multi.getCurrentInstance())) {
+                dropDown.setSelected(true);
+            }
+            values.add(dropDown);
+        }
+        final StringBuilder html = field.getInputField(paraClone, values, ListType.CHECKBOX);
+        ret.append("if (document.getElementsByName('")
+            .append(CIFormSales.Sales_InvoiceForm.deliveryNotes.name).append("')[0]) {\n")
+            .append("document.getElementsByName('").append(CIFormSales.Sales_InvoiceForm.deliveryNotes.name)
+            .append("')[0].innerHTML='").append(html).append("';")
+            .append("}\n");
+        return ret;
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
+            ret.append(new Channel().getConditionJs(_parameter, _contactInstance));
+        }
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
+            ret.append(getJS4DeliveryNote(_parameter, _contactInstance));
+        }
+        return ret;
     }
 }

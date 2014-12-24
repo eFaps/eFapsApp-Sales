@@ -45,6 +45,11 @@
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <property name="PositionType">Sales_InvoicePosition</property>
+                <!-- Sales_Invoice2DeliveryNote -->
+                <property name="ConnectType">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
+                <property name="ConnectCurrentLink">FromLink</property>
+                <property name="ConnectForeignLink">ToLink</property>
+                <property name="ConnectForeignField">deliveryNotes</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -73,11 +78,17 @@
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <property name="PositionType">Sales_InvoicePosition</property>
+                <!-- Sales_Invoice2DeliveryNote -->
+                <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
+                <property name="ConnectCurrentLink01">FromLink</property>
+                <property name="ConnectForeignLink01">ToLink</property>
+                <property name="ConnectForeignField01">deliveryNotes</property>
+
                 <!-- Projects_ProjectService2Invoice -->
-                <property name="ConnectType">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
-                <property name="ConnectCurrentLink">ToLink</property>
-                <property name="ConnectForeignLink">FromLink</property>
-                <property name="ConnectForeignField">project</property>
+                <property name="ConnectType02">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>

@@ -1236,19 +1236,15 @@ public abstract class AbstractDocument_Base
                         CISales.DocumentSumAbstract.RateTaxes,
                         CIERP.DocumentAbstract.Name,
                         CIERP.DocumentAbstract.Note);
-        final SelectBuilder selContOID = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).oid();
-        final SelectBuilder selContName = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact)
-                        .attribute(CIContacts.Contact.Name);
-        print.addSelect(selContOID, selContName);
+        final SelectBuilder selContInst = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).instance();
+        print.addSelect(selContInst);
         print.execute();
 
         final BigDecimal netTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
         final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final Taxes rateTaxes = print.<Taxes> getAttribute(CISales.DocumentSumAbstract.RateTaxes);
 
-        final String contactOid = print.<String> getSelect(selContOID);
-        final String contactName = print.<String> getSelect(selContName);
-        final String contactData = new Contacts().getFieldValue4Contact(Instance.get(contactOid), false);
+        final Instance contactInstance = print.getSelect(selContInst);
         final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
         final String name = print.<String> getAttribute(CIERP.DocumentAbstract.Name);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
@@ -1279,12 +1275,7 @@ public abstract class AbstractDocument_Base
             }
         }
 
-        js.append(currStrBldr);
-        if (isContact2JavaScript4Document(_parameter, _instances)) {
-            js.append(getSetFieldValue(0, "contact", contactOid, contactName)).append("\n")
-                .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
-                .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
-        }
+        js.append(currStrBldr).append(add2JavaScript4DocumentContact(_parameter, _instances, contactInstance));
 
         if ("true".equalsIgnoreCase(_parameter.getParameterValue(AbstractDocument_Base.SELDOCUPDATEPF + "CopyName"))) {
             js.append(getSetFieldValue(0, "name4create", name)).append("\n");
@@ -1304,6 +1295,34 @@ public abstract class AbstractDocument_Base
             .append(add2JavaScript4Document(_parameter, _instances)).append("\n")
             .append("\n");
         return js;
+    }
+
+    /**
+     * Add JavaScript part to the Document Head.
+     *
+     * @param _parameter Parameter as passed from the eFaps API
+     * @param _instances list of instance the values are copied from
+     * @param _contactInstance instance of the contact
+     * @return Return containing the JavaScript
+     * @throws EFapsException on error
+     */
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        if (isContact2JavaScript4Document(_parameter, _instances)) {
+            final PrintQuery print = new PrintQuery(_contactInstance);
+            print.addAttribute(CIContacts.ContactAbstract.Name);
+            print.execute();
+            final String contactName = print.getAttribute(CIContacts.ContactAbstract.Name);
+            final String contactData = getFieldValue4Contact(_contactInstance);
+            ret.append(getSetFieldValue(0, "contact", _contactInstance.getOid(), contactName)).append("\n")
+                            .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
+                            .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
+        }
+        return ret;
     }
 
     /**
