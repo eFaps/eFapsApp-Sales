@@ -336,4 +336,8 @@ public interface SalesSettings
      */
     String INVOICEFROMDELIVERYNOTE = SalesSettings.BASE + "Invoice.CreateFromDeliveryNote";
 
+    /**
+     * Boolean.
+     */
+    String INVOICEASSIGNEMPLOYEE = SalesSettings.BASE + "Invoice.AssignEmployee";
 }
