@@ -83,7 +83,7 @@
                 <property name="DBProperty05">org.efaps.esjp.sales.report.DocPositionReport.currency</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
-                <property name="DBProperty08">org.efaps.esjp.sales.report.DocumentSumReport.typeGroup</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
@@ -106,7 +106,8 @@
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter" name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.1"
+            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
+                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
                 <property name="ReportField">report</property>
@@ -132,7 +133,7 @@
                 <property name="FilterType10">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03">TODAY</property>
+                <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">-</property>
@@ -140,9 +141,9 @@
                 <property name="FilterDefault08">false</property>
                 <property name="FilterDefault09">false</property>
                 <property name="FilterDefault10">false</property>
-                <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
-            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue" name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.2"
+            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
+                name="Sales_DocPositionReportForm.filter.UI_FIELD_VALUE.2"
                 program="org.efaps.esjp.sales.report.DocPositionReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
@@ -164,7 +165,7 @@
                 <property name="DBProperty07">org.efaps.esjp.sales.report.DocPositionReport.dateGroup</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.DocPositionReport.contactGroup</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.DocPositionReport.projectGroup</property>
-                <property name="DBProperty10">org.efaps.esjp.sales.report.DocumentSumReport.typeGroup</property>
+                <property name="DBProperty10">org.efaps.esjp.sales.report.DocPositionReport.typeGroup</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Projects_ProjectService_Select">attribute[Name]</property>
             </trigger>
