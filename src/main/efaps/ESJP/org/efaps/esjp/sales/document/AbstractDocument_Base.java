@@ -110,7 +110,6 @@ import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
-import org.efaps.jaas.AppAccessHandler;
 import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -877,6 +876,8 @@ public abstract class AbstractDocument_Base
         return new Return().put(ReturnValues.VALUES, updateFields4Doc(_parameter));
     }
 
+
+
     /**
      * Used by the update event used in the select doc form for CostSheet.
      *
@@ -935,67 +936,31 @@ public abstract class AbstractDocument_Base
 
         final String input = containsProperty(_parameter, "input") ? getProperty(_parameter, "input") : "selectedDoc";
         final String infofield = containsProperty(_parameter, "field") ? getProperty(_parameter, "field") : "info";
-        final boolean multiple = "true".equalsIgnoreCase(getProperty(_parameter, "multiple"));
+
         // the oid of the document that executed the update event
-        final String currentOid = _parameter.getParameterValue(fieldName);
-        // the previous selected oids
-        final String[] selectedOids = _parameter.getParameterValues(input);
-        if (currentOid != null && !currentOid.isEmpty()) {
-            final PrintQuery print = new PrintQuery(currentOid);
-            print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
-            final SelectBuilder sel = SelectBuilder.get().type().label();
-            print.addSelect(sel);
-            print.execute();
-            final StringBuilder label = new StringBuilder();
-            label.append(print.getSelect(sel)).append(" - ")
-                .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
-                .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
-                               DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
-            label.append(add2LabelUpdateFields4Doc(_parameter, print.getInstance()));
-            final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            if (multiple) {
-                if (!Arrays.asList(Arrays.copyOfRange(selectedOids, 1, selectedOids.length)).contains(
-                                print.getCurrentInstance().getOid())) {
-                    final StringBuilder js = new StringBuilder()
-                        .append("require([\"dojo/query\", \"dojo/dom-construct\",\"dojo/on\"], ")
-                        .append("function(query, domConstruct, on) {")
-                        .append("query(\"div  + input[name='").append(input)
-                        .append("']\").forEach(domConstruct.destroy); ")
-                        .append(" query(\"span[name='").append(infofield).append("']\").forEach(function(node){")
-                        .append("var ul;")
-                        .append("if (query(\"ul\", node).length==0) {")
-                        .append(" domConstruct.empty(node);")
-                        .append("ul = domConstruct.place(\"<ul>");
-
-                    for (final Entry<?, ?> entry : properties.entrySet()) {
-                        js.append("<input type=\\\"hidden\\\" ")
-                            .append("name=\\\"").append(AbstractDocument_Base.SELDOCUPDATEPF).append(entry.getKey())
-                            .append("\\\" ").append("value=\\\"").append(entry.getValue()).append("\\\">");
-                    }
-
-                    js.append("</ul>\", node);\n")
-                        .append("} else {")
-                        .append("ul = query(\"ul\", node)[0];")
-                        .append("}")
-                        .append("var x = domConstruct.place(\"<li>")
-                        .append(StringEscapeUtils.escapeEcmaScript(label.toString()))
-                        .append("<img style=\\\"cursor:pointer\\\"")
-                        .append(" src=\\\"/").append(AppAccessHandler.getApplicationKey())
-                        .append("/servlet/image/org.efaps.ui.wicket.components.table.delete.png?\\\">")
-                        .append("<input type=\\\"hidden\\\" ")
-                        .append("name=\\\"").append(input).append("\\\" ")
-                        .append("value=\\\"").append(currentOid).append("\\\"></li>\"")
-                        .append(", ul, \"last\"); \n")
-                        .append("var img = query(\"img\", x)[0];")
-                        .append("on(img, \"click\", function(e){")
-                        .append("domConstruct.destroy(img.parentNode);")
-                        .append("});")
-                        .append("});")
-                        .append("});");
-
-                    InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
+        final String[] currentOids = _parameter.getParameterValues(fieldName);
+        if (currentOids != null && currentOids.length > 0) {
+            final List<Instance> instances = new ArrayList<>();
+            for (final String oid : currentOids) {
+                final Instance inst = Instance.get(oid);
+                if (inst.isValid()) {
+                    instances.add(inst);
                 }
-            } else {
+            }
+            if (!instances.isEmpty()) {
+                final StringBuilder label = new StringBuilder();
+                if (instances.size() == 1) {
+                    final PrintQuery print = new PrintQuery(instances.get(0));
+                    print.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
+                    final SelectBuilder sel = SelectBuilder.get().type().label();
+                    print.addSelect(sel);
+                    print.execute();
+                    label.append(print.getSelect(sel)).append(" - ")
+                        .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
+                        .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
+                                   DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
+                    label.append(add2LabelUpdateFields4Doc(_parameter, print.getInstance()));
+                }
                 final StringBuilder js = new StringBuilder()
                     .append("require([\"dojo/query\", \"dojo/dom-construct\"], function(query, domConstruct) { ")
                     .append("query(\"div  + input[name='").append(input).append("']\").forEach(domConstruct.destroy); ")
@@ -1005,19 +970,11 @@ public abstract class AbstractDocument_Base
                     .append(StringEscapeUtils.escapeEcmaScript(label.toString()))
                     .append("<span>")
                     .append("<input type=\\\"hidden\\\" ")
-                        .append("name=\\\"").append(input).append("\\\" ")
-                        .append("value=\\\"").append(currentOid).append("\\\">");
-
-                for (final Entry<?, ?> entry : properties.entrySet()) {
-                    js.append("<input type=\\\"hidden\\\" ")
-                        .append("name=\\\"").append(AbstractDocument_Base.SELDOCUPDATEPF).append(entry.getKey())
-                        .append("\\\" ").append("value=\\\"").append(entry.getValue()).append("\\\">");
-                }
-
-                js.append("\", node, \"last\"); \n")
+                    .append("name=\\\"").append(input).append("\\\" ")
+                    .append("value=\\\"").append(fieldName).append("\\\">")
+                    .append("\", node, \"last\"); \n")
                     .append("});")
                     .append("});");
-
                 InterfaceUtils.appendScript4FieldUpdate(map, js.toString());
             }
             InterfaceUtils.appendScript4FieldUpdate(map, getCleanJS(_parameter));
@@ -1776,18 +1733,16 @@ public abstract class AbstractDocument_Base
     protected List<Instance> getInstances4Derived(final Parameter _parameter)
     {
         final List<Instance> ret = new ArrayList<Instance>();
-        final String[] selectedDoc = _parameter.getParameterValues("selectedDoc") == null
-                        ? _parameter.getParameterValues("selectedRow") : _parameter.getParameterValues("selectedDoc");
-        if (selectedDoc != null) {
-            if (selectedDoc.length > 1) {
-                for (int i = 0; i < selectedDoc.length; i++) {
-                    final Instance instance = Instance.get(selectedDoc[i]);
-                    if (instance.isValid() && instance.getType().isKindOf(CISales.DocumentAbstract)) {
-                        ret.add(instance);
-                    }
-                }
-            } else {
-                final Instance instance = Instance.get(selectedDoc[0]);
+        final String[] oids;
+        if (_parameter.getParameterValues("selectedRow") != null) {
+            oids = _parameter.getParameterValues("selectedRow");
+        } else {
+            final String selectedDoc = _parameter.getParameterValue("selectedDoc");
+            oids = _parameter.getParameterValues(selectedDoc);
+        }
+        if (oids != null) {
+            for (final String oid : oids) {
+                final Instance instance = Instance.get(oid);
                 if (instance.isValid() && instance.getType().isKindOf(CISales.DocumentAbstract)) {
                     ret.add(instance);
                 }
