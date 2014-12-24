@@ -364,7 +364,7 @@ public abstract class DocumentSumReport_Base
             }
         }
         if (ret == null) {
-            ret = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSITUATIONREPORT, true);
+            ret = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT, true);
         }
         return ret;
     }
@@ -434,10 +434,13 @@ public abstract class DocumentSumReport_Base
 
             final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
             CurrencyInst selected = null;
+            boolean isBase = false;
             if (filterMap.containsKey("currency")) {
                 final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
                 if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
                     selected = CurrencyInst.get(filter.getObject());
+                } else if (filter.getObject() instanceof Instance &&  "BASE".equals(filter.getObject().getKey())) {
+                    isBase = true;
                 }
             }
 
@@ -451,11 +454,12 @@ public abstract class DocumentSumReport_Base
             }
 
             if (selected == null) {
-                for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                    final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                    currency.getSymbol(),
-                                    currency.getISOCode(), BigDecimal.class, Calculation.SUM);
-                    crosstab.addMeasure(amountMeasure);
+                if (!isBase) {
+                    for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                        final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
+                                        currency.getSymbol(), currency.getISOCode(), BigDecimal.class, Calculation.SUM);
+                        crosstab.addMeasure(amountMeasure);
+                    }
                 }
                 final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                 DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
