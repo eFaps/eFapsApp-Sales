@@ -27,6 +27,9 @@
     <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_DocSituationReportForm</name>
         <field name="filter">
             <property name="HideLabel">true</property>
@@ -38,10 +41,19 @@
                 <property name="ReportField">report4Account</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">contact</property>
+                <property name="Field04">dateGroup</property>
+                <property name="Field05">contactGroup</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Instance</property>
+                <property name="FilterType04">Enum</property>
+                <property name="FilterType05">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">-</property>
+                <property name="FilterDefault04">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
+                <property name="FilterDefault05">false</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocSituationReportForm.filter.UI_FIELD_VALUE.2"
@@ -49,8 +61,83 @@
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocSituationReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
+                <property name="Field03">contact</property>
+                <property name="Field04">dateGroup</property>
+                <property name="Field05">contactGroup</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocSituationReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocSituationReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.DocSituationReport.contact</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.DocSituationReport.dateGroup</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.DocSituationReport.contactGroup</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+            </trigger>
+        </field>
+        <field name="report">
+            <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="generateReport"
+                name="Sales_DocSituationReportForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocSituationReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocSituationReport.FilterKey</property>
+            </trigger>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="projects"/>
+        </profiles>
+        <name>Sales_DocSituationReportForm</name>
+        <field name="filter">
+            <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
+                name="Sales_DocSituationReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.DocSituationReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocSituationReport.FilterKey</property>
+                <property name="ReportField">report4Account</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="Field03">contact</property>
+                <property name="Field04">project</property>
+                <property name="Field05">dateGroup</property>
+                <property name="Field06">contactGroup</property>
+                <property name="Field07">projectGroup</property>
+                <property name="FilterType01">DateTime</property>
+                <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Instance</property>
+                <property name="FilterType04">Instance</property>
+                <property name="FilterType05">Enum</property>
+                <property name="FilterType06">Boolean</property>
+                <property name="FilterType07">Boolean</property>
+                <property name="FilterDefault01">MONTH:-1</property>
+                <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">-</property>
+                <property name="FilterDefault04">-</property>
+                <property name="FilterDefault05">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
+                <property name="FilterDefault06">false</property>
+                <property name="FilterDefault07">false</property>
+            </trigger>
+            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
+                name="Sales_DocSituationReportForm.filter.UI_FIELD_VALUE.2"
+                program="org.efaps.esjp.sales.report.DocSituationReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocSituationReport.FilterKey</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="Field03">contact</property>
+                <property name="Field04">project</property>
+                <property name="Field05">dateGroup</property>
+                <property name="Field06">contactGroup</property>
+                <property name="Field07">projectGroup</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.DocSituationReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.DocSituationReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.sales.report.DocSituationReport.contact</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.DocSituationReport.project</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.DocSituationReport.dateGroup</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.DocSituationReport.contactGroup</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.DocSituationReport.projectGroup</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
+                <property name="Projects_ProjectService_Select">attribute[Name]</property>
             </trigger>
         </field>
         <field name="report">

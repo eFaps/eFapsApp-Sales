@@ -51,6 +51,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
@@ -58,6 +59,7 @@ import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.report.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
@@ -181,15 +183,17 @@ public abstract class DocSituationReport_Base
                 final DocPaymentInfo info = new DocPaymentInfo(inst);
                 infos.put(inst, info);
             }
-            DocPaymentInfo.initialize(_parameter, infos.values().toArray(new DocPaymentInfo[infos.values().size()]));
-
-            for (final Map<String, Object> map : this.valueList) {
-                final Instance docInstance = (Instance) map.get("docInstance");
-                if (docInstance != null && docInstance.isValid()) {
-                    final DocPaymentInfo info = infos.get(docInstance);
-                    final BigDecimal paid = info.getPaid();
-                    map.put("BASEPaid", paid);
-                    map.put("BASEDifference", ((BigDecimal)  map.get("BASE")).subtract(paid));
+            if (!infos.isEmpty()) {
+                DocPaymentInfo.initialize(_parameter, infos.values().toArray(
+                                new DocPaymentInfo[infos.values().size()]));
+                for (final Map<String, Object> map : this.valueList) {
+                    final Instance docInstance = (Instance) map.get("docInstance");
+                    if (docInstance != null && docInstance.isValid()) {
+                        final DocPaymentInfo info = infos.get(docInstance);
+                        final BigDecimal paid = info.getPaid();
+                        map.put("BASEPaid", paid);
+                        map.put("BASEDifference", ((BigDecimal) map.get("BASE")).subtract(paid));
+                    }
                 }
             }
         }
@@ -207,6 +211,10 @@ public abstract class DocSituationReport_Base
             if (filterValue != null && filterValue.getObject().isValid()) {
                 _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, filterValue.getObject());
             }
+        }
+        for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                        IOnDocumentSumReport.class)) {
+            listener.add2QueryBuilder(_parameter, _queryBldr);
         }
     }
 
@@ -292,12 +300,10 @@ public abstract class DocSituationReport_Base
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
 
             final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
-            CurrencyInst selected = null;
-            if (filterMap.containsKey("currency")) {
-                final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
-                if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
-                    selected = CurrencyInst.get(filter.getObject());
-                }
+
+            for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                            IOnDocumentSumReport.class)) {
+                listener.prepend2ColumnDefinition(_parameter, _builder, crosstab);
             }
 
             if (filterMap.containsKey("contactGroup")) {
@@ -309,33 +315,27 @@ public abstract class DocSituationReport_Base
                 }
             }
 
-            if (selected == null) {
-                for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                    final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                    currency.getSymbol(),
-                                    currency.getISOCode(), BigDecimal.class, Calculation.SUM);
-                    crosstab.addMeasure(amountMeasure);
-                }
+            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
                 final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                DBProperties.getProperty(DocSituationReport.class.getName() + ".BASE")
-                                                + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
-                                "BASE", BigDecimal.class, Calculation.SUM);
-                crosstab.addMeasure(amountMeasure);
-            } else {
-                final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
-                                selected.getSymbol(),
-                                selected.getISOCode(), BigDecimal.class, Calculation.SUM);
+                                currency.getSymbol(),
+                                currency.getISOCode(), BigDecimal.class, Calculation.SUM);
                 crosstab.addMeasure(amountMeasure);
             }
+            final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
+                            DBProperties.getProperty(DocSituationReport.class.getName() + ".BASE")
+                                            + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
+                            "BASE", BigDecimal.class, Calculation.SUM);
+            crosstab.addMeasure(amountMeasure);
+
             final CrosstabMeasureBuilder<BigDecimal> paidMeasure = DynamicReports.ctab.measure(
                             DBProperties.getProperty(DocSituationReport.class.getName() + ".BASEPaid"),
                             "BASEPaid", BigDecimal.class, Calculation.SUM);
             crosstab.addMeasure(paidMeasure);
 
-            final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
+            final CrosstabMeasureBuilder<BigDecimal> diffMeasure = DynamicReports.ctab.measure(
                             DBProperties.getProperty(DocSituationReport.class.getName() + ".BASEDifference"),
                             "BASEDifference", BigDecimal.class, Calculation.SUM);
-            crosstab.addMeasure(amountMeasure);
+            crosstab.addMeasure(diffMeasure);
 
             final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("type", String.class)
                             .setHeaderWidth(150);
@@ -347,6 +347,10 @@ public abstract class DocSituationReport_Base
             crosstab.addColumnGroup(columnGroup);
             crosstab.setCellWidth(300);
 
+            for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
+                            IOnDocumentSumReport.class)) {
+                listener.add2ColumnDefinition(_parameter, _builder, crosstab);
+            }
             _builder.addSummary(crosstab);
         }
 
