@@ -33,6 +33,9 @@
 
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource" exclude="true"/>
+        </application-dependencies>
         <profiles>
             <profile name="eFaps"/>
         </profiles>
@@ -64,6 +67,50 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
     </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <application-dependencies>
+            <application name="eFapsApp-HumanResource"/>
+        </application-dependencies>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
+        <name>Sales_InvoiceMyDesk_Menu_Action_Create</name>
+        <access>
+            <role>Sales_Teller</role>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <form>Sales_InvoiceForm</form>
+            <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <!-- Sales_Invoice2DeliveryNote -->
+                <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
+                <property name="ConnectCurrentLink01">FromLink</property>
+                <property name="ConnectForeignLink01">ToLink</property>
+                <property name="ConnectForeignField01">deliveryNotes</property>
+
+                <!-- HumanResource_Employee2Invoice -->
+                <property name="ConnectType02">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">employee</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
+                <property name="Validation">QUANTITYGREATERZERO</property>
+                <property name="Validation01">AMOUNTGREATERZERO</property>
+                <property name="Validation02">DUPLICATEDPOSITION</property>
+            </validate>
+        </target>
+        <property name="Target">modal</property>
+        <property name="TargetCreateType">Sales_Invoice</property>
+        <property name="TargetMode">create</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+    </definition>
+
+
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
