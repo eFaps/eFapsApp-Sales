@@ -1394,12 +1394,12 @@ public abstract class AbstractDocument_Base
                         CISales.PositionSumAbstract.RateCrossPrice,
                         CISales.PositionSumAbstract.Tax,
                         CISales.PositionSumAbstract.Discount);
-        final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
+        final SelectBuilder selProdInstance = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
         final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Name);
         final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Dimension);
-        multi.addSelect(selProdOID, selProdName, selProdDim);
+        multi.addSelect(selProdInstance, selProdName, selProdDim);
         multi.setEnforceSorted(true);
         multi.execute();
 
@@ -1411,33 +1411,47 @@ public abstract class AbstractDocument_Base
 
         while (multi.next()) {
             final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
-
-            final BigDecimal rateNetUnitPrice = multi.<BigDecimal>getAttribute(
-                            CISales.PositionSumAbstract.RateNetUnitPrice);
-            final BigDecimal rateDiscountNetUnitPrice = multi.
-                            <BigDecimal>getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
-            final BigDecimal rateNetPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice);
-            final BigDecimal rateCrossPrice = multi
-                            .<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
-            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
-
+            final Instance prodInstance = multi.getSelect(selProdInstance);
+            final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
+            final BigDecimal rateNetUnitPrice;
+            final BigDecimal rateDiscountNetUnitPrice;
+            final BigDecimal rateNetPrice;
+            final BigDecimal rateCrossPrice;
+            final BigDecimal discount;
+            if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionSumAbstract)) {
+                rateNetUnitPrice = multi.getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
+                rateDiscountNetUnitPrice = multi.getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
+                rateNetPrice = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
+                rateCrossPrice = multi.getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
+                discount = multi.getAttribute(CISales.PositionSumAbstract.Discount);
+            } else if (getCIType().getType().isKindOf(CISales.DocumentSumAbstract)) {
+                final Calculator calc = getCalculator(_parameter, null, prodInstance, quantity, BigDecimal.ZERO,
+                                BigDecimal.ZERO, true, 0);
+                rateNetUnitPrice = calc.getNetUnitPrice();
+                rateDiscountNetUnitPrice = calc.getNetUnitPrice();
+                rateNetPrice = calc.getNetPrice();
+                rateCrossPrice = calc.getCrossPrice();
+                discount = BigDecimal.ZERO;
+            } else {
+                rateNetUnitPrice = BigDecimal.ZERO;
+                rateDiscountNetUnitPrice = BigDecimal.ZERO;
+                rateNetPrice = BigDecimal.ZERO;
+                rateCrossPrice = BigDecimal.ZERO;
+                discount = BigDecimal.ZERO;
+            }
             map.put(new KeyDefStr("oid"), multi.getCurrentInstance().getOid());
-            map.put(new KeyDefFrmt("quantity", qtyFrmt),
-                            multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+            map.put(new KeyDefFrmt("quantity", qtyFrmt), quantity);
             map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
-            map.put(new KeyDefStr("product"), new String[] { multi.<String>getSelect(selProdOID),
+            map.put(new KeyDefStr("product"), new String[] { prodInstance.getOid(),
                             multi.<String>getSelect(selProdName) });
             map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
             map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
                             multi.<Long>getSelect(selProdDim)));
-
-            map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice == null ? BigDecimal.ZERO
-                            : rateNetUnitPrice);
-            map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), rateDiscountNetUnitPrice == null ? BigDecimal.ZERO
-                            : rateDiscountNetUnitPrice);
-            map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice == null ? BigDecimal.ZERO : rateNetPrice);
-            map.put(new KeyDefFrmt("discount", disFrmt), discount == null ? BigDecimal.ZERO : discount);
-            map.put(new KeyDefFrmt("crossPrice", totFrmt), rateCrossPrice == null ? BigDecimal.ZERO : rateCrossPrice);
+            map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice);
+            map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), rateDiscountNetUnitPrice);
+            map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice);
+            map.put(new KeyDefFrmt("discount", disFrmt), discount);
+            map.put(new KeyDefFrmt("crossPrice", totFrmt), rateCrossPrice);
             values.add(map);
         }
 
@@ -2395,7 +2409,7 @@ public abstract class AbstractDocument_Base
         final List<DropDownPosition> options = getSerialNumbers(_parameter);
         String serial = "001";
         StringBuilder snHtml;
-        if (options.size() ==1) {
+        if (options.size() == 1) {
             serial = options.get(0).getValue().toString();
             snHtml = new StringBuilder().append("<input type=\"hidden\" value=\"").append(serial).append("\" name=\"")
                                 .append(fieldName).append("\"><span>").append(serial).append("-</span>");
