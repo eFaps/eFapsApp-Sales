@@ -112,7 +112,7 @@ public abstract class DocPositionReport_Base
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String mime = (String) props.get("Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName(DBProperties.getProperty(ProfServReceiptReport.class.getName() + ".FileName"));
+        dyRp.setFileName(DBProperties.getProperty(DocPositionReport.class.getName() + ".FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);

@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>513140f2-67ae-4832-96b3-b0912b5092e2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -31,12 +33,9 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.DocumentSumReport">
+            <execute method="exportReport" program="org.efaps.esjp.sales.report.DocPositionReport">
                 <property name="Mime">xls</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
-                <property name="Type">Sales_RetentionCertificate</property>
-                <property name="StatusGroup">Sales_RetentionCertificateStatus</property>
-                <property name="Status">!Canceled</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

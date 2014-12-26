@@ -19,7 +19,9 @@
  Last Changed:    $Date$
  Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a862723b-922e-4c73-88f3-4a0119645f86</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
@@ -31,14 +33,11 @@
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute method="exportReport" program="org.efaps.esjp.sales.report.DocumentSumReport">
+            <execute method="exportReport" program="org.efaps.esjp.sales.report.DocPositionReport">
                 <property name="Mime">pdf</property>
                 <property name="PageType">A4</property>
                 <property name="PageOrientation">LANDSCAPE</property>
-                <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
-                <property name="Type">Sales_RetentionCertificate</property>
-                <property name="StatusGroup">Sales_RetentionCertificateStatus</property>
-                <property name="Status">!Canceled</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.DocPositionReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
