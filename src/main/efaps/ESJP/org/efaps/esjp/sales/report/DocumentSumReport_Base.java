@@ -167,18 +167,23 @@ public abstract class DocumentSumReport_Base
                 columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
                 CurrencyInst selected = null;
                 final Map<String, Object> filterMap = getFilterMap(_parameter);
+                boolean isBase = false;
                 if (filterMap.containsKey("currency")) {
                     final CurrencyFilterValue filter = (CurrencyFilterValue) filterMap.get("currency");
                     if (filter.getObject() instanceof Instance && filter.getObject().isValid()) {
                         selected = CurrencyInst.get(filter.getObject());
+                    } else if (filter.getObject() instanceof Instance &&  "BASE".equals(filter.getObject().getKey())) {
+                        isBase = true;
                     }
                 }
                 if (selected == null) {
-                    for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                        final Serie<Data> serie = new Serie<Data>();
-                        serie.setName(currency.getName());
-                        series.put(currency.getISOCode(), serie);
-                        columsChart.addSerie(serie);
+                    if (!isBase) {
+                        for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                            final Serie<Data> serie = new Serie<Data>();
+                            serie.setName(currency.getName());
+                            series.put(currency.getISOCode(), serie);
+                            columsChart.addSerie(serie);
+                        }
                     }
                     final Serie<Data> baseSerie = new Serie<Data>();
                     series.put("BASE", baseSerie);
