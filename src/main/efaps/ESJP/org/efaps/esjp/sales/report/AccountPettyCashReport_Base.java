@@ -295,12 +295,12 @@ public abstract class AccountPettyCashReport_Base
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("dateFrom")) {
                 final DateTime date = (DateTime) filter.get("dateFrom");
-                _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Created,
+                _queryBldr.addWhereAttrGreaterValue(CIERP.DocumentAbstract.Date,
                                 date.withTimeAtStartOfDay().minusSeconds(1));
             }
             if (filter.containsKey("dateTo")) {
                 final DateTime date = (DateTime) filter.get("dateTo");
-                _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Created,
+                _queryBldr.addWhereAttrLessValue(CIERP.DocumentAbstract.Date,
                                 date.withTimeAtStartOfDay().plusDays(1));
             }
 
