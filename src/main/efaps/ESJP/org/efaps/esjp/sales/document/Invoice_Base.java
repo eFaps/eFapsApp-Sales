@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -72,6 +74,7 @@ public abstract class Invoice_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
 
@@ -80,7 +83,13 @@ public abstract class Invoice_Base
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
             new PerceptionCertificate().create4Doc(_parameter, createdDoc);
         }
-        return new Return();
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     @Override
