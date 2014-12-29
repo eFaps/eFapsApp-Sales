@@ -155,6 +155,21 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
         </field>
+        <field name="rateCheckbox">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="HideLabel">true</property>
+            <property name="Label">Sales_PaymentCashOutForm.rateCheckbox.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field" method="getDefault4BooleanSysConfigFieldValue"
+                name="Sales_PaymentCashOutForm.rateCheckbox.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="SystemConfiguration">Sales-Configuration</property>
+                <property name="AttributeConfiguration">org.efaps.sales.payment.Config4Rate</property>
+                <property name="Key">Sales_PaymentCashOut</property>
+            </trigger>
+        </field>
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="ModeCreate">EDITABLE</property>
