@@ -127,8 +127,8 @@
 
         <!-- Sales_Products_StorageAbstractTree_Inventory_Menu_Action_CreateDeliverynote to Products_StorageAbstractTree_Inventory_Menu_Action -->
         update.add2Menu("daaa2340-74af-4414-999d-19ecffa4c5e4", "a84b5926-9b31-4016-85ea-3b12b4d31c55", -1);
-        <!-- Sales_Products_StorageAbstractTree_Inventory_Menu_Action_CreateDeliverynote to Products_StorageAbstractTree_InventoryIndivual -->
-        update.add2Menu("daaa2340-74af-4414-999d-19ecffa4c5e4", "e68eba18-0235-4a06-82cc-8acd787d6ea9", -1);
+        <!-- Sales_Products_StorageAbstractTree_Inventory_Menu_Action_CreateDeliverynote to Products_StorageAbstractTree_InventoryIndividual_Menu_Action -->
+        update.add2Menu("daaa2340-74af-4414-999d-19ecffa4c5e4", "654dd4b3-129d-485f-90b4-af111547e41b", -1);
 
         <!-- Sales_TransactionDocumentAbstractMyDesk to Products_Product_MyDesk -->
         update.add2Menu("ca7eef58-f4a4-4c68-b356-f7bcdd843710", "246542fc-173b-48ec-8cc4-9b635920dc9a", -1);
