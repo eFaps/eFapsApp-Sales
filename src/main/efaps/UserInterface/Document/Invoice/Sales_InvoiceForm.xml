@@ -204,7 +204,9 @@
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Contact"
                 name="Sales_InvoiceForm.contact.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" />
+                event="UI_FIELD_UPDATE" >
+                <property name="SetEmployee">true</property>
+            </trigger>
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>

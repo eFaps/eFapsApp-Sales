@@ -639,7 +639,7 @@ public abstract class AbstractDocument_Base
                                          final Map<String, Object> _map)
         throws EFapsException
     {
-        //To be used from implementation
+
     }
 
 
