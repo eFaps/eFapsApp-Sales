@@ -18,7 +18,6 @@
  * Last Changed By: $Author$
  */
 
-
 package org.efaps.esjp.sales.payment;
 
 import java.io.File;
@@ -63,12 +62,12 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.util.EFapsException;
 
-
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: BulkPayment_Base.java 14047 2014-09-17 17:21:35Z jan@moxter.net
+ *          $
  */
 @EFapsUUID("929914ed-1511-4fb8-9cc8-7514811d3f74")
 @EFapsRevision("$Rev$")
@@ -123,13 +122,15 @@ public abstract class BulkPayment_Base
     }
 
     protected void updateTotal(final Parameter _parameter,
-                               final Instance _instance) throws EFapsException
+                               final Instance _instance)
+        throws EFapsException
     {
         Instance instance;
         BigDecimal total = BigDecimal.ZERO;
-        if (_instance.getType().isKindOf(CISales.BulkPayment2PaymentDocument.getType())) {
+        if (_instance.getType().isKindOf(CISales.BulkPaymentAbstract2PaymentDocument)) {
             final PrintQuery print = new PrintQuery(_instance);
-            final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.BulkPayment2PaymentDocument.FromLink).instance();
+            final SelectBuilder selInst = SelectBuilder.get()
+                            .linkto(CISales.BulkPaymentAbstract2PaymentDocument.FromAbstractLink).instance();
             print.addSelect(selInst);
             print.executeWithoutAccessCheck();
             instance = print.getSelect(selInst);
@@ -157,7 +158,6 @@ public abstract class BulkPayment_Base
         update.executeWithoutAccessCheck();
     }
 
-
     public Return getReport4Detail(final Parameter _parameter)
         throws EFapsException
     {
@@ -168,7 +168,6 @@ public abstract class BulkPayment_Base
         ret.put(ReturnValues.SNIPLETT, html);
         return ret;
     }
-
 
     public Return exportReport4Detail(final Parameter _parameter)
         throws EFapsException
@@ -188,8 +187,6 @@ public abstract class BulkPayment_Base
         ret.put(ReturnValues.TRUE, true);
         return ret;
     }
-
-
 
     protected AbstractDynamicReport getReport(final Parameter _parameter)
     {
@@ -272,6 +269,7 @@ public abstract class BulkPayment_Base
 
             Collections.sort(values, new Comparator<Map<String, Object>>()
             {
+
                 @Override
                 public int compare(final Map<String, Object> _map,
                                    final Map<String, Object> _map1)
@@ -282,10 +280,10 @@ public abstract class BulkPayment_Base
 
             for (final Map<String, Object> map : values) {
                 ret.add(map.get("contact"),
-                        map.get("taxnumber"),
-                        map.get("accountNumber"),
-                        map.get("docName"),
-                        map.get("amount"));
+                                map.get("taxnumber"),
+                                map.get("accountNumber"),
+                                map.get("docName"),
+                                map.get("amount"));
             }
 
             return ret;
@@ -296,16 +294,16 @@ public abstract class BulkPayment_Base
                                           final JasperReportBuilder _builder)
             throws EFapsException
         {
-            final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.contact"),
                             "contact", DynamicReports.type.stringType()).setColumns(60);
-            final TextColumnBuilder<String> accountNumberColumn  = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<String> accountNumberColumn = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.accountNumber"),
                             "accountNumber", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> taxnumberColumn  = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<String> taxnumberColumn = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.taxnumber"),
                             "taxnumber", DynamicReports.type.stringType());
-            final TextColumnBuilder<String> docNameColumn  = DynamicReports.col.column(DBProperties
+            final TextColumnBuilder<String> docNameColumn = DynamicReports.col.column(DBProperties
                             .getProperty("org.efaps.esjp.sales.payment.BulkPayment.Report4Detail.docName"),
                             "docName", DynamicReports.type.stringType());
             final TextColumnBuilder<BigDecimal> amountColumn = DynamicReports.col.column(DBProperties
