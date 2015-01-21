@@ -15,19 +15,19 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 14271 $
+ Last Changed:    $Date: 2014-10-21 08:38:35 -0500 (Tue, 21 Oct 2014) $
+ Last Changed By: $Author: jan@moxter.net $
 
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4b9f07b2-0040-408b-9316-3dce5191fa24</uuid>
+    <uuid>91670190-de64-4c2e-939b-806e7813d88d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 14271 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_BulkPaymentDefinition</name>
+        <name>Sales_BulkPaymentDetractionDefinition</name>
         <parent>Sales_BulkPaymentDefinitionAbstract</parent>
         <attribute>
             <name>Status</name>
@@ -36,7 +36,7 @@
             <sqltable>Sales_BulkPaymentDefinitionSQLTable</sqltable>
             <sqlcolumn>STATUS</sqlcolumn>
             <trigger event="RANGE_VALUE"
-                name="Sales_BulkPaymentDefinition.Status.RANGE_VALUE"
+                name="Sales_BulkPaymentDetractionDefinition.Status.RANGE_VALUE"
                 program="org.efaps.esjp.admin.datamodel.StatusValue">
             </trigger>
         </attribute>

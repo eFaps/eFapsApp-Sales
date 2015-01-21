@@ -26,7 +26,6 @@
     <uuid>be56d0a2-8957-440f-b126-83d4b83078c6</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_BulkPayment</name>
