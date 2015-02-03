@@ -61,7 +61,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
-import org.efaps.esjp.sales.report.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -169,7 +168,8 @@ public abstract class DocSituationReport_Base
             final Properties props = getProperties4TypeList(_parameter);
             DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
+                dateGroup = (DocumentSumGroupedByDate_Base.DateGroup)
+                                ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
