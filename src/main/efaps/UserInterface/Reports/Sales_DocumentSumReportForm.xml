@@ -58,7 +58,7 @@
                 <property name="FilterDefault03">TODAY</property>
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
-                <property name="FilterDefault06">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
+                <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault07">false</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
@@ -140,7 +140,7 @@
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">-</property>
-                <property name="FilterDefault07">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
+                <property name="FilterDefault07">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault08">false</property>
                 <property name="FilterDefault09">false</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>

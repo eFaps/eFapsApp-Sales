@@ -70,7 +70,7 @@
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocSituationReport" >
-                <property name="Enum">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
+                <property name="Enum">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
             </trigger>
         </field>
          <field name="contactGroup">
@@ -143,7 +143,7 @@
             <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocSituationReport" >
-                <property name="Enum">org.efaps.esjp.sales.report.AbstractGroupedByDate_Base$DateGroup</property>
+                <property name="Enum">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
             </trigger>
         </field>
          <field name="contactGroup">

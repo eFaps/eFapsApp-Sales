@@ -55,10 +55,10 @@ import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
-import org.efaps.esjp.sales.report.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -179,9 +179,9 @@ public abstract class DocPositionReport_Base
                 typeList = getTypeList(_parameter);
             }
             final Properties props = getProperties4TypeList(_parameter);
-            DocumentSumGroupedByDate_Base.DateGroup dateGroup;
+            AbstractGroupedByDate.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
+                dateGroup = ( AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
