@@ -55,7 +55,7 @@
                 <property name="FilterType07">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03">TODAY</property>
+                <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
@@ -136,7 +136,7 @@
                 <property name="FilterType09">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
-                <property name="FilterDefault03">TODAY</property>
+                <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">-</property>
