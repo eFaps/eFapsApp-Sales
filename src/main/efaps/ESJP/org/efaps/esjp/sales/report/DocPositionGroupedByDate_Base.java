@@ -57,7 +57,8 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
+ * @version $Id: DocPositionGroupedByDate_Base.java 14807 2015-02-03 17:07:58Z
+ *          jan@moxter.net $
  */
 @EFapsUUID("e852be19-7290-4d0f-ba41-85ea3287372e")
 @EFapsRevision("$Rev$")
@@ -65,6 +66,16 @@ public abstract class DocPositionGroupedByDate_Base
     extends AbstractGroupedByDate
 {
 
+    /**
+     * @param _parameter Paramter as passed by the eFaps API
+     * @param _start start date
+     * @param _end end date
+     * @param _dateGourp date group
+     * @param _props properties map
+     * @param _types list of type
+     * @return ValueList
+     * @throws EFapsException on error
+     */
     public ValueList getValueList(final Parameter _parameter,
                                   final DateTime _start,
                                   final DateTime _end,
@@ -191,12 +202,14 @@ public abstract class DocPositionGroupedByDate_Base
                 }
                 map.put("quantity", quantity);
             }
+            map.put("uoM", uom);
             map.put("docInstance", docInst);
             map.put("contact", multi.getSelect(selDocContactName));
             map.put("partial", getPartial(dateTime, _dateGourp).toString(dateTimeFormatter));
             map.put("type", docInst.getType().getLabel());
             map.put("product", multi.getSelect(selProdName) + " - " + multi.getSelect(selProdDescr)
                             + " [" + uoMStr + "]");
+            map.put("productInst", multi.getSelect(selProdInst));
             ret.add(map);
         }
         return ret;
@@ -206,7 +219,7 @@ public abstract class DocPositionGroupedByDate_Base
                                     final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        // tobe used by
+        // to be used by implementations
     }
 
     public static class ValueList
@@ -214,8 +227,8 @@ public abstract class DocPositionGroupedByDate_Base
     {
 
         /**
-     *
-     */
+         *
+         */
         private static final long serialVersionUID = 1L;
         private DateTime start;
         private DateTime end;

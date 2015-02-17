@@ -107,6 +107,22 @@
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport" />
         </field>
+        <field name="bom">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DocPositionReportForm.filterWithBOM.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                    <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.DocPositionReportBOM</property>
+            </trigger>
+        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -211,6 +227,22 @@
             <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocPositionReport" />
+        </field>
+         <field name="bom">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.DocPositionReport.bom</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.DocPositionReport" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_DocPositionReportForm.filterWithBOM.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                    <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.DocPositionReportBOM</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

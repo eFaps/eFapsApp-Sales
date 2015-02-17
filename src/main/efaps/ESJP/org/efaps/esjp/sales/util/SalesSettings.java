@@ -322,6 +322,11 @@ public interface SalesSettings
     String DOCPOSREPORT = SalesSettings.BASE + "DocPositionReport";
 
     /**
+     * Boolean.
+     */
+    String DOCPOSREPORTBOM = SalesSettings.BASE + "DocPositionReportBOM";
+
+    /**
      * Properties. Can be concatenated.
      */
     String DOCSITUATIONREPORT = SalesSettings.BASE + "DocSituationReport";

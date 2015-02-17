@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -42,7 +43,9 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
+import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -59,6 +62,8 @@ import org.efaps.esjp.erp.AbstractGroupedByDate;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.products.BOM;
+import org.efaps.esjp.products.BOM_Base.ProductBOMBean;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -83,6 +88,10 @@ public abstract class DocPositionReport_Base
      * Logging instance used in this class.
      */
     private static final Logger LOG = LoggerFactory.getLogger(DocPositionReport.class);
+
+    /**
+     * Values for the report.
+     */
     private ValueList valueList;
 
     /**
@@ -181,13 +190,39 @@ public abstract class DocPositionReport_Base
             final Properties props = getProperties4TypeList(_parameter);
             AbstractGroupedByDate.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
-                dateGroup = ( AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
+                dateGroup = (AbstractGroupedByDate.DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
                 dateGroup = DocumentSumGroupedByDate_Base.DateGroup.MONTH;
             }
 
             this.valueList = ds.getValueList(_parameter, start, end, dateGroup, props,
                             typeList.toArray(new Type[typeList.size()]));
+
+            if (filter.containsKey("bom") && BooleanUtils.isTrue((Boolean) filter.get("bom"))) {
+                final List<Map<String, Object>> tmpList = new ArrayList<>();
+                for (final Map<String, Object> value  : this.valueList) {
+                    final Instance prodInst = (Instance) value.get("productInst");
+                    final BigDecimal quantity = (BigDecimal) value.get("quantity");
+                    final UoM uom  = (UoM) value.get("uoM");
+                    final BOM bom  = new BOM();
+                    final List<ProductBOMBean> prodBeans = bom.getBOMProducts(_parameter, prodInst, quantity, uom);
+                    if (prodBeans.isEmpty()) {
+                        tmpList.add(value);
+                    } else {
+                        for (final ProductBOMBean bean : prodBeans) {
+                            final Map<String, Object> newmap = new HashMap<>(value);
+                            newmap.put("quantity", bean.getQuantity());
+                            newmap.put("uoM", bean.getUoM());
+                            newmap.put("product", bean.getName() + " - " + bean.getDescription()
+                                        + " [" + bean.getUoM().getName() + "]");
+                            newmap.put("productInst", bean.getInstance());
+                            tmpList.add(newmap);
+                        }
+                    }
+                }
+                this.valueList.clear();
+                this.valueList.addAll(tmpList);
+            }
         }
         return this.valueList;
     }
@@ -215,6 +250,11 @@ public abstract class DocPositionReport_Base
         return ret;
     }
 
+    /**
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _queryBldr queryBuilder to add to
+     * @throws EFapsException on error
+     */
     protected void add2QueryBuilder(final Parameter _parameter,
                                     final QueryBuilder _queryBldr)
         throws EFapsException
@@ -233,20 +273,27 @@ public abstract class DocPositionReport_Base
         }
     }
 
+    /**
+     * Dynamic Report.
+     */
     public static class DynDocPositionReport
         extends AbstractDynamicReport
     {
 
+        /**
+         * Filtered Report.
+         */
         private final DocPositionReport_Base filteredReport;
 
         /**
-         * @param _docPositionReport_Base
+         * @param _filteredReport report
          */
         public DynDocPositionReport(final DocPositionReport_Base _filteredReport)
         {
             this.filteredReport = _filteredReport;
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
