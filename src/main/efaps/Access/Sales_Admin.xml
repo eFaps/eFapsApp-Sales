@@ -46,6 +46,8 @@
 
         <type>Contacts_Contact</type>
         <type>Sales_AccountFundsToBeSettled</type>
+        <type>Sales_AccountCashDesk</type>
+        <type>Sales_AccountPettyCash</type>
         <type>Sales_BulkPayment</type>
         <type>Sales_BulkPaymentDetraction</type>
         <type>Sales_CashDeskBalance</type>
