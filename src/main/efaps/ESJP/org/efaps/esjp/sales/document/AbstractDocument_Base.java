@@ -1063,7 +1063,7 @@ public abstract class AbstractDocument_Base
 
         final StringBuilder js = new StringBuilder()
             .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
-            .append("var pN = dojo.query('.eFapsContentDiv')[0];\n");
+            .append("var pN = query('.eFapsContentDiv')[0];\n");
 
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final TargetMode mode = command.getTargetMode();
@@ -1394,12 +1394,12 @@ public abstract class AbstractDocument_Base
                         CISales.PositionSumAbstract.RateCrossPrice,
                         CISales.PositionSumAbstract.Tax,
                         CISales.PositionSumAbstract.Discount);
-        final SelectBuilder selProdInstance = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
+        final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
         final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Name);
         final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Dimension);
-        multi.addSelect(selProdInstance, selProdName, selProdDim);
+        multi.addSelect(selProdInst, selProdName, selProdDim);
         multi.setEnforceSorted(true);
         multi.execute();
 
@@ -1411,7 +1411,7 @@ public abstract class AbstractDocument_Base
 
         while (multi.next()) {
             final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
-            final Instance prodInstance = multi.getSelect(selProdInstance);
+            final Instance prodInstance = multi.getSelect(selProdInst);
             final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
             final BigDecimal rateNetUnitPrice;
             final BigDecimal rateDiscountNetUnitPrice;
@@ -1836,8 +1836,8 @@ public abstract class AbstractDocument_Base
         }
         if (rateInfo != null) {
             js.append(getSetFieldValue(0, "rateCurrencyData", getRateUIFrmt(_parameter, rateInfo)))
-                .append(getSetFieldValue(0, "rate", NumberFormatter.get().getFormatter().format(getRateUI(_parameter, rateInfo))))
-                .append("\n")
+                .append(getSetFieldValue(0, "rate", NumberFormatter.get().getFormatter().format(
+                                getRateUI(_parameter, rateInfo)))).append("\n")
                 .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + currencyInst.isInvert()))
                 .append("\n");
         }

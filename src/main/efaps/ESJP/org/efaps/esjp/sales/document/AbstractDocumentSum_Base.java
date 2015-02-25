@@ -65,6 +65,7 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uisearch.Search;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -287,7 +288,7 @@ public abstract class AbstractDocumentSum_Base
         throws EFapsException
     {
         return _parameter.getParameterValue("rateCurrencyId") == null
-                        ?Currency.getBaseCurrency()
+                        ? Currency.getBaseCurrency()
                         : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
     }
 
@@ -655,7 +656,8 @@ public abstract class AbstractDocumentSum_Base
                                                     final List<Instance> _instances)
         throws EFapsException
     {
-        return super.getJavaScript4Positions(_parameter, _instances).append("executeCalculator();");
+        return super.getJavaScript4Positions(_parameter, _instances).append(
+                        InterfaceUtils.wrappInScriptTag(_parameter, "executeCalculator();\n", false, 2000));
     }
 
     @Override
@@ -663,7 +665,8 @@ public abstract class AbstractDocumentSum_Base
                                                     final Instance _instance)
         throws EFapsException
     {
-        return super.getJavaScript4Positions(_parameter, _instance).append("executeCalculator();");
+        return super.getJavaScript4Positions(_parameter, _instance).append(
+                        InterfaceUtils.wrappInScriptTag(_parameter, "executeCalculator();\n", false, 2000));
     }
 
 
@@ -927,7 +930,8 @@ public abstract class AbstractDocumentSum_Base
                         BigDecimal.ROUND_HALF_UP);
 
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocument_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
+                        AbstractDocument_Base.CALCULATORS_VALUE);
 
         final DecimalFormat totalFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
         final int scale = totalFrmt.getMaximumFractionDigits();
@@ -1152,7 +1156,7 @@ public abstract class AbstractDocumentSum_Base
             print.addSelect(selRateCurInst);
             print.execute();
 
-            final Instance baseCurrInst =Currency.getBaseCurrency();
+            final Instance baseCurrInst = Currency.getBaseCurrency();
             final Instance rateCurrInst = print.<Instance>getSelect(selRateCurInst);
             if (!baseCurrInst.equals(rateCurrInst)) {
 
