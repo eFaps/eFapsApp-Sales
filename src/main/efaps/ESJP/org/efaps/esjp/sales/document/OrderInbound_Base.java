@@ -20,10 +20,13 @@
 
 package org.efaps.esjp.sales.document;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -53,5 +56,41 @@ public abstract class OrderInbound_Base
         createPositions(_parameter, createdDoc);
         executeProcess(_parameter, createdDoc);
         return new Return();
+    }
+
+    /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        return new Return();
+    }
+
+    @Override
+    protected Type getType4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getCIType().getType();
+    }
+
+    @Override
+    public String getTypeName4SysConf(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getType4SysConf(_parameter).getName();
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.OrderInbound;
     }
 }

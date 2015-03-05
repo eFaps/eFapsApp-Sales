@@ -176,8 +176,9 @@
         </status>
 
         <status group="Sales_OrderInboundStatus">
+            <key>Digitized</key>
             <key>Open</key>
-            <key>Received</key>
+            <key>Closed</key>
             <key>Canceled</key>
         </status>
 

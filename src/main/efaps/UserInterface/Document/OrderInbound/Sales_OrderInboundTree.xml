@@ -25,26 +25,21 @@
 
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>5c38b2f8-6e81-4f2c-ba1a-5d7812119e8d</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundTree</name>
-        <!-- targets -->
         <target>
             <menu>Sales_OrderInboundTree_Menu</menu>
             <form>Sales_OrderInboundForm</form>
         </target>
-        <!-- type tree for -->
         <type>Sales_OrderInbound</type>
         <childs>
             <child>Sales_DocumentAbstractTree_Doc</child>
             <child>Sales_OrderInboundTree_Position</child>
         </childs>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
     </definition>

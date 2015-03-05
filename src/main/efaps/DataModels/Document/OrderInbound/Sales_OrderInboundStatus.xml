@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -23,33 +23,26 @@
 
 -->
 
-<datamodel-statusgroup  xmlns="http://www.efaps.org/xsd"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-  <uuid>f53fd8fa-7a3d-4fc6-9938-8f50c670e18f</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderInboundStatus</name>
-    <parent>Sales_DocumentStatus</parent>
-
-    <status key="Open">
-      <description>Order was placed.</description>
-    </status>
-
-    <status key="Received">
-      <description>Order was received.</description>
-    </status>
-
-    <status key="Canceled">
-     <description>Order was canceled.</description>
-    </status>
-
-  </definition>
-
-
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f53fd8fa-7a3d-4fc6-9938-8f50c670e18f</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderInboundStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Digitized">
+            <description>Incoming Order was digitized and is still editable. (Digitado)</description>
+        </status>
+        <status key="Open">
+            <description>Incoming Order is open meaning it must be work on but not editable. (Pendiente)</description>
+        </status>
+        <status key="Closed">
+            <description>Incoming Order was closed (Cerado)</description>
+        </status>
+        <status key="Canceled">
+            <description>Incoming Order was canceled (Anulado)</description>
+        </status>
+    </definition>
 </datamodel-statusgroup>
-

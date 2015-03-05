@@ -69,10 +69,27 @@ public abstract class Calculator_Base
     extends AbstractCommon
     implements Serializable
 {
-
+    /**
+     * Keys used in  the SytemConfiguration.
+     */
     public enum Keys
     {
-        PRICELIST, CROSSTOTAL
+        /**
+         * Which PriceList is used. (UUID of a PriceList)
+         */
+        PRICELIST,
+
+        /**
+         * How is the CrossTotal calculated.
+         * Values: "NetTotalPlusTax"
+         */
+        CROSSTOTAL,
+
+        /**
+         * How is the CrossTotal calculated.
+         * Values; "NetPricePlusTax"
+         */
+        CROSSPRICE
     }
 
     /**
@@ -1023,7 +1040,7 @@ public abstract class Calculator_Base
     }
 
     /**
-     * discount net unit price * quantity.
+     * Discount net unit price * quantity.
      *
      * @return net price for the product
      * @throws EFapsException on error
@@ -1085,16 +1102,26 @@ public abstract class Calculator_Base
     public ProductPrice getProductCrossPrice()
         throws EFapsException
     {
-        final ProductPrice ret = getNewPrice();
-        final ProductPrice unit = getProductDiscountCrossUnitPrice();
-        ret.setBasePrice(unit.getBasePrice().multiply(getQuantity()));
-        ret.setOrigPrice(unit.getOrigPrice().multiply(getQuantity()));
-        ret.setCurrentPrice(unit.getCurrentPrice().multiply(getQuantity()));
+        final ProductPrice ret;
+        final String config = getConfig(Keys.CROSSPRICE, "default");
+        switch (config) {
+            case "NetPricePlusTax":
+                final ProductPrice netPrice = getProductNetPrice();
+                ret = evalProductCrossUnitPrice(netPrice);
+                break;
+            default:
+                ret = getNewPrice();
+                final ProductPrice unit = getProductDiscountCrossUnitPrice();
+                ret.setBasePrice(unit.getBasePrice().multiply(getQuantity()));
+                ret.setOrigPrice(unit.getOrigPrice().multiply(getQuantity()));
+                ret.setCurrentPrice(unit.getCurrentPrice().multiply(getQuantity()));
+                break;
+        }
         return ret;
     }
 
     /**
-     * calculate the product price with discount, but calculate the tax after
+     * Calculate the product price with discount, but calculate the tax after
      * the discount when the factor is different of 1, because the discount
      * price has to be rounded before.
      *
@@ -1562,11 +1589,11 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         BigDecimal ret = BigDecimal.ZERO;
-        String crossTotal = "";
+        String config = "";
         if (!_calcList.isEmpty()) {
-            crossTotal = _calcList.get(0).getConfig(Keys.CROSSTOTAL, "default");
+            config = _calcList.get(0).getConfig(Keys.CROSSTOTAL, "default");
         }
-        switch (crossTotal) {
+        switch (config) {
             case "NetTotalPlusTax":
                 ret = Calculator.getNetTotal(_parameter, _calcList);
                 for (final Calculator calc : _calcList) {

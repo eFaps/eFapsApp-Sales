@@ -1,6 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2015 The eFaps Team
 
@@ -17,37 +15,34 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
+ Revision:        $Rev: 5313 $
+ Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
+ Last Changed By: $Author: miguel.a.aranya $
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>05a7d388-58b8-42c1-99da-bc95b5be7b3d</uuid>
+    <uuid>311767e7-9e31-499c-a4ec-6fe0bf4d57cb</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-revision>$Rev: 237 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_OrderInboundTree_Menu_Action_Edit</name>
+        <name>Sales_OrderInboundTree_Menu_Action_SetOpen</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_OrderInboundForm</form>
-            <execute program="org.efaps.esjp.sales.document.OrderInbound" method="edit">
-                <property name="PositionType">Sales_OrderInboundPosition</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Open</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_OrderInboundTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
+                name="Sales_OrderInboundTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Digitized</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

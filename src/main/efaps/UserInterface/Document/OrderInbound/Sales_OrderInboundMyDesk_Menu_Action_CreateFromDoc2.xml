@@ -25,23 +25,20 @@
 
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>d64990c6-35b1-4386-95fd-18db94d1e905</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundMyDesk_Menu_Action_CreateFromDoc2</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_OrderInboundForm</form>
             <execute program="org.efaps.esjp.sales.document.OrderInbound" method="create">
                 <property name="StatusGroup">Sales_OrderInboundStatus</property>
-                <property name="Status">Open</property>
+                <property name="Status">Digitized</property>
                 <property name="PositionType">Sales_OrderInboundPosition</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
@@ -50,8 +47,6 @@
                 <property name="Validation01">DUPLICATEDPOSITION</property>
             </validate>
         </target>
-
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_OrderInbound</property>
         <property name="TargetMode">create</property>

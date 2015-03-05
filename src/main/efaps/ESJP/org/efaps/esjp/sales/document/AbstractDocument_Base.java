@@ -595,8 +595,32 @@ public abstract class AbstractDocument_Base
     public Return autoComplete4Contact(final Parameter _parameter)
         throws EFapsException
     {
-        final Contacts contacts = new Contacts();
+        final Contacts contacts = new Contacts()
+        {
+
+            @Override
+            protected QueryBuilder getQueryBldr4AutoComplete(final Parameter _parameter)
+                throws EFapsException
+            {
+                final QueryBuilder ret = super.getQueryBldr4AutoComplete(_parameter);
+                AbstractDocument_Base.this.add2QueryBldr4AutoComplete4Contact(_parameter, ret);
+                return ret;
+            }
+        };
         return contacts.autoComplete4Contact(_parameter);
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _instance     instance the choice belongs to
+     * @return string to add
+     * @throws EFapsException on error
+     */
+    protected void add2QueryBldr4AutoComplete4Contact(final Parameter _parameter,
+                                                      final QueryBuilder _queryBldr)
+        throws EFapsException
+    {
+        // to be used by implementations
     }
 
     /**
