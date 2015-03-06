@@ -110,7 +110,7 @@ public abstract class Invoice_Base
 
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
             final Instance condInst = Instance
-                            .get(_parameter.getParameterValue(CIFormSales.Sales_InvoiceForm.condition.name));
+                            .get(_parameter.getParameterValue(CIFormSales.Sales_InvoiceForm.condition4edit.name));
             if (condInst.isValid()) {
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2Invoice);
                 queryBldr.addWhereAttrEqValue(CISales.ChannelCondition2Invoice.ToLink, _parameter.getInstance());

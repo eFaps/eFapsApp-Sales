@@ -66,6 +66,7 @@
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
                 <property name="Validation02">DUPLICATEDPOSITION</property>
+                <property name="Validation03">SERIAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -117,6 +118,7 @@
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
                 <property name="Validation02">DUPLICATEDPOSITION</property>
+                <property name="Validation03">SERIAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -164,6 +166,7 @@
                 <property name="Validation">QUANTITYGREATERZERO</property>
                 <property name="Validation01">AMOUNTGREATERZERO</property>
                 <property name="Validation02">DUPLICATEDPOSITION</property>
+                <property name="Validation03">SERIAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>

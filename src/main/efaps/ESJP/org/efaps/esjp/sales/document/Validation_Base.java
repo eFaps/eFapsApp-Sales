@@ -35,10 +35,12 @@ import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.Command;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -88,6 +90,8 @@ public abstract class Validation_Base
         AMOUNTGREATERZERO,
         /** Validate the Name. */
         NAME,
+        /** Validate the Serial Name. */
+        SERIAL,
         /** Present always a warning "Are you sure". */
         AREYOUSURE;
     }
@@ -131,6 +135,9 @@ public abstract class Validation_Base
                     break;
                 case NAME:
                     warnings.addAll(validateName(_parameter, _doc));
+                    break;
+                case SERIAL:
+                    warnings.addAll(validateSerial(_parameter, _doc));
                     break;
                 case AMOUNTGREATERZERO:
                     warnings.addAll(validateAmountGreaterZero(_parameter, _doc));
@@ -352,6 +359,55 @@ public abstract class Validation_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, if none an empty list
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validateSerial(final Parameter _parameter,
+                                         final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final Instance docInst = _parameter.getInstance();
+        Type type = null;
+        if (docInst != null && docInst.isValid()) {
+            type = docInst.getType();
+        } else {
+            final Object cmd = _parameter.get(ParameterValues.UIOBJECT);
+            if (cmd != null && cmd instanceof Command) {
+                type = ((Command) cmd).getTargetCreateType();
+            }
+        }
+
+        final String fieldName = getProperty(_parameter, "NAME_FieldName");
+        String name = null;
+        String snName = null;
+        if (fieldName == null) {
+            name = _parameter.getParameterValue("name4create");
+            snName = _parameter.getParameterValue("name4create_SN");
+            if (name == null) {
+                name = _parameter.getParameterValue("name");
+                snName = _parameter.getParameterValue("name_SN");
+            }
+        } else {
+            name = _parameter.getParameterValue(fieldName);
+            snName = _parameter.getParameterValue(fieldName + "_SN");
+        }
+
+        if (type != null && name != null) {
+            name = snName + "-" + name;
+            final QueryBuilder queryBldr = new QueryBuilder(type);
+            queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Name, name).setIgnoreCase(true);
+            if (!queryBldr.getQuery().execute().isEmpty()) {
+                ret.add(new ExistingSerialWarning());
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * @param _parameter Paramter as passed by the eFaps API
@@ -577,6 +633,15 @@ public abstract class Validation_Base
         extends AbstractWarning
     {
     }
+
+    /**
+     * Warning for existing name.
+     */
+    public static class ExistingSerialWarning
+        extends AbstractWarning
+    {
+    }
+
 
     /**
      * Warning for existing name.
