@@ -36,7 +36,7 @@
         <access-type>checkout</access-type>
         <type>Sales_Reminder</type>
         <status group="Sales_ReminderStatus">
-            <key>Digitized</key>
+            <key>Draft</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
