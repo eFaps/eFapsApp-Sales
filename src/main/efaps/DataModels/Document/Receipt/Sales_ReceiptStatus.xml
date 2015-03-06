@@ -32,7 +32,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReceiptStatus</name>
         <parent>Sales_DocumentStatus</parent>
-        <status key="Digitized">
+        <status key="Draft">
             <description>Receipt was digitized and is still editable. (Digitado)</description>
         </status>
         <status key="Open">

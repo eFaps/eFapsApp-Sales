@@ -35,9 +35,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
+import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -85,6 +87,46 @@ public abstract class Invoice_Base
         }
 
         final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
+     * Method for create a new Quotation.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
+            final Instance condInst = Instance
+                            .get(_parameter.getParameterValue(CIFormSales.Sales_InvoiceForm.condition.name));
+            if (condInst.isValid()) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2Invoice);
+                queryBldr.addWhereAttrEqValue(CISales.ChannelCondition2Invoice.ToLink, _parameter.getInstance());
+                final List<Instance> relInsts = queryBldr.getQuery().execute();
+                Update update;
+                if (relInsts.isEmpty()) {
+                    update = new Insert(CISales.ChannelCondition2Invoice);
+                    update.add(CISales.ChannelCondition2Invoice.ToLink, _parameter.getInstance());
+                } else {
+                    update = new Update(relInsts.get(0));
+                }
+                update.add(CISales.ChannelCondition2Invoice.FromLink, condInst);
+                update.execute();
+            }
+        }
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

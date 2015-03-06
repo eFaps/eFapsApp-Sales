@@ -47,12 +47,21 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="JasperReport">Sales_Invoice</property>
+                <property name="Mime">pdf</property>
+                <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
                 <property name="ConnectType">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
                 <property name="ConnectCurrentLink">FromLink</property>
                 <property name="ConnectForeignLink">ToLink</property>
                 <property name="ConnectForeignField">deliveryNotes</property>
+
+                <!-- Sales_ChannelCondition2Invoice -->
+                <property name="ConnectType01">74552bef-1282-4be2-af52-2fa914ddaa17</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -83,6 +92,9 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="JasperReport">Sales_Invoice</property>
+                <property name="Mime">pdf</property>
+                <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
                 <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
@@ -90,11 +102,17 @@
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">deliveryNotes</property>
 
-                <!-- HumanResource_Employee2Invoice -->
-                <property name="ConnectType02">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
+                 <!-- Sales_ChannelCondition2Invoice -->
+                <property name="ConnectType02">74552bef-1282-4be2-af52-2fa914ddaa17</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
-                <property name="ConnectForeignField02">employee</property>
+                <property name="ConnectForeignField02">condition</property>
+
+                <!-- HumanResource_Employee2Invoice -->
+                <property name="ConnectType03">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">employee</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -124,6 +142,9 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
+                <property name="JasperReport">Sales_Invoice</property>
+                <property name="Mime">pdf</property>
+                <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
                 <property name="ConnectType01">4884c4ab-0bdb-4758-ae98-94d2931952ab</property>
@@ -131,11 +152,17 @@
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">deliveryNotes</property>
 
-                <!-- Projects_ProjectService2Invoice -->
-                <property name="ConnectType02">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
+                 <!-- Sales_ChannelCondition2Invoice -->
+                <property name="ConnectType02">74552bef-1282-4be2-af52-2fa914ddaa17</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
-                <property name="ConnectForeignField02">project</property>
+                <property name="ConnectForeignField02">condition</property>
+
+                <!-- Projects_ProjectService2Invoice -->
+                <property name="ConnectType03">09ee5526-448a-46e6-bb76-cf6da5aeed82</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Invoice" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>

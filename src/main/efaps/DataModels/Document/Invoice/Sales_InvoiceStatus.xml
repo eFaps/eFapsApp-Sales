@@ -32,8 +32,8 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoiceStatus</name>
         <parent>Sales_DocumentStatus</parent>
-        <status key="Digitized">
-            <description>Invoice was digitized and is still editable. (Digitado)</description>
+        <status key="Draft">
+            <description>Invoice was drafted and is still editable. (Borrador)</description>
         </status>
         <status key="Open">
             <description>Invoice was printed, but needs to be payed for. (Pendiente)</description>

@@ -38,10 +38,13 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_InvoiceForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.sales.document.Invoice" method="edit" >
+                 <property name="PositionType">Sales_InvoicePosition</property>
+                <property name="JasperReport">Sales_Invoice</property>
+                <property name="Mime">pdf</property>
+            </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
                 name="Sales_InvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
@@ -49,11 +52,10 @@
                 <property name="Check4CreateStatus">true</property>
              </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
     </definition>
 
 </ui-command>
