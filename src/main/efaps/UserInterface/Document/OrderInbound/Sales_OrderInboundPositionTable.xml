@@ -85,6 +85,7 @@
         </field>
         <field name="uom4View">
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
             <property name="Label">Sales_OrderInboundPosition/UoM.Label</property>
         </field>
