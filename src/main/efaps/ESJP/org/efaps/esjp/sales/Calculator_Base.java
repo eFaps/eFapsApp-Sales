@@ -1597,8 +1597,10 @@ public abstract class Calculator_Base
             case "NetTotalPlusTax":
                 ret = Calculator.getNetTotal(_parameter, _calcList);
                 for (final Calculator calc : _calcList) {
-                    for (final BigDecimal amount : calc.getTaxesAmounts().values()) {
-                        ret = ret.add(amount);
+                    if (!calc.isWithoutTax()) {
+                        for (final BigDecimal amount : calc.getTaxesAmounts().values()) {
+                            ret = ret.add(amount);
+                        }
                     }
                 }
                 break;
