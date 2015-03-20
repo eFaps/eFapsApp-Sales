@@ -1336,7 +1336,8 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        if (isContact2JavaScript4Document(_parameter, _instances)) {
+        if (isContact2JavaScript4Document(_parameter, _instances) && _contactInstance != null
+                        && _contactInstance.isValid()) {
             final PrintQuery print = new PrintQuery(_contactInstance);
             print.addAttribute(CIContacts.ContactAbstract.Name);
             print.execute();
