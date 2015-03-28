@@ -76,12 +76,21 @@
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeCreate">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_UsageReportForm.productDocumentType.Label</property>
+            <property name="Label">Sales_UsageReportForm.documentType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.UsageReport" method="dropDown4ProdDocTypeFieldValue"
+                name="Sales_UsageReportForm.documentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Regex4DefaultValue">02 - .*</property>
+                <property name="Activation">OUTGOING</property>
+            </trigger>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>
