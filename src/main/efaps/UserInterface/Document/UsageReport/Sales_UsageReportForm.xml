@@ -80,7 +80,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_UsageReportForm.documentType.Label</property>
+            <property name="Label">Sales_UsageReportForm.productDocumentType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="createGroup" character="Group">
