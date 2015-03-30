@@ -344,6 +344,25 @@ public abstract class AbstractProductDocument_Base
         edit.updateFieldTable(_parameter, _editDoc.getInstance(), fieldTables);
     }
 
+    @Override
+    protected void add2PositionUpdate(final Parameter _parameter,
+                                      final Calculator _calc,
+                                      final Update _posUpdate,
+                                      final int _idx)
+        throws EFapsException
+    {
+        super.add2PositionUpdate(_parameter, _calc, _posUpdate, _idx);
+        final String[] product = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                        CISales.PositionAbstract.Product.name));
+        if (product != null && product.length > _idx) {
+            final Instance prodInst = Instance.get(product[_idx]);
+            if (prodInst.isValid()) {
+                _posUpdate.add(CISales.PositionAbstract.Product, prodInst);
+            }
+        }
+    }
+
+
     /**
      * @param _parameter Paramater as passed by the eFaps API
      * @param _createdDoc the created document
