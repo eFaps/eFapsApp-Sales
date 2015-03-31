@@ -345,4 +345,11 @@ public interface SalesSettings
      * Boolean.
      */
     String INVOICEASSIGNEMPLOYEE = SalesSettings.BASE + "Invoice.AssignEmployee";
+
+    /**
+     * Boolean.
+     */
+    String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";
+
+
 }

@@ -84,6 +84,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
+import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.common.util.InterfaceUtils_Base.DojoLibs;
 import org.efaps.esjp.contacts.Contacts;
@@ -3294,6 +3295,57 @@ public abstract class AbstractDocument_Base
             calculateCode(_parameter, multi.getCurrentInstance(), ArrayUtils.add(_current, i));
             i++;
         }
+    }
+
+    protected StringBuilder getJS4Doc4Contact(final Parameter _parameter,
+                                              final Instance _instance,
+                                              final Type _docType,
+                                              final String _fieldName,
+                                              final Status... _status)
+        throws EFapsException
+    {
+        final List<Instance> selInstances = getInstances4Derived(_parameter);
+        final Parameter paraClone = ParameterUtil.clone(_parameter);
+        ParameterUtil.setProperty(paraClone, "FieldName", _fieldName);
+
+        final StringBuilder ret = new StringBuilder();
+        final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
+        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        final QueryBuilder queryBldr = new QueryBuilder(_docType);
+        queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, (Object[]) _status);
+
+        if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
+            queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, _instance);
+        } else {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
+            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, _instance);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
+                            CISales.Document2DocumentAbstract.ToAbstractLink);
+            queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+        }
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
+        multi.execute();
+        while (multi.next()) {
+            final String name = multi.<String>getAttribute(CIERP.DocumentAbstract.Name);
+            final DateTime date = multi.<DateTime>getAttribute(CIERP.DocumentAbstract.Date);
+            final String option = name + " "
+                            + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
+            final DropDownPosition dropDown = field
+                            .getDropDownPosition(paraClone, multi.getCurrentInstance().getOid(), option);
+            if (selInstances.contains(multi.getCurrentInstance())) {
+                dropDown.setSelected(true);
+            }
+            values.add(dropDown);
+        }
+        final StringBuilder html = field.getInputField(paraClone, values, ListType.CHECKBOX);
+        ret.append("if (document.getElementsByName('")
+            .append(_fieldName).append("')[0]) {\n")
+            .append("document.getElementsByName('").append(_fieldName)
+            .append("')[0].innerHTML='").append(html).append("';")
+            .append("}\n");
+        return ret;
     }
 
     /**

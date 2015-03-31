@@ -20,6 +20,8 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
@@ -40,9 +42,11 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -230,5 +234,34 @@ public abstract class RecievingTicket_Base
                         .append(revision).append("</span>");
         ret.put(ReturnValues.SNIPLETT, html.toString());
         return ret;
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance, CISales.OrderOutbound.getType(),
+                            CIFormSales.Sales_RecievingTicketForm.orderOutbound.name,
+                            Status.find(CISales.OrderOutboundStatus.Open)));
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CISales.OrderOutbound.getType(), CIFormSales.Sales_RecievingTicketForm.orderOutbound.name,
+                            Status.find(CISales.OrderOutboundStatus.Open)));
+        }
     }
 }

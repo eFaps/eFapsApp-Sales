@@ -90,6 +90,7 @@
                 <property name="ValueSelect">attribute[OID]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
+                <property name="Regex4DefaultValue">02 - .*</property>
                 <property name="Activation">INCOMING</property>
             </trigger>
         </field>
@@ -262,9 +263,23 @@
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="orderOutbound">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_RecievingTicketForm.orderOutbound.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_InvoiceForm.deliveryNotes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.RecievingTicket.CreateFromOrderOutbound</property>
+           </trigger>
         </field>
         <field name="storageJavaScript">
             <property name="ModePrint">NONE</property>
@@ -357,6 +372,7 @@
                 <property name="ValueSelect">attribute[OID]</property>
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
+                <property name="Regex4DefaultValue">02 - .*</property>
                 <property name="Activation">INCOMING</property>
             </trigger>
         </field>
@@ -572,9 +588,23 @@
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
+        </field>
+        <field name="orderOutbound">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Label">Sales_RecievingTicketForm.orderOutbound.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_InvoiceForm.deliveryNotes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.RecievingTicket.CreateFromOrderOutbound</property>
+           </trigger>
         </field>
         <field name="storageJavaScript">
             <property name="ModePrint">NONE</property>
