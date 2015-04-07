@@ -351,5 +351,8 @@ public interface SalesSettings
      */
     String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";
 
-
+    /**
+     * Boolean.
+     */
+    String RECIEVINGTICKETPOSREMARK = SalesSettings.BASE + "RecievingTicket.ActivateRemark4Position";
 }

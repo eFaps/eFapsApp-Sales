@@ -96,5 +96,11 @@
             <sqltable>Sales_PositionAbstractSQLTable</sqltable>
             <sqlcolumn>UOMID</sqlcolumn>
         </attribute>
+        <attribute>
+            <name>Remark</name>
+            <type>String</type>
+            <sqltable>Sales_PositionAbstractSQLTable</sqltable>
+            <sqlcolumn>REMARK</sqlcolumn>
+        </attribute>
     </definition>
 </datamodel-type>

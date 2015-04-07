@@ -223,6 +223,12 @@ public abstract class AbstractProductDocument_Base
                 posIns.add(CISales.PositionAbstract.ProductDesc, descr);
             }
 
+            final String[] remarks = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                            CISales.PositionAbstract.Remark.name));
+            if (remarks != null && remarks.length > i) {
+                posIns.add(CISales.PositionAbstract.Remark, remarks[i]);
+            }
+
             final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                             CISales.PositionAbstract.UoM.name));
             if (uoM != null && uoM.length > i) {

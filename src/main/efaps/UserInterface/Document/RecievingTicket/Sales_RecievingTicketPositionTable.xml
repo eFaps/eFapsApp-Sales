@@ -85,13 +85,27 @@
                     event="UI_FIELD_VALUE">
                     <property name="ValueSelect">oid</property>
             </trigger>
-             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="propertyCheck"
                 name="Sales_RecievingTicketPositionTable.storage.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>
                 <property name="Property">ShowStorage</property>
-             </trigger>
+            </trigger>
+        </field>
+        <field name="remark">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Attribute">Remark</property>
+            <property name="Label">Sales_RecievingTicketPosition/Remark.Label</property>
+            <property name="Width">10</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_RecievingTicketPositionTable.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" >
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.RecievingTicket.ActivateRemark4Position</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>

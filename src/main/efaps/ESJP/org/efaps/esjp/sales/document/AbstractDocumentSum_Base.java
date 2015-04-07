@@ -961,6 +961,12 @@ public abstract class AbstractDocumentSum_Base
                     posIns.add(CISales.PositionAbstract.ProductDesc, productDesc[idx]);
                 }
 
+                final String[] remarks = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.Remark.name));
+                if (remarks != null && remarks.length > idx) {
+                    posIns.add(CISales.PositionAbstract.Remark, remarks[idx]);
+                }
+
                 final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                                 CISales.PositionAbstract.UoM.name));
                 if (uoM != null && uoM.length > idx) {
@@ -1072,6 +1078,12 @@ public abstract class AbstractDocumentSum_Base
                                 CISales.PositionAbstract.ProductDesc.name));
                 if (productDesc != null && productDesc.length > i) {
                     update.add(CISales.PositionAbstract.ProductDesc, productDesc[i]);
+                }
+
+                final String[] remarks = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
+                                CISales.PositionAbstract.Remark.name));
+                if (remarks != null && remarks.length > i) {
+                    update.add(CISales.PositionAbstract.Remark, remarks[i]);
                 }
 
                 final String[] uoM = _parameter.getParameterValues(getFieldName4Attribute(_parameter,

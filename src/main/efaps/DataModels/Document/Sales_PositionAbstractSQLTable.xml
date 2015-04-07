@@ -44,6 +44,7 @@
             <column name="PRODDESC"        type="STRING_SHORT"    not-null="true" length="255"/>
             <column name="QUANTITY"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
             <column name="UOMID"           type="INTEGER"         not-null="true" />
+            <column name="REMARK"          type="STRING_SHORT"                    length="255"/>
             <foreign name="T_SALESPOS_DOCID"               key="DOCID"           reference="T_ERPDOC(ID)"/>
             <foreign name="T_SALESPOS_PROD"                key="PROD"            reference="T_PRODPRODUCT(ID)"/>
         </database>
