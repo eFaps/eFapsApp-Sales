@@ -77,7 +77,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_ProductionReportForm.documentType.Label</property>
+            <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
@@ -88,6 +88,9 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">INCOMING</property>
+                 <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.ProductionReport.DefaultProductDocumentType</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">
@@ -270,7 +273,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_ProductionReportForm.documentType.Label</property>
+            <property name="Label">Sales_ProductionReportForm.productDocumentType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ProductionReport"
                 method="dropDown4ProdDocTypeFieldValue"
@@ -281,6 +284,9 @@
                 <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
                 <property name="OrderSelect">attribute[Name]</property>
                 <property name="Activation">INCOMING</property>
+                 <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.ProductionReport.DefaultProductDocumentType</property>
             </trigger>
         </field>
         <field character="Group" name="createGroup">

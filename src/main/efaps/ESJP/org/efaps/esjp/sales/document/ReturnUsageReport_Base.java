@@ -20,7 +20,6 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -73,14 +72,18 @@ public abstract class ReturnUsageReport_Base
         return new Return();
     }
 
+
     @Override
     protected void connect2ProductDocumentType(final Parameter _parameter,
                                                final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration salesConfig = Sales.getSysConfig();
-        if (salesConfig != null) {
-            final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT);
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("productDocumentType"));
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
+            super.connect2ProductDocumentType(_parameter, _createdDoc);
+        } else {
+            final Instance productDocType = Sales.getSysConfig().getLink(
+                            SalesSettings.RETURNUSAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE);
             if (productDocType != null && productDocType.isValid()) {
                 insert2DocumentTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
             }

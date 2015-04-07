@@ -32,7 +32,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_UsageReportForm</name>
-        <!-- fields -->
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
@@ -76,12 +75,25 @@
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeCreate">NONE</property>
+            <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_UsageReportForm.productDocumentType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.UsageReport"
+                method="dropDown4ProdDocTypeFieldValue"
+                name="Sales_UsageReportForm.productDocumentType.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+                <property name="Type">Sales_ProductDocumentType</property>
+                <property name="ValueSelect">attribute[OID]</property>
+                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
+                <property name="OrderSelect">attribute[Name]</property>
+                <property name="Activation">OUTGOING</property>
+                <property name="SetSelected">true</property>
+                <!-- Sales-Configuration -->
+                <property name="DefaultSysConf">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="DefaultLink">org.efaps.sales.UsageReport.DefaultProductDocumentType</property>
+            </trigger>
         </field>
         <field name="createGroup" character="Group">
             <property name="GroupCount">2</property>

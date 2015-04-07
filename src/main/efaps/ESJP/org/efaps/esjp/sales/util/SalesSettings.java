@@ -187,16 +187,6 @@ public interface SalesSettings
     String INCOMINGINVOICESEQUENCE = SalesSettings.BASE + "IncomingInvoiceSequence";
 
     /**
-     *  OID default productDocumentType to usage report.
-     */
-    String PRODUCTDOCUMENTTYPE4USAGEREPORT = SalesSettings.BASE + "ProductDocumentType4UsageReport";
-
-    /**
-     *  OID default productDocumentType to return usage report.
-     */
-    String PRODUCTDOCUMENTTYPE4RETURNUSAGEREPORT = SalesSettings.BASE + "ProductDocumentType4ReturnUsageReport";
-
-    /**
      *  OID default productDocumentType to return usage report.
      */
     String STORAGEGROUP4PRODUCTREQUESTREPORT = SalesSettings.BASE + "StorageGroup4ProductRequestReport";
@@ -355,4 +345,19 @@ public interface SalesSettings
      * Boolean.
      */
     String RECIEVINGTICKETPOSREMARK = SalesSettings.BASE + "RecievingTicket.ActivateRemark4Position";
+
+    /**
+     * Link.
+     */
+    String USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "UsageReport.DefaultProductDocumentType";
+
+    /**
+     * Link.
+     */
+    String RETURNUSAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "ReturnUsageReport.DefaultProductDocumentType";
+
+    /**
+     * Link.
+     */
+    String PRODUCTIONREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "ProductionReport.DefaultProductDocumentType";
 }

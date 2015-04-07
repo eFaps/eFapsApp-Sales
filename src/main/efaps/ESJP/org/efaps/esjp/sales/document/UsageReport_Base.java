@@ -20,7 +20,6 @@
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -63,9 +62,12 @@ public abstract class UsageReport_Base
                                                final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration salesConfig = Sales.getSysConfig();
-        if (salesConfig != null) {
-            final Instance productDocType = salesConfig.getLink(SalesSettings.PRODUCTDOCUMENTTYPE4USAGEREPORT);
+        final Instance instDocType = Instance.get(_parameter.getParameterValue("productDocumentType"));
+        if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
+            super.connect2ProductDocumentType(_parameter, _createdDoc);
+        } else {
+            final Instance productDocType = Sales.getSysConfig().getLink(
+                            SalesSettings.USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE);
             if (productDocType != null && productDocType.isValid()) {
                 insert2DocumentTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
             }
