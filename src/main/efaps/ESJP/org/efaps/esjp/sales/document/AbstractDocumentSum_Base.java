@@ -1134,9 +1134,16 @@ public abstract class AbstractDocumentSum_Base
     public Return executeCalculatorOnScript(final Parameter _parameter)
         throws EFapsException
     {
+        final Instance derivedInst = Instance.get(_parameter.getParameterValue("derived"));
+        Integer row4priceFromDB = null;
+        if (derivedInst != null && derivedInst.isValid()
+                        && derivedInst.getType().isKindOf(CISales.DocumentStockAbstract)) {
+            row4priceFromDB = -1;
+        }
+
         final Return retVal = new Return();
         final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-        final List<Calculator> calcList = analyseTable(_parameter, null);
+        final List<Calculator> calcList = analyseTable(_parameter, row4priceFromDB);
         int i = 0;
         for (final Calculator cal : calcList) {
             final Map<String, Object> map = new HashMap<String, Object>();
