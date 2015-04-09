@@ -98,6 +98,10 @@
                     event="UI_FIELD_VALUE">
                 <property name="ValueSelect">oid</property>
              </trigger>
+             <trigger program="org.efaps.esjp.sales.document.UsageReport"
+                     method="updateFields4Product"
+                     name="Sales_UsageReportPositionTable.storage.UI_FIELD_UPDATE"
+                     event="UI_FIELD_UPDATE" />
              <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="propertyCheck"
                 name="Sales_UsageReportPositionTable.storage.UI_ACCESSCHECK"
