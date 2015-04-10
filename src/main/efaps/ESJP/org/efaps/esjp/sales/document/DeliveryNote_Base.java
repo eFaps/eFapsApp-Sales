@@ -40,7 +40,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.AttributeQuery;
@@ -57,6 +57,7 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
+import org.efaps.esjp.contacts.util.ContactsSettings;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -71,7 +72,7 @@ import org.joda.time.DateTime;
  * @version $Id$
  */
 @EFapsUUID("363ad7a5-1e7b-4194-89e3-a31d07d783df")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DeliveryNote_Base
     extends AbstractProductDocument
 {
@@ -351,6 +352,28 @@ public abstract class DeliveryNote_Base
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), adress);
                 list.add(map);
+            }
+
+            if (org.efaps.esjp.contacts.util.Contacts.getSysConfig().getAttributeValueAsBoolean(
+                            ContactsSettings.ACTIVATESUBCONTACTS)) {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CIContacts.Contact2SubContact);
+                attrQueryBldr.addWhereAttrEqValue(CIContacts.Contact2SubContact.From, contactInst);
+                final QueryBuilder queryBldr = new QueryBuilder(CIContacts.SubContact);
+                queryBldr.addWhereAttrInQuery(CIContacts.SubContact.ID,
+                                attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selLo = SelectBuilder.get().clazz(CIContacts.SubContactClassLocation)
+                                .attribute(CIContacts.SubContactClassLocation.LocationAdressStreet);
+                multi.addSelect(selLo);
+                multi.execute();
+                while (multi.next()) {
+                    final String loAdress = multi.<String>getSelect(selLo);
+                    if (all || StringUtils.startsWithIgnoreCase(loAdress, input)) {
+                        final Map<String, String> map = new HashMap<String, String>();
+                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), loAdress);
+                        list.add(map);
+                    }
+                }
             }
         }
 
