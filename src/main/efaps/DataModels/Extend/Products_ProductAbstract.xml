@@ -115,6 +115,13 @@
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>SALESUNIT</sqlcolumn>
         </attribute>
+         <attribute>
+            <name>ProductFamilyLink</name>
+            <type>Link</type>
+            <typelink>Products_ProductFamilyAbstract</typelink>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>FAMILYID</sqlcolumn>
+        </attribute>
         <attribute>
             <name>Creator</name>
             <type>CreatorLink</type>
@@ -240,6 +247,13 @@
             <type>Decimal</type>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>SALESUNIT</sqlcolumn>
+        </attribute>
+         <attribute>
+            <name>ProductFamilyLink</name>
+            <type>Link</type>
+            <typelink>Products_ProductFamilyAbstract</typelink>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>FAMILYID</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
