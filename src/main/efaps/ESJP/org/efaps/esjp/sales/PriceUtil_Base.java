@@ -202,7 +202,8 @@ public abstract class PriceUtil_Base
                         ret.setBasePrice(price);
                         ret.setBaseRate(BigDecimal.ONE);
                     } else {
-                        final BigDecimal[] rates = getRates(_parameter, currentInst, baseInst);
+                        final BigDecimal[] rates = getRates(_parameter, currentInst == null ? baseInst : currentInst,
+                                        baseInst);
                         ret.setBasePrice(price.multiply(rates[2]));
                         ret.setBaseRate(rates[2]);
                     }
