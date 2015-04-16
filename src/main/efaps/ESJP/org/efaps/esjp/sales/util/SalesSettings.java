@@ -225,6 +225,11 @@ public interface SalesSettings
     String SERIALNUMBERS = SalesSettings.BASE + "SerialNumbers";
 
     /**
+     * Integer. Length of the number part of a Serialnumber ."001-NNNNNN"
+     */
+    String SERIALNUMBERSUFFIXLENGTH = SalesSettings.BASE + "SerialNumbersSuffixLength";
+
+    /**
      * Boolean.
      * Activate the reservation trigger mechanism on transactions.
      */
@@ -360,4 +365,7 @@ public interface SalesSettings
      * Link.
      */
     String PRODUCTIONREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "ProductionReport.DefaultProductDocumentType";
+
+
+
 }

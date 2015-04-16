@@ -2438,7 +2438,7 @@ public abstract class AbstractDocument_Base
         if (options.size() == 1) {
             serial = options.get(0).getValue().toString();
             snHtml = new StringBuilder().append("<input type=\"hidden\" value=\"").append(serial).append("\" name=\"")
-                                .append(fieldName).append("\"><span>").append(serial).append("-</span>");
+                            .append(fieldName).append("\"><span>").append(serial).append("-</span>");
         } else {
             for (final DropDownPosition option : options) {
                 if (option.isSelected()) {
@@ -2446,32 +2446,34 @@ public abstract class AbstractDocument_Base
                     break;
                 }
             }
-            final Parameter parameter =  ParameterUtil.clone(_parameter);
+            final Parameter parameter = ParameterUtil.clone(_parameter);
             ParameterUtil.setProperty(parameter, "FieldName", fieldName);
             final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
             snHtml = field.getDropDownField(parameter, options).append("-");
         }
         html.append(snHtml);
         String number = getMaxNumber(_parameter, Type.get(type), serial, includeChildTypes);
-        if (number == null) {
-            number = "000001";
-        } else {
+        Integer numberInt = 1;
+        if (number != null) {
             // get the numbers after the first "-"
             final Pattern pattern = Pattern.compile("(?<=-)\\d*");
             final Matcher matcher = pattern.matcher(number);
             if (matcher.find()) {
                 final String numTmp = matcher.group();
-                final int length = numTmp.length();
-                final Integer numInt = Integer.parseInt(numTmp) + 1;
-                final NumberFormat nf = NumberFormat.getInstance();
-                nf.setMinimumIntegerDigits(length);
-                nf.setMaximumIntegerDigits(length);
-                nf.setGroupingUsed(false);
-                number = nf.format(numInt);
+                numberInt = Integer.parseInt(numTmp) + 1;
             }
         }
+        int length = Sales.getSysConfig().getAttributeValueAsInteger(SalesSettings.SERIALNUMBERSUFFIXLENGTH);
+        if (length < 1) {
+            length = 6;
+        }
+        final NumberFormat nf = NumberFormat.getInstance();
+        nf.setMinimumIntegerDigits(length);
+        nf.setMaximumIntegerDigits(length);
+        nf.setGroupingUsed(false);
+        number = nf.format(numberInt);
         html.append("<input type=\"text\" size=\"8\" name=\"").append(fieldValue.getField().getName())
-            .append("\" value=\"").append(number).append("\">");
+                        .append("\" value=\"").append(number).append("\">");
         final Return retVal = new Return();
         retVal.put(ReturnValues.SNIPLETT, html);
         return retVal;
