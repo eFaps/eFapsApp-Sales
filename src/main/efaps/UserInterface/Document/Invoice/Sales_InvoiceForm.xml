@@ -510,7 +510,9 @@
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <property name="SetEmployee">true</property>
+            </trigger>
         </field>
         <field name="executeCalculator" character="Command">
             <property name="ModePrint">NONE</property>
@@ -1023,7 +1025,9 @@
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <property name="SetEmployee">true</property>
+            </trigger>
         </field>
          <field name="executeCalculator" character="Command">
             <property name="ModePrint">NONE</property>

@@ -1347,6 +1347,25 @@ public abstract class AbstractDocument_Base
             ret.append(getSetFieldValue(0, "contact", _contactInstance.getOid(), contactName)).append("\n")
                             .append(getSetFieldValue(0, "contactAutoComplete", contactName)).append("\n")
                             .append(getSetFieldValue(0, "contactData", contactData)).append("\n");
+
+            final Map<String, Object> map = new HashMap<>();
+            new Contacts()
+            {
+
+                @Override
+                public void add2UpdateMap4Contact(final Parameter _parameter,
+                                                  final Instance _contactInstance,
+                                                  final Map<String, Object> _map)
+                    throws EFapsException
+                {
+                    super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+                }
+            }.add2UpdateMap4Contact(_parameter, _contactInstance, map);
+            if (!map.isEmpty()) {
+                final List<Map<String, Object>> values = new ArrayList<>();
+                values.add(map);
+                ret.append(getSetFieldValuesScript(_parameter, values, null));
+            }
         }
         return ret;
     }
