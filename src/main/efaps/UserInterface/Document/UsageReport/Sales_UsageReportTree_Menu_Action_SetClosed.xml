@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2001 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -19,25 +19,23 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>fce18630-7a01-493d-82b9-70ccff774ec5</uuid>
+    <uuid>94ea7002-1db2-4482-983f-1ec7d9d33dfb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_UsageReportTree_Menu_Action_SetCanceled</name>
+        <name>Sales_UsageReportTree_Menu_Action_SetClosed</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <execute program="org.efaps.esjp.sales.document.UsageReport"
-                method="changeStatusWithInverseTransaction">
-                <property name="Status">Canceled</property>
+            <execute method="setStatus"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Closed</property>
             </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Sales_UsageReportTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_UsageReportTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
-                <property name="Status01">Closed</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

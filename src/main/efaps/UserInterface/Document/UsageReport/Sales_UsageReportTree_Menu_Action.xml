@@ -34,10 +34,11 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_UsageReportTree_Menu_Action</name>
-        <!-- childs -->
         <childs>
             <child>Sales_UsageReportTree_Menu_Action_Edit</child>
+            <child>Sales_UsageReportTree_Menu_Action_SetClosed</child>
             <child>Sales_UsageReportTree_Menu_Action_SetCanceled</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>
