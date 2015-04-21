@@ -176,6 +176,40 @@ public abstract class DeliveryNote_Base
         // to be used by implementation
     }
 
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        final PrintQuery print = new PrintQuery(_contactInstance);
+        final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
+                        .attribute(CIContacts.ClassLocation.LocationAdressStreet);
+        print.addSelect(sel);
+        print.execute();
+        final String adress = print.<String>getSelect(sel);
+        _map.put(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress);
+    }
+
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        final PrintQuery print = new PrintQuery(_contactInstance);
+        final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
+                        .attribute(CIContacts.ClassLocation.LocationAdressStreet);
+        print.addSelect(sel);
+        print.execute();
+        final String adress = print.<String>getSelect(sel);
+        ret.append(getSetFieldValue(0, CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress));
+        return ret;
+    }
+
     /**
      * {@inheritDoc}
      */
