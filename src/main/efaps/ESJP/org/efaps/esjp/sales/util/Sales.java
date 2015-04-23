@@ -37,11 +37,9 @@ import org.efaps.util.cache.CacheReloadException;
  * @version $Id$
  */
 @EFapsUUID("70a6a397-b8ef-40c5-853e-cff331bc79bb")
-@EFapsApplication("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public final class Sales
 {
-
-    public static final String APPNAME = "eFapsApp-Sales";
 
     /**
      * Singelton.

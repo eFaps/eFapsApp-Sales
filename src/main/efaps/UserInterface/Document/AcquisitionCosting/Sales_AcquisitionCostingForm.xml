@@ -75,14 +75,6 @@
         <field name="status">
             <property name="Attribute">Status</property>
         </field>
-        <field name="name4edit">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">EDITABLE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Required">true</property>
-            <property name="Label">Sales_AcquisitionCosting/Name.Label</property>
-        </field>
         <field character="Group" name="nameGroup">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
@@ -91,7 +83,6 @@
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
-            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
         <field character="Group" name="documentTypeGroup">
@@ -129,42 +120,6 @@
             <property name="ModeView">READONLY</property>
             <property name="Label">Sales_AcquisitionCostingForm.documentType.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="productDocumentType">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_AcquisitionCostingForm.productDocumentType.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDown4DocumentType" name="Sales_AcquisitionCostingForm.documentType.UI_FIELD_VALUE"
-                program="org.efaps.esjp.sales.document.AcquisitionCosting">
-                <property name="Type">Sales_ProductDocumentType</property>
-                <property name="ValueSelect">oid</property>
-                <property name="Phrase">$&lt;attribute[Name]&gt; - $&lt;attribute[Description]&gt;</property>
-                <property name="OrderSelect">attribute[Name]</property>
-                <property name="Regex4DefaultValue">02 - .*</property>
-            </trigger>
-            <trigger event="UI_ACCESSCHECK" method="propertyCheck" name="Sales_AcquisitionCostingForm.productDocumentType.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="CheckCallingCommand">true</property>
-                <property name="Property">IsProductDocument</property>
-            </trigger>
-        </field>
-        <field name="productDocumentType4View">
-            <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
-            <property name="Label">Sales_AcquisitionCostingForm.productDocumentType.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ModeView">READONLY</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">READONLY</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_ACCESSCHECK" method="propertyCheck" name="Sales_AcquisitionCostingForm.productDocumentType4View.UI_ACCESSCHECK"
-                program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="CheckCallingCommand">true</property>
-                <property name="Property">IsProductDocument</property>
-            </trigger>
         </field>
         <field character="Heading" name="headingSupplier">
             <property name="Level">2</property>
@@ -250,7 +205,7 @@
             <table>Sales_AcquisitionCostingPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_AcquisitionCostingPosition</property>
-                <property name="LinkFrom">AcquisitionCosting</property>
+                <property name="LinkFrom">AcquisitionCostingLink</property>
             </evaluate>
         </field>
         <field name="note">
@@ -347,7 +302,7 @@
             <table>Sales_AcquisitionCostingRatePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_AcquisitionCostingPosition</property>
-                <property name="LinkFrom">AcquisitionCosting</property>
+                <property name="LinkFrom">AcquisitionCostingLink</property>
             </evaluate>
         </field>
         <field name="rateNetTotal4Read">

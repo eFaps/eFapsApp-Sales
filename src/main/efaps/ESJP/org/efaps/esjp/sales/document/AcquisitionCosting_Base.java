@@ -21,7 +21,8 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.sales.util.Sales;
+import org.efaps.ci.CIType;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -30,7 +31,7 @@ import org.efaps.util.EFapsException;
  * @author The eFaps Team
  */
 @EFapsUUID("d1c3dff3-cfcd-4eea-a6d7-7b1529aefada")
-@EFapsApplication(Sales.APPNAME)
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AcquisitionCosting_Base
     extends AbstractDocumentSum
 {
@@ -53,10 +54,32 @@ public abstract class AcquisitionCosting_Base
         return new Return();
     }
 
+    /**
+     * Edit.
+     *
+     * @param _parameter Parameter from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        return new Return();
+    }
+
     @Override
     public Return validate(final Parameter _parameter)
         throws EFapsException
     {
         return new Validation().validate(_parameter, this);
+    }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.AcquisitionCosting;
     }
 }

@@ -27,50 +27,50 @@
         <name>Sales_AcquisitionCostingRatePositionTable</name>
         <field name="quantity">
             <property name="Attribute">Quantity</property>
-            <property name="Label">Sales_IncomingInvoicePosition/Quantity.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/Quantity.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_IncomingInvoicePosition/Product.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/Product.Label</property>
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="Attribute">ProductDesc</property>
-            <property name="Label">Sales_IncomingInvoiceRatePositionTable.productDesc.Label</property>
+            <property name="Label">Sales_AcquisitionCostingRatePositionTable.productDesc.Label</property>
             <property name="Width">10</property>
         </field>
         <field name="uom4View">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
-            <property name="Label">Sales_IncomingInvoicePosition/UoM.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/UoM.Label</property>
         </field>
         <field name="rateNetUnitPrice">
             <property name="Attribute">RateNetUnitPrice</property>
-            <property name="Label">Sales_IncomingInvoicePosition/RateNetUnitPrice.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/RateNetUnitPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="discount">
             <property name="Attribute">Discount</property>
-            <property name="Label">Sales_IncomingInvoicePosition/Discount.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/Discount.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateDiscountNetUnitPrice">
             <property name="Attribute">RateDiscountNetUnitPrice</property>
-            <property name="Label">Sales_IncomingInvoicePosition/RateDiscountNetUnitPrice.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/RateDiscountNetUnitPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateNetPrice">
             <property name="Attribute">RateNetPrice</property>
-            <property name="Label">Sales_IncomingInvoicePosition/RateNetPrice.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/RateNetPrice.Label</property>
             <property name="Align">right</property>
         </field>
         <field name="rateCrossPrice">
             <property name="Attribute">RateCrossPrice</property>
-            <property name="Label">Sales_IncomingInvoicePosition/RateCrossPrice.Label</property>
+            <property name="Label">Sales_AcquisitionCostingPosition/RateCrossPrice.Label</property>
             <property name="Align">right</property>
         </field>
     </definition>

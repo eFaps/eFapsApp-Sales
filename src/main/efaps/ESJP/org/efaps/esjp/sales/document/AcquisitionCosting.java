@@ -20,7 +20,6 @@ package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.esjp.sales.util.Sales;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -30,7 +29,7 @@ import org.efaps.esjp.sales.util.Sales;
  * @author The eFaps Team
  */
 @EFapsUUID("8d182c7d-0cc4-4a74-b0b2-8166b11d7da6")
-@EFapsApplication(Sales.APPNAME)
+@EFapsApplication("eFapsApp-Sales")
 public class AcquisitionCosting
     extends AcquisitionCosting_Base
 {
