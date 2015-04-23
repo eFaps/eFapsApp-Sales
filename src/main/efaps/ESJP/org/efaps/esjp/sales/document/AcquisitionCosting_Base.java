@@ -22,6 +22,10 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
+import org.efaps.db.Insert;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -51,7 +55,37 @@ public abstract class AcquisitionCosting_Base
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
+        connect2RecievingTicket(_parameter, createdDoc);
         return new Return();
+    }
+
+    /**
+     * @param _parameter    Parameter as passed by the eFaps API
+     * @param _createdDoc   created doc
+     * @throws EFapsException on error
+     */
+    protected void connect2RecievingTicket(final Parameter _parameter,
+                                           final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
+        attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance());
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
+        queryBldr.addWhereAttrInQuery(CISales.IncomingInvoice2RecievingTicket.FromLink,
+                        attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.From));
+
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.IncomingInvoice2RecievingTicket.ToLink)
+                        .instance();
+        multi.addSelect(selInst);
+        multi.execute();
+        while (multi.next()) {
+            final Insert insert = new Insert(CISales.AcquisitionCosting2RecievingTicket);
+            insert.add(CISales.AcquisitionCosting2RecievingTicket.FromLink, _createdDoc.getInstance());
+            insert.add(CISales.AcquisitionCosting2RecievingTicket.ToLink, multi.getSelect(selInst));
+            insert.execute();
+        }
     }
 
     /**

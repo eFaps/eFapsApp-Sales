@@ -1126,25 +1126,45 @@ public abstract class Costing_Base
                 final SelectBuilder docInstSel = SelectBuilder.get().linkto(
                                 CISales.PositionAbstract.DocumentAbstractLink).instance();
                 if (CISales.RecievingTicket.getType().equals(getBaseDocInst().getType())) {
-                    // first priority is the special relation for costing
-                    // "Sales_IncomingInvoice2RecievingTicket"
-                    final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
-                    relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
+                    // first priority are the special relation for costing
+                    // "Sales_AcquisitionCosting2RecievingTicket"
+                    final QueryBuilder acRelAttrQueryBldr = new QueryBuilder(CISales.AcquisitionCosting2RecievingTicket);
+                    acRelAttrQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCosting2RecievingTicket.ToLink,
                                     getBaseDocInst());
-                    final AttributeQuery relAttrQuery = relAttrQueryBldr
-                                    .getAttributeQuery(CISales.IncomingInvoice2RecievingTicket.FromLink);
-                    final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
-                    posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
-                                    relAttrQuery);
-                    posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
-                    final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                    posMulti.addSelect(docInstSel);
-                    posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
-                    posMulti.execute();
-                    if (posMulti.next()) {
+                    final AttributeQuery acRelAttrQuery = acRelAttrQueryBldr
+                                    .getAttributeQuery(CISales.AcquisitionCosting2RecievingTicket.FromLink);
+                    final QueryBuilder acPosQueryBldr = new QueryBuilder(CISales.AcquisitionCostingPosition);
+                    acPosQueryBldr.addWhereAttrInQuery(CISales.AcquisitionCostingPosition.DocumentAbstractLink,
+                                    acRelAttrQuery);
+                    acPosQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCostingPosition.Product, getProductInst());
+                    final MultiPrintQuery acPosMulti = acPosQueryBldr.getPrint();
+                    acPosMulti.addSelect(docInstSel);
+                    acPosMulti.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice);
+                    acPosMulti.execute();
+                    if (acPosMulti.next()) {
                         found = true;
-                        setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                        setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                        setCost(acPosMulti.<BigDecimal>getAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice));
+                        setCostDocInst(acPosMulti.<Instance>getSelect(docInstSel));
+                    }
+                    if (!found) {
+                        final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
+                        relAttrQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoice2RecievingTicket.ToLink,
+                                        getBaseDocInst());
+                        final AttributeQuery relAttrQuery = relAttrQueryBldr
+                                        .getAttributeQuery(CISales.IncomingInvoice2RecievingTicket.FromLink);
+                        final QueryBuilder posQueryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
+                        posQueryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink,
+                                        relAttrQuery);
+                        posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
+                        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                        posMulti.addSelect(docInstSel);
+                        posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
+                        posMulti.execute();
+                        if (posMulti.next()) {
+                            found = true;
+                            setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                            setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                        }
                     }
                     // if not found yet, try other relations
                     if (!found) {
