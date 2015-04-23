@@ -59,6 +59,7 @@
             <child>Sales_ReturnUsageReportMyDesk</child>
             <child>Sales_ExchangeMyDesk</child>
             <child>Sales_ProductionOrderMyDesk</child>
+            <child>Sales_AcquisitionCostingMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

@@ -48,6 +48,7 @@
         <type>Sales_AccountFundsToBeSettled</type>
         <type>Sales_AccountCashDesk</type>
         <type>Sales_AccountPettyCash</type>
+        <type>Sales_AcquisitionCosting</type>
         <type>Sales_BulkPayment</type>
         <type>Sales_BulkPaymentDetraction</type>
         <type>Sales_CashDeskBalance</type>
@@ -94,6 +95,12 @@
         <type>Sales_ServiceRequest</type>
         <type>Sales_UsageReport</type>
 
+        <status group="Sales_AcquisitionCostingStatus">
+            <key>Draft</key>
+            <key>Open</key>
+            <key>Closed</key>
+            <key>Canceled</key>
+        </status>
 
         <status group="Sales_CostSheetStatus">
             <key>Open</key>

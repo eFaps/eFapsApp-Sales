@@ -26,7 +26,7 @@ import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.IBitEnum;
 import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.datamodel.attributetype.BitEnumType;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -37,9 +37,12 @@ import org.efaps.util.cache.CacheReloadException;
  * @version $Id$
  */
 @EFapsUUID("70a6a397-b8ef-40c5-853e-cff331bc79bb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("$Rev$")
 public final class Sales
 {
+
+    public static final String APPNAME = "eFapsApp-Sales";
+
     /**
      * Singelton.
      */
