@@ -19,25 +19,21 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>158a1b1c-75ca-416c-aeb2-c6132d8e000f</uuid>
+    <uuid>a15b4590-5c62-41e5-aa5b-41e8d651893c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_AcquisitionCostingTree_Doc</name>
+        <name>Sales_AcquisitionCostingTree_Doc_Menu_Action_AddRecievingTicket</name>
         <target>
-            <menu>Sales_AcquisitionCostingTree_Doc_Menu</menu>
-            <table>Sales_Document2DocumentTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type01">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom01">FromAbstractLink</property>
-                <property name="Type02">ERP_Document2DocumentAbstract</property>
-                <property name="LinkFrom02">ToAbstractLink</property>
-            </evaluate>
+            <search>Sales_AcquisitionCostingTree_Doc_Menu_Action_AddRecievingTicket_Search</search>
+            <execute program="org.efaps.esjp.common.uisearch.Connect">
+                <property name="ConnectParentAttribute">FromLink</property>
+                <property name="ConnectChildAttribute">ToLink</property>
+                <property name="ConnectType">Sales_AcquisitionCosting2RecievingTicket</property>
+            </execute>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
-        <property name="Label">Sales_DocumentAbstractTree_Doc.Label</property>
-        <property name="TargetTitle">Sales_DocumentAbstractTree_Doc.Title</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">edit</property>
+        <property name="RecievingTicketStatus">Open</property>
     </definition>
 </ui-command>
