@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+ Copyright 2003 - 2015 The eFaps Team
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ Author:          The eFaps Team
+
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f9627ee1-4305-43f4-aeb3-0f35365fe1d5</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_AcquisitionCostingTable</name>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_AcquisitionCosting/Name.Label</property>
+        </field>
+        <field name="documentType">
+            <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
+            <property name="Label">Sales_AcquisitionCostingTable.documentType.Label</property>
+        </field>
+        <field name="date">
+            <property name="Attribute">Date</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">WEEK</property>
+            <property name="Label">Sales_AcquisitionCosting/Date.Label</property>
+        </field>
+        <field name="rateCrosstotal">
+            <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_AcquisitionCosting/RateCrossTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="rateNettotal">
+            <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_AcquisitionCosting/RateNetTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="crosstotal">
+            <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_AcquisitionCosting/CrossTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="nettotal">
+            <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_AcquisitionCosting/NetTotal.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="status">
+            <property name="FilterType">PICKLIST</property>
+            <property name="Attribute">StatusAbstract</property>
+            <property name="Label">Sales_DocumentAbstract/Status.Label</property>
+        </field>
+        <field name="creator">
+            <property name="Attribute">Creator</property>
+            <property name="Label">Sales_DocumentAbstract/Creator.Label</property>
+        </field>
+        <field name="buttonOpenInNewWindow">
+            <icon>eFapsActionNewWindow</icon>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Target">popup</property>
+            <property name="SortAble">false</property>
+            <property name="Width">15px</property>
+        </field>
+    </definition>
+</ui-table>
