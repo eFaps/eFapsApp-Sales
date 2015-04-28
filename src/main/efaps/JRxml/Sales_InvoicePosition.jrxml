@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
+<!-- 2015-04-27T18:13:05 -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_InvoicePosition" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="146058d7-836f-4be7-8128-236fea071165">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
+	<parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
+		<property name="Types" value="Sales_CreditNotePosition"/>
+		<property name="LinkFroms" value="CreditNote"/>
+	</parameter>
+	<field name="description" class="java.lang.String">
+		<property name="Select" value="attribute[ProductDesc]"/>
+	</field>
+	<field name="NetPrice" class="java.math.BigDecimal">
+		<property name="Select" value="attribute[RateNetPrice]"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20">
+			<textField>
+				<reportElement x="0" y="0" width="430" height="20" uuid="ae523bfa-67ee-450f-b619-6a7d5e577fd8"/>
+				<textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement x="430" y="0" width="125" height="20" uuid="fe6fce5b-5697-4907-94ef-abadc2760391"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{NetPrice}.setScale(2, BigDecimal.ROUND_HALF_UP)]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

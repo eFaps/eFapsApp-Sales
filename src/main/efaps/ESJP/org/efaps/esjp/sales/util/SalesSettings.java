@@ -21,7 +21,7 @@
 
 package org.efaps.esjp.sales.util;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -32,7 +32,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @version $Id$
  */
 @EFapsUUID("3cad9ef8-22e6-4b3f-9a97-3aa984d8d6c6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public interface SalesSettings
 {
     /**
@@ -340,6 +340,11 @@ public interface SalesSettings
      * Boolean.
      */
     String INVOICEASSIGNEMPLOYEE = SalesSettings.BASE + "Invoice.AssignEmployee";
+
+    /**
+     * String. Name of a JasperReport.
+     */
+    String INVOICEJASPERREPORT = SalesSettings.BASE + "Invoice.JasperReport";
 
     /**
      * Boolean.
