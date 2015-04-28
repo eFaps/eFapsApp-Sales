@@ -347,6 +347,11 @@ public interface SalesSettings
     String INVOICEJASPERREPORT = SalesSettings.BASE + "Invoice.JasperReport";
 
     /**
+     * Properties. Autocomplete Properties 4 Products in Invoice.
+     */
+    String INVOICEAUTOCOMPLETE4PRODUCTS = SalesSettings.BASE + "Invoice.AutoCompleteProperties4Products";
+
+    /**
      * Boolean.
      */
     String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";
