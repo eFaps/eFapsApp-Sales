@@ -25,11 +25,10 @@ import java.util.List;
 import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
@@ -51,7 +50,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("43417000-af54-4cb5-a266-4e6df2ed793e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Invoice_Base
     extends AbstractDocumentSum
 {
@@ -69,7 +68,7 @@ public abstract class Invoice_Base
         final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-
+        connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
 
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
@@ -122,20 +121,6 @@ public abstract class Invoice_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
-    }
-
-    @Override
-    protected Type getType4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getCIType().getType();
-    }
-
-    @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getType4SysConf(_parameter).getName();
     }
 
     @Override

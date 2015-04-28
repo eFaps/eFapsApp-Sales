@@ -798,4 +798,53 @@ public abstract class DeliveryNote_Base
     {
         return CISales.DeliveryNote;
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new return
+     * @throws EFapsException on error
+     */
+    public Return connect2InvoiceTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
+                        .attribute(CISales.DeliveryNote.Status);
+        final SelectBuilder selRecInst = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
+                        .instance();
+        print.addSelect(selStatus, selRecInst);
+        print.addAttribute(CISales.Invoice2DeliveryNote.ToLink,
+                        CISales.Invoice2DeliveryNote.FromLink);
+        print.executeWithoutAccessCheck();
+        final Status status = Status.get(print.<Long>getSelect(selStatus));
+        // if the recieving ticket was open check if the status must change
+        if (status.equals(Status.find(CISales.DeliveryNoteStatus.Open))) {
+            final Instance recInst = print.<Instance>getSelect(selRecInst);
+            final DocComparator comp = new DocComparator();
+            comp.setDocInstance(recInst);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice2DeliveryNote);
+            queryBldr.addWhereAttrEqValue(CISales.Invoice2DeliveryNote.ToLink, recInst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selInvInst = SelectBuilder.get()
+                            .linkto(CISales.Invoice2DeliveryNote.FromLink)
+                            .instance();
+            multi.addSelect(selInvInst);
+            multi.executeWithoutAccessCheck();
+            while (multi.next()) {
+                final Instance invInst = multi.getSelect(selInvInst);
+                final DocComparator docComp = new DocComparator();
+                docComp.setDocInstance(invInst);
+                comp.substractQuantity(docComp);
+            }
+
+            if (comp.quantityIsZero()) {
+                final Update update = new Update(print.<Instance>getSelect(selRecInst));
+                update.add(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Closed));
+                update.executeWithoutAccessCheck();
+            }
+        }
+        return new Return();
+    }
+
 }
