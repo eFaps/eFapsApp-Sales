@@ -85,34 +85,6 @@ public abstract class RecievingTicket_Base
         return new Return();
     }
 
-    /**
-     * Method to connect the document with the selected document type.
-     *
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @param _createdDoc   CreatedDoc  to be connected
-     * @throws EFapsException on error
-     */
-    @Override
-    protected void connect2Derived(final Parameter _parameter,
-                                   final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        super.connect2Derived(_parameter, _createdDoc);
-        final String[] deriveds = _parameter.getParameterValues("derived");
-        if (deriveds != null) {
-            for (final String derived : deriveds) {
-                final Instance derivedInst = Instance.get(derived);
-                if (derivedInst.isValid() && _createdDoc.getInstance().isValid()
-                                && derivedInst.getType().isKindOf(CISales.OrderOutbound.getType())) {
-                    final Insert insert = new Insert(CISales.OrderOutbound2RecievingTicket);
-                    insert.add(CISales.OrderOutbound2RecievingTicket.FromLink, derivedInst);
-                    insert.add(CISales.OrderOutbound2RecievingTicket.ToLink, _createdDoc.getInstance());
-                    insert.execute();
-                }
-            }
-        }
-    }
-
     @Override
     protected void add2DocCreate(final Parameter _parameter,
                                  final Insert _insert,
