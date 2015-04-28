@@ -89,16 +89,6 @@
                 name="Sales_DocumentSumReportForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocumentSumReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">!Replaced</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup02">Accounting_ExternalVoucherStatus</property>
-                <property name="Status02">!Replaced</property>
-
             </trigger>
         </field>
     </definition>
@@ -178,15 +168,6 @@
                 name="Sales_DocumentSumReportForm.report.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.report.DocumentSumReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocumentSumReport.FilterKey</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">!Replaced</property>
-                <property name="Type01">Sales_IncomingReceipt</property>
-                <property name="StatusGroup01">Sales_IncomingReceiptStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup02">Accounting_ExternalVoucherStatus</property>
-                <property name="Status02">!Replaced</property>
             </trigger>
         </field>
     </definition>
