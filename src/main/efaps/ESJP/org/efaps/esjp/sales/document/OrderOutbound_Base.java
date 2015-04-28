@@ -1,5 +1,5 @@
 /*
-final Return ret = new Return(); * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@ final Return ret = new Return(); * Copyright 2003 - 2013 The eFaps Team
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -27,8 +24,9 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -47,7 +45,7 @@ import org.efaps.util.cache.CacheReloadException;
  * @version $Id$
  */
 @EFapsUUID("bd08a90e-91ce-4f03-b1bc-921a53b71948")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class OrderOutbound_Base
     extends AbstractDocumentSum
 {
@@ -157,9 +155,12 @@ public abstract class OrderOutbound_Base
                         .attribute(CISales.OrderOutbound.Status);
         final SelectBuilder selOOInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
                         .instance();
-        print.addSelect(selOOInst, selStatus);
+        final SelectBuilder selToInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
+                        .instance();
+        print.addSelect(selOOInst, selStatus, selToInst);
         print.executeWithoutAccessCheck();
         final Instance ooInst = print.getSelect(selOOInst);
+        final Instance toInst = print.getSelect(selToInst);
         final Status status = Status.get(print.<Long>getSelect(selStatus));
         // if the OrderOutbound was open check if the status must change
         if (executeConnect2DocTrigger(_parameter, status)) {
@@ -186,7 +187,8 @@ public abstract class OrderOutbound_Base
                     comp.substractQuantity(docComp);
                 }
             }
-            if (comp.netIsZero() && comp.quantityIsZero()) {
+            if (toInst.getType().isKindOf(CISales.DocumentSumAbstract) &&  comp.netIsZero() && comp.quantityIsZero()
+                            || toInst.getType().isKindOf(CISales.DocumentStockAbstract) && comp.quantityIsZero()) {
                 final Update update = new Update(ooInst);
                 update.add(CISales.OrderOutbound.Status, Status.find(CISales.OrderOutboundStatus.Received));
                 update.executeWithoutAccessCheck();
@@ -215,9 +217,9 @@ public abstract class OrderOutbound_Base
     }
 
     @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
+    public CIType getCIType()
         throws EFapsException
     {
-        return CISales.OrderOutbound.getType().getName();
+        return CISales.OrderOutbound;
     }
 }
