@@ -171,6 +171,13 @@
                 <property name="LinkFroms">UsageReportLink</property>
             </evaluate>
         </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">80</property>
+        </field>
         <field name="storageJavaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
@@ -386,6 +393,13 @@
                 <property name="Types">Sales_UsageReportPosition</property>
                 <property name="LinkFroms">UsageReportLink</property>
             </evaluate>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Rows">5</property>
+            <property name="Columns">80</property>
         </field>
         <field name="storageJavaScript">
             <property name="ModePrint">NONE</property>
