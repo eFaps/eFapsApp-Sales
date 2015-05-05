@@ -22,7 +22,7 @@ package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
@@ -39,7 +39,7 @@ import org.efaps.util.EFapsException;
  * @version $Id$
  */
 @EFapsUUID("f3252401-2007-4ff3-997d-5e5d1a7ab863")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class UsageReport_Base
     extends AbstractProductDocument
 {
@@ -54,6 +54,7 @@ public abstract class UsageReport_Base
         final CreatedDoc doc = createDoc(_parameter);
         createPositions(_parameter, doc);
         connect2ProductDocumentType(_parameter, doc);
+        connect2Object(_parameter, doc);
         return new Return();
     }
 
