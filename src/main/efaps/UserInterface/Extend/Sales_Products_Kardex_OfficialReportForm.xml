@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,14 +15,12 @@
   limitations under the License.
 
   Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a0804ca0-7200-4b3d-8674-9d10142e7d6e</uuid>
     <file-application>eFapsApp-Products</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_Kardex_OfficialReportForm</name>
@@ -43,6 +41,19 @@
             <property name="Label">Sales_Products_Kardex_OfficialReportForm.dateTo.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Date</property>
+        </field>
+        <field name="currency">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">Sales_Products_Kardex_OfficialReportForm.currency.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_Products_Kardex_OfficialReportForm.currency.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">ERP_Currency</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+            </trigger>
         </field>
         <field name="storage">
             <property name="Label">Sales_Products_Kardex_OfficialReportForm.storage.Label</property>

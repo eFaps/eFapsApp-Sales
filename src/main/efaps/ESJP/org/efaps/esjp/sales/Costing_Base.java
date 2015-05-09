@@ -46,9 +46,11 @@ import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -1250,6 +1252,44 @@ public abstract class Costing_Base
         {
             init();
             return this.cost;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #cost}.
+         *
+         * @return value of instance variable {@link #cost}.
+         * @throws EFapsException on error.
+         */
+        public BigDecimal getCost(final Parameter _parameter,
+                                  final Instance _currencyInst)
+            throws EFapsException
+        {
+            final PrintQuery print = new PrintQuery(getCostDocInst());
+            print.addAttribute(CIERP.DocumentAbstract.Date);
+            print.execute();
+
+            return getCost(_parameter, _currencyInst, print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date));
+        }
+
+        /**
+         * Getter method for the instance variable {@link #cost}.
+         *
+         * @return value of instance variable {@link #cost}.
+         * @throws EFapsException on error.
+         */
+        public BigDecimal getCost(final Parameter _parameter,
+                                  final Instance _currencyInst,
+                                  final DateTime _date)
+            throws EFapsException
+        {
+            BigDecimal ret = getCost();
+            if (ret != null && ret.compareTo(BigDecimal.ZERO) != 0) {
+                if (!Currency.getBaseCurrency().equals(_currencyInst)) {
+                    final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, _date, _currencyInst);
+                    ret = ret.multiply(rateInfo.getRate());
+                }
+            }
+            return ret;
         }
 
         /**

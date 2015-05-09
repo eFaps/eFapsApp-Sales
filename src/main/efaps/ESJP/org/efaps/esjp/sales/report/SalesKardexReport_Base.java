@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -36,7 +33,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.CachedPrintQuery;
@@ -54,6 +51,7 @@ import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
+import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.Costing_Base.CostDoc;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -65,11 +63,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: SalesKardexReport_Base.java 12300 2014-03-25 16:25:14Z
- *          m.aranya@moxter.net $
  */
 @EFapsUUID("172d6272-0b49-4c2e-a004-24d90c719a98")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class SalesKardexReport_Base
     extends EFapsMapDataSource
 {
@@ -168,6 +164,10 @@ public abstract class SalesKardexReport_Base
 
         final DateTime dateTo = new DateTime(_parameter
                         .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.dateTo.name));
+
+        final Instance currencyInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_Products_Kardex_OfficialReportForm.currency.name));
+
         final List<Instance> listStorage = getStorageInstList(_parameter);
         boolean first = true;
         for (final Instance prodInst : _prodInsts) {
@@ -177,7 +177,7 @@ public abstract class SalesKardexReport_Base
                 values.add(new HashMap<String, Object>());
             }
 
-            values.add(getInventoryValue(_parameter, prodInst, listStorage, dateFrom));
+            values.add(getInventoryValue(_parameter, prodInst, listStorage, dateFrom, currencyInst));
             final SelectBuilder selTransDoc = new SelectBuilder().linkto(CIProducts.TransactionInOutAbstract.Document);
             final SelectBuilder selTransDocInst = new SelectBuilder(selTransDoc).instance();
             final SelectBuilder selTransDocName = new SelectBuilder(selTransDoc).attribute(CIERP.DocumentAbstract.Name);
@@ -221,7 +221,8 @@ public abstract class SalesKardexReport_Base
                                 || multi.getCurrentInstance().getType()
                                                 .equals(CIProducts.TransactionInbound4StaticStorage.getType())) {
                     map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), quantity);
-                    addMap2DocumentTypeIn(_parameter, map, transDocInst, dateFrom, dateTo, prodInst);
+                    final TransDoc docTransIn = getTransDoc(_parameter, transDocInst, dateTrans, prodInst);
+                    addMap2DocumentTypeIn(_parameter, map, docTransIn, currencyInst);
                 } else {
                     map.put(Field.TRANS_OUTBOUND_QUANTITY.getKey(), quantity);
                     map.put(Field.TRANS_DOC_SERIE.getKey(), getSeriesOrNumberDocOut(_parameter, transDocName, true));
@@ -288,7 +289,8 @@ public abstract class SalesKardexReport_Base
     protected Map<String, Object> getInventoryValue(final Parameter _parameter,
                                                     final Instance _product,
                                                     final List<Instance> _storageInstList,
-                                                    final DateTime _dateFrom)
+                                                    final DateTime _dateFrom,
+                                                    final Instance _currencyInst)
         throws EFapsException
     {
         BigDecimal actualInventory = BigDecimal.ZERO;
@@ -342,7 +344,7 @@ public abstract class SalesKardexReport_Base
         final Map<String, Object> map = new HashMap<String, Object>();
         map.put(Field.TRANS_DOC_OPERATION.getKey(), "16");
         map.put(Field.TRANS_INBOUND_QUANTITY.getKey(), actualInventory);
-        map.put(Field.TRANS_INBOUND_COST.getKey(), getCost(_parameter, _product, _dateFrom.minusDays(1)));
+        map.put(Field.TRANS_INBOUND_COST.getKey(), getCost(_parameter, _product, _dateFrom.minusDays(1), _currencyInst));
         add2Map4ProductInfo(_parameter, map, null, _product);
         return map;
     }
@@ -393,41 +395,28 @@ public abstract class SalesKardexReport_Base
 
     protected BigDecimal getCost(final Parameter _parameter,
                                  final Instance _productInstance,
-                                 final DateTime _dateFrom)
+                                 final DateTime _dateFrom,
+                                 final Instance _currencyinst)
         throws EFapsException
     {
-        BigDecimal ret = BigDecimal.ONE.negate();
-
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.ProductCost);
-        queryBldr.addWhereAttrEqValue(CIProducts.ProductCost.ProductLink, _productInstance.getId());
-        queryBldr.addWhereAttrGreaterValue(CIProducts.ProductCost.ValidUntil, _dateFrom.minusMinutes(1));
-        queryBldr.addWhereAttrLessValue(CIProducts.ProductCost.ValidFrom, _dateFrom.plusMinutes(1));
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIProducts.ProductCost.Price);
-        multi.execute();
-        if (multi.next()) {
-            ret = multi.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
-        }
-
-        return ret;
+        return Cost.getCost4Currency(_parameter, _dateFrom, _productInstance, _currencyinst);
     }
 
     protected void addMap2DocumentTypeIn(final Parameter _parameter,
                                          final Map<String, Object> _map,
-                                         final Instance _transDocInst,
-                                         final DateTime _dateFrom,
-                                         final DateTime _dateTo,
-                                         final Instance _productInst)
+                                         final TransDoc _docTransIn,
+                                         final Instance _currencyinst)
         throws EFapsException
     {
-        final TransDoc docTransIn = getTransDoc(_parameter, _transDocInst, _dateFrom, _dateTo, _productInst);
-        _map.put(Field.TRANS_DOC_TYPE.getKey(), docTransIn.getDocType());
-        _map.put(Field.TRANS_INBOUND_COST.getKey(), docTransIn.getCostDoc().getCost());
+
+        _map.put(Field.TRANS_DOC_TYPE.getKey(), _docTransIn.getDocType());
+        _map.put(Field.TRANS_INBOUND_COST.getKey(), _docTransIn.getCostDoc()
+                        .getCost(_parameter, _currencyinst, _docTransIn.getDate()));
         _map.put(Field.TRANS_DOC_SERIE.getKey(),
-                        getSeriesOrNumberDocOut(_parameter, docTransIn.getCostDocName(), true));
+                        getSeriesOrNumberDocOut(_parameter, _docTransIn.getCostDocName(), true));
         _map.put(Field.TRANS_DOC_NUMBER.getKey(),
-                        getSeriesOrNumberDocOut(_parameter, docTransIn.getCostDocName(), false));
-        _map.put(Field.TRANS_DOC_OPERATION.getKey(), docTransIn.getProdDocType());
+                        getSeriesOrNumberDocOut(_parameter, _docTransIn.getCostDocName(), false));
+        _map.put(Field.TRANS_DOC_OPERATION.getKey(), _docTransIn.getProdDocType());
     }
 
     protected String getSeriesOrNumberDocOut(final Parameter _parameter,
@@ -435,41 +424,41 @@ public abstract class SalesKardexReport_Base
                                              final boolean _suffix)
     {
         String ret = "-";
+        if (_name != null) {
+            final String[] arrays = _name.split("-");
 
-        final String[] arrays = _name.split("-");
-
-        if (arrays != null && arrays.length > 1) {
-            if (arrays.length == 2) {
-                if (_suffix) {
-                    if (arrays[0].matches("^\\d+")) {
-                        ret = arrays[0];
+            if (arrays != null && arrays.length > 1) {
+                if (arrays.length == 2) {
+                    if (_suffix) {
+                        if (arrays[0].matches("^\\d+")) {
+                            ret = arrays[0];
+                        }
+                    } else {
+                        if (!arrays[0].matches("^\\d+")) {
+                            ret = _name;
+                        } else {
+                            ret = arrays[1];
+                        }
+                    }
+                } else if (arrays.length == 3) {
+                    if (_suffix) {
+                        if (arrays[1].matches("^\\d+")) {
+                            ret = arrays[1];
+                        }
+                    } else {
+                        if (!arrays[1].matches("^\\d+")) {
+                            ret = _name;
+                        } else {
+                            ret = arrays[2];
+                        }
                     }
                 } else {
-                    if (!arrays[0].matches("^\\d+")) {
+                    if (!_suffix) {
                         ret = _name;
-                    } else {
-                        ret = arrays[1];
                     }
-                }
-            } else if (arrays.length == 3) {
-                if (_suffix) {
-                    if (arrays[1].matches("^\\d+")) {
-                        ret = arrays[1];
-                    }
-                } else {
-                    if (!arrays[1].matches("^\\d+")) {
-                        ret = _name;
-                    } else {
-                        ret = arrays[2];
-                    }
-                }
-            } else {
-                if (!_suffix) {
-                    ret = _name;
                 }
             }
         }
-
         return ret.trim();
     }
 
@@ -582,12 +571,11 @@ public abstract class SalesKardexReport_Base
 
     protected TransDoc getTransDoc(final Parameter _parameter,
                                    final Instance _transDocInst,
-                                   final DateTime _dateFrom,
-                                   final DateTime _dateTo,
+                                   final DateTime _date,
                                    final Instance _product)
         throws EFapsException
     {
-        return new TransDoc(_transDocInst, _dateFrom, _dateTo, _product);
+        return new TransDoc(_transDocInst, _date, _product);
     }
 
 
@@ -668,12 +656,14 @@ public abstract class SalesKardexReport_Base
 
         protected String docType;
 
+        private DateTime date;
+
         public TransDoc(final Instance _transDocInst,
-                        final DateTime _dateFrom,
-                        final DateTime _dateTo,
+                        final DateTime _date,
                         final Instance _product)
             throws EFapsException
         {
+            this.date = _date;
             this.instance = _transDocInst;
             this.product = new ProductKardex(_product);
         }
@@ -684,7 +674,7 @@ public abstract class SalesKardexReport_Base
         public String getProdDocType()
             throws EFapsException
         {
-            if (this.prodDocType == null) {
+            if (this.prodDocType == null && getInstance() != null && getInstance().isValid()) {
                 final PrintQuery print = CachedPrintQuery.get4Request(getInstance());
                 final SelectBuilder sel = SelectBuilder.get()
                                 .linkfrom(CISales.Document2ProductDocumentType.DocumentLink)
@@ -703,7 +693,8 @@ public abstract class SalesKardexReport_Base
         public String getDocType()
             throws EFapsException
         {
-            if (this.docType == null) {
+            if (this.docType == null && getCostDoc().getCostDocInst() != null
+                            && getCostDoc().getCostDocInst().isValid()) {
                 final PrintQuery print = CachedPrintQuery.get4Request(getCostDoc().getCostDocInst());
                 final SelectBuilder sel = SelectBuilder.get().linkfrom(CISales.Document2DocumentType.DocumentLink)
                                 .linkto(CISales.Document2DocumentType.DocumentTypeLink)
@@ -711,9 +702,10 @@ public abstract class SalesKardexReport_Base
                 print.addSelect(sel);
                 print.execute();
                 this.docType = print.getSelect(sel);
-                if (this.docType == null) {
-                    this.docType = DOCTYPE_MAP.get(getInstance().getType().getId());
-                }
+
+            }
+            if (this.docType == null && getInstance() != null && getInstance().isValid()) {
+                this.docType = DOCTYPE_MAP.get(getInstance().getType().getId());
             }
             return this.docType;
         }
@@ -735,13 +727,36 @@ public abstract class SalesKardexReport_Base
         protected String getCostDocName()
             throws EFapsException
         {
-            if (this.costDocName == null) {
+            if (this.costDocName == null && getCostDoc().getCostDocInst() != null
+                            && getCostDoc().getCostDocInst().isValid()) {
                 final PrintQuery print = new PrintQuery(getCostDoc().getCostDocInst());
                 print.addAttribute(CIERP.DocumentAbstract.Name);
                 print.execute();
                 this.costDocName = print.getAttribute(CIERP.DocumentAbstract.Name);
             }
             return this.costDocName;
+        }
+
+
+        /**
+         * Getter method for the instance variable {@link #date}.
+         *
+         * @return value of instance variable {@link #date}
+         */
+        public DateTime getDate()
+        {
+            return this.date;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #date}.
+         *
+         * @param _date value for instance variable {@link #date}
+         */
+        public void setDate(final DateTime _date)
+        {
+            this.date = _date;
         }
     }
 }
