@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ import java.util.Set;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
 import org.efaps.ci.CIAdminUser;
@@ -51,6 +51,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -65,10 +66,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("65041308-73a6-47de-bd1d-3dacc37dbc6c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Costing_Base
     implements Job
 {
@@ -171,8 +171,7 @@ public abstract class Costing_Base
                 ret = tmp;
             }
         } catch (final EFapsException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("EFapsException", e);
         }
         return ret;
     }
@@ -949,10 +948,21 @@ public abstract class Costing_Base
         {
             Costing_Base.LOG.debug("Analysing Cost From Document for: {}", this);
             BigDecimal ret = null;
-            final Instance docInstTmp = getDocInstance();
-            if (docInstTmp != null && docInstTmp.isValid()) {
-                final CostDoc costDoc = new CostDoc(docInstTmp, getProductInstance());
-                ret = costDoc.getCost();
+            // this is the transaction that inits a storage therefore search in
+            // cost table
+            if (getTransactionInstance().getType().isCIType(CIProducts.TransactionInbound4StaticStorage)) {
+                final PrintQuery print = new PrintQuery(getTransactionInstance());
+                print.addAttribute(CIProducts.TransactionAbstract.Date);
+                print.execute();
+                ret = Cost.getCost4Currency(new Parameter(),
+                                print.<DateTime>getAttribute(CIProducts.TransactionAbstract.Date),
+                                getProductInstance(), Currency.getBaseCurrency());
+            } else {
+                final Instance docInstTmp = getDocInstance();
+                if (docInstTmp != null && docInstTmp.isValid()) {
+                    final CostDoc costDoc = new CostDoc(docInstTmp, getProductInstance());
+                    ret = costDoc.getCost();
+                }
             }
             Costing_Base.LOG.debug("Result: {} for  Cost From Document for: {}", ret, this);
             return ret == null ? BigDecimal.ZERO : ret;
