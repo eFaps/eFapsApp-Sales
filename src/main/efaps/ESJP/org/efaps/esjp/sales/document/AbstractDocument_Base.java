@@ -2924,10 +2924,11 @@ public abstract class AbstractDocument_Base
      * @param _createdDoc   CreatedDoc  to be connected
      * @throws EFapsException on error
      */
-    protected void connect2Derived(final Parameter _parameter,
-                                   final CreatedDoc _createdDoc)
+    protected List<Instance> connect2Derived(final Parameter _parameter,
+                                             final CreatedDoc _createdDoc)
         throws EFapsException
     {
+        final List<Instance> ret = new ArrayList<>();
         final String[] deriveds = _parameter.getParameterValues("derived");
         if (deriveds != null) {
             for (final String derived : deriveds) {
@@ -2937,9 +2938,11 @@ public abstract class AbstractDocument_Base
                     insert.add(CISales.Document2DerivativeDocument.From, derivedInst);
                     insert.add(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance());
                     insert.execute();
+                    ret.add(derivedInst);
                 }
             }
         }
+        return ret;
     }
 
     /**

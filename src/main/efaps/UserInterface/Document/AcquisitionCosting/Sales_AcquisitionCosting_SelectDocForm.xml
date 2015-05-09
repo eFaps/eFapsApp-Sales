@@ -41,6 +41,22 @@
                 name="Sales_AcquisitionCosting_SelectDocForm.incomingInvoice.UI_FIELD_UPDATE"
                 program="org.efaps.esjp.sales.document.AcquisitionCosting" />
         </field>
+         <field name="acquisitionCosting">
+            <property name="Label">Sales_AcquisitionCosting.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
+                name="Sales_AcquisitionCosting_SelectDocForm.acquisitionCosting.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.AcquisitionCosting">
+                <property name="Type">Sales_AcquisitionCosting</property>
+                <property name="StatusGroup">Sales_AcquisitionCostingStatus</property>
+                <property name="Status01">!Draft</property>
+                <property name="Status02">!Canceled</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Document"
+                name="Sales_AcquisitionCosting_SelectDocForm.acquisitionCosting.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.AcquisitionCosting" />
+        </field>
         <field name="info">
             <property name="ModePrint">NONE</property>
             <property name="Label">Sales_AcquisitionCosting_SelectDocForm.info.Label</property>

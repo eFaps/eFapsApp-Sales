@@ -127,11 +127,11 @@ public abstract class IncomingInvoice_Base
      * @throws EFapsException on error
      */
     @Override
-    protected void connect2Derived(final Parameter _parameter,
+    protected List<Instance> connect2Derived(final Parameter _parameter,
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        super.connect2Derived(_parameter, _createdDoc);
+        final List<Instance> ret = super.connect2Derived(_parameter, _createdDoc);
         final String[] deriveds = _parameter.getParameterValues("derived");
         if (deriveds != null) {
             for (final String derived : deriveds) {
@@ -142,9 +142,13 @@ public abstract class IncomingInvoice_Base
                     insert.add(CISales.OrderOutbound2IncomingInvoice.FromLink, derivedInst);
                     insert.add(CISales.OrderOutbound2IncomingInvoice.ToLink, _createdDoc.getInstance());
                     insert.execute();
+                    if (ret.contains(derivedInst)) {
+                        ret.add(derivedInst);
+                    }
                 }
             }
         }
+        return ret;
     }
 
     /**

@@ -17,15 +17,20 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.List;
+
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
+import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -53,9 +58,9 @@ public abstract class AcquisitionCosting_Base
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
-        connect2Derived(_parameter, createdDoc);
+        final List<Instance> derived = connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
-        connect2RecievingTicket(_parameter, createdDoc);
+        connect2RecievingTicket(_parameter, createdDoc, derived);
         return new Return();
     }
 
@@ -65,16 +70,23 @@ public abstract class AcquisitionCosting_Base
      * @throws EFapsException on error
      */
     protected void connect2RecievingTicket(final Parameter _parameter,
-                                           final CreatedDoc _createdDoc)
+                                           final CreatedDoc _createdDoc,
+                                           final List<Instance> _deriveds)
         throws EFapsException
     {
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
         attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.To, _createdDoc.getInstance());
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
-        queryBldr.addWhereAttrInQuery(CISales.IncomingInvoice2RecievingTicket.FromLink,
-                        attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.From));
-
+        final QueryBuilder queryBldr;
+        if (_deriveds == null | _deriveds.isEmpty() || _deriveds.get(0).getType().isKindOf(CISales.IncomingInvoice)) {
+            queryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
+            queryBldr.addWhereAttrInQuery(CISales.IncomingInvoice2RecievingTicket.FromLink,
+                            attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.From));
+        } else {
+            queryBldr = new QueryBuilder(CISales.AcquisitionCosting2RecievingTicket);
+            queryBldr.addWhereAttrInQuery(CISales.AcquisitionCosting2RecievingTicket.FromLink,
+                            attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.From));
+        }
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selInst = SelectBuilder.get().linkto(CISales.IncomingInvoice2RecievingTicket.ToLink)
                         .instance();
@@ -85,6 +97,13 @@ public abstract class AcquisitionCosting_Base
             insert.add(CISales.AcquisitionCosting2RecievingTicket.FromLink, _createdDoc.getInstance());
             insert.add(CISales.AcquisitionCosting2RecievingTicket.ToLink, multi.getSelect(selInst));
             insert.execute();
+        }
+        for (final Instance inst : _deriveds) {
+            if (inst.getType().isKindOf(CISales.AcquisitionCosting)) {
+                final Update update = new Update(inst);
+                update.add(CISales.AcquisitionCosting.Status, Status.find(CISales.AcquisitionCostingStatus.Canceled));
+                update.execute();
+            }
         }
     }
 
