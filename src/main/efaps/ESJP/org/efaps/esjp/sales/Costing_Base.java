@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -55,6 +56,7 @@ import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -1137,6 +1139,8 @@ public abstract class Costing_Base
                 boolean found = false;
                 final SelectBuilder docInstSel = SelectBuilder.get().linkto(
                                 CISales.PositionAbstract.DocumentAbstractLink).instance();
+                final SelectBuilder docStatusSel = SelectBuilder.get().linkto(
+                                CISales.PositionAbstract.DocumentAbstractLink).status();
                 if (CISales.RecievingTicket.getType().equals(getBaseDocInst().getType())) {
                     // first priority are the special relation for costing
                     // "Sales_AcquisitionCosting2RecievingTicket"
@@ -1150,13 +1154,16 @@ public abstract class Costing_Base
                                     acRelAttrQuery);
                     acPosQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCostingPosition.Product, getProductInst());
                     final MultiPrintQuery acPosMulti = acPosQueryBldr.getPrint();
-                    acPosMulti.addSelect(docInstSel);
+                    acPosMulti.addSelect(docInstSel, docStatusSel);
                     acPosMulti.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice);
                     acPosMulti.execute();
-                    if (acPosMulti.next()) {
-                        found = true;
-                        setCost(acPosMulti.<BigDecimal>getAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice));
-                        setCostDocInst(acPosMulti.<Instance>getSelect(docInstSel));
+                    while (acPosMulti.next() && !found) {
+                        if (validStatus(acPosMulti.<Status>getSelect(docStatusSel))) {
+                            found = true;
+                            setCost(acPosMulti
+                                            .<BigDecimal>getAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice));
+                            setCostDocInst(acPosMulti.<Instance>getSelect(docInstSel));
+                        }
                     }
                     if (!found) {
                         final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.IncomingInvoice2RecievingTicket);
@@ -1169,13 +1176,15 @@ public abstract class Costing_Base
                                         relAttrQuery);
                         posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
                         final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                        posMulti.addSelect(docInstSel);
+                        posMulti.addSelect(docInstSel, docStatusSel);
                         posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
                         posMulti.execute();
-                        if (posMulti.next()) {
-                            found = true;
-                            setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                            setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                        while (posMulti.next() && !found) {
+                            if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                                found = true;
+                                setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                                setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                            }
                         }
                     }
                     // if not found yet, try other relations
@@ -1188,13 +1197,15 @@ public abstract class Costing_Base
                         queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink, attrQuery);
                         queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
                         final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addSelect(docInstSel);
+                        multi.addSelect(docInstSel, docStatusSel);
                         multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
                         multi.execute();
-                        if (multi.next()) {
-                            setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                            setCostDocInst(multi.<Instance>getSelect(docInstSel));
-                            found = true;
+                        while (multi.next() && !found) {
+                            if (validStatus(multi.<Status>getSelect(docStatusSel))) {
+                                setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                                setCostDocInst(multi.<Instance>getSelect(docInstSel));
+                                found = true;
+                            }
                         }
                     }
                 } else if (CISales.IncomingInvoice.getType().equals(getBaseDocInst().getType())) {
@@ -1203,31 +1214,36 @@ public abstract class Costing_Base
                                     getBaseDocInst());
                     queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
                     final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addSelect(docInstSel);
+                    multi.addSelect(docInstSel, docStatusSel);
                     multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
                     multi.execute();
-                    if (multi.next()) {
-                        setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                        setCostDocInst(multi.<Instance>getSelect(docInstSel));
-                        found = true;
+                    while (multi.next() && !found) {
+                        if (validStatus(multi.<Status>getSelect(docStatusSel))) {
+                            setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                            setCostDocInst(multi.<Instance>getSelect(docInstSel));
+                            found = true;
+                        }
                     }
                 } else if (CISales.TransactionDocumentShadowIn.getType().equals(getBaseDocInst().getType())) {
                     final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
                     relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
                                     getBaseDocInst());
                     final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                    posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
-                                relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
+                    posQueryBldr.addWhereAttrInQuery(
+                                    CISales.PositionSumAbstract.DocumentAbstractLink,
+                                    relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
                     posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
                     final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                    posMulti.addSelect(docInstSel);
+                    posMulti.addSelect(docInstSel, docStatusSel);
                     posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice);
                     posMulti.execute();
-                    if (posMulti.next()) {
-                        found = true;
-                        setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                        setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
-                        found = true;
+                    while (posMulti.next() && !found) {
+                        if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                            found = true;
+                            setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                            setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                            found = true;
+                        }
                     }
                 }
                 if (!found) {
@@ -1237,6 +1253,13 @@ public abstract class Costing_Base
                     setCostDocInst(getBaseDocInst());
                 }
             }
+        }
+
+        protected boolean validStatus(final Status _status)
+            throws CacheReloadException
+        {
+            return !Status.find(CISales.InvoiceStatus.Replaced).equals(_status)
+                            && !Status.find(CISales.AcquisitionCostingStatus.Canceled).equals(_status);
         }
 
         /**
