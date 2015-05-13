@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -46,7 +43,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -72,11 +69,9 @@ import org.slf4j.LoggerFactory;
  * grouping them by month and contact.
  *
  * @author The eFaps Team
- * @version $Id: AccountCashDeskBookReport_Base.java 13616 2014-08-13 22:10:22Z
- *          m.aranya@moxter.net $
  */
 @EFapsUUID("3a74eb77-e576-4fdb-9169-82c7b03f25bb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AccountCashDeskBookReport_Base
     extends FilteredReport
 {
@@ -111,7 +106,7 @@ public abstract class AccountCashDeskBookReport_Base
     {
         final Return ret = new Return();
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName(getDBProperty(_parameter, ".FileName"));
+        dyRp.setFileName(getDBProperty(".FileName"));
 
         final Map<String, Object> params = new HashMap<String, Object>();
         final SystemConfiguration config = ERP.getSysConfig();
@@ -131,19 +126,6 @@ public abstract class AccountCashDeskBookReport_Base
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
         return ret;
-    }
-
-    /**
-     * Method to obtains DBProperties.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @param _key Value show DBProperties.
-     * @return String to DBProperties.
-     */
-    protected static String getDBProperty(final Parameter _parameter,
-                                          final String _key)
-    {
-        return DBProperties.getProperty(AccountCashDeskBookReport.class.getName() + _key);
     }
 
     /**
@@ -199,7 +181,7 @@ public abstract class AccountCashDeskBookReport_Base
                 datasource.add(bean);
                 bean.setOid(multi.getCurrentInstance().getOid());
                 bean.setDate(multi.<DateTime>getAttribute(CISales.TransactionAbstract.Date));
-                bean.setTypeTrans(getDBProperty(_parameter, "." + multi.getCurrentInstance().getType().getName()));
+                bean.setTypeTrans(getDBProperty(multi.getCurrentInstance().getType().getName()));
                 final Instance payDocInst = multi.<Instance>getSelect(selPaymentDocInst);
                 final Instance docInst = multi.<Instance>getSelect(selDocInst);
                 getValues4Instances(_parameter, bean, payDocInst, docInst);
