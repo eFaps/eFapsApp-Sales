@@ -55,7 +55,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -79,7 +79,7 @@ import org.joda.time.DateTime;
  * @version $Id: Account_Base.java 8120 2012-10-26 18:21:34Z jan@moxter.net $
  */
 @EFapsUUID("81ca4010-b4ef-40e5-ad0a-55b99db6b617")
-@EFapsRevision("$Rev: 8120 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class SalesProductReport_Base
     extends FilteredReport
 {
@@ -467,6 +467,14 @@ public abstract class SalesProductReport_Base
             }
         }
 
+        @Override
+        protected ReportStyleBuilder getSubtotalStyle4Html(final Parameter _parameter)
+            throws EFapsException
+        {
+            return DynamicReports.stl.style().bold()
+                            .setTopBorder(DynamicReports.stl.penThin());
+        }
+
         protected class UnitPriceSubtotal
             extends AbstractSimpleExpression<BigDecimal>
         {
@@ -481,14 +489,6 @@ public abstract class SalesProductReport_Base
                 final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
                 return total;
             }
-        }
-
-        @Override
-        protected ReportStyleBuilder getSubtotalStyle4Html(final Parameter _parameter)
-            throws EFapsException
-        {
-            return DynamicReports.stl.style().bold()
-                            .setTopBorder(DynamicReports.stl.penThin());
         }
     }
 

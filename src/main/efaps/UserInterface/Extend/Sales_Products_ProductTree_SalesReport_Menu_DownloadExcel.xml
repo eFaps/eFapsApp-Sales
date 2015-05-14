@@ -42,15 +42,9 @@
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
-                <property name="Type01">Sales_Invoice</property>
-                <property name="StatusGroup01">Sales_InvoiceStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Sales_IncomingInvoice</property>
-                <property name="StatusGroup02">Sales_IncomingInvoiceStatus</property>
-                <property name="Status02">!Replaced</property>
-                <property name="Type03">Sales_OrderOutbound</property>
-                <property name="StatusGroup03">Sales_OrderOutboundStatus</property>
-                <property name="Status03">!Canceled</property>
+                 <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>
                 <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
             </execute>
         </target>

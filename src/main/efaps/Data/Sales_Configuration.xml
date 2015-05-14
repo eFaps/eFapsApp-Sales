@@ -250,5 +250,17 @@ Status03=Open
 StatusGroup04=Sales_IncomingInvoiceStatus
 Status04=Digitized]]></value>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.SalesProductReport</key>
+            <value><![CDATA[Type01=Sales_Invoice
+StatusGroup01=Sales_InvoiceStatus
+Status01=!Replaced
+Type02=Sales_IncomingInvoice
+StatusGroup02=Sales_IncomingInvoiceStatus
+Status02=!Replaced
+Type03=Sales_OrderOutbound
+StatusGroup03=Sales_OrderOutboundStatus
+Status03=!Canceled]]></value>
+        </attribute>
     </definition>
 </common-systemconfiguration>
