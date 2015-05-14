@@ -1278,7 +1278,8 @@ public abstract class Costing_Base
             throws CacheReloadException
         {
             return !Status.find(CISales.IncomingInvoiceStatus.Replaced).equals(_status)
-                            && !Status.find(CISales.AcquisitionCostingStatus.Canceled).equals(_status);
+                            && !Status.find(CISales.AcquisitionCostingStatus.Canceled).equals(_status)
+                            && !Status.find(CISales.ProductionCostingStatus.Canceled).equals(_status);
         }
 
         /**

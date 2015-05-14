@@ -35,6 +35,7 @@
         <type>Sales_ProductionReport</type>
         <childs>
             <child>Sales_ProductionReportTree_Position</child>
+            <child>Sales_ProductionReportTree_Doc</child>
             <child>Sales_ProductionReportTree_Transaction</child>
         </childs>
         <property name="Target">content</property>
