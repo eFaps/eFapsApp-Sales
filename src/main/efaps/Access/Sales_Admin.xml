@@ -80,6 +80,7 @@
         <type>Sales_PettyCashBalance</type>
         <type>Sales_PettyCashReceipt</type>
         <type>Sales_ProductRequest</type>
+        <type>Sales_ProductionCosting</type>
         <type>Sales_ProductionOrder</type>
         <type>Sales_ProductionReport</type>
         <type>Sales_Quotation</type>
@@ -403,6 +404,13 @@
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
+            <key>Canceled</key>
+        </status>
+
+         <status group="Sales_ProductionCostingStatus">
+            <key>Draft</key>
+            <key>Open</key>
+            <key>Closed</key>
             <key>Canceled</key>
         </status>
 
