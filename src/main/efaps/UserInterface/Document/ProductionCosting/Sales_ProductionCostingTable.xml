@@ -30,10 +30,6 @@
             <property name="HRef">TREE</property>
             <property name="Label">Sales_ProductionCosting/Name.Label</property>
         </field>
-        <field name="documentType">
-            <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
-            <property name="Label">Sales_ProductionCostingTable.documentType.Label</property>
-        </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="FilterType">FREETEXT</property>

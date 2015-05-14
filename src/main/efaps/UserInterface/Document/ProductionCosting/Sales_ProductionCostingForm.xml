@@ -23,6 +23,9 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="eFaps"/>
+        </profiles>
         <name>Sales_ProductionCostingForm</name>
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
@@ -89,6 +92,314 @@
             <property name="Attribute">Note</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+        </field>
+        <field character="Heading" name="headingPositon">
+            <property name="Level">3</property>
+            <property name="Label">Sales_ProductionCostingForm.headingPositon.Label</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field character="Group" name="currencyGroup">
+            <property name="GroupCount">3</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rateCurrencyId">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI"
+                name="Sales_ProductionCostingForm.currencyId.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency"
+                name="Sales_ProductionCostingForm.currencyId.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="rateCurrencyData">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Label">Sales_ProductionCostingForm.rateCurrencyData.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="withoutVAT">
+            <property name="Label">Sales_ProductionCostingForm.withoutVAT.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="HideLabel">true</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="UIType">CHECKBOX</property>
+            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue"
+                name="Sales_ProductionCostingForm.withoutVAT.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field character="Target" name="positionTable">
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <table>Sales_ProductionCostingPositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_ProductionCostingPosition</property>
+                <property name="LinkFrom">ProductionCostingLink</property>
+            </evaluate>
+        </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="RowSpan">4</property>
+            <property name="Rows">5</property>
+            <property name="Columns">50</property>
+        </field>
+        <field name="netTotal">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateNetTotal</property>
+        </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateTaxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
+        </field>
+        <field name="crossTotal">
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">RateCrossTotal</property>
+        </field>
+        <field name="netTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_ProductionCosting/NetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
+        <field name="crossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[CrossTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_ProductionCosting/CrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field character="Heading" name="rate4ReadHeading">
+            <property name="Level">1</property>
+            <property name="Label">Sales_ProductionCostingForm.rate4ReadHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rate4ReadHeading.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field character="Group" name="rateGroup">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rateGroup.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="rateCurrencyId4Read">
+            <property name="Attribute">RateCurrencyId</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rateCurrencyId4Read.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="rate">
+            <property name="Attribute">Rate</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rate4view.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field character="Heading" name="rateHeadingPositon">
+            <property name="Level">3</property>
+            <property name="Label">Sales_ProductionCostingForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rateHeadingPositon.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field character="Target" name="ratePositionTable">
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.ratePositionTable.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+            <table>Sales_ProductionCostingRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_ProductionCostingPosition</property>
+                <property name="LinkFrom">ProductionCostingLink</property>
+            </evaluate>
+        </field>
+        <field name="rateNetTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_ProductionCosting/RateNetTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rateTaxes.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="rateCrossTotal4Read">
+            <property name="ModeEdit">NONE</property>
+            <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="Label">Sales_ProductionCosting/RateCrossTotal.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Rate"
+                name="Sales_ProductionCostingForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue"
+                name="Sales_ProductionCostingForm.javaScript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+    </definition>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <profiles>
+            <profile name="fabrication"/>
+        </profiles>
+        <name>Sales_ProductionCostingForm</name>
+        <field name="activatePositionsCalculator">
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator"
+                name="Sales_ProductionCostingForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field name="date">
+            <property name="Columns">12</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Attribute">Date</property>
+            <property name="Required">true</property>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Date"
+                name="Sales_ProductionCostingForm.date.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.ProductionCosting"/>
+        </field>
+        <field character="Group" name="createGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="creator">
+            <property name="SelectAlternateOID">linkto[Creator].oid</property>
+            <property name="Attribute">Creator</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field character="Group" name="modifyGroup">
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="modifier">
+            <property name="SelectAlternateOID">linkto[Modifier].oid</property>
+            <property name="Attribute">Modifier</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="ShowTypeIcon">true</property>
+        </field>
+        <field name="modified">
+            <property name="Attribute">Modified</property>
+            <property name="ModeSearch">EDITABLE</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+        </field>
+        <field character="Group" name="nameGroup">
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="GroupCount">2</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="note4View">
+            <property name="Attribute">Note</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+         <field name="headingFabricationProcess" character="Heading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_ProductionCostingForm.headingFabricationProcess.Heading</property>
+            <property name="ModeCreate">EDITABLE</property>
+        </field>
+        <field name="fabricationProcess">
+            <property name="Label">Sales_ProductionCostingForm.fabricationProcess.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">80</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Required">true</property>
+            <trigger program="org.efaps.esjp.fabrication.Process"
+                method="autoComplete4Process"
+                name="Sales_ProductionCostingForm.fabricationProcess.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <!-- Fabrication_Process -->
+                <property name="Type">8c225bdd-e3c6-4713-b230-e6e4e70c087e</property>
+                <property name="StatusGroup">Fabrication_ProcessStatus</property>
+                <property name="Status">Open</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.fabrication.Process"
+                method="updateField4Process"
+                name="Sales_ProductionCostingForm.fabricationProcess.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE"/>
+        </field>
+        <field name="fabricationProcessData">
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">Sales_ProductionCostingForm.fabricationProcessData.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
+        </field>
+        <field name="fabricationProcess4View">
+            <property name="SelectAlternateOID">linkfrom[Fabrication_Process2ProductionCosting#ToLink].linkto[FromLink].oid</property>
+            <property name="Phrase">$&lt;linkfrom[Fabrication_Process2ProductionCosting#ToLink].linkto[FromLink].attribute[Name]&gt; - $&lt;linkfrom[Fabrication_Process2ProductionCosting#ToLink].linkto[FromLink].attribute[Description]&gt;</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_ProductRequest.project.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Columns">50</property>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">3</property>
