@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -55,11 +55,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: RecievingTicket_Base.java 8018 2012-10-09 17:47:24Z
- *          jan@moxter.net $
  */
 @EFapsUUID("f6f4e147-fc24-487e-ae81-69e4c44ac964")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp_Sales")
 public abstract class RecievingTicket_Base
     extends AbstractProductDocument
 {
@@ -218,7 +216,8 @@ public abstract class RecievingTicket_Base
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance, CISales.OrderOutbound.getType(),
                             CIFormSales.Sales_RecievingTicketForm.orderOutbound.name,
-                            Status.find(CISales.OrderOutboundStatus.Open)));
+                            Status.find(CISales.OrderOutboundStatus.Open),
+                            Status.find(CISales.OrderOutboundStatus.Invoiced)));
         }
         return ret;
     }
@@ -233,7 +232,8 @@ public abstract class RecievingTicket_Base
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CISales.OrderOutbound.getType(), CIFormSales.Sales_RecievingTicketForm.orderOutbound.name,
-                            Status.find(CISales.OrderOutboundStatus.Open)));
+                            Status.find(CISales.OrderOutboundStatus.Open),
+                            Status.find(CISales.OrderOutboundStatus.Invoiced)));
         }
     }
 }

@@ -15,30 +15,28 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a6b0b671-c0ed-4fa8-b201-5834136f5e46</uuid>
+    <uuid>1c3c7d2f-3e5a-4393-bac2-6e20e208721d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_OrderOutboundTree_Menu_Action_SetCanceled</name>
+        <name>Sales_OrderOutboundTree_Menu_Action_SetClosed</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
             <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Canceled</property>
+                <property name="Status">Closed</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_OrderOutboundTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                name="Sales_OrderOutboundTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">!Canceled</property>
+                <property name="Status">Open</property>
+                <property name="Status01">Invoiced</property>
+                <property name="Status02">Received</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>

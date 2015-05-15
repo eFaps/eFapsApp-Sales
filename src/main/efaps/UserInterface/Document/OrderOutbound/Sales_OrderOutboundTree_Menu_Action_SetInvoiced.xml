@@ -22,23 +22,22 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>a6b0b671-c0ed-4fa8-b201-5834136f5e46</uuid>
+    <uuid>e798368a-cab7-476e-9e76-695813a95fce</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_OrderOutboundTree_Menu_Action_SetCanceled</name>
+        <name>Sales_OrderOutboundTree_Menu_Action_SetInvoiced</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
             <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Canceled</property>
+                <property name="Status">Invoiced</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_OrderOutboundTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
+                name="Sales_OrderOutboundTree_Menu_Action_SetInvoiced.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">!Canceled</property>
+                <property name="Status">Open</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>
