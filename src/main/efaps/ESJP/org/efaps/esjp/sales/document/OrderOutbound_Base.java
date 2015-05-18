@@ -18,7 +18,9 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
@@ -100,7 +102,6 @@ public abstract class OrderOutbound_Base
         return ret;
     }
 
-
     /**
      * @param _parameter Parameter as passed from the eFaps API
      * @param _createdDoc the created document
@@ -127,7 +128,23 @@ public abstract class OrderOutbound_Base
     public Return connect2RecievingTicketTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        connect2DocTrigger(_parameter);
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .attribute(CISales.OrderOutbound.Status);
+        final SelectBuilder selOOInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .instance();
+        print.addSelect(selOOInst, selStatus);
+        print.executeWithoutAccessCheck();
+
+        final Instance ooInst = print.getSelect(selOOInst);
+        final Status status = Status.get(print.<Long>getSelect(selStatus));
+        final DocComparator comp = getComparator(_parameter, ooInst);
+        final Map<Status, Status> maping = getStatusMapping4connect2RecievingTicker();
+        if (comp.quantityIsZero() && maping.containsKey(status)) {
+            final Update update = new Update(ooInst);
+            update.add(CISales.OrderOutbound.Status, maping.get(status));
+            update.executeWithoutAccessCheck();
+        }
         return new Return();
     }
 
@@ -139,70 +156,72 @@ public abstract class OrderOutbound_Base
     public Return connect2IncomingInvoiceTrigger(final Parameter _parameter)
         throws EFapsException
     {
-        connect2DocTrigger(_parameter);
-        return new Return();
-    }
-
-    /**
-     * @param _parameter Parameter as passed from the eFaps API
-     * @throws EFapsException on error
-     */
-    protected void connect2DocTrigger(final Parameter _parameter)
-        throws EFapsException
-    {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
                         .attribute(CISales.OrderOutbound.Status);
         final SelectBuilder selOOInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
                         .instance();
-        final SelectBuilder selToInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
-                        .instance();
-        print.addSelect(selOOInst, selStatus, selToInst);
+        print.addSelect(selOOInst, selStatus);
         print.executeWithoutAccessCheck();
+
         final Instance ooInst = print.getSelect(selOOInst);
-        final Instance toInst = print.getSelect(selToInst);
         final Status status = Status.get(print.<Long>getSelect(selStatus));
-        // if the OrderOutbound was open check if the status must change
-        if (executeConnect2DocTrigger(_parameter, status)) {
-
-            final DocComparator comp = new DocComparator();
-            comp.setDocInstance(ooInst);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.OrderOutbound2IncomingInvoice);
-            queryBldr.addType(CISales.OrderOutbound2RecievingTicket);
-            queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, ooInst);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selDocInst = SelectBuilder.get()
-                            .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
-                            .instance();
-            multi.addSelect(selDocInst);
-            multi.executeWithoutAccessCheck();
-            while (multi.next()) {
-                final Instance docInst = multi.getSelect(selDocInst);
-                final DocComparator docComp = new DocComparator();
-                docComp.setDocInstance(docInst);
-                if (docInst.getType().isKindOf(CISales.IncomingInvoice.getType())) {
-                    comp.substractNet(docComp);
-                } else {
-                    comp.substractQuantity(docComp);
-                }
-            }
-            if (toInst.getType().isKindOf(CISales.DocumentSumAbstract) &&  comp.netIsZero() && comp.quantityIsZero()
-                            || toInst.getType().isKindOf(CISales.DocumentStockAbstract) && comp.quantityIsZero()) {
-                final Update update = new Update(ooInst);
-                update.add(CISales.OrderOutbound.Status, Status.find(CISales.OrderOutboundStatus.Received));
-                update.executeWithoutAccessCheck();
-            }
+        final DocComparator comp = getComparator(_parameter, ooInst);
+        final Map<Status, Status> maping = getStatusMapping4connect2RecievingTicker();
+        if (comp.netIsZero() && maping.containsKey(status)) {
+            final Update update = new Update(ooInst);
+            update.add(CISales.OrderOutbound.Status, maping.get(status));
+            update.executeWithoutAccessCheck();
         }
+        return new Return();
     }
 
-    protected boolean executeConnect2DocTrigger(final Parameter _parameter,
-                                                final Status _status)
+    protected Map<Status, Status> getStatusMapping4connect2RecievingTicker()
         throws CacheReloadException
     {
-        return _status.equals(Status.find(CISales.OrderOutboundStatus.Open));
+        final Map<Status, Status> ret = new HashMap<>();
+        ret.put(Status.find(CISales.OrderOutboundStatus.Open), Status.find(CISales.OrderOutboundStatus.Received));
+        ret.put(Status.find(CISales.OrderOutboundStatus.Invoiced), Status.find(CISales.OrderOutboundStatus.Closed));
+        return ret;
     }
 
+    protected Map<Status, Status> getStatusMapping4connect2IncomingInvoice()
+        throws CacheReloadException
+    {
+        final Map<Status, Status> ret = new HashMap<>();
+        ret.put(Status.find(CISales.OrderOutboundStatus.Open), Status.find(CISales.OrderOutboundStatus.Invoiced));
+        ret.put(Status.find(CISales.OrderOutboundStatus.Received), Status.find(CISales.OrderOutboundStatus.Closed));
+        return ret;
+    }
+
+    protected DocComparator getComparator(final Parameter _parameter,
+                                          final Instance _orderInst)
+        throws EFapsException
+    {
+        final DocComparator ret = new DocComparator();
+        ret.setDocInstance(_orderInst);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.OrderOutbound2IncomingInvoice);
+        queryBldr.addType(CISales.OrderOutbound2RecievingTicket);
+        queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, _orderInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selDocInst = SelectBuilder.get()
+                        .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
+                        .instance();
+        multi.addSelect(selDocInst);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
+            final DocComparator docComp = new DocComparator();
+            docComp.setDocInstance(docInst);
+            if (docInst.getType().isKindOf(CISales.IncomingInvoice.getType())) {
+                ret.substractNet(docComp);
+            } else {
+                ret.substractQuantity(docComp);
+            }
+        }
+        return ret;
+    }
 
     @Override
     protected boolean isContact2JavaScript4Document(final Parameter _parameter,
