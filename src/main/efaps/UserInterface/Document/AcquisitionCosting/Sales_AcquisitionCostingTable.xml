@@ -21,7 +21,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>f9627ee1-4305-43f4-aeb3-0f35365fe1d5</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_AcquisitionCostingTable</name>
@@ -34,12 +33,22 @@
             <property name="Select">linkfrom[Sales_Document2DocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]</property>
             <property name="Label">Sales_AcquisitionCostingTable.documentType.Label</property>
         </field>
+         <field name="orderOutbound">
+            <property name="Select">linkfrom[Sales_AcquisitionCosting2RecievingTicket#FromLink].linkto[ToLink].linkfrom[Sales_OrderOutbound2RecievingTicket#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Sales_OrderOutbound.Label</property>
+        </field>
+         <field name="contact">
+            <property name="SelectAlternateOID">linkto[Contact].oid</property>
+            <property name="Select">linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_DocumentAbstract/Contact.Label</property>
+            <property name="HRef">TREEMENU</property>
+        </field>
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">WEEK</property>
+            <property name="FilterDefault">YEAR</property>
             <property name="Label">Sales_AcquisitionCosting/Date.Label</property>
         </field>
         <field name="rateCrosstotal">
