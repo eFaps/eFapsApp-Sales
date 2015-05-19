@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2015-05-19T01:47:42 -->
+<!-- 2015-05-19T02:12:28 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_OrderOutbound" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="58846f9e-83fb-4b1a-829c-20202a836695">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
@@ -12,9 +11,10 @@
 	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
 	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="9999 Bhogar"/>
 	<subDataset name="PositionDataset" whenResourceMissingType="Empty" uuid="d32adc6a-5b94-4a4c-8d5b-1820cffd6932">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
-		<parameter name="INSTANCE" class="java.lang.String">
+		<parameter name="INSTANCE" class="java.lang.Object">
 			<parameterDescription><![CDATA[]]></parameterDescription>
 			<defaultValueExpression><![CDATA[4810.3303]]></defaultValueExpression>
 		</parameter>
@@ -37,7 +37,7 @@ linkto[UoM].attribute[Name] as uoM]]>
 		<field name="uoM" class="java.lang.String"/>
 		<field name="productDesc" class="java.lang.String"/>
 	</subDataset>
-	<parameter name="INSTANCE" class="java.lang.String">
+	<parameter name="INSTANCE" class="java.lang.Object">
 		<parameterDescription><![CDATA[]]></parameterDescription>
 		<defaultValueExpression><![CDATA[4810.3303]]></defaultValueExpression>
 	</parameter>
@@ -277,8 +277,11 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="PositionDataset" uuid="3288f31c-17dc-43e8-8e31-84546eeaab71">
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION} ]]></connectionExpression>
+					<datasetRun subDataset="PositionDataset" uuid="1f866cbb-d46c-4078-9c4b-e39a169d4723">
+						<datasetParameter name="INSTANCE">
+							<datasetParameterExpression><![CDATA[$P{INSTANCE}]]></datasetParameterExpression>
+						</datasetParameter>
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="60" uuid="e49d8090-24b5-46af-bbb6-d66df4832563">
 						<property name="local_mesure_unitheight" value="pixel"/>

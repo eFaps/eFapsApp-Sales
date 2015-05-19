@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,37 +17,28 @@
  limitations under the License.
 
  Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
-
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>a047515e-bd1a-443b-9bcf-2f2c7b8eccd5</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderOutboundMyDesk</name>
-    <access>
-      <role>Sales_Admin</role>
-      <role>Sales_Accounting</role>
-    </access>
-    
-    <target>
-      <menu>Sales_OrderOutboundMyDesk_Menu</menu>
-      <table>Sales_DocumentAbstractTable</table>
-      <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-        <property name="Types">Sales_OrderOutbound</property>
-      </evaluate>
-    </target>
-
-    <!-- properties -->
-    <property name="Target">content</property>
-    <property name="TargetShowCheckBoxes">true</property>
-  </definition>
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>a047515e-bd1a-443b-9bcf-2f2c7b8eccd5</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderOutboundMyDesk</name>
+        <access>
+            <role>Sales_Admin</role>
+            <role>Sales_Accounting</role>
+        </access>
+        <target>
+            <menu>Sales_OrderOutboundMyDesk_Menu</menu>
+            <table>Sales_OrderOutboundTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_OrderOutbound</property>
+            </evaluate>
+        </target>
+        <property name="Target">content</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">view</property>
+    </definition>
 </ui-command>
