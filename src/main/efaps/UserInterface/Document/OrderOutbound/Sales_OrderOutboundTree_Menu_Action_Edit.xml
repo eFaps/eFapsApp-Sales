@@ -36,7 +36,13 @@
         </access>
         <target>
             <form>Sales_OrderOutboundForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute program="org.efaps.esjp.sales.document.OrderOutbound" method="edit">
+                <property name="PositionType">Sales_OrderOutboundPosition</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigAttribute">org.efaps.sales.OrderOutbound.JasperReport</property>
+                <property name="NoDataSource">true</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_OrderOutboundTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
@@ -45,7 +51,9 @@
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">460</property>
-        <property name="WindowWidth">515</property>
+        <property name="WindowHeight">660</property>
+        <property name="WindowWidth">1200</property>
+        <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

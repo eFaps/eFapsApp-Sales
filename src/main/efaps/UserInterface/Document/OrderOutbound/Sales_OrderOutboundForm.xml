@@ -170,13 +170,12 @@
         <field name="currencyGroup" character="Group">
             <property name="GroupCount">3</property>
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
         </field>
        <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="rateCurrencyFieldValueUI"
@@ -189,7 +188,6 @@
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
-            <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_OrderOutboundForm.rateCurrencyData.Label</property>
@@ -198,7 +196,7 @@
          <field name="withoutVAT">
             <property name="Label">Sales_OrderOutboundForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="HideLabel">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
@@ -210,10 +208,11 @@
         </field>
         <field name="positionTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <table>Sales_OrderOutboundPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_OrderOutboundPosition</property>
-                <property name="LinkFroms">Order</property>
+                <property name="Type">Sales_OrderOutboundPosition</property>
+                <property name="LinkFrom">Order</property>
             </evaluate>
         </field>
         <field name="note">
@@ -226,21 +225,21 @@
         </field>
         <field name="netTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Attribute">NetTotal</property>
         </field>
          <field name="taxes">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">Taxes</property>
             <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
         <field name="crossTotal">
             <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
+            <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
             <property name="Attribute">CrossTotal</property>
@@ -589,8 +588,8 @@
             <property name="ModeCreate">EDITABLE</property>
             <table>Sales_OrderOutboundPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_OrderOutboundPosition</property>
-                <property name="LinkFroms">Order</property>
+                <property name="Type">Sales_OrderOutboundPosition</property>
+                <property name="LinkFrom">Order</property>
             </evaluate>
         </field>
         <field name="note">
