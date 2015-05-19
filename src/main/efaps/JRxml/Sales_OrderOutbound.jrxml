@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.0.4.final using JasperReports Library version 6.0.4  -->
-<!-- 2015-05-19T00:54:24 -->
+<!-- 2015-05-19T01:47:42 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_OrderOutbound" language="groovy" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="58846f9e-83fb-4b1a-829c-20202a836695">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -65,7 +65,8 @@ linkto[UoM].attribute[Name] as uoM]]>
 	<queryString language="eFaps">
 		<![CDATA[print obj $P!{INSTANCE} select attribute[Name] as name,
 attribute[Date] as date, 
-attribute[DueDate] as dueDate, 
+attribute[DueDate] as dueDate,
+attribute[Note] as note, 
 linkto[Contact].attribute[Name] as contactName,
 linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber] as contactTaxNumber,
 linkto[Contact].class[Contacts_ClassLocation].attribute[LocationAdressStreet] as contactAddressStreet,
@@ -86,6 +87,7 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 	<field name="currencySymbol" class="java.lang.String"/>
 	<field name="currencyISOCode" class="java.lang.String"/>
 	<field name="currencyName" class="java.lang.String"/>
+	<field name="note" class="java.lang.String"/>
 	<pageHeader>
 		<band height="122">
 			<staticText>
@@ -275,8 +277,8 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="AllSectionsNoDetail">
-					<datasetRun subDataset="PositionDataset" uuid="c6394bce-56d9-452c-81b4-39a5d9ade6c6">
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+					<datasetRun subDataset="PositionDataset" uuid="3288f31c-17dc-43e8-8e31-84546eeaab71">
+						<connectionExpression><![CDATA[$P{REPORT_CONNECTION} ]]></connectionExpression>
 					</datasetRun>
 					<jr:column width="60" uuid="e49d8090-24b5-46af-bbb6-d66df4832563">
 						<property name="local_mesure_unitheight" value="pixel"/>
@@ -643,6 +645,10 @@ linkto[RateCurrencyId].attribute[Name] as currencyName]]>
 				</textElement>
 				<text><![CDATA[I.G.V.:]]></text>
 			</staticText>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="340" height="36" uuid="c0f884d2-32ce-4b8f-8e45-376ed2671351"/>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnFooter>
 </jasperReport>
