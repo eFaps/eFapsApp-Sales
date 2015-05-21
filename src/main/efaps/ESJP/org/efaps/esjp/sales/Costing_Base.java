@@ -582,6 +582,64 @@ public abstract class Costing_Base
         return ret;
     }
 
+    protected static BigDecimal getResult4Currency(final Parameter _parameter,
+                                                   final Instance _currencyInstance,
+                                                   final Instance _transactionInstances)
+        throws EFapsException
+    {
+        return Costing.getResult4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
+    }
+
+    protected static Map<Instance, BigDecimal> getResults4Currency(final Parameter _parameter,
+                                                                   final Instance _currencyInstance,
+                                                                   final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        return Costing.getResults4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
+    }
+
+    protected static BigDecimal getResult4Currency(final Parameter _parameter,
+                                                   final DateTime _date,
+                                                   final Instance _currencyInstance,
+                                                   final Instance _transactionInstances)
+        throws EFapsException
+    {
+        return Costing.getResults4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances).get(
+                        _transactionInstances);
+    }
+
+    protected static Map<Instance, BigDecimal> getResults4Currency(final Parameter _parameter,
+                                                                   final DateTime _date,
+                                                                   final Instance _currencyInstance,
+                                                                   final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        final Map<Instance, BigDecimal> ret = new HashMap<>();
+        final QueryBuilder query = new QueryBuilder(CIProducts.CostingAbstract);
+        query.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, (Object[]) _transactionInstances);
+
+        final MultiPrintQuery multi = query.getPrint();
+        final SelectBuilder selTransInst = SelectBuilder.get()
+                        .linkto(CIProducts.CostingAbstract.TransactionAbstractLink).instance();
+        multi.addSelect(selTransInst);
+        multi.addAttribute(CIProducts.CostingAbstract.Result);
+        multi.execute();
+        while (multi.next()) {
+            final Instance transactionInst = multi.getSelect(selTransInst);
+            final BigDecimal result = multi.getAttribute(CIProducts.CostingAbstract.Result);
+            if (_currencyInstance.equals(Currency.getBaseCurrency())) {
+                ret.put(transactionInst, result);
+            } else {
+                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, (String) null,
+                                Currency.getBaseCurrency(), _currencyInstance);
+                final RateInfo rateInfo = rateInfos[2];
+                ret.put(transactionInst, result.setScale(8, BigDecimal.ROUND_HALF_UP)
+                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP));
+            }
+        }
+        return ret;
+    }
+
     /**
      * @return new TransCosting instance
      * @throws EFapsException on error

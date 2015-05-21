@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2015 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>bc89f8b9-6341-4a66-b780-f6e1de3f5814</uuid>
+    <file-application>eFapsApp-Products</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Products_ProductsTransactionResultReportFilterForm</name>
+        <field name="dateFrom">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.TransactionResultReport.dateFrom</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateFromFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport" />
+        </field>
+        <field name="dateTo">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DateUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.TransactionResultReport.dateTo</property>
+            <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.dateFrom.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport" />
+        </field>
+        <field name="storageGroup">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.TransactionResultReport.storageGroup</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.storageGroupp.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="Products_WarehouseGroup_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4StorageGroup"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                    program="org.efaps.esjp.products.StorageGroup">
+                <property name="Type">Products_StorageGroupAbstract</property>
+            </trigger>
+        </field>
+        <field name="storage">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.TransactionResultReport.storage</property>
+            <trigger event="UI_FIELD_VALUE" method="getInstanceFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.storageGroup.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="Products_Warehouse_Select">attribute[Name]</property>
+            </trigger>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Storage"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.storageGroup.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.products.Storage">
+                <property name="Type">Products_DynamicStorage</property>
+            </trigger>
+        </field>
+        <field name="storageDisplay">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.products.reports.TransactionResultReport.storageDisplay</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.storageDisplay.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="Enum">org.efaps.esjp.products.reports.TransactionResultReport_Base$StorageDisplay</property>
+            </trigger>
+        </field>
+        <field name="valuation">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.ProductsTransactionResultReport.valuation</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportFilterForm.valuation.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="Enum">org.efaps.esjp.sales.report.ProductsTransactionResultReport_Base$Valuation</property>
+            </trigger>
+        </field>
+          <field name="currency">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.ProductsTransactionResultReport.currency</property>
+            <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                 <property name="ShowEmptyValue">false</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

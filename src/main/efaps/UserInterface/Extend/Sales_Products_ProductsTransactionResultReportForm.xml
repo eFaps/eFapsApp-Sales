@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2015 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Author:          The eFaps Team
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>679ce150-8a3f-4d2a-89fc-a175c3d1945d</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_Products_ProductsTransactionResultReportForm</name>
+        <field name="filter">
+            <property name="HideLabel">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" index="1" method="setDefaultFilter"
+                name="Sales_Products_ProductsTransactionResultReportForm.filter.UI_FIELD_VALUE.1"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductsTransactionResultReport.FilterKey</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="Field03">storageGroup</property>
+                <property name="Field04">storage</property>
+                <property name="Field05">storageDisplay</property>
+                <property name="Field06">valuation</property>
+                <property name="Field07">currency</property>
+                <property name="FilterType01">DateTime</property>
+                <property name="FilterType02">DateTime</property>
+                <property name="FilterType03">Instance</property>
+                <property name="FilterType04">Instance</property>
+                <property name="FilterType05">Enum</property>
+                <property name="FilterType06">Enum</property>
+                <property name="FilterType07">Currency</property>
+                <property name="FilterDefault01">YEARS:-1</property>
+                <property name="FilterDefault02">TODAY</property>
+                <property name="FilterDefault03">-</property>
+                <property name="FilterDefault04">-</property>
+                <property name="FilterDefault05">org.efaps.esjp.products.reports.TransactionResultReport_Base$StorageDisplay</property>
+                <property name="FilterDefault06">org.efaps.esjp.sales.report.ProductsTransactionResultReport_Base$Valuation</property>
+                <property name="FilterDefault07">BASECURRENCY</property>
+            </trigger>
+            <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
+                name="Sales_Products_ProductsTransactionResultReportForm.filter.UI_FIELD_VALUE.2"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductsTransactionResultReport.FilterKey</property>
+                <property name="Field01">dateFrom</property>
+                <property name="Field02">dateTo</property>
+                <property name="Field03">storageGroup</property>
+                <property name="Field04">storage</property>
+                <property name="Field05">storageDisplay</property>
+                <property name="Field06">valuation</property>
+                <property name="Field07">currency</property>
+                <property name="DBProperty01">org.efaps.esjp.products.reports.TransactionResultReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.products.reports.TransactionResultReport.dateTo</property>
+                <property name="DBProperty03">org.efaps.esjp.products.reports.TransactionResultReport.storageGroup</property>
+                <property name="DBProperty04">org.efaps.esjp.products.reports.TransactionResultReport.storage</property>
+                <property name="DBProperty05">org.efaps.esjp.products.reports.TransactionResultReport.storageDisplay</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.ProductsTransactionResultReport.valuation</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.ProductsTransactionResultReport.currency</property>
+                <property name="Products_WarehouseGroup_Select">attribute[Name]</property>
+                <property name="Products_Warehouse_Select">attribute[Name]</property>
+            </trigger>
+        </field>
+        <field name="report">
+            <property name="HideLabel">true</property>
+            <property name="UIType">SNIPPLET</property>
+            <trigger event="UI_FIELD_VALUE" method="generateReport"
+                name="Sales_Products_ProductsTransactionResultReportForm.report.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.ProductsTransactionResultReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductsTransactionResultReport.FilterKey</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>
