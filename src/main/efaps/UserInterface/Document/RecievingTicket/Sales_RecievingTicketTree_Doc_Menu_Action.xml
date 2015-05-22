@@ -30,6 +30,7 @@
         <name>Sales_RecievingTicketTree_Doc_Menu_Action</name>
         <childs>
             <child>Sales_RecievingTicketTree_Doc_Menu_Action_AddIncomingInvoice</child>
+            <child>Sales_RecievingTicketTree_Doc_Menu_Action_AddOrderOutbound</child>
             <child>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting</child>
             <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
         </childs>
