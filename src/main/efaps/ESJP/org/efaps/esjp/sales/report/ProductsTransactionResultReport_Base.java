@@ -35,6 +35,7 @@ import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.products.reports.TransactionResultReport;
 import org.efaps.esjp.products.reports.TransactionResultReport_Base;
 import org.efaps.esjp.sales.Costing;
+import org.efaps.esjp.sales.Costing_Base.CostingInfo;
 import org.efaps.util.EFapsException;
 
 /**
@@ -96,9 +97,9 @@ public abstract class ProductsTransactionResultReport_Base
                     ((CostDataBean) _bean).setCost(cost).setCurrency(CurrencyInst.get(filter.getObject()).getSymbol());
                     break;
                 case COSTING:
-                    final BigDecimal costing = Costing.getResult4Currency(_parameter, _bean.getDate(),
+                    final CostingInfo costing = Costing.getCosting4Currency(_parameter, _bean.getDate(),
                                     filter.getObject(), _bean.getTransInst());
-                    ((CostDataBean) _bean).setCost(costing).setCurrency(
+                    ((CostDataBean) _bean).setAverage(costing.getResult()).setCost(costing.getCost()).setCurrency(
                                     CurrencyInst.get(filter.getObject()).getSymbol());
                     break;
                 default:
@@ -123,24 +124,44 @@ public abstract class ProductsTransactionResultReport_Base
                                 .getDBProperty("Column.Cost"),
                                 "cost", DynamicReports.type.bigDecimalType());
 
-                final TextColumnBuilder<BigDecimal> totalColumn = DynamicReports.col.column(getFilteredReport()
+                final TextColumnBuilder<BigDecimal> totalCostColumn = DynamicReports.col.column(getFilteredReport()
                                 .getDBProperty("Column.TotalCost"),
                                 "totalCost", DynamicReports.type.bigDecimalType());
+                final AggregationSubtotalBuilder<BigDecimal> totalCostSum = DynamicReports.sbt.aggregate(
+                                totalCostColumn,
+                                Calculation.NOTHING);
 
+                _builder.addColumn(costColumn, totalCostColumn).addSubtotalAtSummary(totalCostSum);
+
+                if (getStorageGroup() != null) {
+                    final AggregationSubtotalBuilder<Object> totalCostSum4Grp = DynamicReports.sbt.aggregate(
+                                    totalCostColumn, Calculation.NOTHING);
+                    _builder.subtotalsAtGroupFooter(getStorageGroup(), totalCostSum4Grp);
+                }
+
+                if (Valuation.COSTING.equals(getValuation(_parameter))) {
+                    final TextColumnBuilder<BigDecimal> averageColumn = DynamicReports.col.column(getFilteredReport()
+                                    .getDBProperty("Column.Average"),
+                                    "average", DynamicReports.type.bigDecimalType());
+
+                    final TextColumnBuilder<BigDecimal> averageTotalColumn = DynamicReports.col.column(
+                                    getFilteredReport().getDBProperty("Column.TotalAverage"),
+                                    "totalAverage", DynamicReports.type.bigDecimalType());
+                    final AggregationSubtotalBuilder<BigDecimal> averageTotalSum = DynamicReports.sbt.aggregate(
+                                    averageTotalColumn,
+                                    Calculation.NOTHING);
+                    _builder.addColumn(averageColumn, averageTotalColumn).addSubtotalAtSummary(averageTotalSum);
+
+                    if (getStorageGroup() != null) {
+                        final AggregationSubtotalBuilder<Object> averageTotalSum4Grp = DynamicReports.sbt.aggregate(
+                                        averageTotalColumn, Calculation.NOTHING);
+                        _builder.subtotalsAtGroupFooter(getStorageGroup(), averageTotalSum4Grp);
+                    }
+                }
                 final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
                                 .getDBProperty("Column.Currency"),
                                 "currency", DynamicReports.type.stringType());
-
-                final AggregationSubtotalBuilder<BigDecimal> totalSum = DynamicReports.sbt.aggregate(totalColumn,
-                                Calculation.NOTHING);
-
-                _builder.addColumn(costColumn, totalColumn, currencyColumn).addSubtotalAtSummary(totalSum);
-
-                if (getStorageGroup() != null) {
-                    final AggregationSubtotalBuilder<Object> totalSum4Grp = DynamicReports.sbt.aggregate(totalColumn,
-                                    Calculation.NOTHING);
-                    _builder.subtotalsAtGroupFooter(getStorageGroup(), totalSum4Grp);
-                }
+                _builder.addColumn(currencyColumn);
             }
         }
 
@@ -162,8 +183,8 @@ public abstract class ProductsTransactionResultReport_Base
     public static class CostDataBean
         extends DataBean
     {
-
         private BigDecimal cost;
+        private BigDecimal average;
         private String currency;
 
         /**
@@ -204,6 +225,22 @@ public abstract class ProductsTransactionResultReport_Base
         }
 
         /**
+         * Getter method for the instance variable {@link #total}.
+         *
+         * @return value of instance variable {@link #total}
+         */
+        public BigDecimal getTotalAverage()
+        {
+            BigDecimal ret;
+            if (getTotal() == null || getCost() == null) {
+                ret = BigDecimal.ZERO;
+            } else {
+                ret = getTotal().multiply(getAverage());
+            }
+            return ret;
+        }
+
+        /**
          * Getter method for the instance variable {@link #curreny}.
          *
          * @return value of instance variable {@link #curreny}
@@ -221,6 +258,27 @@ public abstract class ProductsTransactionResultReport_Base
         public CostDataBean setCurrency(final String _currency)
         {
             this.currency = _currency;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #average}.
+         *
+         * @return value of instance variable {@link #average}
+         */
+        public BigDecimal getAverage()
+        {
+            return this.average;
+        }
+
+        /**
+         * Setter method for instance variable {@link #average}.
+         *
+         * @param _average value for instance variable {@link #average}
+         */
+        public CostDataBean setAverage(final BigDecimal _average)
+        {
+            this.average = _average;
             return this;
         }
     }

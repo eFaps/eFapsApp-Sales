@@ -20,7 +20,6 @@
 
 package org.efaps.esjp.sales;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
@@ -43,37 +42,37 @@ public class Costing
     extends Costing_Base
 {
 
-    public static BigDecimal getResult4Currency(final Parameter _parameter,
-                                               final Instance _currencyInstance,
-                                               final Instance _transactionInstance)
+    public static CostingInfo getCosting4Currency(final Parameter _parameter,
+                                                  final Instance _currencyInstance,
+                                                  final Instance _transactionInstance)
         throws EFapsException
     {
-        return Costing_Base.getResult4Currency(_parameter, _currencyInstance, _transactionInstance);
+        return Costing_Base.getCosting4Currency(_parameter, _currencyInstance, _transactionInstance);
     }
 
-    public static BigDecimal getResult4Currency(final Parameter _parameter,
-                                                final DateTime _date,
-                                                final Instance _currencyInstance,
-                                                final Instance _transactionInstance)
-         throws EFapsException
-     {
-         return Costing_Base.getResult4Currency(_parameter, _date, _currencyInstance, _transactionInstance);
-     }
-
-    public static  Map<Instance, BigDecimal>  getResults4Currency(final Parameter _parameter,
-                                               final Instance _currencyInstance,
-                                               final Instance... _transactionInstances)
+    public static CostingInfo getCosting4Currency(final Parameter _parameter,
+                                                  final DateTime _date,
+                                                  final Instance _currencyInstance,
+                                                  final Instance _transactionInstance)
         throws EFapsException
     {
-        return Costing_Base.getResults4Currency(_parameter, _currencyInstance, _transactionInstances);
+        return Costing_Base.getCosting4Currency(_parameter, _date, _currencyInstance, _transactionInstance);
     }
 
-    public static  Map<Instance, BigDecimal>  getResults4Currency(final Parameter _parameter,
-                                                final DateTime _date,
-                                                final Instance _currencyInstance,
-                                                final Instance... _transactionInstances)
-         throws EFapsException
-     {
-         return Costing_Base.getResults4Currency(_parameter, _date, _currencyInstance, _transactionInstances);
-     }
+    public static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
+                                                                  final Instance _currencyInstance,
+                                                                  final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        return Costing_Base.getCostings4Currency(_parameter, _currencyInstance, _transactionInstances);
+    }
+
+    public static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
+                                                                  final DateTime _date,
+                                                                  final Instance _currencyInstance,
+                                                                  final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        return Costing_Base.getCostings4Currency(_parameter, _date, _currencyInstance, _transactionInstances);
+    }
 }

@@ -582,39 +582,40 @@ public abstract class Costing_Base
         return ret;
     }
 
-    protected static BigDecimal getResult4Currency(final Parameter _parameter,
-                                                   final Instance _currencyInstance,
-                                                   final Instance _transactionInstances)
+    protected static CostingInfo getCosting4Currency(final Parameter _parameter,
+                                                     final Instance _currencyInstance,
+                                                     final Instance _transactionInstances)
         throws EFapsException
     {
-        return Costing.getResult4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
+        return Costing_Base.getCosting4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
     }
 
-    protected static Map<Instance, BigDecimal> getResults4Currency(final Parameter _parameter,
-                                                                   final Instance _currencyInstance,
-                                                                   final Instance... _transactionInstances)
+    protected static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
+                                                                     final Instance _currencyInstance,
+                                                                     final Instance... _transactionInstances)
         throws EFapsException
     {
-        return Costing.getResults4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
+        return Costing_Base.getCostings4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
     }
 
-    protected static BigDecimal getResult4Currency(final Parameter _parameter,
-                                                   final DateTime _date,
-                                                   final Instance _currencyInstance,
-                                                   final Instance _transactionInstances)
+    protected static CostingInfo getCosting4Currency(final Parameter _parameter,
+                                                     final DateTime _date,
+                                                     final Instance _currencyInstance,
+                                                     final Instance _transactionInstances)
         throws EFapsException
     {
-        return Costing.getResults4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances).get(
-                        _transactionInstances);
+        return Costing_Base.getCostings4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances)
+                        .get(
+                                        _transactionInstances);
     }
 
-    protected static Map<Instance, BigDecimal> getResults4Currency(final Parameter _parameter,
-                                                                   final DateTime _date,
-                                                                   final Instance _currencyInstance,
-                                                                   final Instance... _transactionInstances)
+    protected static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
+                                                                     final DateTime _date,
+                                                                     final Instance _currencyInstance,
+                                                                     final Instance... _transactionInstances)
         throws EFapsException
     {
-        final Map<Instance, BigDecimal> ret = new HashMap<>();
+        final Map<Instance, CostingInfo> ret = new HashMap<>();
         final QueryBuilder query = new QueryBuilder(CIProducts.CostingAbstract);
         query.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, (Object[]) _transactionInstances);
 
@@ -622,19 +623,27 @@ public abstract class Costing_Base
         final SelectBuilder selTransInst = SelectBuilder.get()
                         .linkto(CIProducts.CostingAbstract.TransactionAbstractLink).instance();
         multi.addSelect(selTransInst);
-        multi.addAttribute(CIProducts.CostingAbstract.Result);
+        multi.addAttribute(CIProducts.CostingAbstract.Result, CIProducts.CostingAbstract.Cost,
+                        CIProducts.CostingAbstract.Quantity);
         multi.execute();
         while (multi.next()) {
             final Instance transactionInst = multi.getSelect(selTransInst);
+            final BigDecimal quantity = multi.getAttribute(CIProducts.CostingAbstract.Quantity);
+            final BigDecimal cost = multi.getAttribute(CIProducts.CostingAbstract.Cost);
             final BigDecimal result = multi.getAttribute(CIProducts.CostingAbstract.Result);
             if (_currencyInstance.equals(Currency.getBaseCurrency())) {
-                ret.put(transactionInst, result);
+                final CostingInfo info = new CostingInfo().setQuantity(quantity).setCost(cost).setResult(result);
+                ret.put(transactionInst, info);
             } else {
                 final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, (String) null,
                                 Currency.getBaseCurrency(), _currencyInstance);
                 final RateInfo rateInfo = rateInfos[2];
-                ret.put(transactionInst, result.setScale(8, BigDecimal.ROUND_HALF_UP)
-                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP));
+                final CostingInfo info = new CostingInfo().setQuantity(quantity)
+                                .setCost(cost.setScale(8, BigDecimal.ROUND_HALF_UP)
+                                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP))
+                                .setResult(result.setScale(8, BigDecimal.ROUND_HALF_UP)
+                                                .divide(rateInfo.getRate(), BigDecimal.ROUND_HALF_UP));
+                ret.put(transactionInst, info);
             }
         }
         return ret;
@@ -649,6 +658,114 @@ public abstract class Costing_Base
     {
         return new TransCosting();
     }
+
+    public static class CostingInfo
+    {
+        /**
+         * The Costing Instance.
+         */
+        private Instance instance;
+
+        /**
+         * Cost defined by the Costing.
+         */
+        private BigDecimal cost;
+
+        /**
+         * The calculated result of Costing.
+         */
+        private BigDecimal result;
+
+        /**
+         * Quantity of the costing.
+         */
+        private BigDecimal quantity;
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #instance}.
+         *
+         * @param _instance value for instance variable {@link #instance}
+         */
+        public CostingInfo setInstance(final Instance _instance)
+        {
+            this.instance = _instance;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #cost}.
+         *
+         * @return value of instance variable {@link #cost}
+         */
+        public BigDecimal getCost()
+        {
+            return this.cost;
+        }
+
+        /**
+         * Setter method for instance variable {@link #cost}.
+         *
+         * @param _cost value for instance variable {@link #cost}
+         */
+        public CostingInfo setCost(final BigDecimal _cost)
+        {
+            this.cost = _cost;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #result}.
+         *
+         * @return value of instance variable {@link #result}
+         */
+        public BigDecimal getResult()
+        {
+            return this.result;
+        }
+
+        /**
+         * Setter method for instance variable {@link #result}.
+         *
+         * @param _result value for instance variable {@link #result}
+         */
+        public CostingInfo setResult(final BigDecimal _result)
+        {
+            this.result = _result;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #quantity}.
+         *
+         * @return value of instance variable {@link #quantity}
+         */
+        public BigDecimal getQuantity()
+        {
+            return this.quantity;
+        }
+
+        /**
+         * Setter method for instance variable {@link #quantity}.
+         *
+         * @param _quantity value for instance variable {@link #quantity}
+         */
+        public CostingInfo setQuantity(final BigDecimal _quantity)
+        {
+            this.quantity = _quantity;
+            return this;
+        }
+    }
+
 
     /**
      * Class that represents an transaction and its related Costing.
