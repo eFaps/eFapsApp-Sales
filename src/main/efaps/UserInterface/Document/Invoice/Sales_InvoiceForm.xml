@@ -176,6 +176,22 @@
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
         </field>
+        <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_ActionDefinitionInvoice.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.Invoice">
+                <property name="Access">!NONE</property>
+            </trigger>
+        </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_InvoiceForm.headingClient.Heading</property>
@@ -668,6 +684,28 @@
                 <property name="Type">Sales_Invoice</property>
             </trigger>
         </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Required">true</property>
+        </field>
+         <field name="action4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
+            <property name="Select">linkfrom[Sales_ActionDefinitionInvoice2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModePrint">READONLY</property>
+            <property name="ModeView">READONLY</property>
+            <property name="Label">Sales_ActionDefinitionInvoice.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
+                name="Sales_IncomingInvoiceForm.action4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.sales.document.Invoice">
+                <property name="Access">!NONE</property>
+            </trigger>
+        </field>
         <field name="headingProject" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_InvoiceForm.headingProject.Heading</property>
@@ -713,12 +751,6 @@
             <property name="ModeView">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Columns">50</property>
-        </field>
-        <field name="name">
-            <property name="Attribute">Name</property>
-            <property name="Columns">15</property>
-            <property name="ModeEdit">READONLY</property>
-            <property name="Required">true</property>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>

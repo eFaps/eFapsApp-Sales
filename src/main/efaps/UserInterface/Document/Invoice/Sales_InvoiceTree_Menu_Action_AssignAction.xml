@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>19b6574e-0b0e-4253-bf4c-0c4bdff8100c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoiceTree_Menu_Action_AssignAction</name>
@@ -34,7 +28,10 @@
         </access>
         <target>
             <form>Sales_Invoice_AssignActionForm</form>
-            <execute method="assignAction" program="org.efaps.esjp.sales.document.Invoice" />
+            <execute method="assignAction" program="org.efaps.esjp.sales.document.Invoice" >
+                <property name="StatusMapKey">Draft</property>
+                <property name="StatusMapValue">Open</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" index="1"
                 method="accessCheck4Action"
                 name="Sales_InvoiceTree_Menu_Action_AssignAction.UI_ACCESSCHECK.1"

@@ -334,6 +334,11 @@ public interface SalesSettings
     /**
      * Boolean.
      */
+    String INVOICEASSIGNACTION = SalesSettings.BASE + "Invoice.AssignAction";
+
+    /**
+     * Boolean.
+     */
     String INVOICEACTIVATECONDITION = SalesSettings.BASE + "Invoice.ActivateCondition";
 
     /**

@@ -32,6 +32,7 @@
         <name>Sales_InvoiceTree_Menu_Action</name>
         <childs>
             <child>Sales_InvoiceTree_Menu_Action_Edit</child>
+            <child>Sales_InvoiceTree_Menu_Action_SetOpen</child>
             <child>Sales_InvoiceTree_Menu_Action_AssignAction</child>
             <child>Sales_InvoiceTree_Menu_Action_Recalculate</child>
             <child>Sales_InvoiceTree_Menu_Action_SetPaid</child>

@@ -17,11 +17,11 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>39a4aa04-86f4-4093-abfc-90719fa70368</uuid>
+    <uuid>9e12464a-4b32-4469-b7f0-4feb12dc6592</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_InvoiceTree_Menu_Action_SetPaid</name>
+        <name>Sales_InvoiceTree_Menu_Action_SetOpen</name>
         <access>
             <role>Sales_Admin</role>
             <role>Sales_Accounting</role>
@@ -29,12 +29,12 @@
         </access>
         <target>
             <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
-                <property name="Status">Paid</property>
+                <property name="Status">Open</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_InvoiceTree_Menu_Action_SetPaid.UI_ACCESSCHECK"
+                name="Sales_InvoiceTree_Menu_Action_SetOpen.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status">Draft</property>
             </trigger>
         </target>
         <property name="AskUser">true</property>
