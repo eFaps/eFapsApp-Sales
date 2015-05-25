@@ -248,20 +248,6 @@ public abstract class AbstractDocument_Base
      * @return map list for auto-complete.
      * @throws EFapsException on error.
      */
-    public Return autoComplete4OrderOutbound(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.OrderOutbound.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for
-     * OrderOutbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
     public Return autoComplete4ServiceOrderOutbound(final Parameter _parameter)
         throws EFapsException
     {
@@ -3323,9 +3309,8 @@ public abstract class AbstractDocument_Base
 
     protected StringBuilder getJS4Doc4Contact(final Parameter _parameter,
                                               final Instance _instance,
-                                              final Type _docType,
                                               final String _fieldName,
-                                              final Status... _status)
+                                              final QueryBuilder _queryBldr)
         throws EFapsException
     {
         final List<Instance> selInstances = getInstances4Derived(_parameter);
@@ -3335,20 +3320,18 @@ public abstract class AbstractDocument_Base
         final StringBuilder ret = new StringBuilder();
         final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
         final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
-        final QueryBuilder queryBldr = new QueryBuilder(_docType);
-        queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.StatusAbstract, (Object[]) _status);
 
         if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
-            queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, _instance);
+            _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, _instance);
         } else {
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DocumentAbstract);
             attrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, _instance);
             final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
                             CISales.Document2DocumentAbstract.ToAbstractLink);
-            queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
+            _queryBldr.addWhereAttrInQuery(CIERP.DocumentAbstract.ID, attrQuery);
         }
 
-        final MultiPrintQuery multi = queryBldr.getPrint();
+        final MultiPrintQuery multi = _queryBldr.getPrint();
         multi.addAttribute(CIERP.DocumentAbstract.Name, CIERP.DocumentAbstract.Date);
         multi.execute();
         while (multi.next()) {

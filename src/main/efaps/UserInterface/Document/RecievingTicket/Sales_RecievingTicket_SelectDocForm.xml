@@ -27,7 +27,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e0dfe455-91fa-411e-948e-f6245ccb64f3</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_RecievingTicket_SelectDocForm</name>
@@ -39,10 +38,9 @@
                 method="autoComplete4Doc"
                 name="Sales_RecievingTicket_SelectDocForm.orderOutbound.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_OrderOutbound</property>
-                <property name="StatusGroup">Sales_OrderOutboundStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Status02">Invoiced</property>
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.RecievingTicket.CreateFromOrderOutboundAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="updateFields4Document"

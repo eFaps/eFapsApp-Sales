@@ -262,5 +262,15 @@ Type03=Sales_OrderOutbound
 StatusGroup03=Sales_OrderOutboundStatus
 Status03=!Canceled]]></value>
         </attribute>
+        <attribute>
+            <key>org.efaps.sales.RecievingTicket.CreateFromOrderOutboundAutoComplete</key>
+            <value><![CDATA[Type=Sales_OrderOutbound
+StatusGroup01=Sales_OrderOutboundStatus
+Status01=Open
+StatusGroup02=Sales_OrderOutboundStatus
+Status02=Invoiced
+            ]]></value>
+            <description></description>
+        </attribute>
     </definition>
 </common-systemconfiguration>

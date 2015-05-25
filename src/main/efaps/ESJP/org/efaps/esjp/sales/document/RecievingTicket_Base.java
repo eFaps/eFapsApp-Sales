@@ -214,10 +214,11 @@ public abstract class RecievingTicket_Base
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
-            ret.append(getJS4Doc4Contact(_parameter, _contactInstance, CISales.OrderOutbound.getType(),
-                            CIFormSales.Sales_RecievingTicketForm.orderOutbound.name,
-                            Status.find(CISales.OrderOutboundStatus.Open),
-                            Status.find(CISales.OrderOutboundStatus.Invoiced)));
+            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
+                            SalesSettings.RECIEVINGTICKETCREATEFROMORDEROUTBOUNDAC);
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_RecievingTicketForm.orderOutbound.name, queryBldr));
         }
         return ret;
     }
@@ -230,10 +231,11 @@ public abstract class RecievingTicket_Base
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
+            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
+                            SalesSettings.RECIEVINGTICKETCREATEFROMORDEROUTBOUNDAC);
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
-                            CISales.OrderOutbound.getType(), CIFormSales.Sales_RecievingTicketForm.orderOutbound.name,
-                            Status.find(CISales.OrderOutboundStatus.Open),
-                            Status.find(CISales.OrderOutboundStatus.Invoiced)));
+                            CIFormSales.Sales_RecievingTicketForm.orderOutbound.name, queryBldr));
         }
     }
 }

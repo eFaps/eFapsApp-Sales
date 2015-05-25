@@ -141,10 +141,10 @@ public abstract class Invoice_Base
             InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance));
         }
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
+            queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
-                            CISales.DeliveryNote.getType(),
-                            CIFormSales.Sales_InvoiceForm.deliveryNotes.name,
-                            Status.find(CISales.DeliveryNoteStatus.Open) ));
+                            CIFormSales.Sales_InvoiceForm.deliveryNotes.name, queryBldr));
         }
     }
 
@@ -159,9 +159,10 @@ public abstract class Invoice_Base
             ret.append(new Channel().getConditionJs(_parameter, _contactInstance));
         }
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
-            ret.append(getJS4Doc4Contact(_parameter, _contactInstance, CISales.DeliveryNote.getType(),
-                            CIFormSales.Sales_InvoiceForm.deliveryNotes.name,
-                            Status.find(CISales.DeliveryNoteStatus.Open)));
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
+            queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_InvoiceForm.deliveryNotes.name, queryBldr));
         }
         return ret;
     }

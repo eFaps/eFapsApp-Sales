@@ -167,7 +167,7 @@ public abstract class OrderOutbound_Base
         final Instance ooInst = print.getSelect(selOOInst);
         final Status status = Status.get(print.<Long>getSelect(selStatus));
         final DocComparator comp = getComparator(_parameter, ooInst);
-        final Map<Status, Status> maping = getStatusMapping4connect2RecievingTicker();
+        final Map<Status, Status> maping = getStatusMapping4connect2IncomingInvoice();
         if (comp.netIsZero() && maping.containsKey(status)) {
             final Update update = new Update(ooInst);
             update.add(CISales.OrderOutbound.Status, maping.get(status));

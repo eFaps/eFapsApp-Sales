@@ -362,6 +362,11 @@ public interface SalesSettings
     String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";
 
     /**
+     * Properties. QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.
+     */
+    String RECIEVINGTICKETCREATEFROMORDEROUTBOUNDAC = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete";
+
+    /**
      * Boolean.
      */
     String RECIEVINGTICKETPOSREMARK = SalesSettings.BASE + "RecievingTicket.ActivateRemark4Position";
