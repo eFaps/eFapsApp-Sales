@@ -160,7 +160,7 @@ public abstract class ProductsTransactionResultReport_Base
                 }
                 final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
                                 .getDBProperty("Column.Currency"),
-                                "currency", DynamicReports.type.stringType());
+                                "currency", DynamicReports.type.stringType()).setWidth(15);
                 _builder.addColumn(currencyColumn);
             }
         }
