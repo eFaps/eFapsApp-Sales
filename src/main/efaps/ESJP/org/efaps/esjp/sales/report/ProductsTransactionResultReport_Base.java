@@ -99,8 +99,10 @@ public abstract class ProductsTransactionResultReport_Base
                 case COSTING:
                     final CostingInfo costing = Costing.getCosting4Currency(_parameter, _bean.getDate(),
                                     filter.getObject(), _bean.getTransInst());
-                    ((CostDataBean) _bean).setAverage(costing.getResult()).setCost(costing.getCost()).setCurrency(
+                    if (costing != null) {
+                        ((CostDataBean) _bean).setAverage(costing.getResult()).setCost(costing.getCost()).setCurrency(
                                     CurrencyInst.get(filter.getObject()).getSymbol());
+                    }
                     break;
                 default:
                     break;
