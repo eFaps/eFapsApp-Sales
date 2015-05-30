@@ -38,7 +38,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.Command;
 import org.efaps.db.Instance;
@@ -67,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id$
  */
 @EFapsUUID("6ccd0664-cf7a-478f-b356-d8ec9c140b20")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Validation_Base
     extends AbstractDocument
 {

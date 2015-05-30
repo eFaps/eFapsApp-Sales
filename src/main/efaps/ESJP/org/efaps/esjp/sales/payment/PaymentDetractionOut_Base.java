@@ -23,7 +23,6 @@ package org.efaps.esjp.sales.payment;
 import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -37,7 +36,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.AttributeQuery;
@@ -56,19 +55,15 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
-import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
-import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDefStr;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: PaymentExchange_Base.java 8156 2012-11-05 15:32:12Z
- *          jan@moxter.net $
  */
 @EFapsUUID("ba14f903-9522-4a10-b847-db50fdb360a3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentDetractionOut_Base
     extends AbstractPaymentOut
 {
@@ -252,7 +247,7 @@ public abstract class PaymentDetractionOut_Base
         multi.addSelect(selDocInstance, selDocContactName);
         multi.execute();
 
-        final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
+        final Map<Instance, Map<String, Object>> valuesTmp = new LinkedHashMap<>();
         BigDecimal total = BigDecimal.ZERO;
         while (multi.next()) {
             final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, multi.getCurrentInstance());
@@ -260,31 +255,29 @@ public abstract class PaymentDetractionOut_Base
             final Instance docInstance = multi.<Instance>getSelect(selDocInstance);
             final String docName = multi.<String>getAttribute(CISales.DocumentSumAbstract.Name);
             final String docContactName = multi.<String>getSelect(selDocContactName);
-            final Map<KeyDef, Object> map;
+            final Map<String, Object> map;
             if (valuesTmp.containsKey(multi.getCurrentInstance())) {
                 map = valuesTmp.get(valuesTmp);
             } else {
-                map = new HashMap<KeyDef, Object>();
+                map = new HashMap<>();
                 valuesTmp.put(multi.getCurrentInstance(), map);
 
-                map.put(new KeyDefStr("createDocument"), new String[] { docInstance.getOid(), docName });
-                map.put(new KeyDefStr("createDocumentContact"), docContactName);
-                map.put(new KeyDefStr("createDocumentDesc"), docInfo.getInfoField());
-                map.put(new KeyDefStr("payment4Pay"),  NumberFormatter.get().getTwoDigitsFormatter()
+                map.put("createDocument", new String[] { docInstance.getOid(), docName });
+                map.put("createDocumentContact", docContactName);
+                map.put("createDocumentDesc", docInfo.getInfoField());
+                map.put("payment4Pay",  NumberFormatter.get().getTwoDigitsFormatter()
                                 .format(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)));
-                map.put(new KeyDefStr("paymentRate"), NumberFormatter.get().getFormatter(0, 3)
+                map.put("paymentRate", NumberFormatter.get().getFormatter(0, 3)
                                 .format(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)[1]));
-             //   map.put(new KeyDefStr("paymentRate" + RateUI.INVERTEDSUFFIX), docInfo.getCurrencyInstance().isInvert());
-                map.put(new KeyDefStr("paymentAmount"),
+             //   map.put("paymentRate" + RateUI.INVERTEDSUFFIX), docInfo.getCurrencyInstance().isInvert());
+                map.put("paymentAmount",
                                 NumberFormatter.get().getZeroDigitsFormatter().format(crossTotal));
-                map.put(new KeyDefStr("paymentDiscount"),  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
-                map.put(new KeyDefStr("paymentAmountDesc"),  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
-                map.put(new KeyDefStr("detractionDoc"), multi.getCurrentInstance().getOid());
+                map.put("paymentDiscount",  NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
+                map.put("paymentAmountDesc", NumberFormatter.get().getTwoDigitsFormatter().format(BigDecimal.ZERO));
+                map.put("detractionDoc", multi.getCurrentInstance().getOid());
                 total = total.add(crossTotal.setScale(0, BigDecimal.ROUND_HALF_UP));
             }
         }
-        final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
-        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
 
         js.append("<script type=\"text/javascript\">\n");
         if (total.compareTo(BigDecimal.ZERO) == 0) {
@@ -295,7 +288,7 @@ public abstract class PaymentDetractionOut_Base
         if (!TargetMode.EDIT.equals(Context.getThreadContext()
                         .getSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY))) {
             js.append(getTableRemoveScript(_parameter, "paymentTable", false, false))
-                            .append(getTableAddNewRowsScript(_parameter, "paymentTable", strValues,
+                            .append(getTableAddNewRowsScript(_parameter, "paymentTable",  valuesTmp.values(),
                                             getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
         }
         js.append(getSetFieldValue(0, "amount",  NumberFormatter.get().getTwoDigitsFormatter().format(total)))

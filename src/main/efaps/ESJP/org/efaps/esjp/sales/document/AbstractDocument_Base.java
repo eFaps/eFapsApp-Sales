@@ -20,6 +20,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -35,7 +36,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -46,6 +46,7 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Dimension;
@@ -59,7 +60,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
@@ -67,6 +68,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -98,6 +100,7 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
+import org.efaps.esjp.products.Product_Base;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
@@ -129,7 +132,7 @@ import org.slf4j.LoggerFactory;
  *          $
  */
 @EFapsUUID("b3b70ce7-16d0-4425-8ddd-b667cfd3329a")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractDocument_Base
     extends CommonDocument
     implements ICalculatorConfig
@@ -1428,62 +1431,45 @@ public abstract class AbstractDocument_Base
         final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
         final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Name);
+        final SelectBuilder selProdDescr = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
+                        .attribute(CIProducts.ProductAbstract.Description);
         final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Dimension);
-        multi.addSelect(selProdInst, selProdName, selProdDim);
+        multi.addSelect(selProdInst, selProdName, selProdDescr, selProdDim);
         multi.setEnforceSorted(true);
         multi.execute();
 
-        final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
-        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
-        final DecimalFormat upFrmt = NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter));
-        final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
-        final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(getTypeName4SysConf(_parameter));
-
+        final List<UIAbstractPosition> values = new ArrayList<>();
         while (multi.next()) {
-            final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
             final Instance prodInstance = multi.getSelect(selProdInst);
             final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-            final BigDecimal rateNetUnitPrice;
-            final BigDecimal rateDiscountNetUnitPrice;
-            final BigDecimal rateNetPrice;
-            final BigDecimal rateCrossPrice;
-            final BigDecimal discount;
-            if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionSumAbstract)) {
-                rateNetUnitPrice = multi.getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
-                rateDiscountNetUnitPrice = multi.getAttribute(CISales.PositionSumAbstract.RateDiscountNetUnitPrice);
-                rateNetPrice = multi.getAttribute(CISales.PositionSumAbstract.RateNetPrice);
-                rateCrossPrice = multi.getAttribute(CISales.PositionSumAbstract.RateCrossPrice);
-                discount = multi.getAttribute(CISales.PositionSumAbstract.Discount);
-            } else if (getCIType().getType().isKindOf(CISales.DocumentSumAbstract)) {
-                final Calculator calc = getCalculator(_parameter, null, prodInstance, quantity, BigDecimal.ZERO,
-                                BigDecimal.ZERO, true, 0);
-                rateNetUnitPrice = calc.getNetUnitPrice();
-                rateDiscountNetUnitPrice = calc.getNetUnitPrice();
-                rateNetPrice = calc.getNetPrice();
-                rateCrossPrice = calc.getCrossPrice();
-                discount = BigDecimal.ZERO;
-            } else {
-                rateNetUnitPrice = BigDecimal.ZERO;
-                rateDiscountNetUnitPrice = BigDecimal.ZERO;
-                rateNetPrice = BigDecimal.ZERO;
-                rateCrossPrice = BigDecimal.ZERO;
-                discount = BigDecimal.ZERO;
+            final UIAbstractPosition origBean = getUIPosition(_parameter)
+                            .setInstance(multi.getCurrentInstance())
+                            .setProdInstance(prodInstance)
+                            .setQuantity(quantity)
+                            .setUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))
+                            .setProdName(multi.<String>getSelect(selProdName))
+                            .setProdDescr(multi.<String>getSelect(selProdDescr));
+            final List<UIAbstractPosition> beans = updateBean4Indiviual(_parameter, origBean);
+
+            for (final UIAbstractPosition bean : beans) {
+                if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionSumAbstract)) {
+                    bean.setNetUnitPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice))
+                        .setDiscountNetUnitPrice(multi.<BigDecimal>getAttribute(
+                                        CISales.PositionSumAbstract.RateDiscountNetUnitPrice))
+                        .setNetPrice( multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice))
+                        .setCrossPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossPrice))
+                        .setDiscount(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount));
+                } else if (getCIType().getType().isKindOf(CISales.DocumentSumAbstract)) {
+                    final Calculator calc = getCalculator(_parameter, null, bean.getProdInstance(),
+                                    bean.getQuantity(), BigDecimal.ZERO, BigDecimal.ZERO, true, 0);
+                    bean.setNetUnitPrice(calc.getNetUnitPrice())
+                        .setDiscountNetUnitPrice(calc.getNetUnitPrice())
+                        .setNetPrice(  calc.getNetPrice())
+                        .setCrossPrice(calc.getCrossPrice());
+                }
+                values.add(bean);
             }
-            map.put(new KeyDefStr("oid"), multi.getCurrentInstance().getOid());
-            map.put(new KeyDefFrmt("quantity", qtyFrmt), quantity);
-            map.put(new KeyDefStr("productAutoComplete"), multi.<String>getSelect(selProdName));
-            map.put(new KeyDefStr("product"), new String[] { prodInstance.getOid(),
-                            multi.<String>getSelect(selProdName) });
-            map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(CISales.PositionSumAbstract.ProductDesc));
-            map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
-                            multi.<Long>getSelect(selProdDim)));
-            map.put(new KeyDefFrmt("netUnitPrice", upFrmt), rateNetUnitPrice);
-            map.put(new KeyDefFrmt("discountNetUnitPrice", upFrmt), rateDiscountNetUnitPrice);
-            map.put(new KeyDefFrmt("netPrice", totFrmt), rateNetPrice);
-            map.put(new KeyDefFrmt("discount", disFrmt), discount);
-            map.put(new KeyDefFrmt("crossPrice", totFrmt), rateCrossPrice);
-            values.add(map);
         }
 
         final Set<String> noEscape = new HashSet<String>();
@@ -1507,6 +1493,61 @@ public abstract class AbstractDocument_Base
         return js;
     }
 
+    protected List<UIAbstractPosition> updateBean4Indiviual(final Parameter _parameter,
+                                                            final UIAbstractPosition _bean)
+        throws CacheReloadException, EFapsException
+    {
+        final List<UIAbstractPosition> ret = new ArrayList<>();
+        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+            final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
+            print.addAttribute(CIProducts.ProductAbstract.Individual);
+            print.execute();
+            final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
+                            CIProducts.ProductAbstract.Individual);
+            switch (indivual) {
+                case BATCH:
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract2Batch);
+                    attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
+                                    _bean.getProdInstance());
+                    final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
+                    invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
+                                    attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract2Batch.ToLink));
+                    final MultiPrintQuery multi = invQueryBldr.getPrint();
+                    final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
+                    final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+                    final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
+                    final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
+                    multi.addSelect(selProdInst, selProdName, selProdDescr);
+                    multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
+                    multi.execute();
+                    while (multi.next()) {
+                        final Instance prodInst =  multi.getSelect(selProdInst);
+                        _bean.setDoc(null);
+                        final UIAbstractPosition bean = SerializationUtils.clone(_bean);
+                        bean.setProdInstance(prodInst).setProdName(multi.<String>getSelect(selProdName))
+                            .setProdDescr(multi.<String>getSelect(selProdDescr));
+                        bean.setDoc(this);
+                        ret.add(bean);
+                    }
+                    break;
+                default:
+                    ret.add(_bean);
+                    break;
+            }
+        } else {
+            ret.add(_bean);
+        }
+        return ret;
+    }
+
+    protected UIAbstractPosition getUIPosition(final Parameter _parameter)
+    {
+        return new UIAbstractPosition(this)
+        {
+            private static final long serialVersionUID = 1L;
+        };
+    }
+
     /**
      * @param _parameter Paramert as passed by the eFaps API
      * @param _values   values
@@ -1514,16 +1555,12 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
-                                                          final Collection<Map<KeyDef, Object>> _values)
+                                                          final Collection<UIAbstractPosition> _values)
         throws EFapsException
     {
         final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        for (final Map<KeyDef, Object> valueMap :_values) {
-            final Map<String, Object> map  = new HashMap<String, Object>();
-            for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
-                map.put(entry.getKey().getName(), entry.getKey().convert4Map(entry.getValue()));
-            }
-            ret.add(map);
+        for (final UIAbstractPosition UIAbstractPosition :_values) {
+            ret.add(UIAbstractPosition.getMap4JavaScript(_parameter));
         }
         return ret;
     }
@@ -1587,11 +1624,11 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error.
      */
     protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
-                                                      final Collection<Map<KeyDef, Object>> _values,
+                                                      final Collection<UIAbstractPosition> _values,
                                                       final Instance... _instances)
         throws EFapsException
     {
-        final Map<Integer, String> relTypes;
+/*        final Map<Integer, String> relTypes;
         final Map<Integer, String> linkFroms;
         final Map<Integer, String> linkTos;
         final Map<Integer, String> types;
@@ -1687,7 +1724,7 @@ public abstract class AbstractDocument_Base
 
         for (final Map<KeyDef, Object> remove : lstRemove) {
             _values.remove(remove);
-        }
+        }*/
     }
 
     /**
@@ -1697,7 +1734,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected void add2JavaScript4Postions(final Parameter _parameter,
-                                           final Collection<Map<KeyDef, Object>> _values,
+                                           final Collection<UIAbstractPosition> _values,
                                            final Set<String> _noEscape)
         throws EFapsException
     {
@@ -1733,35 +1770,31 @@ public abstract class AbstractDocument_Base
         multi.addSelect(selProdInst, selProdName, selProdDim);
         multi.execute();
 
-        final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
-        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+        final Map<Instance, UIAbstractPosition> valuesTmp = new LinkedHashMap<>();
+        NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         while (multi.next()) {
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);
-            final Map<KeyDef, Object> map;
+
             if (valuesTmp.containsKey(prodInst)) {
-                map = valuesTmp.get(prodInst);
-                final BigDecimal quantity = (BigDecimal) map.get(new KeyDefFrmt("quantity", qtyFrmt));
-                map.put(new KeyDefFrmt("quantity", qtyFrmt),
-                                quantity.add(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
+                final UIAbstractPosition origBean  = valuesTmp.get(prodInst);
+                origBean.setQuantity(origBean.getQuantity().add(
+                                multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             } else {
-                map = new HashMap<KeyDef, Object>();
-                valuesTmp.put(prodInst, map);
-                map.put(new KeyDefStr("product"), new String[] { prodInst.getOid(),
-                    multi.<String>getSelect(selProdName)});
-                map.put(new KeyDefStr("productDesc"), multi.<String>getAttribute(
-                                CISales.PositionSumAbstract.ProductDesc));
-                map.put(new KeyDefStr("uoM"), getUoMFieldStr(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM),
-                                                multi.<Long>getSelect(selProdDim)));
-                map.put(new KeyDefFrmt("quantity", qtyFrmt),
-                                multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
+                final Instance prodInstance = multi.getSelect(selProdInst);
+                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
+                final UIAbstractPosition origBean = getUIPosition(_parameter)
+                                .setInstance(multi.getCurrentInstance())
+                                .setProdInstance(prodInstance)
+                                .setQuantity(quantity);
+                updateBean4Indiviual(_parameter, origBean);
             }
         }
-        final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
+        final Collection<UIAbstractPosition> values = valuesTmp.values();
 
         final Set<String> noEscape = new HashSet<String>();
         noEscape.add("uoM");
 
-        evaluatePositions4RelatedInstances(_parameter, values, _instances.toArray(new Instance[_instances.size()]));
+        //evaluatePositions4RelatedInstances(_parameter, values, _instances.toArray(new Instance[_instances.size()]));
 
         add2JavaScript4Postions(_parameter, values, noEscape);
 
@@ -3376,89 +3409,316 @@ public abstract class AbstractDocument_Base
         return code.toString();
     }
 
-    public abstract static class KeyDef
+    public static abstract class UIAbstractPosition
+        implements Serializable
     {
 
-        private final String name;
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
+        private AbstractDocument_Base doc;
+        private Instance prodInstance;
+        private Instance instance;
+        private BigDecimal quantity;
+        private BigDecimal netUnitPrice;
+        private BigDecimal discount;
+        private BigDecimal discountNetUnitPrice;
+        private BigDecimal netPrice;
+        private BigDecimal crossPrice;
+        private String prodName;
+        private String prodDescr;
+        private Long uoMID;
 
-        public KeyDef(final String _name)
+        public UIAbstractPosition()
         {
-            this.name = _name;
         }
 
-        public String getName()
+        public UIAbstractPosition(final AbstractDocument_Base _doc)
         {
-            return this.name;
+            this.doc = _doc;
         }
 
-        public abstract Object convert4Map(final Object _value)
-            throws EFapsException;
-
-        @Override
-        public boolean equals(final Object _obj)
+        /**
+         * Getter method for the instance variable {@link #prodInstance}.
+         *
+         * @return value of instance variable {@link #prodInstance}
+         */
+        public Instance getProdInstance()
         {
-            boolean ret = false;
-            if (_obj instanceof KeyDef) {
-                ret = ((KeyDef) _obj).getName().equals(getName());
-            } else {
-                ret = super.equals(_obj);
-            }
+            return this.prodInstance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodInstance}.
+         *
+         * @param _prodInstance value for instance variable
+         *            {@link #prodInstance}
+         */
+        public UIAbstractPosition setProdInstance(final Instance _prodInstance)
+        {
+            this.prodInstance = _prodInstance;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #quantity}.
+         *
+         * @return value of instance variable {@link #quantity}
+         */
+        public BigDecimal getQuantity()
+        {
+            return this.quantity;
+        }
+
+        /**
+         * Setter method for instance variable {@link #quantity}.
+         *
+         * @param _quantity value for instance variable {@link #quantity}
+         */
+        public UIAbstractPosition setQuantity(final BigDecimal _quantity)
+        {
+            this.quantity = _quantity;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #netUnitPrice}.
+         *
+         * @return value of instance variable {@link #netUnitPrice}
+         */
+        public BigDecimal getNetUnitPrice()
+        {
+            return this.netUnitPrice;
+        }
+
+        /**
+         * Setter method for instance variable {@link #netUnitPrice}.
+         *
+         * @param _rateNetUnitPrice value for instance variable
+         *            {@link #netUnitPrice}
+         */
+        public UIAbstractPosition setNetUnitPrice(final BigDecimal _netUnitPrice)
+        {
+            this.netUnitPrice = _netUnitPrice;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable
+         * {@link #rateDiscountNetUnitPrice}.
+         *
+         * @return value of instance variable {@link #rateDiscountNetUnitPrice}
+         */
+        public BigDecimal getDiscountNetUnitPrice()
+        {
+            return this.discountNetUnitPrice;
+        }
+
+        /**
+         * Setter method for instance variable {@link #rateDiscountNetUnitPrice}
+         * .
+         *
+         * @param _rateDiscountNetUnitPrice value for instance variable
+         *            {@link #rateDiscountNetUnitPrice}
+         */
+        public UIAbstractPosition setDiscountNetUnitPrice(final BigDecimal _discountNetUnitPrice)
+        {
+            this.discountNetUnitPrice = _discountNetUnitPrice;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #rateNetPrice}.
+         *
+         * @return value of instance variable {@link #rateNetPrice}
+         */
+        public BigDecimal getNetPrice()
+        {
+            return this.netPrice;
+        }
+
+        /**
+         * Setter method for instance variable {@link #rateNetPrice}.
+         *
+         * @param _rateNetPrice value for instance variable
+         *            {@link #rateNetPrice}
+         */
+        public UIAbstractPosition setNetPrice(final BigDecimal _netPrice)
+        {
+            this.netPrice = _netPrice;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #crossPrice}.
+         *
+         * @return value of instance variable {@link #crossPrice}
+         */
+        public BigDecimal getCrossPrice()
+        {
+            return this.crossPrice;
+        }
+
+        /**
+         * Setter method for instance variable {@link #rateCrossPrice}.
+         *
+         * @param _rateCrossPrice value for instance variable
+         *            {@link #rateCrossPrice}
+         */
+        public UIAbstractPosition setCrossPrice(final BigDecimal _crossPrice)
+        {
+            this.crossPrice = _crossPrice;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #discount}.
+         *
+         * @return value of instance variable {@link #discount}
+         */
+        public BigDecimal getDiscount()
+        {
+            return this.discount;
+        }
+
+        /**
+         * Setter method for instance variable {@link #discount}.
+         *
+         * @param _discount value for instance variable {@link #discount}
+         */
+        public UIAbstractPosition setDiscount(final BigDecimal _discount)
+        {
+            this.discount = _discount;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #instance}.
+         *
+         * @return value of instance variable {@link #instance}
+         */
+        public Instance getInstance()
+        {
+            return this.instance;
+        }
+
+        /**
+         * Setter method for instance variable {@link #instance}.
+         *
+         * @param _instance value for instance variable {@link #instance}
+         */
+        public UIAbstractPosition setInstance(final Instance _instance)
+        {
+            this.instance = _instance;
+            return this;
+        }
+
+        public Map<String, Object> getMap4JavaScript(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> ret = new HashMap<>();
+            final String typeName = getDoc().getTypeName4SysConf(_parameter);
+            final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(typeName);
+            final DecimalFormat upFrmt = NumberFormatter.get().getFrmt4UnitPrice(typeName);
+            final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(typeName);
+            final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(typeName);
+
+            ret.put("oid", this.instance.getOid());
+            ret.put("quantity", qtyFrmt.format(getQuantity()));
+            ret.put("product", new String[] { getProdInstance().getOid(), getProdName() });
+            ret.put("productDesc", getProdDescr());
+            ret.put("uoM", getDoc().getUoMFieldStrByUoM(getUoM()));
+            ret.put("netUnitPrice", upFrmt.format(getNetUnitPrice()));
+            ret.put("discountNetUnitPrice", upFrmt.format(getDiscountNetUnitPrice()));
+            ret.put("netPrice", totFrmt.format(getNetPrice()));
+            ret.put("discount", disFrmt.format(getDiscount()));
+            ret.put("crossPrice", totFrmt.format(getCrossPrice()));
             return ret;
         }
 
-        @Override
-        public int hashCode()
+        /**
+         * Getter method for the instance variable {@link #prodName}.
+         *
+         * @return value of instance variable {@link #prodName}
+         */
+        public String getProdName()
         {
-            return getName().hashCode();
+            return this.prodName;
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodName}.
+         *
+         * @param _prodName value for instance variable {@link #prodName}
+         */
+        public UIAbstractPosition setProdName(final String _prodName)
+        {
+            this.prodName = _prodName;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #prodDescr}.
+         *
+         * @return value of instance variable {@link #prodDescr}
+         */
+        public String getProdDescr()
+        {
+            return this.prodDescr;
+        }
+
+        /**
+         * Setter method for instance variable {@link #prodDescr}.
+         *
+         * @param _prodDescr value for instance variable {@link #prodDescr}
+         */
+        public UIAbstractPosition setProdDescr(final String _prodDescr)
+        {
+            this.prodDescr = _prodDescr;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #uoM}.
+         *
+         * @return value of instance variable {@link #uoM}
+         */
+        public Long getUoM()
+        {
+            return this.uoMID;
+        }
+
+        /**
+         * Setter method for instance variable {@link #uoM}.
+         *
+         * @param _uoM value for instance variable {@link #uoM}
+         */
+        public UIAbstractPosition setUoM(final Long _long)
+        {
+            this.uoMID = _long;
+            return this;
+        }
+
+        /**
+         * Getter method for the instance variable {@link #doc}.
+         *
+         * @return value of instance variable {@link #doc}
+         */
+        public AbstractDocument_Base getDoc()
+        {
+            return this.doc;
+        }
+
+
+        /**
+         * Setter method for instance variable {@link #doc}.
+         *
+         * @param _doc value for instance variable {@link #doc}
+         */
+        public void setDoc(final AbstractDocument_Base _doc)
+        {
+            this.doc = _doc;
         }
     }
-
-    public static class KeyDefStr
-        extends KeyDef
-    {
-        /**
-         * @param _name
-         */
-        public KeyDefStr(final String _name)
-        {
-            super(_name);
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Object convert4Map(final Object _value)
-        {
-            return  _value;
-        }
-    }
-
-    public static class KeyDefFrmt
-        extends KeyDef
-    {
-
-        private final DecimalFormat format;
-
-        /**
-         * @param _name
-         */
-        public KeyDefFrmt(final String _name,
-                          final DecimalFormat _format)
-        {
-            super(_name);
-            this.format = _format;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public Object convert4Map(final Object _value)
-            throws EFapsException
-        {
-            return this.format.format(_value);
-        }
-    }
-
 }

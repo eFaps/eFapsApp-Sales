@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -38,7 +37,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field.Display;
 import org.efaps.db.Context;
@@ -68,7 +67,7 @@ import org.joda.time.format.DateTimeFormatter;
  * @version $Id$
  */
 @EFapsUUID("89eb3b05-47a9-4327-96f9-108986f171b7")
-@EFapsRevision("$Rev: 1$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class EventSchedule_Base
     extends AbstractDocumentSum
 {
@@ -368,7 +367,7 @@ public abstract class EventSchedule_Base
         final String[] oids = _parameter.getParameterValues("selectedRow");
         final DecimalFormat formatter = NumberFormatter.get().getTwoDigitsFormatter();
         if (oids != null && oids.length > 0) {
-            final List<Map<KeyDef, Object>> values = new ArrayList<>();
+            final List<Map<String, Object>> values = new ArrayList<>();
             final List<Instance> instances = new ArrayList<>();
             for (final String oid : oids) {
                 instances.add(Instance.get(oid));
@@ -397,13 +396,13 @@ public abstract class EventSchedule_Base
                 final String rateSymbol = multi.<String>getSelect(selRateSymbol);
                 final String contactName = multi.<String>getSelect(selContactNameSel);
 
-                final Map<KeyDef, Object> map = new HashMap<>();
+                final Map<String, Object> map = new HashMap<>();
                 values.add(map);
-                map.put(new KeyDefStr("contactPos"), contactName);
-                map.put(new KeyDefStr("document"), new String[] { docInst.getOid(), name });
-                map.put(new KeyDefStr("amount4Schedule"), formatter.format(crossTotal));
-                map.put(new KeyDefStr("rateNetPrice"), rateSymbol + formatter.format(rateCrossTotal));
-                map.put(new KeyDefStr("netPrice"), symbol + formatter.format(crossTotal) + " / "
+                map.put("contactPos", contactName);
+                map.put("document", new String[] { docInst.getOid(), name });
+                map.put("amount4Schedule", formatter.format(crossTotal));
+                map.put("rateNetPrice", rateSymbol + formatter.format(rateCrossTotal));
+                map.put("netPrice", symbol + formatter.format(crossTotal) + " / "
                                     + formatter.format(getPaymentDocumentOut4Doc(docInst)) + " / "
                                     + formatter.format(getEventSchedule4Doc(docInst)));
             }
@@ -418,9 +417,8 @@ public abstract class EventSchedule_Base
                 i++;
             }
 
-            final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
             js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                            .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                            .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
                                             script, false, false, new HashSet<String>()));
 
         } else if (Display.HIDDEN.equals(fieldValue.getDisplay())) {
@@ -443,7 +441,7 @@ public abstract class EventSchedule_Base
                             .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
 
             final Instance instance = _parameter.getInstance();
-            final Map<Instance, Map<KeyDef, Object>> valuesTmp = new LinkedHashMap<Instance, Map<KeyDef, Object>>();
+            final Map<Instance, Map<String, Object>> valuesTmp = new LinkedHashMap<>();
             if (instance != null && instance.isValid()) {
                 final SelectBuilder selContact = new SelectBuilder().linkto(CISales.PaymentSchedule.Contact).instance();
                 final PrintQuery print = new PrintQuery(instance);
@@ -465,27 +463,25 @@ public abstract class EventSchedule_Base
                     final String symbol = multi.<String>getSelect(selDocSymbol);
                     final String rateSymbol = multi.<String>getSelect(selDocRateSymbol);
 
-                    final Map<KeyDef, Object> map;
+                    final Map<String, Object> map;
                     if (!valuesTmp.containsKey(docInst)) {
-                        map = new HashMap<KeyDef, Object>();
+                        map = new HashMap<>();
                         valuesTmp.put(docInst, map);
-                        map.put(new KeyDefStr("document"),
+                        map.put("document",
                                         new String[] { docInst.getOid(), multi.<String>getSelect(selDocName) });
-                        map.put(new KeyDefStr("documentDesc"),
+                        map.put("documentDesc",
                                         multi.<String>getAttribute(CISales.PaymentSchedulePosition.DocumentDesc));
-                        map.put(new KeyDefStr("amount4Schedule"),
+                        map.put("amount4Schedule",
                                         getNetPriceFmtStr(multi
                                                .<BigDecimal>getAttribute(CISales.PaymentSchedulePosition.NetPrice)));
-                        map.put(new KeyDefStr("rateNetPrice"), rateSymbol + getNetPriceFmtStr(rateNetPrice));
-                        map.put(new KeyDefStr("netPrice"), symbol + getNetPriceFmtStr(netPrice) + " / "
+                        map.put("rateNetPrice", rateSymbol + getNetPriceFmtStr(rateNetPrice));
+                        map.put("netPrice", symbol + getNetPriceFmtStr(netPrice) + " / "
                                         + getNetPriceFmtStr(getPaymentDocumentOut4Doc(docInst)) + " / "
                                         + getNetPriceFmtStr(getEventSchedule4Doc(docInst)));
                     }
                 }
-                final Collection<Map<KeyDef, Object>> values = valuesTmp.values();
-                final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                                .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                                .append(getTableAddNewRowsScript(_parameter, "positionTable", valuesTmp.values(),
                                                 getOnCompleteScript(_parameter), false, false, new HashSet<String>()));
             }
 

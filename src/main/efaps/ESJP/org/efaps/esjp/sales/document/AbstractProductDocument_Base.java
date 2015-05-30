@@ -40,7 +40,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
@@ -88,7 +88,7 @@ import org.slf4j.LoggerFactory;
  * @version $Id: AbstractDocument_Base.java 3674 2010-01-28 18:52:35Z jan.moxter$
  */
 @EFapsUUID("92e52f22-f3f2-43b3-87c3-ad224d9832fc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractProductDocument_Base
     extends AbstractDocument
 {
@@ -517,20 +517,19 @@ public abstract class AbstractProductDocument_Base
 
         final StringBuilder js = new StringBuilder();
         final String[] rows = _parameter.getParameterValues("product");
-        final List<Map<KeyDef, Object>> values = new ArrayList<Map<KeyDef, Object>>();
+        final List<Map<String, Object>> values = new ArrayList<>();
         final Instance storage = Instance.get(_parameter.getParameterValue("storageSetter"));
         if (storage.isValid() && rows != null) {
             for (final String row : rows) {
-                final Map<KeyDef, Object> map2 = new HashMap<KeyDef, Object>();
+                final Map<String, Object> map2 = new HashMap<>();
                 final Instance prod = Instance.get(row);
                 if (prod != null && prod.isValid()) {
-                    map2.put(new KeyDefStr("quantityInStock"), getStock4ProductInStorage(_parameter, prod, storage));
-                    map2.put(new KeyDefStr("storage"), storage.getOid());
+                    map2.put("quantityInStock", getStock4ProductInStorage(_parameter, prod, storage));
+                    map2.put("storage", storage.getOid());
                 }
                 values.add(map2);
             }
-            final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
-            js.append(getSetFieldValuesScript(_parameter, strValues, null))
+            js.append(getSetFieldValuesScript(_parameter, values, null))
                 .append("require([\"dojo/query\"], function(query){")
                 .append("query(\"select[name=storage]\").forEach(function(node){")
                 .append("node.value=\"").append(storage.getOid()).append("\";")
@@ -606,7 +605,7 @@ public abstract class AbstractProductDocument_Base
         if (!instances.isEmpty()) {
             final Type type = instances.get(0).getType();
             if (type.isKindOf(CIProducts.InventoryAbstract)) {
-                final Collection<Map<KeyDef, Object>> values = new ArrayList<>();
+                final Collection<Map<String, Object>> values = new ArrayList<>();
                 final MultiPrintQuery multi = new MultiPrintQuery(instances);
                 final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryAbstract.Product);
                 final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
@@ -622,15 +621,15 @@ public abstract class AbstractProductDocument_Base
 
                 multi.execute();
 
-                final DecimalFormat frmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+                NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
 
                 while (multi.next()) {
                     final Instance prodInst = multi.<Instance>getSelect(selProdInst);
 
-                    final Map<KeyDef, Object> map = new HashMap<KeyDef, Object>();
-                    map.put(new KeyDefStr("product"), new String[] { prodInst.getOid(),
+                    final Map<String, Object> map = new HashMap<>();
+                    map.put("product", new String[] { prodInst.getOid(),
                                     multi.<String>getSelect(selProdName) });
-                    map.put(new KeyDefStr("productDesc"), multi.<String>getSelect(selProdDescr));
+                    map.put("productDesc", multi.<String>getSelect(selProdDescr));
                     final Dimension dim = Dimension.get(multi.<Long>getSelect(selProdDim));
                     final Long defUoMId = multi.<Long>getSelect(selProdDefUoM);
                     final Long uomId;
@@ -644,49 +643,26 @@ public abstract class AbstractProductDocument_Base
                     } else {
                         uomId = dim.getBaseUoM().getId();
                     }
-                    map.put(new KeyDefStr("uoM"), getUoMFieldStr(uomId, dim.getId()));
-                    map.put(new KeyDefFrmt("quantity", frmt),
+                    map.put("uoM", getUoMFieldStr(uomId, dim.getId()));
+                    map.put("quantity",
                                     multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity));
 
                     final Instance storageInst = multi.getSelect(selStorageInst);
                     final String quantityInStock = getStock4ProductInStorage(_parameter, prodInst, storageInst);
-                    map.put(new KeyDefStr("quantityInStock"), quantityInStock);
-                    map.put(new KeyDefStr("storage"), storageInst.getOid());
+                    map.put("quantityInStock", quantityInStock);
+                    map.put("storage", storageInst.getOid());
                     values.add(map);
                 }
 
                 final Set<String> noEscape = new HashSet<String>();
                 noEscape.add("uoM");
 
-                final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
-
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                                    .append(getTableAddNewRowsScript(_parameter, "positionTable", strValues,
+                                    .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
                                                     getOnCompleteScript(_parameter), false, false, noEscape));
             }
         }
         return js;
-    }
-
-    @Override
-    protected void add2JavaScript4Postions(final Parameter _parameter,
-                                           final Collection<Map<KeyDef, Object>> _values,
-                                           final Set<String> _noEscape)
-        throws EFapsException
-    {
-        super.add2JavaScript4Postions(_parameter, _values, _noEscape);
-        final Instance defaultStorageInst = getDefaultStorage(_parameter);
-        if (defaultStorageInst.isValid()) {
-            for (final Map<KeyDef, Object> map : _values) {
-                final Instance prodInst = Instance.get(((String[]) map.get(new KeyDefStr("product")))[0]);
-                if (prodInst.isValid()) {
-                    final String quantityInStock = getStock4ProductInStorage(_parameter, prodInst, defaultStorageInst);
-                    map.put(new KeyDefStr("quantityInStock"), quantityInStock);
-                }
-            }
-        } else {
-            AbstractProductDocument_Base.LOG.warn("A storage default should be configurated");
-        }
     }
 
     /**
@@ -1069,6 +1045,41 @@ public abstract class AbstractProductDocument_Base
         return ret;
     }
 
+    @Override
+    protected UIAbstractPosition getUIPosition(final Parameter _parameter)
+    {
+        return new UIProductDocumentPosition(this);
+    }
+
+
+    public static class UIProductDocumentPosition
+        extends UIAbstractPosition
+    {
+
+        /**
+         * @param _doc
+         */
+        public UIProductDocumentPosition(final AbstractDocument_Base _doc)
+        {
+            super(_doc);
+        }
+
+        @Override
+        public Map<String, Object> getMap4JavaScript(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> ret = super.getMap4JavaScript(_parameter);
+            final Instance defaultStorageInst = ((AbstractProductDocument_Base) getDoc()).getDefaultStorage(_parameter);
+            if (defaultStorageInst.isValid()) {
+                if (getProdInstance().isValid()) {
+                    final String quantityInStock = ((AbstractProductDocument_Base) getDoc())
+                                    .getStock4ProductInStorage(_parameter, getProdInstance(), defaultStorageInst);
+                    ret.put("quantityInStock", quantityInStock);
+                }
+            }
+            return ret;
+        }
+    }
 
     public static class Position
     {

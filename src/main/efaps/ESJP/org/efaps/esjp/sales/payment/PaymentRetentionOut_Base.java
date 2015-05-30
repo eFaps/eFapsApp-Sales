@@ -47,8 +47,6 @@ import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
-import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
-import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDefStr;
 import org.efaps.esjp.sales.payment.DocPaymentInfo_Base.AccountInfo;
 import org.efaps.util.EFapsException;
 
@@ -133,10 +131,10 @@ public abstract class PaymentRetentionOut_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
-        final List<Map<KeyDef, Object>> values = new ArrayList<>();
+        final List<Map<String, Object>> values = new ArrayList<>();
         BigDecimal total = BigDecimal.ZERO;
         for (final Instance docInst : _docInstances) {
-            final Map<KeyDef, Object> map = new HashMap<>();
+            final Map<String, Object> map = new HashMap<>();
             values.add(map);
             final DocPaymentInfo docInfo = getNewDocPaymentInfo(_parameter, docInst);
             docInfo.setAccountInfo(_accountInfo);
@@ -146,28 +144,27 @@ public abstract class PaymentRetentionOut_Base
             final BigDecimal paymentAmountDesc = BigDecimal.ZERO;
 
             total = total.add(amount4PayDoc);
-            map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.createDocument.name),
+            map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.createDocument.name,
                             new String[] { docInst.getOid(), docInfo.getName() });
 
-            map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.createDocumentDesc.name),
+            map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.createDocumentDesc.name,
                             docInfo.getInfoField());
-            map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.payment4Pay.name),
+            map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.payment4Pay.name,
                             NumberFormatter.get().getTwoDigitsFormatter().format(amount4PayDoc));
-            map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentAmount.name),
+            map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentAmount.name,
                             NumberFormatter.get().getTwoDigitsFormatter().format(amount4PayDoc));
-            map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentAmountDesc.name),
+            map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentAmountDesc.name,
                             NumberFormatter.get().getTwoDigitsFormatter().format(paymentAmountDesc));
-            map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentDiscount.name),
+            map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentDiscount.name,
                             NumberFormatter.get().getTwoDigitsFormatter().format(paymentDiscount));
-     //       map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentRate.name), NumberFormatter
+     //       map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentRate.name), NumberFormatter
      //                     .get().getFormatter(0, 3).format(docInfo.getObject4Rate()));
-     //       map.put(new KeyDefStr(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentRate.name
+     //       map.put(CITableSales.Sales_PaymentRetentionOutPaymentTable.paymentRate.name
      //                       + RateUI.INVERTEDSUFFIX), "" + docInfo.getCurrencyInst().isInvert());
         }
 
-        final List<Map<String, Object>> strValues = convertMap4Script(_parameter, values);
         js.append(getTableRemoveScript(_parameter, "paymentTable", false, false))
-                            .append(getTableAddNewRowsScript(_parameter, "paymentTable", strValues,
+                            .append(getTableAddNewRowsScript(_parameter, "paymentTable", values,
                                             null, false, false, new HashSet<String>()));
         js.append(getSetFieldValue(0, "amount",  NumberFormatter.get().getTwoDigitsFormatter().format(total)))
                         .append(getSetFieldValue(0, "total4DiscountPay",

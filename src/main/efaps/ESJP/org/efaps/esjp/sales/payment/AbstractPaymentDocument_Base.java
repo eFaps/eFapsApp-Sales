@@ -46,7 +46,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIAttribute;
@@ -80,7 +80,6 @@ import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
-import org.efaps.esjp.sales.document.AbstractDocument_Base.KeyDef;
 import org.efaps.esjp.sales.document.Conciliation;
 import org.efaps.esjp.sales.listener.IOnPayment;
 import org.efaps.esjp.sales.util.Sales;
@@ -99,11 +98,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
- *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("c7281e33-540f-4db1-bcc6-38e89528883f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractPaymentDocument_Base
     extends CommonDocument
 {
@@ -1731,22 +1728,6 @@ public abstract class AbstractPaymentDocument_Base
 
         return instances;
     }
-
-    protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
-                                                          final Collection<Map<KeyDef, Object>> _values)
-        throws EFapsException
-    {
-        final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        for (final Map<KeyDef, Object> valueMap : _values) {
-            final Map<String, Object> map = new HashMap<String, Object>();
-            for (final Entry<KeyDef, Object> entry : valueMap.entrySet()) {
-                map.put(entry.getKey().getName(), entry.getKey().convert4Map(entry.getValue()));
-            }
-            ret.add(map);
-        }
-        return ret;
-    }
-
 
     /**
      * Method to update fields with document selected.
