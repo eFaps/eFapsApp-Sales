@@ -45,10 +45,12 @@
             <key>Received</key>
             <key>Canceled</key>
         </status>
-        <status group="Sales_OrderOutboundStatus">
+       <status group="Sales_OrderOutboundStatus">
             <key>Draft</key>
             <key>Open</key>
             <key>Received</key>
+            <key>Invoiced</key>
+            <key>Closed</key>
             <key>Canceled</key>
         </status>
         <role>Sales_Accounting</role>
