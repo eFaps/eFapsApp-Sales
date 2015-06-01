@@ -30,7 +30,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -46,6 +48,7 @@ import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.field.FieldTable;
 import org.efaps.ci.CIType;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -67,6 +70,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnCreateDocument;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
+import org.efaps.esjp.products.Product_Base;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
@@ -76,6 +80,7 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -612,10 +617,12 @@ public abstract class AbstractProductDocument_Base
                 final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
                 final SelectBuilder selProdDescr = new SelectBuilder(selProd)
                                 .attribute(CIProducts.ProductAbstract.Description);
-                final SelectBuilder selProdDim = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Dimension);
+                final SelectBuilder selProdDim = new SelectBuilder(selProd)
+                                .attribute(CIProducts.ProductAbstract.Dimension);
                 final SelectBuilder selProdDefUoM = new SelectBuilder(selProd)
                                 .attribute(CIProducts.ProductAbstract.DefaultUoM);
-                final SelectBuilder selStorageInst = SelectBuilder.get().linkto(CIProducts.InventoryAbstract.Storage).instance();
+                final SelectBuilder selStorageInst = SelectBuilder.get().linkto(CIProducts.InventoryAbstract.Storage)
+                                .instance();
                 multi.addSelect(selProdInst, selProdName, selProdDescr, selProdDim, selProdDefUoM, selStorageInst);
                 multi.addAttribute(CIProducts.InventoryAbstract.Quantity);
 
@@ -658,8 +665,8 @@ public abstract class AbstractProductDocument_Base
                 noEscape.add("uoM");
 
                 js.append(getTableRemoveScript(_parameter, "positionTable", false, false))
-                                    .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
-                                                    getOnCompleteScript(_parameter), false, false, noEscape));
+                                .append(getTableAddNewRowsScript(_parameter, "positionTable", values,
+                                                getOnCompleteScript(_parameter), false, false, noEscape));
             }
         }
         return js;
@@ -699,6 +706,77 @@ public abstract class AbstractProductDocument_Base
         return ret.toString();
     }
 
+    @Override
+    protected List<UIAbstractPosition> updateBean4Indiviual(final Parameter _parameter,
+                                                            final UIAbstractPosition _bean)
+        throws CacheReloadException, EFapsException
+    {
+        final List<UIAbstractPosition> ret = new ArrayList<>();
+        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+            final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
+            print.addAttribute(CIProducts.ProductAbstract.Individual);
+            print.execute();
+            final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
+                            CIProducts.ProductAbstract.Individual);
+            switch (indivual) {
+                case BATCH:
+                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract2Batch);
+                    attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
+                                    _bean.getProdInstance());
+                    final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
+                    final Instance storInst = getDefaultStorage(_parameter);
+                    if (storInst != null && storInst.isValid()) {
+                        invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
+                    }
+                    invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
+                                    attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract2Batch.ToLink));
+                    final MultiPrintQuery multi = invQueryBldr.getPrint();
+                    final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
+                    final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+                    final SelectBuilder selProdName = new SelectBuilder(selProd)
+                                    .attribute(CIProducts.ProductAbstract.Name);
+                    final SelectBuilder selProdDescr = new SelectBuilder(selProd)
+                                    .attribute(CIProducts.ProductAbstract.Description);
+                    final SelectBuilder selProdCreated = new SelectBuilder(selProd)
+                                    .attribute(CIProducts.ProductAbstract.Created);
+                    multi.addSelect(selProdInst, selProdName, selProdDescr, selProdCreated);
+                    multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
+                    multi.execute();
+
+                    // FIFO
+                    final Map<DateTime, UIAbstractPosition> fifoMap = new TreeMap<>();
+                    while (multi.next()) {
+                        final Instance prodInst = multi.getSelect(selProdInst);
+                        _bean.setDoc(null);
+                        final UIAbstractPosition bean = SerializationUtils.clone(_bean);
+                        bean.setProdInstance(prodInst)
+                                .setProdName(multi.<String>getSelect(selProdName))
+                                .setProdDescr(multi.<String>getSelect(selProdDescr))
+                                .setQuantity(multi.<BigDecimal>getAttribute(CIProducts.InventoryIndividual.Quantity));
+                        bean.setDoc(this);
+                        fifoMap.put(multi.<DateTime>getSelect(selProdCreated), bean);
+                    }
+
+                    BigDecimal currentQty = _bean.getQuantity();
+                    for (final UIAbstractPosition tmpPos : fifoMap.values()) {
+                        ret.add(tmpPos);
+                        if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
+                            tmpPos.setQuantity(currentQty);
+                            break;
+                        } else {
+                            currentQty = currentQty.subtract(tmpPos.getQuantity());
+                        }
+                    }
+                    break;
+                default:
+                    ret.add(_bean);
+                    break;
+            }
+        } else {
+            ret.add(_bean);
+        }
+        return ret;
+    }
 
 
     /**
@@ -1055,6 +1133,11 @@ public abstract class AbstractProductDocument_Base
     public static class UIProductDocumentPosition
         extends UIAbstractPosition
     {
+
+        /**
+         *
+         */
+        private static final long serialVersionUID = 1L;
 
         /**
          * @param _doc

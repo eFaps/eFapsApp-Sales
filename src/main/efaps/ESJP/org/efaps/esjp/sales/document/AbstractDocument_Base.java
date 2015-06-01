@@ -36,6 +36,7 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import java.util.TreeMap;
@@ -46,7 +47,6 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Dimension;
@@ -68,7 +68,6 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
-import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -100,7 +99,6 @@ import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
-import org.efaps.esjp.products.Product_Base;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
@@ -1493,50 +1491,19 @@ public abstract class AbstractDocument_Base
         return js;
     }
 
+    /**
+     * Give the chance to replace the product with others. e.g Orginal Product with Batch.
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _bean bean to be updated
+     * @return List of beans
+     * @throws EFapsException
+     */
     protected List<UIAbstractPosition> updateBean4Indiviual(final Parameter _parameter,
                                                             final UIAbstractPosition _bean)
-        throws CacheReloadException, EFapsException
+        throws EFapsException
     {
         final List<UIAbstractPosition> ret = new ArrayList<>();
-        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
-            final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
-            print.addAttribute(CIProducts.ProductAbstract.Individual);
-            print.execute();
-            final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
-                            CIProducts.ProductAbstract.Individual);
-            switch (indivual) {
-                case BATCH:
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract2Batch);
-                    attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
-                                    _bean.getProdInstance());
-                    final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
-                    invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
-                                    attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract2Batch.ToLink));
-                    final MultiPrintQuery multi = invQueryBldr.getPrint();
-                    final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
-                    final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
-                    final SelectBuilder selProdName = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Name);
-                    final SelectBuilder selProdDescr = new SelectBuilder(selProd).attribute(CIProducts.ProductAbstract.Description);
-                    multi.addSelect(selProdInst, selProdName, selProdDescr);
-                    multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
-                    multi.execute();
-                    while (multi.next()) {
-                        final Instance prodInst =  multi.getSelect(selProdInst);
-                        _bean.setDoc(null);
-                        final UIAbstractPosition bean = SerializationUtils.clone(_bean);
-                        bean.setProdInstance(prodInst).setProdName(multi.<String>getSelect(selProdName))
-                            .setProdDescr(multi.<String>getSelect(selProdDescr));
-                        bean.setDoc(this);
-                        ret.add(bean);
-                    }
-                    break;
-                default:
-                    ret.add(_bean);
-                    break;
-            }
-        } else {
-            ret.add(_bean);
-        }
+        ret.add(_bean);
         return ret;
     }
 
@@ -1628,7 +1595,7 @@ public abstract class AbstractDocument_Base
                                                       final Instance... _instances)
         throws EFapsException
     {
-/*        final Map<Integer, String> relTypes;
+        final Map<Integer, String> relTypes;
         final Map<Integer, String> linkFroms;
         final Map<Integer, String> linkTos;
         final Map<Integer, String> types;
@@ -1657,8 +1624,8 @@ public abstract class AbstractDocument_Base
             substracts = analyseProperty(_parameter, props, baseKey + ".RelationSubstracts");
         }
 
-        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
-        final List<Map<KeyDef, Object>> lstRemove = new ArrayList<Map<KeyDef, Object>>();
+        NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+        final List<UIAbstractPosition> lstRemove = new ArrayList<>();
         for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
             final Integer key = relTypeEntry.getKey();
             final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
@@ -1701,30 +1668,28 @@ public abstract class AbstractDocument_Base
                 }
             }
 
-            for (final Map<KeyDef, Object> map : _values) {
-                final String[] product = (String[]) map.get(new KeyDefStr("product"));
-                if (prodQuantMap.containsKey(product[0])) {
-                    final BigDecimal quantityTotal = (BigDecimal) map.get(new KeyDefFrmt("quantity", qtyFrmt));
-                    final BigDecimal quantityPartial = prodQuantMap.get(product[0]);
+            for (final UIAbstractPosition uiPosition : _values) {
 
+                if (prodQuantMap.containsKey(uiPosition.getProdInstance().getOid())) {
+                    final BigDecimal quantityPartial = prodQuantMap.get(uiPosition.getProdInstance().getOid());
                     if (substract) {
-                        final BigDecimal quantityCurr = quantityTotal.subtract(quantityPartial);
+                        final BigDecimal quantityCurr = uiPosition.getQuantity().subtract(quantityPartial);
                         if (quantityCurr.compareTo(BigDecimal.ZERO) > 0) {
-                            map.put(new KeyDefFrmt("quantity", qtyFrmt), quantityCurr);
+                            uiPosition.setQuantity(quantityCurr);
                         } else {
-                            lstRemove.add(map);
+                            lstRemove.add(uiPosition);
                         }
                     } else {
-                        final BigDecimal quantityCurr = quantityTotal.add(quantityPartial);
-                        map.put(new KeyDefFrmt("quantity", qtyFrmt), quantityCurr);
+                        final BigDecimal quantityCurr = uiPosition.getQuantity().add(quantityPartial);
+                        uiPosition.setQuantity(quantityCurr);
                     }
                 }
             }
         }
 
-        for (final Map<KeyDef, Object> remove : lstRemove) {
+        for (final UIAbstractPosition remove : lstRemove) {
             _values.remove(remove);
-        }*/
+        }
     }
 
     /**
@@ -3395,8 +3360,8 @@ public abstract class AbstractDocument_Base
      * @return new code as String
      * @throws EFapsException on error
      */
-    private String getCode(final Parameter _parameter,
-                           final Integer[] _current)
+    protected String getCode(final Parameter _parameter,
+                             final Integer[] _current)
         throws EFapsException
     {
         final StringBuilder code = new StringBuilder();
