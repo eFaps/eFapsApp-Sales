@@ -1152,10 +1152,17 @@ public abstract class AbstractProductDocument_Base
             throws EFapsException
         {
             final Map<String, Object> ret = super.getMap4JavaScript(_parameter);
-            final Instance defaultStorageInst = ((AbstractProductDocument_Base) getDoc()).getDefaultStorage(_parameter);
+            AbstractProductDocument_Base tmpDoc;
+            if (getDoc() instanceof AbstractProductDocument_Base) {
+                tmpDoc = (AbstractProductDocument_Base) getDoc();
+            } else {
+                tmpDoc = new AbstractProductDocument(){};
+            }
+
+            final Instance defaultStorageInst = tmpDoc.getDefaultStorage(_parameter);
             if (defaultStorageInst.isValid()) {
                 if (getProdInstance().isValid()) {
-                    final String quantityInStock = ((AbstractProductDocument_Base) getDoc())
+                    final String quantityInStock = tmpDoc
                                     .getStock4ProductInStorage(_parameter, getProdInstance(), defaultStorageInst);
                     ret.put("quantityInStock", quantityInStock);
                 }
