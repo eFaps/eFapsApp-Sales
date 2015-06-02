@@ -30,6 +30,7 @@ import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
@@ -122,6 +123,14 @@ public abstract class ServiceOrderOutbound_Base
         }
         return ret;
     }
+
+    @Override
+    public CIType getCIType()
+        throws EFapsException
+    {
+        return CISales.ServiceOrderOutbound;
+    }
+
 
     @Override
     public Calculator getCalculator(final Parameter _parameter,
