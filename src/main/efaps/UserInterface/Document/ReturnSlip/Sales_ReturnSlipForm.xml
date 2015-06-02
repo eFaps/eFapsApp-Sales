@@ -176,7 +176,6 @@
                 method="autoComplete4Contact"
                 name="Sales_ReturnSlipForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Classification">Contacts_ClassClient</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="updateFields4Contact"
@@ -526,7 +525,6 @@
                 method="autoComplete4Contact"
                 name="Sales_ReturnSlipForm.contact.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE" >
-                <property name="Classification">Contacts_ClassClient</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.ReturnSlip"
                 method="updateFields4Contact"
