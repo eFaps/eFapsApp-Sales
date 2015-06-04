@@ -84,12 +84,14 @@
                 name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_DeliveryNote</property>
+                <property name="Type01">Sales_ReturnSlip</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="updateFields4Name"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_DeliveryNote</property>
+                <property name="Type01">Sales_ReturnSlip</property>
             </trigger>
         </field>
         <field name="name">
@@ -453,13 +455,15 @@
                 method="getNameWithSerialFieldValue"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="Type">Sales_DeliveryNote</property>
+                <property name="Type01">Sales_DeliveryNote</property>
+                <property name="Type02">Sales_ReturnSlip</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="updateFields4Name"
                 name="Sales_InvoiceForm.name4create.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
-                <property name="Type">Sales_DeliveryNote</property>
+                <property name="Type01">Sales_DeliveryNote</property>
+                <property name="Type02">Sales_ReturnSlip</property>
             </trigger>
         </field>
         <field name="name">

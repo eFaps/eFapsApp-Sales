@@ -902,13 +902,11 @@ public abstract class AbstractDocument_Base
     {
         final List<Map<String, Object>> values = new ArrayList<Map<String, Object>>();
         final Map<String, Object> map = new HashMap<String, Object>();
-        final String type = getProperty(_parameter, "Type");
-        final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
+        final Collection<String> types = analyseProperty(_parameter, "Type").values();
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
         final String fieldName = field.getName() + "_SN";
-
-        String number = getMaxNumber(_parameter, Type.get(type), _parameter.getParameterValue(fieldName),
-                        includeChildTypes);
+        String number = getMaxNumber(_parameter, _parameter.getParameterValue(fieldName),
+                        types.toArray(new String[types.size()]));
         if (number == null) {
             number = "000001";
         } else {
@@ -2361,19 +2359,30 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected String getMaxNumber(final Parameter _parameter,
-                                  final Type _type,
                                   final String _serial,
-                                  final boolean _expandChild)
+                                  final String...   _types)
         throws EFapsException
     {
         String ret = null;
-        final QueryBuilder queryBuilder = new QueryBuilder(_type);
+        QueryBuilder queryBuilder = null;
+        for (final String typeStr : _types) {
+            Type type;
+            if (isUUID(typeStr)) {
+                type = Type.get(UUID.fromString(typeStr));
+            } else {
+                type = Type.get(typeStr);
+            }
+            if (queryBuilder == null) {
+                queryBuilder = new QueryBuilder(type);
+            } else {
+                queryBuilder.addType(type);
+            }
+        }
         if (_serial != null) {
             queryBuilder.addWhereAttrMatchValue(CIERP.DocumentAbstract.Name, _serial + "*");
         }
         queryBuilder.addOrderByAttributeDesc(CIERP.DocumentAbstract.Name);
         final InstanceQuery query = queryBuilder.getQuery();
-        query.setIncludeChildTypes(_expandChild);
         query.setLimit(1);
         final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
         multi.addAttribute(CIERP.DocumentAbstract.Name);
@@ -2394,10 +2403,8 @@ public abstract class AbstractDocument_Base
     public Return getNameFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final String type = getProperty(_parameter, "Type");
-        final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
-
-        String number = getMaxNumber(_parameter, Type.get(type), null, includeChildTypes);
+        final Collection<String> types = analyseProperty(_parameter, "Type").values();
+        String number = getMaxNumber(_parameter, null, types.toArray(new String[types.size()]));
         if (number == null) {
             number = "001-000001";
         } else {
@@ -2430,8 +2437,6 @@ public abstract class AbstractDocument_Base
     public Return getNameWithSerialFieldValue(final Parameter _parameter)
         throws EFapsException
     {
-        final String type = getProperty(_parameter, "Type");
-        final boolean includeChildTypes = !"false".equalsIgnoreCase(getProperty(_parameter, "IncludeChildTypes"));
         final StringBuilder html = new StringBuilder();
         final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
         final String fieldName = fieldValue.getField().getName() + "_SN";
@@ -2455,7 +2460,10 @@ public abstract class AbstractDocument_Base
             snHtml = field.getDropDownField(parameter, options).append("-");
         }
         html.append(snHtml);
-        String number = getMaxNumber(_parameter, Type.get(type), serial, includeChildTypes);
+
+        final Collection<String> types = analyseProperty(_parameter, "Type").values();
+        String number = getMaxNumber(_parameter, serial, types.toArray(new String[types.size()]));
+
         Integer numberInt = 1;
         if (number != null) {
             // get the numbers after the first "-"
