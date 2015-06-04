@@ -88,6 +88,8 @@ public abstract class Validation_Base
         QUANTITYGREATERZERO,
         /** Validate that Amount is greater than zero. */
         AMOUNTGREATERZERO,
+        /** Validate that Amount is greater than zero. */
+        TOTALGREATERZERO,
         /** Validate the Name. */
         NAME,
         /** Validate the Serial Name. */
@@ -141,6 +143,9 @@ public abstract class Validation_Base
                     break;
                 case AMOUNTGREATERZERO:
                     warnings.addAll(validateAmountGreaterZero(_parameter, _doc));
+                    break;
+                case TOTALGREATERZERO:
+                    warnings.addAll(validateTotalGreaterZero(_parameter, _doc));
                     break;
                 case AREYOUSURE:
                     areyousure = true;
@@ -265,6 +270,26 @@ public abstract class Validation_Base
             }
             i++;
         }
+        if (total.compareTo(BigDecimal.ZERO) < 1) {
+            ret.add(new TotalGreaterZeroWarning());
+        }
+        return ret;
+    }
+
+    /**
+     * Validate that the given quantities have numbers bigger than Zero.
+     * @param _parameter Parameter as passed by the eFasp API
+     * @param _doc the document calling the evaluation
+     * @return List of warnings, empty list if no warning
+     * @throws EFapsException on error
+     */
+    public List<IWarning> validateTotalGreaterZero(final Parameter _parameter,
+                                                   final AbstractDocument_Base _doc)
+        throws EFapsException
+    {
+        final List<IWarning> ret = new ArrayList<IWarning>();
+        final List<Calculator> calcs = _doc.analyseTable(_parameter, null);
+        final BigDecimal total = Calculator.getNetTotal(_parameter, calcs);
         if (total.compareTo(BigDecimal.ZERO) < 1) {
             ret.add(new TotalGreaterZeroWarning());
         }
