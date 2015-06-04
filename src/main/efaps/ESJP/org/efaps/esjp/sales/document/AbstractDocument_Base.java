@@ -1427,11 +1427,9 @@ public abstract class AbstractDocument_Base
         final SelectBuilder selProdInst = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).instance();
         final SelectBuilder selProdName = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Name);
-        final SelectBuilder selProdDescr = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
-                        .attribute(CIProducts.ProductAbstract.Description);
         final SelectBuilder selProdDim = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product)
                         .attribute(CIProducts.ProductAbstract.Dimension);
-        multi.addSelect(selProdInst, selProdName, selProdDescr, selProdDim);
+        multi.addSelect(selProdInst, selProdName, selProdDim);
         multi.setEnforceSorted(true);
         multi.execute();
 
@@ -1445,7 +1443,7 @@ public abstract class AbstractDocument_Base
                             .setQuantity(quantity)
                             .setUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))
                             .setProdName(multi.<String>getSelect(selProdName))
-                            .setProdDescr(multi.<String>getSelect(selProdDescr));
+                            .setProdDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc));
             final List<UIAbstractPosition> beans = updateBean4Indiviual(_parameter, origBean);
 
             for (final UIAbstractPosition bean : beans) {
@@ -3393,12 +3391,12 @@ public abstract class AbstractDocument_Base
         private AbstractDocument_Base doc;
         private Instance prodInstance;
         private Instance instance;
-        private BigDecimal quantity;
-        private BigDecimal netUnitPrice;
-        private BigDecimal discount;
-        private BigDecimal discountNetUnitPrice;
-        private BigDecimal netPrice;
-        private BigDecimal crossPrice;
+        private BigDecimal quantity ;
+        private BigDecimal netUnitPrice ;
+        private BigDecimal discount ;
+        private BigDecimal discountNetUnitPrice ;
+        private BigDecimal netPrice ;
+        private BigDecimal crossPrice ;
         private String prodName;
         private String prodDescr;
         private Long uoMID;
@@ -3602,11 +3600,22 @@ public abstract class AbstractDocument_Base
             ret.put("product", new String[] { getProdInstance().getOid(), getProdName() });
             ret.put("productDesc", getProdDescr());
             ret.put("uoM", getDoc().getUoMFieldStrByUoM(getUoM()));
-            ret.put("netUnitPrice", upFrmt.format(getNetUnitPrice()));
-            ret.put("discountNetUnitPrice", upFrmt.format(getDiscountNetUnitPrice()));
-            ret.put("netPrice", totFrmt.format(getNetPrice()));
-            ret.put("discount", disFrmt.format(getDiscount()));
-            ret.put("crossPrice", totFrmt.format(getCrossPrice()));
+
+            if (getNetUnitPrice() != null) {
+                ret.put("netUnitPrice", upFrmt.format(getNetUnitPrice()));
+            }
+            if (getDiscountNetUnitPrice() != null) {
+                ret.put("discountNetUnitPrice", upFrmt.format(getDiscountNetUnitPrice()));
+            }
+            if (getNetPrice() != null) {
+                ret.put("netPrice", totFrmt.format(getNetPrice()));
+            }
+            if (getDiscount() != null) {
+                ret.put("discount", disFrmt.format(getDiscount()));
+            }
+            if (getCrossPrice() != null) {
+                ret.put("crossPrice", totFrmt.format(getCrossPrice()));
+            }
             return ret;
         }
 
