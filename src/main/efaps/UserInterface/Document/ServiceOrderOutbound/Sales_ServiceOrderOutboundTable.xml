@@ -61,12 +61,8 @@
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_DocumentAbstract/RateNetTotal.Label</property>
         </field>
-        <field name="currencyName">
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_ServiceOrderOutboundTable.currencyName.Label</property>
-            <property name="Select">linkto[RateCurrencyId].attribute[Name]</property>
-        </field>
         <field name="vendorLink">
+            <property name="FilterType">PICKLIST</property>
             <property name="Attribute">Salesperson</property>
             <property name="Label">Sales_DocumentAbstract/Salesperson.Label</property>
         </field>
