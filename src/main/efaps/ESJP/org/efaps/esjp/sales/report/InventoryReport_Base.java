@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -39,7 +36,7 @@ import net.sf.dynamicreports.report.definition.ReportParameters;
 
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -64,10 +61,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("f874c441-e026-4904-9de4-28173a67c008")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class InventoryReport_Base
     extends org.efaps.esjp.products.reports.InventoryReport
 {
@@ -162,7 +158,6 @@ public abstract class InventoryReport_Base
             }
         }
 
-        @Override
         protected boolean isEvaluateCost(final Parameter _parameter)
             throws EFapsException
         {
@@ -190,7 +185,7 @@ public abstract class InventoryReport_Base
             final Map<Instance, CostBean> costs = getCostObject(_parameter)
                             .getCosts(_parameter, _prodInsts.toArray(new Instance[_prodInsts.size()]));
             for (final InventoryBean bean : _beans) {
-                bean.setCostBean(costs.get(bean.getProdInstance()));
+                bean.setCostBean(_parameter, costs.get(bean.getProdInstance()), null);
             }
         }
 
@@ -357,8 +352,6 @@ public abstract class InventoryReport_Base
 
         private String docName;
 
-        private DateTime date;
-
         private DateTime created;
 
         /**
@@ -379,26 +372,6 @@ public abstract class InventoryReport_Base
         public void setDocName(final String _docName)
         {
             this.docName = _docName;
-        }
-
-        /**
-         * Getter method for the instance variable {@link #date}.
-         *
-         * @return value of instance variable {@link #date}
-         */
-        public DateTime getDate()
-        {
-            return this.date;
-        }
-
-        /**
-         * Setter method for instance variable {@link #date}.
-         *
-         * @param _date value for instance variable {@link #date}
-         */
-        public void setDate(final DateTime _date)
-        {
-            this.date = _date;
         }
 
         /**
