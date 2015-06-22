@@ -36,7 +36,7 @@
             <execute method="create" program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
                 <property name="PositionType">Sales_ServiceOrderOutboundPosition</property>
                 <property name="StatusGroup">Sales_ServiceOrderOutboundStatus</property>
-                <property name="Status">Open</property>
+                <property name="Status">Draft</property>
                 <property name="UseNumberGenerator4Name">true</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="validate">
