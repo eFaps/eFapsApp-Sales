@@ -115,12 +115,18 @@
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>SALESUNIT</sqlcolumn>
         </attribute>
-         <attribute>
+        <attribute>
             <name>ProductFamilyLink</name>
             <type>Link</type>
             <typelink>Products_ProductFamilyAbstract</typelink>
             <sqltable>Products_ProductSQLTable</sqltable>
             <sqlcolumn>FAMILYID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>Barcode</name>
+            <type>String</type>
+            <sqltable>Products_ProductSQLTable</sqltable>
+            <sqlcolumn>CODE</sqlcolumn>
         </attribute>
         <attribute>
             <name>Creator</name>
