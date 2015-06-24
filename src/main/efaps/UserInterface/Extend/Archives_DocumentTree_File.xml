@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,32 +14,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+
+<!-- PLACEHOLDER for the case that Archives is not installed!! -->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>55c3834d-a9d2-4080-af20-36c73c54ec07</uuid>
+    <uuid>df887ae9-e3d6-484b-ace3-b59bc481d69c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ProductRequestTree</name>
+        <application-dependencies>
+            <application name="eFapsApp-Archives" exclude="true"/>
+        </application-dependencies>
+        <name>Archives_DocumentTree_File</name>
         <target>
-            <menu>Sales_ProductRequestTree_Menu</menu>
-            <form>Sales_ProductRequestForm</form>
         </target>
-        <type>Sales_ProductRequest</type>
-        <childs>
-            <child>Sales_DocumentAbstractTree_Doc</child>
-            <child>Sales_ProductRequestTree_Position</child>
-            <child>Sales_ProductRequestTree_ProductStockReport</child>
-            <child>Archives_DocumentTree_File</child>
-        </childs>
         <property name="Target">content</property>
-        <property name="TargetMode">view</property>
+        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetStructurBrowserField">name</property>
     </definition>
-</ui-menu>
+</ui-command>

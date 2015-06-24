@@ -17,19 +17,19 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>deaafe57-9e74-4893-87f9-b55a9d9a7b76</uuid>
+    <uuid>3809b419-2d59-47f6-810e-2f4577cf6bb1</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives"/>
+            <application name="eFapsApp-Archives" />
         </application-dependencies>
-        <name>Sales_IncomingInvoice2ArchiveAbstract</name>
+        <name>Sales_ProductRequest2ArchiveAbstract</name>
         <parent>Archives_Document2ArchiveAbstract</parent>
         <attribute>
             <name>FromLink</name>
             <type>Link</type>
-            <typelink>Sales_IncomingInvoice</typelink>
+            <typelink>Sales_ProductRequest</typelink>
             <sqltable>Archives_Object2ArchiveAbstractSQLTable</sqltable>
             <sqlcolumn>FROMID</sqlcolumn>
         </attribute>
