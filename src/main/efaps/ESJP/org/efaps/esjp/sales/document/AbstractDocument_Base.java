@@ -1735,7 +1735,6 @@ public abstract class AbstractDocument_Base
         NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         while (multi.next()) {
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);
-
             if (valuesTmp.containsKey(prodInst)) {
                 final UIAbstractPosition origBean  = valuesTmp.get(prodInst);
                 origBean.setQuantity(origBean.getQuantity().add(
@@ -1746,8 +1745,18 @@ public abstract class AbstractDocument_Base
                 final UIAbstractPosition origBean = getUIPosition(_parameter)
                                 .setInstance(multi.getCurrentInstance())
                                 .setProdInstance(prodInstance)
-                                .setQuantity(quantity);
-                updateBean4Indiviual(_parameter, origBean);
+                                .setQuantity(quantity)
+                                .setUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))
+                                .setProdName(multi.<String>getSelect(selProdName))
+                                .setProdDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc));
+                for (final UIAbstractPosition bean : updateBean4Indiviual(_parameter, origBean)) {
+                    if (valuesTmp.containsKey(bean.getProdInstance())) {
+                        final UIAbstractPosition origBean4Prod  = valuesTmp.get(prodInst);
+                        origBean4Prod.setQuantity(origBean4Prod.getQuantity().add(bean.getQuantity()));
+                    } else {
+                        valuesTmp.put(bean.getProdInstance(), bean);
+                    }
+                }
             }
         }
         final Collection<UIAbstractPosition> values = valuesTmp.values();
