@@ -138,6 +138,7 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="Required">true</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -415,6 +416,7 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="Required">true</property>
+            <property name="ModeEdit">EDITABLE</property>
         </field>
         <field name="headingProject" character="Heading">
             <property name="Level">2</property>
