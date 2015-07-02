@@ -34,9 +34,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -57,11 +54,13 @@ import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.EFapsTextReport;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
 
 /**
  * TODO comment!
@@ -302,9 +301,8 @@ public abstract class PaymentRetentionReport_Base
         throws EFapsException
     {
         final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-        final SystemConfiguration erpConfig = ERP.getSysConfig();
-        final String companyName = erpConfig.getAttributeValue(ERPSettings.COMPANYNAME);
-        final String companyNumber = erpConfig.getAttributeValue(ERPSettings.COMPANYTAX);
+        final String companyName = ERP.COMPANYNAME.get();
+        final String companyNumber = ERP.COMPANYTAX.get();
 
         final StringBuilder dateFormat = new StringBuilder()
                         .append(new SimpleDateFormat("MMMMM", Context.getThreadContext().getLocale())
@@ -336,7 +334,7 @@ public abstract class PaymentRetentionReport_Base
                 throws EFapsException
             {
                 final SystemConfiguration erpConfig = ERP.getSysConfig();
-                final String companyNumber = erpConfig.getAttributeValue(ERPSettings.COMPANYTAX);
+                final String companyNumber = ERP.COMPANYTAX.get();
                 final String dateFrom = _parameter.getParameterValue("dateFrom");
                 final String dateTo = _parameter.getParameterValue("dateTo");
                 final DateTime from = new DateTime(dateFrom);

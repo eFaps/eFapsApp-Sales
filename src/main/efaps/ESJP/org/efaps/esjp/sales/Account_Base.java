@@ -70,7 +70,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.document.FundsToBeSettledBalance;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -1128,7 +1127,7 @@ public abstract class Account_Base
 
             final SystemConfiguration config = ERP.getSysConfig();
             if (config != null) {
-                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
+                final String companyName = ERP.COMPANYNAME.get();
                 if (companyName != null && !companyName.isEmpty()) {
                     report.getJrParameters().put("CompanyName", companyName);
                 }

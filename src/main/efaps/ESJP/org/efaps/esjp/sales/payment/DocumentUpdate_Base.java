@@ -52,7 +52,6 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.util.EFapsException;
 
@@ -332,8 +331,8 @@ public abstract class DocumentUpdate_Base
 
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+            final String companyName =  ERP.COMPANYNAME.get();
+            final String companyTaxNumb = ERP.COMPANYTAX.get();
 
             if (companyName != null && companyTaxNumb != null && !companyName.isEmpty()
                             && !companyTaxNumb.isEmpty()) {

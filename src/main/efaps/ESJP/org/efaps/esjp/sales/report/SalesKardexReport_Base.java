@@ -23,9 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JasperReport;
-
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
@@ -50,7 +47,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.Costing_Base.CostDoc;
 import org.efaps.util.EFapsException;
@@ -58,6 +54,9 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JasperReport;
 
 /**
  * TODO comment!
@@ -519,8 +518,8 @@ public abstract class SalesKardexReport_Base
         report.getJrParameters().put("Periode", shortTimes(from, to));
         final SystemConfiguration config = ERP.getSysConfig();
         if (config != null) {
-            final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-            final String companyTaxNumb = config.getAttributeValue(ERPSettings.COMPANYTAX);
+            final String companyName = ERP.COMPANYNAME.get();
+            final String companyTaxNumb = ERP.COMPANYTAX.get();
 
             if (companyName != null && companyTaxNumb != null && !companyName.isEmpty() && !companyTaxNumb.isEmpty()) {
                 report.getJrParameters().put("CompanyName", companyName);

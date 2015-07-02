@@ -33,7 +33,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -51,7 +50,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.file.FileUtil;
 import org.efaps.esjp.common.jasperreport.EFapsTextReport;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -80,8 +78,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
             protected File getEmptyFile4TextReport()
                 throws EFapsException
             {
-                final SystemConfiguration config = ERP.getSysConfig();
-                final String companyTaxNum = config.getAttributeValue(ERPSettings.COMPANYTAX);
+                final String companyTaxNum = ERP.COMPANYTAX.get();
 
                 final String name = buildName4TextReport(PaymentDetractionReport4Acquirer_Base.FILE_STARTCHAR,
                                 companyTaxNum, getSequenceNumber(_parameter));
@@ -114,9 +111,8 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 throws EFapsException
             {
                 final List<Object> ret = new ArrayList<Object>();
-                final SystemConfiguration config = ERP.getSysConfig();
-                final String companyName = config.getAttributeValue(ERPSettings.COMPANYNAME);
-                final String companyTaxNum = config.getAttributeValue(ERPSettings.COMPANYTAX);
+                final String companyName = ERP.COMPANYNAME.get();
+                final String companyTaxNum = ERP.COMPANYTAX.get();
                 ret.add(PaymentDetractionReport4Acquirer_Base.MASTER_INDICATOR);
                 ret.add(companyTaxNum);
                 ret.add(companyName);
