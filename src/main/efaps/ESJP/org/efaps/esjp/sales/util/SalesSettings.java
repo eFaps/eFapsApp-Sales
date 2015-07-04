@@ -55,12 +55,6 @@ public interface SalesSettings
 
     /**
      * Boolean.
-     * Allows to activate/deactivate the costing mechanisms.
-     */
-    String ACTIVATECOSTING = SalesSettings.BASE + "ActivateCosting";
-
-    /**
-     * Boolean.
      * Allows to activate/deactivate the registering of the prices during a purchase.
      */
     String ACTIVATEREGPURPRICE = SalesSettings.BASE + "ActivateRegisterOfPuchasePrice";

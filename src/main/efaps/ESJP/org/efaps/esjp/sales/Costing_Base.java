@@ -104,7 +104,7 @@ public abstract class Costing_Base
             while (query.next()) {
                 final Company company = Company.get(query.getCurrentValue().getId());
                 Context.getThreadContext().setCompany(company);
-                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATECOSTING)) {
+                if (Sales.ACTIVATECOSTING.get()) {
                     update();
                 }
             }

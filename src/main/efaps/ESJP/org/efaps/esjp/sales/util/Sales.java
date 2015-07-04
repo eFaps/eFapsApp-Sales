@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.util;
@@ -28,18 +25,34 @@ import org.efaps.admin.datamodel.IEnum;
 import org.efaps.admin.datamodel.attributetype.BitEnumType;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.api.annotation.EFapsSysConfAttribute;
+import org.efaps.api.annotation.EFapsSystemConfiguration;
+import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("70a6a397-b8ef-40c5-853e-cff331bc79bb")
 @EFapsApplication("eFapsApp-Sales")
+@EFapsSystemConfiguration("c9a1cbc3-fd35-4463-80d2-412422a3802f")
 public final class Sales
 {
+
+    /** The base. */
+    public static final String BASE = "org.efaps.sales.";
+
+    /** Sales-Configuration. */
+    public static final UUID SYSCONFUUID = UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ACTIVATECOSTING = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ActivateCosting")
+                    .description("Allows to activate/deactivate the costing mechanisms.");
 
     /**
      * Singelton.
@@ -194,7 +207,6 @@ public final class Sales
     public static SystemConfiguration getSysConfig()
         throws CacheReloadException
     {
-        // Sales-Configuration
-        return SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"));
+        return SystemConfiguration.get(SYSCONFUUID);
     }
 }
