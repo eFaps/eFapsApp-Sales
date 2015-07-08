@@ -13,29 +13,27 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b930c173-5edd-42f2-afba-48157841c96a</uuid>
+    <uuid>fe2c0e90-bf81-4e63-afb3-bec126a69d1f</uuid>
     <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Product4Provider_Report</name>
+        <name>Sales_ProductABCReport4ProductMyDesk_Menu_DownloadExcel</name>
+        <icon>Document_Excel</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_Product4Provider_ReportForm</form>
-            <execute method="exportReport" program="org.efaps.esjp.sales.SalesProduct4ProviderReport">
-                <property name="Types">Sales_OrderOutbound</property>
-                <!-- <property name="Template">Sales_Products4ProviderReportTemplate</property>-->
-                <property name="ShowDetails">false</property>
+            <execute method="exportReport4Product" program="org.efaps.esjp.sales.report.ProductABCReport">
+                <property name="Mime">xls</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Product.FilterKey</property>
             </execute>
         </target>
-        <property name="Target">modal</property>
+        <property name="Target">hidden</property>
         <property name="TargetShowFile">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_Quotation</property>
+        <property name="Label">report.DownloadExcel</property>
     </definition>
 </ui-command>

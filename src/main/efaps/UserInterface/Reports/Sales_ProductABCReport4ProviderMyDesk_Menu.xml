@@ -17,25 +17,15 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>4fec7f5c-d8b8-44fe-b25e-0b710b5b662c</uuid>
+    <uuid>1ccf3428-38a5-4c23-8ffc-c27de7bf0e48</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReportMyDesk</name>
+        <name>Sales_ProductABCReport4ProviderMyDesk_Menu</name>
         <childs>
-            <child>Sales_Product4Provider_Report</child>
-            <child>Sales_Product4Provider_Report2</child>
-            <child>Sales_ProductABCReport4ProviderMyDesk</child>
-            <child>Sales_ProductABCReport4ProducMyDesk</child>
-            <child>Sales_ProfServReceiptReportMyDesk</child>
-            <child>Sales_RetentionReportMyDesk</child>
-            <child>Sales_RetentionBookReportMyDesk</child>
-            <child>Sales_AccountPettyCashReportMyDesk</child>
-            <child>Sales_AccountPettyCashSummaryReportMyDesk</child>
-            <child>Sales_DocumentSumReportMyDesk</child>
-            <child>Sales_DocPositionReportMyDesk</child>
-            <child>Sales_DocSituationReportMyDesk</child>
-            <child>Sales_InventoryReportMyDesk</child>
+            <child>Sales_ProductABCReport4ProviderMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_ProductABCReport4ProviderMyDesk_Menu_DownloadPDF</child>
+            <child>Sales_ProductABCReport4ProviderMyDesk_Menu_Filter</child>
         </childs>
     </definition>
 </ui-menu>

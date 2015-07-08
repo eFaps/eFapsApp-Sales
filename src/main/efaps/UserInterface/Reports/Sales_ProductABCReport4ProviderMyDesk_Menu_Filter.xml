@@ -17,25 +17,28 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b930c173-5edd-42f2-afba-48157841c96a</uuid>
+    <uuid>15814567-a68e-4041-8811-59cc4e22d977</uuid>
     <file-application>eFapsApp-Sales</file-application>
+    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Product4Provider_Report</name>
+        <name>Sales_ProductABCReport4ProviderMyDesk_Menu_Filter</name>
+        <icon>Filter</icon>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_Product4Provider_ReportForm</form>
-            <execute method="exportReport" program="org.efaps.esjp.sales.SalesProduct4ProviderReport">
-                <property name="Types">Sales_OrderOutbound</property>
-                <!-- <property name="Template">Sales_Products4ProviderReportTemplate</property>-->
-                <property name="ShowDetails">false</property>
+            <form>ERP_ReportFilterForm4DateFromTo</form>
+            <execute method="setFilter" program="org.efaps.esjp.sales.report.ProductABCReport">
+                <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Provider.FilterKey</property>
             </execute>
         </target>
         <property name="Target">modal</property>
-        <property name="TargetShowFile">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_Quotation</property>
+        <property name="TargetMode">edit</property>
+        <property name="Label">report.Filter</property>
+        <property name="TargetTitle">report.Filter</property>
+        <property name="FilterKey">org.efaps.esjp.sales.report.ProductABCReport4Provider.FilterKey</property>
+        <property name="FilterTargetForm">Sales_RetentionBookReportForm</property>
+        <property name="FilterTargetField">report</property>
     </definition>
 </ui-command>

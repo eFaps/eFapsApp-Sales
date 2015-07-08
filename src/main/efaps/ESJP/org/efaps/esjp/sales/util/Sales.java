@@ -28,6 +28,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
+import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
@@ -53,6 +54,20 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ActivateCosting")
                     .description("Allows to activate/deactivate the costing mechanisms.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROV = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4ProductABCReport4Provider")
+                    .description("Configures the ABC Report for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROD = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4ProductABCReport4Product")
+                    .description("Configures the ABC Report for Products..");
 
     /**
      * Singelton.

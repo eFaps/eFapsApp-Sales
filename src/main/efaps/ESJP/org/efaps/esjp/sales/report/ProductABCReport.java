@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 3449 $
- * Last Changed:    $Date: 2009-11-29 18:06:11 -0500 (dom, 29 nov 2009) $
- * Last Changed By: $Author: tim.moxter $
  */
 
 package org.efaps.esjp.sales.report;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
@@ -29,12 +26,11 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * class.
  *
  * @author The eFaps Team
- * @version $Id: Account.java 3449 2009-11-29 23:06:11Z tim.moxter $
  */
 @EFapsUUID("d3abe995-8374-4366-bf68-fd18e49c3878")
-@EFapsRevision("$Rev: 3449 $")
-public class SalesProductABCReport
-    extends SalesProductABCReport_Base
+@EFapsApplication("eFapsApp-Sales")
+public class ProductABCReport
+    extends ProductABCReport_Base
 {
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8120 $
- * Last Changed:    $Date: 2012-10-26 13:21:34 -0500 (vie, 26 oct 2012) $
- * Last Changed By: $Author: jan@moxter.net $
  */
 
 package org.efaps.esjp.sales.report;
@@ -28,25 +25,19 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
+import java.util.Properties;
 
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
-import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -58,28 +49,73 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Account_Base.java 8120 2012-10-26 18:21:34Z jan@moxter.net $
  */
 @EFapsUUID("e04923c1-1095-4be3-acb9-6ac2d3556d0a")
-@EFapsRevision("$Rev: 8120 $")
-public abstract class SalesProductABCReport_Base
+@EFapsApplication("eFapsApp-Sales")
+public abstract class ProductABCReport_Base
+    extends FilteredReport
 {
-    private static final String constantA = "80";
-    private static final String constantB = "15";
-    private static final String constantC = "5";
+    public enum ReportType
+    {
+        PROVIDER,
+        PRODUCT;
+    }
+
+    private ReportType reportType;
+
+    protected void setReportType(final ReportType _reportType)
+    {
+        this.reportType = _reportType;
+    }
+
+
+    @Override
+    protected String getCacheKey(final Parameter _parameter)
+        throws EFapsException
+    {
+        if (this.reportType == null) {
+            final Object ui = _parameter.get(ParameterValues.UIOBJECT);
+            String namestr;
+            if (ui instanceof AbstractCommand) {
+                namestr = ((AbstractCommand) _parameter.get(ParameterValues.UIOBJECT)).getName();
+            } else {
+                namestr = ((IUIValue) _parameter.get(ParameterValues.UIOBJECT)).getField().getCollection().getName();
+            }
+            if (namestr.contains("Provider")) {
+                this.reportType = ReportType.PROVIDER;
+            } else {
+                this.reportType = ReportType.PRODUCT;
+            }
+        }
+        return super.getCacheKey(_parameter) + this.reportType;
+    }
+
 
     public Return exportReport4Product(final Parameter _parameter)
         throws EFapsException
     {
+        setReportType(ReportType.PRODUCT);
         final Return ret = new Return();
-        final String mime = _parameter.getParameterValue("mime");
+        final String mime = getProperty(_parameter, "Mime");
         final AbstractDynamicReport dyRp = getABC4ProductReport(_parameter);
         dyRp.setFileName("ProductABCReport");
         File file = null;
@@ -97,8 +133,9 @@ public abstract class SalesProductABCReport_Base
     public Return exportReport4Provider(final Parameter _parameter)
         throws EFapsException
     {
+        setReportType(ReportType.PROVIDER);
         final Return ret = new Return();
-        final String mime = _parameter.getParameterValue("mime");
+        final String mime = getProperty(_parameter, "Mime");
         final AbstractDynamicReport dyRp = getABC4ProviderReport(_parameter);
         dyRp.setFileName("ProductABC4ProviderReport");
         File file = null;
@@ -109,7 +146,38 @@ public abstract class SalesProductABCReport_Base
         }
         ret.put(ReturnValues.VALUES, file);
         ret.put(ReturnValues.TRUE, true);
+        return ret;
+    }
 
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing html snipplet
+     * @throws EFapsException on error
+     */
+    public Return generateReport4Provider(final Parameter _parameter)
+        throws EFapsException
+    {
+        setReportType(ReportType.PROVIDER);
+        final Return ret = new Return();
+        final AbstractDynamicReport dyRp = getABC4ProviderReport(_parameter);
+        final String html = dyRp.getHtmlSnipplet(_parameter);
+        ret.put(ReturnValues.SNIPLETT, html);
+        return ret;
+    }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return Return containing html snipplet
+     * @throws EFapsException on error
+     */
+    public Return generateReport4Product(final Parameter _parameter)
+        throws EFapsException
+    {
+        setReportType(ReportType.PRODUCT);
+        final Return ret = new Return();
+        final AbstractDynamicReport dyRp = getABC4ProductReport(_parameter);
+        final String html = dyRp.getHtmlSnipplet(_parameter);
+        ret.put(ReturnValues.SNIPLETT, html);
         return ret;
     }
 
@@ -128,29 +196,50 @@ public abstract class SalesProductABCReport_Base
     public class ABC4ProductReport
         extends AbstractDynamicReport
     {
+
+        protected void add2QueryBuilder(final Parameter _parameter,
+                                        final QueryBuilder _queryBldr)
+                                            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilterMap(_parameter);
+            if (filter.containsKey("dateFrom")) {
+                final DateTime date = (DateTime) filter.get("dateFrom");
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date,
+                                date.withTimeAtStartOfDay().minusSeconds(1));
+            }
+            if (filter.containsKey("dateTo")) {
+                final DateTime date = (DateTime) filter.get("dateTo");
+                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date,
+                                date.withTimeAtStartOfDay().plusDays(1));
+            }
+        }
+
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String typesStr = (String) props.get("Types");
-            final String[] types = typesStr.split(";");
-            final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-            final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+            JRRewindableDataSource ret;
+            if (isCached(_parameter)) {
+                ret = getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                ret = new DRDataSource("productInst", "productName", "lines", "linesAbc",
+                                "items", "itemsAbc", "amount", "amountAbc");
 
-            final DRDataSource dataSource = new DRDataSource("productInst", "productName", "lines", "linesAbc",
-                                                        "items", "itemsAbc", "amount", "amountAbc");
+                final Map<String, ProductABC> map = new HashMap<String, ProductABC>();
+                BigDecimal netPriceSum = BigDecimal.ZERO;
+                BigDecimal quantitySum = BigDecimal.ZERO;
+                BigDecimal linesSum = BigDecimal.ZERO;
+                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter,
+                                Sales.PRODUCTABCREPORT4PROD.get());
+                add2QueryBuilder(_parameter, attrQueryBldr);
 
-            final Map<String, ProductABC> map = new HashMap<String, ProductABC>();
-            BigDecimal netPriceSum = BigDecimal.ZERO;
-            BigDecimal quantitySum = BigDecimal.ZERO;
-            BigDecimal linesSum = BigDecimal.ZERO;
-            for (final String type : types) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
-                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
-                attrQueryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1));
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
-
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
                 queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink, attrQuery);
 
@@ -160,13 +249,13 @@ public abstract class SalesProductABCReport_Base
                                 CISales.PositionSumAbstract.UoM);
 
                 final SelectBuilder selProductInst = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.Product).instance();
+                                .linkto(CISales.PositionSumAbstract.Product).instance();
                 final SelectBuilder selProductName = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.Product)
-                                        .attribute(CIProducts.ProductAbstract.Name);
+                                .linkto(CISales.PositionSumAbstract.Product)
+                                .attribute(CIProducts.ProductAbstract.Name);
                 final SelectBuilder selProductDesc = new SelectBuilder()
-                                        .linkto(CISales.PositionSumAbstract.Product)
-                                        .attribute(CIProducts.ProductAbstract.Description);
+                                .linkto(CISales.PositionSumAbstract.Product)
+                                .attribute(CIProducts.ProductAbstract.Description);
 
                 multi.addSelect(selProductInst, selProductName, selProductDesc);
                 multi.execute();
@@ -177,55 +266,56 @@ public abstract class SalesProductABCReport_Base
                     final String productDesc = multi.<String>getSelect(selProductDesc);
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
                     final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)
-                                            .multiply(new BigDecimal(uoM.getNumerator()))
-                                            .divide(new BigDecimal(uoM.getDenominator()), 4, BigDecimal.ROUND_HALF_UP);
+                                    .multiply(new BigDecimal(uoM.getNumerator()))
+                                    .divide(new BigDecimal(uoM.getDenominator()), 4, BigDecimal.ROUND_HALF_UP);
                     final BigDecimal netPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetPrice);
                     if (map.containsKey(productInst.getOid())) {
                         final ProductABC prodAbc = map.get(productInst.getOid());
                         prodAbc.addElements(quantity, netPrice);
                     } else {
                         final ProductABC prodAbc = new ProductABC(productInst, productName,
-                                                                    productDesc, quantity, netPrice);
+                                        productDesc, quantity, netPrice);
                         map.put(productInst.getOid(), prodAbc);
                     }
                     netPriceSum = netPriceSum.add(netPrice);
                     quantitySum = quantitySum.add(quantity);
                 }
 
-            }
-            final List<ProductABC> lst = new ArrayList<ProductABC>();
-            lst.addAll(map.values());
+                final List<ProductABC> lst = new ArrayList<ProductABC>();
+                lst.addAll(map.values());
 
-            setLinesAbc(lst, linesSum);
-            setItemsAbc(lst, quantitySum);
-            setAmountAbc(lst, netPriceSum);
+                setLinesAbc(lst, linesSum);
+                setItemsAbc(lst, quantitySum);
+                setAmountAbc(lst, netPriceSum);
 
-            Collections.sort(lst, new Comparator<ProductABC>()
-            {
-                @Override
-                public int compare(final ProductABC _o1,
-                                   final ProductABC _o2)
+                Collections.sort(lst, new Comparator<ProductABC>()
                 {
-                    final int ret;
-                    final String name1 = _o1.getName();
-                    final String name2 = _o2.getName();
-                    ret = name1.compareTo(name2);
-                    return ret;
+
+                    @Override
+                    public int compare(final ProductABC _o1,
+                                       final ProductABC _o2)
+                    {
+                        final int ret;
+                        final String name1 = _o1.getName();
+                        final String name2 = _o2.getName();
+                        ret = name1.compareTo(name2);
+                        return ret;
+                    }
+                });
+
+                for (final ProductABC prod : lst) {
+                   ((DRDataSource) ret).add(prod.getInstance(),
+                                    prod.getName() + ": " + prod.getDesc(),
+                                    prod.getLines(),
+                                    prod.getLinesABC(),
+                                    prod.getItems(),
+                                    prod.getItemsABC(),
+                                    prod.getAmount(),
+                                    prod.getAmountABC());
                 }
-            });
-
-            for (final ProductABC prod : lst) {
-                dataSource.add(prod.getInstance(),
-                                prod.getName() + ": " + prod.getDesc(),
-                                prod.getLines(),
-                                prod.getLinesABC(),
-                                prod.getItems(),
-                                prod.getItemsABC(),
-                                prod.getAmount(),
-                                prod.getAmountABC());
+                cache(_parameter, ret);
             }
-
-            return dataSource;
+            return ret;
         }
 
         @Override
@@ -276,26 +366,47 @@ public abstract class SalesProductABCReport_Base
     public class ABC4ProviderReport
         extends AbstractDynamicReport
     {
+        protected void add2QueryBuilder(final Parameter _parameter,
+                                        final QueryBuilder _queryBldr)
+                                            throws EFapsException
+        {
+            final Map<String, Object> filter = getFilterMap(_parameter);
+            if (filter.containsKey("dateFrom")) {
+                final DateTime date = (DateTime) filter.get("dateFrom");
+                _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date,
+                                date.withTimeAtStartOfDay().minusSeconds(1));
+            }
+            if (filter.containsKey("dateTo")) {
+                final DateTime date = (DateTime) filter.get("dateTo");
+                _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date,
+                                date.withTimeAtStartOfDay().plusDays(1));
+            }
+        }
+
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-            final String typesStr = (String) props.get("Types");
-            final String[] types = typesStr.split(";");
-            final DateTime dateFrom = new DateTime(_parameter.getParameterValue("dateFrom"));
-            final DateTime dateTo = new DateTime(_parameter.getParameterValue("dateTo"));
+            JRRewindableDataSource ret;
+            if (isCached(_parameter)) {
+                ret = getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            } else {
+                ret = new DRDataSource("contactInst", "contactName", "lines", "linesAbc",
+                                                                "amount", "amountAbc");
 
-            final DRDataSource dataSource = new DRDataSource("contactInst", "contactName", "lines", "linesAbc",
-                                                            "amount", "amountAbc");
+                final Map<String, ProductABC> map = new HashMap<String, ProductABC>();
+                BigDecimal netPriceSum = BigDecimal.ZERO;
+                BigDecimal linesSum = BigDecimal.ZERO;
 
-            final Map<String, ProductABC> map = new HashMap<String, ProductABC>();
-            BigDecimal netPriceSum = BigDecimal.ZERO;
-            BigDecimal linesSum = BigDecimal.ZERO;
-            for (final String type : types) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(Type.get(type));
-                attrQueryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
-                attrQueryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1));
+                final QueryBuilder attrQueryBldr = getQueryBldrFromProperties(_parameter,
+                                Sales.PRODUCTABCREPORT4PROV.get());
+                add2QueryBuilder(_parameter, attrQueryBldr);
                 final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
 
                 final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
@@ -330,38 +441,39 @@ public abstract class SalesProductABCReport_Base
                     netPriceSum = netPriceSum.add(netPrice);
                     linesSum = linesSum.add(BigDecimal.ONE);
                 }
-            }
 
-            final List<ProductABC> lst = new ArrayList<ProductABC>();
-            lst.addAll(map.values());
 
-            setLinesAbc(lst, linesSum);
-            setAmountAbc(lst, netPriceSum);
+                final List<ProductABC> lst = new ArrayList<ProductABC>();
+                lst.addAll(map.values());
 
-            Collections.sort(lst, new Comparator<ProductABC>()
-            {
-                @Override
-                public int compare(final ProductABC _o1,
-                                   final ProductABC _o2)
+                setLinesAbc(lst, linesSum);
+                setAmountAbc(lst, netPriceSum);
+
+                Collections.sort(lst, new Comparator<ProductABC>()
                 {
-                    final int ret;
-                    final String name1 = _o1.getName();
-                    final String name2 = _o2.getName();
-                    ret = name1.compareTo(name2);
-                    return ret;
+                    @Override
+                    public int compare(final ProductABC _o1,
+                                       final ProductABC _o2)
+                    {
+                        final int ret;
+                        final String name1 = _o1.getName();
+                        final String name2 = _o2.getName();
+                        ret = name1.compareTo(name2);
+                        return ret;
+                    }
+                });
+
+                for (final ProductABC prod : lst) {
+                    ((DRDataSource) ret).add(prod.getInstance(),
+                                    prod.getName(),
+                                    prod.getLines(),
+                                    prod.getLinesABC(),
+                                    prod.getAmount(),
+                                    prod.getAmountABC());
                 }
-            });
-
-            for (final ProductABC prod : lst) {
-                dataSource.add(prod.getInstance(),
-                                prod.getName(),
-                                prod.getLines(),
-                                prod.getLinesABC(),
-                                prod.getAmount(),
-                                prod.getAmountABC());
+                cache(_parameter, ret);
             }
-
-            return dataSource;
+            return ret;
         }
 
         @Override
@@ -403,16 +515,24 @@ public abstract class SalesProductABCReport_Base
 
     protected void setLinesAbc(final List<ProductABC> _lst,
                                final BigDecimal _lines)
+        throws EFapsException
     {
-        final BigDecimal valueA = _lines.multiply(new BigDecimal(SalesProductABCReport_Base.constantA))
-                                            .divide(new BigDecimal(100));
-        final BigDecimal valueB = valueA.add(_lines.multiply(new BigDecimal(SalesProductABCReport_Base.constantB))
-                                            .divide(new BigDecimal(100)));
-        final BigDecimal valueC = valueB.add(_lines.multiply(new BigDecimal(SalesProductABCReport_Base.constantC))
-                                            .divide(new BigDecimal(100)));
+        Properties props;
+        if (this.reportType.equals(ReportType.PRODUCT)) {
+            props = Sales.PRODUCTABCREPORT4PROD.get();
+        } else {
+            props = Sales.PRODUCTABCREPORT4PROV.get();
+        }
+        final String constantA = props.getProperty("PercentA", "80");
+        final String constantB = props.getProperty("PercentB", "5");
+
+        final BigDecimal valueA = _lines.multiply(new BigDecimal(constantA)).divide(new BigDecimal(100));
+        final BigDecimal valueB = _lines.subtract(_lines.multiply(
+                        new BigDecimal(constantB)).divide(new BigDecimal(100)));
 
         Collections.sort(_lst, new Comparator<ProductABC>()
         {
+
             @Override
             public int compare(final ProductABC _o1,
                                final ProductABC _o2)
@@ -426,13 +546,15 @@ public abstract class SalesProductABCReport_Base
         });
 
         BigDecimal contLines = BigDecimal.ZERO;
+        boolean first = true;
         for (final ProductABC prod : _lst) {
             contLines = contLines.add(prod.getLines());
-            if (valueA.compareTo(contLines) >= 0) {
+            if (first || contLines.compareTo(valueA) < 0) {
                 prod.setLinesABC("A");
-            } else if (valueA.compareTo(contLines) < 0 && valueB.compareTo(contLines) >= 0) {
+                first = false;
+            } else if (contLines.compareTo(valueB) < 0) {
                 prod.setLinesABC("B");
-            } else if (valueB.compareTo(contLines) < 0 && valueC.compareTo(contLines) >= 0) {
+            } else {
                 prod.setLinesABC("C");
             }
         }
@@ -440,13 +562,20 @@ public abstract class SalesProductABCReport_Base
 
     protected void setItemsAbc(final List<ProductABC> _lst,
                                final BigDecimal _items)
+        throws EFapsException
     {
-        final BigDecimal valueA = _items.multiply(new BigDecimal(SalesProductABCReport_Base.constantA))
-                                            .divide(new BigDecimal(100));
-        final BigDecimal valueB = valueA.add(_items.multiply(new BigDecimal(SalesProductABCReport_Base.constantB))
-                                            .divide(new BigDecimal(100)));
-        final BigDecimal valueC = valueB.add(_items.multiply(new BigDecimal(SalesProductABCReport_Base.constantC))
-                                            .divide(new BigDecimal(100)));
+        Properties props;
+        if (this.reportType.equals(ReportType.PRODUCT)) {
+            props = Sales.PRODUCTABCREPORT4PROD.get();
+        } else {
+            props = Sales.PRODUCTABCREPORT4PROV.get();
+        }
+        final String constantA =  props.getProperty("PercentA", "80");
+        final String constantB = props.getProperty("PercentB", "5");
+
+        final BigDecimal valueA = _items.multiply(new BigDecimal(constantA)).divide(new BigDecimal(100));
+        final BigDecimal valueB = _items.subtract(_items.multiply(
+                        new BigDecimal(constantB)).divide(new BigDecimal(100)));
 
         Collections.sort(_lst, new Comparator<ProductABC>()
         {
@@ -463,13 +592,15 @@ public abstract class SalesProductABCReport_Base
         });
 
         BigDecimal contItems = BigDecimal.ZERO;
+        boolean first = true;
         for (final ProductABC prod : _lst) {
             contItems = contItems.add(prod.getItems());
-            if (valueA.compareTo(contItems) >= 0) {
+            if (first || contItems.compareTo(valueA) < 0) {
                 prod.setItemsABC("A");
-            } else if (valueA.compareTo(contItems) < 0 && valueB.compareTo(contItems) >= 0) {
+                first = false;
+            } else if (contItems.compareTo(valueB) < 0) {
                 prod.setItemsABC("B");
-            } else if (valueB.compareTo(contItems) < 0 && valueC.compareTo(contItems) >= 0) {
+            } else {
                 prod.setItemsABC("C");
             }
         }
@@ -477,13 +608,22 @@ public abstract class SalesProductABCReport_Base
 
     protected void setAmountAbc(final List<ProductABC> _lst,
                                final BigDecimal _amount)
+        throws EFapsException
     {
-        final BigDecimal valueA = _amount.multiply(new BigDecimal(SalesProductABCReport_Base.constantA))
+        Properties props;
+        if (this.reportType.equals(ReportType.PRODUCT)) {
+            props = Sales.PRODUCTABCREPORT4PROD.get();
+        } else {
+            props = Sales.PRODUCTABCREPORT4PROV.get();
+        }
+        final String constantA =  props.getProperty("PercentA", "80");
+        final String constantB =  props.getProperty("PercentB", "5");
+
+        final BigDecimal valueA = _amount.multiply(new BigDecimal(constantA))
                                             .divide(new BigDecimal(100));
-        final BigDecimal valueB = valueA.add(_amount.multiply(new BigDecimal(SalesProductABCReport_Base.constantB))
+        final BigDecimal valueB = _amount.subtract(_amount.multiply(new BigDecimal(constantB))
                                             .divide(new BigDecimal(100)));
-        final BigDecimal valueC = valueB.add(_amount.multiply(new BigDecimal(SalesProductABCReport_Base.constantC))
-                                            .divide(new BigDecimal(100)));
+
 
         Collections.sort(_lst, new Comparator<ProductABC>()
         {
@@ -500,13 +640,15 @@ public abstract class SalesProductABCReport_Base
         });
 
         BigDecimal contAmount = BigDecimal.ZERO;
+        boolean first = true;
         for (final ProductABC prod : _lst) {
             contAmount = contAmount.add(prod.getAmount());
-            if (valueA.compareTo(contAmount) >= 0) {
+            if (first || contAmount.compareTo(valueA) < 0) {
                 prod.setAmountABC("A");
-            } else if (valueA.compareTo(contAmount) < 0 && valueB.compareTo(contAmount) >= 0) {
+                first = false;
+            } else if (contAmount.compareTo(valueB) < 0) {
                 prod.setAmountABC("B");
-            } else if (valueB.compareTo(contAmount) < 0 && valueC.compareTo(contAmount) >= 0) {
+            } else {
                 prod.setAmountABC("C");
             }
         }
@@ -521,6 +663,7 @@ public abstract class SalesProductABCReport_Base
         private String linesABC;
         private BigDecimal items;
         private String itemsABC;
+
         private BigDecimal amount;
         private String amountABC;
 
@@ -589,10 +732,7 @@ public abstract class SalesProductABCReport_Base
             return this.itemsABC;
         }
 
-        /**
-         * @param itemsABC the itemsABC to set
-         */
-        private void setItemsABC(final String itemsABC)
+        public void setItemsABC(final String itemsABC)
         {
             this.itemsABC = itemsABC;
         }

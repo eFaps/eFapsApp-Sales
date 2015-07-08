@@ -17,25 +17,18 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b930c173-5edd-42f2-afba-48157841c96a</uuid>
+    <uuid>e772eb8f-5d24-45b2-a34b-d38be1072f1a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Product4Provider_Report</name>
+        <name>Sales_ProductABCReport4ProductMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_Product4Provider_ReportForm</form>
-            <execute method="exportReport" program="org.efaps.esjp.sales.SalesProduct4ProviderReport">
-                <property name="Types">Sales_OrderOutbound</property>
-                <!-- <property name="Template">Sales_Products4ProviderReportTemplate</property>-->
-                <property name="ShowDetails">false</property>
-            </execute>
+            <menu>Sales_ProductABCReport4ProductMyDesk_Menu</menu>
+            <form>Sales_ProductABCReport4ProductForm</form>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetShowFile">true</property>
-        <property name="TargetMode">create</property>
-        <property name="TargetCreateType">Sales_Quotation</property>
-    </definition>
+        <property name="Target">content</property>
+     </definition>
 </ui-command>
