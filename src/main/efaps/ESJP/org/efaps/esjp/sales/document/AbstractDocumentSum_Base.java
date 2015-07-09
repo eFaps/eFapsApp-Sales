@@ -1184,7 +1184,7 @@ public abstract class AbstractDocumentSum_Base
 
                 final Currency currency = new Currency();
                 final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, dateStr, rateCurrInst);
-                final BigDecimal rate = rateInfo.getRate();
+                 final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, docInst.getType().getName());
 
                 final DecimalFormat frmt = NumberFormatter.get().getFormatter();
 
@@ -1267,16 +1267,14 @@ public abstract class AbstractDocumentSum_Base
         final Instance docInst = _parameter.getInstance();
         if (docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
             final PrintQuery print = new PrintQuery(docInst);
-            print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId,
-                            CISales.DocumentSumAbstract.CurrencyId);
+            print.addAttribute(CISales.DocumentSumAbstract.RateCurrencyId);
             print.execute();
 
-            final Instance targetCurrInst = Instance.get(CIERP.Currency.getType(),
-                            print.<Long> getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
-            final PriceUtil priceUtil = new PriceUtil();
-            final BigDecimal[] rates = priceUtil.getExchangeRate(priceUtil.getDateFromParameter(_parameter),
-                            targetCurrInst);
-            final BigDecimal rate = rates[1];
+            final CurrencyInst curInst = CurrencyInst
+                            .get(print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+            final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter,
+                            _parameter.getParameterValue("date_eFapsDate"), curInst.getInstance());
+            final BigDecimal rate = RateInfo.getRateUI(_parameter, rateInfo, docInst.getType().getName());
 
             final DecimalFormat formater = (DecimalFormat) NumberFormat.getInstance(
                             Context.getThreadContext().getLocale());
