@@ -69,6 +69,35 @@ public final class Sales
                     .key(BASE + "Config4ProductABCReport4Product")
                     .description("Configures the ABC Report for Products..");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.CreateFromOrderOutbound")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and Order Outbound.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create Incoming Invoice from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKET= new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.CreateFromRecievingTicket")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and Recieving Ticket.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKETAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.CreateFromRecievingTicketAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of RecievingTicket to create Incoming Invoice from.");
+
+
     /**
      * Singelton.
      */

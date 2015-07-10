@@ -33,11 +33,9 @@ import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsRevision;
@@ -47,20 +45,17 @@ import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
-import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
-import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.common.uiform.Field;
-import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
-import org.efaps.esjp.common.uiform.Field_Base.ListType;
 import org.efaps.esjp.common.uitable.MultiPrint;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.IWarning;
@@ -71,7 +66,6 @@ import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
-import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -112,43 +106,10 @@ public abstract class IncomingInvoice_Base
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
-        connect2RecievingTicket(_parameter, createdDoc);
         registerPurchasePrices(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         createUpdateTaxDoc(_parameter, createdDoc, false);
         return new Return();
-    }
-
-    /**
-     * Method to connect the document with the selected document type.
-     *
-     * @param _parameter    Parameter as passed from the eFaps API
-     * @param _createdDoc   CreatedDoc  to be connected
-     * @throws EFapsException on error
-     */
-    @Override
-    protected List<Instance> connect2Derived(final Parameter _parameter,
-                                   final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final List<Instance> ret = super.connect2Derived(_parameter, _createdDoc);
-        final String[] deriveds = _parameter.getParameterValues("derived");
-        if (deriveds != null) {
-            for (final String derived : deriveds) {
-                final Instance derivedInst = Instance.get(derived);
-                if (derivedInst.isValid() && _createdDoc.getInstance().isValid()
-                                && derivedInst.getType().isKindOf(CISales.OrderOutbound.getType())) {
-                    final Insert insert = new Insert(CISales.OrderOutbound2IncomingInvoice);
-                    insert.add(CISales.OrderOutbound2IncomingInvoice.FromLink, derivedInst);
-                    insert.add(CISales.OrderOutbound2IncomingInvoice.ToLink, _createdDoc.getInstance());
-                    insert.execute();
-                    if (ret.contains(derivedInst)) {
-                        ret.add(derivedInst);
-                    }
-                }
-            }
-        }
-        return ret;
     }
 
     /**
@@ -267,121 +228,6 @@ public abstract class IncomingInvoice_Base
 
         return new Return();
     }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public Return updateFields4Contact(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Return();
-        final Return tmps = super.updateFields4Contact(_parameter);
-
-        final List<Map<String, String>> list = (List<Map<String, String>>) tmps.get(ReturnValues.VALUES);
-
-        final String value = _parameter.getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.contact.name);
-        final Instance instance = value.contains(".") ? Instance.get(value)
-                        : Instance.get(CIContacts.Contact.getType(), value);
-
-        final Map<String, String> map = new HashMap<String, String>();
-        map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), getJS4RecievingTicket(_parameter, instance).toString());
-        list.add(map);
-        ret.put(ReturnValues.VALUES, list);
-
-        final Map<Object, Object> props = (Map<Object, Object>) _parameter.get(ParameterValues.PROPERTIES);
-        props.remove("FieldName");
-        return ret;
-    }
-
-    /**
-     * @param _parameter Parameter from the eFaps API.
-     *  @param _instance instance
-     * @return new Return.
-     * @throws EFapsException on error.
-     *
-     */
-    protected StringBuilder getJS4RecievingTicket(final Parameter _parameter,
-                                                  final Instance _instance)
-        throws EFapsException
-    {
-        final List<Instance> selInstances = getInstances4Derived(_parameter);
-        final Parameter paraClone = ParameterUtil.clone(_parameter);
-        ParameterUtil.setProperty(paraClone, "FieldName", CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
-
-        final StringBuilder ret = new StringBuilder();
-        final Field field = new Field();
-        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.RecievingTicket);
-        queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Status,
-                        Status.find(CISales.RecievingTicketStatus.Open));
-
-        if (_instance.getType().isKindOf(CIContacts.Contact.getType())) {
-            queryBldr.addWhereAttrEqValue(CISales.RecievingTicket.Contact, _instance);
-        } else if (_instance.getType().isKindOf(CISales.OrderOutbound.getType())
-                        || _instance.getType().isKindOf(CISales.ServiceOrderOutbound.getType())) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2DerivativeDocument);
-            attrQueryBldr.addWhereAttrEqValue(CISales.Document2DerivativeDocument.From, _instance);
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DerivativeDocument.To);
-            queryBldr.addWhereAttrInQuery(CISales.RecievingTicket.ID, attrQuery);
-        }
-
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.RecievingTicket.Name, CISales.RecievingTicket.Date);
-        multi.execute();
-        while (multi.next()) {
-            final String name = multi.<String>getAttribute(CISales.RecievingTicket.Name);
-            final DateTime date = multi.<DateTime>getAttribute(CISales.RecievingTicket.Date);
-            final String option = name + " "
-                            + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
-            final DropDownPosition dropDown = field
-                            .getDropDownPosition(paraClone, multi.getCurrentInstance().getOid(), option);
-            if (selInstances.contains(multi.getCurrentInstance())) {
-                dropDown.setSelected(true);
-            }
-            values.add(dropDown);
-        }
-        final StringBuilder html = field.getInputField(paraClone, values, ListType.CHECKBOX);
-        ret.append("if (document.getElementsByName('")
-            .append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name).append("')[0]) {\n")
-            .append("document.getElementsByName('").append(CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name)
-            .append("')[0].innerHTML='").append(html).append("';")
-            .append("}\n");
-        return ret;
-    }
-
-    @Override
-    protected StringBuilder add2JavaScript4Document(final Parameter _parameter,
-                                                    final List<Instance> _instances)
-        throws EFapsException
-    {
-        final StringBuilder ret = super.add2JavaScript4Document(_parameter, _instances);
-        ret.append(getJS4RecievingTicket(_parameter, _instances.get(0)));
-        return ret;
-    }
-
-    /**
-     * @param _parameter    Parameter as passed by the eFaps API
-     * @param _createdDoc   created doc
-     * @throws EFapsException on error
-     */
-    protected void connect2RecievingTicket(final Parameter _parameter,
-                                           final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final String[] tickets = _parameter.getParameterValues(
-                        CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name);
-        if (tickets != null) {
-            for (final String oid : tickets) {
-                final Instance ticketInst = Instance.get(oid);
-                if (ticketInst.isValid()) {
-                    final Insert insert = new Insert(CISales.IncomingInvoice2RecievingTicket);
-                    insert.add(CISales.IncomingInvoice2RecievingTicket.FromLink, _createdDoc.getInstance());
-                    insert.add(CISales.IncomingInvoice2RecievingTicket.ToLink, ticketInst);
-                    insert.execute();
-                }
-            }
-        }
-    }
-
 
     /**
      * @param _parameter    Parameter as passed by the eFaps API
@@ -558,6 +404,49 @@ public abstract class IncomingInvoice_Base
             } catch (final ParseException e) {
                 IncomingInvoice_Base.LOG.error("Catched parsing error", e);
             }
+        }
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        if (Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICEFROMORDEROUTBOUNDAC.get();
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_IncomingInvoiceForm.orderOutbounds.name, queryBldr));
+        }
+        if (Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get()) {
+            final Properties props = Sales.INCOMINGINVOICEFROMRECIEVINGTICKETAC.get();
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name, queryBldr));
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICEFROMORDEROUTBOUNDAC.get();
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_IncomingInvoiceForm.orderOutbounds.name, queryBldr));
+        }
+        if (Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get()) {
+            final Properties props = Sales.INCOMINGINVOICEFROMRECIEVINGTICKETAC.get();
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name, queryBldr));
         }
     }
 

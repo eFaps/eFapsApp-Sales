@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,21 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>afaf3916-ef05-4ae0-b3d1-3ee571e5a92c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -46,6 +37,18 @@
             <form>Sales_IncomingInvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
+
+                <!-- Sales_IncomingInvoice2RecievingTicket -->
+                <property name="ConnectType">a5d2c2c5-a272-49e8-8b15-5174ac0f6a4a</property>
+                <property name="ConnectCurrentLink">FromLink</property>
+                <property name="ConnectForeignLink">ToLink</property>
+                <property name="ConnectForeignField">recievingTickets</property>
+
+                <!-- Sales_OrderOutbound2IncomingInvoice -->
+                <property name="ConnectType01">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">orderOutbounds</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation01">NAME</property>
@@ -84,11 +87,24 @@
             <form>Sales_IncomingInvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
+
+                <!-- Sales_IncomingInvoice2RecievingTicket -->
+                <property name="ConnectType">a5d2c2c5-a272-49e8-8b15-5174ac0f6a4a</property>
+                <property name="ConnectCurrentLink">FromLink</property>
+                <property name="ConnectForeignLink">ToLink</property>
+                <property name="ConnectForeignField">recievingTickets</property>
+
+                <!-- Sales_OrderOutbound2IncomingInvoice -->
+                <property name="ConnectType01">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">orderOutbounds</property>
+
                 <!-- Projects_ProjectService2IncomingInvoice -->
-                <property name="ConnectType">006219c0-4197-4584-9073-dd10aeca9edc</property>
-                <property name="ConnectCurrentLink">ToLink</property>
-                <property name="ConnectForeignLink">FromLink</property>
-                <property name="ConnectForeignField">project</property>
+                <property name="ConnectType02">006219c0-4197-4584-9073-dd10aeca9edc</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation01">NAME</property>
@@ -127,17 +143,30 @@
             <form>Sales_IncomingInvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="create">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
-                <!-- Projects_ProjectService2IncomingInvoice -->
-                <property name="ConnectType">006219c0-4197-4584-9073-dd10aeca9edc</property>
-                <property name="ConnectCurrentLink">ToLink</property>
-                <property name="ConnectForeignLink">FromLink</property>
-                <property name="ConnectForeignField">project</property>
 
-                <!-- Sales_HumanResource_Department2IncomingInvoice -->
-                <property name="ConnectType01">3daec8e6-f8f6-4cfc-9d0a-c6c967f97228</property>
+                <!-- Sales_IncomingInvoice2RecievingTicket -->
+                <property name="ConnectType">a5d2c2c5-a272-49e8-8b15-5174ac0f6a4a</property>
+                <property name="ConnectCurrentLink">FromLink</property>
+                <property name="ConnectForeignLink">ToLink</property>
+                <property name="ConnectForeignField">recievingTickets</property>
+
+                <!-- Sales_OrderOutbound2IncomingInvoice -->
+                <property name="ConnectType01">2a04c980-ad79-40eb-9c7e-0695b367d24a</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
-                <property name="ConnectForeignField01">department</property>
+                <property name="ConnectForeignField01">orderOutbounds</property>
+
+                <!-- Projects_ProjectService2IncomingInvoice -->
+                <property name="ConnectType02">006219c0-4197-4584-9073-dd10aeca9edc</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">project</property>
+
+                <!-- Sales_HumanResource_Department2IncomingInvoice -->
+                <property name="ConnectType03">3daec8e6-f8f6-4cfc-9d0a-c6c967f97228</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">department</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation01">NAME</property>
