@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -38,13 +35,14 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -75,10 +73,9 @@ import org.slf4j.LoggerFactory;
  * Base class for Type Incoming Invoice.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("f7d75f38-5ac8-4bf4-9609-6226ac82fea3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingInvoice_Base
     extends AbstractDocumentSum
 {
@@ -448,6 +445,41 @@ public abstract class IncomingInvoice_Base
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.recievingTickets.name, queryBldr));
         }
+    }
+
+    @Override
+    protected boolean  docIsSelected4JS4Doc4Contact(final Parameter _parameter,
+                                                    final Instance _docInst)
+        throws EFapsException
+    {
+        boolean ret = super.docIsSelected4JS4Doc4Contact(_parameter, _docInst);
+        // not marked selected already but it is an order Outbound or a recieving ticket makr related
+        if (!ret && Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get() && Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()
+                        && (_docInst.getType().isCIType(CISales.OrderOutbound)
+                        ||  _docInst.getType().isCIType(CISales.RecievingTicket))) {
+            final boolean isOrder = _docInst.getType().isCIType(CISales.OrderOutbound);
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.OrderOutbound2RecievingTicket);
+            SelectBuilder selInst;
+            if (isOrder) {
+                queryBldr.addWhereAttrEqValue(CISales.OrderOutbound2RecievingTicket.ToLink,
+                                getInstances4Derived(_parameter).toArray());
+                selInst = SelectBuilder.get().linkto(CISales.OrderOutbound2RecievingTicket.FromLink).instance();
+            } else {
+                queryBldr.addWhereAttrEqValue(CISales.OrderOutbound2RecievingTicket.FromLink,
+                                getInstances4Derived(_parameter).toArray());
+                selInst = SelectBuilder.get().linkto(CISales.OrderOutbound2RecievingTicket.ToLink).instance();
+            }
+            final MultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+            multi.addSelect(selInst);
+            multi.execute();
+            while (multi.next()) {
+                ret = _docInst.equals(multi.<Instance>getSelect(selInst));
+                if (ret) {
+                    break;
+                }
+            }
+        }
+        return ret;
     }
 
     /**

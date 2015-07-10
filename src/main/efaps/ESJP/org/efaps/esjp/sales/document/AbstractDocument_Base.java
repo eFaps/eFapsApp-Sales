@@ -3320,13 +3320,37 @@ public abstract class AbstractDocument_Base
         }
     }
 
+    /**
+     * Checks is a document is selected
+     * by {@link #getJS4Doc4Contact(Parameter, Instance, String, QueryBuilder)}.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the instance of document that must be checked for selected
+     * @return the selected instances4 j s4 doc4 contact
+     */
+    protected boolean docIsSelected4JS4Doc4Contact(final Parameter _parameter,
+                                                   final Instance _docInst)
+         throws EFapsException
+    {
+        return getInstances4Derived(_parameter).contains(_docInst);
+    }
+
+    /**
+     * Gets the j s4 doc4 contact.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the _instance
+     * @param _fieldName the _field name
+     * @param _queryBldr the QueryBuilder
+     * @return the javascript part
+     * @throws EFapsException on error
+     */
     protected StringBuilder getJS4Doc4Contact(final Parameter _parameter,
                                               final Instance _instance,
                                               final String _fieldName,
                                               final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        final List<Instance> selInstances = getInstances4Derived(_parameter);
         final Parameter paraClone = ParameterUtil.clone(_parameter);
         ParameterUtil.setProperty(paraClone, "FieldName", _fieldName);
 
@@ -3354,7 +3378,7 @@ public abstract class AbstractDocument_Base
                             + (date == null ? "" : date.toString("dd/MM/yyyy", Context.getThreadContext().getLocale()));
             final DropDownPosition dropDown = field
                             .getDropDownPosition(paraClone, multi.getCurrentInstance().getOid(), option);
-            if (selInstances.contains(multi.getCurrentInstance())) {
+            if (docIsSelected4JS4Doc4Contact(_parameter, multi.getCurrentInstance())) {
                 dropDown.setSelected(true);
             }
             values.add(dropDown);
