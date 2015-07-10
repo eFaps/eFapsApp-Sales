@@ -1184,7 +1184,8 @@ public abstract class AbstractDocumentSum_Base
 
                 final Currency currency = new Currency();
                 final RateInfo rateInfo = currency.evaluateRateInfo(_parameter, dateStr, rateCurrInst);
-                 final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, docInst.getType().getName());
+                final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, docInst.getType().getName());
+                final Object[] rateObj = RateInfo.getRateObject(_parameter, rateInfo, docInst.getType().getName());
 
                 final DecimalFormat frmt = NumberFormatter.get().getFormatter();
 
@@ -1231,7 +1232,7 @@ public abstract class AbstractDocumentSum_Base
                     update.add(CISales.PositionSumAbstract.DiscountNetUnitPrice, calc.getDiscountNetUnitPrice()
                                     .divide(rate, BigDecimal.ROUND_HALF_UP).setScale(uScale, BigDecimal.ROUND_HALF_UP));
                     update.add(CISales.PositionSumAbstract.CurrencyId, baseCurrInst.getId());
-                    update.add(CISales.PositionSumAbstract.Rate, rateInfo.getRateObject());
+                    update.add(CISales.PositionSumAbstract.Rate, rateObj);
                     update.execute();
                 }
                 // update the base values for the document
@@ -1245,7 +1246,7 @@ public abstract class AbstractDocumentSum_Base
                 final BigDecimal crossTotal = getCrossTotal(_parameter, calcList).divide(rate, BigDecimal.ROUND_HALF_UP)
                             .setScale(scale, BigDecimal.ROUND_HALF_UP);
                 update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
-                update.add(CISales.DocumentSumAbstract.Rate, rateInfo.getRateObject());
+                update.add(CISales.DocumentSumAbstract.Rate, rateObj);
                 update.execute();
             }
         }
