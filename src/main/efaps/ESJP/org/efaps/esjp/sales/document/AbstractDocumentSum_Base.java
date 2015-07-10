@@ -824,10 +824,12 @@ public abstract class AbstractDocumentSum_Base
         final StringBuilder js = new StringBuilder();
         final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, newCurrInst);
 
-        js.append(getSetFieldValue(0, "rateCurrencyData", rateInfo.getRateUIFrmt()))
-            .append(getSetFieldValue(0, "rate", rateInfo.getRateUIFrmt()))
-            .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
-                            Boolean.toString(rateInfo.isInvert())));
+        js.append(getSetFieldValue(0, "rateCurrencyData",
+                        RateInfo.getRateUIFrmt(_parameter, rateInfo, getTypeName4SysConf(_parameter))))
+                        .append(getSetFieldValue(0, "rate",
+                                        RateInfo.getRateUIFrmt(_parameter, rateInfo, getTypeName4SysConf(_parameter))))
+                        .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
+                                        Boolean.toString(rateInfo.isInvert())));
 
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         list.add(map);
