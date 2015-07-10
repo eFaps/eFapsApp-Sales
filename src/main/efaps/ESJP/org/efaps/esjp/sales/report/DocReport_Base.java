@@ -54,7 +54,7 @@ import org.efaps.esjp.common.jasperreport.EFapsMapDataSource;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
-import org.efaps.esjp.erp.Rate;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -92,40 +92,23 @@ public abstract class DocReport_Base
     public enum Field
     {
         /** Date of the report (used only in accounting for ple). */
-        REPORT_DATE("report_date"),
-        /** */
-        DOC_DATE("date"),
-        /** */
-        DOC_DUEDATE("dueDate"),
-        /** */
-        DOC_DOCTYPE("documentType"),
-        /** */
-        DOC_NAME("name"),
-        /** */
-        DOC_SN("docSerialNo"),
-        /** */
-        DOC_NUMBER("docNumber"),
-        /** */
-        DOC_TAXNUM("taxNumber"),
-        /** */
-        DOC_CONTACT("contact"),
-        /** */
-        DOC_CROSSTOTAL("crossTotal"),
-        /** */
-        DOC_NETTOTAL("netTotal"),
-        /** */
-        DOC_IGV("igv"),
-        /** */
-        DOC_EXPORT("export"),
-        /** */
-        DOC_RATE("rate"),
-        /** */
-        DOCREL_DATE("derivedDocumentDate"),
-        /** */
-        DOCREL_TYPE("derivedDocumentType"),
-        /** */
-        DOCREL_PREFNAME("derivedDocumentPreffixName"),
-        /** */
+        REPORT_DATE("report_date"), /** */
+        DOC_DATE("date"), /** */
+        DOC_DUEDATE("dueDate"), /** */
+        DOC_DOCTYPE("documentType"), /** */
+        DOC_NAME("name"), /** */
+        DOC_SN("docSerialNo"), /** */
+        DOC_NUMBER("docNumber"), /** */
+        DOC_TAXNUM("taxNumber"), /** */
+        DOC_CONTACT("contact"), /** */
+        DOC_CROSSTOTAL("crossTotal"), /** */
+        DOC_NETTOTAL("netTotal"), /** */
+        DOC_IGV("igv"), /** */
+        DOC_EXPORT("export"), /** */
+        DOC_RATE("rate"), /** */
+        DOCREL_DATE("derivedDocumentDate"), /** */
+        DOCREL_TYPE("derivedDocumentType"), /** */
+        DOCREL_PREFNAME("derivedDocumentPreffixName"), /** */
         DOCREL_SUFNAME("derivedDocumentSuffixName");
 
         /**
@@ -156,6 +139,7 @@ public abstract class DocReport_Base
      * Mapping for No es defined by SUNAT.
      */
     protected static final Map<Long, String> DOCTYPE_MAP = new HashMap<Long, String>();
+
     static {
         DocReport_Base.DOCTYPE_MAP.put(CISales.Invoice.getType().getId(), "01");
         DocReport_Base.DOCTYPE_MAP.put(CISales.Receipt.getType().getId(), "02");
@@ -169,13 +153,12 @@ public abstract class DocReport_Base
                      final Parameter _parameter,
                      final JRDataSource _parentSource,
                      final Map<String, Object> _jrParameters)
-        throws EFapsException
+                         throws EFapsException
     {
         final String dateFromStr = Context.getThreadContext().getParameter("dateFrom");
         final String dateToStr = Context.getThreadContext().getParameter("dateTo");
         final String currency = _parameter.getParameterValue("currency");
-        final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
-        final boolean active = Boolean.parseBoolean(_parameter.getParameterValue("filterActive"));
+
         final CurrencyInst curInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), currency));
 
         final Instance curBase = Currency.getBaseCurrency();
@@ -235,7 +218,7 @@ public abstract class DocReport_Base
                 final CurrencyInst curInstDoc = new CurrencyInst(multiPrint.<Instance>getSelect(selCurInst));
                 final Long status = multiPrint.<Long>getAttribute(CISales.DocumentSumAbstract.StatusAbstract);
                 final Boolean canceled = new Boolean(status.equals(new Long(Status.find(CISales.InvoiceStatus.uuid,
-                                                "Replaced").getId()))
+                                "Replaced").getId()))
                                 || status.equals(new Long(Status.find(CISales.ReminderStatus.uuid,
                                                 "Replaced").getId()))
                                 || status.equals(new Long(Status.find(CISales.CreditNoteStatus.uuid,
@@ -254,57 +237,69 @@ public abstract class DocReport_Base
                 BigDecimal netTotal = BigDecimal.ZERO;
                 BigDecimal crossTotal = BigDecimal.ZERO;
                 BigDecimal igv = BigDecimal.ZERO;
-                if (active) {
-                    if (curInstDoc.getInstance().getId() != curInst.getInstance().getId()) {
-                        if (curInstDoc.getInstance().getId() != curBase.getId()) {
-                            final Rate rateTmp = getRates4DateRange(curInstDoc.getInstance(), date, rateCurType);
-                            final BigDecimal netTotalTmp = multiPrint
-                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
-                                                        .multiply(rateTmp.getLabel());
-                            final BigDecimal crossTotalTmp = multiPrint
-                                            .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
-                                                        .multiply(rateTmp.getLabel());
 
-                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
-                            map.put(DocReport_Base.Field.DOC_RATE.getKey(), rateTmp.getLabel());
-                            netTotal = negate ? netTotalTmp.multiply(rate.getLabel()).negate()
-                                              : netTotalTmp.multiply(rate.getLabel());
-                            crossTotal = negate ? crossTotalTmp.multiply(rate.getLabel()).negate()
-                                                : crossTotalTmp.multiply(rate.getLabel());
-                        } else {
-                            final Rate rate = getRates4DateRange(curInst.getInstance(), date, rateCurType);
-                            map.put(DocReport_Base.Field.DOC_RATE.getKey(), rate.getLabel());
-                            netTotal = negate
-                                        ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
-                                                        .multiply(rate.getValue()).negate()
-                                        : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
-                                                        .multiply(rate.getValue());
-                            crossTotal = negate
-                                       ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
-                                                        .multiply(rate.getValue()).negate()
-                                       : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
-                                                        .multiply(rate.getValue());
-                        }
+                // if document has different currency than wanted currency
+                if (!curInstDoc.getInstance().equals(curInst.getInstance())) {
+                    // if wanted currency is not base currency
+                    if (!curInstDoc.getInstance().equals(curBase)) {
+                        final RateInfo[] rateInfos = new Currency4Report().evaluateRateInfos(_parameter, date,
+                                        curInstDoc.getInstance(), curInst.getInstance());
 
+                        final BigDecimal rate = RateInfo.getRate(_parameter, rateInfos[2], "DocReport");
+                        final BigDecimal netTotalTmp = multiPrint
+                                        .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                        .divide(rate, BigDecimal.ROUND_HALF_UP)
+                                        .setScale(2, BigDecimal.ROUND_HALF_UP);
+                        final BigDecimal crossTotalTmp = multiPrint
+                                        .<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
+                                        .divide(rate, BigDecimal.ROUND_HALF_UP)
+                                        .setScale(2, BigDecimal.ROUND_HALF_UP);
+
+                        final BigDecimal rate2 = RateInfo.getRateUI(_parameter, rateInfos[2], "DocReport");
+                        map.put(DocReport_Base.Field.DOC_RATE.getKey(), rate2);
+                        netTotal = negate ? netTotalTmp.negate()
+                                        : netTotalTmp;
+                        crossTotal = negate ? crossTotalTmp.negate()
+                                        : crossTotalTmp;
                     } else {
-                        map.put(DocReport_Base.Field.DOC_RATE.getKey(), BigDecimal.ONE);
+                        final RateInfo rateInfo = new Currency4Report().evaluateRateInfo(_parameter, date,
+                                        curInstDoc.getInstance());
+                        final BigDecimal rate = RateInfo.getRate(_parameter, rateInfo, "DocReport");
+                        final BigDecimal rateUI = RateInfo.getRateUI(_parameter, rateInfo, "DocReport");
+
+                        map.put(DocReport_Base.Field.DOC_RATE.getKey(), rateUI);
                         netTotal = negate
-                                    ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
-                                                    .negate()
-                                    : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+                                        ? multiPrint.<BigDecimal>getAttribute(
+                                                        CISales.DocumentSumAbstract.RateNetTotal)
+                                                        .divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                        .setScale(2, BigDecimal.ROUND_HALF_UP).negate()
+                                        : multiPrint.<BigDecimal>getAttribute(
+                                                        CISales.DocumentSumAbstract.RateNetTotal)
+                                                        .divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                        .setScale(2, BigDecimal.ROUND_HALF_UP);
                         crossTotal = negate
-                                    ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal)
-                                                    .negate()
-                                    : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+                                        ? multiPrint.<BigDecimal>getAttribute(
+                                                        CISales.DocumentSumAbstract.RateCrossTotal)
+                                                        .divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                        .setScale(2, BigDecimal.ROUND_HALF_UP).negate()
+                                        : multiPrint.<BigDecimal>getAttribute(
+                                                        CISales.DocumentSumAbstract.RateCrossTotal)
+                                                        .divide(rate, BigDecimal.ROUND_HALF_UP)
+                                                        .setScale(2, BigDecimal.ROUND_HALF_UP);
                     }
+
                 } else {
                     map.put(DocReport_Base.Field.DOC_RATE.getKey(), BigDecimal.ONE);
                     netTotal = negate
-                                ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal).negate()
-                                : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.NetTotal);
+                                    ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal)
+                                                    .negate()
+                                    : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
                     crossTotal = negate
-                                ? multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal).negate()
-                                : multiPrint.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal);
+                                    ? multiPrint.<BigDecimal>getAttribute(
+                                                    CISales.DocumentSumAbstract.RateCrossTotal)
+                                                    .negate()
+                                    : multiPrint.<BigDecimal>getAttribute(
+                                                    CISales.DocumentSumAbstract.RateCrossTotal);
                 }
 
                 igv = crossTotal.subtract(netTotal);
@@ -363,7 +358,8 @@ public abstract class DocReport_Base
             }
         }
         final ComparatorChain chain = new ComparatorChain();
-        chain.addComparator(new Comparator<Map<String, Object>>() {
+        chain.addComparator(new Comparator<Map<String, Object>>()
+        {
 
             @Override
             public int compare(final Map<String, Object> _o1,
@@ -374,7 +370,8 @@ public abstract class DocReport_Base
                 return val1.compareTo(val2);
             }
         });
-        chain.addComparator(new Comparator<Map<String, Object>>() {
+        chain.addComparator(new Comparator<Map<String, Object>>()
+        {
 
             @Override
             public int compare(final Map<String, Object> _o1,
@@ -385,7 +382,8 @@ public abstract class DocReport_Base
                 return date1.compareTo(date2);
             }
         });
-        chain.addComparator(new Comparator<Map<String, Object>>() {
+        chain.addComparator(new Comparator<Map<String, Object>>()
+        {
 
             @Override
             public int compare(final Map<String, Object> _o1,
@@ -401,7 +399,6 @@ public abstract class DocReport_Base
         getValues().addAll(values);
     }
 
-
     /**
      * Method for obtains a new List with instance of the documents.
      *
@@ -414,7 +411,7 @@ public abstract class DocReport_Base
     protected List<Instance> getInstances(final Parameter _parameter,
                                           final DateTime _from,
                                           final DateTime _to)
-        throws EFapsException
+                                              throws EFapsException
     {
         final List<Instance> ret = new ArrayList<Instance>();
         final Map<String, List<Instance>> values = new TreeMap<String, List<Instance>>();
@@ -444,10 +441,10 @@ public abstract class DocReport_Base
      * @throws EFapsException on error.
      */
     protected List<Instance> getInstances(final Parameter _parameter,
-                                                  final UUID _typeUUID,
-                                                  final DateTime _from,
-                                                  final DateTime _to)
-        throws EFapsException
+                                          final UUID _typeUUID,
+                                          final DateTime _from,
+                                          final DateTime _to)
+                                              throws EFapsException
     {
         final String contactOid = _parameter.getParameterValue("contact");
         final String contactName = _parameter.getParameterValue("contactAutoComplete");
@@ -472,7 +469,8 @@ public abstract class DocReport_Base
 
     /**
      * CReate the Document Report.
-     * @param _parameter    Parameter as passed from the eFaps API
+     *
+     * @param _parameter Parameter as passed from the eFaps API
      * @return report
      * @throws EFapsException on error
      */
@@ -516,41 +514,9 @@ public abstract class DocReport_Base
 
     protected void addAdditionalParameters(final Parameter _parameter,
                                            final StandartReport report)
-        throws EFapsException
+                                               throws EFapsException
     {
         // TODO Auto-generated method stub
-    }
-
-
-    protected Rate getRates4DateRange(final Instance _curInst,
-                                      final DateTime _date,
-                                      final Long _rateCurType)
-        throws EFapsException
-    {
-        Rate rate;
-        final QueryBuilder queryBldr = new QueryBuilder(Type.get(_rateCurType));
-        queryBldr.addWhereAttrEqValue(CIERP.CurrencyRateAbstract.CurrencyLink, _curInst.getId());
-        queryBldr.addWhereAttrGreaterValue(CIERP.CurrencyRateAbstract.ValidUntil, _date.minusMinutes(1));
-        queryBldr.addWhereAttrLessValue(CIERP.CurrencyRateAbstract.ValidFrom, _date.plusMinutes(1));
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder valSel = new SelectBuilder()
-                        .attribute(CIERP.CurrencyRateAbstract.Rate).value();
-        final SelectBuilder labSel = new SelectBuilder()
-                        .attribute(CIERP.CurrencyRateAbstract.Rate).label();
-        final SelectBuilder curSel = new SelectBuilder()
-                        .linkto(CIERP.CurrencyRateAbstract.CurrencyLink).oid();
-        multi.addSelect(valSel, labSel, curSel);
-        multi.execute();
-        if (multi.next()) {
-            rate = new Rate(new CurrencyInst(Instance.get(multi.<String>getSelect(curSel))),
-                            multi.<BigDecimal>getSelect(valSel),
-                            multi.<BigDecimal>getSelect(labSel));
-        } else {
-            rate = new Rate(new CurrencyInst(Instance.get(CIERP.Currency.getType(),
-                            _curInst.getId())), BigDecimal.ONE);
-        }
-
-        return rate;
     }
 
     /**
@@ -558,7 +524,7 @@ public abstract class DocReport_Base
      *
      * @param _parameter Parameter as passed form the eFaps API
      * @param _from fromdate
-     * @param _to   to date
+     * @param _to to date
      * @return name of the report
      */
     protected String getReportName(final Parameter _parameter,
@@ -566,13 +532,13 @@ public abstract class DocReport_Base
                                    final DateTime _to)
     {
         return DBProperties.getProperty("Sales_DocReport.Label", "es")
-            + "-" + _from.toString(DateTimeFormat.shortDate())
-            + "-" + _to.toString(DateTimeFormat.shortDate());
+                        + "-" + _from.toString(DateTimeFormat.shortDate())
+                        + "-" + _to.toString(DateTimeFormat.shortDate());
     }
 
     /**
-     * Called from the field with the rate for a document. Returning a
-     * input with one rate selected.
+     * Called from the field with the rate for a document. Returning a input
+     * with one rate selected.
      *
      * @param _parameter Parameter as passed by the eFaps API for ESJP
      * @return a input with one rate for currency
@@ -590,8 +556,9 @@ public abstract class DocReport_Base
         if (fieldValue.getTargetMode().equals(TargetMode.CREATE)) {
             if (fieldValue.getField().getName().equals("rate")) {
                 html.append("<input type='text' value='1' name=\"").append(fieldValue.getField().getName())
-                    .append("\" /> ").append("<span id='convert'>").append(symbol).append(" -> ").append(symbol)
-                    .append("</span>");
+                                .append("\" /> ").append("<span id='convert'>").append(symbol).append(" -> ")
+                                .append(symbol)
+                                .append("</span>");
             }
         }
         final Return retVal = new Return();
@@ -600,8 +567,8 @@ public abstract class DocReport_Base
     }
 
     /**
-     * Called from the field with the rate for a document. Returning a
-     * input with one rate selected.
+     * Called from the field with the rate for a document. Returning a input
+     * with one rate selected.
      *
      * @param _parameter Parameter as passed by the eFaps API for ESJP
      * @return a input with one rate for currency
@@ -618,7 +585,7 @@ public abstract class DocReport_Base
         final Instance newInst = Instance.get(Type.get(CIERP.Currency.uuid), curr);
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                                                            AbstractDocument_Base.CURRENCYINST_KEY);
+                        AbstractDocument_Base.CURRENCYINST_KEY);
         // Sales-Configuration
         final Instance baseInst = Currency.getBaseCurrency();
         if (currentInst == null) {
@@ -630,16 +597,16 @@ public abstract class DocReport_Base
         final CurrencyInst currInst = new CurrencyInst(Instance.get(CIERP.Currency.getType(), curr));
 
         js.append("document.getElementById('convert').innerHTML='").append(baseCurrInst.getSymbol()).append(" -> ")
-            .append(currInst.getSymbol()).append("'");
+                        .append(currInst.getSymbol()).append("'");
         map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
         if (!newInst.equals(currentInst)) {
             final BigDecimal[] rates = new PriceUtil()
-                        .getRates(DateUtil.getDateFromParameter(datecurr), newInst, currentInst);
+                            .getRates(DateUtil.getDateFromParameter(datecurr), newInst, currentInst);
             map.put("rate", rates[3].toString());
             list.add(map);
         } else {
             final BigDecimal[] rates = new PriceUtil()
-                        .getRates(DateUtil.getDateFromParameter(datecurr), currentInst, newInst);
+                            .getRates(DateUtil.getDateFromParameter(datecurr), currentInst, newInst);
             map.put("rate", rates[3].toString());
             list.add(map);
         }
@@ -649,7 +616,16 @@ public abstract class DocReport_Base
         return retVal;
     }
 
-    public Return updateFilterActiveUIValue(final Parameter _parameter) {
-        return new Return();
+    public static class Currency4Report
+        extends Currency
+    {
+
+        @Override
+        protected Type getType4ExchangeRate(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Long rateCurType = Long.parseLong(_parameter.getParameterValue("rateCurrencyType"));
+            return Type.get(rateCurType);
+        }
     }
 }

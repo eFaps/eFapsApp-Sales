@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,11 +16,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd"
@@ -28,7 +23,6 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>dd95f196-45eb-42f4-8034-61370eed93c5</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Document_ReportForm</name>
@@ -59,22 +53,6 @@
             <property name="Label">Sales_Document_ReportForm.filterHeading.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-        <field name="filterActive">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="Label">Sales_Document_ReportForm.filterActive.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="checkboxFieldValue"
-                name="Sales_Document_ReportForm.filterActive.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" >
-                <property name="checked">false</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.sales.document.DocReport"
-                method="updateFilterActiveUIValue"
-                name="Sales_Document_ReportForm.filterActive.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE" >
-            </trigger>
-        </field>
         <field name="contact">
             <property name="Label">Sales_Document_ReportForm.contact.Label</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
@@ -102,7 +80,7 @@
                 method="getTypeDropDownFieldValue"
                 name="Sales_TextModuleForm.forTypeId.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" >
-                <property name="Types">ERP_CurrencyRateAbstract</property>
+                <property name="Type">ERP_CurrencyRateAbstract</property>
                 <property name="IncludeAbstract">false</property>
             </trigger>
         </field>
