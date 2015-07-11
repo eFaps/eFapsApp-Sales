@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,31 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.List;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
+import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("a66a61fd-487a-4764-9e72-f65050c1d39e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class CreditNote_Base
     extends AbstractDocumentSum
 {
@@ -63,7 +63,18 @@ public abstract class CreditNote_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
+        return ret;
+    }
 
+    @Override
+    protected List<Instance> connect2Derived(final Parameter _parameter,
+                                             final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        final List<Instance> ret = super.connect2Derived(_parameter, _createdDoc);
+        final String[] deriveds = _parameter.getParameterValues("derived");
+
+        ParameterUtil.setParmeterValue(_parameter, "invoices", deriveds);
         return ret;
     }
 
@@ -86,14 +97,13 @@ public abstract class CreditNote_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
-
         return ret;
     }
 
     @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
+    public CIType getCIType()
         throws EFapsException
     {
-        return CISales.CreditNote.getType().getName();
+        return CISales.CreditNote;
     }
 }

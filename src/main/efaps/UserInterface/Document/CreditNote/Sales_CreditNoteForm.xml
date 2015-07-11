@@ -126,7 +126,7 @@
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_CreditNote</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="updateFields4Name"
                 name="Sales_CreditNoteForm.name4create.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
@@ -175,28 +175,6 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-        </field>
-        <field name="derived">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="Required">true</property>
-            <property name="SelectAlternateOID">linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_CreditNoteForm.derived.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.CreditNote" method="autoComplete4Invoice"
-                name="Sales_CreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_Invoice</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd"
-                name="Sales_CreditNoteForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2 -->
-                <property name="CmdUUID">13f66c8e-67e5-42ac-b5f6-01133cf969b5</property>
-                <property name="Inverse">true</property>
-            </trigger>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
@@ -252,7 +230,8 @@
             <property name="Attribute">Note</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <property name="RowSpan">3</property>
+            <property name="ModeView">NONE</property>
+            <property name="RowSpan">4</property>
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
@@ -260,19 +239,30 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">RateNetTotal</property>
+            <property name="Attribute">NetTotal</property>
+        </field>
+        <field name="taxes">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="ModeView">NONE</property>
+            <property name="Attribute">Taxes</property>
+            <property name="Label">Sales_DocumentSumAbstract/Taxes.Label</property>
         </field>
         <field name="crossTotal">
             <property name="ModeEdit">READONLY</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
-            <property name="Attribute">RateCrossTotal</property>
+            <property name="Attribute">CrossTotal</property>
         </field>
-        <field name="netTotal4Read">
+       <field name="netTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[NetTotal]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/NetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="taxes4Read">
+            <property name="Attribute">Taxes</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>
@@ -280,40 +270,102 @@
             <property name="Label">Sales_CreditNote/CrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="note">
+            <property name="Attribute">Note</property>
+            <property name="ModeEdit">NONE</property>
+        </field>
         <field name="rate4ReadHeading" character="Heading">
-            <property name="Level">2</property>
+            <property name="Level">1</property>
             <property name="Label">Sales_CreditNoteForm.rate4ReadHeading.Heading</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rate4ReadHeading.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateGroup" character="Group">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCurrencyId4Read">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rateGroup.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
         </field>
-        <field name="rateNetTotal4Read">
+        <field name="rate4view">
+            <property name="Attribute">Rate</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rate4view.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateHeadingPositon" character="Heading">
+            <property name="Level">3</property>
+            <property name="Label">Sales_CreditNoteForm.headingPositon.Label</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rateHeadingPositon.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="ratePositionTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.ratePositionTable.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+            <table>Sales_CreditNoteRatePositionTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_CreditNotePosition</property>
+                <property name="LinkFrom">CreditNote</property>
+            </evaluate>
+        </field>
+         <field name="rateNetTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateNetTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rateNetTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
+        </field>
+        <field name="rateTaxes">
+            <property name="Attribute">RateTaxes</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rateTaxes.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">NONE</property>
             <property name="Phrase">$&lt;attribute[RateCrossTotal]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
             <property name="Label">Sales_CreditNote/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="accessCheck4Rate"
+                name="Sales_CreditNoteForm.rateCrossTotal4Read.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK"/>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
@@ -321,8 +373,24 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.CreditNote" method="getJavaScriptUIValue"
-                name="Sales_CreditNotePositionTable.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="getJavaScriptUIValue"
+                name="Sales_CreditNoteForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" >
+                <property name="SetEmployee">true</property>
+            </trigger>
+        </field>
+        <field name="executeCalculator" character="Command">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="CmdRenderButton">false</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="executeCalculatorOnScript"
+                name="Sales_CreditNoteForm.executeCalculator.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
     </definition>
     <definition>
@@ -423,7 +491,7 @@
                 event="UI_FIELD_VALUE">
                 <property name="Type">Sales_CreditNote</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="updateFields4Name"
                 name="Sales_CreditNoteForm.name4create.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE">
@@ -520,28 +588,7 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="derived">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeView">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="Required">true</property>
-            <property name="SelectAlternateOID">linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].oid</property>
-            <property name="Phrase">$&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].type.label&gt; - $&lt;linkfrom[Sales_Document2DerivativeDocument#To].linkto[From].attribute[Name]&gt;</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <property name="Label">Sales_CreditNoteForm.derived.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.CreditNote" method="autoComplete4Invoice"
-                name="Sales_CreditNoteForm.derived.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_CreditNote</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Cmd"
-                name="Sales_CreditNoteForm.derived.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <!-- Sales_CreditNoteMyDesk_Menu_Action_CreateFromDoc2 -->
-                <property name="CmdUUID">13f66c8e-67e5-42ac-b5f6-01133cf969b5</property>
-                <property name="Inverse">true</property>
-            </trigger>
-        </field>
+
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_CreditNoteForm.headingPositon.Heading</property>
