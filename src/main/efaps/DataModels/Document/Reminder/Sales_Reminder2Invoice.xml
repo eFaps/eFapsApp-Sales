@@ -14,27 +14,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+ Author:          The eFaps Team
+
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>13369a21-f8ce-4565-a9c8-7cf1d54af3ba</uuid>
+    <uuid>ea9bbf8b-718c-45aa-8656-a6502cdbb1eb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReminderMyDesk_Menu_Action_CreateFromDoc</name>
-        <access>
-            <role>Sales_Admin</role>
-            <role>Sales_Accounting</role>
-        </access>
-        <target>
-            <form>Sales_Reminder_SelectDocForm</form>
-            <command>Sales_ReminderMyDesk_Menu_Action_CreateFromDoc2</command>
-        </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">create</property>
-        <property name="WindowHeight">660</property>
-        <property name="WindowWidth">1200</property>
-        <property name="TargetDefaultMenu">none</property>
-        <property name="TargetCmdRevise">true</property>
+        <name>Sales_Reminder2Invoice</name>
+        <parent>Sales_Document2DocumentAbstract</parent>
+        <attribute>
+            <name>FromLink</name>
+            <type>Link</type>
+            <typelink>Sales_CreditNote</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>FROMID</sqlcolumn>
+        </attribute>
+        <attribute>
+            <name>ToLink</name>
+            <type>Link</type>
+            <typelink>Sales_Invoice</typelink>
+            <sqltable>ERP_Document2DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>TOID</sqlcolumn>
+        </attribute>
     </definition>
-</ui-command>
+</datamodel-type>
