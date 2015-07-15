@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2014 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,39 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
-
 
 package org.efaps.esjp.sales.document;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.admin.ui.field.Field;
+import org.efaps.ci.CIType;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
-import org.efaps.db.Instance;
-import org.efaps.db.PrintQuery;
-import org.efaps.db.QueryBuilder;
-import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -56,10 +39,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("a126d27b-105b-4751-bc88-22d320f5b177")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingReminder_Base
     extends AbstractDocumentSum
 {
@@ -115,78 +97,10 @@ public abstract class IncomingReminder_Base
             _insert.add(CISales.IncomingReminder.Revision, revision);
         }
     }
-
     @Override
-    public Return autoComplete4IncomingInvoice(final Parameter _parameter)
+    public CIType getCIType()
         throws EFapsException
     {
-        return new IncomingReminder()
-        {
-
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                final Map<Integer, String> types = analyseProperty(_parameter, "Type");
-                if (!types.isEmpty()) {
-                    for (final Entry<Integer, String> entry : types.entrySet()) {
-                        final Type type = Type.get(entry.getValue());
-                        if (type != null) {
-                            _queryBldr.addType(type);
-                        }
-                    }
-                }
-            };
-        }.autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, (Status[]) null);
-    }
-
-    @Override
-    public Type getType4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return CISales.IncomingReminder.getType();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Return updateFields4IncomingInvoice(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret;
-        if (containsProperty(_parameter, "UpdateContactField")
-                        && "true".equalsIgnoreCase(getProperty(_parameter, "UpdateContactField"))) {
-            final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
-            final Map<String, Object> map = new HashMap<String, Object>();
-
-            final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-            final Instance docInst = Instance.get(_parameter.getParameterValue(field.getName()));
-
-            final SelectBuilder selContactInst = new SelectBuilder()
-                                    .linkto(CISales.DocumentAbstract.Contact).instance();
-            final SelectBuilder selContactName = new SelectBuilder()
-                                    .linkto(CISales.DocumentAbstract.Contact).attribute(CISales.DocumentAbstract.Name);
-
-            final PrintQuery print = new PrintQuery(docInst);
-            print.addSelect(selContactInst, selContactName);
-            print.execute();
-
-            final Instance contactInst = print.<Instance>getSelect(selContactInst);
-            final String contactName = print.<String>getSelect(selContactName);
-
-            if (contactInst != null && contactInst.isValid()) {
-                map.put("contact", new String[]{ contactInst.getOid(), contactName });
-                map.put("contactData", getFieldValue4Contact(contactInst));
-            }
-
-            list.add(map);
-            ret = new Return().put(ReturnValues.VALUES, list);
-        } else {
-            ret = super.updateFields4IncomingInvoice(_parameter);
-        }
-
-        return ret;
+        return CISales.IncomingReminder;
     }
 }

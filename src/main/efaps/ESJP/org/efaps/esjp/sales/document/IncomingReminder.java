@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8342 $
- * Last Changed:    $Date: 2012-12-11 09:42:17 -0500 (Tue, 11 Dec 2012) $
- * Last Changed By: $Author: jan@moxter.net $
  */
-
 
 package org.efaps.esjp.sales.document;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 
@@ -29,10 +25,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: CodeTemplates.xml 8342 2012-12-11 14:42:17Z jan@moxter.net $
  */
 @EFapsUUID("cf1df523-2129-4e81-9342-af1e1065ca64")
-@EFapsRevision("$Rev: 10270 $")
+@EFapsApplication("eFapsApp-Sales")
 public class IncomingReminder
     extends IncomingReminder_Base
 {
