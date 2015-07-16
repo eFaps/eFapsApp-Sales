@@ -96,7 +96,6 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
@@ -2758,8 +2757,7 @@ public abstract class AbstractDocument_Base
             ret = super.getDocName4Create(_parameter);
         } else if (uuidStr != null && !uuidStr.isEmpty()) {
             final Type type = getType4DocCreate(_parameter);
-            final Properties props = ERP.getSysConfig()
-                            .getAttributeValueAsProperties(ERPSettings.NUMBERGENERATOR, true);
+            final Properties props = ERP.NUMBERGENERATOR.get();
 
             Date date = null;
             for (int i = 1; i < 10; i++) {

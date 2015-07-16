@@ -36,7 +36,6 @@ import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
@@ -62,7 +61,7 @@ public abstract class PerceptionCertificate_Base
         throws EFapsException
     {
         @SuppressWarnings("unchecked")
-        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocumentSum_Base.CALCULATORS_VALUE);
+        final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(AbstractDocument_Base.CALCULATORS_VALUE);
         final BigDecimal perception = getPerceptionTotal(_parameter, calcList);
 
         if (perception.compareTo(BigDecimal.ZERO) > 0) {
@@ -108,7 +107,7 @@ public abstract class PerceptionCertificate_Base
         throws EFapsException
     {
         final Type type = CISales.PerceptionCertificate.getType();
-        final Properties props = ERP.getSysConfig().getAttributeValueAsProperties(ERPSettings.NUMBERGENERATOR, true);
+        final Properties props = ERP.NUMBERGENERATOR.get();
         final String uuid = props.getProperty(type.getName());
         final NumberGenerator numGen = NumberGenerator.get(UUID.fromString(uuid));
         return numGen.getNextVal();

@@ -68,7 +68,6 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
-import org.efaps.esjp.erp.util.ERPSettings;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.payment.PaymentInternal;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -114,8 +113,7 @@ public abstract class Transaction_Base
     protected String getName4Internal(final Parameter _parameter)
         throws EFapsException
     {
-        final Properties props = ERP.getSysConfig()
-                        .getAttributeValueAsProperties(ERPSettings.NUMBERGENERATOR, true);
+        final Properties props = ERP.NUMBERGENERATOR.get();
         // Sales_PaymentInternalSequence
         final String uuidStr = props.getProperty(CISales.PaymentInternal.getType().getName(),
                         "b6a9be07-c4cb-4441-9f37-abe87bad2ef7");
