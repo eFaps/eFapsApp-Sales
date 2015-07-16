@@ -32,9 +32,10 @@
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4IncomingInvoice"
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
                 name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.IncomingDetraction">
+                <property name="Type">Sales_IncomingInvoice</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4IncomingInvoice"
                 name="Sales_IncomingDetractionCreateForm.incomingInvoice.UI_FIELD_UPDATE.1" program="org.efaps.esjp.sales.document.IncomingDetraction"

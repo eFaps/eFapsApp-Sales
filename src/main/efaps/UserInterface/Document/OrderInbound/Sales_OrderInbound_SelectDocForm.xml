@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,54 +16,43 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
-  <uuid>27795626-d1e0-4d0d-9ca6-7c082c72e564</uuid>
-  <file-application>eFapsApp-Sales</file-application>
-  <file-revision>$Rev$</file-revision>
-
-  <definition>
-    <version-expression>(version==latest)</version-expression>
-    <name>Sales_OrderInbound_SelectDocForm</name>
-    <!-- fields -->
-    <field name="orderInbound">
-      <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-      <property name="Label">Sales_Order/Name.Label</property>
-      <property name="ModeCreate">EDITABLE</property>
-      <property name="Required">true</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-      <trigger program="org.efaps.esjp.sales.document.OrderInbound"
-               method="autoComplete4OrderInbound"
-               name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Autocomplete"
-               event="UI_FIELD_AUTOCOMPLETE"/>
-      <trigger program="org.efaps.esjp.sales.document.OrderInbound"
-               method="updateFields4OrderInbound"
-               name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Update"
-               event="UI_FIELD_UPDATE"/>
-    </field>
-    <field name="info">
-      <property name="ModePrint">NONE</property>
-      <property name="Label">Sales_Invoice_SelectQuotationForm/info.Label</property>
-      <property name="ModeCreate">READONLY</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-    </field>
-    <field name="javaScript">
-      <property name="ModePrint">NONE</property>
-      <property name="ModeCreate">HIDDEN</property>
-      <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-      <trigger program="org.efaps.esjp.sales.document.OrderInbound"
-               method="getJS4SelectDocumentForm"
-               name="Sales_Order_SelectOrderForm.javaScript.UI_Field_Value"
-               event="UI_FIELD_VALUE"/>
-    </field>
-  </definition>
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>27795626-d1e0-4d0d-9ca6-7c082c72e564</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_OrderInbound_SelectDocForm</name>
+        <field name="orderInbound">
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="Label">Sales_Order/Name.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="Required">true</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderInbound"
+                method="autoComplete4Doc"
+                name="Sales_Quotation_SelectQuotationForm/quotation.UI_Field_Autocomplete"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Sales_OrderInbound</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.OrderInbound"
+                method="updateFields4OrderInbound"
+                name="Sales_OrderInbound_SelectDocForm.orderInbound.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+        </field>
+        <field name="info">
+            <property name="ModePrint">NONE</property>
+            <property name="Label">Sales_Invoice_SelectQuotationForm/info.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderInbound" method="getJS4SelectDocumentForm"
+                name="Sales_Order_SelectOrderForm.javaScript.UI_Field_Value" event="UI_FIELD_VALUE" />
+        </field>
+    </definition>
 </ui-form>

@@ -32,9 +32,10 @@
             <property name="Label">Sales_IncomingInvoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4IncomingInvoice"
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Doc"
                 name="Sales_IncomingRetentionCreateForm.incomingInvoice.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.IncomingRetention">
+                <property name="Type">Sales_IncomingInvoice</property>
                 <property name="Status">Digitized</property>
                 <property name="Status01">Open</property>
                 <property name="Status02">Paid</property>

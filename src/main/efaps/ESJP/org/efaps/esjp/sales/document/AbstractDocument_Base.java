@@ -181,88 +181,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the AutoCompleteField used in the select doc form for
-     * DeliveryNote.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4DeliveryNote(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.DeliveryNote.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for
-     * IncomingInvoices.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4IncomingInvoice(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.IncomingInvoice.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for Invoices.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4Invoice(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.Invoice.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for
-     * OrderInbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4OrderInbound(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.OrderInbound.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for
-     * OrderOutbound.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4ServiceOrderOutbound(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.ServiceOrderOutbound.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for Quotations.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4Quotation(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.Quotation.uuid, (Status[]) null);
-    }
-
-    /**
      * Used by the AutoCompleteField used in the select doc form for ProductRequest.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -274,45 +192,6 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return autoComplete4Doc(_parameter, CISales.ProductRequest.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for Exchange.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4Exchange(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.Exchange.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for IncomingCredit.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4IncomingCredit(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.IncomingCredit.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for0 Incoming Exchange.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4IncomingExchange(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.IncomingExchange.uuid, (Status[]) null);
     }
 
     /**
@@ -355,73 +234,6 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * Used by the AutoCompleteField used in the select doc form for Credit.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4Credit(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.Credit.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for CreditNote.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4CreditNote(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.CreditNote.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for CostSheets.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4CostSheet(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.CostSheet.uuid, (Status[]) null);
-    }
-
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for
-     * Reservation.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4Reservation(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.Reservation.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for IncomingRetentionCertificate.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4IncomingRetentionCertificate(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.IncomingRetentionCertificate.uuid, (Status[]) null);
-    }
-
-    /**
      * Used by the AutoCompleteField used in the select doc form for PettyCashReceipt.
      *
      * @param _parameter Parameter as passed from the eFaps API.
@@ -432,19 +244,6 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         return autoComplete4Doc(_parameter, CISales.PettyCashReceipt.uuid, (Status[]) null);
-    }
-
-    /**
-     * Used by the AutoCompleteField used in the select doc form for ProductionOrder.
-     *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return map list for auto-complete.
-     * @throws EFapsException on error.
-     */
-    public Return autoComplete4ProductionOrder(final Parameter _parameter)
-        throws EFapsException
-    {
-        return autoComplete4Doc(_parameter, CISales.ProductionOrder.uuid, (Status[]) null);
     }
 
     /**
