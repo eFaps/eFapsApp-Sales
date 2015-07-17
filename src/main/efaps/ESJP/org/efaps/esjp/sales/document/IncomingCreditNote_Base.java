@@ -187,7 +187,7 @@ public abstract class IncomingCreditNote_Base
         }
     }
 
-    @Override
+
     public Return autoComplete4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
