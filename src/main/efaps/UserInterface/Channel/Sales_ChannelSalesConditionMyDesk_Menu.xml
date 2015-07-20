@@ -17,18 +17,13 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>acf896ea-21d6-4619-b4b9-90d859a2231e</uuid>
+    <uuid>1ad562d0-931c-4a9e-a7aa-5914224cfc2b</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelMyDesk</name>
+        <name>Sales_ChannelSalesConditionMyDesk_Menu</name>
         <childs>
-            <child>Sales_ChannelPurchaseConditionMyDesk</child>
-            <child>Sales_ChannelSalesConditionMyDesk</child>
-            <!--
-                TODO
-                <child>Sales_ChannelBuyingRouteMyDesk</child>
-             -->
+            <child>Sales_ChannelSalesConditionMyDesk_Menu_Action</child>
         </childs>
     </definition>
 </ui-menu>
