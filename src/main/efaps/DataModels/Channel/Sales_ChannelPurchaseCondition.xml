@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,35 +14,26 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>31c8fb6b-23fb-4394-8eba-0e9d82e64121</uuid>
+    <uuid>668ccd4b-ec1d-42c3-bfd9-79a0809676a9</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelSalesChannel2Contact</name>
-        <parent>Sales_Channel2ContactAbstract</parent>
+        <name>Sales_ChannelPurchaseCondition</name>
+        <parent>Sales_ChannelConditionAbstract</parent>
         <attribute>
-            <name>FromLink</name>
-            <type>Link</type>
-            <typelink>Sales_ChannelSalesChannel</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>FROMID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>ToLink</name>
-            <type>Link</type>
-            <typelink>Contacts_Contact</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_ChannelStatus</typelink>
+            <sqltable>Sales_ChannelSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE"
+                name="Sales_ChannelSalesChannel.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
         </attribute>
     </definition>
 </datamodel-type>

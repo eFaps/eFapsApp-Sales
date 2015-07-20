@@ -17,19 +17,12 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>945e4aca-df1e-4a5c-8191-e3c2acac8ddd</uuid>
+    <uuid>993d04f2-4b34-48dd-be0f-81938f862505</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Channel2DocumentAbstract</name>
-        <parent>Sales_Channel2ObjectAbstract</parent>
+        <name>Sales_ChannelSalesCondition2DocumentAbstract</name>
+        <parent>Sales_Channel2DocumentAbstract</parent>
         <purpose abstract="true" />
-        <attribute>
-            <name>ToAbstractLink</name>
-            <type>Link</type>
-            <typelink>ERP_DocumentAbstract</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
     </definition>
 </datamodel-type>
