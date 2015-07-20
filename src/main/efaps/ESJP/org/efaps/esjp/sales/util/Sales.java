@@ -97,6 +97,26 @@ public final class Sales
                     .key(BASE + "IncomingInvoice.CreateFromRecievingTicketAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of RecievingTicket to create Incoming Invoice from.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CHACTIVATESALESCOND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Channel.ActivateSalesCondition")
+                    .description("Activate the Sales Conditions.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CHACTIVATEPURCHASECOND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Channel.ActivatePurchaseCondition")
+                    .description("Activate the Purchase Conditions");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECEIPTASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to Receipt");
 
     /**
      * Singelton.
