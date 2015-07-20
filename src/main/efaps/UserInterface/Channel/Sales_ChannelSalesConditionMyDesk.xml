@@ -20,7 +20,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>90e8a5c6-a896-428f-bf79-89a3195aa4a2</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 552 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ChannelSalesConditionMyDesk</name>
@@ -33,6 +32,11 @@
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_ChannelSalesCondition</property>
             </evaluate>
+             <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
+                name="Sales_ChannelSalesConditionMyDesk.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="SystemConfig">Sales-Configuration</property>
+                <property name="Attribute">org.efaps.sales.Channel.ActivateSalesCondition</property>
+            </trigger>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>

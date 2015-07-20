@@ -29,7 +29,6 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
@@ -65,7 +64,6 @@ public abstract class OrderOutbound_Base
         final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
-        connectChannel2Document(_parameter, createdDoc);
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         connect2Terms(_parameter, createdDoc);
@@ -102,23 +100,7 @@ public abstract class OrderOutbound_Base
         return ret;
     }
 
-    /**
-     * @param _parameter Parameter as passed from the eFaps API
-     * @param _createdDoc the created document
-     * @throws EFapsException on error
-     */
-    protected void connectChannel2Document(final Parameter _parameter,
-                                           final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        final Instance instCondition = Instance.get(_parameter.getParameterValue("conditionSales"));
-        if (instCondition.isValid() && _createdDoc.getInstance().isValid()) {
-            final Insert insert = new Insert(CISales.ChannelSalesChannel2Document);
-            insert.add(CISales.ChannelSalesChannel2Document.FromLink, instCondition);
-            insert.add(CISales.ChannelSalesChannel2Document.ToLink, _createdDoc.getInstance());
-            insert.execute();
-        }
-    }
+
 
     /**
      * @param _parameter Parameter as passed from the eFaps API

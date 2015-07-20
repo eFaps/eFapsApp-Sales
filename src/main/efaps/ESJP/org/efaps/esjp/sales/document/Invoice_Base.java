@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -47,7 +44,6 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("43417000-af54-4cb5-a266-4e6df2ed793e")
 @EFapsApplication("eFapsApp-Sales")
@@ -101,17 +97,17 @@ public abstract class Invoice_Base
             final Instance condInst = Instance
                             .get(_parameter.getParameterValue(CIFormSales.Sales_InvoiceForm.condition4edit.name));
             if (condInst.isValid()) {
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2Invoice);
-                queryBldr.addWhereAttrEqValue(CISales.ChannelCondition2Invoice.ToLink, _parameter.getInstance());
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelSalesCondition2Invoice);
+                queryBldr.addWhereAttrEqValue(CISales.ChannelSalesCondition2Invoice.ToLink, _parameter.getInstance());
                 final List<Instance> relInsts = queryBldr.getQuery().execute();
                 Update update;
                 if (relInsts.isEmpty()) {
-                    update = new Insert(CISales.ChannelCondition2Invoice);
-                    update.add(CISales.ChannelCondition2Invoice.ToLink, _parameter.getInstance());
+                    update = new Insert(CISales.ChannelSalesCondition2Invoice);
+                    update.add(CISales.ChannelSalesCondition2Invoice.ToLink, _parameter.getInstance());
                 } else {
                     update = new Update(relInsts.get(0));
                 }
-                update.add(CISales.ChannelCondition2Invoice.FromLink, condInst);
+                update.add(CISales.ChannelSalesCondition2Invoice.FromLink, condInst);
                 update.execute();
             }
         }

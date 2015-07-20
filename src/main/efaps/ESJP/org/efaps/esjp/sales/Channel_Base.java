@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8120 $
- * Last Changed:    $Date: 2012-10-26 13:21:34 -0500 (vie, 26 oct 2012) $
- * Last Changed By: $Author: jorge.cueva@moxter.net $
  */
 
 package org.efaps.esjp.sales;
@@ -29,7 +26,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -45,11 +42,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Channel_Base.java 8120 2012-10-26 18:21:34Z
- *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("4541b746-f653-46d8-b066-9aea7e111766")
-@EFapsRevision("$Rev: 8120 $")
+@EFapsApplication("efapsApp-Sales")
 public abstract class Channel_Base
     extends CommonDocument
 {
@@ -65,13 +60,13 @@ public abstract class Channel_Base
         final Return retVal = new Return();
         final String fieldName = getProperty(_parameter, "ConditionFieldName", "condition");
         final Instance condInst = Instance.get(_parameter.getParameterValue(fieldName));
-        if (condInst.isValid() && condInst.getType().isCIType(CISales.ChannelCondition)) {
+        if (condInst.isValid() && condInst.getType().isCIType(CISales.ChannelConditionAbstract)) {
             final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
             final Map<String, String> map = new HashMap<String, String>();
             final PrintQuery print = new PrintQuery(condInst);
-            print.addAttribute(CISales.ChannelCondition.QuantityDays);
+            print.addAttribute(CISales.ChannelConditionAbstract.QuantityDays);
             print.execute();
-            Integer addDays = print.<Integer>getAttribute(CISales.ChannelCondition.QuantityDays);
+            Integer addDays = print.<Integer>getAttribute(CISales.ChannelConditionAbstract.QuantityDays);
             if (addDays == null) {
                 addDays = 0;
             }
@@ -103,12 +98,12 @@ public abstract class Channel_Base
         final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Channel2ContactAbstract);
         attrQueryBldr.addWhereAttrEqValue(CISales.Channel2ContactAbstract.ToAbstractLink, _contactInstance.getId());
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition);
-        queryBldr.addWhereAttrInQuery(CISales.ChannelCondition.ID,
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelConditionAbstract);
+        queryBldr.addWhereAttrInQuery(CISales.ChannelConditionAbstract.ID,
                         attrQueryBldr.getAttributeQuery(CISales.Channel2ContactAbstract.FromAbstractLink));
-        queryBldr.addOrderByAttributeAsc(CISales.ChannelCondition.Name);
+        queryBldr.addOrderByAttributeAsc(CISales.ChannelConditionAbstract.Name);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.ChannelCondition.Name, CISales.ChannelCondition.QuantityDays);
+        multi.addAttribute(CISales.ChannelConditionAbstract.Name, CISales.ChannelConditionAbstract.QuantityDays);
         multi.setEnforceSorted(true);
         if (multi.execute()) {
             boolean first = true;
@@ -117,10 +112,10 @@ public abstract class Channel_Base
             while (multi.next()) {
                 if (first) {
                     first = false;
-                    days = multi.getAttribute(CISales.ChannelCondition.QuantityDays);
+                    days = multi.getAttribute(CISales.ChannelConditionAbstract.QuantityDays);
                     js.append(multi.getCurrentInstance().getOid()).append("'");
                 }
-                final String name = multi.getAttribute(CISales.ChannelCondition.Name);
+                final String name = multi.getAttribute(CISales.ChannelConditionAbstract.Name);
 
                 js.append(",'").append(multi.getCurrentInstance().getOid()).append("','")
                     .append(StringEscapeUtils.escapeEcmaScript(name)).append("'");
