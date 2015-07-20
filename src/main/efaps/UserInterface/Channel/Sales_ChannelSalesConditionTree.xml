@@ -30,6 +30,7 @@
         <type>Sales_ChannelSalesCondition</type>
         <childs>
             <child>Sales_ChannelSalesConditionTree_Contact</child>
+            <child>Sales_ChannelSalesConditionTree_Document</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
