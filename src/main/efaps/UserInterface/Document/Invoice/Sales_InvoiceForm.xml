@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2014 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,11 +16,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd"
@@ -28,7 +23,6 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>0707dc1a-4ade-4588-8f07-9d9662566e34</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -236,7 +230,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Label">Sales_ChannelCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_InvoiceForm.condition.UI_FIELD_VALUE"
@@ -266,7 +260,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Label">Sales_ChannelCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_InvoiceForm.condition.UI_FIELD_VALUE"
@@ -292,7 +286,7 @@
            </trigger>
         </field>
         <field name="condition4View">
-            <property name="Label">Sales_ChannelCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="Select">linkfrom[Sales_ChannelCondition2Invoice#ToLink].linkto[FromLink].attribute[Name]</property>
@@ -797,7 +791,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Label">Sales_ChannelCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_InvoiceForm.condition.UI_FIELD_VALUE"
@@ -823,7 +817,7 @@
            </trigger>
         </field>
         <field name="condition4View">
-            <property name="Label">Sales_ChannelCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <property name="ModeView">READONLY</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="Select">linkfrom[Sales_ChannelCondition2Invoice#ToLink].linkto[FromLink].attribute[Name]</property>
