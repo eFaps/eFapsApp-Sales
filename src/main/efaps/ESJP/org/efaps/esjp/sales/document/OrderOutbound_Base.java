@@ -89,10 +89,11 @@ public abstract class OrderOutbound_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final EditedDoc createdDoc = editDoc(_parameter);
-        updatePositions(_parameter, createdDoc);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
 
-        final File file = createReport(_parameter, createdDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);

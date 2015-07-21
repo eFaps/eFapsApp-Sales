@@ -29,6 +29,7 @@ import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
+import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
@@ -117,6 +118,20 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Receipt.AssignEmployee")
                     .description("Activate the mechanism to assign employee to Receipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECOND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "OrderOutbound.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute ORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "OrderOutbound.JasperReport")
+                    .description("Name of the jasperReport for Order Outbound");
 
     /**
      * Singelton.
