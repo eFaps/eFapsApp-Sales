@@ -133,6 +133,20 @@ public final class Sales
                     .key(BASE + "OrderOutbound.JasperReport")
                     .description("Name of the jasperReport for Order Outbound");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceOrderOutbound.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute SERVICEORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceOrderOutbound.JasperReport")
+                    .description("Name of the jasperReport for Order Outbound");
+
     /**
      * Singelton.
      */

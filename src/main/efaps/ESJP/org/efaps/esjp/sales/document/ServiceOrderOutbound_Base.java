@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8342 $
- * Last Changed:    $Date: 2012-12-11 09:42:17 -0500 (Tue, 11 Dec 2012) $
- * Last Changed By: $Author: jan@moxter.net $
- */
+*/
 
 
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Channel;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
-
 
 /**
  *
@@ -44,7 +44,7 @@ import org.efaps.util.EFapsException;
  * @version $Id: ReturnUsageReport.java 10186 2013-09-12 11:41:31Z m.aranya@moxter.net $
  */
 @EFapsUUID("65d49d25-c1b9-4883-8bb1-0c53292ee789")
-@EFapsRevision("$Rev: 10186 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ServiceOrderOutbound_Base
     extends AbstractDocumentSum
 {
@@ -86,13 +86,42 @@ public abstract class ServiceOrderOutbound_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final EditedDoc createdDoc = editDoc(_parameter);
-        updatePositions(_parameter, createdDoc);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
 
-        final File file = createReport(_parameter, createdDoc);
+        final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.SERVICEORDEROUTBOUNDACTIVATECONDITION.get()) {
+            InterfaceUtils.appendScript4FieldUpdate(_map,
+                            new Channel().getConditionJs(_parameter, _contactInstance,
+                                            CISales.ChannelPurchaseCondition2Contact));
+        }
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        if (Sales.SERVICEORDEROUTBOUNDACTIVATECONDITION.get()) {
+            ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
+                            CISales.ChannelPurchaseCondition2Contact));
         }
         return ret;
     }

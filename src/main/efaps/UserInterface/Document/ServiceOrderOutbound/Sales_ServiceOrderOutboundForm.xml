@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,26 +14,23 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>9fd5c0e0-239c-4aff-aea6-35ae8e8b94df</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ServiceOrderOutboundForm</name>
-        <!-- fields -->
         <field name="activatePositionsCalculator">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ModePrint">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator" name="Sales_ServiceOrderOutboundForm.activatePositionsCalculator.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
+            <trigger event="UI_FIELD_VALUE" method="activatePositionsCalculator"
+                name="Sales_ServiceOrderOutboundForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound" />
         </field>
         <field character="Group" name="dategroup">
             <property name="GroupCount">2</property>
@@ -62,13 +59,14 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_VALUE" method="getSalesPersonFieldValue" name="Sales_ServiceOrderOutboundForm.salesperson.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
-               <property name="Type">Admin_User_Person</property>
-               <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
-               <property name="OrderSelect">attribute[LastName]</property>
-               <property name="WhereAttrEqValue">Status|true</property>
-               <property name="SelectCurrent">true</property>
-           </trigger>
+            <trigger event="UI_FIELD_VALUE" method="getSalesPersonFieldValue" name="Sales_ServiceOrderOutboundForm.salesperson.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
+                <property name="Type">Admin_User_Person</property>
+                <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
+                <property name="OrderSelect">attribute[LastName]</property>
+                <property name="WhereAttrEqValue">Status|true</property>
+                <property name="SelectCurrent">true</property>
+            </trigger>
         </field>
         <field name="salespersonLink">
             <property name="SelectAlternateOID">linkto[Salesperson].oid</property>
@@ -131,10 +129,12 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">98</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_ServiceOrderOutboundForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
+                name="Sales_ServiceOrderOutboundForm.contact.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
                 <property name="Classification">Contacts_ClassLocation</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_ServiceOrderOutboundForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_ServiceOrderOutboundForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -143,6 +143,51 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+               <field name="condition">
+            <property name="Select">linkfrom[Sales_ChannelPurchaseCondition2ServiceOrderOutbound#ToLink].linkto[FromLink].oid</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_ServiceOrderOutboundForm.condition.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_ChannelPurchaseCondition</property>
+                <property name="StatusGroup">Sales_ChannelStatus</property>
+                <property name="Status">Active</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Condition"
+                name="Sales_ServiceOrderOutboundForm.condition.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.Channel"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ServiceOrderOutboundForm.condition.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ServiceOrderOutbound.ActivateCondition</property>
+           </trigger>
+        </field>
+        <field name="condition4View">
+            <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="Select">linkfrom[Sales_ChannelPurchaseCondition2ServiceOrderOutbound#ToLink].linkto[FromLink].attribute[Name]</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ServiceOrderOutboundForm.condition4View.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.ServiceOrderOutbound.ActivateCondition</property>
+           </trigger>
         </field>
         <field character="Heading" name="headingPositon">
             <property name="Level">2</property>
@@ -155,13 +200,15 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
         </field>
-       <field name="rateCurrencyId">
+        <field name="rateCurrencyId">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_ServiceOrderOutboundForm.currencyId.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Invoice"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_ServiceOrderOutboundForm.currencyId.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.Invoice"/>
+            <trigger event="UI_FIELD_VALUE" method="rateCurrencyFieldValueUI" name="Sales_ServiceOrderOutboundForm.currencyId.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.Invoice" />
+            <trigger event="UI_FIELD_UPDATE" method="updateFields4RateCurrency" name="Sales_ServiceOrderOutboundForm.currencyId.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.Invoice" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -171,7 +218,7 @@
             <property name="Label">Sales_OrderOutboundForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field name="withoutVAT">
+        <field name="withoutVAT">
             <property name="Label">Sales_OrderOutboundForm.withoutVAT.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
@@ -179,7 +226,8 @@
             <property name="HideLabel">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
-            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_ServiceOrderOutboundForm.withoutVAT.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.Invoice"/>
+            <trigger event="UI_FIELD_VALUE" method="withoutVATFieldValue" name="Sales_ServiceOrderOutboundForm.withoutVAT.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.Invoice" />
         </field>
         <field character="Target" name="positionTable">
             <property name="ModeCreate">EDITABLE</property>
@@ -235,7 +283,7 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rate4ReadHeading.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rate4ReadHeading.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateGroup" character="Group">
             <property name="GroupCount">2</property>
@@ -243,14 +291,14 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">READONLY</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rateGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rateGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateCurrencyId4Read">
             <property name="Attribute">RateCurrencyId</property>
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rateCurrencyId4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rateCurrencyId4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
@@ -262,19 +310,19 @@
             <property name="Attribute">Rate</property>
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateHeadingPositon" character="Heading">
             <property name="Level">3</property>
             <property name="Label">Sales_OrderOutboundForm.headingPositon.Label</property>
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rateHeadingPositon.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rateHeadingPositon.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="ratePositionTable" character="Target">
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.ratePositionTable.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.ratePositionTable.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
             <table>Sales_ServiceOrderOutboundRatePositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
                 <property name="Type">Sales_ServiceOrderOutboundPosition</property>
@@ -287,13 +335,13 @@
             <property name="Label">Sales_OrderOutbound/RateNetTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rateNetTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rateNetTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateTaxes">
             <property name="Attribute">RateTaxes</property>
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rateTaxes.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rateTaxes.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">NONE</property>
@@ -301,7 +349,7 @@
             <property name="Label">Sales_OrderOutbound/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="accessCheck4Rate"
-                name="Sales_ServiceOrderOutboundForm.rateCrossTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK"/>
+                name="Sales_ServiceOrderOutboundForm.rateCrossTotal4Read.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
@@ -309,16 +357,18 @@
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ServiceOrderOutboundForm.javaScript.UI_FIELD_VALUE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
+            <trigger event="UI_FIELD_VALUE" method="getJavaScriptUIValue" name="Sales_ServiceOrderOutboundForm.javaScript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound" />
         </field>
-         <field character="Command" name="executeCalculator">
+        <field character="Command" name="executeCalculator">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="CmdRenderButton">false</property>
             <property name="HideLabel">true</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">READONLY</property>
-            <trigger event="UI_FIELD_UPDATE" method="executeCalculatorOnScript" name="Sales_ServiceOrderOutboundForm.javaScript2.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.document.ServiceOrderOutbound"/>
+            <trigger event="UI_FIELD_UPDATE" method="executeCalculatorOnScript" name="Sales_ServiceOrderOutboundForm.javaScript2.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound" />
         </field>
     </definition>
 </ui-form>
