@@ -28,11 +28,16 @@
             <property name="Label">Sales_Channel2ContactAbstract/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
             <property name="ModeSearch">READONLY</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>
             <property name="Label">Sales_ChannelCondition2Contact/Status.Label</property>
             <property name="ModeSearch">READONLY</property>
+        </field>
+        <field name="isDefault">
+            <property name="Attribute">IsDefault</property>
+            <property name="Label">Sales_ChannelCondition2Contact/IsDefault.Label</property>
         </field>
         <field name="channelName">
             <property name="HRef">TREE</property>

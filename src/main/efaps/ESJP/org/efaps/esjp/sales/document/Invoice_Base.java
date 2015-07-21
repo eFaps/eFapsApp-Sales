@@ -134,7 +134,8 @@ public abstract class Invoice_Base
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
-            InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance));
+            InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance,
+                            CISales.ChannelSalesCondition2Contact));
         }
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
@@ -152,7 +153,8 @@ public abstract class Invoice_Base
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
-            ret.append(new Channel().getConditionJs(_parameter, _contactInstance));
+            ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
+                            CISales.ChannelSalesCondition2Contact));
         }
         if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);

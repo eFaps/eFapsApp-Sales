@@ -121,7 +121,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECOND = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderOutbound.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Order Outbound");

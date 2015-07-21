@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,27 +15,15 @@
  limitations under the License.
 
 -->
-<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>5b8795a3-21e4-4aab-abb8-9e14c86f2f24</uuid>
+    <uuid>be905df9-745f-4f06-8ad2-74f5b03f51a2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_Channel2ContactAbstract</name>
-        <parent>Sales_Channel2ObjectAbstract</parent>
-        <purpose abstract="true" />
-        <attribute>
-            <name>ToAbstractLink</name>
-            <type>Link</type>
-            <typelink>Contacts_ContactAbstract</typelink>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>TOID</sqlcolumn>
-        </attribute>
-        <attribute>
-            <name>IsDefault</name>
-            <type>Boolean</type>
-            <sqltable>Sales_Channel2ObjectSQLTable</sqltable>
-            <sqlcolumn>ISDEFAULT</sqlcolumn>
-        </attribute>
+        <name>Sales_ChannelSalesCondition2ContactTree_Menu_Action</name>
+        <childs>
+            <child>Sales_ChannelSalesCondition2ContactTree_Menu_Action_Edit</child>
+        </childs>
     </definition>
-</datamodel-type>
+</ui-menu>

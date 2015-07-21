@@ -36,6 +36,9 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.sales.Channel;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -157,6 +160,34 @@ public abstract class OrderOutbound_Base
             update.executeWithoutAccessCheck();
         }
         return new Return();
+    }
+
+    @Override
+    protected void add2UpdateMap4Contact(final Parameter _parameter,
+                                         final Instance _contactInstance,
+                                         final Map<String, Object> _map)
+        throws EFapsException
+    {
+        super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
+        if (Sales.ORDEROUTBOUNDACTIVATECONDITION.get()) {
+            InterfaceUtils.appendScript4FieldUpdate(_map,
+                            new Channel().getConditionJs(_parameter, _contactInstance,
+                                            CISales.ChannelPurchaseCondition2Contact));
+        }
+    }
+
+    @Override
+    protected StringBuilder add2JavaScript4DocumentContact(final Parameter _parameter,
+                                                           final List<Instance> _instances,
+                                                           final Instance _contactInstance)
+        throws EFapsException
+    {
+        final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
+        if (Sales.ORDEROUTBOUNDACTIVATECONDITION.get()) {
+            ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
+                            CISales.ChannelPurchaseCondition2Contact));
+        }
+        return ret;
     }
 
     protected Map<Status, Status> getStatusMapping4connect2RecievingTicker()

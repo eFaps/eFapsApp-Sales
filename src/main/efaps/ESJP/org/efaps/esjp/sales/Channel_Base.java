@@ -18,20 +18,25 @@
 package org.efaps.esjp.sales;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.ui.wicket.util.DateUtil;
@@ -84,42 +89,67 @@ public abstract class Channel_Base
     }
 
     /**
+     * Gets the condition js.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _contactInstance instance of a contact
+     * @param _channelRelType the _channel rel type
      * @return update field values
      * @throws EFapsException on error
      */
     public StringBuilder getConditionJs(final Parameter _parameter,
-                                        final Instance _contactInstance)
+                                        final Instance _contactInstance,
+                                        final CIType _channelRelType)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Channel2ContactAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CISales.Channel2ContactAbstract.ToAbstractLink, _contactInstance.getId());
+        final QueryBuilder queryBldr = new QueryBuilder(_channelRelType);
+        queryBldr.addWhereAttrEqValue(CISales.ChannelConditionAbstract2ContactAbstract.ToAbstractLink,
+                        _contactInstance);
 
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelConditionAbstract);
-        queryBldr.addWhereAttrInQuery(CISales.ChannelConditionAbstract.ID,
-                        attrQueryBldr.getAttributeQuery(CISales.Channel2ContactAbstract.FromAbstractLink));
-        queryBldr.addOrderByAttributeAsc(CISales.ChannelConditionAbstract.Name);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CISales.ChannelConditionAbstract.Name, CISales.ChannelConditionAbstract.QuantityDays);
-        multi.setEnforceSorted(true);
-        if (multi.execute()) {
-            boolean first = true;
-            Integer days = 0;
-            js.append("eFapsSetFieldValue(0,'condition', new Array('");
-            while (multi.next()) {
-                if (first) {
-                    first = false;
-                    days = multi.getAttribute(CISales.ChannelConditionAbstract.QuantityDays);
-                    js.append(multi.getCurrentInstance().getOid()).append("'");
-                }
-                final String name = multi.getAttribute(CISales.ChannelConditionAbstract.Name);
-
-                js.append(",'").append(multi.getCurrentInstance().getOid()).append("','")
-                    .append(StringEscapeUtils.escapeEcmaScript(name)).append("'");
+        final SelectBuilder sel = SelectBuilder.get()
+                        .linkto(CISales.ChannelConditionAbstract2ContactAbstract.FromAbstractLink);
+        final SelectBuilder selInst = new SelectBuilder(sel).instance();
+        final SelectBuilder selName = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.Name);
+        final SelectBuilder selDays = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.QuantityDays);
+        multi.addSelect(selInst, selName, selDays);
+        multi.addAttribute(CISales.ChannelConditionAbstract2ContactAbstract.IsDefault);
+        multi.execute();
+        Object[] defaultObj = null;
+        final List<Object[]> values = new ArrayList<>();
+        while (multi.next()) {
+            final Instance inst = multi.getSelect(selInst);
+            final String name = multi.getSelect(selName);
+            final Integer days = multi.getSelect(selDays);
+            final Object[] obj = new Object[] { inst.getOid(), name, days };
+            if (BooleanUtils.isTrue(
+                            multi.<Boolean>getAttribute(CISales.ChannelConditionAbstract2ContactAbstract.IsDefault))) {
+                defaultObj = obj;
             }
+            values.add(obj);
+        }
+        Collections.sort(values, new Comparator<Object[]>()
+        {
+
+            @Override
+            public int compare(final Object[] arg0,
+                               final Object[] arg1)
+            {
+                return String.valueOf(arg0[1]).compareTo(String.valueOf(arg1[1]));
+            }
+        });
+
+        if (!values.isEmpty()) {
+            final Integer days = defaultObj == null ? (Integer) values.get(0)[2] : (Integer) defaultObj[2];
+            js.append("eFapsSetFieldValue(0,'condition', new Array('")
+                            .append(defaultObj == null ? values.get(0)[0] : defaultObj[0]).append("'");
+            for (final Object[] obj : values) {
+                js.append(",'").append(obj[0]).append("','")
+                                .append(StringEscapeUtils.escapeEcmaScript(String.valueOf(obj[1]))).append("'");
+            }
+
             js.append(")); ");
             DateTime date;
             if (_parameter.getParameterValue("date_eFapsDate") != null) {
