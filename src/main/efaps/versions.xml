@@ -136,7 +136,7 @@
         <!-- connect the Sales_Products_ProductStock4ProductRequestReportMyDesk to Products_MyDesk -->
         update.add2Menu("3e3e1b63-e6be-44c1-a0f8-47caf61a2f36", "0ff70869-361c-4971-bd09-6cf79a0a7dfb", -1);
 
-        <!-- connect the Sales_ContactTree_ChannelSalesChannel to Contacts_ContactTree -->
+        <!-- connect the Sales_Contacts_ContactTree_Channels to Contacts_ContactTree -->
         update.add2Menu("29288ed8-e0b8-4e12-b4be-51b788be3c71", "e1944ac8-4007-476c-a5c8-2bfbdb2b79f9", -1);
 
         <!-- Sales_sales, Admin_Help_MainMenu -->
