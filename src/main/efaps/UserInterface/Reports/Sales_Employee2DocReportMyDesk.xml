@@ -28,6 +28,15 @@
         <target>
             <menu>Sales_Employee2DocReportMyDesk_Menu</menu>
             <form>Sales_Employee2DocReportForm</form>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_Employee2DocReportMyDesk.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                 <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Invoice.AssignEmployee</property>
+                <property name="Attribute">org.efaps.sales.Receipt.AssignEmployee</property>
+            </trigger>
         </target>
         <property name="Target">content</property>
     </definition>
