@@ -106,7 +106,7 @@
                 <property name="ConnectForeignLink01">ToLink</property>
                 <property name="ConnectForeignField01">deliveryNotes</property>
 
-                <!-- HumanResource_Employee2Invoice -->
+                <!-- Sales_Employee2Invoice -->
                 <property name="ConnectType02">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>

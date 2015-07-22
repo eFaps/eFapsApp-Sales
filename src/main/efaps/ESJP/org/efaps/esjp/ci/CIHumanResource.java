@@ -46,4 +46,19 @@ public final class CIHumanResource
         public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
         public final CIAttribute ToAbstractLink = new CIAttribute(this, "ToAbstractLink");
     }
+
+    public static final _Employee2DocumentAbstract Employee2DocumentAbstract = new _Employee2DocumentAbstract("5c3cf605-6036-4580-985a-f5a5f76971b5");
+    public static class _Employee2DocumentAbstract extends CIType
+    {
+        protected _Employee2DocumentAbstract(final String _uuid)
+        {
+            super(_uuid);
+        }
+        public final CIAttribute Created = new CIAttribute(this, "Created");
+        public final CIAttribute Creator = new CIAttribute(this, "Creator");
+        public final CIAttribute FromAbstractLink = new CIAttribute(this, "FromAbstractLink");
+        public final CIAttribute Modified = new CIAttribute(this, "Modified");
+        public final CIAttribute Modifier = new CIAttribute(this, "Modifier");
+        public final CIAttribute ToAbstractLink = new CIAttribute(this, "ToAbstractLink");
+    }
 }

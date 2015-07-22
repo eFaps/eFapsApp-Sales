@@ -67,7 +67,7 @@
             </trigger>
         </field>
         <field name="employee">
-            <property name="SelectAlternateOID">linkfrom[HumanResource_Employee2Receipt#ToLink].linkto[FromLink].oid</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_Employee2Receipt#ToLink].linkto[FromLink].oid</property>
             <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_ReceiptForm.employee.Label</property>
@@ -433,7 +433,7 @@
             <property name="ModeView">READONLY</property>
         </field>
         <field name="employee">
-            <property name="SelectAlternateOID">linkfrom[HumanResource_Employee2Receipt#ToLink].linkto[FromLink].oid</property>
+            <property name="SelectAlternateOID">linkfrom[Sales_Employee2Receipt#ToLink].linkto[FromLink].oid</property>
             <property name="MsgPhrase">HumanResource_EmployeeWithNumberMsgPhrase</property>
             <property name="HRef">TREE</property>
             <property name="Label">Sales_ReceiptForm.employee.Label</property>

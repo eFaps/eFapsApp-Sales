@@ -113,7 +113,7 @@
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">condition</property>
 
-                <!-- HumanResource_Employee2Invoice -->
+                <!-- Sales_Employee2Invoice -->
                 <property name="ConnectType03">828448e9-c7d5-41e9-9723-4e29192e6cc8</property>
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>

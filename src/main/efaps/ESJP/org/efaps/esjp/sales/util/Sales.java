@@ -189,6 +189,13 @@ public final class Sales
                     .key(BASE + "Invoice.AutoCompleteProperties4Products")
                     .description("Autocomplete Properties 4 Products in Invoice");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute EMPLOYEE2DOCREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Report.Employee2DocReport")
+                    .description("Autocomplete Properties 4 Products in Invoice");
+
     /**
      * Singelton.
      */

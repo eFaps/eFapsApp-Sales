@@ -36,7 +36,7 @@
             <form>Sales_ReceiptForm</form>
             <execute program="org.efaps.esjp.sales.document.Receipt" method="create">
                 <property name="PositionType">Sales_ReceiptPosition</property>
-                <!-- HumanResource_Employee2Receipt -->
+                <!-- Sales_Employee2Receipt -->
                 <property name="ConnectType01">9d8b432c-ddf7-45b4-8ed9-cb749b9ee8a1</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
@@ -74,7 +74,7 @@
                 <property name="ConnectForeignLink">FromLink</property>
                 <property name="ConnectForeignField">project</property>
 
-                <!-- HumanResource_Employee2Receipt -->
+                <!-- Sales_Employee2Receipt -->
                 <property name="ConnectType01">9d8b432c-ddf7-45b4-8ed9-cb749b9ee8a1</property>
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
