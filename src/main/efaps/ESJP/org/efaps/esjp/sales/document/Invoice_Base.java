@@ -28,10 +28,8 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
-import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
-import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -92,25 +90,8 @@ public abstract class Invoice_Base
         final Return ret = new Return();
         final EditedDoc editedDoc = editDoc(_parameter);
         updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
 
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
-            final Instance condInst = Instance
-                            .get(_parameter.getParameterValue(CIFormSales.Sales_InvoiceForm.condition4edit.name));
-            if (condInst.isValid()) {
-                final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelSalesCondition2Invoice);
-                queryBldr.addWhereAttrEqValue(CISales.ChannelSalesCondition2Invoice.ToLink, _parameter.getInstance());
-                final List<Instance> relInsts = queryBldr.getQuery().execute();
-                Update update;
-                if (relInsts.isEmpty()) {
-                    update = new Insert(CISales.ChannelSalesCondition2Invoice);
-                    update.add(CISales.ChannelSalesCondition2Invoice.ToLink, _parameter.getInstance());
-                } else {
-                    update = new Update(relInsts.get(0));
-                }
-                update.add(CISales.ChannelSalesCondition2Invoice.FromLink, condInst);
-                update.execute();
-            }
-        }
         final File file = createReport(_parameter, editedDoc);
         if (file != null) {
             ret.put(ReturnValues.VALUES, file);
@@ -133,11 +114,11 @@ public abstract class Invoice_Base
         throws EFapsException
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
+        if (Sales.INVOICEACTIVATECONDITION.get()) {
             InterfaceUtils.appendScript4FieldUpdate(_map, new Channel().getConditionJs(_parameter, _contactInstance,
                             CISales.ChannelSalesCondition2Contact));
         }
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
+        if (Sales.INVOICEFROMDELIVERYNOTE.get()) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
             queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
@@ -152,11 +133,11 @@ public abstract class Invoice_Base
         throws EFapsException
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEACTIVATECONDITION)) {
+        if (Sales.INVOICEACTIVATECONDITION.get()) {
             ret.append(new Channel().getConditionJs(_parameter, _contactInstance,
                             CISales.ChannelSalesCondition2Contact));
         }
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.INVOICEFROMDELIVERYNOTE)) {
+        if (Sales.INVOICEFROMDELIVERYNOTE.get()) {
             final QueryBuilder queryBldr = new QueryBuilder(CISales.DeliveryNote);
             queryBldr.addWhereAttrEqValue(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Open));
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,

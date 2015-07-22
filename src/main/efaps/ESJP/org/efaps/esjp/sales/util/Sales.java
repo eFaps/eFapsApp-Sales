@@ -147,6 +147,48 @@ public final class Sales
                     .key(BASE + "ServiceOrderOutbound.JasperReport")
                     .description("Name of the jasperReport for Order Outbound");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICEACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INVOICEJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.JasperReport")
+                    .description("Name of the jasperReport for Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICEASSIGNACTION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.AssignAction")
+                    .description("Activate the mechanism to assign a action in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICEFROMDELIVERYNOTE= new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.CreateFromDeliveryNote")
+                    .description("Allows to activate/deactivate the mechanisms to relate Invoice and Delivery Note.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INVOICEASSIGNEMPLOYEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INVOICEAUTOCOMPLETE4PRODUCTS = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.AutoCompleteProperties4Products")
+                    .description("Autocomplete Properties 4 Products in Invoice");
+
     /**
      * Singelton.
      */

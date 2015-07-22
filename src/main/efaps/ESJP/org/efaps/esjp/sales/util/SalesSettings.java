@@ -87,12 +87,6 @@ public interface SalesSettings
 
     /**
      * Boolean (true/false).<br/>
-     * Activate the UserInterface for Sales Channel.
-     */
-    String CHANNELSALES = SalesSettings.BASE + "ActivateSalesChannel";
-
-    /**
-     * Boolean (true/false).<br/>
      * Activate the UserInterface for Buying Route.
      */
     String CHANNELBUY = SalesSettings.BASE + "ActivateBuyingRoute";
@@ -324,36 +318,6 @@ public interface SalesSettings
      * Properties. Can be concatenated.
      */
     String PRODUCTREPORT = SalesSettings.BASE + "SalesProductReport";
-
-    /**
-     * Boolean.
-     */
-    String INVOICEASSIGNACTION = SalesSettings.BASE + "Invoice.AssignAction";
-
-    /**
-     * Boolean.
-     */
-    String INVOICEACTIVATECONDITION = SalesSettings.BASE + "Invoice.ActivateCondition";
-
-    /**
-     * Boolean.
-     */
-    String INVOICEFROMDELIVERYNOTE = SalesSettings.BASE + "Invoice.CreateFromDeliveryNote";
-
-    /**
-     * Boolean.
-     */
-    String INVOICEASSIGNEMPLOYEE = SalesSettings.BASE + "Invoice.AssignEmployee";
-
-    /**
-     * String. Name of a JasperReport.
-     */
-    String INVOICEJASPERREPORT = SalesSettings.BASE + "Invoice.JasperReport";
-
-    /**
-     * Properties. Autocomplete Properties 4 Products in Invoice.
-     */
-    String INVOICEAUTOCOMPLETE4PRODUCTS = SalesSettings.BASE + "Invoice.AutoCompleteProperties4Products";
 
     /**
      * Boolean.
