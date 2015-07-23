@@ -36,6 +36,17 @@
             <form>Sales_ServiceOrderOutboundForm</form>
             <execute program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="edit">
                 <property name="PositionType">Sales_ServiceOrderOutboundPosition</property>
+
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigAttribute">org.efaps.sales.ServiceOrderOutbound.JasperReport</property>
+                <property name="Mime">pdf</property>
+                <property name="NoDataSource">true</property>
+
+                <!-- Sales_ChannelPurchaseCondition2ServiceOrderOutbound -->
+                <property name="ConnectType01">e8df4928-f903-4a05-b16e-b3e91f26fff4</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_OrderOutboundTree_Menu_Action_Edit.UI_ACCESSCHECK"

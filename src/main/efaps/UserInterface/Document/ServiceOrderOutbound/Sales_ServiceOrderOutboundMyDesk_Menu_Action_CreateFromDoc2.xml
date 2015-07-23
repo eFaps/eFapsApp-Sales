@@ -38,6 +38,17 @@
                 <property name="StatusGroup">Sales_ServiceOrderOutboundStatus</property>
                 <property name="Status">Draft</property>
                 <property name="UseNumberGenerator4Name">true</property>
+
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigAttribute">org.efaps.sales.ServiceOrderOutbound.JasperReport</property>
+                <property name="Mime">pdf</property>
+                <property name="NoDataSource">true</property>
+
+                <!-- Sales_ChannelPurchaseCondition2ServiceOrderOutbound -->
+                <property name="ConnectType01">e8df4928-f903-4a05-b16e-b3e91f26fff4</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
