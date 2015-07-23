@@ -42,6 +42,13 @@
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigAttribute">org.efaps.sales.OrderOutbound.JasperReport</property>
                 <property name="NoDataSource">true</property>
+
+                <!-- Sales_ChannelPurchaseCondition2OrderOutbound -->
+                <property name="ConnectType01">498557bd-6747-4991-8a12-6a581e96218c</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
+
             </execute>
             <validate program="org.efaps.esjp.sales.document.OrderOutbound" method="validate">
                 <property name="Validation">POSITION</property>
