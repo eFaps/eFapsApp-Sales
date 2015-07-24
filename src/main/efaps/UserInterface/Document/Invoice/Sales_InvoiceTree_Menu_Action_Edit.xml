@@ -32,9 +32,12 @@
         <target>
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="edit" >
-                 <property name="PositionType">Sales_InvoicePosition</property>
-                <property name="JasperReport">Sales_Invoice</property>
-                <property name="Mime">pdf</property>
+                <property name="PositionType">Sales_InvoicePosition</property>
+                <property name="Mime">docx</property>
+                <property name="NoDataSource">true</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
@@ -47,5 +50,6 @@
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

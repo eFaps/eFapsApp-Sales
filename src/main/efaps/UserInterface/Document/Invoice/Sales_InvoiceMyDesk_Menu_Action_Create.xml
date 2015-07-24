@@ -50,7 +50,7 @@
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="Mime">pdf</property>
+                <property name="Mime">docx</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
@@ -98,7 +98,7 @@
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="Mime">pdf</property>
+                <property name="Mime">docx</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
@@ -132,6 +132,7 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 
 
@@ -185,5 +186,6 @@
         <property name="WindowHeight">660</property>
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>
