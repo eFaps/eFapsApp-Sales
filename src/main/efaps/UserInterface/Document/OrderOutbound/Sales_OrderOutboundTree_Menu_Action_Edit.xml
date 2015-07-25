@@ -34,7 +34,7 @@
                 <property name="PositionType">Sales_OrderOutboundPosition</property>
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigAttribute">org.efaps.sales.OrderOutbound.JasperReport</property>
+                <property name="JasperConfigReport">org.efaps.sales.OrderOutbound.JasperReport</property>
                 <property name="NoDataSource">true</property>
                   <!-- Sales_ChannelPurchaseCondition2OrderOutbound -->
                 <property name="ConnectType01">498557bd-6747-4991-8a12-6a581e96218c</property>

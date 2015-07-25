@@ -39,7 +39,7 @@
                 <property name="UseNumberGenerator4Name">true</property>
                  <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigAttribute">org.efaps.sales.OrderOutbound.JasperReport</property>
+                <property name="JasperConfigReport">org.efaps.sales.OrderOutbound.JasperReport</property>
                 <property name="NoDataSource">true</property>
 
                 <!-- Sales_ChannelPurchaseCondition2OrderOutbound -->

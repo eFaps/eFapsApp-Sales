@@ -49,7 +49,7 @@
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
+                <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
                 <property name="Mime">docx</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
@@ -97,7 +97,7 @@
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
+                <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
                 <property name="Mime">docx</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
@@ -151,7 +151,7 @@
             <execute program="org.efaps.esjp.sales.document.Invoice" method="create" >
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
+                <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
                 <property name="Mime">pdf</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>

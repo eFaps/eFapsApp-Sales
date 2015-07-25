@@ -28,8 +28,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.annotation.EFapsSysConfAttribute;
 import org.efaps.api.annotation.EFapsSystemConfiguration;
 import org.efaps.esjp.admin.common.systemconfiguration.BooleanSysConfAttribute;
+import org.efaps.esjp.admin.common.systemconfiguration.EnumSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
+import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
 import org.efaps.util.cache.CacheReloadException;
 
 /**
@@ -159,6 +161,14 @@ public final class Sales
     public static final StringSysConfAttribute INVOICEJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.JasperReport")
+                    .description("Name of the jasperReport for Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> INVOICEMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Invoice.Mime")
+                    .clazz(JasperMime.class)
                     .description("Name of the jasperReport for Invoice");
 
     /** See description. */

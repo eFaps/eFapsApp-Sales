@@ -37,7 +37,7 @@
                 <property name="NoDataSource">true</property>
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="JasperConfigAttribute">org.efaps.sales.Invoice.JasperReport</property>
+                <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"
