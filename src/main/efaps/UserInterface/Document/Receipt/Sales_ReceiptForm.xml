@@ -72,6 +72,7 @@
             <property name="HRef">TREE</property>
             <property name="Label">Sales_ReceiptForm.employee.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
             <property name="Columns">80</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
