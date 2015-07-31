@@ -154,6 +154,12 @@
         <!-- connect Sales_ActionDefinitionMyDesk_Menu_Action  to  ERP_ActionDefinitionMyDesk_Menu-->
         update.add2Menu("79b31e5c-5ab0-4f8d-896f-35e60c58dc01", "7432b23b-a2b7-4f2f-aed9-d0ceef9c9a89", -1);
 
+        <!-- connect Sales_HumanResource_EmployeeTree_Documents_Menu_Action_AddInvoice  to  HumanResource_EmployeeTree_Documents_Menu_Action-->
+        update.add2Menu("3054f9ee-567e-40af-9158-4c00e6a4bd6c", "f0666e18-5d1c-43c3-ac8b-dcc61da3bd4e", -1);
+        <!-- connect Sales_HumanResource_EmployeeTree_Documents_Menu_Action_AddReceipt  to  HumanResource_EmployeeTree_Documents_Menu_Action-->
+        update.add2Menu("a17a0046-62b0-4b30-a5c2-80e7b7d52eca", "f0666e18-5d1c-43c3-ac8b-dcc61da3bd4e", -1);
+
+
         <!-- add to Sales_Admin role -->
         rolUp = new RoleUpdate("d9ef697d-8910-4eaf-bf3b-bfe9e834314e");
         <!-- ERP_AttributeDefinitionMyDesk -->
