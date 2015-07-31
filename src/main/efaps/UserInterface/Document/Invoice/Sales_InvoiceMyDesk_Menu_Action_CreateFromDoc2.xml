@@ -16,21 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>a2f44a2f-4479-4abb-a771-1b6f020dee11</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
@@ -50,7 +41,7 @@
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="Mime">docx</property>
+                <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
@@ -98,7 +89,7 @@
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="Mime">pdf</property>
+                <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->
@@ -151,7 +142,7 @@
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
-                <property name="Mime">pdf</property>
+                <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
                 <property name="NoDataSource">true</property>
                 <property name="PositionType">Sales_InvoicePosition</property>
                 <!-- Sales_Invoice2DeliveryNote -->

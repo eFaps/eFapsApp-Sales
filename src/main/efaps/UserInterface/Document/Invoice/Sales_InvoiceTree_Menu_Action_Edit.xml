@@ -22,7 +22,6 @@
             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>32bc9e20-6dcc-478e-aaa7-994e97852409</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_InvoiceTree_Menu_Action_Edit</name>
@@ -33,11 +32,16 @@
             <form>Sales_InvoiceForm</form>
             <execute program="org.efaps.esjp.sales.document.Invoice" method="edit" >
                 <property name="PositionType">Sales_InvoicePosition</property>
-                <property name="Mime">docx</property>
                 <property name="NoDataSource">true</property>
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Invoice.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.Invoice.Mime</property>
+                <!-- Sales_ChannelCondition2Invoice -->
+                <property name="ConnectType01">74552bef-1282-4be2-af52-2fa914ddaa17</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="check4Status"

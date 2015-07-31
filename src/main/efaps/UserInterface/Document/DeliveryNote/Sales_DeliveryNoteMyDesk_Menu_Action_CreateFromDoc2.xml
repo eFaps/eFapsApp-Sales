@@ -44,8 +44,9 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
-                <property name="JasperReport">Sales_DeliveryNote</property>
-                <property name="Mime">pdf</property>
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.DeliveryNote.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.DeliveryNote.Mime</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate" >
                 <property name="Validation">POSITION</property>
@@ -79,8 +80,9 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
-                <property name="JasperReport">Sales_DeliveryNote</property>
-                <property name="Mime">pdf</property>
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.DeliveryNote.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.DeliveryNote.Mime</property>
                 <!-- Projects_ProjectService2DeliveryNote -->
                 <property name="ConnectType">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
                 <property name="ConnectCurrentLink">ToLink</property>
