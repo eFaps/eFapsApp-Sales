@@ -35,8 +35,8 @@
         </access>
         <target>
             <form>Sales_Products_SalesReportFilterForm</form>
-            <execute program="org.efaps.esjp.sales.SalesProductReport" method="setFilter">
-                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+            <execute program="org.efaps.esjp.sales.report.SalesProductReport" method="setFilter">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>
@@ -45,6 +45,6 @@
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="Label">report.Filter</property>
-        <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+        <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
     </definition>
 </ui-command>

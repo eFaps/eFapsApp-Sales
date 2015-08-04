@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,11 +14,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -36,7 +31,7 @@
         </access>
         <!-- target definitions -->
         <target>
-            <execute program="org.efaps.esjp.sales.SalesProductReport" method="exportReport">
+            <execute program="org.efaps.esjp.sales.report.SalesProductReport" method="exportReport">
                 <property name="Mime">xls</property>
                 <property name="Template">Sales_Products_SalesReportTemplate</property>
                 <property name="ShowDetails">true</property>
@@ -45,7 +40,7 @@
                  <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>
-                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
             </execute>
         </target>
         <property name="Target">hidden</property>

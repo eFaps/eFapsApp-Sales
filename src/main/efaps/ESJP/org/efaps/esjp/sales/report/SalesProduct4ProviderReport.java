@@ -18,7 +18,7 @@
  * Last Changed By: $Author: tim.moxter $
  */
 
-package org.efaps.esjp.sales;
+package org.efaps.esjp.sales.report;
 
 import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;

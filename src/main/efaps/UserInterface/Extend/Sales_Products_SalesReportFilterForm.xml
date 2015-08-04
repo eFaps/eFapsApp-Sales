@@ -14,8 +14,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -52,6 +50,36 @@
                  <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>
+            </trigger>
+        </field>
+        <field name="dateConfig">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.dateConfig</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_Products_SalesReportFilterForm.dateConfig.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="Enum">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
+            </trigger>
+        </field>
+        <field name="priceConfig">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
+            <trigger event="UI_FIELD_VALUE" method="getEnumFieldValue"
+                name="Sales_Products_SalesReportFilterForm.priceConfig.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+                <property name="Enum">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
+            </trigger>
+        </field>
+         <field name="currency">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
+            <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
+                name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport" >
+                <property name="ShowEmptyValue">false</property>
             </trigger>
         </field>
     </definition>

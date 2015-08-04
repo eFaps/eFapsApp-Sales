@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,75 +15,66 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev: 6547 $
-  Last Changed:    $Date: 2011-05-13 10:46:26 -0500 (vie, 13 may 2011) $
-  Last Changed By: $Author: jorge.cueva@moxter.net $
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>65479a2a-a8c0-4de8-bc56-e25ec85c6bde</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 1408 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_Products_SalesReportForm</name>
-        <field name="description">
-            <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="getDBPropertiesFieldValue"
-                name="Sales_Products_SalesReportForm.description.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="DBProperty">org.efaps.esjp.sales.SalesProductReport.Title</property>
-            </trigger>
-        </field>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-             <trigger program="org.efaps.esjp.sales.SalesProductReport"
-                method="setDefaultFilter"
-                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.1"
-                event="UI_FIELD_VALUE"
-                index="1">
-                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+            <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="setDefaultFilter"
+                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.1" event="UI_FIELD_VALUE" index="1">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
                 <property name="ReportField">salesReport</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
+                <property name="Field04">dateConfig</property>
+                <property name="Field05">priceConfig</property>
+                <property name="Field06">currency</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
+                <property name="FilterType04">Enum</property>
+                <property name="FilterType05">Enum</property>
+                <property name="FilterType06">Currency</property>
                 <property name="FilterDefault01">YEAR:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
-             </trigger>
-            <trigger program="org.efaps.esjp.sales.SalesProductReport"
-                method="getFilterFieldValue"
-                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.2"
-                event="UI_FIELD_VALUE"
-                index="2">
-                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+                <property name="FilterDefault04">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
+                <property name="FilterDefault05">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
+                <property name="FilterDefault06">BASECURRENCY</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="getFilterFieldValue"
+                name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE" index="2">
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.SalesProductReport.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.SalesProductReport.dateTo</property>
+                <property name="Field04">dateConfig</property>
+                <property name="Field05">priceConfig</property>
+                <property name="Field06">currency</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.SalesProductReport.dateFrom</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.SalesProductReport.dateTo</property>
                 <property name="DBProperty03">ERP_ReportFilterForm4DateFromToType.type.Label</property>
+                <property name="DBProperty04">org.efaps.esjp.sales.report.SalesProductReport.dateConfig</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
             </trigger>
         </field>
         <field name="salesReport">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.SalesProductReport"
-                method="generateReport"
-                name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="generateReport"
+                name="Sales_Products_SalesReportForm.salesReport.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="ShowDetails">true</property>
                 <property name="OppositeFilter">true</property>
                 <property name="DateFilter">month</property>
-                <property name="FilterKey">org.efaps.esjp.sales.SalesProductReport.FilterKey</property>
+                <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKey</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>

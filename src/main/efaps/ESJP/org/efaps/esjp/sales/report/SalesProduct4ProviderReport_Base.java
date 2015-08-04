@@ -18,7 +18,7 @@
  * Last Changed By: $Author: jan@moxter.net $
  */
 
-package org.efaps.esjp.sales;
+package org.efaps.esjp.sales.report;
 
 import java.io.File;
 import java.math.BigDecimal;
