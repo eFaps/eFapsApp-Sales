@@ -311,13 +311,24 @@ public abstract class Employee2DocReport_Base
                                 DBProperties.getProperty(DocumentSumReport.class.getName() + ".BASE")
                                                 + " " + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol(),
                                 "BASE", BigDecimal.class, Calculation.SUM);
-                crosstab.addMeasure(amountMeasure);
+
+                final CrosstabMeasureBuilder<BigDecimal> countMeasure = DynamicReports.ctab.measure(
+                                getFilteredReport().getDBProperty("Count"),
+                                "BASE", BigDecimal.class, Calculation.COUNT);
+
+                crosstab.addMeasure(amountMeasure, countMeasure);
             } else {
                 final CrosstabMeasureBuilder<BigDecimal> amountMeasure = DynamicReports.ctab.measure(
                                 selected.getSymbol(),
                                 selected.getISOCode(), BigDecimal.class, Calculation.SUM);
-                crosstab.addMeasure(amountMeasure);
+
+                final CrosstabMeasureBuilder<BigDecimal> countMeasure = DynamicReports.ctab.measure(
+                                getFilteredReport().getDBProperty("Count"),
+                                selected.getISOCode(), BigDecimal.class, Calculation.COUNT);
+
+                crosstab.addMeasure(amountMeasure, countMeasure);
             }
+
             final CrosstabRowGroupBuilder<String> rowTypeGroup = DynamicReports.ctab.rowGroup("type", String.class)
                             .setHeaderWidth(150);
             crosstab.addRowGroup(rowTypeGroup);
