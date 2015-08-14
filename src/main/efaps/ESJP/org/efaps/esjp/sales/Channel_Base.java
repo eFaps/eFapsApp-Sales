@@ -103,61 +103,62 @@ public abstract class Channel_Base
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
+        if (_contactInstance != null && _contactInstance.isValid()) {
+            final QueryBuilder queryBldr = new QueryBuilder(_channelRelType);
+            queryBldr.addWhereAttrEqValue(CISales.ChannelConditionAbstract2ContactAbstract.ToAbstractLink,
+                            _contactInstance);
 
-        final QueryBuilder queryBldr = new QueryBuilder(_channelRelType);
-        queryBldr.addWhereAttrEqValue(CISales.ChannelConditionAbstract2ContactAbstract.ToAbstractLink,
-                        _contactInstance);
-
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder sel = SelectBuilder.get()
-                        .linkto(CISales.ChannelConditionAbstract2ContactAbstract.FromAbstractLink);
-        final SelectBuilder selInst = new SelectBuilder(sel).instance();
-        final SelectBuilder selName = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.Name);
-        final SelectBuilder selDays = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.QuantityDays);
-        multi.addSelect(selInst, selName, selDays);
-        multi.addAttribute(CISales.ChannelConditionAbstract2ContactAbstract.IsDefault);
-        multi.execute();
-        Object[] defaultObj = null;
-        final List<Object[]> values = new ArrayList<>();
-        while (multi.next()) {
-            final Instance inst = multi.getSelect(selInst);
-            final String name = multi.getSelect(selName);
-            final Integer days = multi.getSelect(selDays);
-            final Object[] obj = new Object[] { inst.getOid(), name, days };
-            if (BooleanUtils.isTrue(
-                            multi.<Boolean>getAttribute(CISales.ChannelConditionAbstract2ContactAbstract.IsDefault))) {
-                defaultObj = obj;
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder sel = SelectBuilder.get()
+                            .linkto(CISales.ChannelConditionAbstract2ContactAbstract.FromAbstractLink);
+            final SelectBuilder selInst = new SelectBuilder(sel).instance();
+            final SelectBuilder selName = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.Name);
+            final SelectBuilder selDays = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.QuantityDays);
+            multi.addSelect(selInst, selName, selDays);
+            multi.addAttribute(CISales.ChannelConditionAbstract2ContactAbstract.IsDefault);
+            multi.execute();
+            Object[] defaultObj = null;
+            final List<Object[]> values = new ArrayList<>();
+            while (multi.next()) {
+                final Instance inst = multi.getSelect(selInst);
+                final String name = multi.getSelect(selName);
+                final Integer days = multi.getSelect(selDays);
+                final Object[] obj = new Object[] { inst.getOid(), name, days };
+                if (BooleanUtils.isTrue(multi.<Boolean>getAttribute(
+                                CISales.ChannelConditionAbstract2ContactAbstract.IsDefault))) {
+                    defaultObj = obj;
+                }
+                values.add(obj);
             }
-            values.add(obj);
-        }
-        Collections.sort(values, new Comparator<Object[]>()
-        {
-
-            @Override
-            public int compare(final Object[] arg0,
-                               final Object[] arg1)
+            Collections.sort(values, new Comparator<Object[]>()
             {
-                return String.valueOf(arg0[1]).compareTo(String.valueOf(arg1[1]));
-            }
-        });
 
-        if (!values.isEmpty()) {
-            final Integer days = defaultObj == null ? (Integer) values.get(0)[2] : (Integer) defaultObj[2];
-            js.append("eFapsSetFieldValue(0,'condition', new Array('")
-                            .append(defaultObj == null ? values.get(0)[0] : defaultObj[0]).append("'");
-            for (final Object[] obj : values) {
-                js.append(",'").append(obj[0]).append("','")
-                                .append(StringEscapeUtils.escapeEcmaScript(String.valueOf(obj[1]))).append("'");
-            }
+                @Override
+                public int compare(final Object[] arg0,
+                                   final Object[] arg1)
+                {
+                    return String.valueOf(arg0[1]).compareTo(String.valueOf(arg1[1]));
+                }
+            });
 
-            js.append(")); ");
-            DateTime date;
-            if (_parameter.getParameterValue("date_eFapsDate") != null) {
-                date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
-            } else {
-                date = new DateTime();
+            if (!values.isEmpty()) {
+                final Integer days = defaultObj == null ? (Integer) values.get(0)[2] : (Integer) defaultObj[2];
+                js.append("eFapsSetFieldValue(0,'condition', new Array('")
+                                .append(defaultObj == null ? values.get(0)[0] : defaultObj[0]).append("'");
+                for (final Object[] obj : values) {
+                    js.append(",'").append(obj[0]).append("','")
+                                    .append(StringEscapeUtils.escapeEcmaScript(String.valueOf(obj[1]))).append("'");
+                }
+
+                js.append(")); ");
+                DateTime date;
+                if (_parameter.getParameterValue("date_eFapsDate") != null) {
+                    date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
+                } else {
+                    date = new DateTime();
+                }
+                js.append(getSetFieldValue(0, "dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(days))));
             }
-            js.append(getSetFieldValue(0, "dueDate_eFapsDate", DateUtil.getDate4Parameter(date.plusDays(days))));
         }
         return js;
     }
