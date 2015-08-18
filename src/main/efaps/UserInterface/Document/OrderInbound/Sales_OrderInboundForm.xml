@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,18 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>84a38dc3-3e20-44d4-ab3b-70b51d3a12bf</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundForm</name>
@@ -151,7 +144,9 @@
             <trigger program="org.efaps.esjp.sales.document.OrderInbound"
                 method="autoComplete4Contact"
                 name="Sales_OrderInboundForm.contact.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="Classification">Contacts_ClassClient</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.OrderInbound"
                 method="updateFields4Contact"
                 name="Sales_OrderInboundForm.contact.UI_FIELD_UPDATE"
