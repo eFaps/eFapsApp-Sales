@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,19 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>94c86ccd-2fa3-4278-b183-06bbf863aa3d</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReturnUsageReportMyDesk_Menu_Action_Create</name>
@@ -34,8 +26,6 @@
             <role>Sales_Admin</role>
             <role>Sales_Delivery</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_ReturnUsageReportForm</form>
             <execute program="org.efaps.esjp.sales.document.ReturnUsageReport"
@@ -44,10 +34,18 @@
                 <property name="StatusGroup">Sales_ReturnUsageReportStatus</property>
                 <property name="Status">Closed</property>
                 <property name="UseNumberGenerator4Name">true</property>
-            </execute>
-        </target>
 
-        <!-- properties -->
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.ReturnUsageReport.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.ReturnUsageReport.Mime</property>
+                <property name="NoDataSource">true</property>
+            </execute>
+            <validate program="org.efaps.esjp.sales.document.UsageReport" method="validate">
+                <property name="Validation">POSITION</property>
+                <property name="Validation01">QUANTITYGREATERZERO</property>
+            </validate>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_ReturnUsageReport</property>
         <property name="TargetMode">create</property>
@@ -55,5 +53,6 @@
         <property name="WindowWidth">1200</property>
         <property name="TargetDefaultMenu">none</property>
         <property name="ShowStorage">true</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

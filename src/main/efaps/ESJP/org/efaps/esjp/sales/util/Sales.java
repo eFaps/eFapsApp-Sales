@@ -221,6 +221,21 @@ public final class Sales
                     .clazz(JasperMime.class)
                     .description("Mime for the jasperReport for UsageReport");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute RETUSAGEREPJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ReturnUsageReport.JasperReport")
+                    .description("Name of the jasperReport for ReturnUsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> RETUSAGEREPMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ReturnUsageReport.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime for the jasperReport for ReturnUsageReport");
+
     /**
      * Singelton.
      */

@@ -14,30 +14,30 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>cc6fc9e9-4fde-4cf8-a7ee-e0fb0184c34a</uuid>
+    <uuid>9dec074a-2af3-41b7-a8e6-7722d7b9fd75</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReturnUsageReportTree_Menu_Action_Edit</name>
+        <name>Sales_ReturnUsageReportTree_Menu_Action_SetClosed</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Delivery</role>
         </access>
         <target>
-            <form>Sales_ReturnUsageReportForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Closed</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_ReturnUsageReportTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                name="Sales_ReturnUsageReportTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

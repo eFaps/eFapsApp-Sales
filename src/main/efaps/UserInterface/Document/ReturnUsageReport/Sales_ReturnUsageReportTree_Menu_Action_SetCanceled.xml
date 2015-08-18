@@ -17,27 +17,28 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>cc6fc9e9-4fde-4cf8-a7ee-e0fb0184c34a</uuid>
+    <uuid>d5c6d048-78b4-40fe-96e1-0d8628b80beb</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ReturnUsageReportTree_Menu_Action_Edit</name>
+        <name>Sales_ReturnUsageReportTree_Menu_Action_SetCanceled</name>
         <access>
             <role>Sales_Admin</role>
-            <role>Sales_Delivery</role>
         </access>
         <target>
-            <form>Sales_ReturnUsageReportForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+            <execute method="changeStatusWithInverseTransaction"
+                program="org.efaps.esjp.sales.document.ReturnUsageReport">
+                <property name="Status">Canceled</property>
+            </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_ReturnUsageReportTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                name="Sales_ReturnUsageReportTree_Menu_Action_SetCanceled.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
+                <property name="Status01">Closed</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
@@ -35,10 +35,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("af083c87-5220-4365-8e29-42d740104d3e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class ReturnUsageReport_Base
     extends AbstractProductDocument
 {
@@ -51,10 +50,18 @@ public abstract class ReturnUsageReport_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc);
-        return new Return();
+        final Return ret = new Return();
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     /**
