@@ -80,7 +80,6 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
-import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -709,73 +708,93 @@ public abstract class AbstractProductDocument_Base
     @Override
     protected List<UIAbstractPosition> updateBean4Indiviual(final Parameter _parameter,
                                                             final UIAbstractPosition _bean)
-        throws CacheReloadException, EFapsException
+        throws EFapsException
     {
         final List<UIAbstractPosition> ret = new ArrayList<>();
-        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
-            final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
-            print.addAttribute(CIProducts.ProductAbstract.Individual);
-            print.execute();
-            final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
-                            CIProducts.ProductAbstract.Individual);
-            switch (indivual) {
-                case BATCH:
-                    final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract2Batch);
-                    attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
-                                    _bean.getProdInstance());
-                    final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
-                    final Instance storInst = getDefaultStorage(_parameter);
-                    if (storInst != null && storInst.isValid()) {
-                        invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
-                    }
-                    invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
-                                    attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract2Batch.ToLink));
-                    final MultiPrintQuery multi = invQueryBldr.getPrint();
-                    final SelectBuilder selProd = SelectBuilder.get().linkto(CIProducts.InventoryIndividual.Product);
-                    final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
-                    final SelectBuilder selProdName = new SelectBuilder(selProd)
-                                    .attribute(CIProducts.ProductAbstract.Name);
-                    final SelectBuilder selProdDescr = new SelectBuilder(selProd)
-                                    .attribute(CIProducts.ProductAbstract.Description);
-                    final SelectBuilder selProdCreated = new SelectBuilder(selProd)
-                                    .attribute(CIProducts.ProductAbstract.Created);
-                    multi.addSelect(selProdInst, selProdName, selProdDescr, selProdCreated);
-                    multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
-                    multi.execute();
+        if (isUpdateBean4Individual(_parameter, _bean)) {
 
-                    // FIFO
-                    final Map<DateTime, UIAbstractPosition> fifoMap = new TreeMap<>();
-                    while (multi.next()) {
-                        final Instance prodInst = multi.getSelect(selProdInst);
-                        _bean.setDoc(null);
-                        final UIAbstractPosition bean = SerializationUtils.clone(_bean);
-                        bean.setProdInstance(prodInst)
-                                .setProdName(multi.<String>getSelect(selProdName))
-                                .setProdDescr(multi.<String>getSelect(selProdDescr))
-                                .setQuantity(multi.<BigDecimal>getAttribute(CIProducts.InventoryIndividual.Quantity));
-                        bean.setDoc(this);
-                        fifoMap.put(multi.<DateTime>getSelect(selProdCreated), bean);
-                    }
-
-                    BigDecimal currentQty = _bean.getQuantity();
-                    for (final UIAbstractPosition tmpPos : fifoMap.values()) {
-                        ret.add(tmpPos);
-                        if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
-                            tmpPos.setQuantity(currentQty);
-                            break;
-                        } else {
-                            currentQty = currentQty.subtract(tmpPos.getQuantity());
+            if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+                final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
+                print.addAttribute(CIProducts.ProductAbstract.Individual);
+                print.execute();
+                final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
+                                CIProducts.ProductAbstract.Individual);
+                switch (indivual) {
+                    case BATCH:
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StockProductAbstract2Batch);
+                        attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
+                                        _bean.getProdInstance());
+                        final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
+                        final Instance storInst = getDefaultStorage(_parameter);
+                        if (storInst != null && storInst.isValid()) {
+                            invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
                         }
-                    }
-                    break;
-                default:
-                    ret.add(_bean);
-                    break;
+                        invQueryBldr.addWhereAttrInQuery(CIProducts.InventoryIndividual.Product,
+                                        attrQueryBldr.getAttributeQuery(CIProducts.StockProductAbstract2Batch.ToLink));
+                        final MultiPrintQuery multi = invQueryBldr.getPrint();
+                        final SelectBuilder selProd = SelectBuilder.get()
+                                        .linkto(CIProducts.InventoryIndividual.Product);
+                        final SelectBuilder selProdInst = new SelectBuilder(selProd).instance();
+                        final SelectBuilder selProdName = new SelectBuilder(selProd)
+                                        .attribute(CIProducts.ProductAbstract.Name);
+                        final SelectBuilder selProdDescr = new SelectBuilder(selProd)
+                                        .attribute(CIProducts.ProductAbstract.Description);
+                        final SelectBuilder selProdCreated = new SelectBuilder(selProd)
+                                        .attribute(CIProducts.ProductAbstract.Created);
+                        multi.addSelect(selProdInst, selProdName, selProdDescr, selProdCreated);
+                        multi.addAttribute(CIProducts.InventoryIndividual.Quantity);
+                        multi.execute();
+
+                        // FIFO
+                        final Map<DateTime, UIAbstractPosition> fifoMap = new TreeMap<>();
+                        while (multi.next()) {
+                            final Instance prodInst = multi.getSelect(selProdInst);
+                            _bean.setDoc(null);
+                            final UIAbstractPosition bean = SerializationUtils.clone(_bean);
+                            bean.setProdInstance(prodInst)
+                                            .setProdName(multi.<String>getSelect(selProdName))
+                                            .setProdDescr(multi.<String>getSelect(selProdDescr))
+                                            .setQuantity(multi.<BigDecimal>getAttribute(
+                                                            CIProducts.InventoryIndividual.Quantity));
+                            bean.setDoc(this);
+                            fifoMap.put(multi.<DateTime>getSelect(selProdCreated), bean);
+                        }
+
+                        BigDecimal currentQty = _bean.getQuantity();
+                        for (final UIAbstractPosition tmpPos : fifoMap.values()) {
+                            ret.add(tmpPos);
+                            if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
+                                tmpPos.setQuantity(currentQty);
+                                break;
+                            } else {
+                                currentQty = currentQty.subtract(tmpPos.getQuantity());
+                            }
+                        }
+                        break;
+                    default:
+                        ret.add(_bean);
+                        break;
+                }
+            } else {
+                ret.add(_bean);
             }
         } else {
-            ret.add(_bean);
+            ret.addAll(super.updateBean4Indiviual(_parameter, _bean));
         }
         return ret;
+    }
+
+    /**
+     * Checks if is update bean4 individual.
+     *
+     * @param _parameter the _parameter
+     * @param _bean the _bean
+     * @return true, if is update bean4 individual
+     */
+    protected boolean isUpdateBean4Individual(final Parameter _parameter,
+                                              final UIAbstractPosition _bean)
+    {
+        return true;
     }
 
 

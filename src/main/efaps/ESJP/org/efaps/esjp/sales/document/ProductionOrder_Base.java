@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8342 $
- * Last Changed:    $Date: 2012-12-11 09:42:17 -0500 (mar, 11 dic 2012) $
- * Last Changed By: $Author: jan@moxter.net $
  */
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
@@ -32,15 +32,12 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: ProductRequest_Base.java 10353 2013-10-02 23:30:42Z
- *          jan@moxter.net $
- */
+*/
 @EFapsUUID("3ad10108-9a89-4c51-a99d-c22c2127cdb0")
-@EFapsRevision("$Rev: 10353 $")
+@EFapsApplication("eFapsApp-Sales$")
 public abstract class ProductionOrder_Base
     extends AbstractProductDocument
 {
-
     /**
      * @param _parameter Parameter as passed from the eFaps API.
      * @return new Return.
@@ -49,11 +46,20 @@ public abstract class ProductionOrder_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         connect2Derived(_parameter, createdDoc);
         createPositions(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
         executeProcess(_parameter, createdDoc);
-        return new Return();
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
     }
 
     @Override
@@ -61,5 +67,12 @@ public abstract class ProductionOrder_Base
         throws EFapsException
     {
         return CISales.ProductionOrder.getType();
+    }
+
+    @Override
+    protected boolean isUpdateBean4Individual(final Parameter _parameter,
+                                              final UIAbstractPosition _bean)
+    {
+        return false;
     }
 }
