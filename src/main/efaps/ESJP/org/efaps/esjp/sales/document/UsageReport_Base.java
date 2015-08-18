@@ -20,8 +20,11 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -51,11 +54,18 @@ public abstract class UsageReport_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        final CreatedDoc doc = createDoc(_parameter);
-        createPositions(_parameter, doc);
-        connect2ProductDocumentType(_parameter, doc);
-        connect2Object(_parameter, doc);
-        return new Return();
+        final Return ret = new Return();
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        createPositions(_parameter, createdDoc);
+        connect2ProductDocumentType(_parameter, createdDoc);
+        connect2Object(_parameter, createdDoc);
+
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
     }
 
     @Override

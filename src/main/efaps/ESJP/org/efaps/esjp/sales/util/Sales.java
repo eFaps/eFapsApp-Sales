@@ -206,6 +206,21 @@ public final class Sales
                     .key(BASE + "Report.Employee2DocReport")
                     .description("Autocomplete Properties 4 Products in Invoice");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute USAGEREPORTJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.JasperReport")
+                    .description("Name of the jasperReport for UsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> USAGEREPORTMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime for the jasperReport for UsageReport");
+
     /**
      * Singelton.
      */
