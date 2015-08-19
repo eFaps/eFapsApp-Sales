@@ -37,6 +37,7 @@
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
                 <property name="AutoType">TOKEN</property>
+                <property name="ExtraParameter">deliveryNote</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.Invoice"
                 method="updateFields4Document"

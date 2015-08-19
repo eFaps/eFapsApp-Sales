@@ -381,13 +381,33 @@ public abstract class AbstractDocument_Base
 
     }
 
-
+    /**
+     * Add to QueryBuilder.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException on error
+     */
     protected void add2QueryBldr(final Parameter _parameter,
                                  final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        // TODO Auto-generated method stub
-
+        // for a TOKEN AutoComplete add filter to only have one Contact
+        if ("TOKEN".equals(getProperty(_parameter, "AutoType"))) {
+            final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+            if (uiObject instanceof Field) {
+               final Instance docInst = Instance.get(_parameter.getParameterValue(((Field) uiObject).getName()));
+               if (docInst.isValid()) {
+                   final PrintQuery print = new PrintQuery(docInst);
+                   print.addAttribute(CIERP.DocumentAbstract.Contact);
+                   print.execute();
+                   final Object contObj = print.getAttribute(CIERP.DocumentAbstract.Contact);
+                   if (contObj != null) {
+                       _queryBldr.addWhereAttrEqValue(CIERP.DocumentAbstract.Contact, contObj);
+                   }
+               }
+            }
+        }
     }
 
     /**
