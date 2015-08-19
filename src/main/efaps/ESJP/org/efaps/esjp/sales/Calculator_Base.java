@@ -23,7 +23,6 @@ package org.efaps.esjp.sales;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.Format;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,7 +33,7 @@ import java.util.UUID;
 
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Instance;
@@ -64,7 +63,7 @@ import org.joda.time.DateTime;
  *          $
  */
 @EFapsUUID("a9ce907c-0e76-44f9-8dbe-2fdfe2893ae0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Calculator_Base
     extends AbstractCommon
     implements Serializable
@@ -170,9 +169,15 @@ public abstract class Calculator_Base
     private Parameter parameter;
 
     /**
-     * TypeName used to access SystemConfigurations.
+     * Key used to access SystemConfigurations belonging to the Document.
      */
-    private final String typeName;
+    private final String docKey;
+
+
+    /**
+     * Key used to access SystemConfigurations belonging to the Positions.
+     */
+    private final String posKey;
 
     /**
      * List of taxes for the Calculator.
@@ -189,7 +194,8 @@ public abstract class Calculator_Base
     {
         this.taxCatId = 0;
         this.empty = true;
-        this.typeName = CISales.DocumentAbstract.getType().getName();
+        this.docKey = CISales.DocumentAbstract.getType().getName();
+        this.posKey = CISales.PositionAbstract.getType().getName();
         setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
@@ -207,7 +213,8 @@ public abstract class Calculator_Base
     {
         this.taxCatId = 0;
         this.empty = true;
-        this.typeName = _config.getTypeName4SysConf(_parameter);
+        this.docKey = _config.getSysConfKey4Doc(_parameter);
+        this.posKey = _config.getSysConfKey4Pos(_parameter);
         setDate(new DateTime(Context.getThreadContext().getChronology()));
     }
 
@@ -225,7 +232,8 @@ public abstract class Calculator_Base
     {
         this.parameter = _parameter;
         this.empty = false;
-        this.typeName = _config.getTypeName4SysConf(_parameter);
+        this.docKey = _config.getSysConfKey4Doc(_parameter);
+        this.posKey = _config.getSysConfKey4Pos(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setDate(DateUtil.getDateFromParameter(dateStr));
@@ -313,7 +321,8 @@ public abstract class Calculator_Base
     {
         this.parameter = _parameter;
         this.empty = false;
-        this.typeName = _config.getTypeName4SysConf(_parameter);
+        this.docKey = _config.getSysConfKey4Doc(_parameter);
+        this.posKey = _config.getSysConfKey4Pos(_parameter);
         final String dateStr = _parameter == null ? null : _parameter.getParameterValue(getDateFieldName(_parameter));
         if (dateStr != null && dateStr != null) {
             setDate(DateUtil.getDateFromParameter(dateStr));
@@ -377,29 +386,57 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @param _key key to be retrieved
-     * @return the value for the key
-     * @throws EFapsException on error
+     * Gets the doc key.
+     *
+     * @return the doc key
      */
-    protected String getConfig(final Keys _key)
-        throws EFapsException
+    protected String getDocKey()
     {
-        return getConfig(_key, null);
+        return this.docKey;
     }
 
     /**
-     * @param _key key to be retrieved
+     * Gets the pos key.
+     *
+     * @return the pos key
+     */
+    protected String getPosKey()
+    {
+        return this.posKey;
+    }
+
+    /**
+     * Gets the config.
+     *
+     * @param _mainKey the _main key
+     * @param _propkey the _propkey
+     * @return the value for the key
+     * @throws EFapsException on error
+     */
+    protected String getConfig(final String _mainKey,
+                               final Keys _propkey)
+        throws EFapsException
+    {
+        return getConfig(_mainKey, _propkey, null);
+    }
+
+    /**
+     * Gets the config.
+     *
+     * @param _mainKey the _main key
+     * @param _propkey the _propkey
      * @param _default dafeult value
      * @return the value for the key
      * @throws EFapsException on error
      */
-    protected String getConfig(final Keys _key,
+    protected String getConfig(final String _mainKey,
+                               final Keys _propkey,
                                final String _default)
         throws EFapsException
     {
         final Properties props = Sales.getSysConfig()
                         .getAttributeValueAsProperties(SalesSettings.CALCULATORCONFIG, true);
-        final String keyStr = getTypeName() + "." + _key.name();
+        final String keyStr = _mainKey + "." + _propkey.name();
         return _default == null ? props.getProperty(keyStr) : props.getProperty(keyStr, _default);
     }
 
@@ -460,7 +497,7 @@ public abstract class Calculator_Base
                                   final String _unitPrice)
         throws EFapsException
     {
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
 
         final BigDecimal unitPrice = parse(_unitPrice).setScale(format.getMaximumFractionDigits(),
                         BigDecimal.ROUND_HALF_UP);
@@ -475,7 +512,7 @@ public abstract class Calculator_Base
     protected UUID getPriceListUUID()
         throws EFapsException
     {
-        final String uuid = getConfig(Keys.PRICELIST);
+        final String uuid = getConfig(getDocKey(), Keys.PRICELIST);
         UUID ret = null;
         if (uuid != null) {
             if (isUUID(uuid)) {
@@ -720,20 +757,19 @@ public abstract class Calculator_Base
     public String getNetUnitPriceStr()
         throws EFapsException
     {
-        return getFormatter().format(getNetUnitPrice());
+        return NumberFormatter.get().getFormatter().format(getNetUnitPrice());
     }
 
     /**
      * Get the net unit price formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getNetUnitPriceFmtStr(final Format _formater)
+    public String getNetUnitPriceFmtStr()
         throws EFapsException
     {
-        return _formater.format(getNetUnitPrice());
+        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getNetUnitPrice());
     }
 
     /**
@@ -807,20 +843,19 @@ public abstract class Calculator_Base
     public String getCrossUnitPriceStr()
         throws EFapsException
     {
-        return getFormatter().format(getCrossUnitPrice());
+        return NumberFormatter.get().getFormatter().format(getCrossUnitPrice());
     }
 
     /**
      * Get the cross unit price formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getCrossUnitPriceFmtStr(final Format _formater)
+    public String getCrossUnitPriceFmtStr()
         throws EFapsException
     {
-        return _formater.format(getCrossUnitPrice());
+        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getCrossUnitPrice());
     }
 
     /**
@@ -848,14 +883,13 @@ public abstract class Calculator_Base
     /**
      * Get the cross price formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getDiscountFmtStr(final Format _formater)
+    public String getDiscountFmtStr()
         throws EFapsException
     {
-        return _formater.format(getDiscount());
+        return NumberFormatter.get().getFrmt4Discount(getPosKey()).format(getDiscount());
     }
 
     /**
@@ -865,7 +899,7 @@ public abstract class Calculator_Base
     public String getDiscountStr()
         throws EFapsException
     {
-        return getFormatter().format(getDiscount());
+        return NumberFormatter.get().getFormatter().format(getDiscount());
     }
 
     /**
@@ -922,7 +956,7 @@ public abstract class Calculator_Base
         final ProductPrice ret = getNewPrice();
         final ProductPrice unit = getProductNetUnitPrice();
 
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
         final int decDigCant = format.getMaximumFractionDigits();
 
         ret.setBasePrice(unit.getBasePrice().subtract(unit.getBasePrice().divide(new BigDecimal(100))
@@ -937,14 +971,13 @@ public abstract class Calculator_Base
     /**
      * Get the discount net unit price formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getDiscountNetUnitPriceFmtStr(final Format _formater)
+    public String getDiscountNetUnitPriceFmtStr()
         throws EFapsException
     {
-        return _formater.format(getDiscountNetUnitPrice());
+        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getDiscountNetUnitPrice());
     }
 
     /**
@@ -954,7 +987,7 @@ public abstract class Calculator_Base
     public String getDiscountNetUnitPriceStr()
         throws EFapsException
     {
-        return getFormatter().format(getDiscountNetUnitPrice());
+        return NumberFormatter.get().getFormatter().format(getDiscountNetUnitPrice());
     }
 
     /**
@@ -1017,16 +1050,18 @@ public abstract class Calculator_Base
     public String getQuantityStr()
         throws EFapsException
     {
-        return getFormatter().format(getQuantity());
+        return NumberFormatter.get().getFormatter().format(getQuantity());
     }
 
     /**
      * @param _formater formater to be applied
      * @return formated Quantity
+     * @throws EFapsException
      */
-    public String getQuantityFmtStr(final Format _formater)
+    public String getQuantityFmtStr()
+        throws EFapsException
     {
-        return _formater.format(getQuantity());
+        return NumberFormatter.get().getFrmt4Quantity(getPosKey()).format(getQuantity());
     }
 
     /**
@@ -1063,10 +1098,10 @@ public abstract class Calculator_Base
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getNetPriceFmtStr(final Format _formater)
+    public String getNetPriceFmtStr()
         throws EFapsException
     {
-        return _formater.format(getNetPrice());
+        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getNetPrice());
     }
 
     /**
@@ -1076,7 +1111,7 @@ public abstract class Calculator_Base
     public String getCrossPriceStr()
         throws EFapsException
     {
-        return getFormatter().format(getCrossPrice());
+        return NumberFormatter.get().getFormatter().format(getCrossPrice());
     }
 
     /**
@@ -1103,7 +1138,7 @@ public abstract class Calculator_Base
         throws EFapsException
     {
         final ProductPrice ret;
-        final String config = getConfig(Keys.CROSSPRICE, "default");
+        final String config = getConfig(getPosKey(), Keys.CROSSPRICE, "default");
         switch (config) {
             case "NetPricePlusTax":
                 final ProductPrice netPrice = getProductNetPrice();
@@ -1131,7 +1166,7 @@ public abstract class Calculator_Base
     public ProductPrice getProductDiscountCrossUnitPrice()
         throws EFapsException
     {
-        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getTypeName());
+        final DecimalFormat format = NumberFormatter.get().getFrmt4UnitPrice(getPosKey());
         final int decDigCant = format.getMaximumFractionDigits();
 
         final ProductPrice ret = getNewPrice();
@@ -1180,14 +1215,13 @@ public abstract class Calculator_Base
     /**
      * Get the cross price formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getCrossPriceFmtStr(final Format _formater)
+    public String getCrossPriceFmtStr()
         throws EFapsException
     {
-        return _formater.format(getCrossPrice());
+        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getCrossPrice());
     }
 
     /**
@@ -1197,7 +1231,7 @@ public abstract class Calculator_Base
     public String getNetPriceStr()
         throws EFapsException
     {
-        return getFormatter().format(getNetPrice());
+        return NumberFormatter.get().getFormatter().format(getNetPrice());
     }
 
     /**
@@ -1368,7 +1402,7 @@ public abstract class Calculator_Base
     public String getPerceptionStr()
         throws EFapsException
     {
-        return getFormatter().format(getPerception());
+        return NumberFormatter.get().getFormatter().format(getPerception());
     }
 
     /**
@@ -1378,10 +1412,10 @@ public abstract class Calculator_Base
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
-    public String getPerceptionFmtStr(final Format _formater)
+    public String getPerceptionFmtStr()
         throws EFapsException
     {
-        return _formater.format(getPerception());
+        return NumberFormatter.get().getFrmt4UnitPrice(getPosKey()).format(getPerception());
     }
 
     /**
@@ -1448,18 +1482,6 @@ public abstract class Calculator_Base
     }
 
     /**
-     * Getter method for instance variable {@link #formater}.
-     *
-     * @return value of instance variable {@link #formater}
-     * @throws EFapsException on error
-     */
-    protected DecimalFormat getFormatter()
-        throws EFapsException
-    {
-        return NumberFormatter.get().getFormatter();
-    }
-
-    /**
      * @param _currencyInstance intsance of the currency
      * @param _rate rate to aply
      */
@@ -1482,22 +1504,11 @@ public abstract class Calculator_Base
     {
         final BigDecimal ret;
         try {
-            ret = (BigDecimal) getFormatter().parse(_value);
+            ret = (BigDecimal) NumberFormatter.get().getFormatter().parse(_value);
         } catch (final ParseException e) {
             throw new EFapsException(Calculator.class, "ParseException", e);
         }
         return ret;
-    }
-
-    /**
-     * @param _value value to be formated
-     * @return value formated with {@link #formater}
-     * @throws EFapsException on error
-     */
-    public String format(final Object _value)
-        throws EFapsException
-    {
-        return getFormatter().format(_value);
     }
 
     /**
@@ -1552,16 +1563,6 @@ public abstract class Calculator_Base
     }
 
     /**
-     * Getter method for the instance variable {@link #typeName}.
-     *
-     * @return value of instance variable {@link #typeName}
-     */
-    public String getTypeName()
-    {
-        return this.typeName;
-    }
-
-    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _calcList List of calculator
      * @return crossTotal
@@ -1591,7 +1592,7 @@ public abstract class Calculator_Base
         BigDecimal ret = BigDecimal.ZERO;
         String config = "";
         if (!_calcList.isEmpty()) {
-            config = _calcList.get(0).getConfig(Keys.CROSSTOTAL, "default");
+            config = _calcList.get(0).getConfig(_calcList.get(0).getDocKey(), Keys.CROSSTOTAL, "default");
         }
         switch (config) {
             case "NetTotalPlusTax":

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -46,7 +43,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
@@ -92,10 +89,9 @@ import org.efaps.util.EFapsException;
  * Class is the abstract instance for all documents of type DocumentSum.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("e177ab08-67f0-4ce2-8eff-d3f167352bee")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractDocumentSum_Base
     extends AbstractDocument
 {
@@ -481,16 +477,11 @@ public abstract class AbstractDocumentSum_Base
         // positions
         if (_cal != null) {
             _map.put("quantity", _cal.getQuantityStr());
-            _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                            getTypeName4SysConf(_parameter))));
-            _map.put("netPrice", _cal.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                            getTypeName4SysConf(_parameter))));
-            _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                            getTypeName4SysConf(_parameter))));
-            _map.put("discount", _cal.getDiscountFmtStr(NumberFormatter.get().getFrmt4Discount(
-                            getTypeName4SysConf(_parameter))));
-            _map.put("crossPrice", _cal.getCrossPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                            getTypeName4SysConf(_parameter))));
+            _map.put("netUnitPrice", _cal.getNetUnitPriceFmtStr());
+            _map.put("netPrice", _cal.getNetPriceFmtStr());
+            _map.put("discountNetUnitPrice", _cal.getDiscountNetUnitPriceFmtStr());
+            _map.put("discount", _cal.getDiscountFmtStr());
+            _map.put("crossPrice", _cal.getCrossPriceFmtStr());
         }
         // totals
         _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
@@ -707,14 +698,10 @@ public abstract class AbstractDocumentSum_Base
                 if (!calculator.isEmpty()) {
                     calculator.applyRate(newInst, RateInfo.getRate(_parameter, rateInfos[2],
                                     getTypeName4SysConf(_parameter)));
-                    map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                    getTypeName4SysConf(_parameter))));
-                    map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                                    getTypeName4SysConf(_parameter))));
-                    map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
-                                    NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
-                    map2.put("crossPrice", calculator.getCrossPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                                    getTypeName4SysConf(_parameter))));
+                    map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr());
+                    map2.put("netPrice", calculator.getNetPriceFmtStr());
+                    map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr());
+                    map2.put("crossPrice", calculator.getCrossPriceFmtStr());
                     values.put(i, map2);
                 }
                 i++;
@@ -873,16 +860,11 @@ public abstract class AbstractDocumentSum_Base
                     calculator.applyRate(newInst, RateInfo.getRate(_parameter, rateInfo,
                                     getTypeName4SysConf(_parameter)));
                 }
-                map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr(NumberFormatter.get().getFrmt4UnitPrice(
-                                getTypeName4SysConf(_parameter))));
-                map2.put("netPrice", calculator.getNetPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                                getTypeName4SysConf(_parameter))));
-                map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr(
-                                NumberFormatter.get().getFrmt4UnitPrice(getTypeName4SysConf(_parameter))));
-                map2.put("crossPrice", calculator.getCrossPriceFmtStr(NumberFormatter.get().getFrmt4Total(
-                                getTypeName4SysConf(_parameter))));
+                map2.put("netUnitPrice", calculator.getNetUnitPriceFmtStr());
+                map2.put("netPrice", calculator.getNetPriceFmtStr());
+                map2.put("discountNetUnitPrice", calculator.getDiscountNetUnitPriceFmtStr());
+                map2.put("crossPrice", calculator.getCrossPriceFmtStr());
                 values.put(i, map2);
-
             }
             i++;
         }

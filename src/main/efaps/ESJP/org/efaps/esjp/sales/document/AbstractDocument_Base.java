@@ -2024,7 +2024,6 @@ public abstract class AbstractDocument_Base
      * @return the type name used in SystemConfiguration
      * @throws EFapsException on error
      */
-    @Override
     public String getTypeName4SysConf(final Parameter _parameter)
         throws EFapsException
     {
@@ -2045,7 +2044,6 @@ public abstract class AbstractDocument_Base
         return CISales.DocumentAbstract;
     }
 
-    // new methods for abstraction
     /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return type used for creation of positions
@@ -2054,10 +2052,9 @@ public abstract class AbstractDocument_Base
     protected Type getType4PositionCreate(final Parameter _parameter)
         throws EFapsException
     {
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         Type ret = null;
-        if (props.containsKey("PositionType")) {
-            ret = Type.get(String.valueOf(props.get("PositionType")));
+        if (containsProperty(_parameter, "PositionType")) {
+            ret = Type.get(getProperty(_parameter, "PositionType"));
         }
         return ret;
     }
@@ -2528,10 +2525,7 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return true it minimum retail price must be applied else false
-     * @throws EFapsException on error
-     *
+     * {@inheritDoc}
      */
     @Override
     public boolean isIncludeMinRetail(final Parameter _parameter)
@@ -2540,11 +2534,34 @@ public abstract class AbstractDocument_Base
         return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean priceFromUIisNet(final Parameter _parameter)
         throws EFapsException
     {
         return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getSysConfKey4Doc(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getTypeName4SysConf(_parameter);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getSysConfKey4Pos(final Parameter _parameter)
+        throws EFapsException
+    {
+        return getType4PositionCreate(_parameter).getName();
     }
 
     /**

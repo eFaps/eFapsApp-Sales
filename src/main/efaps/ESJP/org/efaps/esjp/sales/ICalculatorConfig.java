@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 5989 $
- * Last Changed:    $Date: 2010-12-27 17:02:29 -0500 (lun, 27 dic 2010) $
- * Last Changed By: $Author: jan@moxter.net $
  */
 
 package org.efaps.esjp.sales;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.util.EFapsException;
 
@@ -34,13 +31,47 @@ import org.efaps.util.EFapsException;
  * @version $Id: Calculator.java 5989 2010-12-27 22:02:29Z jan@moxter.net $
  */
 @EFapsUUID("95155127-2301-4c8a-b288-13779c64c71a")
-@EFapsRevision("$Rev: 5989 $")
+@EFapsApplication("eFapsApp-Sales")
 public interface ICalculatorConfig
 {
 
-    boolean isIncludeMinRetail(Parameter _parameter) throws EFapsException;
+    /**
+     * Checks if is include min retail.
+     *
+     * @param _parameter the _parameter
+     * @return true, if is include min retail
+     * @throws EFapsException on error
+     */
+    boolean isIncludeMinRetail(Parameter _parameter)
+        throws EFapsException;
 
-    String getTypeName4SysConf(final Parameter _parameter) throws EFapsException;
+    /**
+     * Gets the Key for SystemComfiguration used for Document like totals.
+     *
+     * @param _parameter the _parameter
+     * @return the key
+     * @throws EFapsException on error
+     */
+    String getSysConfKey4Doc(final Parameter _parameter)
+        throws EFapsException;
 
-    boolean priceFromUIisNet(Parameter _parameter) throws EFapsException;
+    /**
+     * Gets the Key for SystemComfiguration used for Positions like prices.
+     *
+     * @param _parameter the _parameter
+     * @return the key
+     * @throws EFapsException on error
+     */
+    String getSysConfKey4Pos(final Parameter _parameter)
+        throws EFapsException;
+
+    /**
+     * Price from UI is net.
+     *
+     * @param _parameter the _parameter
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    boolean priceFromUIisNet(Parameter _parameter)
+        throws EFapsException;
 }
