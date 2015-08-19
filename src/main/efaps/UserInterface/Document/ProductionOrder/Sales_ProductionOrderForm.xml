@@ -114,7 +114,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Fabrication-Configuration -->
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
-                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrder.HasContact</property>
             </trigger>
         </field>
         <field name="contact">
@@ -131,7 +131,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Fabrication-Configuration -->
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
-                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrder.HasContact</property>
             </trigger>
             <trigger event="UI_FIELD_AUTOCOMPLETE"
                 method="autoComplete4Contact"
@@ -157,7 +157,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Fabrication-Configuration -->
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
-                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrder.HasContact</property>
             </trigger>
         </field>
         <field character="Heading" name="headingPosition">
@@ -287,7 +287,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Fabrication-Configuration -->
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
-                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrder.HasContact</property>
             </trigger>
         </field>
         <field name="contact">
@@ -304,7 +304,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Fabrication-Configuration -->
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
-                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrder.HasContact</property>
             </trigger>
             <trigger event="UI_FIELD_AUTOCOMPLETE"
                 method="autoComplete4Contact"
@@ -330,7 +330,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Fabrication-Configuration -->
                 <property name="SystemConfig">660188ee-c160-44a1-879b-81595594bfa6</property>
-                <property name="Attribute">org.efaps.fabrication.ProductionOrderHasContact</property>
+                <property name="Attribute">org.efaps.fabrication.ProductionOrder.HasContact</property>
             </trigger>
         </field>
         <field character="Heading" name="headingPosition">
