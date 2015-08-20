@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2011 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 14310 $
- Last Changed:    $Date: 2014-10-28 10:17:31 -0500 (Tue, 28 Oct 2014) $
- Last Changed By: $Author: jan@moxter.net $
-
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>20450e67-eed9-4ee5-b932-63e7885f4e21</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 14310 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_OrderInboundTable</name>
@@ -33,9 +28,19 @@
             <property name="Attribute">Name</property>
             <property name="Label">Sales_OrderInbound/Name.Label</property>
         </field>
-         <field name="revision">
-            <property name="Attribute">Revision</property>
-            <property name="Label">Sales_OrderInbound/Revision.Label</property>
+        <field name="remark">
+            <property name="Attribute">Remark</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_OrderInbound/Remark.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderInboundTable.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderInbound.ActivateRemark</property>
+            </trigger>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>

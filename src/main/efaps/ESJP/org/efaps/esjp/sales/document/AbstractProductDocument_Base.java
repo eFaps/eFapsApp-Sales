@@ -152,6 +152,12 @@ public abstract class AbstractProductDocument_Base
             insert.add(CISales.DocumentStockAbstract.Revision, revision);
             createdDoc.getValues().put(CISales.DocumentStockAbstract.Revision.name, revision);
         }
+        final String remark = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentStockAbstract.Remark.name));
+        if (remark != null) {
+            insert.add(CISales.DocumentStockAbstract.Remark, remark);
+            createdDoc.getValues().put(CISales.DocumentStockAbstract.Remark.name, remark);
+        }
         final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentStockAbstract.Salesperson.name));
         if (salesperson != null) {

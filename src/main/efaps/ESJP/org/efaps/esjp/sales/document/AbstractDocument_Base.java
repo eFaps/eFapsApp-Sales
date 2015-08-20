@@ -992,18 +992,20 @@ public abstract class AbstractDocument_Base
                         CISales.DocumentSumAbstract.Rate,
                         CISales.DocumentSumAbstract.RateTaxes,
                         CIERP.DocumentAbstract.Name,
-                        CIERP.DocumentAbstract.Note);
+                        CIERP.DocumentAbstract.Note,
+                        CIERP.DocumentAbstract.Remark);
         final SelectBuilder selContInst = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).instance();
         print.addSelect(selContInst);
         print.execute();
 
-        final BigDecimal netTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
-        final BigDecimal crossTotal = print.<BigDecimal> getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
-        final Taxes rateTaxes = print.<Taxes> getAttribute(CISales.DocumentSumAbstract.RateTaxes);
+        final BigDecimal netTotal = print.getAttribute(CISales.DocumentSumAbstract.RateNetTotal);
+        final BigDecimal crossTotal = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
+        final Taxes rateTaxes = print.getAttribute(CISales.DocumentSumAbstract.RateTaxes);
 
         final Instance contactInstance = print.getSelect(selContInst);
-        final String note = print.<String> getAttribute(CIERP.DocumentAbstract.Note);
-        final String name = print.<String> getAttribute(CIERP.DocumentAbstract.Name);
+        final String note = print.getAttribute(CIERP.DocumentAbstract.Note);
+        final String remark = print.getAttribute(CIERP.DocumentAbstract.Remark);
+        final String name = print.getAttribute(CIERP.DocumentAbstract.Name);
         final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
@@ -1049,6 +1051,7 @@ public abstract class AbstractDocument_Base
                 .append("}\n");
         }
         js.append(getSetFieldValue(0, "note", note)).append("\n")
+            .append(getSetFieldValue(0, "remark", remark)).append("\n")
             .append(add2JavaScript4Document(_parameter, _instances)).append("\n")
             .append("\n");
         return js;
@@ -2055,6 +2058,8 @@ public abstract class AbstractDocument_Base
         Type ret = null;
         if (containsProperty(_parameter, "PositionType")) {
             ret = Type.get(getProperty(_parameter, "PositionType"));
+        } else if (getTypeName4SysConf(_parameter) != null) {
+            ret = Type.get(getTypeName4SysConf(_parameter) + "Position");
         }
         return ret;
     }

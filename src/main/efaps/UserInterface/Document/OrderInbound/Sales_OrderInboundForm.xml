@@ -120,10 +120,18 @@
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
         </field>
-        <field name="revision">
-            <property name="Attribute">Revision</property>
+        <field name="remark">
+            <property name="Attribute">Remark</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderInboundForm.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.OrderInbound.ActivateRemark</property>
+            </trigger>
         </field>
         <field name="status">
             <property name="Attribute">Status</property>

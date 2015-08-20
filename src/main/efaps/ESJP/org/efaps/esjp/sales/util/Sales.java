@@ -236,6 +236,13 @@ public final class Sales
                     .clazz(JasperMime.class)
                     .description("Mime for the jasperReport for ReturnUsageReport");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ORDERINBOUNDACTIVATEREMARK = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "OrderInbound.ActivateRemark")
+                    .description("Activate the Remark Attribute for Order Inbound");
+
     /**
      * Singelton.
      */

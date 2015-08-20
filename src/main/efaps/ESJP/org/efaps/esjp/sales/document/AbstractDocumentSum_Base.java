@@ -207,6 +207,13 @@ public abstract class AbstractDocumentSum_Base
             _editDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, contactIns);
         }
 
+        final String remark = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Remark.name));
+        if (remark != null) {
+            update.add(CISales.DocumentSumAbstract.Remark, remark);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Remark.name, remark);
+        }
+
         final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentSumAbstract.Note.name));
         if (note != null) {
@@ -347,6 +354,14 @@ public abstract class AbstractDocumentSum_Base
             insert.add(CISales.DocumentSumAbstract.Revision, revision);
             createdDoc.getValues().put(CISales.DocumentSumAbstract.Revision.name, revision);
         }
+
+        final String remark = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Remark.name));
+        if (remark != null) {
+            insert.add(CISales.DocumentSumAbstract.Remark, remark);
+            createdDoc.getValues().put(CISales.DocumentSumAbstract.Remark.name, remark);
+        }
+
         final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentSumAbstract.Salesperson.name));
         if (salesperson != null) {
