@@ -243,6 +243,13 @@ public final class Sales
                     .key(BASE + "OrderInbound.ActivateRemark")
                     .description("Activate the Remark Attribute for Order Inbound");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute DELIVERYNOTEACTIVATEREMARK = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.ActivateRemark")
+                    .description("Activate the Remark Attribute for Order Inbound");
+
     /**
      * Singelton.
      */

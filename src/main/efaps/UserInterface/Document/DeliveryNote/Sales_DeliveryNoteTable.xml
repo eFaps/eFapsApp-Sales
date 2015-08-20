@@ -36,6 +36,18 @@
             <property name="Label">Sales_ReturnSlip.documentType.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="remark">
+            <property name="Attribute">Remark</property>
+            <property name="Label">Sales_DeliveryNote/Remark.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderInboundForm.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.DeliveryNote.ActivateRemark</property>
+            </trigger>
+        </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
@@ -84,6 +96,18 @@
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>
             <property name="Label">Sales_ReturnSlip.documentType.Label</property>
             <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="remark">
+            <property name="Attribute">Remark</property>
+            <property name="Label">Sales_DeliveryNote/Remark.Label</property>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_OrderInboundForm.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.DeliveryNote.ActivateRemark</property>
+            </trigger>
         </field>
         <field name="date">
             <property name="FilterType">FREETEXT</property>
