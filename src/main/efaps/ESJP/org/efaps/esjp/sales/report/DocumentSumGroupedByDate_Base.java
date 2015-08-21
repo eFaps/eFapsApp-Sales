@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -35,7 +32,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
@@ -56,11 +53,9 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DocumentSumGroupedByDate_Base.java 14547 2014-11-30 22:44:37Z
- *          jan@moxter.net $
  */
 @EFapsUUID("e7448d39-68b9-45b3-b63b-f9a911040358")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DocumentSumGroupedByDate_Base
     extends AbstractGroupedByDate
 {
@@ -117,6 +112,7 @@ public abstract class DocumentSumGroupedByDate_Base
         multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.RateNetTotal,
                         CISales.DocumentSumAbstract.Date);
+        add2Print(_parameter, multi);
         multi.execute();
         while (multi.next()) {
             final Map<String, Object> map = new HashMap<>();
@@ -141,6 +137,7 @@ public abstract class DocumentSumGroupedByDate_Base
             map.put("type", multi.getCurrentInstance().getType().getLabel());
             map.put("BASE", total);
             map.put(CurrencyInst.get(rateCurInst).getISOCode(), rateTotal);
+            add2Map(_parameter, multi, map);
             ret.add(map);
         }
 
@@ -151,11 +148,47 @@ public abstract class DocumentSumGroupedByDate_Base
         return ret;
     }
 
+    /**
+     * Add to map.
+     *
+     * @param _parameter the _parameter
+     * @param _multi the _multi
+     * @param _map the _map
+     */
+    protected void add2Map(final Parameter _parameter,
+                           final MultiPrintQuery _multi,
+                           final Map<String, Object> _map)
+        throws EFapsException
+    {
+        // to be used by implementation
+    }
+
+    /**
+     * Add to print.
+     *
+     * @param _parameter the _parameter
+     * @param _multi the _multi
+     * @throws EFapsException on error
+     */
+    protected void add2Print(final Parameter _parameter,
+                             final MultiPrintQuery _multi)
+        throws EFapsException
+    {
+        // to be used by implementation
+    }
+
+    /**
+     * Add to QueryBuilder.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException on error
+     */
     protected void add2QueryBuilder(final Parameter _parameter,
                                     final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        // tobe used by
+     // to be used by implementation
     }
 
     public static class ValueList

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -37,17 +34,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.UUID;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -55,11 +43,14 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
@@ -83,15 +74,25 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DocumentSumReport_Base.java 14547 2014-11-30 22:44:37Z
- *          jan@moxter.net $
  */
 @EFapsUUID("19c0ee49-3942-4872-9e7d-de1f0d73b446")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DocumentSumReport_Base
     extends FilteredReport
 {
@@ -101,6 +102,13 @@ public abstract class DocumentSumReport_Base
         NONE, CONTACT;
     }
 
+    public enum User
+    {
+        NONE,
+        CREATOR,
+        MODIFIER,
+        PERSON;
+    }
 
     /**
      * Logging instance used in this class.
@@ -111,8 +119,6 @@ public abstract class DocumentSumReport_Base
      * DataBean list.
      */
     private ValueList valueList;
-
-
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -263,17 +269,7 @@ public abstract class DocumentSumReport_Base
         throws EFapsException
     {
         if (this.valueList == null) {
-            final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate()
-            {
-                @Override
-                protected void add2QueryBuilder(final Parameter _parameter,
-                                                final QueryBuilder _queryBldr)
-                    throws EFapsException
-                {
-                    super.add2QueryBuilder(_parameter, _queryBldr);
-                    DocumentSumReport_Base.this.add2QueryBuilder(_parameter, _queryBldr);
-                }
-            };
+            final DocumentSumGroupedByDate ds = getGroupedBy(_parameter);
             final Map<String, Object> filter = getFilterMap(_parameter);
             final DateTime start;
             final DateTime end;
@@ -311,6 +307,103 @@ public abstract class DocumentSumReport_Base
         return this.valueList;
     }
 
+    /**
+     * Gets the grouped by.
+     *
+     * @param _parameter the _parameter
+     * @return the grouped by
+     * @throws EFapsException on error
+     */
+    protected DocumentSumGroupedByDate getGroupedBy(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new DocumentSumGroupedByDate()
+        {
+
+            @Override
+            protected void add2QueryBuilder(final Parameter _parameter,
+                                            final QueryBuilder _queryBldr)
+                                                throws EFapsException
+            {
+                super.add2QueryBuilder(_parameter, _queryBldr);
+                DocumentSumReport_Base.this.add2QueryBuilder(_parameter, _queryBldr);
+            }
+
+            @Override
+            protected void add2Print(final Parameter _parameter,
+                                     final MultiPrintQuery _multi)
+                throws EFapsException
+            {
+                super.add2Print(_parameter, _multi);
+                final Map<String, Object> filter = getFilterMap(_parameter);
+                if (filter.containsKey("userGroup")) {
+                    final EnumFilterValue filterValue = (EnumFilterValue) filter.get("userGroup");
+                    switch ((User) filterValue.getObject()) {
+                        case CREATOR:
+                            //Admin_User_PersonMsgPhrase
+                            _multi.addMsgPhrase(SelectBuilder.get().linkto(CIERP.DocumentAbstract.Creator),
+                                            MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2")));
+                            break;
+                        case MODIFIER:
+                            //Admin_User_PersonMsgPhrase
+                            _multi.addMsgPhrase(SelectBuilder.get().linkto(CIERP.DocumentAbstract.Modifier),
+                                            MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2")));
+                            break;
+                        case PERSON:
+                            //Admin_User_PersonMsgPhrase
+                            _multi.addMsgPhrase(SelectBuilder.get().linkto(CIERP.DocumentAbstract.Salesperson),
+                                            MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2")));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            @Override
+            protected void add2Map(final Parameter _parameter,
+                                   final MultiPrintQuery _multi,
+                                   final Map<String, Object> _map)
+                throws EFapsException
+            {
+                super.add2Map(_parameter, _multi, _map);
+                final Map<String, Object> filter = getFilterMap(_parameter);
+                if (filter.containsKey("userGroup")) {
+                    final EnumFilterValue filterValue = (EnumFilterValue) filter.get("userGroup");
+                    switch ((User) filterValue.getObject()) {
+                        case CREATOR:
+                            // Admin_User_PersonMsgPhrase
+                            _map.put("user",_multi.getMsgPhrase(
+                                            SelectBuilder.get().linkto(CIERP.DocumentAbstract.Creator),
+                                            MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2"))));
+                            break;
+                        case MODIFIER:
+                            // Admin_User_PersonMsgPhrase
+                            _map.put("user", _multi.getMsgPhrase(
+                                            SelectBuilder.get().linkto(CIERP.DocumentAbstract.Modifier),
+                                            MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2"))));
+                            break;
+                        case PERSON:
+                            // Admin_User_PersonMsgPhrase
+                            _map.put("user", _multi.getMsgPhrase(
+                                            SelectBuilder.get().linkto(CIERP.DocumentAbstract.Salesperson),
+                                            MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2"))));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        };
+    }
+
+    /**
+     * Add2 query builder.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException on error
+     */
     protected void add2QueryBuilder(final Parameter _parameter,
                                     final QueryBuilder _queryBldr)
         throws EFapsException
@@ -405,24 +498,25 @@ public abstract class DocumentSumReport_Base
             this.sumReport = _sumReport;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final ValueList values = getSumReport().getData(_parameter);
-            final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
-            chain.addComparator(new Comparator<Map<String, Object>>()
-            {
-
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    return 0;
+            JRRewindableDataSource ret;
+            if (getSumReport().isCached(_parameter)) {
+                ret = getSumReport().getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    e.printStackTrace();
                 }
-            });
-            Collections.sort(values, chain);
-            return new JRMapCollectionDataSource((Collection) values);
+            } else {
+                final ValueList values = getSumReport().getData(_parameter);
+                ret = new JRMapCollectionDataSource((Collection) values);
+                getSumReport().cache(_parameter, ret);
+            }
+            return ret;
         }
 
         @Override
@@ -453,6 +547,15 @@ public abstract class DocumentSumReport_Base
                 final Boolean contactBool = (Boolean) filterMap.get("contactGroup");
                 if (contactBool != null && contactBool) {
                     final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
+                                    String.class).setHeaderWidth(150);
+                    crosstab.addRowGroup(contactGroup);
+                }
+            }
+
+            if (filterMap.containsKey("userGroup")) {
+                final EnumFilterValue filterValue = (EnumFilterValue) filterMap.get("userGroup");
+                if (!User.NONE.equals(filterValue.getObject())) {
+                    final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("user",
                                     String.class).setHeaderWidth(150);
                     crosstab.addRowGroup(contactGroup);
                 }
@@ -504,5 +607,4 @@ public abstract class DocumentSumReport_Base
             return this.sumReport;
         }
     }
-
 }

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d768495d-e621-43df-919a-22a8a77b340f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -46,6 +41,7 @@
                 <property name="Field05">currency</property>
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
+                <property name="Field08">userGroup</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -53,6 +49,7 @@
                 <property name="FilterType05">Currency</property>
                 <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Boolean</property>
+                <property name="FilterType08">Enum</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -60,6 +57,7 @@
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault07">false</property>
+                <property name="FilterDefault08">org.efaps.esjp.sales.report.DocumentSumReport_Base$User</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocumentSumReportForm.filter.UI_FIELD_VALUE.2"
@@ -72,6 +70,7 @@
                 <property name="Field05">currency</property>
                 <property name="Field06">dateGroup</property>
                 <property name="Field07">contactGroup</property>
+                <property name="Field08">userGroup</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocumentSumReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocumentSumReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocumentSumReport.type</property>
@@ -79,6 +78,7 @@
                 <property name="DBProperty05">org.efaps.esjp.sales.report.DocumentSumReport.currency</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.DocumentSumReport.dateGroup</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.DocumentSumReport.contactGroup</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.DocumentSumReport.userGroup</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
@@ -115,6 +115,7 @@
                 <property name="Field07">dateGroup</property>
                 <property name="Field08">contactGroup</property>
                 <property name="Field09">projectGroup</property>
+                <property name="Field10">userGroup</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
@@ -124,6 +125,7 @@
                 <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Boolean</property>
                 <property name="FilterType09">Boolean</property>
+                <property name="FilterType10">Enum</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
@@ -133,6 +135,7 @@
                 <property name="FilterDefault07">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
                 <property name="FilterDefault08">false</property>
                 <property name="FilterDefault09">false</property>
+                <property name="FilterDefault10">org.efaps.esjp.sales.report.DocumentSumReport_Base$User</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
@@ -148,6 +151,7 @@
                 <property name="Field07">dateGroup</property>
                 <property name="Field08">contactGroup</property>
                 <property name="Field09">projectGroup</property>
+                <property name="Field10">userGroup</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.DocumentSumReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.DocumentSumReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.sales.report.DocumentSumReport.type</property>
@@ -157,6 +161,7 @@
                 <property name="DBProperty07">org.efaps.esjp.sales.report.DocumentSumReport.dateGroup</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.DocumentSumReport.contactGroup</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.DocumentSumReport.projectGroup</property>
+                <property name="DBProperty10">org.efaps.esjp.sales.report.DocumentSumReport.userGroup</property>
                 <property name="Contacts_Contact_Select">attribute[Name]</property>
                 <property name="Projects_ProjectService_Select">attribute[Name]</property>
             </trigger>
