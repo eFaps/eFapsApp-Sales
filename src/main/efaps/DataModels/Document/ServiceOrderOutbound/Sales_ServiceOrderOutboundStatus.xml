@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,19 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-<datamodel-statusgroup
-    xmlns="http://www.efaps.org/xsd"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d97024a7-786e-4ec0-8ec5-5368ff942d59</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ServiceOrderOutboundStatus</name>
@@ -38,11 +30,11 @@
         <status key="Open">
             <description>Order was placed. (Pendiente)</description>
         </status>
-        <status key="Received">
-            <description>Order was received.(Cerrado)</description>
+        <status key="Closed">
+            <description>Order was closed.(Cerrado)</description>
         </status>
         <status key="Canceled">
-            <description>Order was canceled.  (Anulado)</description>
+            <description>Order was canceled. (Anulado)</description>
         </status>
     </definition>
 </datamodel-statusgroup>
