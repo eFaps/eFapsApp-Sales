@@ -58,13 +58,22 @@
                 method="autoComplete4Doc"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_ServiceOrderOutbound</property>
-                <property name="Status01">!Canceled</property>
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 method="updateFields4Document"
                 name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_IncomingInvoice_SelectDocForm.serviceOrderOutbound.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.CreateFromServiceOrderOutbound</property>
+           </trigger>
         </field>
         <field name="recievingTicket">
             <property name="Label">Sales_RecievingTicket.Label</property>

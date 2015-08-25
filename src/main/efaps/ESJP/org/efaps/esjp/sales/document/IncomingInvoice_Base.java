@@ -99,6 +99,7 @@ public abstract class IncomingInvoice_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
+        final Return ret = new Return();
         final CreatedDoc createdDoc = createDoc(_parameter);
         createPositions(_parameter, createdDoc);
         connect2DocumentType(_parameter, createdDoc);
@@ -106,7 +107,8 @@ public abstract class IncomingInvoice_Base
         registerPurchasePrices(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
         createUpdateTaxDoc(_parameter, createdDoc, false);
-        return new Return();
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
     }
 
     /**

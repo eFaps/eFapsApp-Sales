@@ -86,6 +86,21 @@ public final class Sales
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create Incoming Invoice from.");
 
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.CreateFromServiceOrderOutbound")
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and Order Outbound.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete")
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create Incoming Invoice from.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKET= new BooleanSysConfAttribute()
