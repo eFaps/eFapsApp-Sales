@@ -43,6 +43,7 @@
                 name="Sales_ServiceOrderOutboundPositionTable.product.UI_FIELD_AUTOCOMPLETE"
                 program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
                 <property name="Type">Products_ProductTextPosition</property>
+                <property name="Type01">Products_ProductService</property>
             </trigger>
             <trigger event="UI_FIELD_UPDATE" method="updateFields4Product"
                 name="Sales_ServiceOrderOutboundPositionTable.product.UI_FIELD_UPDATE"
