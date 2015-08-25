@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+
+  Copyright 2003 - 2015 The eFaps Team
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>15ed0e9c-b439-4c9f-920f-6102ed10497f</uuid>
+    <file-application>eFapsApp-Sales</file-application>
+    <definition>
+        <version-expression>(version==latest)</version-expression>
+        <name>Sales_ServiceOrderOutboundSearchForm</name>
+        <field name="jsLinkField">
+            <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getJSLinkField"
+                name="Sales_ServiceOrderOutboundSearchForm.jsLinkField.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="link">/servlet/static/org.efaps.ui.wicket.behaviors.FieldUpdate.js?</property>
+            </trigger>
+        </field>
+        <field name="contact">
+            <property name="Attribute">Contact</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_ServiceOrderOutbound/Contact.Label</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact"
+                name="Sales_ServiceOrderOutboundSearchForm.contact.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.sales.document.ServiceOrderOutbound">
+                <property name="Key">ID</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_ServiceOrderOutbound/Name.Label</property>
+        </field>
+        <field name="status">
+            <property name="Attribute">Status</property>
+            <property name="Columns">15</property>
+            <property name="ModeSearch">EDITABLE</property>
+            <property name="Label">Sales_ServiceOrderOutbound/Status.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getStatusDropDownFieldValue"
+                name="Sales_ServiceOrderOutboundSearchForm.status.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
+                <property name="StatusGroup">Sales_ServiceOrderOutboundStatus</property>
+                <property name="AddWildcard4Search">true</property>
+            </trigger>
+        </field>
+        <field name="javaScript">
+            <property name="ModeSearch">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger event="UI_FIELD_VALUE" method="getJavaScript4Search"
+                name="Sales_ServiceOrderOutboundSearchForm.javaScript.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.document.RecievingTicket">
+                <property name="StatusGroup">Sales_ServiceOrderOutboundStatus</property>
+                <property name="Status4SearchKey">ServiceOrderOutboundStatus</property>
+            </trigger>
+        </field>
+    </definition>
+</ui-form>

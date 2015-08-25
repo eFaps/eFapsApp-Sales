@@ -19,10 +19,12 @@
 package org.efaps.esjp.sales.document;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -30,6 +32,11 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Instance;
+import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
+import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
@@ -37,6 +44,7 @@ import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
+import org.efaps.util.cache.CacheReloadException;
 
 /**
  *
@@ -97,6 +105,69 @@ public abstract class ServiceOrderOutbound_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API
+     * @return new Return
+     * @throws EFapsException on error
+     */
+    public Return connect2IncomingInvoiceTrigger(final Parameter _parameter)
+        throws EFapsException
+    {
+        final PrintQuery print = new PrintQuery(_parameter.getInstance());
+        final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .attribute(CISales.ServiceOrderOutbound.Status);
+        final SelectBuilder selOOInst = SelectBuilder.get().linkto(CISales.Document2DocumentAbstract.FromAbstractLink)
+                        .instance();
+        print.addSelect(selOOInst, selStatus);
+        print.executeWithoutAccessCheck();
+
+        final Instance ooInst = print.getSelect(selOOInst);
+        final Status status = Status.get(print.<Long>getSelect(selStatus));
+        final DocComparator comp = getComparator(_parameter, ooInst);
+        final Map<Status, Status> maping = getStatusMapping4connect2IncomingInvoice();
+        if (comp.netIsZero() && maping.containsKey(status)) {
+            final Update update = new Update(ooInst);
+            update.add(CISales.ServiceOrderOutbound.Status, maping.get(status));
+            update.executeWithoutAccessCheck();
+        }
+        return new Return();
+    }
+
+    protected DocComparator getComparator(final Parameter _parameter,
+                                          final Instance _orderInst)
+                                              throws EFapsException
+    {
+        final DocComparator ret = new DocComparator();
+        ret.setDocInstance(_orderInst);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.ServiceOrderOutbound2IncomingInvoice);
+        queryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.FromAbstractLink, _orderInst);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selDocInst = SelectBuilder.get()
+                        .linkto(CISales.Document2DocumentAbstract.ToAbstractLink)
+                        .instance();
+        multi.addSelect(selDocInst);
+        multi.executeWithoutAccessCheck();
+        while (multi.next()) {
+            final Instance docInst = multi.getSelect(selDocInst);
+            final DocComparator docComp = new DocComparator();
+            docComp.setDocInstance(docInst);
+            ret.substractNet(docComp);
+        }
+        return ret;
+    }
+
+    protected Map<Status, Status> getStatusMapping4connect2IncomingInvoice()
+        throws CacheReloadException
+    {
+        final Map<Status, Status> ret = new HashMap<>();
+        ret.put(Status.find(CISales.ServiceOrderOutboundStatus.Open),
+                        Status.find(CISales.ServiceOrderOutboundStatus.Closed));
+        return ret;
+    }
+
+
 
     @Override
     protected void add2UpdateMap4Contact(final Parameter _parameter,

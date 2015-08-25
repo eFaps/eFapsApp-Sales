@@ -419,6 +419,12 @@ public abstract class IncomingInvoice_Base
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.orderOutbounds.name, queryBldr));
         }
+        if (Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC.get();
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_IncomingInvoiceForm.serviceOrderOutbounds.name, queryBldr));
+        }
         if (Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get()) {
             final Properties props = Sales.INCOMINGINVOICEFROMRECIEVINGTICKETAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
@@ -440,6 +446,12 @@ public abstract class IncomingInvoice_Base
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_IncomingInvoiceForm.orderOutbounds.name, queryBldr));
+        }
+        if (Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUND.get()) {
+            final Properties props = Sales.INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC.get();
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
+            InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
+                            CIFormSales.Sales_IncomingInvoiceForm.serviceOrderOutbounds.name, queryBldr));
         }
         if (Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get()) {
             final Properties props = Sales.INCOMINGINVOICEFROMRECIEVINGTICKETAC.get();
