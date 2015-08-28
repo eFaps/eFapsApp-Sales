@@ -436,7 +436,11 @@ public abstract class Costing_Base
 
                     final BigDecimal divisor = newCostQuantity.add(current.getTransactionQuantity());
                     final BigDecimal result;
-                    if (divisor.compareTo(BigDecimal.ZERO) != 0) {
+                    // the previous quantity of the stock was negativ or zero, so result must be the cost
+                    if (newCostQuantity.compareTo(BigDecimal.ZERO) <= 0) {
+                        result = current.getCost();
+                    // the devisoer is not zero
+                    } else if (divisor.compareTo(BigDecimal.ZERO) != 0) {
                         result = prev.getResult().multiply(newCostQuantity)
                                         .add(current.getCost().multiply(current.getTransactionQuantity()))
                                         .setScale(12, BigDecimal.ROUND_HALF_UP)
@@ -1162,7 +1166,13 @@ public abstract class Costing_Base
          */
         public BigDecimal getResult()
         {
-            return this.result;
+            BigDecimal ret;
+            if (BigDecimal.ZERO.compareTo(this.result) > 0) {
+                ret = BigDecimal.ZERO;
+            } else {
+                ret = this.result;
+            }
+            return ret;
         }
 
         /**
