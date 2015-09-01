@@ -2566,7 +2566,14 @@ public abstract class AbstractDocument_Base
     public String getSysConfKey4Pos(final Parameter _parameter)
         throws EFapsException
     {
-        return getType4PositionCreate(_parameter).getName();
+        final Type typeTmp = getType4PositionCreate(_parameter);
+        String ret;
+        if (typeTmp != null) {
+            ret = typeTmp.getName();
+        } else {
+            ret = "DefaultPosition";
+        }
+        return ret;
     }
 
     /**
