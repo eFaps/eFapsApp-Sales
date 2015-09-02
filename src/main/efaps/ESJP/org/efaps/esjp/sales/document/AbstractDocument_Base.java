@@ -98,7 +98,6 @@ import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
-import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
 import org.efaps.esjp.sales.PriceUtil;
@@ -1664,7 +1663,7 @@ public abstract class AbstractDocument_Base
             _map.put("uoM", getUoMFieldStr(selectedUoM, dimId));
             _map.put("productDesc", StringEscapeUtils.escapeEcmaScript(desc));
 
-            if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+            if (Products.ACTIVATEINDIVIDUAL.get()) {
                 add4Individual(_parameter, _prodInst,
                                 print.<ProductIndividual>getAttribute(CIProducts.ProductAbstract.Individual),
                                 _map, _prodInst.getOid(), name +  "-" + desc);
@@ -1814,7 +1813,7 @@ public abstract class AbstractDocument_Base
         }
 
         catalogFilter4productAutoComplete(_parameter, _queryBldr);
-        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+        if (Products.ACTIVATEINDIVIDUAL.get()) {
             final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
                             SalesSettings.AUTOCOMPLETE4PRODUCT, true);
             final String typeName = getTypeName4AutoComplete4Product(_parameter);

@@ -74,7 +74,6 @@ import org.efaps.esjp.products.Product_Base;
 import org.efaps.esjp.products.Storage;
 import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
-import org.efaps.esjp.products.util.ProductsSettings;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.ProdDocActivation;
@@ -203,7 +202,7 @@ public abstract class AbstractProductDocument_Base
                             CISales.PositionAbstract.Product.name));
             if (product != null && product.length > i) {
                 Instance inst = Instance.get(product[i]);
-                if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+                if (Products.ACTIVATEINDIVIDUAL.get()) {
                     if (inst.getType().isKindOf(CIProducts.ProductIndividualAbstract.getType())) {
                         final PrintQuery print = new PrintQuery(inst);
                         final SelectBuilder sel = SelectBuilder.get()
@@ -388,7 +387,7 @@ public abstract class AbstractProductDocument_Base
                                     final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+        if (Products.ACTIVATEINDIVIDUAL.get()) {
 
             final String[] products = _parameter.getParameterValues(getFieldName4Attribute(_parameter,
                             CISales.PositionAbstract.Product.name));
@@ -719,7 +718,7 @@ public abstract class AbstractProductDocument_Base
         final List<UIAbstractPosition> ret = new ArrayList<>();
         if (isUpdateBean4Individual(_parameter, _bean)) {
 
-            if (Products.getSysConfig().getAttributeValueAsBoolean(ProductsSettings.ACTIVATEINDIVIDUAL)) {
+            if (Products.ACTIVATEINDIVIDUAL.get()) {
                 final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(), Product_Base.CACHEKEY4PRODUCT);
                 print.addAttribute(CIProducts.ProductAbstract.Individual);
                 print.execute();
