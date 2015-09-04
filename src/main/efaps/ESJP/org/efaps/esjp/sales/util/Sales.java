@@ -218,7 +218,7 @@ public final class Sales
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute EMPLOYEE2DOCREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Report.Employee2DocReport")
+                    .key(BASE + "report.Employee2DocReport")
                     .description("Autocomplete Properties 4 Products in Invoice");
 
     /** See description. */
@@ -264,6 +264,20 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.ActivateRemark")
                     .description("Activate the Remark Attribute for Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PRODUCTREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesProductReport")
+                    .description("Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PRODUCTREPORTASSIGENED = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesProductReport.ActivateContactAssigned2Employee")
+                    .description("Properties 4 Products in Invoice");
 
     /**
      * Singelton.

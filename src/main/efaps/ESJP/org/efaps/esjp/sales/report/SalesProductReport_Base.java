@@ -27,6 +27,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.datamodel.Dimension;
@@ -546,6 +547,19 @@ public abstract class SalesProductReport_Base
                     ret = new Object[] {};
                 } else {
                     ret = filter.getObject().toArray();
+                }
+                if (ret.length == 0) {
+                    final InstanceFilterValue employeefilter = (InstanceFilterValue) filterMap.get("employee");
+                    if (employeefilter.getObject().isValid()) {
+                        //HumanResource_Employee2Contact
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(
+                                        UUID.fromString("2f3768b5-ffad-4ed4-a960-2f774e316e21"));
+                        attrQueryBldr.addWhereAttrEqValue("FromLink", employeefilter.getObject());
+
+                        final QueryBuilder queryBldr = new QueryBuilder(CIContacts.Contact);
+                        queryBldr.addWhereAttrInQuery(CIContacts.Contact.ID, attrQueryBldr.getAttributeQuery("ToLink"));
+                        ret = queryBldr.getQuery().execute().toArray();
+                    }
                 }
             }
             return ret;

@@ -33,7 +33,7 @@
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesProductReport.FilterKeyMyDesk</property>
                 <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesProductReport</property>
                 <property name="CachedReportAddInstanceCriteria">true</property>
             </execute>
         </target>
