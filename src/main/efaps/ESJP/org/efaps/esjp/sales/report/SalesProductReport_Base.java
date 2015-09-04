@@ -151,10 +151,10 @@ public abstract class SalesProductReport_Base
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
-        return new BuySellReport(this);
+        return new DynSalesProductReport(this);
     }
 
-    public static class BuySellReport
+    public static class DynSalesProductReport
         extends AbstractDynamicReport
     {
 
@@ -166,7 +166,7 @@ public abstract class SalesProductReport_Base
         /**
          * @param _salesProductReport_Base
          */
-        public BuySellReport(final SalesProductReport_Base _salesProductReport_Base)
+        public DynSalesProductReport(final SalesProductReport_Base _salesProductReport_Base)
         {
             this.filteredReport = _salesProductReport_Base;
         }
@@ -181,8 +181,7 @@ public abstract class SalesProductReport_Base
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    throw new EFapsException("JRException", e);
                 }
             } else {
                 final Instance instance = _parameter.getInstance();
@@ -348,6 +347,18 @@ public abstract class SalesProductReport_Base
                                             .compareTo(Integer.valueOf(_arg1.getDocDate().getMonthOfYear()));
                         }
                     });
+                    if (instance.getType().isKindOf(CIProducts.ProductAbstract)) {
+                        comparator.addComparator(new Comparator<DataBean>()
+                        {
+
+                            @Override
+                            public int compare(final DataBean _arg0,
+                                               final DataBean _arg1)
+                            {
+                                return _arg0.getContact().compareTo(_arg1.getContact());
+                            }
+                        });
+                    }
                 }
                 comparator.addComparator(new Comparator<DataBean>()
                 {
@@ -642,8 +653,8 @@ public abstract class SalesProductReport_Base
             @Override
             public BigDecimal evaluate(final ReportParameters _reportParameters)
             {
-                final BigDecimal quantitySumValue = _reportParameters.getValue(BuySellReport.this.quantitySum);
-                final BigDecimal priceSumValue = _reportParameters.getValue(BuySellReport.this.priceSum);
+                final BigDecimal quantitySumValue = _reportParameters.getValue(DynSalesProductReport.this.quantitySum);
+                final BigDecimal priceSumValue = _reportParameters.getValue(DynSalesProductReport.this.priceSum);
 
                 final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
                 return total;
