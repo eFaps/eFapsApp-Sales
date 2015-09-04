@@ -34,20 +34,23 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
                 <property name="Field04">dateConfig</property>
-                <property name="Field05">priceConfig</property>
-                <property name="Field06">currency</property>
+                <property name="Field05">hideDetails</property>
+                <property name="Field06">priceConfig</property>
+                <property name="Field07">currency</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Type</property>
                 <property name="FilterType04">Enum</property>
-                <property name="FilterType05">Enum</property>
-                <property name="FilterType06">Currency</property>
+                <property name="FilterType05">Boolean</property>
+                <property name="FilterType06">Enum</property>
+                <property name="FilterType07">Currency</property>
                 <property name="FilterDefault01">YEAR:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
-                <property name="FilterDefault05">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
-                <property name="FilterDefault06">BASECURRENCY</property>
+                <property name="FilterDefault05">false</property>
+                <property name="FilterDefault06">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
+                <property name="FilterDefault07">BASECURRENCY</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.report.SalesProductReport" method="getFilterFieldValue"
                 name="Sales_Products_SalesReportForm.filter.UI_FIELD_VALUE.2" event="UI_FIELD_VALUE" index="2">
@@ -56,14 +59,16 @@
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>
                 <property name="Field04">dateConfig</property>
-                <property name="Field05">priceConfig</property>
-                <property name="Field06">currency</property>
+                <property name="Field05">hideDetails</property>
+                <property name="Field06">priceConfig</property>
+                <property name="Field07">currency</property>
                 <property name="DBProperty01">org.efaps.esjp.sales.report.SalesProductReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.sales.report.SalesProductReport.dateTo</property>
                 <property name="DBProperty03">ERP_ReportFilterForm4DateFromToType.type.Label</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.SalesProductReport.dateConfig</property>
-                <property name="DBProperty05">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
+                <property name="DBProperty05">org.efaps.esjp.sales.report.SalesProductReport.hideDetails</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
+                <property name="DBProperty07">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
                 <property name="CachedReportAddInstanceCriteria">true</property>
             </trigger>
         </field>

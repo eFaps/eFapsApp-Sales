@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,10 +95,13 @@ public abstract class SalesProductReport_Base
      */
     public enum DateConfig
     {
-
         /** Includes a group on date level. */
-        DAILY, /** Includes a group on monthly level. */
-        MONTHLY, /** Shows onnly the latest. */
+        DAILY,
+        /** Includes a group on monthly level. */
+        MONTHLY,
+        /** Includes a group on monthly level. */
+        YEARLY,
+        /** Shows onnly the latest. */
         LATEST;
     }
 
@@ -265,7 +269,8 @@ public abstract class SalesProductReport_Base
                                     .setDocOID(multi.<String>getSelect(selDocOID))
                                     .setDocStatus(multi.<String>getSelect(selDocStatus))
                                     .setProductDiscount(
-                                                    multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount));
+                                                    multi.<BigDecimal>getAttribute(
+                                                                    CISales.PositionSumAbstract.Discount));
                     data.add(dataBean);
 
                     final UoM uoM = Dimension.getUoM(multi.<Long>getAttribute(CISales.PositionSumAbstract.UoM));
@@ -292,11 +297,15 @@ public abstract class SalesProductReport_Base
                                         CISales.PositionSumAbstract.NetPrice) : multi.<BigDecimal>getAttribute(
                                                         CISales.PositionSumAbstract.CrossPrice);
                     } else {
-                        final BigDecimal unitPriceTmp = PriceConfig.NET.equals(priceConfig) ? multi.<BigDecimal>getAttribute(
-                                        CISales.PositionSumAbstract.RateNetUnitPrice) : multi.<BigDecimal>getAttribute(
+                        final BigDecimal unitPriceTmp = PriceConfig.NET.equals(priceConfig)
+                                        ? multi.<BigDecimal>getAttribute(
+                                                        CISales.PositionSumAbstract.RateNetUnitPrice)
+                                        : multi.<BigDecimal>getAttribute(
                                                         CISales.PositionSumAbstract.RateCrossUnitPrice);
-                        final BigDecimal priceTmp = PriceConfig.NET.equals(priceConfig) ? multi.<BigDecimal>getAttribute(
-                                        CISales.PositionSumAbstract.RateNetPrice) : multi.<BigDecimal>getAttribute(
+                        final BigDecimal priceTmp = PriceConfig.NET.equals(priceConfig)
+                                        ? multi.<BigDecimal>getAttribute(
+                                                        CISales.PositionSumAbstract.RateNetPrice)
+                                        : multi.<BigDecimal>getAttribute(
                                                         CISales.PositionSumAbstract.RateCrossPrice);
                         final RateInfo rateInfo = new Currency().evaluateRateInfos(_parameter, date, curInst,
                                         currencyInst.getInstance())[2];
@@ -345,18 +354,18 @@ public abstract class SalesProductReport_Base
                                             .compareTo(Integer.valueOf(_arg1.getDocDate().getMonthOfYear()));
                         }
                     });
-                    if (instance.getType().isKindOf(CIProducts.ProductAbstract)) {
-                        comparator.addComparator(new Comparator<DataBean>()
-                        {
+                } else if (DateConfig.YEARLY.equals(dateConfig)) {
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
 
-                            @Override
-                            public int compare(final DataBean _arg0,
-                                               final DataBean _arg1)
-                            {
-                                return _arg0.getContact().compareTo(_arg1.getContact());
-                            }
-                        });
-                    }
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return Integer.valueOf(_arg0.getDocDate().getYear())
+                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getYear()));
+                        }
+                    });
                 }
                 comparator.addComparator(new Comparator<DataBean>()
                 {
@@ -368,6 +377,19 @@ public abstract class SalesProductReport_Base
                         return _arg0.getProductName().compareTo(_arg1.getProductName());
                     }
                 });
+                if (instance.getType().isKindOf(CIProducts.ProductAbstract)) {
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return _arg0.getContact().compareTo(_arg1.getContact());
+                        }
+                    });
+                }
+
                 Collections.sort(data, comparator);
 
                 final List<DataBean> dataSource;
@@ -383,13 +405,38 @@ public abstract class SalesProductReport_Base
                             dataSource.add(bean);
                         }
                     }
+                } else if (isHideDetails(_parameter)) {
+                    dataSource = new ArrayList<>();
+                    final Map<String, DataBean> added = new LinkedHashMap<>();
+                    for (final DataBean bean : data) {
+                        final String criteria = instance.getType().isKindOf(CIContacts.Contact.getType())
+                                        ? bean.getProductInst().getOid() : bean.getContactInst().getOid();
+                        if (!added.containsKey(criteria)) {
+                            added.put(criteria, bean);
+                            bean.setDocName(null).setDocOID(null).setDocType(null).setDocStatus(null);
+                            dataSource.add(bean);
+                        } else {
+                            final DataBean current = added.get(criteria);
+                            current.setPrice(current.getPrice().add(bean.getPrice()))
+                                            .setQuantity(current.getQuantity().add(bean.getQuantity()))
+                                            .setUnitPrice(current.getPrice().divide(current.getQuantity(),
+                                                            BigDecimal.ROUND_HALF_UP));
+                        }
+                    }
                 } else {
                     dataSource = data;
                 }
-                ret =  new JRBeanCollectionDataSource(dataSource);
+                ret = new JRBeanCollectionDataSource(dataSource);
                 getFilteredReport().cache(_parameter, ret);
             }
             return ret;
+        }
+
+        protected boolean isHideDetails(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            return (Boolean) filter.get("hideDetails");
         }
 
         protected CurrencyInst evaluateCurrencyInst(final Parameter _parameter)
@@ -448,7 +495,7 @@ public abstract class SalesProductReport_Base
          */
         protected void add2QueryBuilder(final Parameter _parameter,
                                         final QueryBuilder _queryBldr)
-                                            throws EFapsException
+            throws EFapsException
         {
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             final DateTime dateFrom;
@@ -475,14 +522,15 @@ public abstract class SalesProductReport_Base
         @Override
         protected void addColumnDefintion(final Parameter _parameter,
                                           final JasperReportBuilder _builder)
-                                              throws EFapsException
+            throws EFapsException
         {
             final DateConfig dateConfig = evaluateDateConfig(_parameter);
             final boolean isContact = _parameter.getInstance().getType().isKindOf(CIContacts.Contact.getType());
+            final boolean hideDetails = isHideDetails(_parameter);
 
             final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(
                             this.filteredReport.getDBProperty("Contact"), "contact",
-                            DynamicReports.type.stringType());
+                            DynamicReports.type.stringType()).setWidth(250);
             final TextColumnBuilder<String> productColumn = DynamicReports.col.column(
                             this.filteredReport.getDBProperty("Product"), "product",
                             DynamicReports.type.stringType());
@@ -547,50 +595,64 @@ public abstract class SalesProductReport_Base
                             BigDecimal.class, Calculation.SUM);
             final VariableBuilder<BigDecimal> price4Month = DynamicReports.variable("price",
                             BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> quantity4Year = DynamicReports.variable("quantity",
+                            BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> price4Year = DynamicReports.variable("price",
+                            BigDecimal.class, Calculation.SUM);
             final VariableBuilder<BigDecimal> quantity4Total = DynamicReports.variable("quantity",
                             BigDecimal.class, Calculation.SUM);
             final VariableBuilder<BigDecimal> price4Total = DynamicReports.variable("price",
                             BigDecimal.class, Calculation.SUM);
             if (!DateConfig.LATEST.equals(dateConfig)) {
-                if (isContact) {
-                    quantity4ProdCon.setResetGroup(productGroup);
-                    price4ProdCon.setResetGroup(productGroup);
-                } else {
-                    quantity4ProdCon.setResetGroup(contactGroup);
-                    price4ProdCon.setResetGroup(contactGroup);
+                if (!hideDetails) {
+                    quantity4ProdCon.setResetGroup(isContact ? productGroup : contactGroup);
+                    price4ProdCon.setResetGroup(isContact ? productGroup : contactGroup);
                 }
-                quantity4Month.setResetGroup(monthGroup);
-                price4Month.setResetGroup(monthGroup);
+                if (!DateConfig.YEARLY.equals(dateConfig)) {
+                    quantity4Month.setResetGroup(monthGroup);
+                    price4Month.setResetGroup(monthGroup);
+                }
+                quantity4Year.setResetGroup(yearGroup);
+                price4Year.setResetGroup(yearGroup);
             }
-            _builder.addVariable(quantity4ProdCon, price4ProdCon, quantity4Month, price4Month, quantity4Total, price4Total);
+            _builder.addVariable(quantity4ProdCon, price4ProdCon, quantity4Month, price4Month, quantity4Total,
+                            price4Total);
 
-            final StyleBuilder unitPriceTotalStyle = DynamicReports.stl.style()
+            final StyleBuilder totalStyle = DynamicReports.stl.style()
                             .setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT).setBold(true)
                             .setPattern("#,##0.00");
-            final StyleBuilder unitPriceTotalStyleTot = DynamicReports.stl.style(unitPriceTotalStyle)
-                            .setTopBorder(DynamicReports.stl.penDouble());
+            final StyleBuilder txtStyle = DynamicReports.stl.style(totalStyle)
+                            .setHorizontalTextAlignment(HorizontalTextAlignment.CENTER);
 
             final AggregationSubtotalBuilder<BigDecimal> quantityProdSum = DynamicReports.sbt.sum(quantityColumn);
             final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum = DynamicReports.sbt.sum(priceColumn);
             final AggregationSubtotalBuilder<BigDecimal> unitPriceProdSum = DynamicReports.sbt.<BigDecimal>aggregate(
                             new UnitPriceTotal(quantity4ProdCon, price4ProdCon), unitPriceColumn, Calculation.NOTHING)
-                            .setStyle(unitPriceTotalStyle);
+                            .setStyle(totalStyle);
 
             final AggregationSubtotalBuilder<BigDecimal> quantityProdSum4Month = DynamicReports.sbt.sum(quantityColumn);
             final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum4Month = DynamicReports.sbt.sum(priceColumn);
             final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Month = DynamicReports.sbt
                             .<BigDecimal>aggregate(new UnitPriceTotal(quantity4Month, price4Month),
                                             unitPriceColumn, Calculation.NOTHING)
-                            .setStyle(unitPriceTotalStyle);
+                            .setStyle(totalStyle);
+
+            final AggregationSubtotalBuilder<BigDecimal> quantityProdSum4Year = DynamicReports.sbt.sum(quantityColumn);
+            final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum4Year = DynamicReports.sbt.sum(priceColumn);
+            final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Year = DynamicReports.sbt
+                            .<BigDecimal>aggregate(new UnitPriceTotal(quantity4Year, price4Year),
+                                            unitPriceColumn, Calculation.NOTHING)
+                            .setStyle(totalStyle);
+
 
             final AggregationSubtotalBuilder<BigDecimal> quantityTotSum = DynamicReports.sbt.sum(quantityColumn)
-                            .setStyle(unitPriceTotalStyleTot);
+                            .setStyle(totalStyle);
             final AggregationSubtotalBuilder<BigDecimal> netPriceTotSum = DynamicReports.sbt.sum(priceColumn)
-                            .setStyle(unitPriceTotalStyleTot);
+                            .setStyle(totalStyle);
             final AggregationSubtotalBuilder<BigDecimal> unitPriceTotSum = DynamicReports.sbt
                             .<BigDecimal>aggregate(new UnitPriceTotal(quantity4Total, price4Total),
                                             unitPriceColumn, Calculation.NOTHING)
-                            .setStyle(unitPriceTotalStyleTot);
+                            .setStyle(totalStyle);
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
@@ -599,30 +661,37 @@ public abstract class SalesProductReport_Base
 
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
-
             if (DateConfig.LATEST.equals(dateConfig)) {
                 if (isContact) {
                     _builder.addColumn(productNameColumn, productDescColumn);
                 }
             } else {
-                _builder.addColumn(yearColumn, monthColumn);
+                _builder.addColumn(yearColumn);
+                if (!DateConfig.YEARLY.equals(dateConfig)) {
+                    _builder.addColumn(monthColumn);
+                }
             }
             if (DateConfig.DAILY.equals(dateConfig)) {
                 _builder.addColumn(dateColumn);
+            }
+            if (!DateConfig.LATEST.equals(dateConfig) && isContact && hideDetails) {
+                _builder.addColumn(productNameColumn, productDescColumn);
             }
 
             if (!isContact) {
                 _builder.addColumn(contactColumn);
             }
 
-            if (getExType().equals(ExportType.HTML)) {
-                _builder.addColumn(linkColumn);
-            }
-            _builder.addColumn(docTypeColumn,
+            if (!hideDetails) {
+                if (getExType().equals(ExportType.HTML)) {
+                    _builder.addColumn(linkColumn);
+                }
+                _builder.addColumn(docTypeColumn,
                             docNameColumn.setFixedWidth(150),
                             statusColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER),
-                            dateColumn,
-                            uomColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(70),
+                            dateColumn);
+            }
+            _builder.addColumn(uomColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(70),
                             quantityColumn,
                             unitPriceColumn,
                             discountColumn,
@@ -630,30 +699,43 @@ public abstract class SalesProductReport_Base
                             currencyColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER)
                                             .setFixedWidth(70));
             if (!DateConfig.LATEST.equals(dateConfig)) {
-                if (isContact) {
-                    _builder.groupBy(yearGroup, monthGroup);
-                    if (DateConfig.DAILY.equals(dateConfig)) {
-                        _builder.groupBy(dateGroup);
-                    }
-                    _builder.groupBy(productGroup);
-                    _builder.addSubtotalAtGroupFooter(productGroup, quantityProdSum);
-                    _builder.addSubtotalAtGroupFooter(productGroup, unitPriceProdSum);
-                    _builder.addSubtotalAtGroupFooter(productGroup, netPriceProdSum);
-                } else {
-                    _builder.groupBy(yearGroup, monthGroup);
-                    if (DateConfig.DAILY.equals(dateConfig)) {
-                        _builder.groupBy(dateGroup);
-                    }
-                    _builder.groupBy(contactGroup);
-                    _builder.addSubtotalAtGroupFooter(contactGroup, quantityProdSum);
-                    _builder.addSubtotalAtGroupFooter(contactGroup, unitPriceProdSum);
-                    _builder.addSubtotalAtGroupFooter(contactGroup, netPriceProdSum);
-
+                _builder.groupBy(yearGroup);
+                if (!DateConfig.YEARLY.equals(dateConfig)) {
+                    _builder.groupBy(monthGroup);
                 }
-                _builder.addSubtotalAtGroupFooter(monthGroup, quantityProdSum4Month);
-                _builder.addSubtotalAtGroupFooter(monthGroup, unitPriceTotal4Month);
-                _builder.addSubtotalAtGroupFooter(monthGroup, netPriceProdSum4Month);
-                _builder.addSubtotalAtSummary(quantityTotSum, unitPriceTotSum, netPriceTotSum);
+                if (DateConfig.DAILY.equals(dateConfig)) {
+                    _builder.groupBy(dateGroup);
+                }
+                if (!hideDetails) {
+                    _builder.groupBy(isContact ? productGroup : contactGroup);
+                    _builder.addSubtotalAtGroupFooter(isContact ? productGroup : contactGroup,
+                                    DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle),
+                                    quantityProdSum, unitPriceProdSum, netPriceProdSum);
+                }
+
+                if (isContact) {
+                    if (!DateConfig.YEARLY.equals(dateConfig)) {
+                        _builder.addSubtotalAtGroupFooter(monthGroup, netPriceProdSum4Month,
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                    }
+                    _builder.addSubtotalAtGroupFooter(yearGroup, netPriceProdSum4Year,
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                    _builder.addSubtotalAtSummary(netPriceTotSum,
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                } else {
+                    if (!DateConfig.YEARLY.equals(dateConfig)) {
+                        _builder.addSubtotalAtGroupFooter(monthGroup, quantityProdSum4Month, unitPriceTotal4Month,
+                                    netPriceProdSum4Month, DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                    }
+                    _builder.addSubtotalAtGroupFooter(yearGroup, quantityProdSum4Year, unitPriceTotal4Year,
+                                    netPriceProdSum4Year, DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                    _builder.addSubtotalAtSummary(quantityTotSum, unitPriceTotSum, netPriceTotSum,
+                                    DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
+                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                }
             }
         }
 

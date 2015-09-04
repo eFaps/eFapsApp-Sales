@@ -62,6 +62,15 @@
                 <property name="Enum">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
             </trigger>
         </field>
+         <field name="hideDetails">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
+            <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.hideDetails</property>
+            <trigger event="UI_FIELD_VALUE" method="getBooleanFieldValue"
+                name="Sales_Products_SalesReportFilterForm.hideDetails.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesProductReport">
+            </trigger>
+        </field>
         <field name="priceConfig">
             <property name="ModeEdit">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
