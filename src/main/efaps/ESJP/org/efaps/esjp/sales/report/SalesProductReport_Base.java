@@ -66,6 +66,7 @@ import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
 import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.style.ReportStyleBuilder;
+import net.sf.dynamicreports.report.builder.style.StyleBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
@@ -157,9 +158,6 @@ public abstract class SalesProductReport_Base
     public static class DynSalesProductReport
         extends AbstractDynamicReport
     {
-
-        protected VariableBuilder<BigDecimal> quantitySum;
-        protected VariableBuilder<BigDecimal> priceSum;
 
         private final SalesProductReport_Base filteredReport;
 
@@ -541,16 +539,58 @@ public abstract class SalesProductReport_Base
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
             final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn).groupByDataType();
 
+            final VariableBuilder<BigDecimal> quantity4ProdCon = DynamicReports.variable("quantity",
+                            BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> price4ProdCon = DynamicReports.variable("price",
+                            BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> quantity4Month = DynamicReports.variable("quantity",
+                            BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> price4Month = DynamicReports.variable("price",
+                            BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> quantity4Total = DynamicReports.variable("quantity",
+                            BigDecimal.class, Calculation.SUM);
+            final VariableBuilder<BigDecimal> price4Total = DynamicReports.variable("price",
+                            BigDecimal.class, Calculation.SUM);
+            if (!DateConfig.LATEST.equals(dateConfig)) {
+                if (isContact) {
+                    quantity4ProdCon.setResetGroup(productGroup);
+                    price4ProdCon.setResetGroup(productGroup);
+                } else {
+                    quantity4ProdCon.setResetGroup(contactGroup);
+                    price4ProdCon.setResetGroup(contactGroup);
+                }
+                quantity4Month.setResetGroup(monthGroup);
+                price4Month.setResetGroup(monthGroup);
+            }
+            _builder.addVariable(quantity4ProdCon, price4ProdCon, quantity4Month, price4Month, quantity4Total, price4Total);
+
+            final StyleBuilder unitPriceTotalStyle = DynamicReports.stl.style()
+                            .setHorizontalTextAlignment(HorizontalTextAlignment.RIGHT).setBold(true)
+                            .setPattern("#,##0.00");
+            final StyleBuilder unitPriceTotalStyleTot = DynamicReports.stl.style(unitPriceTotalStyle)
+                            .setTopBorder(DynamicReports.stl.penDouble());
+
             final AggregationSubtotalBuilder<BigDecimal> quantityProdSum = DynamicReports.sbt.sum(quantityColumn);
-            final AggregationSubtotalBuilder<Number> netUnitPriceProdAvg = DynamicReports.sbt.avg(unitPriceColumn);
             final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum = DynamicReports.sbt.sum(priceColumn);
+            final AggregationSubtotalBuilder<BigDecimal> unitPriceProdSum = DynamicReports.sbt.<BigDecimal>aggregate(
+                            new UnitPriceTotal(quantity4ProdCon, price4ProdCon), unitPriceColumn, Calculation.NOTHING)
+                            .setStyle(unitPriceTotalStyle);
+
+            final AggregationSubtotalBuilder<BigDecimal> quantityProdSum4Month = DynamicReports.sbt.sum(quantityColumn);
+            final AggregationSubtotalBuilder<BigDecimal> netPriceProdSum4Month = DynamicReports.sbt.sum(priceColumn);
+            final AggregationSubtotalBuilder<BigDecimal> unitPriceTotal4Month = DynamicReports.sbt
+                            .<BigDecimal>aggregate(new UnitPriceTotal(quantity4Month, price4Month),
+                                            unitPriceColumn, Calculation.NOTHING)
+                            .setStyle(unitPriceTotalStyle);
 
             final AggregationSubtotalBuilder<BigDecimal> quantityTotSum = DynamicReports.sbt.sum(quantityColumn)
-                            .setStyle(DynamicReports.stl.style().setBold(true)
-                                            .setTopBorder(DynamicReports.stl.penDouble()));
+                            .setStyle(unitPriceTotalStyleTot);
             final AggregationSubtotalBuilder<BigDecimal> netPriceTotSum = DynamicReports.sbt.sum(priceColumn)
-                            .setStyle(DynamicReports.stl.style().setBold(true)
-                                            .setTopBorder(DynamicReports.stl.penDouble()));
+                            .setStyle(unitPriceTotalStyleTot);
+            final AggregationSubtotalBuilder<BigDecimal> unitPriceTotSum = DynamicReports.sbt
+                            .<BigDecimal>aggregate(new UnitPriceTotal(quantity4Total, price4Total),
+                                            unitPriceColumn, Calculation.NOTHING)
+                            .setStyle(unitPriceTotalStyleTot);
 
             final GenericElementBuilder linkElement = DynamicReports.cmp.genericElement(
                             "http://www.efaps.org", "efapslink")
@@ -559,20 +599,7 @@ public abstract class SalesProductReport_Base
 
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
-            this.quantitySum = DynamicReports.variable("quantity", BigDecimal.class, Calculation.SUM);
-            this.priceSum = DynamicReports.variable("price", BigDecimal.class, Calculation.SUM);
 
-            if (!DateConfig.LATEST.equals(dateConfig)) {
-                if (isContact) {
-                    this.quantitySum.setResetGroup(productGroup);
-                    this.priceSum.setResetGroup(productGroup);
-
-                } else {
-                    this.quantitySum.setResetGroup(contactGroup);
-                    this.priceSum.setResetGroup(contactGroup);
-                }
-            }
-            _builder.addVariable(this.quantitySum, this.priceSum);
             if (DateConfig.LATEST.equals(dateConfig)) {
                 if (isContact) {
                     _builder.addColumn(productNameColumn, productDescColumn);
@@ -610,9 +637,8 @@ public abstract class SalesProductReport_Base
                     }
                     _builder.groupBy(productGroup);
                     _builder.addSubtotalAtGroupFooter(productGroup, quantityProdSum);
-                    _builder.addSubtotalAtGroupFooter(productGroup, netUnitPriceProdAvg);
+                    _builder.addSubtotalAtGroupFooter(productGroup, unitPriceProdSum);
                     _builder.addSubtotalAtGroupFooter(productGroup, netPriceProdSum);
-                    _builder.addSubtotalAtSummary(quantityTotSum, netPriceTotSum);
                 } else {
                     _builder.groupBy(yearGroup, monthGroup);
                     if (DateConfig.DAILY.equals(dateConfig)) {
@@ -620,9 +646,14 @@ public abstract class SalesProductReport_Base
                     }
                     _builder.groupBy(contactGroup);
                     _builder.addSubtotalAtGroupFooter(contactGroup, quantityProdSum);
-                    _builder.addSubtotalAtGroupFooter(contactGroup, netUnitPriceProdAvg);
+                    _builder.addSubtotalAtGroupFooter(contactGroup, unitPriceProdSum);
                     _builder.addSubtotalAtGroupFooter(contactGroup, netPriceProdSum);
+
                 }
+                _builder.addSubtotalAtGroupFooter(monthGroup, quantityProdSum4Month);
+                _builder.addSubtotalAtGroupFooter(monthGroup, unitPriceTotal4Month);
+                _builder.addSubtotalAtGroupFooter(monthGroup, netPriceProdSum4Month);
+                _builder.addSubtotalAtSummary(quantityTotSum, unitPriceTotSum, netPriceTotSum);
             }
         }
 
@@ -643,22 +674,30 @@ public abstract class SalesProductReport_Base
         {
             return this.filteredReport;
         }
+    }
 
-        protected class UnitPriceSubtotal
-            extends AbstractSimpleExpression<BigDecimal>
+    public static class UnitPriceTotal
+        extends AbstractSimpleExpression<BigDecimal>
+    {
+
+        private static final long serialVersionUID = 1L;
+        private final VariableBuilder<BigDecimal> price;
+        private final VariableBuilder<BigDecimal> quantity;
+
+        public UnitPriceTotal(final VariableBuilder<BigDecimal> _quantity,
+                              final VariableBuilder<BigDecimal> _price)
         {
+            this.price = _price;
+            this.quantity = _quantity;
+        }
 
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public BigDecimal evaluate(final ReportParameters _reportParameters)
-            {
-                final BigDecimal quantitySumValue = _reportParameters.getValue(DynSalesProductReport.this.quantitySum);
-                final BigDecimal priceSumValue = _reportParameters.getValue(DynSalesProductReport.this.priceSum);
-
-                final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
-                return total;
-            }
+        @Override
+        public BigDecimal evaluate(final ReportParameters _reportParameters)
+        {
+            final BigDecimal quantitySumValue = _reportParameters.getValue(this.quantity);
+            final BigDecimal priceSumValue = _reportParameters.getValue(this.price);
+            final BigDecimal total = priceSumValue.divide(quantitySumValue, 4, BigDecimal.ROUND_HALF_UP);
+            return total;
         }
     }
 
