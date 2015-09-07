@@ -411,8 +411,7 @@ public abstract class SalesProductReport_Base
                     dataSource = new ArrayList<>();
                     final Map<String, DataBean> added = new LinkedHashMap<>();
                     for (final DataBean bean : data) {
-                        String criteria = groupByContact(_parameter)
-                                        ? bean.getProductInst().getOid() : bean.getContactInst().getOid();
+                        String criteria =  bean.getProductInst().getOid()+ "-" + bean.getContactInst().getOid();
                         switch (dateConfig) {
                             case DAILY:
                                 criteria = criteria  + bean.getDocDate().toString("-YYYY-MM-dd");
@@ -639,7 +638,8 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
-            return isProduct(_parameter) || (Boolean) filter.get("groupByContact");
+            return isProduct(_parameter)
+                            || (filter.containsKey("groupByContact") && (Boolean) filter.get("groupByContact"));
         }
 
         @Override
@@ -796,16 +796,30 @@ public abstract class SalesProductReport_Base
             if (DateConfig.DAILY.equals(dateConfig)) {
                 _builder.addColumn(dateColumn);
             }
-            if (!DateConfig.LATEST.equals(dateConfig) && groupByContact
-                            && (hideDetails || !isInstance(_parameter))) {
-                _builder.addColumn(productNameColumn, productDescColumn);
-            }
 
-            if (!groupByContact) {
-                _builder.addColumn(contactColumn);
-            }
+            if (hideDetails) {
+                if (groupByContact) {
+                    if (isProduct(_parameter)) {
+                        _builder.addColumn(contactColumn);
+                    } else {
+                        _builder.addColumn(productNameColumn, productDescColumn);
+                    }
+                } else {
+                    if (isContact(_parameter)) {
+                        _builder.addColumn(productNameColumn, productDescColumn);
+                    } else {
+                        _builder.addColumn(contactColumn);
+                    }
+                }
+            } else {
+                if (!isInstance(_parameter)) {
+                    if (groupByContact) {
+                        _builder.addColumn(productNameColumn, productDescColumn);
+                    } else {
+                        _builder.addColumn(contactColumn);
+                    }
+                }
 
-            if (!hideDetails) {
                 if (getExType().equals(ExportType.HTML)) {
                     _builder.addColumn(linkColumn);
                 }
@@ -841,18 +855,17 @@ public abstract class SalesProductReport_Base
                     }
                 }
 
-
                 if (!DateConfig.YEARLY.equals(dateConfig)) {
                     _builder.addSubtotalAtGroupFooter(monthGroup, netPriceProdSum4Month,
                                 DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
                 }
-                    _builder.addSubtotalAtGroupFooter(yearGroup, netPriceProdSum4Year,
-                                DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
-                    _builder.addSubtotalAtSummary(netPriceTotSum,
+                _builder.addSubtotalAtGroupFooter(yearGroup, netPriceProdSum4Year,
+                            DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
+                _builder.addSubtotalAtSummary(netPriceTotSum,
                                 DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle));
 
-                    // grouped by product or grouped by contact with only one product
-                if (!groupByContact || (groupByContact && getProductInst(_parameter).length == 1)) {
+                // only in case of one product present the price per unit
+                if (getProductInst(_parameter).length == 1) {
                     if (!DateConfig.YEARLY.equals(dateConfig)) {
                         _builder.addSubtotalAtGroupFooter(monthGroup, quantityProdSum4Month, unitPriceTotal4Month,
                                     DynamicReports.sbt.first(uomColumn).setStyle(txtStyle));
