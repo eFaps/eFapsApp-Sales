@@ -411,18 +411,35 @@ public abstract class SalesProductReport_Base
                     dataSource = new ArrayList<>();
                     final Map<String, DataBean> added = new LinkedHashMap<>();
                     for (final DataBean bean : data) {
-                        final String criteria = groupByContact(_parameter)
+                        String criteria = groupByContact(_parameter)
                                         ? bean.getProductInst().getOid() : bean.getContactInst().getOid();
+                        switch (dateConfig) {
+                            case DAILY:
+                                criteria = criteria  + bean.getDocDate().toString("-YYYY-MM-dd");
+                                break;
+                            case MONTHLY:
+                                criteria = criteria  + bean.getDocDate().toString("-YYYY-MM");
+                                break;
+                            case YEARLY:
+                                criteria = criteria  + bean.getDocDate().toString("YYYY");
+                                break;
+                            default:
+                                break;
+                        }
+
                         if (!added.containsKey(criteria)) {
                             added.put(criteria, bean);
-                            bean.setDocName(null).setDocOID(null).setDocType(null).setDocStatus(null);
                             dataSource.add(bean);
                         } else {
                             final DataBean current = added.get(criteria);
                             current.setPrice(current.getPrice().add(bean.getPrice()))
-                                            .setQuantity(current.getQuantity().add(bean.getQuantity()))
-                                            .setUnitPrice(current.getPrice().divide(current.getQuantity(),
-                                                            BigDecimal.ROUND_HALF_UP));
+                                            .setQuantity(current.getQuantity().add(bean.getQuantity()));
+                            if (current.getPrice().compareTo(BigDecimal.ZERO) == 0) {
+                                current.setUnitPrice(BigDecimal.ZERO);
+                            } else {
+                                current .setUnitPrice(current.getPrice().divide(current.getQuantity(),
+                                                BigDecimal.ROUND_HALF_UP));
+                            }
                         }
                     }
                 } else {
