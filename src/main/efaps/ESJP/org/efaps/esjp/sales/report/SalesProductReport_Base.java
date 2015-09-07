@@ -533,7 +533,13 @@ public abstract class SalesProductReport_Base
             return isInstance(_parameter) && _parameter.getInstance().getType().isKindOf(CIContacts.Contact);
         }
 
-
+        /**
+         * Gets the contact inst.
+         *
+         * @param _parameter the _parameter
+         * @return the contact inst
+         * @throws EFapsException on error
+         */
         protected Object[] getContactInst(final Parameter _parameter)
             throws EFapsException
         {
@@ -543,14 +549,15 @@ public abstract class SalesProductReport_Base
             } else {
                 final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("contact");
-                if (filter.getObject() == null) {
+                if (filter == null || (filter != null && filter.getObject() == null)) {
                     ret = new Object[] {};
                 } else {
                     ret = filter.getObject().toArray();
                 }
                 if (ret.length == 0) {
                     final InstanceFilterValue employeefilter = (InstanceFilterValue) filterMap.get("employee");
-                    if (employeefilter.getObject().isValid()) {
+                    if (employeefilter != null &&  employeefilter.getObject() != null
+                                    && employeefilter.getObject().isValid()) {
                         //HumanResource_Employee2Contact
                         final QueryBuilder attrQueryBldr = new QueryBuilder(
                                         UUID.fromString("2f3768b5-ffad-4ed4-a960-2f774e316e21"));
@@ -585,7 +592,7 @@ public abstract class SalesProductReport_Base
             } else {
                 final Map<String, Object> filterMap = this.filteredReport.getFilterMap(_parameter);
                 final InstanceSetFilterValue filter = (InstanceSetFilterValue) filterMap.get("product");
-                if (filter.getObject() == null) {
+                if (filter == null || (filter != null && filter.getObject() == null)) {
                     ret = new Object[] {};
                 } else {
                     ret = filter.getObject().toArray();

@@ -49,7 +49,7 @@
                 program="org.efaps.esjp.erp.FilteredReport" >
                  <!-- Sales-Configuration -->
                 <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="QueryBldrConfigAttribute">org.efaps.sales.SalesProductReport</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesProductReport</property>
             </trigger>
         </field>
         <field name="dateConfig">
