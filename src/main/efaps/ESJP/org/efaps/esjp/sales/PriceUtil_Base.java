@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -34,11 +31,12 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
@@ -47,8 +45,11 @@ import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.document.AbstractDocument_Base;
@@ -66,10 +67,9 @@ import org.joda.time.format.DateTimeFormatter;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("3a726661-473f-48b6-82dd-9b6498561d48")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PriceUtil_Base
     implements Serializable
 {
@@ -88,6 +88,91 @@ public abstract class PriceUtil_Base
      * Needed for serialization.
      */
     private static final long serialVersionUID = 1L;
+
+
+    /**
+     * Method to get the Price for a product.
+     *
+     * @param _parameter Parameter as passed form the efaps API
+     * @param _productInst the _product inst
+     * @param _docType the _doc type
+     * @param _netPrice the _net price
+     * @param _evalContact the _eval contact
+     * @return price for the product as BigDecimal
+     * @throws EFapsException on error
+     */
+    public ProductPrice getLatestPrice(final Parameter _parameter,
+                                       final Instance _productInst,
+                                       final Type _docType,
+                                       final boolean _netPrice,
+                                       final boolean _evalContact)
+        throws EFapsException
+    {
+        final ProductPrice ret = getProductPrice(_parameter);
+
+        final QueryBuilder posAttrQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+        posAttrQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, _productInst);
+
+        final QueryBuilder attrQueryBldr = new QueryBuilder(_docType);
+        attrQueryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
+                        posAttrQueryBldr.getAttributeQuery(CISales.PositionSumAbstract.DocumentAbstractLink));
+        if (_evalContact) {
+           final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+           if (contactInst.isValid() && contactInst.getType().isKindOf(CIContacts.ContactAbstract)) {
+               attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contactInst);
+           }
+        }
+
+        attrQueryBldr.addOrderByAttributeDesc(CISales.DocumentSumAbstract.Date);
+        attrQueryBldr.setLimit(1);
+
+        final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionSumAbstract);
+        queryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, _productInst);
+        queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
+                        attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID));
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.RateCurrencyId).instance();
+        multi.addSelect(selCurInst);
+        multi.addAttribute(CISales.PositionSumAbstract.RateNetUnitPrice,
+                        CISales.PositionSumAbstract.RateCrossUnitPrice);
+        multi.execute();
+        if (multi.next()) {
+            final Instance baseInst = Currency.getBaseCurrency();
+
+            final Instance priceInst = multi.getSelect(selCurInst);
+            final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
+                            AbstractDocument_Base.CURRENCYINST_KEY);
+
+            final BigDecimal price = _netPrice
+                            ? multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice)
+                            : multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossUnitPrice);
+
+            ret.setCurrentCurrencyInstance(currentInst);
+            ret.setOrigCurrencyInstance(priceInst);
+            ret.setOrigPrice(price);
+            if (priceInst.equals(currentInst)) {
+                ret.setCurrentPrice(price);
+            } else {
+                if (currentInst != null) {
+                    final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
+                    ret.setCurrentPrice(price.multiply(rates[2]));
+                } else {
+                    ret.setCurrentPrice(price);
+                }
+            }
+            if (priceInst.equals(baseInst)) {
+                ret.setBasePrice(price);
+                ret.setBaseRate(BigDecimal.ONE);
+            } else {
+                final BigDecimal[] rates = getRates(_parameter, currentInst == null ? baseInst : currentInst,
+                                baseInst);
+                ret.setBasePrice(price.multiply(rates[2]));
+                ret.setBaseRate(rates[2]);
+            }
+        }
+        return ret;
+    }
+
 
     /**
      * Method to get the Price for a product.

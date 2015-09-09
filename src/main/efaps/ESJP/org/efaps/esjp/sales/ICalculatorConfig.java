@@ -34,17 +34,6 @@ import org.efaps.util.EFapsException;
 @EFapsApplication("eFapsApp-Sales")
 public interface ICalculatorConfig
 {
-
-    /**
-     * Checks if is include min retail.
-     *
-     * @param _parameter the _parameter
-     * @return true, if is include min retail
-     * @throws EFapsException on error
-     */
-    boolean isIncludeMinRetail(Parameter _parameter)
-        throws EFapsException;
-
     /**
      * Gets the Key for SystemComfiguration used for Document like totals.
      *
@@ -66,7 +55,7 @@ public interface ICalculatorConfig
         throws EFapsException;
 
     /**
-     * Price from UI is net.
+     * is the Price past from the  UserInterface the netprice.
      *
      * @param _parameter the _parameter
      * @return true, if successful

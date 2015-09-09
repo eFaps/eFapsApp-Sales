@@ -261,7 +261,7 @@ public abstract class IncomingInvoice_Base
                                     CIProducts.ProductPricelistPurchase);
                     final BigDecimal basePrice = prodPrice.getBasePrice();
                     BigDecimal price;
-                    if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET)) {
+                    if (Calculator.priceIsNet(_parameter, this)) {
                         price = calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
                                         .setScale(uScale, BigDecimal.ROUND_HALF_UP);
                     } else {

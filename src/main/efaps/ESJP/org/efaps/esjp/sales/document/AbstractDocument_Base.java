@@ -2532,16 +2532,6 @@ public abstract class AbstractDocument_Base
      * {@inheritDoc}
      */
     @Override
-    public boolean isIncludeMinRetail(final Parameter _parameter)
-        throws EFapsException
-    {
-        return Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.MINRETAILPRICE);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean priceFromUIisNet(final Parameter _parameter)
         throws EFapsException
     {

@@ -117,6 +117,36 @@ public class Calculator
     }
 
     /**
+     * Price is net.
+     *
+     * @param _parameter the _parameter
+     * @param _config the _config
+     * @return true, if successful
+     * @throws EFapsException
+     */
+    public static boolean priceIsNet(final Parameter _parameter,
+                                     final ICalculatorConfig _config)
+        throws EFapsException
+    {
+        return Calculator_Base.priceIsNet(_parameter, _config);
+    }
+
+    /**
+     * Price is net.
+     *
+     * @param _parameter the _parameter
+     * @param _config the _config
+     * @return true, if successful
+     * @throws EFapsException
+     */
+    public static boolean isIncludeMinRetail(final Parameter _parameter,
+                                             final ICalculatorConfig _config)
+        throws EFapsException
+    {
+        return Calculator_Base.isIncludeMinRetail(_parameter, _config);
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @param _calcList List of calculator
      * @return crossTotal

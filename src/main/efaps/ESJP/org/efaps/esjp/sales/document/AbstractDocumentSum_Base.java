@@ -110,8 +110,8 @@ public abstract class AbstractDocumentSum_Base
     {
         final Return ret = new Return();
         final Field field = (Field) _parameter.get(ParameterValues.UIOBJECT);
-        if (field.isEditableDisplay(TargetMode.CREATE) && !isIncludeMinRetail(_parameter)
-                        || field.isReadonlyDisplay(TargetMode.CREATE) && isIncludeMinRetail(_parameter)) {
+        if (field.isEditableDisplay(TargetMode.CREATE) && !Calculator.isIncludeMinRetail(_parameter, this) || field
+                        .isReadonlyDisplay(TargetMode.CREATE) && Calculator.isIncludeMinRetail(_parameter, this)) {
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
@@ -1426,7 +1426,7 @@ public abstract class AbstractDocumentSum_Base
             final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
             BigDecimal unitPrice;
-            if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET)) {
+            if (Calculator.priceIsNet(_parameter, this)) {
                 unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
             } else {
                 unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossUnitPrice);

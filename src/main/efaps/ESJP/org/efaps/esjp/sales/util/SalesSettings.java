@@ -74,13 +74,6 @@ public interface SalesSettings
     String MINRETAILPRICE = SalesSettings.BASE + "ActivateMinRetailPrice";
 
     /**
-     * Boolean (true/false).<br/>
-     * Do the product prices include already the tax, or
-     * must it be added? (Crossprice or netprice)
-     */
-    String PRODPRICENET = SalesSettings.BASE + "ProductPriceIsNetPrice";
-
-    /**
      * Link to a default warehouse instance.
      */
     String DEFAULTTAXCAT4PRODUCT = SalesSettings.BASE + "DefaultTaxCategory4Product";

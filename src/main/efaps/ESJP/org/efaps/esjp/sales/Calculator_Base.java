@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -59,8 +56,6 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Calculator_Base.java 14047 2014-09-17 17:21:35Z jan@moxter.net
- *          $
  */
 @EFapsUUID("a9ce907c-0e76-44f9-8dbe-2fdfe2893ae0")
 @EFapsApplication("eFapsApp-Sales")
@@ -74,9 +69,41 @@ public abstract class Calculator_Base
     public enum Keys
     {
         /**
+         * How is the price evaluated.
+         * Values: <br>
+         * <table>
+         * <tr><th>Value</th><th>Definition</th><th>Comment</th></tr>
+         * <tr>
+         * <td>PriceList</td>
+         * <td>Use a defined PriceList.</td>
+         * <td>Requires that {@link #PRICELIST} is defined.</td>
+         * </tr><tr>
+         * <td>Latest</td>
+         * <td>Evaluate latest price applied.</td>
+         * <td>Requires that {@link #PRICEEVALTYPE} is defined.</td>
+         * </tr><tr>
+         * <td>Latest4Contact</td>
+         * <td>Evaluate latest price applied for given contact.</td>
+         * <td>Requires that {@link #PRICEEVALTYPE} is defined.</td>
+         * </tr>
+         * </table>
+         */
+        PRICEEVALUATION,
+
+        /**
          * Which PriceList is used. (UUID of a PriceList)
          */
         PRICELIST,
+
+        /**
+         * Type of the document that is used for the price evaluation. (UUID or Name).
+         */
+        PRICEEVALTYPE,
+
+        /**
+         * is the product price a net price. Defaults to true.
+         */
+        PRICEISNET,
 
         /**
          * How is the CrossTotal calculated.
@@ -86,9 +113,14 @@ public abstract class Calculator_Base
 
         /**
          * How is the CrossTotal calculated.
-         * Values; "NetPricePlusTax"
+         * Values: "NetPricePlusTax"
          */
-        CROSSPRICE
+        CROSSPRICE,
+
+        /**
+         * Include the evaluation for minimum price. Defaults to false.
+         */
+        INCLUDEMINPRICE
     }
 
     /**
@@ -251,14 +283,13 @@ public abstract class Calculator_Base
                 setPriceFromUI(_parameter, _unitPrice);
                 this.priceIsNet = _config.priceFromUIisNet(_parameter);
             } else {
+                this.priceIsNet = priceIsNet(_parameter);
                 if (_priceFromDB) {
-                    final PriceUtil priceutil = new PriceUtil();
-                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    if (_config != null && _config.isIncludeMinRetail(_parameter)) {
-                        this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    this.productPrice = evalPriceFromDB(_parameter);
+                    if (_config != null && isIncludeMinRetail(_parameter)) {
+                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
-                this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
             }
         } else {
             this.oid = _prodInstance != null && _prodInstance.isValid() ? _prodInstance.getOid() : null;
@@ -268,15 +299,15 @@ public abstract class Calculator_Base
                     setPriceFromUI(_parameter, _unitPrice);
                     this.priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
-                    final PriceUtil priceutil = new PriceUtil();
-                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
+                    this.priceIsNet = priceIsNet(_parameter);
+                    this.productPrice = evalPriceFromDB(_parameter);;
+
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
                 this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
-                if (_config != null && _config.isIncludeMinRetail(_parameter)) {
+                if (_config != null && isIncludeMinRetail(_parameter)) {
                     this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
@@ -285,7 +316,7 @@ public abstract class Calculator_Base
         }
         setDiscount(_discount);
 
-        if (_config != null && _config.isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
+        if (_config != null && isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
             final BigDecimal discountPrice = getProductPrice().getBasePrice().subtract(getProductPrice().getBasePrice()
                             .divide(new BigDecimal(100)).multiply(getDiscount()));
             if (discountPrice.compareTo(getMinProductPrice().getBasePrice()) < 0) {
@@ -340,14 +371,13 @@ public abstract class Calculator_Base
                 setPriceFromUI(_parameter, _unitPrice);
                 this.priceIsNet = _config.priceFromUIisNet(_parameter);
             } else {
+                this.priceIsNet = priceIsNet(_parameter);
                 if (_priceFromDB) {
-                    final PriceUtil priceutil = new PriceUtil();
-                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    if (_config != null && _config.isIncludeMinRetail(_parameter)) {
-                        this.minProductPrice = priceutil.getPrice(_parameter, this.oid, getMinPriceListUUID());
+                    this.productPrice = evalPriceFromDB(_parameter);
+                    if (_config != null && isIncludeMinRetail(_parameter)) {
+                        this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                     }
                 }
-                this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
             }
         } else {
             this.oid = _oid;
@@ -357,15 +387,14 @@ public abstract class Calculator_Base
                     setPriceFromUI(_parameter, _unitPrice);
                     this.priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
-                    final PriceUtil priceutil = new PriceUtil();
-                    this.productPrice = priceutil.getPrice(_parameter, this.oid, getPriceListUUID());
-                    this.priceIsNet = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.PRODPRICENET);
+                    this.priceIsNet = priceIsNet(_parameter);
+                    this.productPrice = evalPriceFromDB(_parameter);
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
                 print.addAttribute(CISales.ProductAbstract.TaxCategory);
                 print.execute();
                 this.taxCatId = print.<Long>getAttribute(CISales.ProductAbstract.TaxCategory);
-                if (_config != null && _config.isIncludeMinRetail(_parameter)) {
+                if (_config != null && isIncludeMinRetail(_parameter)) {
                     this.minProductPrice = new PriceUtil().getPrice(_parameter, this.oid, getMinPriceListUUID());
                 }
             } else {
@@ -374,7 +403,7 @@ public abstract class Calculator_Base
         }
         setDiscount(_discount);
 
-        if (_config != null && _config.isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
+        if (_config != null && isIncludeMinRetail(_parameter) && getMinProductPrice() != null) {
             final BigDecimal discountPrice = getProductPrice().getBasePrice().subtract(getProductPrice().getBasePrice()
                             .divide(new BigDecimal(100)).multiply(getDiscount()));
             if (discountPrice.compareTo(getMinProductPrice().getBasePrice()) < 0) {
@@ -383,6 +412,81 @@ public abstract class Calculator_Base
         }
         setQuantity(_quantity);
         this.perceptionProduct = new Perception().productIsPerception(_parameter, Instance.get(this.oid));
+    }
+
+    /**
+     * Eval price from db.
+     *
+     * @param _parameter the _parameter
+     * @return the product price
+     * @throws EFapsException on error
+     */
+    protected ProductPrice evalPriceFromDB(final Parameter _parameter)
+        throws EFapsException
+    {
+        ProductPrice ret;
+        final String config = getConfig(getDocKey(), Keys.PRICEEVALUATION, "PriceList");
+        switch (config) {
+            case "Latest":
+                ret = new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
+                                this.priceIsNet, false);
+                break;
+            case "Latest4Contact":
+                ret = new PriceUtil().getLatestPrice(_parameter, getProductInstance(), getPriceEvalType(),
+                                this.priceIsNet, true);
+                break;
+            case "PriceList":
+            default:
+                ret = new PriceUtil().getPrice(_parameter, getOid(), getPriceListUUID());
+                break;
+        }
+        return ret;
+    }
+
+    /**
+     * Gets the price evaluation type.
+     *
+     * @return the price eval type
+     * @throws EFapsException on error
+     */
+    protected Type getPriceEvalType()
+        throws EFapsException
+    {
+        final String typeStr = getConfig(getDocKey(), Keys.PRICEEVALTYPE,
+                        CISales.DocumentSumAbstract.getType().getUUID().toString());
+        Type ret;
+        if (isUUID(typeStr)) {
+            ret = Type.get(UUID.fromString(typeStr));
+        } else {
+            ret = Type.get(typeStr);
+        }
+        return ret;
+    }
+
+    /**
+     * Checks if is include min retail.
+     *
+     * @param _parameter the _parameter
+     * @return true, if is include min retail
+     * @throws EFapsException on error
+     */
+    protected boolean isIncludeMinRetail(final Parameter _parameter)
+        throws EFapsException
+    {
+        return "true".equalsIgnoreCase(getConfig(getDocKey(), Keys.INCLUDEMINPRICE, "false"));
+    }
+
+    /**
+     * Checks if is include min retail.
+     *
+     * @param _parameter the _parameter
+     * @return true, if is include min retail
+     * @throws EFapsException on error
+     */
+    protected boolean priceIsNet(final Parameter _parameter)
+        throws EFapsException
+    {
+        return "true".equalsIgnoreCase(getConfig(getDocKey(), Keys.PRICEISNET, "true"));
     }
 
     /**
@@ -1560,6 +1664,36 @@ public abstract class Calculator_Base
     public void setEmpty(final boolean _empty)
     {
         this.empty = _empty;
+    }
+
+    /**
+     * Price is net.
+     *
+     * @param _parameter the _parameter
+     * @param _config the _config
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    protected static boolean priceIsNet(final Parameter _parameter,
+                                        final ICalculatorConfig _config)
+        throws EFapsException
+    {
+        return  new Calculator(_parameter,_config).priceIsNet(_parameter);
+    }
+
+    /**
+     * Price is net.
+     *
+     * @param _parameter the _parameter
+     * @param _config the _config
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    protected static boolean isIncludeMinRetail(final Parameter _parameter,
+                                                final ICalculatorConfig _config)
+        throws EFapsException
+    {
+        return  new Calculator(_parameter,_config).isIncludeMinRetail(_parameter);
     }
 
     /**
