@@ -203,9 +203,10 @@ public abstract class IncomingInvoice_Base
     public Return edit(final Parameter _parameter)
         throws EFapsException
     {
-        final EditedDoc editDoc = editDoc(_parameter);
-        updatePositions(_parameter, editDoc);
-        createUpdateTaxDoc(_parameter, editDoc, true);
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updatePositions(_parameter, editedDoc);
+        updateConnection2Object(_parameter, editedDoc);
+        createUpdateTaxDoc(_parameter, editedDoc, true);
         return new Return();
     }
 
@@ -468,7 +469,8 @@ public abstract class IncomingInvoice_Base
     {
         boolean ret = super.docIsSelected4JS4Doc4Contact(_parameter, _docInst);
         // not marked selected already but it is an order Outbound or a recieving ticket makr related
-        if (!ret && Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get() && Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()
+        if (!ret && !getInstances4Derived(_parameter).isEmpty()
+                    && Sales.INCOMINGINVOICEFROMRECIEVINGTICKET.get() && Sales.INCOMINGINVOICEFROMORDEROUTBOUND.get()
                         && (_docInst.getType().isCIType(CISales.OrderOutbound)
                         ||  _docInst.getType().isCIType(CISales.RecievingTicket))) {
             final boolean isOrder = _docInst.getType().isCIType(CISales.OrderOutbound);

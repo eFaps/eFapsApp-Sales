@@ -117,6 +117,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute CHACTIVATESALESCOND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Channel.ActivateSalesCondition")

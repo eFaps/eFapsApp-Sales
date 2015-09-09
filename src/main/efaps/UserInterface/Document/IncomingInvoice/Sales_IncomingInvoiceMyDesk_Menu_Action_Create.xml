@@ -55,6 +55,12 @@
                 <property name="ConnectCurrentLink02">ToLink</property>
                 <property name="ConnectForeignLink02">FromLink</property>
                 <property name="ConnectForeignField02">serviceOrderOutbounds</property>
+
+                <!-- Sales_ChannelPurchaseCondition2IncomingInvoice -->
+                <property name="ConnectType03">61b4d934-1f8f-4d6d-af05-d21d0bc73bcd</property>
+                <property name="ConnectCurrentLink03">ToLink</property>
+                <property name="ConnectForeignLink03">FromLink</property>
+                <property name="ConnectForeignField03">condition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation01">NAME</property>
@@ -117,6 +123,12 @@
                 <property name="ConnectCurrentLink03">ToLink</property>
                 <property name="ConnectForeignLink03">FromLink</property>
                 <property name="ConnectForeignField03">serviceOrderOutbounds</property>
+
+                <!-- Sales_ChannelPurchaseCondition2IncomingInvoice -->
+                <property name="ConnectType04">61b4d934-1f8f-4d6d-af05-d21d0bc73bcd</property>
+                <property name="ConnectCurrentLink04">ToLink</property>
+                <property name="ConnectForeignLink04">FromLink</property>
+                <property name="ConnectForeignField04">condition</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation01">NAME</property>
@@ -185,6 +197,13 @@
                 <property name="ConnectCurrentLink04">ToLink</property>
                 <property name="ConnectForeignLink04">FromLink</property>
                 <property name="ConnectForeignField04">serviceOrderOutbounds</property>
+
+                <!-- Sales_ChannelPurchaseCondition2IncomingInvoice -->
+                <property name="ConnectType05">61b4d934-1f8f-4d6d-af05-d21d0bc73bcd</property>
+                <property name="ConnectCurrentLink05">ToLink</property>
+                <property name="ConnectForeignLink05">FromLink</property>
+                <property name="ConnectForeignField05">condition</property>
+
             </execute>
             <validate program="org.efaps.esjp.sales.document.IncomingInvoice" method="validate">
                 <property name="Validation01">NAME</property>

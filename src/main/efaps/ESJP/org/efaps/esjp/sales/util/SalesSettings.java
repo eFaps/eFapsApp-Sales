@@ -344,9 +344,4 @@ public interface SalesSettings
      */
     String PRODUCTIONREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "ProductionReport.DefaultProductDocumentType";
 
-    /**
-     * String. Name of a JasperReport.
-     */
-    String ORDEROUTBOUNDJASPERREPORT = SalesSettings.BASE + "OrderOutbound.JasperReport";
-
 }

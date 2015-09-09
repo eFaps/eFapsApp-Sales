@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,21 +16,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-command xmlns="http://www.efaps.org/xsd"
-            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-            xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>65c5eda8-8e5e-459c-8868-0f39370cf057</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingInvoiceTree_Menu_Action_Edit</name>
@@ -39,22 +30,22 @@
             <role>Sales_Accounting</role>
             <role>Sales_IncomingDocument</role>
         </access>
-
-        <!-- target definitions -->
         <target>
             <form>Sales_IncomingInvoiceForm</form>
-            <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="edit" >
+            <execute program="org.efaps.esjp.sales.document.IncomingInvoice" method="edit">
                 <property name="PositionType">Sales_IncomingInvoicePosition</property>
-            </execute>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="check4Status"
-                name="Sales_IncomingInvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <property name="Check4CreateStatus">true</property>
-             </trigger>
-        </target>
 
-        <!-- properties -->
+                <!-- Sales_ChannelPurchaseCondition2IncomingInvoice -->
+                <property name="ConnectType01">61b4d934-1f8f-4d6d-af05-d21d0bc73bcd</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
+            </execute>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
+                name="Sales_IncomingInvoiceTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+                <property name="Check4CreateStatus">true</property>
+            </trigger>
+        </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
         <property name="WindowHeight">660</property>
