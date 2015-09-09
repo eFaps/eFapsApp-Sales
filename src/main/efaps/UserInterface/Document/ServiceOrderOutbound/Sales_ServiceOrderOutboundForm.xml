@@ -387,5 +387,17 @@
             <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound" method="getJavaScriptUIValue"
                 name="Sales_ServiceOrderOutboundForm.javaScript.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
         </field>
+        <field name="executeCalculator" character="Command">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="CmdRenderButton">false</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.ServiceOrderOutbound"
+                method="executeCalculatorOnScript"
+                name="Sales_ServiceOrderOutboundForm.executeCalculator.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
     </definition>
 </ui-form>
