@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d91f3874-5b70-4732-937a-159288f208af</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PositionSumAbstract</name>
@@ -36,8 +30,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>NETUNITPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">unit</property>
             </trigger>
         </attribute>
@@ -46,8 +42,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>GROSSUNITPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">unit</property>
             </trigger>
         </attribute>
@@ -56,8 +54,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>DISCOUNT</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">discount</property>
             </trigger>
         </attribute>
@@ -66,8 +66,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>DISCOUNTPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">unit</property>
             </trigger>
         </attribute>
@@ -76,8 +78,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>NETPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">total</property>
             </trigger>
         </attribute>
@@ -86,8 +90,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>GROSSPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">total</property>
             </trigger>
         </attribute>
@@ -104,7 +110,8 @@
             <typelink>ERP_Currency</typelink>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>CURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Sales_PositionSumAbstract.CurrencyId.RANGE_VALUE"
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_PositionSumAbstract.CurrencyId.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
@@ -116,7 +123,8 @@
             <typelink>ERP_Currency</typelink>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RATECURRENCYID</sqlcolumn>
-            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue" name="Sales_PositionSumAbstract.CurrencyId.RANGE_VALUE"
+            <trigger program="org.efaps.esjp.admin.datamodel.RangesValue"
+                name="Sales_PositionSumAbstract.CurrencyId.RANGE_VALUE"
                 event="RANGE_VALUE">
                 <property name="Value">Name</property>
                 <property name="Type">ERP_Currency</property>
@@ -127,8 +135,10 @@
             <type>Rate</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RATE,RATEDENOM</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.Currency" method="getRateValue"
-                name="Sales_PositionSumAbstract.Rate.RATE_VALUE" event="RATE_VALUE" />
+            <trigger program="org.efaps.esjp.erp.Currency"
+                method="getRateValue"
+                name="Sales_PositionSumAbstract.Rate.RATE_VALUE"
+                event="RATE_VALUE" />
             <property name="CurrencyAttribute4Rate">RateCurrencyId</property>
             <property name="TargetCurrencyAttribute4Rate">CurrencyId</property>
         </attribute>
@@ -137,8 +147,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RNETUNITPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">unit</property>
             </trigger>
         </attribute>
@@ -147,8 +159,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RGROSSUNITPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">unit</property>
             </trigger>
         </attribute>
@@ -157,8 +171,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RDISCOUNTPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">unit</property>
             </trigger>
         </attribute>
@@ -167,8 +183,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RNETPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">total</property>
             </trigger>
         </attribute>
@@ -177,8 +195,10 @@
             <type>Decimal</type>
             <sqltable>Sales_PositionSumAbstractSQLTable</sqltable>
             <sqlcolumn>RGROSSPRICE</sqlcolumn>
-            <trigger program="org.efaps.esjp.erp.CommonDocument" method="setScale4ReadValue"
-                name="Sales_PositionSumAbstract.Quantity" event="READ_VALUE">
+            <trigger program="org.efaps.esjp.erp.CommonDocument"
+                method="setScale4ReadValue"
+                name="Sales_PositionSumAbstract.Quantity"
+                event="READ_VALUE">
                 <property name="Formatter">total</property>
             </trigger>
         </attribute>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,16 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<datamodel-sqltable xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a1c97a33-09d3-4a2e-90bf-e0ebabeb5e19</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PositionSumAbstractSQLTable</name>
@@ -31,23 +26,22 @@
         <database>
             <table-name>T_SALESPOSSUM</table-name>
             <parent-table>T_SALESPOS</parent-table>
-            <!-- columns -->
-            <column name="GROSSUNITPRICE"  type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="NETUNITPRICE"    type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="GROSSPRICE"      type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="NETPRICE"        type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="DISCOUNTPRICE"   type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="GROSSUNITPRICE"  type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="NETUNITPRICE"    type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="GROSSPRICE"      type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="NETPRICE"        type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="DISCOUNTPRICE"   type="DECIMAL"         not-null="true" length="14" scale="6"/>
             <column name="TAXID"           type="INTEGER"         not-null="true" />
             <column name="DISCOUNT"        type="DECIMAL"         not-null="true" length="5" scale="2" />
             <column name="CURRENCYID"      type="INTEGER"         not-null="true"/>
             <column name="RATECURRENCYID"  type="INTEGER"         not-null="true"/>
             <column name="RATE"            type="DECIMAL"         not-null="true" length="14" scale="6"/>
             <column name="RATEDENOM"       type="DECIMAL"                         length="14" scale="6" />
-            <column name="RGROSSUNITPRICE" type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="RNETUNITPRICE"   type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="RGROSSPRICE"     type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="RNETPRICE"       type="DECIMAL"         not-null="true" length="14" scale="4"/>
-            <column name="RDISCOUNTPRICE"  type="DECIMAL"         not-null="true" length="14" scale="4"/>
+            <column name="RGROSSUNITPRICE" type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="RNETUNITPRICE"   type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="RGROSSPRICE"     type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="RNETPRICE"       type="DECIMAL"         not-null="true" length="14" scale="6"/>
+            <column name="RDISCOUNTPRICE"  type="DECIMAL"         not-null="true" length="14" scale="6"/>
             <foreign name="T_SALESPOSSUM_CURRENCYID"          key="CURRENCYID"      reference="T_ERPCUR(ID)"/>
             <foreign name="T_SALESPOSSUM_RATECURRENCYID"      key="RATECURRENCYID"  reference="T_ERPCUR(ID)"/>
         </database>
