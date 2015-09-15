@@ -586,6 +586,15 @@ public abstract class Costing_Base
         return ret;
     }
 
+    /**
+     * Gets the costing4 currency.
+     *
+     * @param _parameter the _parameter
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costing4 currency
+     * @throws EFapsException on error
+     */
     protected static CostingInfo getCosting4Currency(final Parameter _parameter,
                                                      final Instance _currencyInstance,
                                                      final Instance _transactionInstances)
@@ -594,6 +603,15 @@ public abstract class Costing_Base
         return Costing_Base.getCosting4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
     }
 
+    /**
+     * Gets the costings4 currency.
+     *
+     * @param _parameter the _parameter
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException on error
+     */
     protected static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
                                                                      final Instance _currencyInstance,
                                                                      final Instance... _transactionInstances)
@@ -602,17 +620,36 @@ public abstract class Costing_Base
         return Costing_Base.getCostings4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
     }
 
+    /**
+     * Gets the costing4 currency.
+     *
+     * @param _parameter the _parameter
+     * @param _date the _date
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costing4 currency
+     * @throws EFapsException on error
+     */
     protected static CostingInfo getCosting4Currency(final Parameter _parameter,
                                                      final DateTime _date,
                                                      final Instance _currencyInstance,
                                                      final Instance _transactionInstances)
         throws EFapsException
     {
-        return Costing_Base.getCostings4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances)
-                        .get(
-                                        _transactionInstances);
+        return Costing_Base.getCostings4Currency(_parameter, _date, _currencyInstance, _transactionInstances)
+                        .get(_transactionInstances);
     }
 
+    /**
+     * Gets the costings4 currency.
+     *
+     * @param _parameter the _parameter
+     * @param _date the _date
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException on error
+     */
     protected static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
                                                                      final DateTime _date,
                                                                      final Instance _currencyInstance,
@@ -639,7 +676,7 @@ public abstract class Costing_Base
                 final CostingInfo info = new CostingInfo().setQuantity(quantity).setCost(cost).setResult(result);
                 ret.put(transactionInst, info);
             } else {
-                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, (String) null,
+                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date,
                                 Currency.getBaseCurrency(), _currencyInstance);
                 final RateInfo rateInfo = rateInfos[2];
                 final CostingInfo info = new CostingInfo().setQuantity(quantity)
