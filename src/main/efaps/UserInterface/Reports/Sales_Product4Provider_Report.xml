@@ -27,7 +27,7 @@
         </access>
         <target>
             <form>Sales_Product4Provider_ReportForm</form>
-            <execute method="exportReport" program="org.efaps.esjp.sales.SalesProduct4ProviderReport">
+            <execute method="exportReport" program="org.efaps.esjp.sales.report.SalesProduct4ProviderReport">
                 <property name="Types">Sales_OrderOutbound</property>
                 <!-- <property name="Template">Sales_Products4ProviderReportTemplate</property>-->
                 <property name="ShowDetails">false</property>

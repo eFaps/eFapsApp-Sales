@@ -266,30 +266,30 @@ public abstract class SalesProduct4ProviderReport_Base
             final CurrencyInst curInst = new CurrencyInst(baseInst);
             final boolean showDetails = Boolean.parseBoolean((String) props.get("ShowDetails"));
             final TextColumnBuilder<String> contactColumn  = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.Contact"), "contact",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.Contact"), "contact",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> productColumn  = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.ProductName"), "productName",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.ProductName"), "productName",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> productDescColumn  = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.ProductDesc"), "productDesc",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.ProductDesc"), "productDesc",
                             DynamicReports.type.stringType());
             final TextColumnBuilder<String> productNameDescColumn  = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.ProductNameDesc"), "productNameDesc",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.ProductNameDesc"), "productNameDesc",
                             DynamicReports.type.stringType());
             DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.Date"), "date",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.Date"), "date",
                             DynamicReports.type.dateType());
 
             final TextColumnBuilder<BigDecimal> netPriceColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.NetPrice")
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.NetPrice")
                                         + " (" + curInst.getSymbol() + ")", "netPrice",
                             DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<BigDecimal> quantityColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.Quantity"), "quantity",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.Quantity"), "quantity",
                             DynamicReports.type.bigDecimalType());
             final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(DBProperties
-                            .getProperty("org.efaps.esjp.sales.SalesProduct4ProviderReport.Currency"), "currency",
+                            .getProperty("org.efaps.esjp.sales.report.SalesProduct4ProviderReport.Currency"), "currency",
                             DynamicReports.type.stringType());
 
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
