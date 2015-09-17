@@ -151,11 +151,18 @@
                 <property name="Type">Sales_Receipt</property>
             </trigger>
         </field>
+        <field name="name4edit">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+        </field>
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="Required">true</property>
-            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
         </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
@@ -507,6 +514,13 @@
                 event="UI_FIELD_UPDATE">
                 <property name="Type">Sales_Receipt</property>
             </trigger>
+        </field>
+        <field name="name4edit">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
         </field>
         <field name="name">
             <property name="Attribute">Name</property>
