@@ -12,14 +12,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ *
  */
-
-
 package org.efaps.esjp.sales.dashboard;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -30,8 +28,8 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  */
 @EFapsUUID("8e4aae87-ac9e-441c-9995-9698ddc4c2f2")
 @EFapsApplication("eFapsApp-Sales")
-public class SalesPanel
-    extends SalesPanel_Base
+public class Sales4ContactPanel
+    extends Sales4ContactPanel_Base
 {
     /**
      *
