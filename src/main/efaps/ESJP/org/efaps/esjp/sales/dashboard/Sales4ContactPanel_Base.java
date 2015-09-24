@@ -34,7 +34,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.AbstractCommon;
+import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.ui.html.dojo.charting.BarsChart;
 import org.efaps.esjp.ui.html.dojo.charting.Data;
 import org.efaps.esjp.ui.html.dojo.charting.Orientation;
@@ -50,14 +50,21 @@ import org.joda.time.DateTime;
 @EFapsUUID("8e4aae87-ac9e-441c-9995-9698ddc4c2f2")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class Sales4ContactPanel_Base
-    extends AbstractCommon
+    extends AbstractDashboardPanel
     implements IEsjpSnipplet
 {
+    /**
+    *
+    */
+   private static final long serialVersionUID = 1L;
 
     /**
-     *
+     * @param _config
      */
-    private static final long serialVersionUID = 1L;
+    public Sales4ContactPanel_Base(final String _config)
+    {
+        super(_config);
+    }
 
     @Override
     public CharSequence getHtmlSnipplet()
@@ -120,9 +127,9 @@ public abstract class Sales4ContactPanel_Base
                                 "}");
                 _plot.addConfig("labels", true);
             };
-        }.setWidth(650).setHeight(400).setGap(2);
+        }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
 
-        chart.setTitle(getDBProperty("Title"));
+        chart.setTitle(getTitle());
         chart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
 
         final Serie<Data> serie = new Serie<Data>();

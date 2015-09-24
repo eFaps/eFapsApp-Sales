@@ -31,8 +31,16 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class Sales4ContactPanel
     extends Sales4ContactPanel_Base
 {
+
     /**
      *
      */
     private static final long serialVersionUID = 1L;
+    /**
+     * @param _config
+     */
+    public Sales4ContactPanel(final String _config)
+    {
+        super(_config);
+    }
 }
