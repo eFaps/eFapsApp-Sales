@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IEsjpSnipplet;
@@ -35,6 +36,8 @@ import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
+import org.efaps.esjp.erp.Currency;
+import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.ui.html.dojo.charting.BarsChart;
 import org.efaps.esjp.ui.html.dojo.charting.Data;
 import org.efaps.esjp.ui.html.dojo.charting.Orientation;
@@ -66,36 +69,81 @@ public abstract class Sales4ContactPanel_Base
         super(_config);
     }
 
+    /**
+     * Gets the height.
+     *
+     * @return the height
+     */
+    protected Integer getMonth()
+    {
+        return Integer.valueOf(getConfig().getProperty("Month", "6"));
+    }
+
+    /**
+     * Gets the currency inst.
+     *
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    protected Instance getCurrencyInst()
+        throws EFapsException
+    {
+        return Instance.get(getConfig().getProperty("CurrencyOID", Currency.getBaseCurrency().getOid()));
+    }
+
+    /**
+     * Gets the currency inst.
+     *
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    protected String getTotal()
+        throws EFapsException
+    {
+        return getConfig().getProperty("Total", "NET");
+    }
+
     @Override
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-
-        final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(6);
+        final Parameter parameter = new Parameter();
+        final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(getMonth());
         final DateTime end = new DateTime().withTimeAtStartOfDay().plusDays(1);
 
         final Map<Instance, BigDecimal> values = new HashMap<>();
         final Map<Instance, String> contacts = new HashMap<>();
-        final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice);
-        queryBldr.addWhereAttrGreaterValue(CISales.Invoice.Date, start);
-        queryBldr.addWhereAttrLessValue(CISales.Invoice.Date, end);
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(parameter, getConfig());
+        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
+        queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.Invoice.Contact).instance();
-        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.Invoice.Contact)
+        final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact).instance();
+        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
                         .attribute(CIContacts.Contact.Name);
         multi.addSelect(selContactInst, selContactName);
-        multi.addAttribute(CISales.Invoice.NetTotal);
+        multi.addAttribute(CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal,
+                        CISales.DocumentSumAbstract.Date);
         multi.execute();
         while (multi.next()) {
+            final DateTime date = multi.getAttribute(CISales.DocumentSumAbstract.Date);
             final Instance contactInst = multi.getSelect(selContactInst);
+
+            final RateInfo rateInfo = new Currency().evaluateRateInfo(parameter, date, getCurrencyInst());
+
+            BigDecimal currentValue = multi.<BigDecimal>getAttribute(getTotal().equals("NET")
+                            ? CISales.DocumentSumAbstract.NetTotal
+                                            :  CISales.DocumentSumAbstract.CrossTotal);
+
+            currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
+
             BigDecimal val;
             if (values.containsKey(contactInst)) {
                 val = values.get(contactInst);
             } else {
                 val = BigDecimal.ZERO;
             }
-            values.put(contactInst, val.add(multi.<BigDecimal>getAttribute(CISales.Invoice.NetTotal)));
+            values.put(contactInst, val.add(currentValue));
             if (!contacts.containsKey(contactInst)) {
                 contacts.put(contactInst,  multi.<String>getSelect(selContactName));
             }
@@ -130,11 +178,10 @@ public abstract class Sales4ContactPanel_Base
         }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
 
         chart.setTitle(getTitle());
-        chart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
+        chart.setOrientation(Orientation.CHART_ONLY);
 
         final Serie<Data> serie = new Serie<Data>();
         chart.addSerie(serie);
-        serie.setName("Venta");
         for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
             final Data dataTmp = new Data().setSimple(false);
             serie.addData(dataTmp);

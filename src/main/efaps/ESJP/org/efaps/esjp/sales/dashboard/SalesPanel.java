@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-
 package org.efaps.esjp.sales.dashboard;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -33,8 +31,17 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class SalesPanel
     extends SalesPanel_Base
 {
+
     /**
      *
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * @param _config
+     */
+    public SalesPanel(final String _config)
+    {
+        super(_config);
+    }
 }

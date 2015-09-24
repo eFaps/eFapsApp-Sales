@@ -36,6 +36,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IEsjpSnipplet;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate;
@@ -59,6 +60,7 @@ import org.joda.time.DateTime;
 @EFapsUUID("c4c43876-30f1-431d-9ba4-38758a9f80d5")
 @EFapsApplication("eFapsApp-Sales")
 public abstract class SalesPanel_Base
+    extends AbstractDashboardPanel
     implements IEsjpSnipplet
 {
 
@@ -66,6 +68,14 @@ public abstract class SalesPanel_Base
      *
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * @param _config
+     */
+    public SalesPanel_Base(final String _config)
+    {
+        super(_config);
+    }
 
     @Override
     public CharSequence getHtmlSnipplet()
@@ -115,8 +125,8 @@ public abstract class SalesPanel_Base
             } else {
                 series = new HashMap<>();
                 columsChart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
-                                .setGap(5).setWidth(650).setHeight(400);
-                columsChart.setTitle((String) map.get("type"));
+                                .setGap(5).setWidth(getWidth()).setHeight(getHeight());
+                columsChart.setTitle(getTitle());
                 columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
                 final CurrencyInst selected = CurrencyInst.get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126"));
 
