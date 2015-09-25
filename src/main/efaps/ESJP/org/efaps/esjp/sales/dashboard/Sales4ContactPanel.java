@@ -36,6 +36,15 @@ public class Sales4ContactPanel
      *
      */
     private static final long serialVersionUID = 1L;
+
+    /**
+     * Instantiates a new sales4 contact panel.
+     */
+    public Sales4ContactPanel()
+    {
+        super();
+    }
+
     /**
      * @param _config
      */

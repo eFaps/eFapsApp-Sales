@@ -70,6 +70,14 @@ public abstract class SalesPanel_Base
     private static final long serialVersionUID = 1L;
 
     /**
+     * Instantiates a new sales panel_ base.
+     */
+    public SalesPanel_Base()
+    {
+        super();
+    }
+
+    /**
      * @param _config
      */
     public SalesPanel_Base(final String _config)

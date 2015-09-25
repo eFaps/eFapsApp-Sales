@@ -35,6 +35,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
@@ -60,6 +61,14 @@ public abstract class Sales4ContactPanel_Base
     *
     */
    private static final long serialVersionUID = 1L;
+
+   /**
+    * Instantiates a new sales4 contact panel.
+    */
+   public Sales4ContactPanel_Base()
+   {
+       super();
+   }
 
     /**
      * @param _config
@@ -114,7 +123,9 @@ public abstract class Sales4ContactPanel_Base
 
         final Map<Instance, BigDecimal> values = new HashMap<>();
         final Map<Instance, String> contacts = new HashMap<>();
-        final QueryBuilder queryBldr = getQueryBldrFromProperties(parameter, getConfig());
+
+        final QueryBuilder queryBldr = AbstractCommon.getQueryBldrFromProperties(getConfig());
+
         queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
         final MultiPrintQuery multi = queryBldr.getPrint();
