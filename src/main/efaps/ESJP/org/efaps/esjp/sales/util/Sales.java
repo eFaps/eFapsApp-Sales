@@ -294,6 +294,13 @@ public final class Sales
                     .key(BASE + "report.SalesProductReport.ActivateContactAssigned2Employee")
                     .description("Properties 4 Products in Invoice");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocSituationReport")
+                    .description("Properties 4 DocSituationReport");
+
     /**
      * Singelton.
      */

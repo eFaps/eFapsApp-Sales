@@ -303,11 +303,6 @@ public interface SalesSettings
     String DOCPOSREPORTBOM = SalesSettings.BASE + "DocPositionReportBOM";
 
     /**
-     * Properties. Can be concatenated.
-     */
-    String DOCSITUATIONREPORT = SalesSettings.BASE + "DocSituationReport";
-
-    /**
      * Boolean.
      */
     String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";
