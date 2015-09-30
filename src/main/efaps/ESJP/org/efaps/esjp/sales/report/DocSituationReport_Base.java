@@ -63,6 +63,8 @@ import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
 import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
@@ -271,24 +273,36 @@ public abstract class DocSituationReport_Base
             this.sumReport = _sumReport;
         }
 
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         @Override
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final ValueList values = getSumReport().getData(_parameter);
-            final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
-            chain.addComparator(new Comparator<Map<String, Object>>()
-            {
-
-                @Override
-                public int compare(final Map<String, Object> _o1,
-                                   final Map<String, Object> _o2)
-                {
-                    return 0;
+            JRRewindableDataSource ret;
+            if (getFilteredReport().isCached(_parameter)) {
+                ret = getFilteredReport().getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    throw new EFapsException("JRException", e);
                 }
-            });
-            Collections.sort(values, chain);
-            return new JRMapCollectionDataSource((Collection) values);
+            } else {
+                final ValueList values = getFilteredReport().getData(_parameter);
+                final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
+                chain.addComparator(new Comparator<Map<String, Object>>()
+                {
+                    @Override
+                    public int compare(final Map<String, Object> _o1,
+                                       final Map<String, Object> _o2)
+                    {
+                        return 0;
+                    }
+                });
+                Collections.sort(values, chain);
+                ret = new JRMapCollectionDataSource((Collection) values);
+                getFilteredReport().cache(_parameter, ret);
+            }
+            return ret;
         }
 
         @Override
@@ -298,7 +312,7 @@ public abstract class DocSituationReport_Base
         {
             final CrosstabBuilder crosstab = DynamicReports.ctab.crosstab();
 
-            final Map<String, Object> filterMap = getSumReport().getFilterMap(_parameter);
+            final Map<String, Object> filterMap = getFilteredReport().getFilterMap(_parameter);
 
             for (final IOnDocumentSumReport listener : Listener.get().<IOnDocumentSumReport>invoke(
                             IOnDocumentSumReport.class)) {
@@ -358,7 +372,7 @@ public abstract class DocSituationReport_Base
          *
          * @return value of instance variable {@link #sumReport}
          */
-        public DocSituationReport_Base getSumReport()
+        public DocSituationReport_Base getFilteredReport()
         {
             return this.sumReport;
         }
