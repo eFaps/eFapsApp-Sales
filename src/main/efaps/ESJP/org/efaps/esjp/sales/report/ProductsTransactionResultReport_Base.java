@@ -19,12 +19,6 @@ package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -38,6 +32,12 @@ import org.efaps.esjp.sales.Costing;
 import org.efaps.esjp.sales.Costing_Base.CostingInfo;
 import org.efaps.util.EFapsException;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+
 /**
  * TODO comment!
  *
@@ -49,9 +49,19 @@ public abstract class ProductsTransactionResultReport_Base
     extends TransactionResultReport
 {
 
+    /**
+     * The Enum Valuation.
+     */
     public enum Valuation
     {
-        COST, COSTING, NONE;
+        /** The cost. */
+        COST,
+
+        /** The costing. */
+        COSTING,
+
+        /** The none. */
+        NONE;
     }
 
     /**
@@ -66,22 +76,23 @@ public abstract class ProductsTransactionResultReport_Base
         return new DynProductsTransactionResultReport(this);
     }
 
+    /**
+     * The Class DynProductsTransactionResultReport.
+     */
     public static class DynProductsTransactionResultReport
         extends DynTransactionResultReport
     {
 
         /**
-         * @param _filteredReport
+         * Instantiates a new dyn products transaction result report.
+         *
+         * @param _filteredReport the _filtered report
          */
         public DynProductsTransactionResultReport(final TransactionResultReport_Base _filteredReport)
         {
             super(_filteredReport);
         }
 
-        /**
-         * @param _parameter
-         * @param _bean
-         */
         @Override
         protected void add2Bean(final Parameter _parameter,
                                 final DataBean _bean)
@@ -121,7 +132,13 @@ public abstract class ProductsTransactionResultReport_Base
             throws EFapsException
         {
             super.addColumnDefintion(_parameter, _builder);
+
             if (!Valuation.NONE.equals(getValuation(_parameter))) {
+                final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
+                                .getDBProperty("Column.Currency"),
+                                "currency", DynamicReports.type.stringType()).setWidth(15);
+                _builder.getReport().getColumns().add(4, currencyColumn.build());
+
                 final TextColumnBuilder<BigDecimal> costColumn = DynamicReports.col.column(getFilteredReport()
                                 .getDBProperty("Column.Cost"),
                                 "cost", DynamicReports.type.bigDecimalType());
@@ -133,7 +150,9 @@ public abstract class ProductsTransactionResultReport_Base
                                 totalCostColumn,
                                 Calculation.NOTHING);
 
-                _builder.addColumn(costColumn, totalCostColumn).addSubtotalAtSummary(totalCostSum);
+                _builder.getReport().getColumns().add(4, totalCostColumn.build());
+                _builder.getReport().getColumns().add(4, costColumn.build());
+                _builder.addSubtotalAtSummary(totalCostSum);
 
                 if (getStorageGroup() != null) {
                     final AggregationSubtotalBuilder<Object> totalCostSum4Grp = DynamicReports.sbt.aggregate(
@@ -152,7 +171,11 @@ public abstract class ProductsTransactionResultReport_Base
                     final AggregationSubtotalBuilder<BigDecimal> averageTotalSum = DynamicReports.sbt.aggregate(
                                     averageTotalColumn,
                                     Calculation.NOTHING);
-                    _builder.addColumn(averageColumn, averageTotalColumn).addSubtotalAtSummary(averageTotalSum);
+
+                    _builder.getReport().getColumns().add(6, averageTotalColumn.build());
+                    _builder.getReport().getColumns().add(6, averageColumn.build());
+
+                    _builder.addSubtotalAtSummary(averageTotalSum);
 
                     if (getStorageGroup() != null) {
                         final AggregationSubtotalBuilder<Object> averageTotalSum4Grp = DynamicReports.sbt.aggregate(
@@ -160,13 +183,16 @@ public abstract class ProductsTransactionResultReport_Base
                         _builder.subtotalsAtGroupFooter(getStorageGroup(), averageTotalSum4Grp);
                     }
                 }
-                final TextColumnBuilder<String> currencyColumn = DynamicReports.col.column(getFilteredReport()
-                                .getDBProperty("Column.Currency"),
-                                "currency", DynamicReports.type.stringType()).setWidth(15);
-                _builder.addColumn(currencyColumn);
             }
         }
 
+        /**
+         * Gets the valuation.
+         *
+         * @param _parameter the _parameter
+         * @return the valuation
+         * @throws EFapsException on error
+         */
         protected Valuation getValuation(final Parameter _parameter)
             throws EFapsException
         {
@@ -182,11 +208,20 @@ public abstract class ProductsTransactionResultReport_Base
         }
     }
 
+    /**
+     * The Class CostDataBean.
+     */
     public static class CostDataBean
         extends DataBean
     {
+
+        /** The cost. */
         private BigDecimal cost;
+
+        /** The average. */
         private BigDecimal average;
+
+        /** The currency. */
         private String currency;
 
         /**
@@ -203,6 +238,7 @@ public abstract class ProductsTransactionResultReport_Base
          * Setter method for instance variable {@link #cost}.
          *
          * @param _cost value for instance variable {@link #cost}
+         * @return the cost data bean
          */
         public CostDataBean setCost(final BigDecimal _cost)
         {
@@ -255,7 +291,8 @@ public abstract class ProductsTransactionResultReport_Base
         /**
          * Setter method for instance variable {@link #currency}.
          *
-         * @param _curreny value for instance variable {@link #currency}
+         * @param _currency the _currency
+         * @return the cost data bean
          */
         public CostDataBean setCurrency(final String _currency)
         {
@@ -277,6 +314,7 @@ public abstract class ProductsTransactionResultReport_Base
          * Setter method for instance variable {@link #average}.
          *
          * @param _average value for instance variable {@link #average}
+         * @return the cost data bean
          */
         public CostDataBean setAverage(final BigDecimal _average)
         {

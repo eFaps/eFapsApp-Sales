@@ -14,8 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
@@ -34,6 +32,7 @@
                 <property name="PageType">A4</property>
                 <property name="PageOrientation">LANDSCAPE</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.ProductsTransactionResultReport.FilterKey</property>
+                <property name="CachedReportAddInstanceCriteria">true</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
