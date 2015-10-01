@@ -66,9 +66,11 @@ import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
 import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
 import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.constant.HorizontalTextAlignment;
 import net.sf.dynamicreports.report.definition.ReportParameters;
 import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
 /**
@@ -184,6 +186,19 @@ public abstract class SalesReport4Account_Base
         this.reportKey = _reportKey;
     }
 
+    @Override
+    protected String getCacheKey(final Parameter _parameter)
+        throws EFapsException
+    {
+        final ReportKey key;
+        if (containsProperty(_parameter, "ReportKey")) {
+            key = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
+        } else {
+            key = getReportKey();
+        }
+        return super.getCacheKey(_parameter) + "." + key;
+    }
+
     /**
      * Report class.
      */
@@ -214,87 +229,95 @@ public abstract class SalesReport4Account_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            final List<DataBean> dataSource = new ArrayList<>();
-
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
-
-            boolean offset = false;
-            if (filter.containsKey("switch")) {
-                offset = (boolean) filter.get("switch");
-            }
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
-            add2QueryBuilder(_parameter, queryBldr);
-
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            multi.addAttribute(CISales.DocumentSumAbstract.Created,
-                            CISales.DocumentSumAbstract.Date,
-                            CISales.DocumentSumAbstract.Name,
-                            CISales.DocumentSumAbstract.DueDate,
-                            CISales.DocumentSumAbstract.Rate,
-                            CISales.DocumentSumAbstract.CrossTotal,
-                            CISales.DocumentSumAbstract.CurrencyId,
-                            CISales.DocumentSumAbstract.RateCurrencyId,
-                            CISales.DocumentSumAbstract.RateCrossTotal,
-                            CISales.DocumentSumAbstract.Revision);
-
-            final SelectBuilder selContactInst = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).instance();
-            final SelectBuilder selStatus = new SelectBuilder().status().label();
-            final SelectBuilder selContactName = new SelectBuilder()
-                            .linkto(CISales.DocumentSumAbstract.Contact).attribute(CIContacts.Contact.Name);
-
-            multi.addSelect(selContactInst, selContactName, selStatus);
-            multi.execute();
-            while (multi.next()) {
-                final DataBean dataBean = new DataBean()
-                        .setDocInst(multi.getCurrentInstance())
-                        .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
-                        .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                        .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
-                        .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                        .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                        .setDocStatus(multi.<String>getSelect(selStatus))
-                        .setRate(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate))
-                        .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId),
-                                    multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal))
-                        .addCross(multi.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId),
-                                    multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
-                dataSource.add(dataBean);
-            }
-
-            final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
-            chain.addComparator(new Comparator<DataBean>()
-            {
-
-                @Override
-                public int compare(final DataBean _o1,
-                                   final DataBean _o2)
-                {
-                    return Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)
-                                    ? _o1.getDocCreated().compareTo(_o2.getDocCreated())
-                                    : _o1.getDocDate().compareTo(_o2.getDocDate());
+            JRRewindableDataSource ret;
+            if (getFilteredReport().isCached(_parameter)) {
+                ret = getFilteredReport().getDataSourceFromCache(_parameter);
+                try {
+                    ret.moveFirst();
+                } catch (final JRException e) {
+                    throw new EFapsException("JRException", e);
                 }
-            }
-                            );
-            chain.addComparator(new Comparator<DataBean>()
-            {
+            } else {
+                final List<DataBean> dataSource = new ArrayList<>();
 
-                @Override
-                public int compare(final DataBean _o1,
-                                   final DataBean _o2)
-                {
-                    return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+
+                boolean offset = false;
+                if (filter.containsKey("switch")) {
+                    offset = (boolean) filter.get("switch");
                 }
-            }
-                            );
-            Collections.sort(dataSource, chain);
-            final Collection<Map<String, ?>> col = new ArrayList<>();
-            for (final DataBean bean : dataSource) {
-                col.add(bean.getMap());
-            }
+                final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
+                add2QueryBuilder(_parameter, queryBldr);
 
-            return new JRMapCollectionDataSource(col);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
+                                CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
+                                CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
+                                CISales.DocumentSumAbstract.CurrencyId, CISales.DocumentSumAbstract.RateCurrencyId,
+                                CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Revision);
 
+                final SelectBuilder selContactInst = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
+                                .instance();
+                final SelectBuilder selStatus = new SelectBuilder().status().label();
+                final SelectBuilder selContactName = new SelectBuilder().linkto(CISales.DocumentSumAbstract.Contact)
+                                .attribute(CIContacts.Contact.Name);
+
+                multi.addSelect(selContactInst, selContactName, selStatus);
+                multi.execute();
+                while (multi.next()) {
+                    final DataBean dataBean = new DataBean().setDocInst(multi.getCurrentInstance()).setDocCreated(multi
+                                    .<DateTime>getAttribute(CISales.DocumentSumAbstract.Created)).setDocDate(multi
+                                                    .<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                    .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
+                                    .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                    .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
+                                    .setDocStatus(multi.<String>getSelect(selStatus));
+
+                    if (isCurrencyBase(_parameter)) {
+                        dataBean.setCurrencyBase(true).addCross(multi.<Long>getAttribute(
+                                        CISales.DocumentSumAbstract.CurrencyId), multi.<BigDecimal>getAttribute(
+                                                        CISales.DocumentSumAbstract.CrossTotal));
+                    } else {
+                        dataBean.setRate(multi.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate)).addCross(multi
+                                        .<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId), multi
+                                                        .<BigDecimal>getAttribute(
+                                                                        CISales.DocumentSumAbstract.RateCrossTotal));
+                    }
+                    dataSource.add(dataBean);
+                }
+
+                final ComparatorChain<DataBean> chain = new ComparatorChain<DataBean>();
+                chain.addComparator(new Comparator<DataBean>()
+                {
+
+                    @Override
+                    public int compare(final DataBean _o1,
+                                       final DataBean _o2)
+                    {
+                        return Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT) ? _o1
+                                        .getDocCreated().compareTo(_o2.getDocCreated())
+                                        : _o1.getDocDate().compareTo(_o2.getDocDate());
+                    }
+                });
+                chain.addComparator(new Comparator<DataBean>()
+                {
+
+                    @Override
+                    public int compare(final DataBean _o1,
+                                       final DataBean _o2)
+                    {
+                        return _o1.getDocContactName().compareTo(_o2.getDocContactName());
+                    }
+                });
+                Collections.sort(dataSource, chain);
+                final Collection<Map<String, ?>> col = new ArrayList<>();
+                for (final DataBean bean : dataSource) {
+                    col.add(bean.getMap());
+                }
+                ret = new JRMapCollectionDataSource(col);
+                getFilteredReport().cache(_parameter, ret);
+            }
+            return ret;
         }
 
         /**
@@ -442,7 +465,7 @@ public abstract class SalesReport4Account_Base
                                 crossColumn, payColumn, result);
                 gridList.add(titelGroup);
                 _builder.addColumn(crossColumn, payColumn, result);
-                if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
+                if (!currency.getInstance().equals(Currency.getBaseCurrency()) && !isCurrencyBase(_parameter)) {
                     final TextColumnBuilder<BigDecimal> rateColumn = DynamicReports.col.column(
                                     this.filteredReport.getLabel(_parameter, "rate"),
                                     "rate_" + currency.getISOCode(), DynamicReports.type.bigDecimalType());
@@ -469,7 +492,7 @@ public abstract class SalesReport4Account_Base
             _builder.addColumn(typeColumn.setFixedWidth(120),
                             createdColumn,
                             dateColumn,
-                            nameColumn.setHorizontalAlignment(HorizontalAlignment.CENTER).setFixedWidth(140),
+                            nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(140),
                             revisionColumn,
                             contactNameColumn.setFixedWidth(200),
                             dueDateColumn,
@@ -481,7 +504,11 @@ public abstract class SalesReport4Account_Base
         }
 
         /**
-         * @return
+         * Gets the currency instances for the report.
+         *
+         * @param _parameter the _parameter
+         * @return the currency inst4 report
+         * @throws EFapsException on error
          */
         public Set<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
             throws EFapsException
@@ -490,7 +517,22 @@ public abstract class SalesReport4Account_Base
             final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
             if (filter.containsKey("currency")) {
                 final Instance currency = ((CurrencyFilterValue) filter.get("currency")).getObject();
-                if (currency.isValid()) {
+                if ("BASE".equals(currency.getKey())) {
+                    ret.add(new CurrencyInst(currency) {
+                        @Override
+                        public String getName()
+                            throws EFapsException
+                        {
+                            return DBProperties.getProperty(FilteredReport.class.getName() + ".BaseCurrency");
+                        }
+                        @Override
+                        public String getISOCode()
+                            throws EFapsException
+                        {
+                            return "BASE";
+                        }
+                    });
+                } else if (currency.isValid()) {
                     ret.add(new CurrencyInst(currency));
                 } else {
                     ret = CurrencyInst.getAvailable();
@@ -499,6 +541,20 @@ public abstract class SalesReport4Account_Base
                 ret = CurrencyInst.getAvailable();
             }
             return ret;
+        }
+
+        /**
+         * Checks if is currency base.
+         *
+         * @param _parameter the _parameter
+         * @return true, if is currency base
+         * @throws EFapsException on error
+         */
+        public boolean isCurrencyBase(final Parameter _parameter)
+            throws EFapsException
+        {
+            final Set<CurrencyInst> currencies = getCurrencyInst4Report(_parameter);
+            return currencies.size() == 1 && "BASE".equals(currencies.iterator().next().getInstance().getKey());
         }
     }
 
@@ -556,6 +612,30 @@ public abstract class SalesReport4Account_Base
 
         private Object[] rate;
 
+        private boolean currencyBase;
+
+        /**
+         * Checks if is currency base.
+         *
+         * @return true, if is currency base
+         */
+        public boolean isCurrencyBase()
+        {
+            return this.currencyBase;
+        }
+
+        /**
+         * Sets the currency base.
+         *
+         * @param _currencyBase the _currency base
+         * @return the data bean
+         */
+        public DataBean setCurrencyBase(final boolean _currencyBase)
+        {
+            this.currencyBase = _currencyBase;
+            return this;
+        }
+
         /**
          * @return
          */
@@ -576,12 +656,17 @@ public abstract class SalesReport4Account_Base
             ret.put("docContactName", getDocContactName());
             ret.put("docDueDate", getDocDueDate());
 
-            for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
-                if (this.cross.containsKey(currency.getInstance().getId())) {
-                    ret.put("crossTotal_" + currency.getISOCode(), this.cross.get(currency.getInstance().getId()));
-                    ret.put("payed_" + currency.getISOCode(), this.payments.get(currency.getInstance().getId()));
-                    if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
-                        ret.put("rate_" + currency.getISOCode(), currency.isInvert() ? getRate()[1] : getRate()[0]);
+            if (isCurrencyBase()) {
+                ret.put("crossTotal_BASE", this.cross.get(Currency.getBaseCurrency().getId()));
+                ret.put("payed_BASE", this.payments.get(Currency.getBaseCurrency().getId()));
+            } else {
+                for (final CurrencyInst currency : CurrencyInst.getAvailable()) {
+                    if (this.cross.containsKey(currency.getInstance().getId())) {
+                        ret.put("crossTotal_" + currency.getISOCode(), this.cross.get(currency.getInstance().getId()));
+                        ret.put("payed_" + currency.getISOCode(), this.payments.get(currency.getInstance().getId()));
+                        if (!currency.getInstance().equals(Currency.getBaseCurrency())) {
+                            ret.put("rate_" + currency.getISOCode(), currency.isInvert() ? getRate()[1] : getRate()[0]);
+                        }
                     }
                 }
             }

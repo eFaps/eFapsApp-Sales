@@ -22,16 +22,6 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentOut_Report4AccountForm</name>
-        <field name="description">
-            <property name="HideLabel">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="getDBPropertiesFieldValue"
-                name="Sales_PaymentDocumentOut_Report4AccountForm.description.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE">
-                <property name="DBProperty">org.efaps.esjp.sales.report.SalesReport4Account.Title</property>
-            </trigger>
-        </field>
         <field name="filter">
             <property name="HideLabel">true</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -70,6 +60,7 @@
                 event="UI_FIELD_VALUE"
                 index="2">
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
+                <property name="ReportKey">OUT</property>
                 <property name="Field01">dateFrom</property>
                 <property name="Field02">dateTo</property>
                 <property name="Field03">type</property>

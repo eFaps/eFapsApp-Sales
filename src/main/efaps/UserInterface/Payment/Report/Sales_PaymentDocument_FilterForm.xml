@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2014 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>09dc4d86-edc1-4dd8-bbee-183da0ba5546</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocument_FilterForm</name>
@@ -43,6 +37,19 @@
             <trigger event="UI_FIELD_VALUE" method="getDateToFieldValue"
                 name="Sales_PaymentDocument_FilterForm.dateTo.UI_FIELD_VALUE"
                 program="org.efaps.esjp.erp.FilteredReport" />
+        </field>
+        <field name="type">
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Label">ERP_ReportFilterForm4DateFromToType.type.Label</property>
+            <trigger event="UI_FIELD_VALUE" method="getTypeFieldValue"
+                name="Sales_PaymentDocument_FilterForm.type.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.report.SalesReport4Account">
+                <property name="ListType">CHECKBOX</property>
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesReport4Account.IN</property>
+            </trigger>
         </field>
         <field name="contact">
             <property name="ModeEdit">EDITABLE</property>
@@ -67,15 +74,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_PaymentDocument_FilterForm.currency.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="getOptionListFieldValue"
-                name="Sales_PaymentDocument_FilterForm.currency.UI_FIELD_VALUE"
+            <trigger program="org.efaps.esjp.sales.report.SalesReport4Account"
+                method="getCurrencyFieldValue"
+                name="Sales_PaymentDocumentOut_FilterForm.currency.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="Type">ERP_Currency</property>
-                <property name="ValueSelect">oid</property>
-                <property name="Select">attribute[Name]</property>
-                <property name="OrderSelect">attribute[Name]</property>
-                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="ShowBaseCurrency">true</property>
             </trigger>
         </field>
     </definition>

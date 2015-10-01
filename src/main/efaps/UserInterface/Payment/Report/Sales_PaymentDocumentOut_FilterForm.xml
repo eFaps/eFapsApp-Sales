@@ -74,15 +74,11 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="UIType">DROPDOWN</property>
             <property name="Label">Sales_PaymentDocumentOut_FilterForm.currency.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field"
-                method="getOptionListFieldValue"
+            <trigger program="org.efaps.esjp.sales.report.SalesReport4Account"
+                method="getCurrencyFieldValue"
                 name="Sales_PaymentDocumentOut_FilterForm.currency.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE">
-                <property name="Type">ERP_Currency</property>
-                <property name="ValueSelect">oid</property>
-                <property name="Select">attribute[Name]</property>
-                <property name="OrderSelect">attribute[Name]</property>
-                <property name="EmptyValue">org.efaps.esjp.common.uiform.Field.EmptyValue</property>
+                <property name="ShowBaseCurrency">true</property>
             </trigger>
         </field>
     </definition>

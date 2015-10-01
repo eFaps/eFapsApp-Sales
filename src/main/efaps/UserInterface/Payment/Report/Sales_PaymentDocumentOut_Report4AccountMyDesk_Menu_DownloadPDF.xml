@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>eda0953c-4b70-42c4-9ad2-0be5ffeecb95</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentOut_Report4AccountMyDesk_Menu_DownloadPDF</name>
@@ -32,7 +26,6 @@
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <execute method="exportReport" program="org.efaps.esjp.sales.report.SalesReport4Account">
                 <property name="Mime">pdf</property>
@@ -42,46 +35,9 @@
                 <property name="ReportKey">OUT</property>
                 <property name="DateFilter">month</property>
                 <property name="FilterKey">org.efaps.esjp.sales.report.SalesReport4Account.OUT.FilterKey</property>
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">!Replaced</property>
-                <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
-                <property name="Status01">!Replaced</property>
-                <property name="Type02">Sales_IncomingReceipt</property>
-                <property name="StatusGroup02">Sales_IncomingReceiptStatus</property>
-                <property name="Status02">!Replaced</property>
-                <property name="Type03">Sales_PaymentOrder</property>
-                <property name="StatusGroup03">Sales_PaymentOrderStatus</property>
-                <property name="Status03">!Canceled</property>
-                <property name="Type04">Sales_Exchange</property>
-                <property name="StatusGroup04">Sales_ExchangeStatus</property>
-                <property name="Status04">!Canceled</property>
-                <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
-                <property name="Status05">!Canceled</property>
-                <property name="Type100">Sales_IncomingInvoice</property>
-                <property name="Type101">Accounting_ExternalVoucher</property>
-                <property name="Type102">Sales_IncomingReceipt</property>
-                <property name="Type103">Sales_PaymentOrder</property>
-                <property name="Type104">Sales_Exchange</property>
-                <property name="Type105">Sales_IncomingCredit</property>
-                <property name="StatusGroup100">Sales_IncomingInvoiceStatus</property>
-                <property name="Status100">!Replaced</property>
-                <property name="StatusGroup101">Sales_IncomingInvoiceStatus</property>
-                <property name="Status101">!Paid</property>
-                <property name="StatusGroup102">Accounting_ExternalVoucherStatus</property>
-                <property name="Status102">!Replaced</property>
-                <property name="StatusGroup103">Sales_IncomingReceiptStatus</property>
-                <property name="Status103">!Replaced</property>
-                <property name="StatusGroup104">Sales_IncomingReceiptStatus</property>
-                <property name="Status104">!Paid</property>
-                <property name="StatusGroup105">Sales_PaymentOrderStatus</property>
-                <property name="Status105">!Canceled</property>
-                <property name="StatusGroup106">Sales_ExchangeStatus</property>
-                <property name="Status106">!Canceled</property>
-                <property name="StatusGroup107">Sales_IncomingCreditStatus</property>
-                <property name="Status107">!Canceled</property>
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.report.SalesReport4Account.OUT</property>
             </execute>
         </target>
         <property name="Target">hidden</property>
