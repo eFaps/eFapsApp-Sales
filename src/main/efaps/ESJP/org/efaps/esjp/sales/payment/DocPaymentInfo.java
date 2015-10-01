@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
@@ -32,10 +29,9 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("e59d7d3e-21ed-45f3-addc-02672734ad80")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class DocPaymentInfo
     extends DocPaymentInfo_Base
 {
@@ -76,14 +72,14 @@ public class DocPaymentInfo
         DocPaymentInfo_Base.initDetraction(_parameter, _infos);
     }
 
-    protected static void initRetention(final Parameter _parameter,
+    public static void initRetention(final Parameter _parameter,
                                         final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
         DocPaymentInfo_Base.initRetention(_parameter, _infos);
     }
 
-    protected static void initSwap(final Parameter _parameter,
+    public static void initSwap(final Parameter _parameter,
                                    final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {

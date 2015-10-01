@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -49,6 +49,7 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.sales.document.AbstractDocumentTax;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -56,11 +57,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DocWithPayment_Base.java 8972 2013-02-25 18:33:09Z
- *          jan@moxter.net $
  */
 @EFapsUUID("1f2a247a-717a-4285-a43a-d41e47200b0c")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DocPaymentInfo_Base
 {
 
@@ -321,7 +320,16 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         initialize();
-        return this.crossTotal.subtract(getPaid()).compareTo(BigDecimal.ZERO) == 0;
+        final Properties props = Sales.PAYMENTTHRESHOLD4PAID.get();
+        BigDecimal threshold = BigDecimal.ZERO;
+        try {
+            final DecimalFormat format =  (DecimalFormat) NumberFormat.getInstance();
+            format.setParseBigDecimal(true);
+            threshold = (BigDecimal) format.parse(props.getProperty(this.instance.getType().getName(), "0"));
+        } catch (final ParseException e) {
+            throw new EFapsException("catched ParseException", e);
+        }
+        return this.crossTotal.subtract(getPaid()).abs().compareTo(threshold) <= 0;
     }
 
     /**
@@ -654,7 +662,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
-    
+
         final MultiPrintQuery multi = new MultiPrintQuery(new ArrayList<Instance>(instance2info.keySet()));
         final SelectBuilder selContactName = new SelectBuilder()
                         .linkto(CISales.DocumentAbstract.Contact).attribute(CIContacts.Contact.Name);
@@ -667,7 +675,7 @@ public abstract class DocPaymentInfo_Base
                         CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.Rate,
                         CISales.DocumentSumAbstract.CrossTotal);
         multi.executeWithoutAccessCheck();
-    
+
         while (multi.next()) {
             final DocPaymentInfo_Base info = instance2info.get(multi.getCurrentInstance());
             info.setCrossTotal(multi.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.CrossTotal));
@@ -692,7 +700,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
-    
+
         // check normal payments
         final QueryBuilder queryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
         queryBldr.addWhereAttrEqValue(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
@@ -726,12 +734,12 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
-    
+
         // check related taxdocs for detraction, for detraction the payment for detraction will be included
         final QueryBuilder attrTaxQueryBldr = new QueryBuilder(CISales.IncomingDetraction2IncomingInvoice);
         attrTaxQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction2IncomingInvoice.ToAbstractLink,
                         instance2info.keySet().toArray());
-    
+
         final QueryBuilder taxQueryBldr = new QueryBuilder(CIERP.Document2PaymentDocumentAbstract);
         taxQueryBldr.addWhereAttrInQuery(CIERP.Document2PaymentDocumentAbstract.FromAbstractLink,
                         attrTaxQueryBldr.getAttributeQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink));
@@ -766,21 +774,21 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
-    
+
         // check related taxdocs for retention. For retention the emission
         // of a certificate counts as payment
         final QueryBuilder attrTaxQueryBldr2 = new QueryBuilder(CISales.IncomingRetention2IncomingInvoice);
         attrTaxQueryBldr2.addWhereAttrEqValue(CISales.IncomingRetention2IncomingInvoice.ToAbstractLink,
                         instance2info.keySet().toArray());
-    
+
         final QueryBuilder certQueryBldr = new QueryBuilder(CISales.RetentionCertificate);
         certQueryBldr.addWhereAttrEqValue(CISales.RetentionCertificate.Status,
                         Status.find(CISales.RetentionCertificateStatus.Closed));
-    
+
         final QueryBuilder certQueryBldr2 = new QueryBuilder(CISales.RetentionCertificate2IncomingRetention);
         certQueryBldr2.addWhereAttrInQuery(CISales.RetentionCertificate2IncomingRetention.FromLink,
                         certQueryBldr.getAttributeQuery(CISales.RetentionCertificate.ID));
-    
+
         final QueryBuilder retQueryBldr = new QueryBuilder(CISales.IncomingRetention);
         retQueryBldr.addWhereAttrInQuery(CISales.IncomingRetention.ID,
                         certQueryBldr2.getAttributeQuery(CISales.RetentionCertificate2IncomingRetention.ToLink));
@@ -814,7 +822,7 @@ public abstract class DocPaymentInfo_Base
         throws EFapsException
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
-    
+
         // check related taxdocs for retention. For retention the emission
         // of a certificate counts as payment
         // check swap
@@ -838,17 +846,17 @@ public abstract class DocPaymentInfo_Base
         while (swapMulti.next()) {
             if (!verifySet.contains(swapMulti.getCurrentInstance())) {
                 verifySet.add(swapMulti.getCurrentInstance());
-    
+
                 final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
                 final Instance docToInst = swapMulti.getSelect(selDocToInst);
-    
+
                 if (instance2info.containsKey(docFromInst)) {
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
                     final Instance curInst = swapMulti.getSelect(selCur3);
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
                     info.payPos.add(new PayPos(info.date, amount, curInst));
                 }
-    
+
                 if (instance2info.containsKey(docToInst)) {
                     final DocPaymentInfo_Base info = instance2info.get(docToInst);
                     final Instance curInst = swapMulti.getSelect(selCur3);

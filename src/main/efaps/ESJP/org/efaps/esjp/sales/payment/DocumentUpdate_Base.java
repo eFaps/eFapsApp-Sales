@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -37,7 +34,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.Command;
 import org.efaps.db.AttributeQuery;
@@ -60,11 +57,9 @@ import org.efaps.util.EFapsException;
  * to it. e.g change the Status when a invoice was payed completely.
  *
  * @author The eFaps Team
- * @version $Id: DocumentUpdate_Base.java 14061 2014-09-17 23:29:50Z
- *          jan@moxter.net $
  */
 @EFapsUUID("46709cec-7b85-4630-9e2c-517db66ce2d0")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DocumentUpdate_Base
 {
 
@@ -214,6 +209,13 @@ public abstract class DocumentUpdate_Base
         return false;
     }
 
+    /**
+     * Renew.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return renew(final Parameter _parameter)
         throws EFapsException
     {
@@ -263,6 +265,14 @@ public abstract class DocumentUpdate_Base
         return ret;
     }
 
+    /**
+     * Creates the file.
+     *
+     * @param _parameter the _parameter
+     * @param _instance the _instance
+     * @param _cmd the _cmd
+     * @throws EFapsException on error
+     */
     @SuppressWarnings("unchecked")
     protected void createFile(final Parameter _parameter,
                               final Instance _instance,
@@ -355,12 +365,16 @@ public abstract class DocumentUpdate_Base
         checkin.execute(name + "." + mime, input, ((Long) file.length()).intValue());
     }
 
+    /**
+     * Adds the parameter report4 renew.
+     *
+     * @param _instance the _instance
+     * @param _report the _report
+     * @throws EFapsException on error
+     */
     protected void addParameterReport4Renew(final Instance _instance,
                                             final StandartReport _report)
         throws EFapsException
     {
-        // TODO Auto-generated method stub
-
     }
-
 }

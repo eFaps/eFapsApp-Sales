@@ -85,14 +85,16 @@ public final class Sales
     public static final BooleanSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutbound")
-                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and Order Outbound.");
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and "
+                                    + "Order Outbound.");
 
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
-                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create Incoming Invoice from.");
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
+                                    + "Incoming Invoice from.");
 
 
     /** See description. */
@@ -100,28 +102,34 @@ public final class Sales
     public static final BooleanSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromServiceOrderOutbound")
-                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and Order Outbound.");
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and "
+                                    + "Order Outbound.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMSERVORDEROUTBOUNDAC
+        = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromServiceOrderOutboundAutoComplete")
-                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create Incoming Invoice from.");
+                    .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound "
+                                    + "to create Incoming Invoice from.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKET= new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKET = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromRecievingTicket")
-                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice and Recieving Ticket.");
+                    .description("Allows to activate/deactivate the mechanisms to relate Incoming Invoice "
+                                    + "and Recieving Ticket.");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKETAC = new PropertiesSysConfAttribute()
+    public static final PropertiesSysConfAttribute INCOMINGINVOICEFROMRECIEVINGTICKETAC
+        = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromRecievingTicketAutoComplete")
-                    .description("Config for a QueryBuilder for Autocomplete and Query of RecievingTicket to create Incoming Invoice from.");
+                    .description("Config for a QueryBuilder for Autocomplete and Query of RecievingTicket to create "
+                                    + "Incoming Invoice from.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -210,7 +218,7 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute INVOICEFROMDELIVERYNOTE= new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute INVOICEFROMDELIVERYNOTE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.CreateFromDeliveryNote")
                     .description("Allows to activate/deactivate the mechanisms to relate Invoice and Delivery Note.");
@@ -315,6 +323,12 @@ public final class Sales
                     .key(BASE + "report.SalesReport4Account.OUT")
                     .description("Properties 4 SalesReport4Account OUT.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTTHRESHOLD4PAID = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.Threshold4Paid")
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
     /**
      * Singelton.
      */
