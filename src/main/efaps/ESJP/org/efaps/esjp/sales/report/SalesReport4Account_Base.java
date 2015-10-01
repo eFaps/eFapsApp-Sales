@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -32,27 +29,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
-import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
-import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
-import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
-import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.constant.HorizontalAlignment;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
@@ -74,15 +56,28 @@ import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
+import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.grid.ColumnGridComponentBuilder;
+import net.sf.dynamicreports.report.builder.grid.ColumnTitleGroupBuilder;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.constant.HorizontalAlignment;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: SalesReport4Account_Base.java 14090 2014-09-23 19:51:05Z
- *          jan@moxter.net $
  */
 @EFapsUUID("d095f1fb-9286-4f93-a030-715873826dca")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class SalesReport4Account_Base
     extends FilteredReport
 {
@@ -201,6 +196,12 @@ public abstract class SalesReport4Account_Base
          */
         private final SalesReport4Account_Base filteredReport;
 
+
+        public SalesReport4Account_Base getFilteredReport()
+        {
+            return this.filteredReport;
+        }
+
         /**
          * @param _report4Account class used
          */
@@ -221,7 +222,7 @@ public abstract class SalesReport4Account_Base
             if (filter.containsKey("switch")) {
                 offset = (boolean) filter.get("switch");
             }
-            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 100 : 0);
+            final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
             add2QueryBuilder(_parameter, queryBldr);
 
             final MultiPrintQuery multi = queryBldr.getPrint();
@@ -330,6 +331,15 @@ public abstract class SalesReport4Account_Base
                     _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.RateCurrencyId, currency);
                 }
             }
+
+            if (filter.containsKey("type")) {
+                final TypeFilterValue filters = (TypeFilterValue) filter.get("type");
+                final Set<Long> typeids = filters.getObject();
+                if (!typeids.isEmpty()) {
+                    _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type, typeids.toArray());
+                }
+            }
+
             _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());

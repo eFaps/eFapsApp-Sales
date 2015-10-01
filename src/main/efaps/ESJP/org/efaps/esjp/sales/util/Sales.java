@@ -301,6 +301,20 @@ public final class Sales
                     .key(BASE + "report.DocSituationReport")
                     .description("Properties 4 DocSituationReport");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesReport4Account.IN")
+                    .description("Properties 4 SalesReport4Account IN.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTOUT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesReport4Account.OUT")
+                    .description("Properties 4 SalesReport4Account OUT.");
+
     /**
      * Singelton.
      */
