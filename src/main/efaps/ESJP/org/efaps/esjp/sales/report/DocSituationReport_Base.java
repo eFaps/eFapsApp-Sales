@@ -191,7 +191,10 @@ public abstract class DocSituationReport_Base
                     final Instance docInstance = (Instance) map.get("docInstance");
                     if (docInstance != null && docInstance.isValid()) {
                         final DocPaymentInfo info = infos.get(docInstance);
-                        final BigDecimal paid = info.getPaid();
+                        BigDecimal paid = info.getPaid();
+                        if ("true".equals(props.getProperty(docInstance.getType().getName() + ".Negate"))) {
+                            paid = paid.negate();
+                        }
                         map.put("BASEPaid", paid);
                         map.put("BASEDifference", ((BigDecimal) map.get("BASE")).subtract(paid));
                     }

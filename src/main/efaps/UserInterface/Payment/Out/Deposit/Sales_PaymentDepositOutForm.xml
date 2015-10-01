@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 20135 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,34 +14,31 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2c255daa-2bf7-4856-ba13-fbf3d2f873ea</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDepositOutForm</name>
-        <!-- fields -->
         <field name="deactivateFiltered4Invoice">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="deactivateFiltered4Invoice" name="Sales_PaymentDepositOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger event="UI_FIELD_VALUE" method="deactivateFiltered4Invoice"
+                name="Sales_PaymentDepositOutForm.deactivateFiltered4Invoice.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
         </field>
         <field name="code">
             <property name="ModeCreate">NONE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">READONLY</property>
             <property name="Attribute">Code</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_PaymentDepositOutForm.code.UI_ACCESSCHECK" program="org.efaps.esjp.admin.access.AccessOnField">
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PaymentDepositOutForm.code.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessOnField">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocumentOut</property>
             </trigger>
@@ -62,8 +59,10 @@
             <property name="Required">true</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4RateCurrency"
-                name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4RateCurrency"
+                name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="date4read">
             <property name="Columns">12</property>
@@ -87,8 +86,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Columns">50</property>
-            <trigger event="UI_FIELD_AUTOCOMPLETE" method="autoComplete4Contact" name="Sales_PaymentDepositOutForm.UI_FIELD_AUTOCOMPLETE" program="org.efaps.esjp.contacts.Contacts"/>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4Contact" name="Sales_PaymentDepositOutForm.contact.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger event="UI_FIELD_AUTOCOMPLETE"
+                method="autoComplete4Contact"
+                name="Sales_PaymentDepositOutForm.UI_FIELD_AUTOCOMPLETE"
+                program="org.efaps.esjp.contacts.Contacts"/>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Contact"
+                name="Sales_PaymentDepositOutForm.contact.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
         </field>
         <field name="checkbox4Invoice">
             <property name="ModeCreate">READONLY</property>
@@ -96,10 +101,16 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="checkboxFieldValue" name="Sales_PaymentDepositOutForm.checkbox4Invoice.UI_FIELD_VALUE" program="org.efaps.esjp.common.uiform.Field">
+            <trigger event="UI_FIELD_VALUE"
+                method="checkboxFieldValue"
+                name="Sales_PaymentDepositOutForm.checkbox4Invoice.UI_FIELD_VALUE"
+                program="org.efaps.esjp.common.uiform.Field">
                 <property name="checked">false</property>
             </trigger>
-            <trigger event="UI_FIELD_UPDATE" method="update4checkbox4Invoive" name="Sales_PaymentDepositOutForm.checkbox4Invoice.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger event="UI_FIELD_UPDATE"
+                method="update4checkbox4Invoive"
+                name="Sales_PaymentDepositOutForm.checkbox4Invoice.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
         </field>
         <field character="Group" name="rateGroup">
             <property name="GroupCount">2</property>
@@ -116,17 +127,26 @@
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_FIELD_VALUE" method="dropDown4AccountFieldValue" name="Sales_PaymentDepositOutForm.account.UI_FIELD_VALUE" program="org.efaps.esjp.sales.payment.PaymentDepositOut">
+            <trigger event="UI_FIELD_VALUE"
+                method="dropDown4AccountFieldValue"
+                name="Sales_PaymentDepositOutForm.account.UI_FIELD_VALUE"
+                program="org.efaps.esjp.sales.payment.PaymentDepositOut">
                 <property name="Type">Sales_AccountCashDesk</property>
                 <property name="StatusGroup">Sales_AccountCashDeskStatus</property>
                 <property name="Status">Active</property>
                 <property name="MsgPhrase">Sales_AccountMsgPhrase4Payment</property>
                 <property name="Activation">DEPOSIT</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4RateCurrency"
-                name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE.1" event="UI_FIELD_UPDATE" index="1"/>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4Position"
-                name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE.2" event="UI_FIELD_UPDATE" index="2"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4RateCurrency"
+                name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE.1"
+                event="UI_FIELD_UPDATE"
+                index="1"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4Position"
+                name="Sales_PaymentDepositOutForm.account.UI_FIELD_UPDATE.2"
+                event="UI_FIELD_UPDATE"
+                index="2"/>
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>
@@ -139,7 +159,10 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">READONLY</property>
             <property name="Required">true</property>
-            <trigger event="UI_FIELD_UPDATE" method="updateFields4AbsoluteAmount" name="Sales_PaymentDepositOutForm.UI_FIELD_UPDATE" program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4AbsoluteAmount"
+                name="Sales_PaymentDepositOutForm.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.payment.PaymentDepositOut"/>
         </field>
         <field name="status">
             <property name="ModeCreate">NONE</property>
@@ -184,6 +207,8 @@
         <field name="docPicker" character="Picker">
             <property name="HideLabel">true</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_PaymentDepositOutForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
