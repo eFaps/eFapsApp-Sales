@@ -69,7 +69,7 @@
         </field>
         <field name="currency">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="Label">org.efaps.esjp.sales.report.DocumentSumReport.currency</property>
             <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"
@@ -172,7 +172,7 @@
         </field>
         <field name="currency">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="Label">org.efaps.esjp.sales.report.DocumentSumReport.currency</property>
             <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
                 name="ERP_ReportFilterForm4DateFromToType.dateTo.UI_FIELD_VALUE"

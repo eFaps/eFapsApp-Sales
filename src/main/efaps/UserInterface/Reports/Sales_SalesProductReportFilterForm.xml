@@ -92,7 +92,7 @@
         </field>
         <field name="currency">
             <property name="ModeEdit">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIType">DROPDOWN</property>
             <property name="Label">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
             <trigger event="UI_FIELD_VALUE" method="getCurrencyFieldValue"
                 name="Sales_SalesProductReportFilterForm.currency.UI_FIELD_VALUE"
