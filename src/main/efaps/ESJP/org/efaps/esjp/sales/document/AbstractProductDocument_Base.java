@@ -965,7 +965,8 @@ public abstract class AbstractProductDocument_Base
                             CIProducts.TransactionAbstract.Description,
                             CIProducts.TransactionAbstract.Date,
                             CIProducts.TransactionAbstract.UoM);
-            multi.execute();
+            // ensure that all transaction are evaluated
+            multi.executeWithoutAccessCheck();
             while (multi.next()) {
                 Insert insert;
                 if (CIProducts.TransactionInbound.getType().equals(multi.getCurrentInstance().getType())) {
