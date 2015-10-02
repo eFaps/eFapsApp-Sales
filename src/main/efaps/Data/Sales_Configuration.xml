@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,19 +16,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
-<common-systemconfiguration xmlns="http://www.efaps.org/xsd"
-                            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<common-systemconfiguration xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                             xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>c9a1cbc3-fd35-4463-80d2-412422a3802f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales-Configuration</name>
@@ -271,6 +263,44 @@ StatusGroup02=Sales_OrderOutboundStatus
 Status02=Invoiced
             ]]></value>
             <description></description>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.report.SalesReport4Account.IN</key>
+            <value><![CDATA[Type01=Sales_Invoice
+Type02=Sales_Receipt
+StatusGroup01=Sales_InvoiceStatus
+Status01=!Replaced
+StatusGroup02=Sales_InvoiceStatus
+Status02=!Paid
+StatusGroup03=Sales_ReceiptStatus
+Status03=!Replaced
+StatusGroup04=Sales_ReceiptStatus
+Status04=!Paid
+Type100=Sales_Invoice
+Type101=Sales_Receipt
+StatusGroup100=Sales_InvoiceStatus
+Status100=!Replaced
+StatusGroup101=Sales_ReceiptStatus
+Status101=!Replaced]]></value>
+        </attribute>
+        <attribute>
+            <key>org.efaps.sales.report.SalesReport4Account.OUT</key>
+            <value><![CDATA[Type01=Sales_IncomingInvoice
+Type02=Sales_IncomingReceipt
+StatusGroup01=Sales_IncomingInvoiceStatus
+Status01=!Replaced
+StatusGroup02=Sales_IncomingInvoiceStatus
+Status02=!Paid
+StatusGroup03=Sales_IncomingReceiptStatus
+Status03=!Replaced
+StatusGroup04=Sales_IncomingReceiptStatus
+Status04=!Paid
+Type100=Sales_IncomingInvoice
+Type102=Sales_IncomingReceipt
+StatusGroup100=Sales_IncomingInvoiceStatus
+Status100=!Replaced
+StatusGroup101=Sales_IncomingReceiptStatus
+Status101=!Replaced]]></value>
         </attribute>
     </definition>
 </common-systemconfiguration>
