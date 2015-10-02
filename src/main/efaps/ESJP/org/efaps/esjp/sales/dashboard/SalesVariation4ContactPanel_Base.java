@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.event.Parameter;
@@ -51,32 +52,30 @@ import org.joda.time.DateTime;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("8e4aae87-ac9e-441c-9995-9698ddc4c2f2")
+@EFapsUUID("13531752-6454-48b1-a88c-a34d01da90cc")
 @EFapsApplication("eFapsApp-Sales")
-public abstract class Sales4ContactPanel_Base
+public abstract class SalesVariation4ContactPanel_Base
     extends AbstractDashboardPanel
     implements IEsjpSnipplet
 {
 
-    /**
-    *
-    */
+    /** */
     private static final long serialVersionUID = 1L;
 
     /**
      * Instantiates a new sales4 contact panel.
      */
-    public Sales4ContactPanel_Base()
+    public SalesVariation4ContactPanel_Base()
     {
         super();
     }
 
     /**
-     * Instantiates a new sales4 contact panel_ base.
+     * Instantiates a new sales variation4 contact panel_ base.
      *
      * @param _config the _config
      */
-    public Sales4ContactPanel_Base(final String _config)
+    public SalesVariation4ContactPanel_Base(final String _config)
     {
         super(_config);
     }
@@ -86,9 +85,9 @@ public abstract class Sales4ContactPanel_Base
      *
      * @return the height
      */
-    protected Integer getMonth()
+    protected Integer getDays()
     {
-        return Integer.valueOf(getConfig().getProperty("Month", "6"));
+        return Integer.valueOf(getConfig().getProperty("Days", "60"));
     }
 
     /**
@@ -115,26 +114,66 @@ public abstract class Sales4ContactPanel_Base
         return getConfig().getProperty("Total", "NET");
     }
 
+    /**
+     * Gets the sort.
+     *
+     * DEGREASE/INGREASE
+     *
+     * @return the sort
+     * @throws EFapsException on error
+     */
+    protected String getSort()
+        throws EFapsException
+    {
+        return getConfig().getProperty("Sort", "DEGREASE");
+    }
+
+    /**
+     * Gets the value.
+     * TOTAL/PERCENT
+     * @return the value
+     * @throws EFapsException on error
+     */
+    protected String getValue()
+        throws EFapsException
+    {
+        return getConfig().getProperty("Value", "TOTAL");
+    }
+
+    /**
+     * Gets the quantiy.
+     *
+     * @return the quantiy
+     * @throws EFapsException on error
+     */
+    protected Integer getCount()
+        throws EFapsException
+    {
+        return Integer.parseInt(getConfig().getProperty("Count", "10"));
+    }
+
     @Override
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
         final Parameter parameter = new Parameter();
-        final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(getMonth());
+        final DateTime start2 = new DateTime().withTimeAtStartOfDay().minusDays(getDays());
+        final DateTime start1 = start2.withTimeAtStartOfDay().minusDays(getDays());
         final DateTime end = new DateTime().withTimeAtStartOfDay().plusDays(1);
 
-        final Map<Instance, BigDecimal> values = new HashMap<>();
+        final Map<Instance, BigDecimal> values1 = new HashMap<>();
+        final Map<Instance, BigDecimal> values2 = new HashMap<>();
         final Map<Instance, String> contacts = new HashMap<>();
 
         final QueryBuilder queryBldr = AbstractCommon.getQueryBldrFromProperties(getConfig());
 
-        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
+        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start1);
         queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact).instance();
-        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
-                        .attribute(CIContacts.Contact.Name);
+        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact).attribute(
+                        CIContacts.Contact.Name);
         multi.addSelect(selContactInst, selContactName);
         multi.addAttribute(CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal,
                         CISales.DocumentSumAbstract.Date);
@@ -146,32 +185,74 @@ public abstract class Sales4ContactPanel_Base
             final RateInfo rateInfo = new Currency().evaluateRateInfo(parameter, date, getCurrencyInst());
 
             BigDecimal currentValue = multi.<BigDecimal>getAttribute(getTotal().equals("NET")
-                            ? CISales.DocumentSumAbstract.NetTotal
-                                            :  CISales.DocumentSumAbstract.CrossTotal);
+                            ? CISales.DocumentSumAbstract.NetTotal : CISales.DocumentSumAbstract.CrossTotal);
 
             currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-            BigDecimal val;
-            if (values.containsKey(contactInst)) {
-                val = values.get(contactInst);
+            if (date.isAfter(start2)) {
+                BigDecimal val;
+                if (values2.containsKey(contactInst)) {
+                    val = values2.get(contactInst);
+                } else {
+                    val = BigDecimal.ZERO;
+                }
+                values2.put(contactInst, val.add(currentValue));
             } else {
-                val = BigDecimal.ZERO;
+                BigDecimal val;
+                if (values1.containsKey(contactInst)) {
+                    val = values1.get(contactInst);
+                } else {
+                    val = BigDecimal.ZERO;
+                }
+                values1.put(contactInst, val.add(currentValue));
             }
-            values.put(contactInst, val.add(currentValue));
+
             if (!contacts.containsKey(contactInst)) {
-                contacts.put(contactInst,  multi.<String>getSelect(selContactName));
+                contacts.put(contactInst, multi.<String>getSelect(selContactName));
             }
         }
+
+        final Map<Instance, BigDecimal> values = new HashMap<>();
+        for (final Entry<Instance, BigDecimal> entry :  values1.entrySet()) {
+            BigDecimal amount = entry.getValue();
+            if (values2.containsKey(entry.getKey())) {
+                if ("PERCENT".equalsIgnoreCase(getValue())) {
+                    amount = new BigDecimal(100).setScale(8).divide(amount, BigDecimal.ROUND_HALF_UP)
+                        .multiply(values2.get(entry.getKey())).setScale(2, BigDecimal.ROUND_HALF_UP);
+                    if (amount.compareTo(new BigDecimal(100)) > 0) {
+                        amount = amount.subtract(new BigDecimal(100));
+                        amount = amount.negate();
+                    } else {
+                        amount = new BigDecimal(100).subtract(amount);
+                    }
+                } else {
+                    amount = amount.subtract(values2.get(entry.getKey()));
+                }
+            } else if ("PERCENT".equalsIgnoreCase(getValue())) {
+                amount = new BigDecimal(100);
+            }
+            values.put(entry.getKey(), amount);
+        }
+        for (final Entry<Instance, BigDecimal> entry :  values2.entrySet()) {
+            if (!values.containsKey(entry.getKey())) {
+                if ("PERCENT".equalsIgnoreCase(getValue())) {
+                    values.put(entry.getKey(), new BigDecimal(100).negate());
+                } else {
+                    values.put(entry.getKey(), entry.getValue().negate());
+                }
+            }
+        }
+
         final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues
             = new Comparator<Map.Entry<Instance, BigDecimal>>()
-            {
-                @Override
-                public int compare(final Map.Entry<Instance, BigDecimal> _left,
-                                   final Map.Entry<Instance, BigDecimal> _right)
                 {
-                    return _right.getValue().compareTo(_left.getValue());
-                }
-            };
+                    @Override
+                    public int compare(final Map.Entry<Instance, BigDecimal> _left,
+                                       final Map.Entry<Instance, BigDecimal> _right)
+                    {
+                        return _right.getValue().compareTo(_left.getValue());
+                    }
+                };
         // create a list of map entries
         final List<Map.Entry<Instance, BigDecimal>> sorted = new ArrayList<>();
 
@@ -179,7 +260,11 @@ public abstract class Sales4ContactPanel_Base
         sorted.addAll(values.entrySet());
         Collections.sort(sorted, byMapValues);
 
-        int y = 10;
+        if ("INGREASE".equalsIgnoreCase(getSort())) {
+            Collections.reverse(sorted);
+        }
+
+        int y = getCount();
         final BarsChart chart = new BarsChart()
             {
                 @Override
@@ -187,8 +272,7 @@ public abstract class Sales4ContactPanel_Base
                 {
                     super.configurePlot(_plot);
                     _plot.addConfig("labelFunc", "function labelFunc(value, fixed, precision) {\n"
-                                    + "    return value.label;\n"
-                                    + "}");
+                                    + "    return value.label;\n" + "}");
                     _plot.addConfig("labels", true);
                 };
             }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
@@ -202,9 +286,9 @@ public abstract class Sales4ContactPanel_Base
             final Data dataTmp = new Data().setSimple(false);
             serie.addData(dataTmp);
             dataTmp.setXValue(y);
-            dataTmp.setYValue(entry.getValue());
+            dataTmp.setYValue(entry.getValue().abs());
             dataTmp.addConfig("label", "\"" + StringEscapeUtils.escapeEcmaScript(contacts.get(entry.getKey())) + "\"");
-            dataTmp.setTooltip(contacts.get(entry.getKey()) + " - " + entry.getValue());
+            dataTmp.setTooltip(contacts.get(entry.getKey()) + " - " + entry.getValue().abs());
             y--;
             if (y < 1) {
                 final Data dataTmp2 = new Data().setSimple(false);
