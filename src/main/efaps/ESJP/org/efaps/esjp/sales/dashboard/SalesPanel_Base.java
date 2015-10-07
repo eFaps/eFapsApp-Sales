@@ -27,7 +27,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
@@ -35,7 +34,6 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IEsjpSnipplet;
-import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -78,11 +76,24 @@ public abstract class SalesPanel_Base
     }
 
     /**
-     * @param _config
+     * Instantiates a new sales panel_ base.
+     *
+     * @param _config the _config
      */
     public SalesPanel_Base(final String _config)
     {
         super(_config);
+    }
+
+
+    /**
+     * Gets the height.
+     *
+     * @return the height
+     */
+    protected Integer getDays()
+    {
+        return Integer.valueOf(getConfig().getProperty("Days", "14"));
     }
 
     @Override
@@ -93,12 +104,12 @@ public abstract class SalesPanel_Base
 
         final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
         final Parameter parameter = new Parameter();
-        final Properties props = new Properties();
 
-        final DateTime start = new DateTime().minusDays(14);
+        final DateTime start = new DateTime().minusDays(getDays());
         final DateTime end = new DateTime().plusDays(1);
+
         final ValueList values = ds.getValueList(parameter, start, end, DocumentSumGroupedByDate_Base.DateGroup.DAY,
-                        props, CISales.Invoice.getType()).groupBy("partial", "type");
+                        getConfig()).groupBy("partial", "type");
         final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<Map<String, Object>>()
         {
