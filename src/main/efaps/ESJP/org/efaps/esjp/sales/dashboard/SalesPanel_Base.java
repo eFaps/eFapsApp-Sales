@@ -27,14 +27,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IEsjpSnipplet;
+import org.efaps.db.Instance;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate;
@@ -96,6 +97,19 @@ public abstract class SalesPanel_Base
         return Integer.valueOf(getConfig().getProperty("Days", "14"));
     }
 
+    /**
+     * Gets the currency inst.
+     *
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
+    protected Instance getCurrencyInst()
+        throws EFapsException
+    {
+        return Instance.get(getConfig().getProperty("CurrencyOID", Currency.getBaseCurrency().getOid()));
+    }
+
+
     @Override
     public CharSequence getHtmlSnipplet()
         throws EFapsException
@@ -147,7 +161,7 @@ public abstract class SalesPanel_Base
                                 .setGap(5).setWidth(getWidth()).setHeight(getHeight());
                 columsChart.setTitle(getTitle());
                 columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
-                final CurrencyInst selected = CurrencyInst.get(UUID.fromString("691758fc-a060-4bd5-b1fa-b33296638126"));
+                final CurrencyInst selected = CurrencyInst.get(getCurrencyInst());
 
                 final Serie<Data> serie = new Serie<Data>();
                 serie.setName(selected.getName());
