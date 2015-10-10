@@ -42,6 +42,7 @@ import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.ui.html.dojo.charting.BarsChart;
 import org.efaps.esjp.ui.html.dojo.charting.Data;
@@ -180,7 +181,11 @@ public abstract class Employee2DocPanel_Base
             }
             values.put(emplInst, val.add(currentValue));
             if (!employees.containsKey(emplInst)) {
-                employees.put(emplInst, multi.getMsgPhrase(selEmpl, msgPhrase));
+                if (emplInst == null) {
+                    employees.put(emplInst, ERP.COMPANYNAME.get());
+                } else {
+                    employees.put(emplInst, multi.getMsgPhrase(selEmpl, msgPhrase));
+                }
             }
         }
         final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues = new Comparator<
@@ -218,6 +223,7 @@ public abstract class Employee2DocPanel_Base
 
         final Serie<Data> serie = new Serie<Data>();
         chart.addSerie(serie);
+        boolean added = false;
         for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
             final Data dataTmp = new Data().setSimple(false);
             serie.addData(dataTmp);
@@ -232,8 +238,15 @@ public abstract class Employee2DocPanel_Base
                 serie.addData(dataTmp2);
                 dataTmp2.setXValue(0);
                 dataTmp2.setYValue(0);
+                added = true;
                 break;
             }
+        }
+        if (!added) {
+            final Data dataTmp2 = new Data().setSimple(false);
+            serie.addData(dataTmp2);
+            dataTmp2.setXValue(0);
+            dataTmp2.setYValue(0);
         }
         ret.append(chart.getHtmlSnipplet());
         return ret;
