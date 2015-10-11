@@ -30,6 +30,7 @@ import java.util.Map.Entry;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.EnumUtils;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
@@ -107,7 +108,7 @@ public abstract class SalesPanel_Base
     protected Instance getCurrencyInst()
         throws EFapsException
     {
-        return Instance.get(getConfig().getProperty("CurrencyOID", Currency.getBaseCurrency().getOid()));
+        return Instance.get(getConfig().getProperty("CurrencyOID", "1.1"));
     }
 
     /**
@@ -121,7 +122,6 @@ public abstract class SalesPanel_Base
                         getConfig().getProperty("DateGroup", "DAY"));
     }
 
-
     /**
      * Checks if is date group start.
      *
@@ -132,12 +132,33 @@ public abstract class SalesPanel_Base
         return "true".equalsIgnoreCase(getConfig().getProperty("DateGroupStart", "false"));
     }
 
+    /**
+     * Show serie.
+     *
+     * @param _key the _key
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    protected boolean showSerie(final String _key)
+        throws EFapsException
+    {
+        boolean ret = true;
+        if (getCurrencyInst().isValid()) {
+            ret = _key.equals(CurrencyInst.get(getCurrencyInst()).getISOCode());
+        } else {
+            if (getCurrencyInst().getId() == 1) {
+                ret = true;
+            } else {
+                ret = _key.equals("BASE");
+            }
+        }
+        return ret;
+    }
+
     @Override
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        final StringBuilder html = new StringBuilder();
-
         final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
         final Parameter parameter = new Parameter();
         final boolean isDateStart = isDateGroupStart();
@@ -173,57 +194,48 @@ public abstract class SalesPanel_Base
         final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<Map<String, Object>>()
         {
-
             @Override
             public int compare(final Map<String, Object> _o1,
                                final Map<String, Object> _o2)
             {
                 return String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial")));
             }
-
         });
         Collections.sort(values, chain);
 
         int x = 0;
         final Map<String, Integer> xmap = new LinkedHashMap<>();
+        final ColumnsChart chart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
+                        .setGap(5).setWidth(getWidth()).setHeight(getHeight());
+        final String title = getTitle();
+        if (title != null && !title.isEmpty()) {
+            chart.setTitle(getTitle());
+        }
+        chart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
 
-        final Map<String, ColumnsChart> charts = new HashMap<>();
-        final Map<String, Map<String, Serie<Data>>> seriesMap = new HashMap<>();
         final Axis xAxis = new Axis().setName("x");
-        for (final Map<String, Object> map : values) {
+        chart.addAxis(xAxis);
 
+        final Map<String, Serie<Data>> series = new HashMap<>();
+        final Serie<Data> baseSerie = new Serie<Data>();
+        baseSerie.setName(DBProperties.getProperty("org.efaps.esjp.sales.report.DocumentSumReport.BASE") + " "
+                        + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
+        series.put("BASE", baseSerie);
+        for (final CurrencyInst curr : CurrencyInst.getAvailable()) {
+            final Serie<Data> serie = new Serie<Data>();
+            serie.setName(curr.getName());
+            series.put(curr.getISOCode(), serie);
+        }
+
+        for (final Map<String, Object> map : values) {
             if (!xmap.containsKey(map.get("partial"))) {
                 xmap.put((String) map.get("partial"), x++);
             }
-
-            final ColumnsChart columsChart;
-            final Map<String, Serie<Data>> series;
-            if (charts.containsKey(map.get("type"))) {
-                columsChart = charts.get(map.get("type"));
-                series = seriesMap.get(map.get("type"));
-            } else {
-                series = new HashMap<>();
-                columsChart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
-                                .setGap(5).setWidth(getWidth()).setHeight(getHeight());
-                columsChart.setTitle(getTitle());
-                columsChart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
-                final CurrencyInst selected = CurrencyInst.get(getCurrencyInst());
-
-                final Serie<Data> serie = new Serie<Data>();
-                serie.setName(selected.getName());
-                series.put(selected.getISOCode(), serie);
-                columsChart.addSerie(serie);
-
-                columsChart.addAxis(xAxis);
-                charts.put((String) map.get("type"), columsChart);
-                seriesMap.put((String) map.get("type"), series);
-            }
-
             for (final Entry<String, Object> entry : map.entrySet()) {
                 final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
                 final Data dataTmp = new Data().setSimple(false);
                 final Serie<Data> serie = series.get(entry.getKey());
-                if (serie != null) {
+                if (serie != null && showSerie(entry.getKey())) {
                     serie.addData(dataTmp);
                     final BigDecimal y = ((BigDecimal) entry.getValue()).abs();
                     dataTmp.setXValue(xmap.get(map.get("partial")));
@@ -239,11 +251,20 @@ public abstract class SalesPanel_Base
             map.put("text", Util.wrap4String(entry.getKey()));
             labels.add(map);
         }
-        xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
-        for (final ColumnsChart chart : charts.values()) {
-            html.append(chart.getHtmlSnipplet());
+        for (final Entry<String, Serie<Data>> entry : series.entrySet()) {
+            // only one currency and base is used, do not show base
+            if (series.size() == 2) {
+                if (!"BASE".equals(entry.getKey())) {
+                    chart.addSerie(entry.getValue());
+                }
+            } else {
+                if (!entry.getValue().getData().isEmpty()) {
+                    chart.addSerie(entry.getValue());
+                }
+            }
         }
-        return html;
+        xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
+        return chart.getHtmlSnipplet();
     }
 
     @Override
