@@ -251,10 +251,18 @@ public abstract class SalesPanel_Base
             map.put("text", Util.wrap4String(entry.getKey()));
             labels.add(map);
         }
+
+        int count = 0;
+        for (final Serie<Data> serie : series.values()) {
+            if (!serie.getData().isEmpty()) {
+                count++;
+            }
+        }
+
         for (final Entry<String, Serie<Data>> entry : series.entrySet()) {
             // only one currency and base is used, do not show base
-            if (series.size() == 2) {
-                if (!"BASE".equals(entry.getKey())) {
+            if (count == 2) {
+                if (!"BASE".equals(entry.getKey()) && !entry.getValue().getData().isEmpty()) {
                     chart.addSerie(entry.getValue());
                 }
             } else {
@@ -263,6 +271,7 @@ public abstract class SalesPanel_Base
                 }
             }
         }
+
         xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
         return chart.getHtmlSnipplet();
     }
