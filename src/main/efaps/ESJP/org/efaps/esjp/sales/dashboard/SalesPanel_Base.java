@@ -29,12 +29,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.apache.commons.lang3.EnumUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.api.ui.IEsjpSnipplet;
 import org.efaps.db.Instance;
 import org.efaps.esjp.common.dashboard.AbstractDashboardPanel;
+import org.efaps.esjp.common.datetime.JodaTimeUtils;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
@@ -86,15 +88,14 @@ public abstract class SalesPanel_Base
         super(_config);
     }
 
-
     /**
      * Gets the height.
      *
      * @return the height
      */
-    protected Integer getDays()
+    protected Integer getQuantity()
     {
-        return Integer.valueOf(getConfig().getProperty("Days", "14"));
+        return Integer.valueOf(getConfig().getProperty("Quantity", "14"));
     }
 
     /**
@@ -109,6 +110,27 @@ public abstract class SalesPanel_Base
         return Instance.get(getConfig().getProperty("CurrencyOID", Currency.getBaseCurrency().getOid()));
     }
 
+    /**
+     * Gets the group.
+     *
+     * @return the group
+     */
+    protected DocumentSumGroupedByDate_Base.DateGroup getDateGroup()
+    {
+        return EnumUtils.getEnum(DocumentSumGroupedByDate_Base.DateGroup.class,
+                        getConfig().getProperty("DateGroup", "DAY"));
+    }
+
+
+    /**
+     * Checks if is date group start.
+     *
+     * @return true, if is date group start
+     */
+    protected boolean isDateGroupStart()
+    {
+        return "true".equalsIgnoreCase(getConfig().getProperty("DateGroupStart", "false"));
+    }
 
     @Override
     public CharSequence getHtmlSnipplet()
@@ -118,11 +140,35 @@ public abstract class SalesPanel_Base
 
         final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
         final Parameter parameter = new Parameter();
-
-        final DateTime start = new DateTime().minusDays(getDays());
+        final boolean isDateStart = isDateGroupStart();
+        final DateTime start;
+        switch (getDateGroup()) {
+            case YEAR:
+                start = isDateStart ? new DateTime().minusYears(getQuantity()).withDayOfYear(1)
+                                : new DateTime().minusYears(getQuantity());
+                break;
+            case HALFYEAR:
+                start = new DateTime().withFieldAdded(JodaTimeUtils.halfYears(), -getQuantity());
+                break;
+            case QUARTER:
+                start = new DateTime().withFieldAdded(JodaTimeUtils.quarters(), -getQuantity());
+                break;
+            case MONTH:
+                start = isDateStart ? new DateTime().minusMonths(getQuantity()).withDayOfMonth(1)
+                                : new DateTime().minusMonths(getQuantity());
+                break;
+            case WEEK:
+                start = isDateStart ? new DateTime().minusWeeks(getQuantity()).withDayOfWeek(1)
+                                : new DateTime().minusWeeks(getQuantity());
+                break;
+            case DAY:
+            default:
+                start = new DateTime().minusDays(getQuantity());
+                break;
+        }
         final DateTime end = new DateTime().plusDays(1);
 
-        final ValueList values = ds.getValueList(parameter, start, end, DocumentSumGroupedByDate_Base.DateGroup.DAY,
+        final ValueList values = ds.getValueList(parameter, start, end, getDateGroup(),
                         getConfig()).groupBy("partial", "type");
         final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<Map<String, Object>>()
