@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -31,7 +28,7 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -52,10 +49,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("31c806ae-c891-4797-a85b-71113a79c02e")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractSumOnlyDocument_Base
     extends AbstractDocumentSum
 {
@@ -171,7 +167,7 @@ public abstract class AbstractSumOnlyDocument_Base
             }
             addDefaults(_parameter, insert, createdDoc);
         } catch (final ParseException e) {
-           throw new EFapsException("Parsing Error", e);
+            throw new EFapsException("Parsing Error", e);
         }
 
         insert.add(CISales.DocumentSumAbstract.DiscountTotal, BigDecimal.ZERO);
@@ -224,6 +220,128 @@ public abstract class AbstractSumOnlyDocument_Base
             _createdDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, BigDecimal.ZERO);
         }
     }
+
+
+    /**
+     * Method to edit the basic Document. The method checks for the Type to be
+     * created for every attribute if a related field is in the parameters.
+     *
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @param _editDoc edited document
+     * @return the edited document
+     * @throws EFapsException on error.
+     */
+    @Override
+    protected EditedDoc editDoc(final Parameter _parameter,
+                                final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        final Object[] rateObj = getRateObject(_parameter);
+        final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
+                        BigDecimal.ROUND_HALF_UP);
+
+        final Update update = new Update(_editDoc.getInstance());
+        final String name = getDocName4Edit(_parameter);
+        if (name != null) {
+            update.add(CISales.DocumentSumAbstract.Name, name);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Name.name, name);
+        }
+
+        final String date = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Date.name));
+        if (date != null) {
+            update.add(CISales.DocumentSumAbstract.Date, date);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Date.name, date);
+        }
+        final String duedate = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.DueDate.name));
+        if (duedate != null) {
+            update.add(CISales.DocumentSumAbstract.DueDate, duedate);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.DueDate.name, duedate);
+        }
+
+        final String contact = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Contact.name));
+        final Instance contactIns = Instance.get(contact);
+        if (contactIns != null && contactIns.isValid()) {
+            update.add(CISales.DocumentSumAbstract.Contact, contactIns.getId());
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Contact.name, contactIns);
+        }
+
+        final String remark = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Remark.name));
+        if (remark != null) {
+            update.add(CISales.DocumentSumAbstract.Remark, remark);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Remark.name, remark);
+        }
+
+        final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Note.name));
+        if (note != null) {
+            update.add(CISales.DocumentSumAbstract.Note, note);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Note.name, note);
+        }
+
+        final String salesperson = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Salesperson.name));
+        if (salesperson != null) {
+            update.add(CISales.DocumentSumAbstract.Salesperson, salesperson);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Salesperson.name, salesperson);
+        }
+
+        final String groupId = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Group.name));
+        if (groupId != null) {
+            update.add(CISales.DocumentSumAbstract.Group, groupId);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Group.name, groupId);
+        }
+        final DecimalFormat frmt = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter));
+        final int scale = frmt.getMaximumFractionDigits();
+
+        try {
+            final String rateNetTotalStr = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                            CISales.DocumentSumAbstract.RateNetTotal.name));
+
+            if (rateNetTotalStr != null && !rateNetTotalStr.isEmpty()) {
+                final BigDecimal rateNetTotal = (BigDecimal) frmt.parse(rateNetTotalStr);
+                update.add(CISales.DocumentSumAbstract.RateNetTotal, rateNetTotal);
+                _editDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateNetTotal);
+
+                final BigDecimal netTotal = rateNetTotal.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale,
+                                BigDecimal.ROUND_HALF_UP);
+                update.add(CISales.DocumentSumAbstract.NetTotal, netTotal);
+                _editDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, netTotal);
+            }
+
+            final String rateCrossTotalStr = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                            CISales.DocumentSumAbstract.RateCrossTotal.name));
+            if (rateCrossTotalStr != null && !rateCrossTotalStr.isEmpty()) {
+                final BigDecimal rateCrossTotal = (BigDecimal) frmt.parse(rateCrossTotalStr);
+                update.add(CISales.DocumentSumAbstract.RateCrossTotal, rateCrossTotal);
+                _editDoc.getValues().put(CISales.DocumentSumAbstract.RateCrossTotal.name, rateCrossTotal);
+
+                final BigDecimal crossTotal = rateCrossTotal.divide(rate, BigDecimal.ROUND_HALF_UP).setScale(scale,
+                                BigDecimal.ROUND_HALF_UP);
+                update.add(CISales.DocumentSumAbstract.CrossTotal, crossTotal);
+                _editDoc.getValues().put(CISales.DocumentSumAbstract.CrossTotal.name, crossTotal);
+                // if not added yet do it now to prevent error
+                if (!_editDoc.getValues().containsKey(CISales.DocumentSumAbstract.RateNetTotal.name)) {
+                    update.add(CISales.DocumentSumAbstract.RateNetTotal, rateCrossTotal);
+                    _editDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, rateCrossTotal);
+                    update.add(CISales.DocumentSumAbstract.NetTotal, crossTotal);
+                    _editDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, crossTotal);
+                }
+            }
+        } catch (final ParseException e) {
+            throw new EFapsException("Parsing Error", e);
+        }
+        addStatus2DocEdit(_parameter, update, _editDoc);
+        add2DocEdit(_parameter, update, _editDoc);
+        update.execute();
+
+        return _editDoc;
+    }
+
 
     /**
      * Method to update amount.

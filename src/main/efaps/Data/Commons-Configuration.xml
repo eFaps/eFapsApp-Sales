@@ -52,7 +52,8 @@ Sales_PaymentOrder=f15f6031-c5d3-4bf8-89f4-a7a1b244d22e
 Sales_PettyCashBalance=18f8d376-aea6-4739-9389-2d560b0b086a
 Sales_AccountFundsToBeSettled=d4b2f225-5fbe-4cdb-9948-e1327a96d539
 Sales_AcquisitionCosting=06e88125-9461-42ec-9354-b5e634dd0178
-Sales_ProductionCosting=da404e37-e1d5-4c01-8abd-6018631b8622]]></value>
+Sales_ProductionCosting=da404e37-e1d5-4c01-8abd-6018631b8622
+Sales_IncomingInstallment=f521848e-46ca-43d4-9b3e-77aeb4d09a20]]></value>
         </attribute>
     </definition>
 </common-systemconfiguration>

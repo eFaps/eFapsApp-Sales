@@ -17,24 +17,17 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f886f9ca-d29d-407a-9103-e0184b30d0ba</uuid>
+    <uuid>7f62ca3d-7184-46ee-9d79-fa4878608c9a</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentsIncomingMyDesk</name>
+        <name>Sales_IncomingInstallmentTree_Menu_Action</name>
         <childs>
-            <child>Sales_RecievingTicketMyDesk</child>
-            <child>Sales_OrderInboundMyDesk</child>
-            <child>Sales_IncomingInvoiceMyDesk</child>
-            <child>Sales_IncomingReceiptMyDesk</child>
-            <child>Sales_IncomingProfServReceiptMyDesk</child>
-            <child>Sales_IncomingCreditMyDesk</child>
-            <child>Sales_IncomingInstallmentMyDesk</child>
-            <child>Sales_IncomingCreditNoteMyDesk</child>
-            <child>Sales_IncomingReminderMyDesk</child>
-            <child>Sales_IncomingExchangeMyDesk</child>
-            <child>Sales_IncomingPerceptionCertificateMyDesk</child>
-            <child>Sales_IncomingRetentionCertificateMyDesk</child>
+            <child>Sales_IncomingInstallmentTree_Menu_Action_Edit</child>
+            <child>Sales_IncomingInstallmentTree_Menu_Action_SetOpen</child>
+            <child>Sales_IncomingInstallmentTree_Menu_Action_SetPaid</child>
+            <child>Sales_IncomingInstallmentTree_Menu_Action_SetCanceled</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
         </childs>
     </definition>
 </ui-menu>

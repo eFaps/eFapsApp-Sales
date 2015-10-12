@@ -14,13 +14,10 @@
  * limitations under the License.
  *
  */
-
-
 package org.efaps.esjp.sales.document;
 
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -29,10 +26,10 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  *
  * @author The eFaps Team
  */
-@EFapsUUID("a24ebf7f-29b3-45a1-9ec8-763ea0e94d62")
+@EFapsUUID("bd84ef09-4e4b-4bb9-8f8f-d2ba1b28af9f")
 @EFapsApplication("eFapsApp-Sales")
-public abstract class AbstractSumOnlyDocument
-    extends AbstractSumOnlyDocument_Base
+public class IncomingInstallment
+    extends IncomingInstallment_Base
 {
 
 }

@@ -17,19 +17,19 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>059bddf8-c87e-49e6-909e-878b0223760d</uuid>
+    <uuid>c1f5def6-aaf9-43b2-8d59-e021b4968fb2</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingCreditTree</name>
+        <name>Sales_IncomingInstallmentTree</name>
         <target>
-            <menu>Sales_IncomingCreditTree_Menu</menu>
-            <form>Sales_IncomingCreditForm</form>
+            <menu>Sales_IncomingInstallmentTree_Menu</menu>
+            <form>Sales_IncomingInstallmentForm</form>
         </target>
-        <type>Sales_IncomingCredit</type>
+        <type>Sales_IncomingInstallment</type>
         <childs>
-            <child>Sales_IncomingCreditTree_Doc</child>
-            <child>Sales_IncomingCreditTree_Payment</child>
+            <child>Sales_IncomingInstallmentTree_Doc</child>
+            <child>Sales_IncomingInstallmentTree_Payment</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>
