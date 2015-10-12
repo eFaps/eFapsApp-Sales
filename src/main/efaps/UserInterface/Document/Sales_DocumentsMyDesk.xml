@@ -16,8 +16,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
-
 -->
 
 <ui-menu xmlns="http://www.efaps.org/xsd"
@@ -36,6 +34,7 @@
             <child>Sales_CashReceiptMyDesk</child>
             <child>Sales_ReminderMyDesk</child>
             <child>Sales_CreditMyDesk</child>
+            <child>Sales_InstallmentMyDesk</child>
             <child>Sales_CreditNoteMyDesk</child>
             <child>Sales_DeliveryNoteMyDesk</child>
             <child>Sales_ReturnSlipMyDesk</child>

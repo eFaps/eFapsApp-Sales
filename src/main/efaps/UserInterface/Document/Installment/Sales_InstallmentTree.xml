@@ -17,39 +17,19 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>ccb345aa-3f74-4452-b720-1451b178ccea</uuid>
+    <uuid>60deabf5-130e-412d-9aee-ab739847e2d4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_CreditTree</name>
+        <name>Sales_InstallmentTree</name>
         <target>
-            <menu>Sales_CreditTree_Menu</menu>
-            <form>Sales_CreditForm</form>
+            <menu>Sales_InstallmentTree_Menu</menu>
+            <form>Sales_InstallmentForm</form>
         </target>
-        <type>Sales_Credit</type>
+        <type>Sales_Installment</type>
         <childs>
-            <child>Sales_CreditTree_Doc</child>
-            <child>Sales_CreditTree_Payment</child>
-        </childs>
-        <property name="Target">content</property>
-        <property name="TargetMode">view</property>
-    </definition>
-
-    <definition>
-        <version-expression>(version==latest)</version-expression>
-        <application-dependencies>
-            <application name="eFapsApp-Archives" />
-        </application-dependencies>
-        <name>Sales_CreditTree</name>
-        <target>
-            <menu>Sales_CreditTree_Menu</menu>
-            <form>Sales_CreditForm</form>
-        </target>
-        <type>Sales_Credit</type>
-        <childs>
-            <child>Sales_CreditTree_File</child>
-            <child>Sales_CreditTree_Doc</child>
-            <child>Sales_CreditTree_Payment</child>
+            <child>Sales_InstallmentTree_Doc</child>
+            <child>Sales_InstallmentTree_Payment</child>
         </childs>
         <property name="Target">content</property>
         <property name="TargetMode">view</property>

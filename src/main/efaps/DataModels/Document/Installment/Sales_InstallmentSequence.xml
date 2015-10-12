@@ -17,12 +17,12 @@
 -->
 <numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f521848e-46ca-43d4-9b3e-77aeb4d09a20</uuid>
+    <uuid>ebcf6479-6d1e-41e4-a689-1ceb046ba850</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInstallmentSequence</name>
-        <format>C.p.p.-%05d</format>
+        <name>Sales_InstallmentSequence</name>
+        <format>C.p.c.-%05d</format>
         <startvalue>1</startvalue>
     </definition>
 </numbergenerator>

@@ -15,14 +15,15 @@
  limitations under the License.
 
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f521848e-46ca-43d4-9b3e-77aeb4d09a20</uuid>
+    <uuid>fef3d77e-d97a-4446-9fae-a71a406d3d69</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInstallmentSequence</name>
-        <format>C.p.p.-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_CreditTree_Doc_Menu</name>
+        <childs>
+            <child>Sales_CreditTree_Doc_Menu_Action</child>
+        </childs>
     </definition>
-</numbergenerator>
+</ui-menu>

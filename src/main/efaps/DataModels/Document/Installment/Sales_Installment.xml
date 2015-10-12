@@ -15,14 +15,25 @@
  limitations under the License.
 
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f521848e-46ca-43d4-9b3e-77aeb4d09a20</uuid>
+    <uuid>1645f7db-04d4-48ac-a31e-8072c74f95d0</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInstallmentSequence</name>
-        <format>C.p.p.-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_Installment</name>
+        <parent>Sales_DocumentSumAbstract</parent>
+        <attribute>
+            <name>Status</name>
+            <type>Status</type>
+            <typelink>Sales_InstallmentStatus</typelink>
+            <sqltable>ERP_DocumentAbstractSQLTable</sqltable>
+            <sqlcolumn>STATUS</sqlcolumn>
+            <trigger event="RANGE_VALUE" name="Sales_Installment.Status.RANGE_VALUE"
+                program="org.efaps.esjp.admin.datamodel.StatusValue">
+            </trigger>
+        </attribute>
+        <trigger event="ACCESSCHECK" name="Sales_Installment.ACCESSCHECK"
+            program="org.efaps.esjp.admin.access.SimpleAccessCheckOnType" />
     </definition>
-</numbergenerator>
+</datamodel-type>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,15 +14,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
 
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>e27982b8-469a-47b6-bb0b-f2cf214db5c7</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_CreditForm</name>
@@ -76,7 +73,7 @@
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
-         <field character="Group" name="nameGroup">
+        <field character="Group" name="nameGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
         </field>
@@ -88,13 +85,13 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-          <field name="name">
+        <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-         <field name="revision">
+        <field name="revision">
             <property name="Attribute">Revision</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -209,7 +206,7 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-HumanResource"/>
+            <application name="eFapsApp-HumanResource" />
         </application-dependencies>
         <name>Sales_CreditForm</name>
         <field character="Group" name="dateGroup">
@@ -223,7 +220,7 @@
             <property name="Attribute">Date</property>
             <property name="Required">true</property>
             <trigger program="org.efaps.esjp.sales.document.Credit" method="updateFields4Date"
-                name="Sales_CreditForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_CreditForm.date.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="dueDate">
             <property name="Columns">12</property>
@@ -261,7 +258,7 @@
             <property name="Attribute">Status</property>
             <property name="ModeEdit">EDITABLE</property>
         </field>
-         <field character="Group" name="nameGroup">
+        <field character="Group" name="nameGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
         </field>
@@ -273,13 +270,13 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-          <field name="name">
+        <field name="name">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-         <field name="revision">
+        <field name="revision">
             <property name="Attribute">Revision</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
@@ -423,5 +420,22 @@
             <property name="Label">Sales_Credit/RateCrossTotal.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+         <field character="Heading" name="installmentHeading">
+            <property name="Level">2</property>
+            <property name="Label">Sales_CreditForm.installmentHeading.Heading</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+        </field>
+         <field name="installmentTable" character="Target">
+            <property name="ModeEdit">NONE</property>
+            <table>Sales_Installment4DocTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type">Sales_Installment2Credit</property>
+                <property name="LinkFrom">ToLink</property>
+                <property name="InstanceSelect">linkto[FromLink].instance</property>
+            </evaluate>
+        </field>
+
     </definition>
 </ui-form>

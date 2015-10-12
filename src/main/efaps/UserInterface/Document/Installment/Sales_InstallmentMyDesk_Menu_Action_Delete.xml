@@ -15,14 +15,20 @@
  limitations under the License.
 
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f521848e-46ca-43d4-9b3e-77aeb4d09a20</uuid>
+    <uuid>e3c5e043-3df9-4d19-ad4a-e2b10377be50</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInstallmentSequence</name>
-        <format>C.p.p.-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_InstallmentMyDesk_Menu_Action_Delete</name>
+        <access>
+            <role>Sales_Admin</role>
+        </access>
+        <target>
+            <execute program="org.efaps.esjp.common.uitable.CommonDelete" />
+        </target>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
     </definition>
-</numbergenerator>
+</ui-command>

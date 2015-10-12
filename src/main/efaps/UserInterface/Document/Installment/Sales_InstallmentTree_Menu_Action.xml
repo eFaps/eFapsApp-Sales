@@ -15,14 +15,19 @@
  limitations under the License.
 
 -->
-<numbergenerator xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>f521848e-46ca-43d4-9b3e-77aeb4d09a20</uuid>
+    <uuid>d41eac48-804c-459c-a2ec-ab935fad3051</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_IncomingInstallmentSequence</name>
-        <format>C.p.p.-%05d</format>
-        <startvalue>1</startvalue>
+        <name>Sales_InstallmentTree_Menu_Action</name>
+        <childs>
+            <child>Sales_InstallmentTree_Menu_Action_Edit</child>
+            <child>Sales_InstallmentTree_Menu_Action_SetOpen</child>
+            <child>Sales_InstallmentTree_Menu_Action_SetPaid</child>
+            <child>Sales_InstallmentTree_Menu_Action_SetCanceled</child>
+            <child>ERP_DocumentAbstractTree_Action_EditStatus</child>
+        </childs>
     </definition>
-</numbergenerator>
+</ui-menu>

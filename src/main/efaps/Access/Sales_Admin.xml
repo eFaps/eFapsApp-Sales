@@ -68,6 +68,7 @@
         <type>Sales_IncomingProfServReceipt</type>
         <type>Sales_IncomingReceipt</type>
         <type>Sales_IncomingReminder</type>
+        <type>Sales_Installment</type>
         <type>Sales_Invoice</type>
         <type>Sales_OrderInbound</type>
         <type>Sales_OrderOutbound</type>
@@ -292,6 +293,14 @@
 
         <status group="Sales_IncomingInstallmentStatus">
             <key>Digitized</key>
+            <key>Open</key>
+            <key>Paid</key>
+            <key>Booked</key>
+            <key>Canceled</key>
+        </status>
+
+        <status group="Sales_InstallmentStatus">
+            <key>Draft</key>
             <key>Open</key>
             <key>Paid</key>
             <key>Booked</key>
