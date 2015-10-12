@@ -190,7 +190,7 @@ public abstract class SalesPanel_Base
         final DateTime end = new DateTime().plusDays(1);
 
         final ValueList values = ds.getValueList(parameter, start, end, getDateGroup(),
-                        getConfig()).groupBy("partial", "type");
+                        getConfig()).groupBy("partial");
         final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
         chain.addComparator(new Comparator<Map<String, Object>>()
         {
@@ -237,7 +237,11 @@ public abstract class SalesPanel_Base
                 final Serie<Data> serie = series.get(entry.getKey());
                 if (serie != null && showSerie(entry.getKey())) {
                     serie.addData(dataTmp);
-                    final BigDecimal y = ((BigDecimal) entry.getValue()).abs();
+                    final BigDecimal y = ((BigDecimal) entry.getValue());
+                    // for the case that negaitve numbers are given
+                    if (y.compareTo(BigDecimal.ZERO) < 0 && chart.getAxis().size() < 2) {
+                        chart.addAxis(new Axis().setName("y").setVertical(true));
+                    }
                     dataTmp.setXValue(xmap.get(map.get("partial")));
                     dataTmp.setYValue(y);
                     dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + map.get("partial"));
