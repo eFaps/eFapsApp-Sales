@@ -237,7 +237,7 @@ public abstract class SalesPanel_Base
                 final Serie<Data> serie = series.get(entry.getKey());
                 if (serie != null && showSerie(entry.getKey())) {
                     serie.addData(dataTmp);
-                    final BigDecimal y = ((BigDecimal) entry.getValue());
+                    final BigDecimal y = (BigDecimal) entry.getValue();
                     // for the case that negaitve numbers are given
                     if (y.compareTo(BigDecimal.ZERO) < 0 && chart.getAxis().size() < 2) {
                         chart.addAxis(new Axis().setName("y").setVertical(true));
@@ -275,8 +275,9 @@ public abstract class SalesPanel_Base
                 }
             }
         }
-
-        xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
+        if (!labels.isEmpty()) {
+            xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
+        }
         return chart.getHtmlSnipplet();
     }
 

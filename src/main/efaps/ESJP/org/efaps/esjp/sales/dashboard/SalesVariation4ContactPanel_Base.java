@@ -277,11 +277,15 @@ public abstract class SalesVariation4ContactPanel_Base
                 };
             }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
 
-        chart.setTitle(getTitle());
+        final String title = getTitle();
+        if (title != null && !title.isEmpty()) {
+            chart.setTitle(getTitle());
+        }
         chart.setOrientation(Orientation.CHART_ONLY);
 
         final Serie<Data> serie = new Serie<Data>();
         chart.addSerie(serie);
+        boolean added = false;
         for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
             final Data dataTmp = new Data().setSimple(false);
             serie.addData(dataTmp);
@@ -295,8 +299,15 @@ public abstract class SalesVariation4ContactPanel_Base
                 serie.addData(dataTmp2);
                 dataTmp2.setXValue(0);
                 dataTmp2.setYValue(0);
+                added = true;
                 break;
             }
+        }
+        if (!added) {
+            final Data dataTmp2 = new Data().setSimple(false);
+            serie.addData(dataTmp2);
+            dataTmp2.setXValue(0);
+            dataTmp2.setYValue(0);
         }
         ret.append(chart.getHtmlSnipplet());
         return ret;

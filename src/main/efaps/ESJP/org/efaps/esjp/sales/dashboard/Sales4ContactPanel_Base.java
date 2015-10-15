@@ -104,6 +104,18 @@ public abstract class Sales4ContactPanel_Base
     }
 
     /**
+     * Gets the quantiy.
+     *
+     * @return the quantiy
+     * @throws EFapsException on error
+     */
+    protected Integer getCount()
+        throws EFapsException
+    {
+        return Integer.parseInt(getConfig().getProperty("Count", "10"));
+    }
+
+    /**
      * Gets the currency inst.
      *
      * @return the currency inst
@@ -179,7 +191,7 @@ public abstract class Sales4ContactPanel_Base
         sorted.addAll(values.entrySet());
         Collections.sort(sorted, byMapValues);
 
-        int y = 10;
+        int y = getCount();
         final BarsChart chart = new BarsChart()
             {
                 @Override
@@ -198,6 +210,7 @@ public abstract class Sales4ContactPanel_Base
 
         final Serie<Data> serie = new Serie<Data>();
         chart.addSerie(serie);
+        boolean added = false;
         for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
             final Data dataTmp = new Data().setSimple(false);
             serie.addData(dataTmp);
@@ -211,8 +224,15 @@ public abstract class Sales4ContactPanel_Base
                 serie.addData(dataTmp2);
                 dataTmp2.setXValue(0);
                 dataTmp2.setYValue(0);
+                added = true;
                 break;
             }
+        }
+        if (!added) {
+            final Data dataTmp2 = new Data().setSimple(false);
+            serie.addData(dataTmp2);
+            dataTmp2.setXValue(0);
+            dataTmp2.setYValue(0);
         }
         ret.append(chart.getHtmlSnipplet());
         return ret;
