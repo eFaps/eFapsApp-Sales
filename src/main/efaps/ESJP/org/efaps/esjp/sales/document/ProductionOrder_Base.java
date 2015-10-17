@@ -71,7 +71,7 @@ public abstract class ProductionOrder_Base
 
     @Override
     protected boolean isUpdateBean4Individual(final Parameter _parameter,
-                                              final UIAbstractPosition _bean)
+                                              final AbstractUIPosition _bean)
     {
         return false;
     }

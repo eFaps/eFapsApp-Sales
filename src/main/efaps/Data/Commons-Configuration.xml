@@ -29,7 +29,7 @@
         <version-expression>(version==latest)</version-expression>
         <name>Commons-Configuration</name>
         <attribute>
-            <key>org.efaps.erp.NumberGenerators01</key>
+            <key>org.efaps.commons.NumberGenerators01</key>
             <value><![CDATA[Sales_ProductionReport=e028e7a5-d940-4735-914a-60af073bb557
 Sales_OrderOutbound=d7e3e088-4dea-43eb-8b09-710605405092
 Sales_ProductRequest=9bd0cebf-9b20-4744-bc48-7f8d34d4c642

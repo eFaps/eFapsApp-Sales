@@ -1182,25 +1182,25 @@ public abstract class AbstractDocument_Base
         multi.setEnforceSorted(true);
         multi.execute();
 
-        final List<UIAbstractPosition> values = new ArrayList<>();
+        final List<AbstractUIPosition> values = new ArrayList<>();
         while (multi.next()) {
             final Instance prodInstance = multi.getSelect(selProdInst);
             final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-            final UIAbstractPosition origBean = getUIPosition(_parameter)
+            final AbstractUIPosition origBean = getUIPosition(_parameter)
                             .setInstance(multi.getCurrentInstance())
                             .setProdInstance(prodInstance)
                             .setQuantity(quantity)
                             .setUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))
                             .setProdName(multi.<String>getSelect(selProdName))
                             .setProdDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc));
-            final List<UIAbstractPosition> beans = updateBean4Indiviual(_parameter, origBean);
+            final List<AbstractUIPosition> beans = updateBean4Indiviual(_parameter, origBean);
 
-            for (final UIAbstractPosition bean : beans) {
+            for (final AbstractUIPosition bean : beans) {
                 if (multi.getCurrentInstance().getType().isKindOf(CISales.PositionSumAbstract)) {
                     bean.setNetUnitPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice))
                         .setDiscountNetUnitPrice(multi.<BigDecimal>getAttribute(
                                         CISales.PositionSumAbstract.RateDiscountNetUnitPrice))
-                        .setNetPrice( multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice))
+                        .setNetPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetPrice))
                         .setCrossPrice(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossPrice))
                         .setDiscount(multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount));
                 } else if (getCIType().getType().isKindOf(CISales.DocumentSumAbstract)) {
@@ -1208,7 +1208,7 @@ public abstract class AbstractDocument_Base
                                     bean.getQuantity(), BigDecimal.ZERO, BigDecimal.ZERO, true, 0);
                     bean.setNetUnitPrice(calc.getNetUnitPrice())
                         .setDiscountNetUnitPrice(calc.getNetUnitPrice())
-                        .setNetPrice(  calc.getNetPrice())
+                        .setNetPrice(calc.getNetPrice())
                         .setCrossPrice(calc.getCrossPrice());
                 }
                 values.add(bean);
@@ -1238,23 +1238,31 @@ public abstract class AbstractDocument_Base
 
     /**
      * Give the chance to replace the product with others. e.g Orginal Product with Batch.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _bean bean to be updated
+     * @param _storageInst the storage instance
      * @return List of beans
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
-    protected List<UIAbstractPosition> updateBean4Indiviual(final Parameter _parameter,
-                                                            final UIAbstractPosition _bean)
+    protected List<AbstractUIPosition> updateBean4Indiviual(final Parameter _parameter,
+                                                            final AbstractUIPosition _bean)
         throws EFapsException
     {
-        final List<UIAbstractPosition> ret = new ArrayList<>();
+        final List<AbstractUIPosition> ret = new ArrayList<>();
         ret.add(_bean);
         return ret;
     }
 
-    protected UIAbstractPosition getUIPosition(final Parameter _parameter)
+    /**
+     * Gets the UI position.
+     *
+     * @param _parameter the _parameter
+     * @return the UI position
+     */
+    protected AbstractUIPosition getUIPosition(final Parameter _parameter)
     {
-        return new UIAbstractPosition(this)
+        return new AbstractUIPosition(this)
         {
             private static final long serialVersionUID = 1L;
         };
@@ -1267,12 +1275,12 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected List<Map<String, Object>> convertMap4Script(final Parameter _parameter,
-                                                          final Collection<UIAbstractPosition> _values)
+                                                          final Collection<AbstractUIPosition> _values)
         throws EFapsException
     {
         final List<Map<String, Object>> ret = new ArrayList<Map<String, Object>>();
-        for (final UIAbstractPosition UIAbstractPosition :_values) {
-            ret.add(UIAbstractPosition.getMap4JavaScript(_parameter));
+        for (final AbstractUIPosition uiPosition :_values) {
+            ret.add(uiPosition.getMap4JavaScript(_parameter));
         }
         return ret;
     }
@@ -1336,7 +1344,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error.
      */
     protected void evaluatePositions4RelatedInstances(final Parameter _parameter,
-                                                      final Collection<UIAbstractPosition> _values,
+                                                      final Collection<AbstractUIPosition> _values,
                                                       final Instance... _instances)
         throws EFapsException
     {
@@ -1370,7 +1378,7 @@ public abstract class AbstractDocument_Base
         }
 
         NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
-        final List<UIAbstractPosition> lstRemove = new ArrayList<>();
+        final List<AbstractUIPosition> lstRemove = new ArrayList<>();
         for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
             final Integer key = relTypeEntry.getKey();
             final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
@@ -1413,7 +1421,7 @@ public abstract class AbstractDocument_Base
                 }
             }
 
-            for (final UIAbstractPosition uiPosition : _values) {
+            for (final AbstractUIPosition uiPosition : _values) {
 
                 if (prodQuantMap.containsKey(uiPosition.getProdInstance().getOid())) {
                     final BigDecimal quantityPartial = prodQuantMap.get(uiPosition.getProdInstance().getOid());
@@ -1432,7 +1440,7 @@ public abstract class AbstractDocument_Base
             }
         }
 
-        for (final UIAbstractPosition remove : lstRemove) {
+        for (final AbstractUIPosition remove : lstRemove) {
             _values.remove(remove);
         }
     }
@@ -1444,7 +1452,7 @@ public abstract class AbstractDocument_Base
      * @throws EFapsException on error
      */
     protected void add2JavaScript4Postions(final Parameter _parameter,
-                                           final Collection<UIAbstractPosition> _values,
+                                           final Collection<AbstractUIPosition> _values,
                                            final Set<String> _noEscape)
         throws EFapsException
     {
@@ -1480,27 +1488,27 @@ public abstract class AbstractDocument_Base
         multi.addSelect(selProdInst, selProdName, selProdDim);
         multi.execute();
 
-        final Map<Instance, UIAbstractPosition> valuesTmp = new LinkedHashMap<>();
+        final Map<Instance, AbstractUIPosition> valuesTmp = new LinkedHashMap<>();
         NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
         while (multi.next()) {
             final Instance prodInst = multi.<Instance>getSelect(selProdInst);
             if (valuesTmp.containsKey(prodInst)) {
-                final UIAbstractPosition origBean  = valuesTmp.get(prodInst);
+                final AbstractUIPosition origBean  = valuesTmp.get(prodInst);
                 origBean.setQuantity(origBean.getQuantity().add(
                                 multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity)));
             } else {
                 final Instance prodInstance = multi.getSelect(selProdInst);
                 final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-                final UIAbstractPosition origBean = getUIPosition(_parameter)
+                final AbstractUIPosition origBean = getUIPosition(_parameter)
                                 .setInstance(multi.getCurrentInstance())
                                 .setProdInstance(prodInstance)
                                 .setQuantity(quantity)
                                 .setUoM(multi.<Long>getAttribute(CISales.PositionAbstract.UoM))
                                 .setProdName(multi.<String>getSelect(selProdName))
                                 .setProdDescr(multi.<String>getAttribute(CISales.PositionAbstract.ProductDesc));
-                for (final UIAbstractPosition bean : updateBean4Indiviual(_parameter, origBean)) {
+                for (final AbstractUIPosition bean : updateBean4Indiviual(_parameter, origBean)) {
                     if (valuesTmp.containsKey(bean.getProdInstance())) {
-                        final UIAbstractPosition origBean4Prod  = valuesTmp.get(prodInst);
+                        final AbstractUIPosition origBean4Prod  = valuesTmp.get(prodInst);
                         origBean4Prod.setQuantity(origBean4Prod.getQuantity().add(bean.getQuantity()));
                     } else {
                         valuesTmp.put(bean.getProdInstance(), bean);
@@ -1508,7 +1516,7 @@ public abstract class AbstractDocument_Base
                 }
             }
         }
-        final Collection<UIAbstractPosition> values = valuesTmp.values();
+        final Collection<AbstractUIPosition> values = valuesTmp.values();
 
         final Set<String> noEscape = new HashSet<String>();
         noEscape.add("uoM");
@@ -2850,34 +2858,93 @@ public abstract class AbstractDocument_Base
         return code.toString();
     }
 
-    public static abstract class UIAbstractPosition
+    /**
+     * The Class AbstractUIPosition.
+     *
+     * @author The eFaps Team
+     */
+    public abstract static class AbstractUIPosition
         implements Serializable
     {
-
-        /**
-         *
-         */
+        /** */
         private static final long serialVersionUID = 1L;
+
+        /** The doc. */
         private AbstractDocument_Base doc;
+
+        /** The prod instance. */
         private Instance prodInstance;
+
+        /** The instance. */
         private Instance instance;
-        private BigDecimal quantity ;
-        private BigDecimal netUnitPrice ;
-        private BigDecimal discount ;
-        private BigDecimal discountNetUnitPrice ;
-        private BigDecimal netPrice ;
-        private BigDecimal crossPrice ;
+
+        /** The quantity. */
+        private BigDecimal quantity;
+
+        /** The net unit price. */
+        private BigDecimal netUnitPrice;
+
+        /** The discount. */
+        private BigDecimal discount;
+
+        /** The discount net unit price. */
+        private BigDecimal discountNetUnitPrice;
+
+        /** The net price. */
+        private BigDecimal netPrice;
+
+        /** The cross price. */
+        private BigDecimal crossPrice;
+
+        /** The prod name. */
         private String prodName;
+
+        /** The prod descr. */
         private String prodDescr;
+
+        /** The uo mid. */
         private Long uoMID;
 
-        public UIAbstractPosition()
+        /** The storage inst. */
+        private Instance storageInst;
+
+
+        /**
+         * Instantiates a new UI abstract position.
+         */
+        public AbstractUIPosition()
         {
         }
 
-        public UIAbstractPosition(final AbstractDocument_Base _doc)
+        /**
+         * Instantiates a new UI abstract position.
+         *
+         * @param _doc the _doc
+         */
+        public AbstractUIPosition(final AbstractDocument_Base _doc)
         {
             this.doc = _doc;
+        }
+
+        /**
+         * Gets the storage inst.
+         *
+         * @return the storage inst
+         */
+        public Instance getStorageInst()
+        {
+            return this.storageInst;
+        }
+
+        /**
+         * Sets the storage inst.
+         *
+         * @param _storageInst the new storage inst
+         */
+        public AbstractUIPosition setStorageInst(final Instance _storageInst)
+        {
+            this.storageInst = _storageInst;
+            return this;
         }
 
         /**
@@ -2895,8 +2962,9 @@ public abstract class AbstractDocument_Base
          *
          * @param _prodInstance value for instance variable
          *            {@link #prodInstance}
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setProdInstance(final Instance _prodInstance)
+        public AbstractUIPosition setProdInstance(final Instance _prodInstance)
         {
             this.prodInstance = _prodInstance;
             return this;
@@ -2916,8 +2984,9 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #quantity}.
          *
          * @param _quantity value for instance variable {@link #quantity}
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setQuantity(final BigDecimal _quantity)
+        public AbstractUIPosition setQuantity(final BigDecimal _quantity)
         {
             this.quantity = _quantity;
             return this;
@@ -2936,10 +3005,10 @@ public abstract class AbstractDocument_Base
         /**
          * Setter method for instance variable {@link #netUnitPrice}.
          *
-         * @param _rateNetUnitPrice value for instance variable
-         *            {@link #netUnitPrice}
+         * @param _netUnitPrice the _net unit price
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setNetUnitPrice(final BigDecimal _netUnitPrice)
+        public AbstractUIPosition setNetUnitPrice(final BigDecimal _netUnitPrice)
         {
             this.netUnitPrice = _netUnitPrice;
             return this;
@@ -2960,10 +3029,10 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #rateDiscountNetUnitPrice}
          * .
          *
-         * @param _rateDiscountNetUnitPrice value for instance variable
-         *            {@link #rateDiscountNetUnitPrice}
+         * @param _discountNetUnitPrice the _discount net unit price
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setDiscountNetUnitPrice(final BigDecimal _discountNetUnitPrice)
+        public AbstractUIPosition setDiscountNetUnitPrice(final BigDecimal _discountNetUnitPrice)
         {
             this.discountNetUnitPrice = _discountNetUnitPrice;
             return this;
@@ -2982,10 +3051,10 @@ public abstract class AbstractDocument_Base
         /**
          * Setter method for instance variable {@link #rateNetPrice}.
          *
-         * @param _rateNetPrice value for instance variable
-         *            {@link #rateNetPrice}
+         * @param _netPrice the _net price
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setNetPrice(final BigDecimal _netPrice)
+        public AbstractUIPosition setNetPrice(final BigDecimal _netPrice)
         {
             this.netPrice = _netPrice;
             return this;
@@ -3004,10 +3073,10 @@ public abstract class AbstractDocument_Base
         /**
          * Setter method for instance variable {@link #rateCrossPrice}.
          *
-         * @param _rateCrossPrice value for instance variable
-         *            {@link #rateCrossPrice}
+         * @param _crossPrice the _cross price
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setCrossPrice(final BigDecimal _crossPrice)
+        public AbstractUIPosition setCrossPrice(final BigDecimal _crossPrice)
         {
             this.crossPrice = _crossPrice;
             return this;
@@ -3027,8 +3096,9 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #discount}.
          *
          * @param _discount value for instance variable {@link #discount}
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setDiscount(final BigDecimal _discount)
+        public AbstractUIPosition setDiscount(final BigDecimal _discount)
         {
             this.discount = _discount;
             return this;
@@ -3048,13 +3118,21 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #instance}.
          *
          * @param _instance value for instance variable {@link #instance}
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setInstance(final Instance _instance)
+        public AbstractUIPosition setInstance(final Instance _instance)
         {
             this.instance = _instance;
             return this;
         }
 
+        /**
+         * Gets the map4 java script.
+         *
+         * @param _parameter the _parameter
+         * @return the map4 java script
+         * @throws EFapsException on error
+         */
         public Map<String, Object> getMap4JavaScript(final Parameter _parameter)
             throws EFapsException
         {
@@ -3065,7 +3143,7 @@ public abstract class AbstractDocument_Base
             final DecimalFormat totFrmt = NumberFormatter.get().getFrmt4Total(typeName);
             final DecimalFormat disFrmt = NumberFormatter.get().getFrmt4Discount(typeName);
 
-            ret.put("oid", this.instance.getOid());
+            ret.put("oid", this.instance != null ? this.instance.getOid() : "");
             ret.put("quantity", qtyFrmt.format(getQuantity()));
             ret.put("product", new String[] { getProdInstance().getOid(), getProdName() });
             ret.put("productDesc", getProdDescr());
@@ -3103,8 +3181,9 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #prodName}.
          *
          * @param _prodName value for instance variable {@link #prodName}
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setProdName(final String _prodName)
+        public AbstractUIPosition setProdName(final String _prodName)
         {
             this.prodName = _prodName;
             return this;
@@ -3124,8 +3203,9 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #prodDescr}.
          *
          * @param _prodDescr value for instance variable {@link #prodDescr}
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setProdDescr(final String _prodDescr)
+        public AbstractUIPosition setProdDescr(final String _prodDescr)
         {
             this.prodDescr = _prodDescr;
             return this;
@@ -3144,9 +3224,10 @@ public abstract class AbstractDocument_Base
         /**
          * Setter method for instance variable {@link #uoM}.
          *
-         * @param _uoM value for instance variable {@link #uoM}
+         * @param _long the _long
+         * @return the abstract ui position
          */
-        public UIAbstractPosition setUoM(final Long _long)
+        public AbstractUIPosition setUoM(final Long _long)
         {
             this.uoMID = _long;
             return this;
@@ -3161,7 +3242,6 @@ public abstract class AbstractDocument_Base
         {
             return this.doc;
         }
-
 
         /**
          * Setter method for instance variable {@link #doc}.

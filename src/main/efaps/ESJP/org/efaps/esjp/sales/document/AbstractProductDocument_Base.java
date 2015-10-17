@@ -711,11 +711,11 @@ public abstract class AbstractProductDocument_Base
     }
 
     @Override
-    protected List<UIAbstractPosition> updateBean4Indiviual(final Parameter _parameter,
-                                                            final UIAbstractPosition _bean)
+    protected List<AbstractUIPosition> updateBean4Indiviual(final Parameter _parameter,
+                                                            final AbstractUIPosition _bean)
         throws EFapsException
     {
-        final List<UIAbstractPosition> ret = new ArrayList<>();
+        final List<AbstractUIPosition> ret = new ArrayList<>();
         if (isUpdateBean4Individual(_parameter, _bean)) {
 
             if (Products.ACTIVATEINDIVIDUAL.get()) {
@@ -730,7 +730,13 @@ public abstract class AbstractProductDocument_Base
                         attrQueryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract2Batch.FromLink,
                                         _bean.getProdInstance());
                         final QueryBuilder invQueryBldr = new QueryBuilder(CIProducts.InventoryIndividual);
-                        final Instance storInst = getDefaultStorage(_parameter);
+                        final Instance storInst;
+                        if (_bean.getStorageInst() != null) {
+                            storInst = _bean.getStorageInst();
+                        } else {
+                            storInst = getDefaultStorage(_parameter);
+                        }
+
                         if (storInst != null && storInst.isValid()) {
                             invQueryBldr.addWhereAttrEqValue(CIProducts.InventoryIndividual.Storage, storInst);
                         }
@@ -751,11 +757,11 @@ public abstract class AbstractProductDocument_Base
                         multi.execute();
 
                         // FIFO
-                        final Map<DateTime, UIAbstractPosition> fifoMap = new TreeMap<>();
+                        final Map<DateTime, AbstractUIPosition> fifoMap = new TreeMap<>();
                         while (multi.next()) {
                             final Instance prodInst = multi.getSelect(selProdInst);
                             _bean.setDoc(null);
-                            final UIAbstractPosition bean = SerializationUtils.clone(_bean);
+                            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
                             bean.setProdInstance(prodInst)
                                             .setProdName(multi.<String>getSelect(selProdName))
                                             .setProdDescr(multi.<String>getSelect(selProdDescr))
@@ -766,7 +772,7 @@ public abstract class AbstractProductDocument_Base
                         }
 
                         BigDecimal currentQty = _bean.getQuantity();
-                        for (final UIAbstractPosition tmpPos : fifoMap.values()) {
+                        for (final AbstractUIPosition tmpPos : fifoMap.values()) {
                             ret.add(tmpPos);
                             if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
                                 tmpPos.setQuantity(currentQty);
@@ -797,7 +803,7 @@ public abstract class AbstractProductDocument_Base
      * @return true, if is update bean4 individual
      */
     protected boolean isUpdateBean4Individual(final Parameter _parameter,
-                                              final UIAbstractPosition _bean)
+                                              final AbstractUIPosition _bean)
     {
         return true;
     }
@@ -1149,23 +1155,27 @@ public abstract class AbstractProductDocument_Base
     }
 
     @Override
-    protected UIAbstractPosition getUIPosition(final Parameter _parameter)
+    protected AbstractUIPosition getUIPosition(final Parameter _parameter)
     {
         return new UIProductDocumentPosition(this);
     }
 
-
+    /**
+     * The Class UIProductDocumentPosition.
+     *
+     * @author The eFaps Team
+     */
     public static class UIProductDocumentPosition
-        extends UIAbstractPosition
+        extends AbstractUIPosition
     {
 
-        /**
-         *
-         */
+        /** */
         private static final long serialVersionUID = 1L;
 
         /**
-         * @param _doc
+         * Instantiates a new UI product document position.
+         *
+         * @param _doc the _doc
          */
         public UIProductDocumentPosition(final AbstractDocument_Base _doc)
         {
@@ -1181,15 +1191,24 @@ public abstract class AbstractProductDocument_Base
             if (getDoc() instanceof AbstractProductDocument_Base) {
                 tmpDoc = (AbstractProductDocument_Base) getDoc();
             } else {
-                tmpDoc = new AbstractProductDocument(){};
+                tmpDoc = new AbstractProductDocument()
+                {
+                };
             }
 
-            final Instance defaultStorageInst = tmpDoc.getDefaultStorage(_parameter);
-            if (defaultStorageInst.isValid()) {
+            final Instance storInst;
+            if (getStorageInst() != null) {
+                storInst = getStorageInst();
+            } else {
+                storInst = tmpDoc.getDefaultStorage(_parameter);
+            }
+
+            if (storInst.isValid()) {
                 if (getProdInstance().isValid()) {
-                    final String quantityInStock = tmpDoc
-                                    .getStock4ProductInStorage(_parameter, getProdInstance(), defaultStorageInst);
+                    final String quantityInStock = tmpDoc.getStock4ProductInStorage(_parameter, getProdInstance(),
+                                    storInst);
                     ret.put("quantityInStock", quantityInStock);
+                    ret.put("storage", storInst.getOid());
                 }
             }
             return ret;
