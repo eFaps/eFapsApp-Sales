@@ -1,209 +1,210 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version last-->
+<!-- Created with Jaspersoft Studio version 6.1.1.final using JasperReports Library version 6.1.1  -->
+<!-- 2015-10-20T10:29:07 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_ReturnUsageReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="06cf717a-e14a-4459-98ad-ec6aa77734fa">
-    <parameter name="INSTANCE" class="java.lang.Object"/>
-    <queryString language="eFaps">
-        <![CDATA[print $P!{INSTANCE} select
+	<parameter name="INSTANCE" class="java.lang.Object"/>
+	<queryString language="eFaps">
+		<![CDATA[print $P!{INSTANCE} select
 attribute[Name] as name,
 attribute[Date] as date,
 linkfrom[Projects_ProjectService2ReturnUsageReport#ToLink].linkto[FromLink].attribute[Name] as project,
 linkfrom[Projects_ProjectService2ReturnUsageReport#ToLink].linkto[FromLink].attribute[Description] as projectDescr,
-linkfrom[HumanResource_Employee2ReturnUsageReport#ToLink].linkto[FromLink].attribute[FirstName] as employeeFirstName,
-linkfrom[HumanResource_Employee2ReturnUsageReport#ToLink].linkto[FromLink].attribute[LastName] as employeeLastName,
+linkfrom[Sales_Employee2ReturnUsageReport#ToLink].linkto[FromLink].attribute[FirstName] as employeeFirstName,
+linkfrom[Sales_Employee2ReturnUsageReport#ToLink].linkto[FromLink].attribute[LastName] as employeeLastName,
 linkfrom[HumanResource_Department2ReturnUsageReport#ToLink].linkto[FromLink].attribute[Name] as employeeDepartment,
 attribute[Note] as note]]>
-    </queryString>
-    <field name="name" class="java.lang.String"/>
-    <field name="date" class="org.joda.time.DateTime"/>
-    <field name="project" class="java.lang.String"/>
-    <field name="projectDescr" class="java.lang.String"/>
-    <field name="employeeFirstName" class="java.lang.String"/>
-    <field name="employeeLastName" class="java.lang.String"/>
-    <field name="employeeDepartment" class="java.lang.String"/>
-    <field name="note" class="java.lang.String"/>
-    <pageHeader>
-        <band height="45" splitType="Stretch">
-            <staticText>
-                <reportElement x="131" y="15" width="322" height="15" uuid="59498143-85b7-401e-a9bd-cf9367b1c2e8"/>
-                <textElement textAlignment="Center">
-                    <font size="9" isBold="false" isStrikeThrough="false"/>
-                </textElement>
-                <text><![CDATA[Av. Industrial Oeste Centinela 218, Chincha Baja, Telf: 056-272167]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="131" y="30" width="322" height="15" uuid="69dcebe0-ebb5-41b3-829c-2472855078e8"/>
-                <textElement textAlignment="Center">
-                    <font isStrikeThrough="false"/>
-                </textElement>
-                <text><![CDATA[RUC: 20279232322]]></text>
-            </staticText>
-            <image>
-                <reportElement x="-1" y="0" width="132" height="45" uuid="15d8dd84-a0ac-4941-813d-ff4c37d8ca98"/>
-                <imageExpression><![CDATA["JasperImage.SD"]]></imageExpression>
-            </image>
-            <textField evaluationTime="Report">
-                <reportElement x="521" y="30" width="34" height="15" uuid="da6a9816-c76e-415f-8d9d-c3d68cbf4806">
-                    <property name="local_mesure_unitwidth" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.width" value="px"/>
-                </reportElement>
-                <textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="131" y="0" width="322" height="15" uuid="0deadb88-1f4f-4b2f-97c5-1c80d3fd8e2f"/>
-                <textElement textAlignment="Center">
-                    <font isStrikeThrough="false"/>
-                </textElement>
-                <text><![CDATA[SISTEMA DE GESTIÓN DE LA CALIDAD -  LOGÍSTICA]]></text>
-            </staticText>
-            <textField>
-                <reportElement x="453" y="30" width="68" height="15" uuid="e607fafd-b55b-4aae-8f7d-7b32145fe941"/>
-                <textElement textAlignment="Right"/>
-                <textFieldExpression><![CDATA["P\u00e1gina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="453" y="0" width="102" height="30" uuid="58bbad5e-589a-491b-9e9b-d0a664084617"/>
-                <textElement textAlignment="Center" verticalAlignment="Middle">
-                    <font size="12"/>
-                </textElement>
-                <text><![CDATA[SD-LOG-FR-013]]></text>
-            </staticText>
-        </band>
-    </pageHeader>
-    <detail>
-        <band height="105" splitType="Stretch">
-            <textField>
-                <reportElement mode="Transparent" x="-1" y="0" width="556" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="338d9709-e750-40f9-ab0c-4d5e59ad2fa4"/>
-                <box padding="0" topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
-                <textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
-                    <font fontName="SansSerif" size="15" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfFontName="Helvetica" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
-                    <paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
-                </textElement>
-                <textFieldExpression><![CDATA["VALE DE DEVOLUCIÓN " + $F{name}]]></textFieldExpression>
-            </textField>
-            <textField pattern="dd/MM/yyyy">
-                <reportElement x="455" y="25" width="100" height="20" uuid="c1bcf0ac-ba58-4dfc-abd4-b15f3f726406">
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
-            </textField>
-            <staticText>
-                <reportElement x="0" y="45" width="80" height="20" uuid="9c3cb23a-fb05-4c6a-9ed8-16077f04b837"/>
-                <box rightPadding="3"/>
-                <textElement textAlignment="Left"/>
-                <text><![CDATA[Proyecto:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="65" width="80" height="20" uuid="88023780-e4db-49fa-a3eb-ab8d7b4f2a1e"/>
-                <box rightPadding="3"/>
-                <textElement textAlignment="Left"/>
-                <text><![CDATA[Empleado:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="0" y="85" width="80" height="20" uuid="b9cdd35b-d636-4c0a-b461-f9a90aa5e8f0">
-                    <property name="local_mesure_unitwidth" value="pixel"/>
-                </reportElement>
-                <box rightPadding="3"/>
-                <textElement textAlignment="Left"/>
-                <text><![CDATA[Departamento:]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="375" y="25" width="80" height="20" uuid="9ed2d8c6-1974-4be4-b95d-dd8e08e47993"/>
-                <box rightPadding="3"/>
-                <textElement textAlignment="Right" markup="none">
-                    <font size="10"/>
-                </textElement>
-                <text><![CDATA[Fecha:]]></text>
-            </staticText>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="45" width="475" height="20" uuid="304c3cea-dbe3-46de-98a6-6233c13d43b3">
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <textFieldExpression><![CDATA[($F{project} == null ? "" : $F{project})   + " - " +($F{projectDescr} == null ? "" : $F{projectDescr})]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="65" width="475" height="20" uuid="06fd8d21-ce4e-49f7-9274-70b1e75c5527">
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <textFieldExpression><![CDATA[($F{employeeFirstName} == null ? "" :$F{employeeFirstName}) + " " + ($F{employeeLastName} == null ? "" : $F{employeeLastName})]]></textFieldExpression>
-            </textField>
-            <textField isBlankWhenNull="true">
-                <reportElement x="80" y="85" width="475" height="20" uuid="f9f4a9f2-8857-4bda-890c-2180049292ad">
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <textFieldExpression><![CDATA[$F{employeeDepartment}]]></textFieldExpression>
-            </textField>
-        </band>
-        <band height="52">
-            <subreport>
-                <reportElement x="0" y="10" width="555" height="20" uuid="42e9eaf1-ee22-46a4-b911-5c12a5b1c401"/>
-                <subreportParameter name="INSTANCE">
-                    <subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
-                </subreportParameter>
-                <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-                <subreportExpression><![CDATA["Sales_UsageReportPosition.jrxml"]]></subreportExpression>
-            </subreport>
-        </band>
-        <band height="30">
-            <textField isStretchWithOverflow="true" isBlankWhenNull="false">
-                <reportElement x="-1" y="0" width="556" height="20" uuid="938cfc07-0f13-42cb-b22e-6a5eb36b48cc">
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-                <textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
-            </textField>
-        </band>
-    </detail>
-    <columnFooter>
-        <band height="77">
-            <line>
-                <reportElement x="31" y="48" width="100" height="1" uuid="8ec706a8-a3d7-4067-ac06-1869c1c23f9e">
-                    <property name="local_mesure_unity" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.y" value="px"/>
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-            </line>
-            <line>
-                <reportElement x="220" y="48" width="100" height="1" uuid="7a45da1e-eb6e-4a53-98aa-df0211ffe115">
-                    <property name="local_mesure_unity" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.y" value="px"/>
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-            </line>
-            <line>
-                <reportElement x="400" y="48" width="100" height="1" uuid="1a221486-a660-446b-82e8-68699af1e084">
-                    <property name="local_mesure_unity" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.y" value="px"/>
-                    <property name="local_mesure_unitheight" value="pixel"/>
-                    <property name="com.jaspersoft.studio.unit.height" value="px"/>
-                </reportElement>
-            </line>
-            <staticText>
-                <reportElement x="31" y="49" width="100" height="28" uuid="39c40f96-f7b8-44e0-ae9a-0611b69e3c50"/>
-                <textElement textAlignment="Center">
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[Nombre y Firma Almacenero]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="230" y="48" width="80" height="28" uuid="59c251f0-ea83-4d38-aed8-eb6d456a59e9"/>
-                <textElement textAlignment="Center">
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[Nombre y Firma Recibido]]></text>
-            </staticText>
-            <staticText>
-                <reportElement x="420" y="48" width="70" height="28" uuid="0953cef5-e2ab-4131-bd7b-d8e861c2f15e"/>
-                <textElement textAlignment="Center">
-                    <font size="8"/>
-                </textElement>
-                <text><![CDATA[Nombre y Firma Jefe Alamcen]]></text>
-            </staticText>
-        </band>
-    </columnFooter>
+	</queryString>
+	<field name="name" class="java.lang.String"/>
+	<field name="date" class="org.joda.time.DateTime"/>
+	<field name="project" class="java.lang.String"/>
+	<field name="projectDescr" class="java.lang.String"/>
+	<field name="employeeFirstName" class="java.lang.String"/>
+	<field name="employeeLastName" class="java.lang.String"/>
+	<field name="employeeDepartment" class="java.lang.String"/>
+	<field name="note" class="java.lang.String"/>
+	<pageHeader>
+		<band height="45" splitType="Stretch">
+			<staticText>
+				<reportElement x="131" y="15" width="322" height="15" uuid="59498143-85b7-401e-a9bd-cf9367b1c2e8"/>
+				<textElement textAlignment="Center">
+					<font size="9" isBold="false" isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[Av. Industrial Oeste Centinela 218, Chincha Baja, Telf: 056-272167]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="131" y="30" width="322" height="15" uuid="69dcebe0-ebb5-41b3-829c-2472855078e8"/>
+				<textElement textAlignment="Center">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[RUC: 20279232322]]></text>
+			</staticText>
+			<image>
+				<reportElement x="-1" y="0" width="132" height="45" uuid="15d8dd84-a0ac-4941-813d-ff4c37d8ca98"/>
+				<imageExpression><![CDATA["JasperImage.SD"]]></imageExpression>
+			</image>
+			<textField evaluationTime="Report">
+				<reportElement x="521" y="30" width="34" height="15" uuid="da6a9816-c76e-415f-8d9d-c3d68cbf4806">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[" " + $V{PAGE_NUMBER}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="131" y="0" width="322" height="15" uuid="0deadb88-1f4f-4b2f-97c5-1c80d3fd8e2f"/>
+				<textElement textAlignment="Center">
+					<font isStrikeThrough="false"/>
+				</textElement>
+				<text><![CDATA[SISTEMA DE GESTIÓN DE LA CALIDAD -  LOGÍSTICA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="453" y="30" width="68" height="15" uuid="e607fafd-b55b-4aae-8f7d-7b32145fe941"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["P\u00e1gina "+$V{PAGE_NUMBER}+" de"]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="453" y="0" width="102" height="30" uuid="58bbad5e-589a-491b-9e9b-d0a664084617"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[SD-LOG-FR-013]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="105" splitType="Stretch">
+			<textField>
+				<reportElement mode="Transparent" x="-1" y="0" width="556" height="25" forecolor="#000000" backcolor="#FFFFFF" uuid="338d9709-e750-40f9-ab0c-4d5e59ad2fa4"/>
+				<box padding="0" topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Top" rotation="None" markup="none">
+					<font fontName="SansSerif" size="15" isBold="true" isItalic="false" isUnderline="false" isStrikeThrough="false" pdfEncoding="Cp1252" isPdfEmbedded="false"/>
+					<paragraph lineSpacing="Single" lineSpacingSize="1.0" firstLineIndent="0" leftIndent="0" rightIndent="0" spacingBefore="0" spacingAfter="0" tabStopWidth="40"/>
+				</textElement>
+				<textFieldExpression><![CDATA["VALE DE DEVOLUCIÓN " + $F{name}]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="455" y="25" width="100" height="20" uuid="c1bcf0ac-ba58-4dfc-abd4-b15f3f726406">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{date}.toDate()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="45" width="80" height="20" uuid="9c3cb23a-fb05-4c6a-9ed8-16077f04b837"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Proyecto:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="65" width="80" height="20" uuid="88023780-e4db-49fa-a3eb-ab8d7b4f2a1e"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Empleado:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="85" width="80" height="20" uuid="b9cdd35b-d636-4c0a-b461-f9a90aa5e8f0">
+					<property name="local_mesure_unitwidth" value="pixel"/>
+				</reportElement>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Left"/>
+				<text><![CDATA[Departamento:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="375" y="25" width="80" height="20" uuid="9ed2d8c6-1974-4be4-b95d-dd8e08e47993"/>
+				<box rightPadding="3"/>
+				<textElement textAlignment="Right" markup="none">
+					<font size="10"/>
+				</textElement>
+				<text><![CDATA[Fecha:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="45" width="475" height="20" uuid="304c3cea-dbe3-46de-98a6-6233c13d43b3">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[($F{project} == null ? "" : $F{project})   + " - " +($F{projectDescr} == null ? "" : $F{projectDescr})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="65" width="475" height="20" uuid="06fd8d21-ce4e-49f7-9274-70b1e75c5527">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[($F{employeeFirstName} == null ? "" :$F{employeeFirstName}) + " " + ($F{employeeLastName} == null ? "" : $F{employeeLastName})]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="80" y="85" width="475" height="20" uuid="f9f4a9f2-8857-4bda-890c-2180049292ad">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{employeeDepartment}]]></textFieldExpression>
+			</textField>
+		</band>
+		<band height="52">
+			<subreport>
+				<reportElement x="0" y="10" width="555" height="20" uuid="42e9eaf1-ee22-46a4-b911-5c12a5b1c401"/>
+				<subreportParameter name="INSTANCE">
+					<subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["Sales_UsageReportPosition.jrxml"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="30">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="false">
+				<reportElement x="-1" y="0" width="556" height="20" uuid="938cfc07-0f13-42cb-b22e-6a5eb36b48cc">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="77">
+			<line>
+				<reportElement x="31" y="48" width="100" height="1" uuid="8ec706a8-a3d7-4067-ac06-1869c1c23f9e">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="220" y="48" width="100" height="1" uuid="7a45da1e-eb6e-4a53-98aa-df0211ffe115">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<line>
+				<reportElement x="400" y="48" width="100" height="1" uuid="1a221486-a660-446b-82e8-68699af1e084">
+					<property name="local_mesure_unity" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+			</line>
+			<staticText>
+				<reportElement x="31" y="49" width="100" height="28" uuid="39c40f96-f7b8-44e0-ae9a-0611b69e3c50"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Nombre y Firma Almacenero]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="230" y="48" width="80" height="28" uuid="59c251f0-ea83-4d38-aed8-eb6d456a59e9"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Nombre y Firma Recibido]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="420" y="48" width="70" height="28" uuid="0953cef5-e2ab-4131-bd7b-d8e861c2f15e"/>
+				<textElement textAlignment="Center">
+					<font size="8"/>
+				</textElement>
+				<text><![CDATA[Nombre y Firma Jefe Alamcen]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
 </jasperReport>
