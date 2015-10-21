@@ -160,7 +160,7 @@ public abstract class AbstractSumOnlyDocument_Base
                 // if not added yet do it now to prevent error
                 if (!createdDoc.getValues().containsKey(CISales.DocumentSumAbstract.RateNetTotal.name)) {
                     insert.add(CISales.DocumentSumAbstract.RateNetTotal, rateCrossTotal);
-                    createdDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, rateCrossTotal);
+                    createdDoc.getValues().put(CISales.DocumentSumAbstract.RateNetTotal.name, rateCrossTotal);
                     insert.add(CISales.DocumentSumAbstract.NetTotal, crossTotal);
                     createdDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, crossTotal);
                 }
