@@ -60,6 +60,18 @@ public abstract class DocumentSumGroupedByDate_Base
     extends AbstractGroupedByDate
 {
 
+    /**
+     * Gets the value list.
+     *
+     * @param _parameter the _parameter
+     * @param _start the _start
+     * @param _end the _end
+     * @param _dateGourp the _date gourp
+     * @param _props the _props
+     * @param _types the _types
+     * @return the value list
+     * @throws EFapsException on error
+     */
     public ValueList getValueList(final Parameter _parameter,
                                   final DateTime _start,
                                   final DateTime _end,
@@ -111,12 +123,17 @@ public abstract class DocumentSumGroupedByDate_Base
         multi.addSelect(selContactName, selRateCurInst);
         multi.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal, CISales.DocumentSumAbstract.RateNetTotal,
-                        CISales.DocumentSumAbstract.Date);
+                        CISales.DocumentSumAbstract.Date, CISales.DocumentSumAbstract.DueDate);
         add2Print(_parameter, multi);
         multi.execute();
         while (multi.next()) {
             final Map<String, Object> map = new HashMap<>();
-            final DateTime dateTime = multi.getAttribute(CISales.DocumentSumAbstract.Date);
+            final DateTime dateTime;
+            if ("DueDate".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Date"))) {
+                dateTime = multi.getAttribute(CISales.DocumentSumAbstract.DueDate);
+            } else {
+                dateTime = multi.getAttribute(CISales.DocumentSumAbstract.Date);
+            }
             BigDecimal total;
             BigDecimal rateTotal;
             if ("NET".equals(props.getProperty(multi.getCurrentInstance().getType().getName() + ".Total"))) {
@@ -154,6 +171,7 @@ public abstract class DocumentSumGroupedByDate_Base
      * @param _parameter the _parameter
      * @param _multi the _multi
      * @param _map the _map
+     * @throws EFapsException on error
      */
     protected void add2Map(final Parameter _parameter,
                            final MultiPrintQuery _multi,
@@ -191,20 +209,39 @@ public abstract class DocumentSumGroupedByDate_Base
      // to be used by implementation
     }
 
+    /**
+     * The Class ValueList.
+     *
+     * @author The eFaps Team
+     */
     public static class ValueList
         extends ArrayList<Map<String, Object>>
     {
 
-        /**
-         *
-         */
+        /** */
         private static final long serialVersionUID = 1L;
+
+        /** The start. */
         private DateTime start;
+
+        /** The end. */
         private DateTime end;
+
+        /** The date gourp. */
         private DateGroup dateGourp;
+
+        /** The props. */
         private Properties props;
+
+        /** The types. */
         private Set<Type> types = new HashSet<>();
 
+        /**
+         * Group by.
+         *
+         * @param _keys the _keys
+         * @return the value list
+         */
         public ValueList groupBy(final String... _keys)
         {
             final Map<String, Map<String, Object>> tmpMap = new HashMap<>();
@@ -238,6 +275,11 @@ public abstract class DocumentSumGroupedByDate_Base
             return ret;
         }
 
+        /**
+         * Gets the doc instances.
+         *
+         * @return the doc instances
+         */
         public Set<Instance> getDocInstances()
         {
             final Set<Instance> ret = new HashSet<>();
