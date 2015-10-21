@@ -79,10 +79,17 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
         </field>
-        <field name="name">
+         <field name="name4edit">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Required">true</property>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="Columns">15</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
         <field name="revision">
@@ -152,6 +159,7 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>
+            <property name="Required">true</property>
         </field>
         <field name="crossTotal4Read">
             <property name="ModeEdit">NONE</property>

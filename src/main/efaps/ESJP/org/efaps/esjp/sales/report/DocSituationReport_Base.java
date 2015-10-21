@@ -204,6 +204,13 @@ public abstract class DocSituationReport_Base
         return this.valueList;
     }
 
+    /**
+     * Add to query builder.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException on error
+     */
     protected void add2QueryBuilder(final Parameter _parameter,
                                     final QueryBuilder _queryBldr)
         throws EFapsException
