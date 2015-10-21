@@ -16,19 +16,16 @@
 
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>deb49b6f-1bcc-4a2c-bfb6-ea86d6f55b06</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5792f4b8-73b0-41b5-82cb-a25a06421c24</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractMyDesk</name>
+        <name>Sales_PaymentDocument_Report4AccountCompIndMyDesk_Menu</name>
         <childs>
-            <child>Sales_PaymentDocumentMyDesk</child>
-            <child>Sales_PaymentExchangeMyDesk</child>
-            <child>Sales_PaymentDocument_Report4AccountMyDesk</child>
-            <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk</child>
-            <child>Sales_CollectionOrderMyDesk</child>
-            <child>Sales_DatedCheckMyDesk</child>
+            <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk_Menu_DownloadExcel</child>
+            <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk_Menu_DownloadPDF</child>
+            <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk_Menu_Filter</child>
         </childs>
     </definition>
 </ui-menu>

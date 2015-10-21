@@ -323,6 +323,12 @@ public final class Sales
                     .key(BASE + "report.SalesReport4Account.OUT")
                     .description("Properties 4 SalesReport4Account OUT.");
 
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ACTIVATECOMPANYINDREPORT = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.ActivateCompanyIndependent")
+                    .description("Activate the Company Independent Reports.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PAYMENTTHRESHOLD4PAID = new PropertiesSysConfAttribute()

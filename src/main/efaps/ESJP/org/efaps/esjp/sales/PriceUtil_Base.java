@@ -89,7 +89,6 @@ public abstract class PriceUtil_Base
      */
     private static final long serialVersionUID = 1L;
 
-
     /**
      * Method to get the Price for a product.
      *
@@ -117,12 +116,11 @@ public abstract class PriceUtil_Base
         attrQueryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID,
                         posAttrQueryBldr.getAttributeQuery(CISales.PositionSumAbstract.DocumentAbstractLink));
         if (_evalContact) {
-           final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
-           if (contactInst.isValid() && contactInst.getType().isKindOf(CIContacts.ContactAbstract)) {
-               attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contactInst);
-           }
+            final Instance contactInst = Instance.get(_parameter.getParameterValue("contact"));
+            if (contactInst.isValid() && contactInst.getType().isKindOf(CIContacts.ContactAbstract)) {
+                attrQueryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, contactInst);
+            }
         }
-
         attrQueryBldr.addOrderByAttributeDesc(CISales.DocumentSumAbstract.Date);
         attrQueryBldr.setLimit(1);
 
@@ -131,7 +129,8 @@ public abstract class PriceUtil_Base
         queryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
                         attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID));
         final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.RateCurrencyId).instance();
+        final SelectBuilder selCurInst = SelectBuilder.get().linkto(CISales.PositionSumAbstract.RateCurrencyId)
+                        .instance();
         multi.addSelect(selCurInst);
         multi.addAttribute(CISales.PositionSumAbstract.RateNetUnitPrice,
                         CISales.PositionSumAbstract.RateCrossUnitPrice);
@@ -172,7 +171,6 @@ public abstract class PriceUtil_Base
         }
         return ret;
     }
-
 
     /**
      * Method to get the Price for a product.
@@ -938,7 +936,7 @@ public abstract class PriceUtil_Base
         /**
          * @param _key key
          */
-        private RangeInterval(final String _key)
+        RangeInterval(final String _key)
         {
             this.key = _key;
         }

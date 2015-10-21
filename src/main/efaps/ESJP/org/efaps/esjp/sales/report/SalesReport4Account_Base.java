@@ -38,6 +38,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
+import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -186,19 +187,6 @@ public abstract class SalesReport4Account_Base
         this.reportKey = _reportKey;
     }
 
-    @Override
-    protected String getCacheKey(final Parameter _parameter)
-        throws EFapsException
-    {
-        final ReportKey key;
-        if (containsProperty(_parameter, "ReportKey")) {
-            key = ReportKey.valueOf(getProperty(_parameter, "ReportKey"));
-        } else {
-            key = getReportKey();
-        }
-        return super.getCacheKey(_parameter) + "." + key;
-    }
-
     /**
      * Report class.
      */
@@ -211,18 +199,24 @@ public abstract class SalesReport4Account_Base
          */
         private final SalesReport4Account_Base filteredReport;
 
-
-        public SalesReport4Account_Base getFilteredReport()
-        {
-            return this.filteredReport;
-        }
-
         /**
+         * Instantiates a new report4 account.
+         *
          * @param _report4Account class used
          */
         public Report4Account(final SalesReport4Account_Base _report4Account)
         {
             this.filteredReport = _report4Account;
+        }
+
+        /**
+         * Gets the filtered report.
+         *
+         * @return the filtered report
+         */
+        protected SalesReport4Account_Base getFilteredReport()
+        {
+            return this.filteredReport;
         }
 
         @Override
@@ -249,7 +243,10 @@ public abstract class SalesReport4Account_Base
                 final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
                 add2QueryBuilder(_parameter, queryBldr);
 
-                final MultiPrintQuery multi = queryBldr.getPrint();
+                final InstanceQuery query = queryBldr.getQuery();
+                query.setCompanyDepended(isCompanyDependent(_parameter));
+
+                final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
                 multi.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
                                 CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
                                 CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,
@@ -510,7 +507,7 @@ public abstract class SalesReport4Account_Base
          * @return the currency inst4 report
          * @throws EFapsException on error
          */
-        public Set<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
+        protected Set<CurrencyInst> getCurrencyInst4Report(final Parameter _parameter)
             throws EFapsException
         {
             Set<CurrencyInst> ret = new HashSet<>();
@@ -550,11 +547,24 @@ public abstract class SalesReport4Account_Base
          * @return true, if is currency base
          * @throws EFapsException on error
          */
-        public boolean isCurrencyBase(final Parameter _parameter)
+        protected boolean isCurrencyBase(final Parameter _parameter)
             throws EFapsException
         {
             final Set<CurrencyInst> currencies = getCurrencyInst4Report(_parameter);
             return currencies.size() == 1 && "BASE".equals(currencies.iterator().next().getInstance().getKey());
+        }
+
+        /**
+         * Checks if is company depended.
+         *
+         * @param _parameter the _parameter
+         * @return true, if is company depended
+         * @throws EFapsException on error
+         */
+        protected boolean isCompanyDependent(final Parameter _parameter)
+            throws EFapsException
+        {
+            return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
         }
     }
 
@@ -587,31 +597,46 @@ public abstract class SalesReport4Account_Base
         }
     }
 
+    /**
+     * The Class DataBean.
+     */
     public static class DataBean
     {
 
+        /** The doc inst. */
         private Instance docInst;
 
+        /** The doc created. */
         private DateTime docCreated;
 
+        /** The doc date. */
         private DateTime docDate;
 
+        /** The doc due date. */
         private DateTime docDueDate;
 
+        /** The doc name. */
         private String docName;
 
+        /** The doc revision. */
         private String docRevision;
 
+        /** The doc status. */
         private String docStatus;
 
+        /** The doc contact name. */
         private String docContactName;
 
+        /** The cross. */
         private final Map<Long, BigDecimal> cross = new HashMap<>();
 
+        /** The payments. */
         private final Map<Long, BigDecimal> payments = new HashMap<>();
 
+        /** The rate. */
         private Object[] rate;
 
+        /** The currency base. */
         private boolean currencyBase;
 
         /**
@@ -637,7 +662,10 @@ public abstract class SalesReport4Account_Base
         }
 
         /**
-         * @return
+         * Gets the map.
+         *
+         * @return the map
+         * @throws EFapsException on error
          */
         public Map<String, ?> getMap()
             throws EFapsException
@@ -673,10 +701,17 @@ public abstract class SalesReport4Account_Base
             return ret;
         }
 
-        public DataBean addCross(final Long currencyId,
+        /**
+         * Adds the cross.
+         *
+         * @param _currencyId the currency id
+         * @param _cross the _cross
+         * @return the data bean
+         */
+        public DataBean addCross(final Long _currencyId,
                                  final BigDecimal _cross)
         {
-            this.cross.put(currencyId, _cross);
+            this.cross.put(_currencyId, _cross);
             return this;
         }
 
@@ -694,6 +729,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docInst}.
          *
          * @param _docInst value for instance variable {@link #docInst}
+         * @return the data bean
          */
         public DataBean setDocInst(final Instance _docInst)
         {
@@ -715,6 +751,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docCreated}.
          *
          * @param _docCreated value for instance variable {@link #docCreated}
+         * @return the data bean
          */
         public DataBean setDocCreated(final DateTime _docCreated)
         {
@@ -736,6 +773,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docDate}.
          *
          * @param _docDate value for instance variable {@link #docDate}
+         * @return the data bean
          */
         public DataBean setDocDate(final DateTime _docDate)
         {
@@ -757,6 +795,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docDueDate}.
          *
          * @param _docDueDate value for instance variable {@link #docDueDate}
+         * @return the data bean
          */
         public DataBean setDocDueDate(final DateTime _docDueDate)
         {
@@ -778,6 +817,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docName}.
          *
          * @param _docName value for instance variable {@link #docName}
+         * @return the data bean
          */
         public DataBean setDocName(final String _docName)
         {
@@ -800,6 +840,7 @@ public abstract class SalesReport4Account_Base
          *
          * @param _docContactName value for instance variable
          *            {@link #docContactName}
+         * @return the data bean
          */
         public DataBean setDocContactName(final String _docContactName)
         {
@@ -821,6 +862,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #rate}.
          *
          * @param _rate value for instance variable {@link #rate}
+         * @return the data bean
          */
         public DataBean setRate(final Object[] _rate)
         {
@@ -842,6 +884,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docRevision}.
          *
          * @param _docRevision value for instance variable {@link #docRevision}
+         * @return the data bean
          */
         public DataBean setDocRevision(final String _docRevision)
         {
@@ -852,9 +895,6 @@ public abstract class SalesReport4Account_Base
         /**
          * Method to obtains totals of the payments relations to document.
          *
-         * @param _parameter Parameter as passed by the eFaps API
-         * @param _docInst Instance of the payment
-         * @return value of the payments
          * @throws EFapsException on error
          */
         protected void evalPayments()
@@ -883,6 +923,7 @@ public abstract class SalesReport4Account_Base
          * Setter method for instance variable {@link #docStatus}.
          *
          * @param _docStatus value for instance variable {@link #docStatus}
+         * @return the data bean
          */
         public DataBean setDocStatus(final String _docStatus)
         {
