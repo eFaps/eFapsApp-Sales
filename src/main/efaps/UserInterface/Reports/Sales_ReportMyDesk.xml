@@ -35,6 +35,7 @@
             <child>Sales_DocumentSumReportMyDesk</child>
             <child>Sales_DocPositionReportMyDesk</child>
             <child>Sales_DocSituationReportMyDesk</child>
+            <child>Sales_DocSituationReportCompIndMyDesk</child>
             <child>Sales_SalesProductReportMyDesk</child>
             <child>Sales_Employee2DocReportMyDesk</child>
             <child>Sales_InventoryReportMyDesk</child>
