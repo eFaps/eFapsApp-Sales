@@ -38,7 +38,6 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
-import org.efaps.db.InstanceQuery;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
@@ -242,11 +241,8 @@ public abstract class SalesReport4Account_Base
                 }
                 final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, offset ? 0 : 100);
                 add2QueryBuilder(_parameter, queryBldr);
-
-                final InstanceQuery query = queryBldr.getQuery();
-                query.setCompanyDepended(isCompanyDependent(_parameter));
-
-                final MultiPrintQuery multi = new MultiPrintQuery(query.execute());
+                queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
+                final MultiPrintQuery multi = queryBldr.getPrint();
                 multi.addAttribute(CISales.DocumentSumAbstract.Created, CISales.DocumentSumAbstract.Date,
                                 CISales.DocumentSumAbstract.Name, CISales.DocumentSumAbstract.DueDate,
                                 CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CrossTotal,

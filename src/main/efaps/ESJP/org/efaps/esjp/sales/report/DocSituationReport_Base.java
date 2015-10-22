@@ -227,7 +227,22 @@ public abstract class DocSituationReport_Base
                         IOnDocumentSumReport.class)) {
             listener.add2QueryBuilder(_parameter, _queryBldr);
         }
+        _queryBldr.setCompanyDependent(isCompanyDependent(_parameter));
     }
+
+    /**
+     * Checks if is company depended.
+     *
+     * @param _parameter the _parameter
+     * @return true, if is company depended
+     * @throws EFapsException on error
+     */
+    protected boolean isCompanyDependent(final Parameter _parameter)
+        throws EFapsException
+    {
+        return "true".equalsIgnoreCase(getProperty(_parameter, "CompanyDependent", "true"));
+    }
+
 
     @Override
     protected Properties getProperties4TypeList(final Parameter _parameter)
