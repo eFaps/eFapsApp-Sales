@@ -810,21 +810,23 @@ public abstract class DeliveryNote_Base
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
         final SelectBuilder selStatus = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
                         .attribute(CISales.DeliveryNote.Status);
-        final SelectBuilder selRecInst = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
+        final SelectBuilder selDelNoteInst = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.ToLink)
                         .instance();
-        print.addSelect(selStatus, selRecInst);
+        final SelectBuilder selInvoiceInst = SelectBuilder.get().linkto(CISales.Invoice2DeliveryNote.FromLink)
+                        .instance();
+        print.addSelect(selStatus, selDelNoteInst, selInvoiceInst);
         print.addAttribute(CISales.Invoice2DeliveryNote.ToLink,
                         CISales.Invoice2DeliveryNote.FromLink);
         print.executeWithoutAccessCheck();
         final Status status = Status.get(print.<Long>getSelect(selStatus));
-        // if the recieving ticket was open check if the status must change
+        // if the deliverynote ticket was open check if the status must change
         if (status.equals(Status.find(CISales.DeliveryNoteStatus.Open))) {
-            final Instance recInst = print.<Instance>getSelect(selRecInst);
+            final Instance delNoteInst = print.<Instance>getSelect(selDelNoteInst);
             final DocComparator comp = new DocComparator();
-            comp.setDocInstance(recInst);
-
+            comp.setDocInstance(delNoteInst);
+            // check for the case that there are n Invoices for the given DeliveryNote
             final QueryBuilder queryBldr = new QueryBuilder(CISales.Invoice2DeliveryNote);
-            queryBldr.addWhereAttrEqValue(CISales.Invoice2DeliveryNote.ToLink, recInst);
+            queryBldr.addWhereAttrEqValue(CISales.Invoice2DeliveryNote.ToLink, delNoteInst);
             final MultiPrintQuery multi = queryBldr.getPrint();
             final SelectBuilder selInvInst = SelectBuilder.get()
                             .linkto(CISales.Invoice2DeliveryNote.FromLink)
@@ -839,9 +841,45 @@ public abstract class DeliveryNote_Base
             }
 
             if (comp.quantityIsZero()) {
-                final Update update = new Update(print.<Instance>getSelect(selRecInst));
+                final Update update = new Update(delNoteInst);
                 update.add(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Closed));
                 update.executeWithoutAccessCheck();
+            } else {
+                // check for the case that for the n DeliveryNotes for the Invoice
+                final Instance invoiceInst = print.<Instance>getSelect(selInvoiceInst);
+                final DocComparator invComp = new DocComparator();
+                invComp.setDocInstance(invoiceInst);
+                // check for the case that there are n Invoices for the given DeliveryNote
+                final QueryBuilder queryBldr2 = new QueryBuilder(CISales.Invoice2DeliveryNote);
+                queryBldr2.addWhereAttrEqValue(CISales.Invoice2DeliveryNote.FromLink, invoiceInst);
+                final MultiPrintQuery multi2 = queryBldr2.getPrint();
+                final SelectBuilder selDelInst = SelectBuilder.get()
+                                .linkto(CISales.Invoice2DeliveryNote.ToLink)
+                                .instance();
+                final SelectBuilder selDelStatus = SelectBuilder.get()
+                                .linkto(CISales.Invoice2DeliveryNote.ToLink).status();
+                multi2.addSelect(selDelInst, selDelStatus);
+                multi2.executeWithoutAccessCheck();
+                final Set<Instance> delInsts = new HashSet<>();
+                while (multi2.next()) {
+                    final Instance delInst = multi2.getSelect(selDelInst);
+                    final Status delStatus = multi2.getSelect(selDelStatus);
+                    if (!delStatus.equals(Status.find(CISales.DeliveryNoteStatus.Canceled))) {
+                        final DocComparator docComp = new DocComparator();
+                        docComp.setDocInstance(delInst);
+                        invComp.substractQuantity(docComp);
+                        if (delStatus.equals(Status.find(CISales.DeliveryNoteStatus.Open))) {
+                            delInsts.add(delInst);
+                        }
+                    }
+                }
+                if (invComp.quantityIsZero()) {
+                    for (final Instance inst : delInsts) {
+                        final Update update = new Update(inst);
+                        update.add(CISales.DeliveryNote.Status, Status.find(CISales.DeliveryNoteStatus.Closed));
+                        update.executeWithoutAccessCheck();
+                    }
+                }
             }
         }
         return new Return();
