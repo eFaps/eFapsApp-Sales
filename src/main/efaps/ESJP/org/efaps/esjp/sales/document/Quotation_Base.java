@@ -63,6 +63,29 @@ public abstract class Quotation_Base
         return ret;
     }
 
+    /**
+     * Method for create a new Quotation.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editDoc = editDoc(_parameter);
+        updatePositions(_parameter, editDoc);
+        updateConnection2Object(_parameter, editDoc);
+
+        final File file = createReport(_parameter, editDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
     @Override
     public CIType getCIType()
         throws EFapsException

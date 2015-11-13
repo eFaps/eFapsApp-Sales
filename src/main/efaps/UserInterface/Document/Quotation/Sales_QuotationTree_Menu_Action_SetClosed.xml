@@ -1,8 +1,6 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-<!--
-
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2014 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,31 +15,28 @@
  limitations under the License.
 
 -->
-
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7b8dc27c-67b4-4dc6-9dc9-335bfe8152fe</uuid>
+    <uuid>b6c354a4-03f6-4cdd-b796-48a94247ab1c</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_QuotationTree_Menu_Action_Edit</name>
+        <name>Sales_QuotationTree_Menu_Action_SetClosed</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <form>Sales_QuotationForm</form>
-            <execute method="edit" program="org.efaps.esjp.sales.document.Quotation">
-                 <property name="PositionType">Sales_ReceiptPosition</property>
+            <execute method="setStatus" program="org.efaps.esjp.admin.datamodel.StatusValue">
+                <property name="Status">Closed</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
-                name="Sales_QuotationTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                name="Sales_ReturnSlipTree_Menu_Action_SetClosed.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
                 <property name="Status">Open</property>
             </trigger>
         </target>
-        <property name="Target">modal</property>
-        <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="AskUser">true</property>
+        <property name="Submit">true</property>
+        <property name="SubmitSelectedRows">-1</property>
     </definition>
 </ui-command>
