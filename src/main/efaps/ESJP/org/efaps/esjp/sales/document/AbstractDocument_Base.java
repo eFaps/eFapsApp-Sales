@@ -139,11 +139,6 @@ public abstract class AbstractDocument_Base
     public static final String FIELDTABLES = AbstractDocument.class.getName() + ".FieldTables";
 
     /**
-     * Key used to store the instance of the current Currency in the session.
-     */
-    public static final String CURRENCYINST_KEY = AbstractDocument.class.getName() + ".CurrencyInstance";
-
-    /**
      * Key used to store the list of calculators in the session.
      */
     public static final String CALCULATOR_KEY = AbstractDocument.class.getName() + ".CalculatorKey";
@@ -1020,7 +1015,6 @@ public abstract class AbstractDocument_Base
                 derived = true;
             }
             final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
-            Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
             ratesCur = new PriceUtil().getExchangeRate(new DateTime().withTimeAtStartOfDay(), newInst);
 
             if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived
@@ -2282,7 +2276,6 @@ public abstract class AbstractDocument_Base
         }
 
         final Instance currInst = evaluateCurrency4JavaScript(_parameter);
-        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, currInst);
 
         final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field()
         {

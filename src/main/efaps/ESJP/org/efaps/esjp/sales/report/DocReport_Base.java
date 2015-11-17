@@ -57,7 +57,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.sales.PriceUtil;
-import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.DateTimeUtil;
@@ -584,8 +583,7 @@ public abstract class DocReport_Base
 
         final Instance newInst = Instance.get(Type.get(CIERP.Currency.uuid), curr);
         final Map<String, String> map = new HashMap<String, String>();
-        Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCYINST_KEY);
+        Instance currentInst = new Currency().getCurrencyFromUI(_parameter);
         // Sales-Configuration
         final Instance baseInst = Currency.getBaseCurrency();
         if (currentInst == null) {

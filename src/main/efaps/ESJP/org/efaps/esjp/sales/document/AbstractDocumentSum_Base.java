@@ -275,8 +275,6 @@ public abstract class AbstractDocumentSum_Base
         add2DocEdit(_parameter, update, _editDoc);
         update.execute();
 
-        Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
-
         return _editDoc;
     }
 
@@ -290,9 +288,7 @@ public abstract class AbstractDocumentSum_Base
                                                final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        return _parameter.getParameterValue("rateCurrencyId") == null
-                        ? Currency.getBaseCurrency()
-                        : Instance.get(CIERP.Currency.getType(), _parameter.getParameterValue("rateCurrencyId"));
+        return new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId");
     }
 
     /**
@@ -423,7 +419,6 @@ public abstract class AbstractDocumentSum_Base
                         IOnCreateDocument.class)) {
             listener.afterCreate(_parameter, createdDoc);
         }
-        Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
         return createdDoc;
     }
 
@@ -690,13 +685,11 @@ public abstract class AbstractDocumentSum_Base
 
         final Instance newInst = getRateCurrencyInstance(_parameter, null);
         final Map<String, String> map = new HashMap<String, String>();
-        Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCYINST_KEY);
+        Instance currentInst = new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId_eFapsPrevious");
         final Instance baseInst = Currency.getBaseCurrency();
-        if (currentInst == null) {
+        if (currentInst == null || (currentInst != null && !currentInst.isValid())) {
             currentInst = baseInst;
         }
-        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY, newInst);
 
         if (!newInst.equals(currentInst)) {
             final Currency currency = new Currency();
@@ -767,8 +760,7 @@ public abstract class AbstractDocumentSum_Base
                                  final List<Calculator> _calcList)
         throws EFapsException
     {
-        final Instance curInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCYINST_KEY);
+        final Instance curInst = getCurrencyFromUI(_parameter);
         final OpenAmount openAmount = new Payment().new OpenAmount(new CurrencyInst(curInst),
                         getCrossTotal(_parameter, _calcList),
                         new PriceUtil().getDateFromParameter(_parameter));
@@ -1812,5 +1804,19 @@ public abstract class AbstractDocumentSum_Base
         print.execute();
         return html.append(_child.getType().getLabel()
                         + " - " + print.<String>getAttribute(CISales.DocumentAbstract.Name));
+    }
+
+
+    /**
+     * Gets the currency from ui.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the currency from ui
+     * @throws EFapsException on error
+     */
+    protected Instance getCurrencyFromUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Currency().getCurrencyFromUI(_parameter);
     }
 }

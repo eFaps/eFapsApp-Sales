@@ -25,14 +25,15 @@
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReceiptPositionTable</name>
-        <!-- fields -->
         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_ReceiptPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Quantity"
-                name="Sales_ReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Quantity"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="product">
             <property name="SelectAlternateOID">linkto[Product].oid</property>
@@ -41,10 +42,16 @@
             <property name="Label">Sales_ReceiptPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="autoComplete4Product"
-                name="Sales_ReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE" />
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Product"
-                name="Sales_ReceiptPositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="autoComplete4Product"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <property name="ExtraParameter">contact</property>
+            </trigger>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Product"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="productDesc">
             <property name="Columns">90</property>
@@ -76,25 +83,33 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_ReceiptPosition/NetUnitPrice.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4NetUnitPrice"
-                name="Sales_ReceiptPositionTable.netUnitPrice.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="accessCheck4NetUnitPrice"
-                name="Sales_ReceiptPositionTable.netUnitPrice.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="netUnitPrice4Read">
             <property name="ModeCreate">READONLY</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_ReceiptPosition/NetUnitPrice.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="accessCheck4NetUnitPrice"
-                name="Sales_ReceiptPositionTable.netUnitPrice.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="accessCheck4NetUnitPrice"
+                name="Sales_ReceiptPositionTable.netUnitPrice.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK" />
         </field>
         <field name="discount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Discount</property>
             <property name="Label">Sales_ReceiptPosition/Discount.Label</property>
-            <trigger program="org.efaps.esjp.sales.document.Receipt" method="updateFields4Discount"
-                name="Sales_ReceiptPositionTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="updateFields4Discount"
+                name="Sales_ReceiptPositionTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="discountNetUnitPrice">
             <property name="ModeCreate">READONLY</property>

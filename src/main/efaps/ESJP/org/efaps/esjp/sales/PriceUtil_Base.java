@@ -52,7 +52,7 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
-import org.efaps.esjp.sales.document.AbstractDocument_Base;
+import org.efaps.esjp.products.PriceList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.HtmlTable;
@@ -137,10 +137,8 @@ public abstract class PriceUtil_Base
         multi.execute();
         if (multi.next()) {
             final Instance baseInst = Currency.getBaseCurrency();
-
             final Instance priceInst = multi.getSelect(selCurInst);
-            final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                            AbstractDocument_Base.CURRENCYINST_KEY);
+            final Instance currentInst = new Currency().getCurrencyFromUI(_parameter);
 
             final BigDecimal price = _netPrice
                             ? multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice)
@@ -255,45 +253,68 @@ public abstract class PriceUtil_Base
                 } else {
                     multi = queryBldr2.getPrint();
                 }
-                multi.addAttribute(CIProducts.ProductPricelistPosition.Price,
-                                CIProducts.ProductPricelistPosition.CurrencyId);
+                final SelectBuilder selPGInst = SelectBuilder.get().linkto(
+                                CIProducts.ProductPricelistPosition.PriceGroupLink).instance();
+                final SelectBuilder selCurrInst = SelectBuilder.get().linkto(
+                                CIProducts.ProductPricelistPosition.CurrencyId).instance();
+                multi.addSelect(selPGInst, selCurrInst);
+                multi.addAttribute(CIProducts.ProductPricelistPosition.Price);
                 multi.execute();
-                if (multi.next()) {
-                    final Instance priceInst = Instance.get(CIERP.Currency.getType(),
-                                    multi.<Long>getAttribute(CIProducts.ProductPricelistPosition.CurrencyId));
-                    final Instance currentInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                                    AbstractDocument_Base.CURRENCYINST_KEY);
+                boolean first = true;
+                while (multi.next()) {
+                    final Instance pgInst = multi.getSelect(selPGInst);
+                    if ((first && (pgInst == null || pgInst != null && !pgInst.isValid()))
+                                    || groupApplies(_parameter, pgInst)) {
+                        first = false;
+                        final Instance origCurrInst = multi.getSelect(selCurrInst);
+                        final Instance currentInst = new Currency().getCurrencyFromUI(_parameter);
+                        final Instance baseInst = Currency.getBaseCurrency();
 
-                    final Instance baseInst = Currency.getBaseCurrency();
+                        final BigDecimal price = multi.<BigDecimal>getAttribute(
+                                        CIProducts.ProductPricelistPosition.Price);
 
-                    final BigDecimal price = multi.<BigDecimal>getAttribute(CIProducts.ProductPricelistPosition.Price);
-
-                    ret.setCurrentCurrencyInstance(currentInst);
-                    ret.setOrigCurrencyInstance(priceInst);
-                    ret.setOrigPrice(price);
-                    if (priceInst.equals(currentInst)) {
-                        ret.setCurrentPrice(price);
-                    } else {
-                        if (currentInst != null) {
-                            final BigDecimal[] rates = getRates(_parameter, currentInst, priceInst);
-                            ret.setCurrentPrice(price.multiply(rates[2]));
-                        } else {
+                        ret.setCurrentCurrencyInstance(currentInst);
+                        ret.setOrigCurrencyInstance(origCurrInst);
+                        ret.setOrigPrice(price);
+                        if (origCurrInst.equals(currentInst)) {
                             ret.setCurrentPrice(price);
+                        } else {
+                            if (currentInst != null) {
+                                final BigDecimal[] rates = getRates(_parameter, currentInst, origCurrInst);
+                                ret.setCurrentPrice(price.multiply(rates[2]));
+                            } else {
+                                ret.setCurrentPrice(price);
+                            }
                         }
-                    }
-                    if (priceInst.equals(baseInst)) {
-                        ret.setBasePrice(price);
-                        ret.setBaseRate(BigDecimal.ONE);
-                    } else {
-                        final BigDecimal[] rates = getRates(_parameter, currentInst == null ? baseInst : currentInst,
-                                        baseInst);
-                        ret.setBasePrice(price.multiply(rates[2]));
-                        ret.setBaseRate(rates[2]);
+                        if (origCurrInst.equals(baseInst)) {
+                            ret.setBasePrice(price);
+                            ret.setBaseRate(BigDecimal.ONE);
+                        } else {
+                            final BigDecimal[] rates = getRates(_parameter, currentInst == null
+                                            ? baseInst : currentInst, baseInst);
+                            ret.setBasePrice(price.multiply(rates[2]));
+                            ret.setBaseRate(rates[2]);
+                        }
                     }
                 }
             }
         }
         return ret;
+    }
+
+    /**
+     * Group applies.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _priceGroupInstance the price group instance
+     * @return true, if successful
+     * @throws EFapsException on error
+     */
+    protected boolean groupApplies(final Parameter _parameter,
+                                   final Instance _priceGroupInstance)
+        throws EFapsException
+    {
+        return new PriceList().groupApplies(_parameter, _priceGroupInstance);
     }
 
     /**

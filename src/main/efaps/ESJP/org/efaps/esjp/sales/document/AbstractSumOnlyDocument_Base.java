@@ -30,7 +30,6 @@ import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
-import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
@@ -186,7 +185,6 @@ public abstract class AbstractSumOnlyDocument_Base
 
         createdDoc.setInstance(insert.getInstance());
 
-        Context.getThreadContext().removeSessionAttribute(AbstractDocument_Base.CURRENCYINST_KEY);
         return createdDoc;
     }
 

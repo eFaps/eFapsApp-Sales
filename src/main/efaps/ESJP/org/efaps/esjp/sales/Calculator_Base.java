@@ -41,7 +41,6 @@ import org.efaps.esjp.common.AbstractCommon;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
-import org.efaps.esjp.sales.document.AbstractDocument_Base;
 import org.efaps.esjp.sales.tax.Tax;
 import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
@@ -300,7 +299,7 @@ public abstract class Calculator_Base
                     this.priceIsNet = _config.priceFromUIisNet(_parameter);
                 } else {
                     this.priceIsNet = priceIsNet(_parameter);
-                    this.productPrice = evalPriceFromDB(_parameter);;
+                    this.productPrice = evalPriceFromDB(_parameter);
 
                 }
                 final PrintQuery print = new PrintQuery(this.oid);
@@ -567,8 +566,7 @@ public abstract class Calculator_Base
                                   final BigDecimal _unitPrice)
         throws EFapsException
     {
-        Instance currInst = (Instance) Context.getThreadContext().getSessionAttribute(
-                        AbstractDocument_Base.CURRENCYINST_KEY);
+        Instance currInst = new Currency().getCurrencyFromUI(_parameter);
 
         final Instance baseInst = Currency.getBaseCurrency();
 
@@ -1158,9 +1156,10 @@ public abstract class Calculator_Base
     }
 
     /**
-     * @param _formater formater to be applied
+     * Gets the quantity fmt str.
+     *
      * @return formated Quantity
-     * @throws EFapsException
+     * @throws EFapsException on error
      */
     public String getQuantityFmtStr()
         throws EFapsException
@@ -1198,7 +1197,6 @@ public abstract class Calculator_Base
     /**
      * Get the net price formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
@@ -1512,7 +1510,6 @@ public abstract class Calculator_Base
     /**
      * Get the Perception formated with the given formater.
      *
-     * @param _formater formater to use
      * @return formated string representation of the net unit price
      * @throws EFapsException on error
      */
@@ -1678,7 +1675,7 @@ public abstract class Calculator_Base
                                         final ICalculatorConfig _config)
         throws EFapsException
     {
-        return  new Calculator(_parameter,_config).priceIsNet(_parameter);
+        return new Calculator(_parameter, _config).priceIsNet(_parameter);
     }
 
     /**
@@ -1693,7 +1690,7 @@ public abstract class Calculator_Base
                                                 final ICalculatorConfig _config)
         throws EFapsException
     {
-        return  new Calculator(_parameter,_config).isIncludeMinRetail(_parameter);
+        return new Calculator(_parameter, _config).isIncludeMinRetail(_parameter);
     }
 
     /**
