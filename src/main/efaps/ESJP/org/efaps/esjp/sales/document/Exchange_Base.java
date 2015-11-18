@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2015 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -33,7 +30,7 @@ import java.util.Map.Entry;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -56,11 +53,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Exchange_Base.java 11836 2014-01-27 14:29:16Z
- *          m.aranya@moxter.net $
  */
 @EFapsUUID("237aaa91-4c18-413c-9718-268deb312702")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Exchange_Base
     extends AbstractSumOnlyDocument
 {
@@ -119,6 +114,11 @@ public abstract class Exchange_Base
                         .getParameterValues(CITableSales.Sales_ExchangeCreateCalculatedTable.crossTotal4Exchange.name);
         final String[] currAr = _parameter
                         .getParameterValues(CITableSales.Sales_ExchangeCreateCalculatedTable.currency4Exchange.name);
+        final String[] dateAr = _parameter
+                        .getParameterValues(CITableSales.Sales_ExchangeCreateCalculatedTable.date.name);
+        final String[] dueDateAr = _parameter
+                        .getParameterValues(CITableSales.Sales_ExchangeCreateCalculatedTable.dueDate.name);
+
         final String[] docOids = _parameter.getParameterValues(CITableSales.Sales_SwapPayTable.document.name);
         final List<Instance> docInsts = new ArrayList<>();
         if (nameAr != null && crossAr != null && currAr != null && docOids != null) {
@@ -132,7 +132,9 @@ public abstract class Exchange_Base
                     ParameterUtil.setParmeterValue(parameter, "rateCrossTotal", crossAr[i]);
                     ParameterUtil.setParmeterValue(parameter, "rateCurrencyId", currAr[i]);
                     ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
-                                    CISales.DocumentSumAbstract.Date.name), new DateTime().toString());
+                                    CISales.DocumentSumAbstract.Date.name), dateAr[i]);
+                    ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
+                                    CISales.DocumentSumAbstract.DueDate.name), dueDateAr[i]);
                     final CreatedDoc createdDoc = createDoc(parameter);
                     exchangeMap.put(createdDoc.getInstance(), (BigDecimal) NumberFormatter.get().getFormatter()
                                     .parse(crossAr[i]));
