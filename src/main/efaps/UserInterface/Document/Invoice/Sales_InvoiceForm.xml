@@ -227,7 +227,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_InvoiceForm.condition.UI_FIELD_VALUE"
@@ -747,7 +747,7 @@
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="UIType">DROPDOWN</property>
-            <property name="Label">Sales_ChannelPurchaseCondition.Label</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
             <trigger program="org.efaps.esjp.common.uiform.Field"
                 method="getOptionListFieldValue"
                 name="Sales_InvoiceForm.condition.UI_FIELD_VALUE"

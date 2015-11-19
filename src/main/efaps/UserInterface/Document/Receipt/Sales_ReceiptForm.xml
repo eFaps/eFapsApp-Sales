@@ -192,6 +192,51 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="condition">
+            <property name="Select">linkfrom[Sales_ChannelSalesCondition2Receipt#ToLink].linkto[FromLink].oid</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_ReceiptForm.condition.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_ChannelSalesCondition</property>
+                <property name="StatusGroup">Sales_ChannelStatus</property>
+                <property name="Status">Active</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Condition"
+                name="Sales_ReceiptForm.condition.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.Channel"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReceiptForm.condition.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Receipt.ActivateCondition</property>
+           </trigger>
+        </field>
+        <field name="condition4View">
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="Select">linkfrom[Sales_ChannelSalesCondition2Receipt#ToLink].linkto[FromLink].attribute[Name]</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReceiptForm.condition4View.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Receipt.ActivateCondition</property>
+           </trigger>
+        </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_ReceiptForm.headingPositon.Heading</property>
@@ -601,6 +646,51 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="condition">
+            <property name="Select">linkfrom[Sales_ChannelSalesCondition2Receipt#ToLink].linkto[FromLink].oid</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="UIType">DROPDOWN</property>
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
+            <trigger program="org.efaps.esjp.common.uiform.Field"
+                method="getOptionListFieldValue"
+                name="Sales_ReceiptForm.condition.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="Type">Sales_ChannelSalesCondition</property>
+                <property name="StatusGroup">Sales_ChannelStatus</property>
+                <property name="Status">Active</property>
+                <property name="Select">attribute[Name]</property>
+                <property name="ValueSelect">oid</property>
+                <property name="SetSelected">true</property>
+            </trigger>
+            <trigger event="UI_FIELD_UPDATE"
+                method="updateFields4Condition"
+                name="Sales_ReceiptForm.condition.UI_FIELD_UPDATE"
+                program="org.efaps.esjp.sales.Channel"/>
+            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReceiptForm.condition.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Receipt.ActivateCondition</property>
+           </trigger>
+        </field>
+        <field name="condition4View">
+            <property name="Label">Sales_ChannelSalesCondition.Label</property>
+            <property name="ModeView">READONLY</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="Select">linkfrom[Sales_ChannelSalesCondition2Receipt#ToLink].linkto[FromLink].attribute[Name]</property>
+             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
+                method="configCheck"
+                name="Sales_ReceiptForm.condition4View.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Receipt.ActivateCondition</property>
+           </trigger>
         </field>
         <field name="headingPositon" character="Heading">
             <property name="Level">2</property>

@@ -35,6 +35,12 @@
                 <property name="ConnectCurrentLink01">ToLink</property>
                 <property name="ConnectForeignLink01">FromLink</property>
                 <property name="ConnectForeignField01">employee</property>
+
+                <!-- Sales_ChannelSalesCondition2Receipt -->
+                <property name="ConnectType02">102fef61-0ac3-4387-b4fb-702f6b2eaad4</property>
+                <property name="ConnectCurrentLink02">ToLink</property>
+                <property name="ConnectForeignLink02">FromLink</property>
+                <property name="ConnectForeignField02">condition</property>
             </execute>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="check4Status"
                 name="Sales_ReceiptTree_Menu_Action_Edit.UI_ACCESSCHECK" event="UI_ACCESSCHECK">

@@ -161,6 +161,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECEIPTACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Receipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "OrderOutbound.ActivateCondition")
@@ -323,6 +330,7 @@ public final class Sales
                     .key(BASE + "report.SalesReport4Account.OUT")
                     .description("Properties 4 SalesReport4Account OUT.");
 
+    /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute ACTIVATECOMPANYINDREPORT = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
@@ -335,6 +343,7 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.Threshold4Paid")
                     .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+
     /**
      * Singelton.
      */
