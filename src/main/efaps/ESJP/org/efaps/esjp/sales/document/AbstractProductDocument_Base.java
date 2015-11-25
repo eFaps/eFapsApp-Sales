@@ -781,6 +781,15 @@ public abstract class AbstractProductDocument_Base
                                 currentQty = currentQty.subtract(tmpPos.getQuantity());
                             }
                         }
+                        if (currentQty.compareTo(BigDecimal.ZERO) > 0) {
+                            final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+                            bean.setDoc(this)
+                                .setProdInstance(Instance.get(""))
+                                .setProdName("NOSTOCK")
+                                .setProdDescr(multi.<String>getSelect(selProdDescr))
+                                .setQuantity(currentQty);
+                            ret.add(bean);
+                        }
                         break;
                     default:
                         ret.add(_bean);
@@ -1069,7 +1078,10 @@ public abstract class AbstractProductDocument_Base
     }
 
     /**
+     * Gets the description4 product transaction.
+     *
      * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
      * @return description
      * @throws EFapsException on error
      */
@@ -1103,6 +1115,13 @@ public abstract class AbstractProductDocument_Base
         createProductTransaction(_parameter, positions);
     }
 
+    /**
+     * Creates the product transaction.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _positions the positions
+     * @throws EFapsException on error
+     */
     public void createProductTransaction(final Parameter _parameter,
                                          final List<Position> _positions)
         throws EFapsException
@@ -1121,6 +1140,14 @@ public abstract class AbstractProductDocument_Base
         }
     }
 
+    /**
+     * Gets the positions4 document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the positions4 document
+     * @throws EFapsException on error
+     */
     protected List<Position> getPositions4Document(final Parameter _parameter,
                                                    final Instance _docInst)
         throws EFapsException
@@ -1215,29 +1242,58 @@ public abstract class AbstractProductDocument_Base
         }
     }
 
+    /**
+     * The Class Position.
+     */
     public static class Position
     {
+
+        /** The instance. */
         private final Instance instance;
+
+        /** The prod instance. */
         private Instance prodInstance;
+
+        /** The prod name. */
         private String prodName;
+
+        /** The quantity. */
         private BigDecimal quantity;
+
+        /** The descr. */
         private String descr;
+
+        /** The uo m. */
         private UoM uoM;
+
+        /** The storage inst. */
         private Instance storageInst;
+
+        /** The doc inst. */
         private Instance docInst;
 
+        /** The date. */
         private DateTime date;
+
+        /** The transaction descr. */
         private String transactionDescr;
 
 
         /**
-         * @param _currentInstance
+         * Instantiates a new position.
+         *
+         * @param _instance the instance
          */
         public Position(final Instance _instance)
         {
             this.instance = _instance;
         }
 
+        /**
+         * Gets the transaction type.
+         *
+         * @return the transaction type
+         */
         public Type getTransactionType()
         {
             Type ret = null;
@@ -1251,11 +1307,21 @@ public abstract class AbstractProductDocument_Base
             return ret;
         }
 
+        /**
+         * Checks if is indiviudal.
+         *
+         * @return true, if is indiviudal
+         */
         public boolean isIndiviudal()
         {
-             return getProdInstance().getType().isKindOf(CIProducts.ProductIndividualAbstract);
+            return getProdInstance().getType().isKindOf(CIProducts.ProductIndividualAbstract);
         }
 
+        /**
+         * Gets the transaction descr.
+         *
+         * @return the transaction descr
+         */
         public String getTransactionDescr()
         {
             return this.transactionDescr;
@@ -1275,6 +1341,7 @@ public abstract class AbstractProductDocument_Base
          * Setter method for instance variable {@link #prodName}.
          *
          * @param _prodName value for instance variable {@link #prodName}
+         * @return the position
          */
         public Position setProdName(final String _prodName)
         {
@@ -1296,6 +1363,7 @@ public abstract class AbstractProductDocument_Base
          * Setter method for instance variable {@link #quantity}.
          *
          * @param _quantity value for instance variable {@link #quantity}
+         * @return the position
          */
         public Position setQuantity(final BigDecimal _quantity)
         {
@@ -1317,6 +1385,7 @@ public abstract class AbstractProductDocument_Base
          * Setter method for instance variable {@link #descr}.
          *
          * @param _descr value for instance variable {@link #descr}
+         * @return the position
          */
         public Position setDescr(final String _descr)
         {
@@ -1338,13 +1407,13 @@ public abstract class AbstractProductDocument_Base
          * Setter method for instance variable {@link #uoM}.
          *
          * @param _uoM value for instance variable {@link #uoM}
+         * @return the position
          */
         public Position setUoM(final UoM _uoM)
         {
             this.uoM = _uoM;
             return this;
         }
-
 
         /**
          * Getter method for the instance variable {@link #instance}.
@@ -1370,13 +1439,13 @@ public abstract class AbstractProductDocument_Base
          * Setter method for instance variable {@link #prodInstance}.
          *
          * @param _prodInstance value for instance variable {@link #prodInstance}
+         * @return the position
          */
         public Position setProdInstance(final Instance _prodInstance)
         {
             this.prodInstance = _prodInstance;
             return this;
         }
-
 
         /**
          * Getter method for the instance variable {@link #storageInst}.
@@ -1388,18 +1457,17 @@ public abstract class AbstractProductDocument_Base
             return this.storageInst;
         }
 
-
         /**
          * Setter method for instance variable {@link #storageInst}.
          *
          * @param _storageInst value for instance variable {@link #storageInst}
+         * @return the position
          */
         public Position setStorageInst(final Instance _storageInst)
         {
             this.storageInst = _storageInst;
             return this;
         }
-
 
         /**
          * Getter method for the instance variable {@link #date}.
@@ -1411,18 +1479,17 @@ public abstract class AbstractProductDocument_Base
             return this.date;
         }
 
-
         /**
          * Setter method for instance variable {@link #date}.
          *
          * @param _date value for instance variable {@link #date}
+         * @return the position
          */
         public Position setDate(final DateTime _date)
         {
             this.date = _date;
             return this;
         }
-
 
         /**
          * Getter method for the instance variable {@link #docInst}.
@@ -1434,11 +1501,11 @@ public abstract class AbstractProductDocument_Base
             return this.docInst;
         }
 
-
         /**
          * Setter method for instance variable {@link #docInst}.
          *
          * @param _docInst value for instance variable {@link #docInst}
+         * @return the position
          */
         public Position setDocInst(final Instance _docInst)
         {
@@ -1446,11 +1513,11 @@ public abstract class AbstractProductDocument_Base
             return this;
         }
 
-
         /**
          * Setter method for instance variable {@link #transactionDescr}.
          *
          * @param _transactionDescr value for instance variable {@link #transactionDescr}
+         * @return the position
          */
         public Position setTransactionDescr(final String _transactionDescr)
         {
@@ -1458,5 +1525,4 @@ public abstract class AbstractProductDocument_Base
             return this;
         }
     }
-
 }

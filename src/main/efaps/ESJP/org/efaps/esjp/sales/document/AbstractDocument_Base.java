@@ -3241,9 +3241,10 @@ public abstract class AbstractDocument_Base
          *
          * @param _doc value for instance variable {@link #doc}
          */
-        public void setDoc(final AbstractDocument_Base _doc)
+        public AbstractUIPosition setDoc(final AbstractDocument_Base _doc)
         {
             this.doc = _doc;
+            return this;
         }
     }
 }
