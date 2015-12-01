@@ -772,16 +772,21 @@ public abstract class AbstractProductDocument_Base
                         }
 
                         BigDecimal currentQty = _bean.getQuantity();
+                        boolean complete= false;
                         for (final AbstractUIPosition tmpPos : fifoMap.values()) {
                             ret.add(tmpPos);
                             if (currentQty.compareTo(tmpPos.getQuantity()) < 1) {
                                 tmpPos.setQuantity(currentQty);
+                                complete = true;
                                 break;
                             } else {
                                 currentQty = currentQty.subtract(tmpPos.getQuantity());
                             }
                         }
-                        if (currentQty.compareTo(BigDecimal.ZERO) > 0) {
+                        if (!complete && currentQty.compareTo(BigDecimal.ZERO) > 0) {
+                            // to be able to serialize, ensure that the document is not set
+                            final AbstractDocument_Base docTmp = _bean.getDoc();
+                            _bean.setDoc(null);
                             final AbstractUIPosition bean = SerializationUtils.clone(_bean);
                             bean.setDoc(this)
                                 .setProdInstance(Instance.get(""))
@@ -789,6 +794,8 @@ public abstract class AbstractProductDocument_Base
                                 .setProdDescr(multi.<String>getSelect(selProdDescr))
                                 .setQuantity(currentQty);
                             ret.add(bean);
+                            // back to original state
+                            _bean.setDoc(docTmp);
                         }
                         break;
                     default:
