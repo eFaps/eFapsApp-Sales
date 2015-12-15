@@ -58,7 +58,6 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
-import org.efaps.esjp.contacts.util.ContactsSettings;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
@@ -389,8 +388,7 @@ public abstract class DeliveryNote_Base
                 list.add(map);
             }
 
-            if (org.efaps.esjp.contacts.util.Contacts.getSysConfig().getAttributeValueAsBoolean(
-                            ContactsSettings.ACTIVATESUBCONTACTS)) {
+            if (org.efaps.esjp.contacts.util.Contacts.ACTIVATESUBCONTACTS.get()) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIContacts.Contact2SubContact);
                 attrQueryBldr.addWhereAttrEqValue(CIContacts.Contact2SubContact.From, contactInst);
                 final QueryBuilder queryBldr = new QueryBuilder(CIContacts.SubContact);
