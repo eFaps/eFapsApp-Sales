@@ -86,6 +86,19 @@ public abstract class IncomingExchange_Base
     }
 
     /**
+     * Update fields for pre calculate.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4PreCalculate(final Parameter _parameter)
+        throws EFapsException
+    {
+        return new Exchange().updateFields4PreCalculate(_parameter);
+    }
+
+    /**
      * @param _parameter Parameter as passed from eFaps API.
      * @return new Return.
      * @throws EFapsException on error.

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2015 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,15 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>72fd94bc-e2b2-4a9a-b97f-b0d285af574c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeCreateCalculatedForm</name>
@@ -43,7 +40,7 @@
                 name="Sales_IncomingExchangeCreateCalculatedForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingExchange" method="updateFields4Contact"
-                name="Sales_IncomingExchangeCreateCalculatedForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_IncomingExchangeCreateCalculatedForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -66,17 +63,31 @@
                 <property name="Type">Sales_DocumentSumAbstract</property>
             </evaluate>
         </field>
-         <field name="total">
+        <field name="totalGrp" character="Group">
+            <property name="GroupCount">2</property>
+            <property name="ModeCreate">READONLY</property>
+        </field>
+        <field name="total">
             <property name="Label">Sales_SwapCollectTable.document.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-         <field character="Heading" name="exchangeHeading">
+        <field name="preCalculate">
+            <property name="Label">Sales_IncomingExchangeCreateCalculatedForm.preCalculate.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.NumberUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
+                method="updateFields4PreCalculate"
+                name="Sales_IncomingExchangeCreateCalculatedForm.preCalculate.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE">
+            </trigger>
+        </field>
+        <field character="Heading" name="exchangeHeading">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingExchangeCreateCalculatedForm.exchangeHeading.Heading</property>
             <property name="ModeCreate">READONLY</property>
         </field>
-         <field character="Target" name="exchangeTable">
+        <field character="Target" name="exchangeTable">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <table>Sales_IncomingExchangeCreateCalculatedTable</table>
@@ -84,7 +95,7 @@
                 <property name="Type">Sales_DocumentSumAbstract</property>
             </evaluate>
         </field>
-         <field name="exchangeTotal">
+        <field name="exchangeTotal">
             <property name="Label">Sales_IncomingExchangeCreateCalculatedForm.exchangeTotal.Label</property>
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>

@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -44,6 +45,8 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Swap;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
+import org.efaps.ui.wicket.util.DateUtil;
+import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -238,6 +241,53 @@ public abstract class Exchange_Base
         return val.validate(_parameter, this);
     }
 
+    /**
+     * Update fields4 pre calculate.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return updateFields4PreCalculate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final BigDecimal total = new Swap().getSum4Positions(_parameter, true);
+        final String divStr = _parameter.getParameterValue(
+                        CIFormSales.Sales_IncomingExchangeCreateCalculatedForm.preCalculate.name);
+        if (!StringUtils.isEmpty(divStr) && StringUtils.isNumeric(divStr) && total.compareTo(BigDecimal.ZERO) > 0) {
+            final int div = Integer.parseInt(divStr);
+            final BigDecimal[] vals = total.divideAndRemainder(new BigDecimal(div));
+
+            final List<Map<String, Object>> strValues = new ArrayList<>();
+            final StringBuilder js = new StringBuilder();
+            boolean first = true;
+            for (int i = 0; i < div; i++) {
+                final Map<String, Object> map = new HashMap<>();
+                strValues.add(map);
+                BigDecimal val;
+                if (first) {
+                    val = vals[0].add(vals[1]);
+                    first = false;
+                } else {
+                    val = vals[0];
+                }
+                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.crossTotal4Exchange.name, val);
+                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.date.name,
+                                DateUtil.getDate4Parameter(new DateTime().plusMonths(i)));
+                map.put(CITableSales.Sales_IncomingExchangeCreateCalculatedTable.dueDate.name,
+                                DateUtil.getDate4Parameter(new DateTime().plusMonths(i + 1)));
+            }
+            js.append(getTableRemoveScript(_parameter, "exchangeTable", false, false))
+                .append(getTableAddNewRowsScript(_parameter, "exchangeTable", strValues, null));
+            final List<Map<String, Object>> values = new ArrayList<>();
+            final Map<String,Object> map = new HashMap<>();
+            map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
+            values.add(map);
+            ret.put(ReturnValues.VALUES, values);
+        }
+        return ret;
+    }
 
     /**
      * @param _parameter Parameter as passed from eFaps API.
