@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2010 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -45,7 +42,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
@@ -80,10 +77,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("70868417-752b-45e8-8ada-67d0b15ad35b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Account_Base
     extends CommonDocument
 {
@@ -274,6 +270,14 @@ public abstract class Account_Base
     }
 
 
+    /**
+     * Gets the currency inst.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _accInst the acc inst
+     * @return the currency inst
+     * @throws EFapsException on error
+     */
     public CurrencyInst getCurrencyInst(final Parameter _parameter,
                                         final Instance _accInst)
         throws EFapsException
@@ -290,7 +294,8 @@ public abstract class Account_Base
      * Create the transaction for the PettyCash.
      *
      * @param _parameter Parameter as passed from the eFaps API
-     * @param _createdDoc doc the transaction is connected to
+     * @param _accInst the acc inst
+     * @param _docInst the doc inst
      * @throws EFapsException on error
      */
     protected void createTransaction(final Parameter _parameter,
@@ -304,20 +309,21 @@ public abstract class Account_Base
                             CISales.DocumentSumAbstract.Note, CISales.DocumentSumAbstract.RateCrossTotal);
             print.execute();
             final Insert payInsert = new Insert(CISales.Payment);
-            payInsert.add(CISales.Payment.Date, print.getAttribute(CISales.DocumentSumAbstract.Date));
+            payInsert.add(CISales.Payment.Date, print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
             payInsert.add(CISales.Payment.CreateDocument, _docInst);
             payInsert.execute();
 
             final Insert transInsert = new Insert(CISales.TransactionOutbound);
             transInsert.add(CISales.TransactionOutbound.Amount,
-                            print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
+                            print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal));
             transInsert.add(CISales.TransactionOutbound.CurrencyId,
-                            print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+                            print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
             transInsert.add(CISales.TransactionOutbound.Payment, payInsert.getInstance());
             transInsert.add(CISales.TransactionOutbound.Account, _accInst);
             transInsert.add(CISales.TransactionOutbound.Description,
-                            print.getAttribute(CISales.DocumentSumAbstract.Note));
-            transInsert.add(CISales.TransactionOutbound.Date, print.getAttribute(CISales.DocumentSumAbstract.Date));
+                            print.<String>getAttribute(CISales.DocumentSumAbstract.Note));
+            transInsert.add(CISales.TransactionOutbound.Date,
+                            print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
             transInsert.execute();
         }
     }
@@ -430,7 +436,7 @@ public abstract class Account_Base
             transInsert.add(CISales.TransactionOutbound.Payment, payInst.getId());
             transInsert.add(CISales.TransactionOutbound.Account, cashDeskInstance.getId());
             transInsert.add(CISales.TransactionOutbound.Description,
-                            DBProperties.getProperty("org.efaps.esjp.sales.TransactionOutBoundDescription.CashDeskBalance"));
+                    DBProperties.getProperty("org.efaps.esjp.sales.TransactionOutBoundDescription.CashDeskBalance"));
             transInsert.add(CISales.TransactionOutbound.Date, new DateTime());
             transInsert.execute();
         }
@@ -469,6 +475,13 @@ public abstract class Account_Base
         return rates;
     }
 
+    /**
+     * Revenues field value ui.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return revenuesFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
@@ -665,7 +678,8 @@ public abstract class Account_Base
     {
         final Map<?, ?> properties = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final FieldValue fValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        DateTime firstDate = null, lastDate = null;
+        DateTime firstDate = null;
+        DateTime lastDate = null;
         if (fValue.getTargetMode().equals(TargetMode.CREATE)) {
             if (fValue.getField().getName().equals("name4create")) {
                 firstDate = new DateTime().withDayOfMonth(1).withTimeAtStartOfDay();
@@ -858,17 +872,15 @@ public abstract class Account_Base
         final Return ret = new Return();
         final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final boolean withDateComm = Boolean.parseBoolean((String) props.get("WithDate"));
-        final boolean withDateConf = Sales.getSysConfig().getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
+        final boolean withDateConf = Sales.getSysConfig().getAttributeValueAsBoolean(
+                        "PettyCashBalance_CommandWithDate");
         if (withDateConf && withDateComm) {
             ret.put(ReturnValues.TRUE, true);
         } else if (!withDateConf && !withDateComm) {
             ret.put(ReturnValues.TRUE, true);
         }
-
         return ret;
     }
-
-
 
     /**
      * Method for return a field and put start amount to petty cash.
@@ -907,12 +919,12 @@ public abstract class Account_Base
             try {
                 startAmount = (BigDecimal) formater.parse(startAmountStr);
             } catch (final ParseException e) {
-               throw new EFapsException(Account_Base.class, "ParseException", e);
+                throw new EFapsException(Account_Base.class, "ParseException", e);
             }
             final BigDecimal startAmountOrig = getStartAmount(_parameter);
 
             difference = amount.negate();
-            if(startAmount.compareTo(startAmountOrig) != 0){
+            if (startAmount.compareTo(startAmountOrig) != 0) {
                 difference = difference.add(startAmount.subtract(startAmountOrig));
             }
         }
@@ -1026,12 +1038,26 @@ public abstract class Account_Base
         return !query.execute().isEmpty();
     }
 
+    /**
+     * Additional validate4 petty cash receipt.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the string
+     * @throws EFapsException on error
+     */
     protected String additionalValidate4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
         return null;
     }
 
+    /**
+     * Gets the amount4 field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the amount4 field value
+     * @throws EFapsException on error
+     */
     public Return getAmount4FieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -1040,6 +1066,13 @@ public abstract class Account_Base
         return ret;
     }
 
+    /**
+     * Gets the amount4 transaction account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the amount4 transaction account
+     * @throws EFapsException on error
+     */
     protected BigDecimal getAmount4TransactionAccount(final Parameter _parameter)
         throws EFapsException
     {
@@ -1075,6 +1108,13 @@ public abstract class Account_Base
         return ret;
     }
 
+    /**
+     * Download liquidation.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return downloadLiquidation(final Parameter _parameter)
         throws EFapsException
     {
@@ -1146,7 +1186,8 @@ public abstract class Account_Base
      *
      * @param _parameter Parameter as passed from the eFaps API.
      * @param _report Standartreport to adding a new jrParameters.
-     * @param _accountInst Instance of the account.
+     * @param _instance the instance
+     * @throws EFapsException on error
      */
     protected void add2DownloadLiquidation4JrParameters(final Parameter _parameter,
                                                         final StandartReport _report,
@@ -1156,6 +1197,15 @@ public abstract class Account_Base
         // to be set implemented.
     }
 
+    /**
+     * Gets the sets the field value.
+     *
+     * @param _idx the idx
+     * @param _fieldName the field name
+     * @param _value the value
+     * @param _escape the escape
+     * @return the sets the field value
+     */
     protected StringBuilder getSetFieldValue(final int _idx,
                                              final String _fieldName,
                                              final String _value,
@@ -1172,6 +1222,13 @@ public abstract class Account_Base
         return ret;
     }
 
+    /**
+     * Edits the amount4 petty cash receipt.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return editAmount4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {
