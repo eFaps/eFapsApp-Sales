@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -38,7 +35,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractCommand;
 import org.efaps.db.Context;
@@ -81,10 +78,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("310e13ba-6fdb-49a7-8612-5c0f3802e550")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Swap_Base
     extends CommonDocument
 {
@@ -134,7 +130,7 @@ public abstract class Swap_Base
                 print.addAttribute(CISales.DocumentSumAbstract.Contact);
                 print.executeWithoutAccessCheck();
                 queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
-                                print.getAttribute(CISales.DocumentSumAbstract.Contact));
+                                print.<Long>getAttribute(CISales.DocumentSumAbstract.Contact));
             } else if (_parameter.getParameterValue("contact") != null) {
                 final Instance inst = Instance.get(_parameter.getParameterValue("contact"));
                 queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid() ? inst : 0);
