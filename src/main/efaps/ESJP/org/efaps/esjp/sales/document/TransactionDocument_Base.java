@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -26,7 +23,7 @@ import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -37,20 +34,26 @@ import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ui.html.Table;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: TransactionDocument_Base.java 13816 2014-08-25 21:03:42Z
- *          jan@moxter.net $
  */
 @EFapsUUID("8f2539fd-4e71-4f5a-bab2-6329b3dcebbf")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class TransactionDocument_Base
     extends AbstractProductDocument
 {
 
+    /**
+     * Access check4 document shadow.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return accessCheck4DocumentShadow(final Parameter _parameter)
         throws EFapsException
     {
@@ -71,12 +74,27 @@ public abstract class TransactionDocument_Base
         return ret;
     }
 
+    /**
+     * Creates the document shadow.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the created doc
+     * @throws EFapsException on error
+     */
     public CreatedDoc createDocumentShadow(final Parameter _parameter)
         throws EFapsException
     {
         return createDocumentShadow(_parameter, _parameter.getInstance());
     }
 
+    /**
+     * Creates the document shadow.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _docInst the doc inst
+     * @return the created doc
+     * @throws EFapsException on error
+     */
     public CreatedDoc createDocumentShadow(final Parameter _parameter,
                                            final Instance _docInst)
         throws EFapsException
@@ -88,9 +106,9 @@ public abstract class TransactionDocument_Base
         print.execute();
 
         final Insert insert = new Insert(getType4DocCreate(_parameter));
-        insert.add(CIERP.DocumentAbstract.Name, print.getAttribute(CIERP.DocumentAbstract.Name));
-        insert.add(CIERP.DocumentAbstract.Date, print.getAttribute(CIERP.DocumentAbstract.Date));
-        insert.add(CIERP.DocumentAbstract.Contact, print.getAttribute(CIERP.DocumentAbstract.Contact));
+        insert.add(CIERP.DocumentAbstract.Name, print.<String>getAttribute(CIERP.DocumentAbstract.Name));
+        insert.add(CIERP.DocumentAbstract.Date, print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date));
+        insert.add(CIERP.DocumentAbstract.Contact, print.<Long>getAttribute(CIERP.DocumentAbstract.Contact));
         addStatus2DocCreate(_parameter, insert, ret);
         add2DocCreate(_parameter, insert, ret);
         insert.execute();
@@ -118,6 +136,13 @@ public abstract class TransactionDocument_Base
         return ret;
     }
 
+    /**
+     * Gets the products4 doc shadow field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the products4 doc shadow field value
+     * @throws EFapsException on error
+     */
     public Return getProducts4DocShadowFieldValue(final Parameter _parameter)
         throws EFapsException
     {
