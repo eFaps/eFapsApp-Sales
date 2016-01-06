@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -35,7 +32,7 @@ import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.admin.ui.field.Field.Display;
@@ -52,16 +49,15 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.util.EFapsException;
+import org.joda.time.DateTime;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: AbstractDocumentTax_Base.java 13280 2014-07-09 17:50:17Z
- *          jan@moxter.net $
  */
 @EFapsUUID("83f2f7db-b2d5-4817-bd4c-abf4a0cffa17")
-@EFapsRevision("$Rev: 1$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractDocumentTax_Base
     extends AbstractDocumentSum
 {
@@ -107,18 +103,22 @@ public abstract class AbstractDocumentTax_Base
                                 CISales.DocumentSumAbstract.Rate, CISales.DocumentSumAbstract.CurrencyId,
                                 CISales.DocumentSumAbstract.RateCurrencyId, CISales.DocumentSumAbstract.Name);
                 print.executeWithoutAccessCheck();
-                update.add(CISales.DocumentSumAbstract.Date, print.getAttribute(CISales.DocumentSumAbstract.Date));
+                update.add(CISales.DocumentSumAbstract.Date,
+                                print.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date));
                 update.add(CISales.DocumentSumAbstract.Contact,
-                                print.getAttribute(CISales.DocumentSumAbstract.Contact));
+                                print.<Long>getAttribute(CISales.DocumentSumAbstract.Contact));
                 update.add(CISales.DocumentSumAbstract.Salesperson,
-                                print.getAttribute(CISales.DocumentSumAbstract.Salesperson));
-                update.add(CISales.DocumentSumAbstract.Group, print.getAttribute(CISales.DocumentSumAbstract.Group));
-                update.add(CISales.DocumentSumAbstract.Rate, print.getAttribute(CISales.DocumentSumAbstract.Rate));
+                                print.<Long>getAttribute(CISales.DocumentSumAbstract.Salesperson));
+                update.add(CISales.DocumentSumAbstract.Group,
+                                print.<Long>getAttribute(CISales.DocumentSumAbstract.Group));
+                update.add(CISales.DocumentSumAbstract.Rate,
+                                print.<Object>getAttribute(CISales.DocumentSumAbstract.Rate));
                 update.add(CISales.DocumentSumAbstract.CurrencyId,
-                                print.getAttribute(CISales.DocumentSumAbstract.CurrencyId));
+                                print.<Long>getAttribute(CISales.DocumentSumAbstract.CurrencyId));
                 update.add(CISales.DocumentSumAbstract.RateCurrencyId,
-                                print.getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
-                update.add(CISales.DocumentSumAbstract.Name, print.getAttribute(CISales.DocumentSumAbstract.Name));
+                                print.<Long>getAttribute(CISales.DocumentSumAbstract.RateCurrencyId));
+                update.add(CISales.DocumentSumAbstract.Name,
+                                print.<String>getAttribute(CISales.DocumentSumAbstract.Name));
                 update.add(CISales.DocumentSumAbstract.RateNetTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.RateDiscountTotal, BigDecimal.ZERO);
                 update.add(CISales.DocumentSumAbstract.NetTotal, BigDecimal.ZERO);
