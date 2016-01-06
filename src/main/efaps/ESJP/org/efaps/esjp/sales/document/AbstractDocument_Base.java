@@ -706,8 +706,8 @@ public abstract class AbstractDocument_Base
                     final SelectBuilder sel = SelectBuilder.get().type().label();
                     print.addSelect(sel);
                     print.execute();
-                    label.append(print.getSelect(sel)).append(" - ")
-                        .append(print.getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
+                    label.append(print.<Object>getSelect(sel)).append(" - ")
+                        .append(print.<Object>getAttribute(CIERP.DocumentAbstract.Name)).append(" - ")
                         .append(print.<DateTime> getAttribute(CIERP.DocumentAbstract.Date).toString(
                                    DateTimeFormat.forStyle("S-").withLocale(Context.getThreadContext().getLocale())));
                     label.append(add2LabelUpdateFields4Doc(_parameter, print.getInstance()));

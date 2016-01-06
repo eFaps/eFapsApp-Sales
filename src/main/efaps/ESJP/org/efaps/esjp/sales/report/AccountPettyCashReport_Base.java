@@ -72,6 +72,18 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
+import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.builder.group.ColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 /**
  * Report used to analyze receipt for professional fees (Recibos Honorarios) by
  * grouping them by month and contact.
@@ -539,9 +551,10 @@ public abstract class AccountPettyCashReport_Base
                 print.addSelect(sel);
                 print.addAttribute(CISales.AccountPettyCash.Name, CISales.AccountPettyCash.AmountAbstract);
                 print.execute();
-                ret.append(print.getAttribute(CISales.AccountPettyCash.Name))
-                                .append(" - ").append(print.getAttribute(CISales.AccountPettyCash.AmountAbstract))
-                                .append(CurrencyInst.get(print.getSelect(sel)).getSymbol());
+                ret.append(print.<String>getAttribute(CISales.AccountPettyCash.Name))
+                                .append(" - ")
+                                .append(print.<BigDecimal>getAttribute(CISales.AccountPettyCash.AmountAbstract))
+                                .append(CurrencyInst.get(print.<Instance>getSelect(sel)).getSymbol());
             } catch (final EFapsException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

@@ -202,8 +202,8 @@ public abstract class Swap_Base
                             CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.RateCrossTotal,
                             CISales.DocumentSumAbstract.StatusAbstract);
             print.execute();
-            final CurrencyInst currInst = CurrencyInst.get(print.getSelect(selCurrInst));
-            final CurrencyInst rateCurrInst = CurrencyInst.get(print.getSelect(selRateCurrInst));
+            final CurrencyInst currInst = CurrencyInst.get(print.<Instance>getSelect(selCurrInst));
+            final CurrencyInst rateCurrInst = CurrencyInst.get(print.<Instance>getSelect(selRateCurrInst));
 
             map.put("contact4Doc", print.getSelect(selContactName));
             map.put("crossTotal", print.getAttribute(CISales.DocumentSumAbstract.CrossTotal) + currInst.getSymbol());
@@ -563,7 +563,7 @@ public abstract class Swap_Base
         payInfo.getRateInfo4Target().setRateUI(rateinfo.getRateUI());
 
         ret.append(_docInst.getType().getLabel()).append(" ")
-                        .append(print.getAttribute(CISales.DocumentSumAbstract.Name)).append(" ")
+                        .append(print.<String>getAttribute(CISales.DocumentSumAbstract.Name)).append(" ")
                         .append(payInfo.getInfoField());
         return ret.toString();
     }
