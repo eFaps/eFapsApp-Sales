@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2014 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,11 +15,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0"
@@ -28,9 +22,6 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <!-- ************************************************************************
-    * Module Definition
-    ************************************************************************* -->
     <parent>
         <groupId>org.efaps</groupId>
         <artifactId>efaps-parent</artifactId>
@@ -164,7 +155,6 @@
              <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                
                 <configuration>
                     <suiteXmlFiles>
                         <suiteXmlFile>${basedir}/src/test/resources/testng.xml</suiteXmlFile>
@@ -173,10 +163,6 @@
             </plugin>
         </plugins>
     </build>
-
-    <!-- ************************************************************************
-    * Dependencies
-    ************************************************************************* -->
     <dependencies>
         <dependency>
             <groupId>org.efaps.apps</groupId>
