@@ -131,7 +131,7 @@ public abstract class Costing_Base
 
         final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
         attrQueryBldr.addWhereAttrEqValue(CIProducts.TransactionInOutAbstract.Document,
-                        print.getAttribute(CISales.Document2DocumentAbstract.ToAbstractLink));
+                        print.<Long>getAttribute(CISales.Document2DocumentAbstract.ToAbstractLink));
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.TransactionInOutAbstract.ID);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
@@ -700,6 +700,9 @@ public abstract class Costing_Base
         return new TransCosting();
     }
 
+    /**
+     * The Class CostingInfo.
+     */
     public static class CostingInfo
     {
         /**
@@ -736,6 +739,7 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #instance}.
          *
          * @param _instance value for instance variable {@link #instance}
+         * @return the costing info
          */
         public CostingInfo setInstance(final Instance _instance)
         {
@@ -757,6 +761,7 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #cost}.
          *
          * @param _cost value for instance variable {@link #cost}
+         * @return the costing info
          */
         public CostingInfo setCost(final BigDecimal _cost)
         {
@@ -778,6 +783,7 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #result}.
          *
          * @param _result value for instance variable {@link #result}
+         * @return the costing info
          */
         public CostingInfo setResult(final BigDecimal _result)
         {
@@ -799,6 +805,7 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #quantity}.
          *
          * @param _quantity value for instance variable {@link #quantity}
+         * @return the costing info
          */
         public CostingInfo setQuantity(final BigDecimal _quantity)
         {
@@ -1366,7 +1373,8 @@ public abstract class Costing_Base
                 if (CISales.RecievingTicket.getType().equals(getBaseDocInst().getType())) {
                     // first priority are the special relation for costing
                     // "Sales_AcquisitionCosting2RecievingTicket"
-                    final QueryBuilder acRelAttrQueryBldr = new QueryBuilder(CISales.AcquisitionCosting2RecievingTicket);
+                    final QueryBuilder acRelAttrQueryBldr = new QueryBuilder(
+                                    CISales.AcquisitionCosting2RecievingTicket);
                     acRelAttrQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCosting2RecievingTicket.ToLink,
                                     getBaseDocInst());
                     final AttributeQuery acRelAttrQuery = acRelAttrQueryBldr
@@ -1404,7 +1412,8 @@ public abstract class Costing_Base
                         while (posMulti.next() && !found) {
                             if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
                                 found = true;
-                                setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
+                                setCost(posMulti.<BigDecimal>getAttribute(
+                                                CISales.IncomingInvoicePosition.NetUnitPrice));
                                 setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
                             }
                         }
@@ -1451,7 +1460,7 @@ public abstract class Costing_Base
                     relAttrQueryBldr.addWhereAttrEqValue(CISales.Document2DocumentAbstract.ToAbstractLink,
                                     getBaseDocInst());
                     final QueryBuilder posQueryBldr = new QueryBuilder(CISales.PositionSumAbstract);
-                    posQueryBldr.addWhereAttrInQuery( CISales.PositionSumAbstract.DocumentAbstractLink,
+                    posQueryBldr.addWhereAttrInQuery(CISales.PositionSumAbstract.DocumentAbstractLink,
                                 relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
                     posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
                     final MultiPrintQuery posMulti = posQueryBldr.getPrint();
@@ -1496,6 +1505,13 @@ public abstract class Costing_Base
             }
         }
 
+        /**
+         * Valid status.
+         *
+         * @param _status the status
+         * @return true, if successful
+         * @throws CacheReloadException the cache reload exception
+         */
         protected boolean validStatus(final Status _status)
             throws CacheReloadException
         {
@@ -1532,6 +1548,8 @@ public abstract class Costing_Base
         /**
          * Getter method for the instance variable {@link #cost}.
          *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _currencyInst the currency inst
          * @return value of instance variable {@link #cost}.
          * @throws EFapsException on error.
          */
@@ -1549,6 +1567,9 @@ public abstract class Costing_Base
         /**
          * Getter method for the instance variable {@link #cost}.
          *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _currencyInst the currency inst
+         * @param _date the date
          * @return value of instance variable {@link #cost}.
          * @throws EFapsException on error.
          */
