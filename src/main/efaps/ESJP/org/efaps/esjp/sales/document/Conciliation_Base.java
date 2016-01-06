@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -34,6 +31,8 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
+import org.efaps.admin.program.esjp.EFapsApplication;
+import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -57,8 +56,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
+@EFapsUUID("8edaa963-a701-409e-8694-2f8532ebe29b")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Conciliation_Base
     extends AbstractSumOnlyDocument
 {
@@ -175,6 +175,13 @@ public abstract class Conciliation_Base
         } .execute(_parameter);
     }
 
+    /**
+     * Creates the position4 automation.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _paymentDocInst the payment doc inst
+     * @throws EFapsException on error
+     */
     public void createPosition4Automation(final Parameter _parameter,
                                           final Instance _paymentDocInst)
         throws EFapsException
@@ -208,6 +215,14 @@ public abstract class Conciliation_Base
         return new Return();
     }
 
+    /**
+     * Creates the positions.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _conciliationInst the conciliation inst
+     * @param _paymentInsts the payment insts
+     * @throws EFapsException on error
+     */
     protected void createPositions(final Parameter _parameter,
                                    final Instance _conciliationInst,
                                    final Instance... _paymentInsts)
@@ -277,7 +292,7 @@ public abstract class Conciliation_Base
 
         final QueryBuilder queryBldr2 = new QueryBuilder(CISales.ConciliationPosition);
         queryBldr2.addWhereAttrEqValue(CISales.ConciliationPosition.ConciliationLink,
-                        print.getAttribute(CISales.ConciliationPosition.ConciliationLink));
+                        print.<Long>getAttribute(CISales.ConciliationPosition.ConciliationLink));
         queryBldr2.addWhereAttrNotEqValue(CISales.ConciliationPosition.ID, _parameter.getInstance());
         queryBldr2.addOrderByAttributeAsc(CISales.ConciliationPosition.PositionNumber);
         final InstanceQuery query2 = queryBldr2.getQuery();
@@ -343,7 +358,7 @@ public abstract class Conciliation_Base
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.ConciliationPosition);
         queryBldr.addWhereAttrEqValue(CISales.ConciliationPosition.ConciliationLink,
-                        print.getAttribute(CISales.ConciliationPosition.ConciliationLink));
+                        print.<Long>getAttribute(CISales.ConciliationPosition.ConciliationLink));
         queryBldr.addWhereAttrNotEqValue(CISales.ConciliationPosition.ID, _parameter.getInstance());
         queryBldr.addOrderByAttributeDesc(CISales.ConciliationPosition.PositionNumber);
         queryBldr.setLimit(1);
@@ -365,6 +380,7 @@ public abstract class Conciliation_Base
      * @return new empty Return
      * @throws EFapsException on error
      */
+    @Override
     public Return updatePostTrigger(final Parameter _parameter)
         throws EFapsException
     {
