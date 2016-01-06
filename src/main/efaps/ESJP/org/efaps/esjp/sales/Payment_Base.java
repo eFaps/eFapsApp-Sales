@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -45,7 +42,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
@@ -73,10 +70,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("32d6c7f5-a70c-4eea-a940-ab136952dfdc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Payment_Base
     extends AbstractPaymentDocument
 {
@@ -137,9 +133,9 @@ public abstract class Payment_Base
                     docPrint.execute();
                     targetDocIns.add(CISales.PaymentDocumentAbstract.StatusAbstract, status.getId());
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Contact,
-                                    docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
+                                    docPrint.<Long>getAttribute(CIERP.DocumentAbstract.Contact));
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Name,
-                                    docPrint.getAttribute(CIERP.DocumentAbstract.Name));
+                                    docPrint.<String>getAttribute(CIERP.DocumentAbstract.Name));
                     final String code = getCode4GeneratedDocWithSysConfig(_parameter);
                     if (code != null) {
                         targetDocIns.add(CISales.PaymentDocumentOutAbstract.Code, code);
@@ -152,10 +148,10 @@ public abstract class Payment_Base
 
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
                                     CISales.PaymentDocumentOutAbstract.Name.name),
-                                    docPrint.getAttribute(CIERP.DocumentAbstract.Name));
+                                    docPrint.<String>getAttribute(CIERP.DocumentAbstract.Name));
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
                                     CISales.PaymentDocumentOutAbstract.Contact.name),
-                                                    docPrint.getAttribute(CIERP.DocumentAbstract.Contact));
+                                    docPrint.<Long>getAttribute(CIERP.DocumentAbstract.Contact));
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
                                     CISales.PaymentDocumentOutAbstract.Code.name), code);
                     createdDoc.getValues().put(getFieldName4Attribute(_parameter,
@@ -183,7 +179,7 @@ public abstract class Payment_Base
                 insert.add(CISales.Payment.Amount, amounts[i]);
                 //TODO
                 insert.add(CISales.Payment.RateCurrencyLink, currencies[i]);
-                insert.add(CISales.Payment.Rate, new Object[]{1,1});
+                insert.add(CISales.Payment.Rate, new Object[]{1, 1});
                 insert.execute();
                 final Instance paymentInst = insert.getInstance();
 
@@ -296,6 +292,14 @@ public abstract class Payment_Base
         return html;
     }
 
+    /**
+     * Gets the open amount.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @return the open amount
+     * @throws EFapsException on error
+     */
     public OpenAmount getOpenAmount(final Parameter _parameter,
                                     final Instance _instance)
         throws EFapsException
@@ -303,12 +307,12 @@ public abstract class Payment_Base
         return getOpenAmount(_parameter, _instance, true);
     }
 
-
     /**
      * Method to calculate the open amount for an instance.
      *
      * @param _parameter Parameter as passed from the eFaps API
      * @param _instance instance the open amount is wanted for
+     * @param _accessCheck the access check
      * @return open amount
      * @throws EFapsException on error
      */
@@ -537,6 +541,13 @@ public abstract class Payment_Base
         return retVal;
     }
 
+    /**
+     * Gets the open amount4 picker.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the open amount4 picker
+     * @throws EFapsException on error
+     */
     protected String getOpenAmount4Picker(final Parameter _parameter)
         throws EFapsException
     {
@@ -575,12 +586,25 @@ public abstract class Payment_Base
         return !ret.isEmpty() ? ret : null;
     }
 
+    /**
+     * Auto complete4 document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     */
     public Return autoComplete4Document(final Parameter _parameter)
     {
         final Return ret = new Return();
         return ret;
     }
 
+    /**
+     * Multi print4 payment picker.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return multiPrint4PaymentPicker(final Parameter _parameter)
         throws EFapsException
     {
