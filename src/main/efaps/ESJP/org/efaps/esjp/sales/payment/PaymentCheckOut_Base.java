@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -34,7 +31,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -59,17 +56,18 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
- *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("541288ca-b89a-4b1c-97ad-f01eba31ccaa")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentCheckOut_Base
     extends AbstractPaymentOut
 {
 
-    private final static String PAYMENT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getpayableDocument";
-    private final static String ACCOUNT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getAccount";
+    /** The Constant PAYMENT. */
+    private static final String PAYMENT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getpayableDocument";
+
+    /** The Constant ACCOUNT. */
+    private static final String ACCOUNT = "org.efaps.esjp.sales.payment.PaymentCheckOut.getAccount";
 
     /**
      * Create a new PaymentCheckOut.
@@ -129,7 +127,7 @@ public abstract class PaymentCheckOut_Base
 
             final Update updatePayDoc = new Update(_createdDoc.getInstance());
             updatePayDoc.add(CIERP.PaymentDocumentAbstract.Name,
-                            print.getAttribute(CISales.CheckBook2PaymentCheckOut.Number));
+                            print.<String>getAttribute(CISales.CheckBook2PaymentCheckOut.Number));
             updatePayDoc.executeWithoutTrigger();
 
             final Update relUpdate = new Update(checkBook2checkInst);
@@ -209,6 +207,13 @@ public abstract class PaymentCheckOut_Base
         return ret;
     }
 
+    /**
+     * Gets the payment2 check out position instances.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the payment2 check out position instances
+     * @throws EFapsException on error
+     */
     public Return getPayment2CheckOutPositionInstances(final Parameter _parameter)
         throws EFapsException
     {
@@ -271,6 +276,13 @@ public abstract class PaymentCheckOut_Base
         return ret;
     }
 
+    /**
+     * Gets the payable document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the payable document
+     * @throws EFapsException on error
+     */
     @SuppressWarnings("unchecked")
     public Return getpayableDocument(final Parameter _parameter)
         throws EFapsException
@@ -332,6 +344,13 @@ public abstract class PaymentCheckOut_Base
         return ret;
     }
 
+    /**
+     * Gets the account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the account
+     * @throws EFapsException on error
+     */
     @SuppressWarnings("unchecked")
     public Return getAccount(final Parameter _parameter)
         throws EFapsException
