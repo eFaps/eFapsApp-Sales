@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.comparative;
@@ -30,7 +27,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.db.Context;
@@ -52,10 +49,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("9274142f-4882-43d4-a87f-840eb51d1720")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractComparative_Base
     extends CommonDocument
 {
@@ -134,6 +130,13 @@ public abstract class AbstractComparative_Base
         return create.execute(_parameter);
     }
 
+    /**
+     * Add2 detail create.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _insert the insert
+     * @throws EFapsException on error
+     */
     protected void add2DetailCreate(final Parameter _parameter,
                                     final Insert _insert)
         throws EFapsException
@@ -142,20 +145,28 @@ public abstract class AbstractComparative_Base
     }
 
     /**
-     * @param _parameter
-     * @param _attribute
+     * Gets the value4 link.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _linkValue the link value
+     * @return the value4 link
+     * @throws EFapsException on error
      */
     public abstract String getValue4Link(final Parameter _parameter,
                                          final Long _linkValue)
         throws EFapsException;
 
     /**
-     * @param _parameter
-     * @param _attribute
-     * @param _attribute2
-     * @param _attribute3
-     * @param _attribute4
-     * @return
+     * Gets the value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _detailInst the detail inst
+     * @param _dateValue the date value
+     * @param _decimalValue the decimal value
+     * @param _integerValue the integer value
+     * @param _stringValue the string value
+     * @return the value
+     * @throws EFapsException on error
      */
     public String getValue(final Parameter _parameter,
                            final Instance _detailInst,
@@ -176,9 +187,12 @@ public abstract class AbstractComparative_Base
     }
 
     /**
-     * @param _parameter
-     * @param _decimalValue
-     * @return
+     * Gets the value4 decimal.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _decimalValue the decimal value
+     * @return the value4 decimal
+     * @throws EFapsException on error
      */
     protected String getValue4Decimal(final Parameter _parameter,
                                       final BigDecimal _decimalValue)
@@ -189,9 +203,12 @@ public abstract class AbstractComparative_Base
     }
 
     /**
-     * @param _parameter
-     * @param _integerValue
-     * @return
+     * Gets the value4 integer.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _integerValue the integer value
+     * @return the value4 integer
+     * @throws EFapsException on error
      */
     protected String getValue4Integer(final Parameter _parameter,
                                       final Integer _integerValue)
@@ -200,6 +217,13 @@ public abstract class AbstractComparative_Base
         return _integerValue == null ? "" : _integerValue.toString();
     }
 
+    /**
+     * Gets the value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the value
+     * @throws EFapsException on error
+     */
     @SuppressWarnings("unchecked")
     public Return getValue(final Parameter _parameter)
         throws EFapsException
@@ -237,6 +261,13 @@ public abstract class AbstractComparative_Base
     }
 
 
+    /**
+     * Dimension drop down field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return dimensionDropDownFieldValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -254,7 +285,7 @@ public abstract class AbstractComparative_Base
                     print.addAttribute(CISales.ComparativeDetailAbstract.ComparativeAbstractLink);
                     print.execute();
                     _queryBldr.addWhereAttrEqValue(CISales.ComparativeDimensionAbstract.ComparativeAbstractLink,
-                                    print.getAttribute(CISales.ComparativeDetailAbstract.ComparativeAbstractLink));
+                                print.<Long>getAttribute(CISales.ComparativeDetailAbstract.ComparativeAbstractLink));
                 } else {
                     _queryBldr.addWhereAttrEqValue(CISales.ComparativeDimensionAbstract.ComparativeAbstractLink,
                                     instance);
@@ -263,6 +294,4 @@ public abstract class AbstractComparative_Base
         };
         return field.dropDownFieldValue(_parameter);
     }
-
-
 }
