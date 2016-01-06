@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8484 $
- * Last Changed:    $Date: 2013-01-07 14:11:24 -0500 (lun, 07 ene 2013) $
- * Last Changed By: $Author: jan@moxter.net $
  */
 
 
@@ -35,7 +32,7 @@ import java.util.Map;
 
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -57,10 +54,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DetractionReport4Provider_Base.java 8484 2013-01-07 19:11:24Z jan@moxter.net $
  */
 @EFapsUUID("6d915d6b-fdbe-4bb0-8133-588a0ce3613f")
-@EFapsRevision("$Rev: 8484 $")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentDetractionReport4Acquirer_Base
 {
     private static String MASTER_INDICATOR = "*";
@@ -164,7 +160,7 @@ public abstract class PaymentDetractionReport4Acquirer_Base
 
                 final QueryBuilder queryBldrDef = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
                 queryBldrDef.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.FromLink,
-                                print.getAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId));
+                                print.<Long>getAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId));
                 final MultiPrintQuery multiDef = queryBldrDef.getPrint();
                 multiDef.addAttribute(CISales.BulkPaymentDefinition2Contact.ToLink,
                                 CISales.BulkPaymentDefinition2Contact.AccountNumber);
@@ -195,11 +191,13 @@ public abstract class PaymentDetractionReport4Acquirer_Base
                 final SelectBuilder selProvId = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
                                 .linkto(CISales.PaymentDetractionOut.Contact).id();
                 final SelectBuilder selOperType = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                                .linkfrom(CISales.BulkPaymentDetraction2PaymentDocument, CISales.BulkPaymentDetraction2PaymentDocument.ToLink)
+                                .linkfrom(CISales.BulkPaymentDetraction2PaymentDocument,
+                                                CISales.BulkPaymentDetraction2PaymentDocument.ToLink)
                                 .linkto(CISales.BulkPaymentDetraction2PaymentDocument.OperationType)
                                 .attribute(CISales.AttributeDefinitionOperationType.Value);
                 final SelectBuilder selServType = new SelectBuilder().linkto(CISales.Payment.TargetDocument)
-                                .linkfrom(CISales.BulkPaymentDetraction2PaymentDocument, CISales.BulkPaymentDetraction2PaymentDocument.ToLink)
+                                .linkfrom(CISales.BulkPaymentDetraction2PaymentDocument,
+                                                CISales.BulkPaymentDetraction2PaymentDocument.ToLink)
                                 .linkto(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType)
                                 .attribute(CISales.AttributeDefinitionOperationType.Value);
                 final SelectBuilder selDocDate = new SelectBuilder().linkto(CISales.Payment.CreateDocument)

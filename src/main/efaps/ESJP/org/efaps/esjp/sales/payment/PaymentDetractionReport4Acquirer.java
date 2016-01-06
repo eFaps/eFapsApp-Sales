@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8484 $
- * Last Changed:    $Date: 2013-01-07 14:11:24 -0500 (lun, 07 ene 2013) $
- * Last Changed By: $Author: jan@moxter.net $
  */
 
 package org.efaps.esjp.sales.payment;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: DetractionReport4Provider.java 8484 2013-01-07 19:11:24Z jan@moxter.net $
  */
 @EFapsUUID("5521227c-fe30-4cdf-9d51-df7f81702f44")
-@EFapsRevision("$Rev: 8484 $")
+@EFapsApplication("eFapsApp-Sales")
 public class PaymentDetractionReport4Acquirer
     extends PaymentDetractionReport4Acquirer_Base
 {
