@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -29,20 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
-
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
@@ -62,19 +52,31 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.util.EFapsException;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
+
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: BulkPayment_Base.java 14047 2014-09-17 17:21:35Z jan@moxter.net
- *          $
  */
 @EFapsUUID("929914ed-1511-4fb8-9cc8-7514811d3f74")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class BulkPayment_Base
     extends AbstractDocument
 {
 
+    /**
+     * Creates the.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -107,6 +109,13 @@ public abstract class BulkPayment_Base
         return new Return();
     }
 
+    /**
+     * Connect insert post trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return connectInsertPostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -114,6 +123,13 @@ public abstract class BulkPayment_Base
         return new Return();
     }
 
+    /**
+     * Connect update post trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return connectUpdatePostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -121,6 +137,13 @@ public abstract class BulkPayment_Base
         return new Return();
     }
 
+    /**
+     * Update total.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @throws EFapsException on error
+     */
     protected void updateTotal(final Parameter _parameter,
                                final Instance _instance)
         throws EFapsException
@@ -158,6 +181,13 @@ public abstract class BulkPayment_Base
         update.executeWithoutAccessCheck();
     }
 
+    /**
+     * Gets the report4 detail.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the report4 detail
+     * @throws EFapsException on error
+     */
     public Return getReport4Detail(final Parameter _parameter)
         throws EFapsException
     {
@@ -188,9 +218,48 @@ public abstract class BulkPayment_Base
         return ret;
     }
 
+    /**
+     * Gets the report.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the report
+     */
     protected AbstractDynamicReport getReport(final Parameter _parameter)
     {
         return new Report4Detail();
+    }
+
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final Return ret = new Return();
+        final String accNumBank = _parameter
+                        .getParameterValue(CIFormSales.Sales_BulkPaymentDefinition2ContactForm.accountNumber.name);
+        if (accNumBank != null && !accNumBank.isEmpty()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDefinition);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDefinition.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
+            queryBldr.addWhereAttrInQuery(CISales.BulkPaymentDefinition2Contact.FromLink, attrQuery);
+            queryBldr.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.AccountNumber, accNumBank);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.existingAccount"));
+            }
+        }
+
+        if (!html.toString().isEmpty()) {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        } else {
+            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.nonExistingAccount"));
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+            ret.put(ReturnValues.TRUE, true);
+        }
+
+        return ret;
     }
 
     public class Report4Detail
@@ -211,7 +280,7 @@ public abstract class BulkPayment_Base
 
             final QueryBuilder queryBldrCont = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
             queryBldrCont.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.FromLink,
-                            print.getAttribute(CISales.BulkPayment.BulkDefinitionId));
+                            print.<Long>getAttribute(CISales.BulkPayment.BulkDefinitionId));
             final MultiPrintQuery multiCont = queryBldrCont.getPrint();
             multiCont.addAttribute(CISales.BulkPaymentDefinition2Contact.AccountNumber);
             final SelectBuilder selContOid = new SelectBuilder()
@@ -315,38 +384,5 @@ public abstract class BulkPayment_Base
             _builder.addColumn(contactColumn, taxnumberColumn, accountNumberColumn, docNameColumn, amountColumn);
             _builder.addSubtotalAtColumnFooter(subtotal);
         }
-    }
-
-    @Override
-    public Return validate(final Parameter _parameter)
-        throws EFapsException
-    {
-        final StringBuilder html = new StringBuilder();
-        final Return ret = new Return();
-        final String accNumBank = _parameter
-                        .getParameterValue(CIFormSales.Sales_BulkPaymentDefinition2ContactForm.accountNumber.name);
-        if (accNumBank != null && !accNumBank.isEmpty()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDefinition);
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDefinition.ID);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
-            queryBldr.addWhereAttrInQuery(CISales.BulkPaymentDefinition2Contact.FromLink, attrQuery);
-            queryBldr.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.AccountNumber, accNumBank);
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            if (query.next()) {
-                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.existingAccount"));
-            }
-        }
-
-        if (!html.toString().isEmpty()) {
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        } else {
-            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.nonExistingAccount"));
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-            ret.put(ReturnValues.TRUE, true);
-        }
-
-        return ret;
     }
 }
