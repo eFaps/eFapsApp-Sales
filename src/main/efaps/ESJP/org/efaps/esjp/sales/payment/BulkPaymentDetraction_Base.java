@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -30,20 +27,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
-import net.sf.dynamicreports.report.datasource.DRDataSource;
-import net.sf.jasperreports.engine.JRDataSource;
-
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
@@ -64,19 +54,32 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.document.AbstractDocument;
 import org.efaps.util.EFapsException;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
+import net.sf.dynamicreports.report.datasource.DRDataSource;
+import net.sf.jasperreports.engine.JRDataSource;
+
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("f58acffd-cd5b-4b24-b25f-92edfcbc651f")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class BulkPaymentDetraction_Base
     extends AbstractDocument
 {
 
+    /**
+     * Creates the.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
@@ -85,8 +88,11 @@ public abstract class BulkPaymentDetraction_Base
     }
 
     /**
-     * @param _parameter
-     * @return
+     * Creates the doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the created doc
+     * @throws EFapsException on error
      */
     public CreatedDoc createDoc(final Parameter _parameter)
         throws EFapsException
@@ -123,6 +129,13 @@ public abstract class BulkPaymentDetraction_Base
         return ret;
     }
 
+    /**
+     * Connect insert post trigger4 update service type.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return connectInsertPostTrigger4UpdateServiceType(final Parameter _parameter)
         throws EFapsException
     {
@@ -151,13 +164,21 @@ public abstract class BulkPaymentDetraction_Base
                 print3.executeWithoutAccessCheck();
 
                 final Update update = new Update(instance);
-                update.add(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType, print3.getSelect(selServiceId));
+                update.add(CISales.BulkPaymentDetraction2PaymentDocument.ServiceType,
+                                print3.<Long>getSelect(selServiceId));
                 update.executeWithoutTrigger();
             }
         }
         return new Return();
     }
 
+    /**
+     * Connect insert post trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return connectInsertPostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -165,6 +186,13 @@ public abstract class BulkPaymentDetraction_Base
         return new Return();
     }
 
+    /**
+     * Connect update post trigger.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return connectUpdatePostTrigger(final Parameter _parameter)
         throws EFapsException
     {
@@ -172,6 +200,13 @@ public abstract class BulkPaymentDetraction_Base
         return new Return();
     }
 
+    /**
+     * Update total.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @throws EFapsException on error
+     */
     protected void updateTotal(final Parameter _parameter,
                                final Instance _instance)
         throws EFapsException
@@ -210,6 +245,13 @@ public abstract class BulkPaymentDetraction_Base
     }
 
 
+    /**
+     * Gets the report4 detail.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the report4 detail
+     * @throws EFapsException on error
+     */
     public Return getReport4Detail(final Parameter _parameter)
         throws EFapsException
     {
@@ -222,6 +264,13 @@ public abstract class BulkPaymentDetraction_Base
     }
 
 
+    /**
+     * Export report4 detail.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return exportReport4Detail(final Parameter _parameter)
         throws EFapsException
     {
@@ -241,13 +290,82 @@ public abstract class BulkPaymentDetraction_Base
         return ret;
     }
 
-
-
+    /**
+     * Gets the report.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the report
+     */
     protected AbstractDynamicReport getReport(final Parameter _parameter)
     {
         return new Report4Detail();
     }
 
+    @Override
+    public Return validate(final Parameter _parameter)
+        throws EFapsException
+    {
+        final StringBuilder html = new StringBuilder();
+        final Return ret = new Return();
+        final String accNumBank = _parameter
+                        .getParameterValue(CIFormSales.Sales_BulkPaymentDefinition2ContactForm.accountNumber.name);
+        if (accNumBank != null && !accNumBank.isEmpty()) {
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDefinition);
+            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDefinition.ID);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
+            queryBldr.addWhereAttrInQuery(CISales.BulkPaymentDefinition2Contact.FromLink, attrQuery);
+            queryBldr.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.AccountNumber, accNumBank);
+            final InstanceQuery query = queryBldr.getQuery();
+            query.execute();
+            if (query.next()) {
+                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.existingAccount"));
+            }
+        }
+
+        if (!html.toString().isEmpty()) {
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+        } else {
+            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.nonExistingAccount"));
+            ret.put(ReturnValues.SNIPLETT, html.toString());
+            ret.put(ReturnValues.TRUE, true);
+        }
+
+        return ret;
+    }
+
+    /**
+     * Search4 bulk payment detraction.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return search4BulkPaymentDetraction(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Search()
+        {
+            @Override
+            protected void add2QueryBuilder(final Parameter _parameter,
+                                            final QueryBuilder _queryBldr)
+                throws EFapsException
+            {
+                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDetraction2PaymentDocument);
+                final AttributeQuery attrQuery =
+                                attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDetraction2PaymentDocument.ToLink);
+
+                _queryBldr.addWhereAttrNotInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
+            }
+        }.execute(_parameter);
+
+        return ret;
+    }
+
+    /**
+     * The Class Report4Detail.
+     *
+     */
     public class Report4Detail
         extends AbstractDynamicReport
     {
@@ -266,7 +384,7 @@ public abstract class BulkPaymentDetraction_Base
 
             final QueryBuilder queryBldrCont = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
             queryBldrCont.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.FromLink,
-                            print.getAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId));
+                            print.<Long>getAttribute(CISales.BulkPaymentDetraction.BulkDefinitionId));
             final MultiPrintQuery multiCont = queryBldrCont.getPrint();
             multiCont.addAttribute(CISales.BulkPaymentDefinition2Contact.AccountNumber);
             final SelectBuilder selContOid = new SelectBuilder()
@@ -288,7 +406,8 @@ public abstract class BulkPaymentDetraction_Base
             final AttributeQuery pdAttrQuery = pdAttrQueryBldr.getAttributeQuery(CISales.PaymentDocumentOutAbstract.ID);
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDetraction2PaymentDocument);
-            attrQueryBldr.addWhereAttrEqValue(CISales.BulkPaymentDetraction2PaymentDocument.FromLink, _parameter.getInstance()
+            attrQueryBldr.addWhereAttrEqValue(CISales.BulkPaymentDetraction2PaymentDocument.FromLink,
+                            _parameter.getInstance()
                             .getId());
             attrQueryBldr.addWhereAttrInQuery(CISales.BulkPaymentDetraction2PaymentDocument.ToLink, pdAttrQuery);
             final AttributeQuery attrQuery = attrQueryBldr
@@ -369,59 +488,5 @@ public abstract class BulkPaymentDetraction_Base
             _builder.addColumn(contactColumn, taxnumberColumn, accountNumberColumn, docNameColumn, amountColumn);
             _builder.addSubtotalAtColumnFooter(subtotal);
         }
-    }
-
-    @Override
-    public Return validate(final Parameter _parameter)
-        throws EFapsException
-    {
-        final StringBuilder html = new StringBuilder();
-        final Return ret = new Return();
-        final String accNumBank = _parameter
-                        .getParameterValue(CIFormSales.Sales_BulkPaymentDefinition2ContactForm.accountNumber.name);
-        if (accNumBank != null && !accNumBank.isEmpty()) {
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDefinition);
-            final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDefinition.ID);
-
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.BulkPaymentDefinition2Contact);
-            queryBldr.addWhereAttrInQuery(CISales.BulkPaymentDefinition2Contact.FromLink, attrQuery);
-            queryBldr.addWhereAttrEqValue(CISales.BulkPaymentDefinition2Contact.AccountNumber, accNumBank);
-            final InstanceQuery query = queryBldr.getQuery();
-            query.execute();
-            if (query.next()) {
-                html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.existingAccount"));
-            }
-        }
-
-        if (!html.toString().isEmpty()) {
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-        } else {
-            html.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.BulkPayment.nonExistingAccount"));
-            ret.put(ReturnValues.SNIPLETT, html.toString());
-            ret.put(ReturnValues.TRUE, true);
-        }
-
-        return ret;
-    }
-
-    public Return search4BulkPaymentDetraction(final Parameter _parameter)
-        throws EFapsException
-    {
-        final Return ret = new Search()
-        {
-            @Override
-            protected void add2QueryBuilder(final Parameter _parameter,
-                                            final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.BulkPaymentDetraction2PaymentDocument);
-                final AttributeQuery attrQuery =
-                                attrQueryBldr.getAttributeQuery(CISales.BulkPaymentDetraction2PaymentDocument.ToLink);
-
-                _queryBldr.addWhereAttrNotInQuery(CISales.PaymentDetractionOut.ID, attrQuery);
-            }
-        }.execute(_parameter);
-
-        return ret;
     }
 }
