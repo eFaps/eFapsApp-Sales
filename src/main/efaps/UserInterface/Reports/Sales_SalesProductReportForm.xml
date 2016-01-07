@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@
                 <property name="Field03">type</property>
                 <property name="Field04">dateConfig</property>
                 <property name="Field05">hideDetails</property>
-                <property name="Field06">groupByContact</property>
+                <property name="Field06">groupConfig</property>
                 <property name="Field07">priceConfig</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">contact</property>
@@ -45,7 +45,7 @@
                 <property name="FilterType03">Type</property>
                 <property name="FilterType04">Enum</property>
                 <property name="FilterType05">Boolean</property>
-                <property name="FilterType06">Boolean</property>
+                <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Currency</property>
                 <property name="FilterType09">InstanceSet</property>
@@ -55,7 +55,7 @@
                 <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
                 <property name="FilterDefault05">false</property>
-                <property name="FilterDefault06">true</property>
+                <property name="FilterDefault06">org.efaps.esjp.sales.report.SalesProductReport_Base$GroupConfig</property>
                 <property name="FilterDefault07">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
                 <property name="FilterDefault08">BASECURRENCY</property>
                 <property name="FilterDefault09">-</property>
@@ -70,7 +70,7 @@
                 <property name="Field03">type</property>
                 <property name="Field04">dateConfig</property>
                 <property name="Field05">hideDetails</property>
-                <property name="Field06">groupByContact</property>
+                <property name="Field06">groupConfig</property>
                 <property name="Field07">priceConfig</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">contact</property>
@@ -80,7 +80,7 @@
                 <property name="DBProperty03">ERP_ReportFilterForm4DateFromToType.type.Label</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.SalesProductReport.dateConfig</property>
                 <property name="DBProperty05">org.efaps.esjp.sales.report.SalesProductReport.hideDetails</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.groupByContact</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.groupConfig</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.SalesProductReport.contact</property>
@@ -111,7 +111,7 @@
                 <property name="Field03">type</property>
                 <property name="Field04">dateConfig</property>
                 <property name="Field05">hideDetails</property>
-                <property name="Field06">groupByContact</property>
+                <property name="Field06">groupConfig</property>
                 <property name="Field07">priceConfig</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">contact</property>
@@ -122,7 +122,7 @@
                 <property name="FilterType03">Type</property>
                 <property name="FilterType04">Enum</property>
                 <property name="FilterType05">Boolean</property>
-                <property name="FilterType06">Boolean</property>
+                <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Currency</property>
                 <property name="FilterType09">InstanceSet</property>
@@ -133,7 +133,7 @@
                 <property name="FilterDefault03">Sales_Invoice</property>
                 <property name="FilterDefault04">org.efaps.esjp.sales.report.SalesProductReport_Base$DateConfig</property>
                 <property name="FilterDefault05">false</property>
-                <property name="FilterDefault06">true</property>
+                <property name="FilterDefault06">org.efaps.esjp.sales.report.SalesProductReport_Base$GroupConfig</property>
                 <property name="FilterDefault07">org.efaps.esjp.sales.report.SalesProductReport_Base$PriceConfig</property>
                 <property name="FilterDefault08">BASECURRENCY</property>
                 <property name="FilterDefault09">-</property>
@@ -149,7 +149,7 @@
                 <property name="Field03">type</property>
                 <property name="Field04">dateConfig</property>
                 <property name="Field05">hideDetails</property>
-                <property name="Field06">groupByContact</property>
+                <property name="Field06">groupConfig</property>
                 <property name="Field07">priceConfig</property>
                 <property name="Field08">currency</property>
                 <property name="Field09">contact</property>
@@ -160,7 +160,7 @@
                 <property name="DBProperty03">ERP_ReportFilterForm4DateFromToType.type.Label</property>
                 <property name="DBProperty04">org.efaps.esjp.sales.report.SalesProductReport.dateConfig</property>
                 <property name="DBProperty05">org.efaps.esjp.sales.report.SalesProductReport.hideDetails</property>
-                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.groupByContact</property>
+                <property name="DBProperty06">org.efaps.esjp.sales.report.SalesProductReport.groupConfig</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.SalesProductReport.priceConfig</property>
                 <property name="DBProperty08">org.efaps.esjp.sales.report.SalesProductReport.currency</property>
                 <property name="DBProperty09">org.efaps.esjp.sales.report.SalesProductReport.contact</property>

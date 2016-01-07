@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,6 +30,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
+import org.efaps.admin.datamodel.Classification;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.event.Parameter;
@@ -41,11 +42,13 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
+import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.eql.ClassSelect;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeDate;
 import org.efaps.esjp.common.jasperreport.datatype.DateTimeMonth;
@@ -54,9 +57,12 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.erp.RateInfo;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.base.expression.AbstractSimpleExpression;
@@ -113,10 +119,31 @@ public abstract class SalesProductReport_Base
      */
     public enum PriceConfig
     {
-        /** Includes a group on date level. */
-        NET, /** Includes a group on monthly level. */
+        /** Use net prices. */
+        NET,
+        /** Use cross prices. */
         CROSS;
     }
+
+    /**
+     * The Enum DateConfig.
+     *
+     * @author The eFaps Team
+     */
+    public enum GroupConfig
+    {
+        /** Group by Product. */
+        PRODUCT,
+        /** Group by Contact. */
+        CONTACT,
+        /** Group by product family. */
+        PRODFAMILY;
+    }
+
+    /**
+     * Logging instance used in this class.
+     */
+    protected static final Logger LOG = LoggerFactory.getLogger(SalesProductReport.class);
 
     /**
      * @param _parameter Parameter as passed by the eFasp API
@@ -134,6 +161,13 @@ public abstract class SalesProductReport_Base
         return ret;
     }
 
+    /**
+     * Export report.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return exportReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -154,24 +188,37 @@ public abstract class SalesProductReport_Base
         return ret;
     }
 
+    /**
+     * Gets the report.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the report
+     * @throws EFapsException on error
+     */
     protected AbstractDynamicReport getReport(final Parameter _parameter)
         throws EFapsException
     {
         return new DynSalesProductReport(this);
     }
 
+    /**
+     * The Class DynSalesProductReport.
+     */
     public static class DynSalesProductReport
         extends AbstractDynamicReport
     {
 
+        /** The filtered report. */
         private final SalesProductReport_Base filteredReport;
 
         /**
-         * @param _salesProductReport_Base
+         * Instantiates a new dyn sales product report.
+         *
+         * @param _filteredReport the filtered report
          */
-        public DynSalesProductReport(final SalesProductReport_Base _salesProductReport_Base)
+        public DynSalesProductReport(final SalesProductReport_Base _filteredReport)
         {
-            this.filteredReport = _salesProductReport_Base;
+            this.filteredReport = _filteredReport;
         }
 
         @Override
@@ -189,6 +236,7 @@ public abstract class SalesProductReport_Base
             } else {
 
                 final DateConfig dateConfig = evaluateDateConfig(_parameter);
+                final GroupConfig groupConfig = evaluateGroupConfig(_parameter);
                 final PriceConfig priceConfig = evaluatePriceConfig(_parameter);
                 final CurrencyInst currencyInst = evaluateCurrencyInst(_parameter);
 
@@ -268,8 +316,7 @@ public abstract class SalesProductReport_Base
                                     .setDocType(multi.<String>getSelect(selDocType))
                                     .setDocOID(multi.<String>getSelect(selDocOID))
                                     .setDocStatus(multi.<String>getSelect(selDocStatus))
-                                    .setProductDiscount(
-                                                    multi.<BigDecimal>getAttribute(
+                                    .setProductDiscount(multi.<BigDecimal>getAttribute(
                                                                     CISales.PositionSumAbstract.Discount));
                     data.add(dataBean);
 
@@ -319,80 +366,7 @@ public abstract class SalesProductReport_Base
                     dataBean.setUnitPrice(unitPrice).setPrice(price);
                 }
 
-                final ComparatorChain<DataBean> comparator = new ComparatorChain<>();
-                if (DateConfig.DAILY.equals(dateConfig) || DateConfig.LATEST.equals(dateConfig)) {
-                    comparator.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _arg0,
-                                           final DataBean _arg1)
-                        {
-                            return _arg0.getDocDate().compareTo(_arg1.getDocDate());
-                        }
-                    });
-                } else if (DateConfig.MONTHLY.equals(dateConfig)) {
-                    comparator.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _arg0,
-                                           final DataBean _arg1)
-                        {
-                            return Integer.valueOf(_arg0.getDocDate().getYear())
-                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getYear()));
-                        }
-                    });
-                    comparator.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _arg0,
-                                           final DataBean _arg1)
-                        {
-                            return Integer.valueOf(_arg0.getDocDate().getMonthOfYear())
-                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getMonthOfYear()));
-                        }
-                    });
-                } else if (DateConfig.YEARLY.equals(dateConfig)) {
-                    comparator.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _arg0,
-                                           final DataBean _arg1)
-                        {
-                            return Integer.valueOf(_arg0.getDocDate().getYear())
-                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getYear()));
-                        }
-                    });
-                }
-
-                if (groupByContact(_parameter)) {
-                    comparator.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _arg0,
-                                           final DataBean _arg1)
-                        {
-                            return _arg0.getContact().compareTo(_arg1.getContact());
-                        }
-                    });
-                } else {
-                    comparator.addComparator(new Comparator<DataBean>()
-                    {
-
-                        @Override
-                        public int compare(final DataBean _arg0,
-                                           final DataBean _arg1)
-                        {
-                            return _arg0.getProductName().compareTo(_arg1.getProductName());
-                        }
-                    });
-                }
-
-                Collections.sort(data, comparator);
+                sort(_parameter, data);
 
                 final List<DataBean> dataSource;
                 if (DateConfig.LATEST.equals(dateConfig)) {
@@ -411,7 +385,10 @@ public abstract class SalesProductReport_Base
                     dataSource = new ArrayList<>();
                     final Map<String, DataBean> added = new LinkedHashMap<>();
                     for (final DataBean bean : data) {
-                        String criteria =  bean.getProductInst().getOid()+ "-" + bean.getContactInst().getOid();
+                        String criteria = (GroupConfig.PRODFAMILY.equals(groupConfig)
+                                                ? bean.getProductFamily()
+                                                : bean.getProductInst().getOid())
+                                        + "-" + bean.getContactInst().getOid();
                         switch (dateConfig) {
                             case DAILY:
                                 criteria = criteria  + bean.getDocDate().toString("-YYYY-MM-dd");
@@ -450,6 +427,124 @@ public abstract class SalesProductReport_Base
             return ret;
         }
 
+        /**
+         * Sort.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @param _data the data
+         * @throws EFapsException on error
+         */
+        protected void sort(final Parameter _parameter,
+                            final List<DataBean> _data)
+            throws EFapsException
+        {
+            final ComparatorChain<DataBean> comparator = new ComparatorChain<>();
+            switch (evaluateDateConfig(_parameter)) {
+                case DAILY:
+                case LATEST:
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return _arg0.getDocDate().compareTo(_arg1.getDocDate());
+                        }
+                    });
+                    break;
+                case MONTHLY:
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return Integer.valueOf(_arg0.getDocDate().getYear())
+                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getYear()));
+                        }
+                    });
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return Integer.valueOf(_arg0.getDocDate().getMonthOfYear())
+                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getMonthOfYear()));
+                        }
+                    });
+                    break;
+                case YEARLY:
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return Integer.valueOf(_arg0.getDocDate().getYear())
+                                            .compareTo(Integer.valueOf(_arg1.getDocDate().getYear()));
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+
+            switch (evaluateGroupConfig(_parameter)) {
+                case CONTACT:
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return _arg0.getContact().compareTo(_arg1.getContact());
+                        }
+                    });
+                    break;
+                case PRODUCT:
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return _arg0.getProductName().compareTo(_arg1.getProductName());
+                        }
+                    });
+                    break;
+                case PRODFAMILY:
+                    comparator.addComparator(new Comparator<DataBean>()
+                    {
+
+                        @Override
+                        public int compare(final DataBean _arg0,
+                                           final DataBean _arg1)
+                        {
+                            return _arg0.getProductFamily().compareTo(_arg1.getProductFamily());
+                        }
+                    });
+                    break;
+                default:
+                    break;
+            }
+
+            Collections.sort(_data, comparator);
+        }
+
+        /**
+         * Checks if is hide details.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return true, if is hide details
+         * @throws EFapsException on error
+         */
         protected boolean isHideDetails(final Parameter _parameter)
             throws EFapsException
         {
@@ -457,6 +552,13 @@ public abstract class SalesProductReport_Base
             return (Boolean) filter.get("hideDetails");
         }
 
+        /**
+         * Evaluate currency inst.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the currency inst
+         * @throws EFapsException on error
+         */
         protected CurrencyInst evaluateCurrencyInst(final Parameter _parameter)
             throws EFapsException
         {
@@ -478,6 +580,13 @@ public abstract class SalesProductReport_Base
             return ret;
         }
 
+        /**
+         * Evaluate date config.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the date config
+         * @throws EFapsException on error
+         */
         protected DateConfig evaluateDateConfig(final Parameter _parameter)
             throws EFapsException
         {
@@ -492,6 +601,13 @@ public abstract class SalesProductReport_Base
             return ret;
         }
 
+        /**
+         * Evaluate price config.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the price config
+         * @throws EFapsException on error
+         */
         protected PriceConfig evaluatePriceConfig(final Parameter _parameter)
             throws EFapsException
         {
@@ -502,6 +618,27 @@ public abstract class SalesProductReport_Base
                 ret = (PriceConfig) value.getObject();
             } else {
                 ret = PriceConfig.NET;
+            }
+            return ret;
+        }
+
+        /**
+         * Evaluate group config.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the group config
+         * @throws EFapsException on error
+         */
+        protected GroupConfig evaluateGroupConfig(final Parameter _parameter)
+            throws EFapsException
+        {
+            GroupConfig ret;
+            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
+            final EnumFilterValue value = (EnumFilterValue) filter.get("groupConfig");
+            if (value != null) {
+                ret = (GroupConfig) value.getObject();
+            } else {
+                ret = GroupConfig.PRODUCT;
             }
             return ret;
         }
@@ -542,9 +679,10 @@ public abstract class SalesProductReport_Base
          *
          * @param _parameter the _parameter
          * @return true, if is contact
-         * @throws EFapsException
+         * @throws EFapsException on error
          */
-        protected boolean isContact(final Parameter _parameter) throws EFapsException
+        protected boolean isContact(final Parameter _parameter)
+            throws EFapsException
         {
             return isInstance(_parameter) && _parameter.getInstance().getType().isKindOf(CIContacts.Contact);
         }
@@ -599,6 +737,13 @@ public abstract class SalesProductReport_Base
             return isInstance(_parameter) && _parameter.getInstance().getType().isKindOf(CIProducts.ProductAbstract);
         }
 
+        /**
+         * Gets the product inst.
+         *
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the product inst
+         * @throws EFapsException on error
+         */
         protected Object[] getProductInst(final Parameter _parameter)
             throws EFapsException
         {
@@ -623,23 +768,9 @@ public abstract class SalesProductReport_Base
          * @param _parameter the _parameter
          * @return true, if is instance
          */
-        protected boolean isInstance(final Parameter _parameter) {
-            return _parameter.getInstance() != null && _parameter.getInstance().isValid();
-        }
-
-        /**
-         * Evaluate it it must be grouped by contact.
-         *
-         * @param _parameter the _parameter
-         * @return true, if successful
-         * @throws EFapsException
-         */
-        protected boolean groupByContact(final Parameter _parameter)
-            throws EFapsException
+        protected boolean isInstance(final Parameter _parameter)
         {
-            final Map<String, Object> filter = this.filteredReport.getFilterMap(_parameter);
-            return isProduct(_parameter)
-                            || (filter.containsKey("groupByContact") && (Boolean) filter.get("groupByContact"));
+            return _parameter.getInstance() != null && _parameter.getInstance().isValid();
         }
 
         @Override
@@ -648,14 +779,18 @@ public abstract class SalesProductReport_Base
             throws EFapsException
         {
             final DateConfig dateConfig = evaluateDateConfig(_parameter);
+            final GroupConfig groupConfig = evaluateGroupConfig(_parameter);
+
             final boolean hideDetails = isHideDetails(_parameter);
-            final boolean groupByContact = groupByContact(_parameter);
 
             final TextColumnBuilder<String> contactColumn = DynamicReports.col.column(
                             this.filteredReport.getDBProperty("Contact"), "contact",
                             DynamicReports.type.stringType()).setWidth(250);
             final TextColumnBuilder<String> productColumn = DynamicReports.col.column(
                             this.filteredReport.getDBProperty("Product"), "product",
+                            DynamicReports.type.stringType());
+            final TextColumnBuilder<String> productFamilyColumn = DynamicReports.col.column(
+                            this.filteredReport.getDBProperty("ProductFamily"), "productFamily",
                             DynamicReports.type.stringType());
 
             final TextColumnBuilder<String> productNameColumn = DynamicReports.col.column(
@@ -709,6 +844,8 @@ public abstract class SalesProductReport_Base
             final ColumnGroupBuilder dateGroup = DynamicReports.grp.group(dateColumn).groupByDataType();
             final ColumnGroupBuilder contactGroup = DynamicReports.grp.group(contactColumn).groupByDataType();
             final ColumnGroupBuilder productGroup = DynamicReports.grp.group(productColumn).groupByDataType();
+            final ColumnGroupBuilder productFamilyGroup = DynamicReports.grp.group(productFamilyColumn)
+                            .groupByDataType();
 
             final VariableBuilder<BigDecimal> quantity4ProdCon = DynamicReports.variable("quantity",
                             BigDecimal.class, Calculation.SUM);
@@ -728,8 +865,22 @@ public abstract class SalesProductReport_Base
                             BigDecimal.class, Calculation.SUM);
             if (!DateConfig.LATEST.equals(dateConfig)) {
                 if (!hideDetails || !isInstance(_parameter)) {
-                    quantity4ProdCon.setResetGroup(groupByContact ? contactGroup : productGroup);
-                    price4ProdCon.setResetGroup(groupByContact ? contactGroup : productGroup);
+                    switch (groupConfig) {
+                        case CONTACT:
+                            quantity4ProdCon.setResetGroup(contactGroup);
+                            price4ProdCon.setResetGroup(contactGroup);
+                            break;
+                        case PRODFAMILY:
+                            quantity4ProdCon.setResetGroup(productFamilyGroup);
+                            price4ProdCon.setResetGroup(productFamilyGroup);
+                            break;
+                        case PRODUCT:
+                            quantity4ProdCon.setResetGroup(productGroup);
+                            price4ProdCon.setResetGroup(productGroup);
+                            break;
+                        default:
+                            break;
+                    }
                 }
                 if (!DateConfig.YEARLY.equals(dateConfig)) {
                     quantity4Month.setResetGroup(monthGroup);
@@ -784,8 +935,16 @@ public abstract class SalesProductReport_Base
             final ComponentColumnBuilder linkColumn = DynamicReports.col.componentColumn(linkElement).setTitle("");
 
             if (DateConfig.LATEST.equals(dateConfig)) {
-                if (groupByContact) {
-                    _builder.addColumn(productNameColumn, productDescColumn);
+                switch (groupConfig) {
+                    case CONTACT:
+                        _builder.addColumn(productNameColumn, productDescColumn);
+                        break;
+                    case PRODFAMILY:
+                        break;
+                    case PRODUCT:
+                        break;
+                    default:
+                        break;
                 }
             } else {
                 _builder.addColumn(yearColumn);
@@ -798,25 +957,45 @@ public abstract class SalesProductReport_Base
             }
 
             if (hideDetails) {
-                if (groupByContact) {
-                    if (isProduct(_parameter)) {
-                        _builder.addColumn(contactColumn);
-                    } else {
-                        _builder.addColumn(productNameColumn, productDescColumn);
-                    }
-                } else {
-                    if (isContact(_parameter)) {
-                        _builder.addColumn(productNameColumn, productDescColumn);
-                    } else {
-                        _builder.addColumn(contactColumn);
-                    }
+                switch (groupConfig) {
+                    case CONTACT:
+                        if (isProduct(_parameter)) {
+                            _builder.addColumn(contactColumn);
+                        } else {
+                            _builder.addColumn(productNameColumn, productDescColumn);
+                        }
+                        break;
+                    case PRODFAMILY:
+                        if (isContact(_parameter)) {
+                            _builder.addColumn(productFamilyColumn);
+                        } else {
+                            _builder.addColumn(contactColumn);
+                        }
+                        break;
+                    case PRODUCT:
+                        if (isContact(_parameter)) {
+                            _builder.addColumn(productNameColumn, productDescColumn);
+                        } else {
+                            _builder.addColumn(contactColumn);
+                        }
+                        break;
+                    default:
+                        break;
+
                 }
             } else {
                 if (!isInstance(_parameter)) {
-                    if (groupByContact) {
-                        _builder.addColumn(productNameColumn, productDescColumn);
-                    } else {
-                        _builder.addColumn(contactColumn);
+                    switch (groupConfig) {
+                        case CONTACT:
+                            _builder.addColumn(productNameColumn, productDescColumn);
+                            break;
+                        case PRODUCT:
+                            _builder.addColumn(contactColumn);
+                            break;
+                        case PRODFAMILY:
+                            break;
+                        default:
+                            break;
                     }
                 }
 
@@ -844,14 +1023,32 @@ public abstract class SalesProductReport_Base
                     _builder.groupBy(dateGroup);
                 }
                 if (!hideDetails || !isInstance(_parameter)) {
-                    _builder.groupBy(groupByContact ? contactGroup : productGroup);
-                    _builder.addSubtotalAtGroupFooter(groupByContact ? contactGroup : productGroup,
-                                    DynamicReports.sbt.first(currencyColumn).setStyle(txtStyle), netPriceProdSum);
-                    // grouped by product or grouped by contact with only one product
-                    if (!groupByContact || (groupByContact && getProductInst(_parameter).length == 1)) {
-                        _builder.addSubtotalAtGroupFooter(groupByContact ? contactGroup : productGroup,
-                                    DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
-                                    quantityProdSum, unitPriceProdSum);
+                    switch (groupConfig) {
+                        case CONTACT:
+                            _builder.groupBy(contactGroup);
+                            _builder.addSubtotalAtGroupFooter(contactGroup, DynamicReports.sbt.first(currencyColumn)
+                                            .setStyle(txtStyle), netPriceProdSum);
+                            if (getProductInst(_parameter).length == 1) {
+                                _builder.addSubtotalAtGroupFooter(contactGroup,
+                                            DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
+                                            quantityProdSum, unitPriceProdSum);
+                            }
+                            break;
+                        case PRODFAMILY:
+                            _builder.groupBy(productFamilyGroup);
+                            _builder.addSubtotalAtGroupFooter(productFamilyGroup, DynamicReports.sbt.first(
+                                            currencyColumn).setStyle(txtStyle), netPriceProdSum);
+                            break;
+                        case PRODUCT:
+                            _builder.groupBy(productGroup);
+                            _builder.addSubtotalAtGroupFooter(productGroup, DynamicReports.sbt.first(currencyColumn)
+                                            .setStyle(txtStyle), netPriceProdSum);
+                            _builder.addSubtotalAtGroupFooter(productGroup,
+                                            DynamicReports.sbt.first(uomColumn).setStyle(txtStyle),
+                                            quantityProdSum, unitPriceProdSum);
+                            break;
+                        default:
+                            break;
                     }
                 }
 
@@ -897,14 +1094,29 @@ public abstract class SalesProductReport_Base
         }
     }
 
+    /**
+     * The Class UnitPriceTotal.
+     */
     public static class UnitPriceTotal
         extends AbstractSimpleExpression<BigDecimal>
     {
 
+        /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
+
+        /** The price. */
         private final VariableBuilder<BigDecimal> price;
+
+        /** The quantity. */
         private final VariableBuilder<BigDecimal> quantity;
 
+        /**
+         * Instantiates a new unit price total.
+         *
+         * @param _name the name
+         * @param _quantity the quantity
+         * @param _price the price
+         */
         public UnitPriceTotal(final String _name,
                               final VariableBuilder<BigDecimal> _quantity,
                               final VariableBuilder<BigDecimal> _price)
@@ -929,12 +1141,19 @@ public abstract class SalesProductReport_Base
         }
     }
 
+    /**
+     * The Class LinkExpression.
+     */
     public static class LinkExpression
         extends AbstractComplexExpression<EmbeddedLink>
     {
 
+        /** The Constant serialVersionUID. */
         private static final long serialVersionUID = 1L;
 
+        /**
+         * Instantiates a new link expression.
+         */
         public LinkExpression()
         {
             addExpression(DynamicReports.field("docOID", String.class));
@@ -949,121 +1168,255 @@ public abstract class SalesProductReport_Base
         }
     }
 
+    /**
+     * The Class DataBean.
+     */
     public static class DataBean
     {
 
+        /** The doc oid. */
         private String docOID;
+
+        /** The doc name. */
         private String docName;
+
+        /** The doc type. */
         private String docType;
+
+        /** The doc date. */
         private DateTime docDate;
+
+        /** The doc status. */
         private String docStatus;
 
+        /** The currency. */
         private String currency;
+
+        /** The contact. */
         private String contact;
 
+        /** The quantity. */
         private BigDecimal quantity;
+
+        /** The unit price. */
         private BigDecimal unitPrice;
+
+        /** The price. */
         private BigDecimal price;
+
+        /** The contact inst. */
         private Instance contactInst;
+
+        /** The product inst. */
         private Instance productInst;
+
+        /** The product name. */
         private String productName;
+
+        /** The product desc. */
         private String productDesc;
+
+        /** The product uo m. */
         private String productUoM;
+
+        /** The product discount. */
         private BigDecimal productDiscount;
 
+        /** The product family. */
+        private String productFamily;
+
+        /**
+         * Gets the product desc.
+         *
+         * @return the product desc
+         */
         public String getProductDesc()
         {
             return this.productDesc;
         }
 
+        /**
+         * Sets the product desc.
+         *
+         * @param _productDesc the product desc
+         * @return the data bean
+         */
         public DataBean setProductDesc(final String _productDesc)
         {
             this.productDesc = _productDesc;
             return this;
         }
 
+        /**
+         * Gets the doc oid.
+         *
+         * @return the doc oid
+         */
         public String getDocOID()
         {
             return this.docOID;
         }
 
-        public DataBean setDocOID(final String docOID)
+        /**
+         * Sets the doc oid.
+         *
+         * @param _docOID the doc oid
+         * @return the data bean
+         */
+        public DataBean setDocOID(final String _docOID)
         {
-            this.docOID = docOID;
+            this.docOID = _docOID;
             return this;
         }
 
+        /**
+         * Gets the doc name.
+         *
+         * @return the doc name
+         */
         public String getDocName()
         {
             return this.docName;
         }
 
+        /**
+         * Sets the doc name.
+         *
+         * @param _docName the doc name
+         * @return the data bean
+         */
         public DataBean setDocName(final String _docName)
         {
             this.docName = _docName;
             return this;
         }
 
+        /**
+         * Gets the currency.
+         *
+         * @return the currency
+         */
         public String getCurrency()
         {
             return this.currency;
         }
 
-        public DataBean setCurrency(final String currency)
+        /**
+         * Sets the currency.
+         *
+         * @param _currency the currency
+         * @return the data bean
+         */
+        public DataBean setCurrency(final String _currency)
         {
-            this.currency = currency;
+            this.currency = _currency;
             return this;
         }
 
+        /**
+         * Gets the contact.
+         *
+         * @return the contact
+         */
         public String getContact()
         {
             return this.contact;
         }
 
-        public DataBean setContact(final String contact)
+        /**
+         * Sets the contact.
+         *
+         * @param _contact the contact
+         * @return the data bean
+         */
+        public DataBean setContact(final String _contact)
         {
-            this.contact = contact;
+            this.contact = _contact;
             return this;
         }
 
+        /**
+         * Gets the doc date.
+         *
+         * @return the doc date
+         */
         public DateTime getDocDate()
         {
             return this.docDate;
         }
 
+        /**
+         * Sets the date.
+         *
+         * @param _docDate the doc date
+         * @return the data bean
+         */
         public DataBean setDate(final DateTime _docDate)
         {
             this.docDate = _docDate;
             return this;
         }
 
+        /**
+         * Gets the quantity.
+         *
+         * @return the quantity
+         */
         public BigDecimal getQuantity()
         {
             return this.quantity;
         }
 
+        /**
+         * Sets the quantity.
+         *
+         * @param _quantity the quantity
+         * @return the data bean
+         */
         public DataBean setQuantity(final BigDecimal _quantity)
         {
             this.quantity = _quantity;
             return this;
         }
 
+        /**
+         * Gets the contact inst.
+         *
+         * @return the contact inst
+         */
         public Instance getContactInst()
         {
             return this.contactInst;
         }
 
+        /**
+         * Sets the contact inst.
+         *
+         * @param _contactInst the contact inst
+         * @return the data bean
+         */
         public DataBean setContactInst(final Instance _contactInst)
         {
             this.contactInst = _contactInst;
             return this;
         }
 
+        /**
+         * Gets the product inst.
+         *
+         * @return the product inst
+         */
         public Instance getProductInst()
         {
             return this.productInst;
         }
 
+        /**
+         * Sets the product inst.
+         *
+         * @param _productInst the product inst
+         * @return the data bean
+         */
         public DataBean setProductInst(final Instance _productInst)
         {
             this.productInst = _productInst;
@@ -1071,33 +1424,66 @@ public abstract class SalesProductReport_Base
             return this;
         }
 
+        /**
+         * Gets the product name.
+         *
+         * @return the product name
+         */
         public String getProductName()
         {
             return this.productName;
         }
 
-        public DataBean setProductName(final String productName)
+        /**
+         * Sets the product name.
+         *
+         * @param _productName the product name
+         * @return the data bean
+         */
+        public DataBean setProductName(final String _productName)
         {
-            this.productName = productName;
+            this.productName = _productName;
             return this;
         }
 
+        /**
+         * Gets the product uo m.
+         *
+         * @return the product uo m
+         */
         public String getProductUoM()
         {
             return this.productUoM;
         }
 
-        public DataBean setProductUoM(final String productUoM)
+        /**
+         * Sets the product uo m.
+         *
+         * @param _productUoM the product uo m
+         * @return the data bean
+         */
+        public DataBean setProductUoM(final String _productUoM)
         {
-            this.productUoM = productUoM;
+            this.productUoM = _productUoM;
             return this;
         }
 
+        /**
+         * Gets the product discount.
+         *
+         * @return the product discount
+         */
         public BigDecimal getProductDiscount()
         {
             return this.productDiscount;
         }
 
+        /**
+         * Sets the product discount.
+         *
+         * @param _productDiscount the product discount
+         * @return the data bean
+         */
         public DataBean setProductDiscount(final BigDecimal _productDiscount)
         {
             this.productDiscount = _productDiscount;
@@ -1113,11 +1499,14 @@ public abstract class SalesProductReport_Base
         }
 
         /**
-         * @param unitPrice the unitPrice to set
+         * Sets the unit price.
+         *
+         * @param _unitPrice the unitPrice to set
+         * @return the data bean
          */
-        public DataBean setUnitPrice(final BigDecimal unitPrice)
+        public DataBean setUnitPrice(final BigDecimal _unitPrice)
         {
-            this.unitPrice = unitPrice;
+            this.unitPrice = _unitPrice;
             return this;
         }
 
@@ -1132,11 +1521,12 @@ public abstract class SalesProductReport_Base
         /**
          * Sets the price.
          *
-         * @param price the price to set
+         * @param _price the price to set
+         * @return the data bean
          */
-        public DataBean setPrice(final BigDecimal price)
+        public DataBean setPrice(final BigDecimal _price)
         {
-            this.price = price;
+            this.price = _price;
             return this;
         }
 
@@ -1149,11 +1539,14 @@ public abstract class SalesProductReport_Base
         }
 
         /**
-         * @param docType the docType to set
+         * Sets the doc type.
+         *
+         * @param _docType the doc type
+         * @return the data bean
          */
-        public DataBean setDocType(final String docType)
+        public DataBean setDocType(final String _docType)
         {
-            this.docType = docType;
+            this.docType = _docType;
             return this;
         }
 
@@ -1166,7 +1559,10 @@ public abstract class SalesProductReport_Base
         }
 
         /**
-         * @param docStatus the docStatus to set
+         * Sets the doc status.
+         *
+         * @param _docStatus the doc status
+         * @return the data bean
          */
         public DataBean setDocStatus(final String _docStatus)
         {
@@ -1174,9 +1570,56 @@ public abstract class SalesProductReport_Base
             return this;
         }
 
+        /**
+         * Gets the product.
+         *
+         * @return the product
+         */
         public String getProduct()
         {
             return getProductName() + " " + getProductDesc();
+        }
+
+        /**
+         * Gets the product.
+         *
+         * @return the product
+         * @throws EFapsException on error
+         */
+        public String getProductFamily()
+        {
+            if (this.productFamily == null) {
+                try {
+                    final PrintQuery print = new PrintQuery(getProductInst());
+                    final SelectBuilder selClazz = SelectBuilder.get().clazz().type();
+                    print.addSelect(selClazz);
+                    print.execute();
+                    final List<Classification> clazzList = print.<List<Classification>>getSelect(selClazz);
+                    if (clazzList == null) {
+                        this.productFamily = "-";
+                    } else {
+                        final ClassSelect classSel = new ClassSelect()
+                        {
+                            @Override
+                            protected int getLevel()
+                            {
+                                int ret = -1;
+                                try {
+                                    ret = Sales.PRODUCTREPORTPRODFAMLEVEL.get();
+                                } catch (final EFapsException e) {
+                                    LOG.error("Catched error on Configuration evaluation.");
+                                }
+                                return ret;
+                            }
+                        };
+
+                        this.productFamily = (String) classSel.evalValue(clazzList);
+                    }
+                } catch (final Exception e) {
+                    LOG.error("Catched error on Family evaluation.");
+                }
+            }
+            return this.productFamily;
         }
     }
 }
