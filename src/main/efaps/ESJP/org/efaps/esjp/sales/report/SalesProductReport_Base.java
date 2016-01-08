@@ -669,7 +669,7 @@ public abstract class SalesProductReport_Base
                 _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
                                 ((TypeFilterValue) filter.get("type")).getObject().toArray());
             }
-            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
+            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom.minusDays(1));
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());
         }
