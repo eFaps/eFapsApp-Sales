@@ -247,6 +247,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute CREDITNOTEJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "CreditNote.JasperReport")
+                    .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> CREDITNOTEMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "CreditNote.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute EMPLOYEE2DOCREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.Employee2DocReport")

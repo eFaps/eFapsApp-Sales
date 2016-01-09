@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -35,9 +35,11 @@
         <target>
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
-                <property name="JasperReport">Sales_CreditNote</property>
-                <property name="Mime">pdf</property>
                 <property name="PositionType">Sales_CreditNotePosition</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.CreditNote.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.CreditNote.Mime</property>
 
                 <!-- Sales_CreditNote2Invoice -->
                 <property name="ConnectType">cc71f437-46ac-4db0-b53c-ad94b7ae36d9</property>
@@ -75,9 +77,11 @@
         <target>
             <form>Sales_CreditNoteForm</form>
             <execute program="org.efaps.esjp.sales.document.CreditNote" method="create">
-                <property name="JasperReport">Sales_CreditNote</property>
-                <property name="Mime">pdf</property>
                 <property name="PositionType">Sales_CreditNotePosition</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.CreditNote.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.CreditNote.Mime</property>
 
                 <!-- Sales_CreditNote2Invoice -->
                 <property name="ConnectType">cc71f437-46ac-4db0-b53c-ad94b7ae36d9</property>
