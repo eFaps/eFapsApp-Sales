@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.2.0.final using JasperReports Library version 6.2.0  -->
-<!-- 2016-01-09T09:29:40 -->
+<!-- 2016-01-09T09:50:34 -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_CreditNote" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6191646c-e16a-4888-ad56-9d61af346b96">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="eFaps"/>
-	<import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
 	<import value="org.efaps.number2words.Converter"/>
 	<style name="Table_TH" mode="Opaque" backcolor="#B8B8B8" isBlankWhenNull="true">
 		<box>
