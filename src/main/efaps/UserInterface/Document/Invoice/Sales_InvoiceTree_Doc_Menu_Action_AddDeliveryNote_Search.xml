@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2016 The eFaps Team
+ Copyright 2003 - 2015 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -15,19 +16,18 @@
  limitations under the License.
 
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>891bc91c-36c1-47ce-aba1-7560229909c4</uuid>
+    <uuid>cb518de7-4ce1-42e6-88f5-a50bb73ec619</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_InvoiceTree_Doc_Menu_Action</name>
+        <name>Sales_InvoiceTree_Doc_Menu_Action_AddDeliveryNote_Search</name>
+        <default>
+            <command>Sales_DeliveryNoteSearch</command>
+        </default>
         <childs>
-            <child>Sales_InvoiceTree_Doc_Menu_Action_AddDeliveryNote</child>
-            <child>Sales_InvoiceTree_Doc_Menu_Action_AddDocExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
+            <child>Sales_DeliveryNoteSearch</child>
         </childs>
-        <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>
     </definition>
-</ui-menu>
+</ui-search>

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -14,20 +15,22 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
+
 -->
-<ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>891bc91c-36c1-47ce-aba1-7560229909c4</uuid>
+    <uuid>8e6526c1-474b-4ec9-874f-2842a8935449</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_InvoiceTree_Doc_Menu_Action</name>
-        <childs>
-            <child>Sales_InvoiceTree_Doc_Menu_Action_AddDeliveryNote</child>
-            <child>Sales_InvoiceTree_Doc_Menu_Action_AddDocExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
-        </childs>
-        <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>
+        <name>Sales_DeliveryNoteSearch</name>
+        <target>
+            <form>Sales_DeliveryNoteSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                <property name="Type">Sales_DeliveryNote</property>
+            </evaluate>
+        </target>
+        <property name="TargetMode">search</property>
     </definition>
-</ui-menu>
+</ui-command>
