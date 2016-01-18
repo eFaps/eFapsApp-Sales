@@ -20,11 +20,15 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TreeMap;
 import java.util.UUID;
 
+import org.apache.commons.lang3.SerializationUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
@@ -34,6 +38,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -47,6 +52,9 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.esjp.products.Product_Base;
+import org.efaps.esjp.products.util.Products;
+import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -237,5 +245,79 @@ public abstract class RecievingTicket_Base
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_RecievingTicketForm.orderOutbound.name, queryBldr));
         }
+    }
+
+    @Override
+    protected List<AbstractUIPosition> updateBean4Indiviual(final Parameter _parameter,
+                                                            final AbstractUIPosition _bean)
+                                                                throws EFapsException
+    {
+        final List<AbstractUIPosition> ret = new ArrayList<>();
+        final List<Instance> docInsts = getInstances4Derived(_parameter);
+        // if the vcalues are copied from a Deliverynote the batches must use
+        // the same batch again
+        // (its just movement between distinct storages)
+        if (!docInsts.isEmpty() && docInsts.get(0).isValid()
+                        && docInsts.get(0).getType().isCIType(CISales.DeliveryNote)) {
+            final Instance docInst = docInsts.get(0);
+            if (isUpdateBean4Individual(_parameter, _bean)) {
+                if (Products.ACTIVATEINDIVIDUAL.get()) {
+                    final PrintQuery print = new CachedPrintQuery(_bean.getProdInstance(),
+                                    Product_Base.CACHEKEY4PRODUCT);
+                    print.addAttribute(CIProducts.ProductAbstract.Individual);
+                    print.execute();
+                    final ProductIndividual indivual = print.<ProductIndividual>getAttribute(
+                                    CIProducts.ProductAbstract.Individual);
+                    switch (indivual) {
+                        case BATCH:
+                            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionIndividualOutbound);
+                            queryBldr.addWhereAttrEqValue(CIProducts.TransactionIndividualOutbound.Document, docInst);
+
+                            final MultiPrintQuery multi = queryBldr.getPrint();
+
+                            final SelectBuilder selProdInst = SelectBuilder.get()
+                                            .linkto(CIProducts.TransactionIndividualOutbound.Product)
+                                            .linkfrom(CIProducts.StockProductAbstract2Batch.ToLink)
+                                            .linkto(CIProducts.StockProductAbstract2Batch.FromLink)
+                                            .instance();
+                            final SelectBuilder selBatchInst = SelectBuilder.get()
+                                            .linkto(CIProducts.TransactionIndividualOutbound.Product)
+                                            .instance();
+                            final SelectBuilder selBatchName = SelectBuilder.get()
+                                            .linkto(CIProducts.TransactionIndividualOutbound.Product)
+                                            .attribute(CIProducts.ProductAbstract.Name);
+                            multi.addSelect(selProdInst, selBatchInst, selBatchName);
+                            multi.addAttribute(CIProducts.TransactionIndividualOutbound.Quantity);
+                            multi.execute();
+                            new TreeMap<>();
+                            while (multi.next()) {
+                                final Instance prodInst = multi.getSelect(selProdInst);
+                                if (prodInst.equals(_bean.getProdInstance())) {
+                                    final Instance batchInst = multi.getSelect(selBatchInst);
+                                    _bean.setDoc(null);
+                                    final AbstractUIPosition bean = SerializationUtils.clone(_bean);
+                                    bean.setProdInstance(batchInst)
+                                                    .setProdName(multi.<String>getSelect(selBatchName))
+                                                    .setQuantity(multi.<BigDecimal>getAttribute(
+                                                                    CIProducts.TransactionIndividualOutbound.Quantity));
+                                    bean.setDoc(this);
+                                    ret.add(bean);
+                                }
+                            }
+                            break;
+                        default:
+                            ret.add(_bean);
+                            break;
+                    }
+                } else {
+                    ret.add(_bean);
+                }
+            } else {
+                ret.addAll(super.updateBean4Indiviual(_parameter, _bean));
+            }
+        } else {
+            ret.addAll(super.updateBean4Indiviual(_parameter, _bean));
+        }
+        return ret;
     }
 }

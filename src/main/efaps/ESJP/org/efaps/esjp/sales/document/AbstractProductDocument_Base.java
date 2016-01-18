@@ -255,7 +255,8 @@ public abstract class AbstractProductDocument_Base
             posIns.execute();
             if (individualName != null) {
                 CIType transType;
-                if (posIns.getInstance().getType().isKindOf(CISales.ReturnSlipPosition)) {
+                if (posIns.getInstance().getType().isKindOf(CISales.ReturnSlipPosition)
+                                || posIns.getInstance().getType().isKindOf(CISales.RecievingTicketPosition)) {
                     transType = CIProducts.TransactionIndividualInbound;
                 } else {
                     transType = CIProducts.TransactionIndividualOutbound;
