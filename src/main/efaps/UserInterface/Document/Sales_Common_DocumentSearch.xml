@@ -17,16 +17,19 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>b8811f12-3ba4-460a-97d1-2ba93c3a5f35</uuid>
+    <uuid>0021078d-5730-4980-b9cc-4ae564353aac</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DeliveryNoteTree_Doc_Menu_Action</name>
+        <name>Sales_Common_DocumentSearch</name>
         <childs>
-            <child>Sales_DeliveryNoteTree_Doc_Menu_Action_AddInvoice</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_AddExisting</child>
-            <child>Sales_DocumentAbstractTree_Doc_Menu_Action_Disconnect</child>
+            <child>Sales_DeliveryNoteSearch</child>
+            <child>Sales_InvoiceSearch</child>
+            <child>Sales_OrderOutboundSearch</child>
+            <child>Sales_ReceiptSearch</child>
         </childs>
-        <property name="Label">Sales_DocumentAbstractTree_Doc_Menu_Action.Label</property>
+        <parents>
+            <parent>ERP_Common_Search</parent>
+        </parents>
     </definition>
 </ui-menu>
