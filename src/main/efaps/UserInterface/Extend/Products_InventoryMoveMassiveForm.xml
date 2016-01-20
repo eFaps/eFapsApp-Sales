@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2009 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,21 +14,16 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
+<!-- Overwrites the form from Products App -->
+
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>62b679cf-4ee7-4c88-bed1-956876f1a0bf</uuid>
-    <file-application>eFapsApp-Products</file-application>
-    <file-revision>$Rev$</file-revision>
+    <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Products_InventoryMoveMassiveForm</name>
-        <!-- fields -->
         <field name="date">
             <property name="Columns">12</property>
             <property name="ModeCreate">EDITABLE</property>
@@ -44,7 +39,6 @@
             <property name="ModeSearch">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
                 name="Products_InventoryMoveMassiveForm.storage.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Products_DynamicStorage</property>
@@ -59,7 +53,7 @@
             <property name="Attribute">Description</property>
             <property name="Required">true</property>
         </field>
-        <field name="productDocumentType">
+         <field name="productDocumentType">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModePrint">NONE</property>
@@ -79,7 +73,7 @@
             <property name="Level">2</property>
             <property name="Label">Products_InventoryMoveMassiveForm.transactionHeading.Label</property>
         </field>
-        <field name="paymentTable" character="Target">
+        <field name="inventoryTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
@@ -88,5 +82,18 @@
                 <property name="Type">Products_TransactionAbstract</property>
             </evaluate>
         </field>
+        <field name="javaScript">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">HIDDEN</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.products.Transaction"
+                method="getJavaScript4MoveInventory"
+                name="Products_InventoryMoveMassiveForm.javaScript.UI_Field_Value"
+                event="UI_FIELD_VALUE" >
+            </trigger>
+        </field>
     </definition>
 </ui-form>
+
