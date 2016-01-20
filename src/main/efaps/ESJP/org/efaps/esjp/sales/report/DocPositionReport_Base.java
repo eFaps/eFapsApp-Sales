@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.report;
@@ -32,16 +29,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
-import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
-import net.sf.dynamicreports.report.constant.Calculation;
-import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
-
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang.BooleanUtils;
 import org.efaps.admin.common.SystemConfiguration;
@@ -49,13 +36,16 @@ import org.efaps.admin.datamodel.Dimension.UoM;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.AbstractGroupedByDate;
@@ -66,23 +56,46 @@ import org.efaps.esjp.products.BOM;
 import org.efaps.esjp.products.BOM_Base.ProductBOMBean;
 import org.efaps.esjp.sales.report.DocPositionGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabColumnGroupBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabMeasureBuilder;
+import net.sf.dynamicreports.report.builder.crosstab.CrosstabRowGroupBuilder;
+import net.sf.dynamicreports.report.constant.Calculation;
+import net.sf.jasperreports.engine.JRDataSource;
+import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
+
 /**
- * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("4fad5c69-177a-4d35-85ad-984146bcf546")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class DocPositionReport_Base
     extends FilteredReport
 {
+    /**
+     * The Enum DateConfig.
+     *
+     * @author The eFaps Team
+     */
+    public enum ContactGroup
+    {
+        /** None. */
+        NONE,
+        /** Group by Document Contact*/
+        DOCCONTACT,
+        /** Group by Product Producer. */
+        PRODPRODUCER,
+        /** Group by Product Supplier. */
+        PRODSUPPLIER;
+    }
 
     /**
      * Logging instance used in this class.
@@ -118,10 +131,9 @@ public abstract class DocPositionReport_Base
         throws EFapsException
     {
         final Return ret = new Return();
-        final Map<?, ?> props = (Map<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String mime = (String) props.get("Mime");
+        final String mime = getProperty(_parameter, "Mime");
         final AbstractDynamicReport dyRp = getReport(_parameter);
-        dyRp.setFileName(DBProperties.getProperty(DocPositionReport.class.getName() + ".FileName"));
+        dyRp.setFileName(getDBProperty("FileName"));
         File file = null;
         if ("xls".equalsIgnoreCase(mime)) {
             file = dyRp.getExcel(_parameter);
@@ -223,6 +235,23 @@ public abstract class DocPositionReport_Base
                 this.valueList.clear();
                 this.valueList.addAll(tmpList);
             }
+            final ContactGroup contactGroup = evaluateContactGroup(_parameter);
+            if (ContactGroup.PRODPRODUCER.equals(contactGroup)
+                            || ContactGroup.PRODPRODUCER.equals(contactGroup)) {
+                for (final Map<String, Object> value  : this.valueList) {
+                    final Instance prodInst = (Instance) value.get("productInst");
+                    final CachedPrintQuery print = CachedPrintQuery.get4Request(prodInst);
+                    final SelectBuilder selContactName = ContactGroup.PRODPRODUCER.equals(contactGroup)
+                                    ? SelectBuilder.get().linkfrom(CIProducts.Product2Producer.From).linkto(
+                                            CIProducts.Product2Producer.To).attribute(CIContacts.ContactAbstract.Name)
+                                    : SelectBuilder.get().linkfrom(CIProducts.Product2Supplier.From).linkto(
+                                            CIProducts.Product2Supplier.To).attribute(CIContacts.ContactAbstract.Name);
+                    print.addSelect(selContactName);
+                    print.executeWithoutAccessCheck();
+                    value.put("contact", print.getSelect(selContactName));
+                }
+            }
+
         }
         return this.valueList;
     }
@@ -245,7 +274,7 @@ public abstract class DocPositionReport_Base
             }
         }
         if (ret == null) {
-            ret = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCPOSREPORT, true);
+            ret = Sales.DOCPOSREPORT.get();
         }
         return ret;
     }
@@ -264,14 +293,55 @@ public abstract class DocPositionReport_Base
         if (filter.containsKey("contact")) {
             final InstanceFilterValue filterValue = (InstanceFilterValue) filter.get("contact");
             if (filterValue != null && filterValue.getObject().isValid()) {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
-                attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
+                final ContactGroup contactGroup = evaluateContactGroup(_parameter);
+                switch (contactGroup) {
+                    case PRODPRODUCER:
+                        final QueryBuilder p2pAttrQueryBldr = new QueryBuilder(CIProducts.Product2Producer);
+                        p2pAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Producer.To, filterValue.getObject());
 
-                _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
-                                attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                        _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
+                                        p2pAttrQueryBldr.getAttributeQuery(CIProducts.Product2Producer.From));
+                        break;
+                    case PRODSUPPLIER:
+                        final QueryBuilder p2sAttrQueryBldr = new QueryBuilder(CIProducts.Product2Supplier);
+                        p2sAttrQueryBldr.addWhereAttrEqValue(CIProducts.Product2Supplier.To, filterValue.getObject());
+
+                        _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.Product,
+                                        p2sAttrQueryBldr.getAttributeQuery(CIProducts.Product2Supplier.From));
+                        break;
+                    default:
+                        final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentAbstract);
+                        attrQueryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
+
+                        _queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink,
+                                        attrQueryBldr.getAttributeQuery(CISales.DocumentAbstract.ID));
+                        break;
+                }
             }
         }
     }
+
+    /**
+     * Evaluate contact group.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the date config
+     * @throws EFapsException on error
+     */
+    protected ContactGroup evaluateContactGroup(final Parameter _parameter)
+        throws EFapsException
+    {
+        ContactGroup ret;
+        final Map<String, Object> filter = getFilterMap(_parameter);
+        final EnumFilterValue value = (EnumFilterValue) filter.get("contactGroup");
+        if (value != null) {
+            ret = (ContactGroup) value.getObject();
+        } else {
+            ret = ContactGroup.NONE;
+        }
+        return ret;
+    }
+
 
     /**
      * Dynamic Report.
@@ -330,14 +400,11 @@ public abstract class DocPositionReport_Base
                     selected = CurrencyInst.get(filter.getObject());
                 }
             }
-
-            if (filterMap.containsKey("contactGroup")) {
-                final Boolean contactBool = (Boolean) filterMap.get("contactGroup");
-                if (contactBool != null && contactBool) {
-                    final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
-                                    String.class).setHeaderWidth(150);
-                    crosstab.addRowGroup(contactGroup);
-                }
+            final ContactGroup contactGrp = this.filteredReport.evaluateContactGroup(_parameter);
+            if (!ContactGroup.NONE.equals(contactGrp)) {
+                final CrosstabRowGroupBuilder<String> contactGroup = DynamicReports.ctab.rowGroup("contact",
+                                String.class).setHeaderWidth(150);
+                crosstab.addRowGroup(contactGroup);
             }
             if (filterMap.containsKey("typeGroup")) {
                 final Boolean contactBool = (Boolean) filterMap.get("typeGroup");

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a3073c87-826a-4349-8928-bce6ecceccfc</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -53,7 +47,7 @@
                 <property name="FilterType04">Instance</property>
                 <property name="FilterType05">Currency</property>
                 <property name="FilterType06">Enum</property>
-                <property name="FilterType07">Boolean</property>
+                <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
                 <property name="FilterDefault02">TODAY</property>
@@ -61,7 +55,7 @@
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault07">false</property>
+                <property name="FilterDefault07">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
                 <property name="FilterDefault08">false</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
@@ -92,7 +86,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.DocPositionReportBOM</property>
+                <property name="Attribute">org.efaps.esjp.sales.report.DocPositionReport.ActivateBOM</property>
                 <property name="Inverse">true</property>
              </trigger>
         </field>
@@ -119,7 +113,7 @@
                 <property name="FilterType04">Instance</property>
                 <property name="FilterType05">Currency</property>
                 <property name="FilterType06">Enum</property>
-                <property name="FilterType07">Boolean</property>
+                <property name="FilterType07">Enum</property>
                 <property name="FilterType08">Boolean</property>
                 <property name="FilterType09">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
@@ -128,7 +122,7 @@
                 <property name="FilterDefault04">-</property>
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault07">false</property>
+                <property name="FilterDefault07">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
                 <property name="FilterDefault08">false</property>
                 <property name="FilterDefault09">false</property>
             </trigger>
@@ -162,7 +156,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.DocPositionReportBOM</property>
+                <property name="Attribute">org.efaps.esjp.sales.report.DocPositionReport.ActivateBOM</property>
              </trigger>
         </field>
         <field name="report">
@@ -206,7 +200,7 @@
                 <property name="FilterType05">Instance</property>
                 <property name="FilterType06">Currency</property>
                 <property name="FilterType07">Enum</property>
-                <property name="FilterType08">Boolean</property>
+                <property name="FilterType08">Enum</property>
                 <property name="FilterType09">Boolean</property>
                 <property name="FilterType10">Boolean</property>
                 <property name="FilterDefault01">MONTH:-1</property>
@@ -216,7 +210,7 @@
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">-</property>
                 <property name="FilterDefault07">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault08">false</property>
+                <property name="FilterDefault08">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
                 <property name="FilterDefault09">false</property>
                 <property name="FilterDefault10">false</property>
             </trigger>
@@ -253,7 +247,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.DocPositionReportBOM</property>
+                <property name="Attribute">org.efaps.esjp.sales.report.DocPositionReport.ActivateBOM</property>
                 <property name="Inverse">true</property>
              </trigger>
         </field>
@@ -283,7 +277,7 @@
                 <property name="FilterType05">Instance</property>
                 <property name="FilterType06">Currency</property>
                 <property name="FilterType07">Enum</property>
-                <property name="FilterType08">Boolean</property>
+                <property name="FilterType08">Enum</property>
                 <property name="FilterType09">Boolean</property>
                 <property name="FilterType10">Boolean</property>
                 <property name="FilterType11">Boolean</property>
@@ -294,7 +288,7 @@
                 <property name="FilterDefault05">-</property>
                 <property name="FilterDefault06">-</property>
                 <property name="FilterDefault07">org.efaps.esjp.erp.AbstractGroupedByDate_Base$DateGroup</property>
-                <property name="FilterDefault08">false</property>
+                <property name="FilterDefault08">org.efaps.esjp.sales.report.DocPositionReport_Base$ContactGroup</property>
                 <property name="FilterDefault09">false</property>
                 <property name="FilterDefault10">false</property>
                 <property name="FilterDefault11">false</property>
@@ -334,7 +328,7 @@
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.DocPositionReportBOM</property>
+                <property name="Attribute">org.efaps.esjp.sales.report.DocPositionReport.ActivateBOM</property>
              </trigger>
         </field>
         <field name="report">

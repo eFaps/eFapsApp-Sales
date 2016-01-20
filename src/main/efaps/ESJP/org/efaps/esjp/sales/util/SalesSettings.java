@@ -293,16 +293,6 @@ public interface SalesSettings
     String DOCSUMREPORT = SalesSettings.BASE + "DocumentSumReport";
 
     /**
-     * Properties. Can be concatenated.
-     */
-    String DOCPOSREPORT = SalesSettings.BASE + "DocPositionReport";
-
-    /**
-     * Boolean.
-     */
-    String DOCPOSREPORTBOM = SalesSettings.BASE + "DocPositionReportBOM";
-
-    /**
      * Boolean.
      */
     String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";

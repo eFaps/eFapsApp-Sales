@@ -382,6 +382,20 @@ public final class Sales
                     .key(BASE + "payment.Threshold4Paid")
                     .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCPOSREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport")
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute DOCPOSREPORTBOM = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport.ActivateBOM")
+                    .description("Activate the Company Independent Reports.");
+
     /**
      * Singelton.
      */
