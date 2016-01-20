@@ -117,7 +117,7 @@
                 event="UI_ACCESSCHECK">
                     <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.esjp.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="Attribute">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
             </trigger>
         </field>
     </definition>
@@ -240,7 +240,7 @@
                 event="UI_ACCESSCHECK">
                     <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.esjp.sales.report.DocPositionReport.ActivateBOM</property>
+                <property name="Attribute">org.efaps.sales.report.DocPositionReport.ActivateBOM</property>
             </trigger>
         </field>
     </definition>
