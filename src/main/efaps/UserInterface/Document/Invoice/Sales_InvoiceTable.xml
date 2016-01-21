@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@
         </field>
         <field name="rateCrosstotal">
             <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[RateCrossTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
             <property name="Align">right</property>
@@ -65,6 +66,7 @@
         </field>
         <field name="rateNettotal">
             <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[RateNetTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/RateNetTotal.Label</property>
             <property name="Align">right</property>
@@ -86,6 +88,7 @@
         </field>
         <field name="crosstotal">
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[CrossTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/CrossTotal.Label</property>
             <property name="Align">right</property>
@@ -101,6 +104,7 @@
         </field>
         <field name="nettotal">
             <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[NetTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/NetTotal.Label</property>
             <property name="Align">right</property>
@@ -164,6 +168,7 @@
         </field>
         <field name="rateCrosstotal">
             <property name="Phrase">$&lt;attribute[RateCrossTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[RateCrossTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/RateCrossTotal.Label</property>
             <property name="Align">right</property>
@@ -179,6 +184,7 @@
         </field>
         <field name="rateNettotal">
             <property name="Phrase">$&lt;attribute[RateNetTotal].format[#,##0.00]&gt; $&lt;linkto[RateCurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[RateNetTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/RateNetTotal.Label</property>
             <property name="Align">right</property>
@@ -200,6 +206,7 @@
         </field>
         <field name="crosstotal">
             <property name="Phrase">$&lt;attribute[CrossTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[CrossTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/CrossTotal.Label</property>
             <property name="Align">right</property>
@@ -215,6 +222,7 @@
         </field>
         <field name="nettotal">
             <property name="Phrase">$&lt;attribute[NetTotal].format[#,##0.00]&gt; $&lt;linkto[CurrencyId].attribute[Symbol]&gt;</property>
+            <property name="SortSelect">attribute[NetTotal]</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
             <property name="Label">Sales_Invoice/NetTotal.Label</property>
             <property name="Align">right</property>

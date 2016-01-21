@@ -159,7 +159,6 @@
         <!-- connect Sales_HumanResource_EmployeeTree_Documents_Menu_Action_AddReceipt  to  HumanResource_EmployeeTree_Documents_Menu_Action-->
         update.add2Menu("a17a0046-62b0-4b30-a5c2-80e7b7d52eca", "f0666e18-5d1c-43c3-ac8b-dcc61da3bd4e", -1);
 
-
         <!-- add to Sales_Admin role -->
         rolUp = new RoleUpdate("d9ef697d-8910-4eaf-bf3b-bfe9e834314e");
         <!-- ERP_AttributeDefinitionMyDesk -->
@@ -168,8 +167,6 @@
         rolUp.addUI("7a067a21-383c-4563-8ebe-a07338df705d");
         <!-- ERP_DocumentSearch -->
         rolUp.addUI("f6bdcbcd-5c2d-4e70-a279-6528d41d4c13");
-        <!-- ERP_DocumentAbstractTree_Action_EditStatus -->
-        rolUp.addUI("2d18b6f3-50af-4d2b-b3fa-37920a8d5243");
 
         <!-- add to Sales_IncomingDocument role -->
         RoleUpdate rolUp = new RoleUpdate("b9a41c56-25aa-4ca9-a15c-0c5b54fa325a");
