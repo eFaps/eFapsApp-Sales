@@ -396,6 +396,27 @@ public final class Sales
                     .key(BASE + "report.DocPositionReport.ActivateBOM")
                     .description("Activate the Company Independent Reports.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.CreateFromOrderOutbound")
+                    .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete")
+                    .description(" QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECIEVINGTICKETPOSREMARK = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.ActivateRemark4Position")
+                    .description("Activate the Company Independent Reports.");
+
     /**
      * Singelton.
      */

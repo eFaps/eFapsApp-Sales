@@ -221,9 +221,8 @@ public abstract class RecievingTicket_Base
         throws EFapsException
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
-            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                            SalesSettings.RECIEVINGTICKETCREATEFROMORDEROUTBOUNDAC);
+        if (Sales.RECIEVINGTICKETFROMORDEROUTBOUND.get()) {
+            final Properties props = Sales.RECIEVINGTICKETFROMORDEROUTBOUNDAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             ret.append(getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_RecievingTicketForm.orderOutbound.name, queryBldr));
@@ -238,9 +237,8 @@ public abstract class RecievingTicket_Base
         throws EFapsException
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.RECIEVINGTICKETFROMORDEROUTBOUND)) {
-            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                            SalesSettings.RECIEVINGTICKETCREATEFROMORDEROUTBOUNDAC);
+        if (Sales.RECIEVINGTICKETFROMORDEROUTBOUND.get()) {
+            final Properties props = Sales.RECIEVINGTICKETFROMORDEROUTBOUNDAC.get();
             final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter, props);
             InterfaceUtils.appendScript4FieldUpdate(_map, getJS4Doc4Contact(_parameter, _contactInstance,
                             CIFormSales.Sales_RecievingTicketForm.orderOutbound.name, queryBldr));

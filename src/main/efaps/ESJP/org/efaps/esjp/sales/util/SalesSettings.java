@@ -293,21 +293,6 @@ public interface SalesSettings
     String DOCSUMREPORT = SalesSettings.BASE + "DocumentSumReport";
 
     /**
-     * Boolean.
-     */
-    String RECIEVINGTICKETFROMORDEROUTBOUND = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutbound";
-
-    /**
-     * Properties. QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.
-     */
-    String RECIEVINGTICKETCREATEFROMORDEROUTBOUNDAC = SalesSettings.BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete";
-
-    /**
-     * Boolean.
-     */
-    String RECIEVINGTICKETPOSREMARK = SalesSettings.BASE + "RecievingTicket.ActivateRemark4Position";
-
-    /**
      * Link.
      */
     String USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "UsageReport.DefaultProductDocumentType";
