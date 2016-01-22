@@ -2,7 +2,7 @@
 
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -31,17 +31,29 @@
         <target>
             <form>Sales_QuotationForm</form>
             <execute method="edit" program="org.efaps.esjp.sales.document.Quotation">
-                 <property name="PositionType">Sales_ReceiptPosition</property>
+                <property name="PositionType">Sales_ReceiptPosition</property>
+                 <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.Quotation.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.Quotation.Mime</property>
+                <property name="NoDataSource">true</property>
+
+                <!-- Sales_ChannelSalesCondition2Quotation -->
+                <property name="ConnectType01">9bb9efae-e3c9-4b68-908b-4b80b821643c</property>
+                <property name="ConnectCurrentLink01">ToLink</property>
+                <property name="ConnectForeignLink01">FromLink</property>
+                <property name="ConnectForeignField01">condition</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="check4Status"
                 name="Sales_QuotationTree_Menu_Action_Edit.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessCheck4UI">
-                <property name="Status">Open</property>
+                <property name="Status">Draft</property>
             </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>
-        <property name="WindowHeight">600</property>
-        <property name="WindowWidth">900</property>
+        <property name="WindowHeight">660</property>
+       <property name="WindowWidth">1200</property>
+        <property name="TargetShowFile">true</property>
     </definition>
 </ui-command>

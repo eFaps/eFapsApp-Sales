@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,7 +16,6 @@
  limitations under the License.
 
 -->
-
 <datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>bba08338-d552-40ae-9dd9-719129cf8422</uuid>
@@ -26,6 +24,9 @@
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuotationStatus</name>
         <parent>Sales_DocumentStatus</parent>
+        <status key="Draft">
+            <description>Quotation is in draft. Borrador</description>
+        </status>
         <status key="Open">
             <description>Send to a costumer or client.</description>
         </status>

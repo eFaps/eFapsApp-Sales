@@ -417,6 +417,28 @@ public final class Sales
                     .key(BASE + "RecievingTicket.ActivateRemark4Position")
                     .description("Activate the Company Independent Reports.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute QUOTATIONACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Quotation.ActivateCondition")
+                    .description("Activate Condition for Quotation.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute QUOTATIONJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Quotation.JasperReport")
+                    .description("Name of the jasperReport for Quotation");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> QUOTATIONMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Quotation.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for Quotation");
+
     /**
      * Singelton.
      */
