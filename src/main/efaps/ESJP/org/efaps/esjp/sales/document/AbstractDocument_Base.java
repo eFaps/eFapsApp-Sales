@@ -100,7 +100,6 @@ import org.efaps.esjp.products.util.Products;
 import org.efaps.esjp.products.util.Products.ProductIndividual;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.ICalculatorConfig;
-import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.listener.IOnCreateFromDocument;
 import org.efaps.esjp.sales.listener.IOnQuery;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
@@ -809,11 +808,7 @@ public abstract class AbstractDocument_Base
     protected String getJavaScript4SelectDoc(final Parameter _parameter)
         throws EFapsException
     {
-        final Instance currency4Invoice = evaluateCurrency4JavaScript(_parameter);
-        final Instance baseCurrency = Currency.getBaseCurrency();
-
         final StringBuilder js = new StringBuilder()
-            .append(updateRateFields(_parameter, currency4Invoice, baseCurrency)).append("\n")
             .append("var pN = query('.eFapsContentDiv')[0];\n");
 
         final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
@@ -825,7 +820,7 @@ public abstract class AbstractDocument_Base
             final Instance instCall = _parameter.getCallInstance();
             final List<Instance> instances = getInstances4Derived(_parameter);
             if (!instances.isEmpty()) {
-                // if obnly one instance is given it might be a copy and not a derived
+                // if only one instance is given it might be a copy and not a derived
                 if (instances.size() == 1) {
                     final Instance instance = instances.get(0);
                     // in case of copy check if it is really a copy (meaning the same type will be created)
@@ -859,7 +854,9 @@ public abstract class AbstractDocument_Base
                             && instCall.getType().isKindOf(CISales.DocumentAbstract.getType())) {
                 final List<Instance> instCallLst = new ArrayList<Instance>();
                 instCallLst.add(instCall);
-                js.append(add2JavaScript4Document(_parameter, instCallLst))
+                // if no instance was detected to copy from set the default Currency
+                js.append(updateRateFields(_parameter, null)).append("\n")
+                    .append(add2JavaScript4Document(_parameter, instCallLst))
                     .append(getJavaScript4Positions(_parameter, instCall));
             }
         }
@@ -979,8 +976,8 @@ public abstract class AbstractDocument_Base
     {
         final StringBuilder js = new StringBuilder();
         // as a default
-        final Instance instance = _instances.get(0);
-        final PrintQuery print = new PrintQuery(instance);
+        final Instance docInst = _instances.get(0);
+        final PrintQuery print = new PrintQuery(docInst);
         print.addAttribute(CISales.DocumentSumAbstract.RateNetTotal,
                         CISales.DocumentSumAbstract.RateCrossTotal,
                         CISales.DocumentSumAbstract.Rate,
@@ -1000,34 +997,11 @@ public abstract class AbstractDocument_Base
         final String note = print.getAttribute(CIERP.DocumentAbstract.Note);
         final String remark = print.getAttribute(CIERP.DocumentAbstract.Remark);
         final String name = print.getAttribute(CIERP.DocumentAbstract.Name);
-        final Object[] rates = print.<Object[]> getAttribute(CISales.DocumentSumAbstract.Rate);
 
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
 
-        final StringBuilder currStrBldr = new StringBuilder();
-        BigDecimal[] ratesCur = null;
-        if (rates != null) {
-            final Instance currency4Invoice = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
-            final Instance baseCurrency = Currency.getBaseCurrency();
-            final Instance instanceDerived = getInstances4Derived(_parameter).get(0);
-            boolean derived = false;
-            if (instanceDerived.isValid()) {
-                derived = true;
-            }
-            final Instance newInst = Instance.get(CIERP.Currency.getType(), rates[2].toString());
-            ratesCur = new PriceUtil().getExchangeRate(new DateTime().withTimeAtStartOfDay(), newInst);
-
-            if (rates[2].equals(rates[3]) && !currency4Invoice.equals(baseCurrency) && !derived
-                            || !rates[2].equals(rates[3])) {
-                currStrBldr.append(getSetFieldValue(0, "rateCurrencyId", "" + rates[2])).append("\n")
-                    .append(getSetFieldValue(0, "rateCurrencyData", ratesCur[1].toString()))
-                    .append(getSetFieldValue(0, "rate", ratesCur[1].toString())).append("\n")
-                    .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
-                                    "" + new CurrencyInst(newInst).isInvert())).append("\n");
-            }
-        }
-
-        js.append(currStrBldr).append(add2JavaScript4DocumentContact(_parameter, _instances, contactInstance));
+        js.append(updateRateFields(_parameter, docInst))
+            .append(add2JavaScript4DocumentContact(_parameter, _instances, contactInstance));
 
         if ("true".equalsIgnoreCase(_parameter.getParameterValue(AbstractDocument_Base.SELDOCUPDATEPF + "CopyName"))) {
             js.append(getSetFieldValue(0, "name4create", name)).append("\n");
@@ -1570,15 +1544,40 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Update rate fields.
+     *
+     * @param _parameter the _parameter
+     * @param _docInst the _doc inst
+     * @return the string
+     * @throws EFapsException the efaps exception
+     */
+    protected String updateRateFields(final Parameter _parameter,
+                                      final Instance _docInst)
+        throws EFapsException
+    {
+        // if no document is given set the currencies
+        Instance docInst = _docInst;
+        if (docInst == null && TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            docInst = _parameter.getInstance();
+        }
+        return updateRateFields(_parameter, docInst,
+                        evaluateCurrency4JavaScript(_parameter), Currency.getBaseCurrency());
+    }
+
+    /**
+     * Update rate fields.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
-     * @param _newInst      new Instance
-     * @param _currentInst  current Instance
+     * @param _docInst the _doc inst
+     * @param _targetCurrencyInst the _target currency inst
+     * @param _currentCurrencyInst the _current currency inst
      * @return html for field
      * @throws EFapsException on error
      */
     protected String updateRateFields(final Parameter _parameter,
-                                      final Instance _newInst,
-                                      final Instance _currentInst)
+                                      final Instance _docInst,
+                                      final Instance _targetCurrencyInst,
+                                      final Instance _currentCurrencyInst)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
@@ -1586,34 +1585,35 @@ public abstract class AbstractDocument_Base
         RateInfo rateInfo = null;
         CurrencyInst currencyInst = null;
         // in edit mode try to use the rate of the document
-        if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
-            final Instance inst = _parameter.getInstance();
-            if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                final PrintQuery print = new PrintQuery(inst);
-                print.addAttribute(CISales.DocumentSumAbstract.Rate);
-                print.executeWithoutAccessCheck();
-                final Object rate = print.getAttribute(CISales.DocumentSumAbstract.Rate);
-                if (rate != null && rate instanceof Object[]) {
-                    final Currency currency = new Currency();
-                    rateInfo  = currency.evaluateRateInfo(_parameter, (Object[]) rate);
-                    currencyInst = rateInfo.getCurrencyInstObj();
-                }
+        if (_docInst != null && _docInst.isValid()
+                        && _docInst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
+            final PrintQuery print = new PrintQuery(_docInst);
+            print.addAttribute(CISales.DocumentSumAbstract.Rate);
+            print.executeWithoutAccessCheck();
+            final Object rate = print.getAttribute(CISales.DocumentSumAbstract.Rate);
+            if (rate != null && rate instanceof Object[]) {
+                final Currency currency = new Currency();
+                rateInfo  = currency.evaluateRateInfo(_parameter, (Object[]) rate);
+                currencyInst = rateInfo.getCurrencyInstObj();
             }
         }
+
         // if no rate yet try to set it
         if (rateInfo == null) {
             final Currency currency = new Currency();
             final String date = _parameter.getParameterValue("date_eFapsDate");
-            final RateInfo[] rates = currency.evaluateRateInfos(_parameter, date, _currentInst, _newInst);
+            final RateInfo[] rates = currency.evaluateRateInfos(_parameter, date, _currentCurrencyInst,
+                            _targetCurrencyInst);
             rateInfo = rates[2];
             currencyInst = rates[1].getCurrencyInstObj();
         }
         if (rateInfo != null) {
-            js.append(getSetFieldValue(0, "rateCurrencyData", getRateUIFrmt(_parameter, rateInfo)))
+            js.append(getSetFieldValue(0, "rateCurrencyData", getRateUIFrmt(_parameter, rateInfo))).append("\n")
                 .append(getSetFieldValue(0, "rate", NumberFormatter.get().getFormatter().format(
                                 getRateUI(_parameter, rateInfo)))).append("\n")
-                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + currencyInst.isInvert()))
-                .append("\n");
+                .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX, "" + currencyInst.isInvert())).append("\n")
+                .append(getSetFieldValue(0, "rateCurrencyId", String.valueOf(currencyInst.getInstance().getId())))
+                    .append("\n");
         }
         return js.toString();
     }
