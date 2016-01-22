@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2010 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,16 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 5313 $
- Last Changed:    $Date: 2010-08-16 11:22:53 -0500 (Mon, 16 Aug 2010) $
- Last Changed By: $Author: miguel.a.aranya $
-
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>43f06a1f-c207-41c1-b792-226ca39795ab</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 5313 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_QuotationTree_Position</name>
@@ -34,11 +30,10 @@
             <menu>Sales_QuotationTree_Position_Menu</menu>
             <table>Sales_QuotationPositionTable</table>
             <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Types">Sales_QuotationPosition</property>
-                <property name="LinkFroms">Quotation</property>
+                <property name="Type">Sales_QuotationPosition</property>
+                <property name="LinkFrom">Quotation</property>
             </evaluate>
         </target>
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
         <property name="TargetMode">view</property>
