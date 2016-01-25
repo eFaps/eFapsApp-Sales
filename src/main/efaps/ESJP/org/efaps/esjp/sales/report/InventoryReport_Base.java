@@ -26,14 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
-import net.sf.dynamicreports.report.builder.DynamicReports;
-import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
-import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
-import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
-import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
-import net.sf.dynamicreports.report.definition.ReportParameters;
-
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -57,6 +49,14 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
+import net.sf.dynamicreports.report.builder.DynamicReports;
+import net.sf.dynamicreports.report.builder.column.ComponentColumnBuilder;
+import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
+import net.sf.dynamicreports.report.builder.component.GenericElementBuilder;
+import net.sf.dynamicreports.report.builder.expression.AbstractComplexExpression;
+import net.sf.dynamicreports.report.definition.ReportParameters;
+
 /**
  * TODO comment!
  *
@@ -68,9 +68,17 @@ public abstract class InventoryReport_Base
     extends org.efaps.esjp.products.reports.InventoryReport
 {
 
+    /**
+     * The Enum Valuation.
+     */
     public enum Valuation
     {
-        COST, REPLACEMENT;
+
+        /** The cost. */
+        COST,
+
+        /** The replacement. */
+        REPLACEMENT;
     }
 
     /**
@@ -98,7 +106,9 @@ public abstract class InventoryReport_Base
     {
 
         /**
-         * @param _inventoryReport_Base
+         * Instantiates a new sales dyn inventory report.
+         *
+         * @param _inventoryReport the _inventory report
          */
         public SalesDynInventoryReport(final FilteredReport _inventoryReport)
         {
@@ -158,6 +168,13 @@ public abstract class InventoryReport_Base
             }
         }
 
+        /**
+         * Checks if is evaluate cost.
+         *
+         * @param _parameter the _parameter
+         * @return true, if is evaluate cost
+         * @throws EFapsException the e faps exception
+         */
         protected boolean isEvaluateCost(final Parameter _parameter)
             throws EFapsException
         {
@@ -172,6 +189,9 @@ public abstract class InventoryReport_Base
         }
     }
 
+    /**
+     * The Class SalesInventory.
+     */
     public static class SalesInventory
         extends Inventory
     {
@@ -204,6 +224,9 @@ public abstract class InventoryReport_Base
         }
     }
 
+    /**
+     * The Class SalesInventoryBean.
+     */
     public static class SalesInventoryBean
         extends InventoryBean
     {
@@ -222,15 +245,25 @@ public abstract class InventoryReport_Base
             return ret;
         }
 
+        /**
+         * Gets the doc created.
+         *
+         * @return the doc created
+         */
         public DateTime getDocCreated()
         {
             DateTime ret = null;
             if (getCostBean() != null && getCostBean() instanceof SalesCostBean) {
-                ret = ((SalesCostBean) getCostBean()).getCreated();
+                ret = ((SalesCostBean) getCostBean()).getDocCreated();
             }
             return ret;
         }
 
+        /**
+         * Gets the doc date.
+         *
+         * @return the doc date
+         */
         public DateTime getDocDate()
         {
             DateTime ret = null;
@@ -240,6 +273,11 @@ public abstract class InventoryReport_Base
             return ret;
         }
 
+        /**
+         * Gets the doc oid.
+         *
+         * @return the doc oid
+         */
         public String getDocOID()
         {
             String ret = null;
@@ -252,10 +290,14 @@ public abstract class InventoryReport_Base
 
     }
 
+    /**
+     * The Class SalesCost.
+     */
     public static class SalesCost
         extends Cost
     {
 
+        /** The evaluate cost. */
         private boolean evaluateCost;
 
         @Override
@@ -301,7 +343,7 @@ public abstract class InventoryReport_Base
                     bean.setDocInst(multi.<Instance>getSelect(selDocInst));
                     bean.setDocName(multi.<String>getSelect(selDocName));
                     bean.setDate(multi.<DateTime>getSelect(selDocDate));
-                    bean.setCreated(multi.<DateTime>getSelect(selDocCreate));
+                    bean.setDocCreated(multi.<DateTime>getSelect(selDocCreate));
                     beans.add(bean);
                 }
                 Collections.sort(beans, new Comparator<SalesCostBean>()
@@ -345,14 +387,20 @@ public abstract class InventoryReport_Base
         }
     }
 
+    /**
+     * The Class SalesCostBean.
+     */
     public static class SalesCostBean
         extends CostBean
     {
+        /** The doc inst. */
         private Instance docInst;
 
+        /** The doc name. */
         private String docName;
 
-        private DateTime created;
+        /** The doc created. */
+        private DateTime docCreated;
 
         /**
          * Getter method for the instance variable {@link #docName}.
@@ -379,9 +427,9 @@ public abstract class InventoryReport_Base
          *
          * @return value of instance variable {@link #created}
          */
-        public DateTime getCreated()
+        public DateTime getDocCreated()
         {
-            return this.created;
+            return this.docCreated;
         }
 
         /**
@@ -389,11 +437,10 @@ public abstract class InventoryReport_Base
          *
          * @param _created value for instance variable {@link #created}
          */
-        public void setCreated(final DateTime _created)
+        public void setDocCreated(final DateTime _created)
         {
-            this.created = _created;
+            this.docCreated = _created;
         }
-
 
         /**
          * Getter method for the instance variable {@link #docInst}.
@@ -405,7 +452,6 @@ public abstract class InventoryReport_Base
             return this.docInst;
         }
 
-
         /**
          * Setter method for instance variable {@link #docInst}.
          *
@@ -416,7 +462,6 @@ public abstract class InventoryReport_Base
             this.docInst = _docInst;
         }
     }
-
 
     /**
      * Expression used to render a link for the UserInterface.
@@ -446,6 +491,4 @@ public abstract class InventoryReport_Base
             return EmbeddedLink.getJasperLink(oid);
         }
     }
-
-
 }
