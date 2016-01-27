@@ -183,6 +183,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute ORDEROUTBOUNDPRODUCTAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "OrderOutbound.ProductAutoComplete")
+                    .description("Configuration for the AutoComplete for Products in OrderOutbound")
+                    .addDefaultValue("Type", "Products_ProductAbstract");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute SERVICEORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ServiceOrderOutbound.ActivateCondition")
