@@ -39,6 +39,7 @@
             <child>Sales_SalesProductReportMyDesk</child>
             <child>Sales_Employee2DocReportMyDesk</child>
             <child>Sales_InventoryReportMyDesk</child>
+            <child>Sales_DocVsDocReportMyDesk</child>
         </childs>
     </definition>
 </ui-menu>
