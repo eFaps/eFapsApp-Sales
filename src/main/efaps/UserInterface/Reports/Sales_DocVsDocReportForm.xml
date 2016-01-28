@@ -30,21 +30,28 @@
                 name="Sales_DocVsDocReportForm.filter.UI_FIELD_VALUE.1"
                 program="org.efaps.esjp.sales.report.DocVsDocReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocVsDocReport.FilterKeyMyDesk</property>
-                <property name="Field01">dateFrom</property>
-                <property name="Field02">dateTo</property>
-                <property name="FilterType01">DateTime</property>
-                <property name="FilterType02">DateTime</property>
-                <property name="FilterDefault01">YEAR:-1</property>
-                <property name="FilterDefault02">TODAY</property>
+                <property name="Field01">versus</property>
+                <property name="Field02">contact</property>
+                <property name="FilterType01">Versus</property>
+                <property name="FilterType02">InstanceSet</property>
+                <property name="FilterDefault01">0</property>
+                <property name="FilterDefault02">-</property>
+                 <!-- Sales-Configuration -->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.report.DocVsDocReport</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_DocVsDocReportForm.filter.UI_FIELD_VALUE.2"
                 program="org.efaps.esjp.sales.report.DocVsDocReport">
                 <property name="FilterKey">org.efaps.esjp.sales.report.DocVsDocReport.FilterKeyMyDesk</property>
-                <property name="Field01">dateFrom</property>
-                <property name="Field02">dateTo</property>
-                <property name="DBProperty01">org.efaps.esjp.sales.report.DocVsDocReport.dateFrom</property>
-                <property name="DBProperty02">org.efaps.esjp.sales.report.DocVsDocReport.dateTo</property>
+                <property name="Field01">versus</property>
+                <property name="Field02">contact</property>
+                <property name="DBProperty01">org.efaps.esjp.sales.report.DocVsDocReport.versus</property>
+                <property name="DBProperty02">org.efaps.esjp.sales.report.DocVsDocReport.contact</property>
+                 <!-- Sales-Configuration -->
+                <property name="PropertiesConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="PropertiesConfigAttribute">org.efaps.sales.report.DocVsDocReport</property>
+                <property name="Contacts_Contact_Select">attribute[Name]</property>
             </trigger>
         </field>
         <field name="report">
