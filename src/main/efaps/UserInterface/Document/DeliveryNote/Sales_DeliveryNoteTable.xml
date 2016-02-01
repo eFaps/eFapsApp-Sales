@@ -28,8 +28,20 @@
         <field name="name">
             <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
-            <property name="Label">Sales_DocumentAbstract/Name.Label</property>
+            <property name="Label">Sales_DeliveryNote/Name.Label</property>
         </field>
+         <field name="nameWithSerialNumber">
+            <property name="HRef">TREE</property>
+            <property name="Attribute">Name</property>
+            <property name="Label">Sales_DeliveryNote/Name.Label</property>
+            <property name="FilterType">FORM</property>
+            <property name="FilterCmd">Sales_DocumentWithSerialNumberFilterCmd</property>
+            <property name="FilterAttributes">Name</property>
+        </field>
+
+
+
+
         <field name="documentType">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>

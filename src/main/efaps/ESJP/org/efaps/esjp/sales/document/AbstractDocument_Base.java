@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.EventType;
@@ -108,6 +109,8 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
+import org.efaps.ui.wicket.models.objects.UITable;
+import org.efaps.ui.wicket.models.objects.UITable.TableFilter;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -319,9 +322,10 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Add2 query bldr4 auto complete4 contact.
+     *
      * @param _parameter Parameter as passed from the eFaps API.
-     * @param _instance     instance the choice belongs to
-     * @return string to add
+     * @param _queryBldr the _query bldr
      * @throws EFapsException on error
      */
     protected void add2QueryBldr4AutoComplete4Contact(final Parameter _parameter,
@@ -734,9 +738,12 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter
-     * @param _instance
-     * @param _label
+     * Add2 label update fields4 doc.
+     *
+     * @param _parameter the _parameter
+     * @param _instance the _instance
+     * @return the string
+     * @throws EFapsException the e faps exception
      */
     protected String add2LabelUpdateFields4Doc(final Parameter _parameter,
                                              final Instance _instance)
@@ -1209,7 +1216,6 @@ public abstract class AbstractDocument_Base
      *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _bean bean to be updated
-     * @param _storageInst the storage instance
      * @return List of beans
      * @throws EFapsException on error
      */
@@ -1675,12 +1681,15 @@ public abstract class AbstractDocument_Base
 
 
     /**
+     * Add4 individual.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _prodInst     instance of the product the new individuals will belong to
      * @param _individual   value of the individual attribute
      * @param _map          map the script will be added to
      * @param _key          key to be used as fieldname etc
      * @param _legend       legend to be presented
+     * @return the string builder
      * @throws EFapsException on error
      */
     public StringBuilder add4Individual(final Parameter _parameter,
@@ -1839,14 +1848,24 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter
-     * @return
+     * Gets the type name4 auto complete4 product.
+     *
+     * @param _parameter the _parameter
+     * @return the type name4 auto complete4 product
+     * @throws EFapsException the e faps exception
      */
     protected String getTypeName4AutoComplete4Product(final Parameter _parameter) throws EFapsException
     {
         return getTypeName4SysConf(_parameter);
     }
 
+    /**
+     * Catalog filter4product auto complete.
+     *
+     * @param _parameter the _parameter
+     * @param _queryBldr the _query bldr
+     * @throws EFapsException the e faps exception
+     */
     protected void catalogFilter4productAutoComplete(final Parameter _parameter,
                                                      final QueryBuilder _queryBldr)
         throws EFapsException
@@ -2078,10 +2097,10 @@ public abstract class AbstractDocument_Base
 
     /**
      * Method to get the maximum for a value from the database.
+     *
      * @param _parameter Parameter as passed by the eFaps API for esjp
-     * @param _type type to search for
      * @param _serial optional serial number used as filter
-     * @param _expandChild expand childs
+     * @param _types the _types
      * @return maximum
      * @throws EFapsException on error
      */
@@ -2218,6 +2237,52 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Gets the name with serial filter field value.
+     *
+     * @param _parameter the _parameter
+     * @return the name with serial filter field value
+     * @throws EFapsException the e faps exception
+     */
+    public Return getNameWithSerialFilterFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final List<DropDownPosition> values = getSerialNumbers(_parameter);
+        for (final DropDownPosition position: values) {
+            position.setValue(position.getValue() + "-*");
+        }
+        final UIForm uiform = (UIForm) _parameter.get(ParameterValues.CLASS);
+        final String sessKey =  uiform.getCallingCommand().getUUID() + "-" + UITable.UserCacheKey.FILTER.getValue();
+        if (Context.getThreadContext().containsSessionAttribute(sessKey)) {
+            @SuppressWarnings("unchecked")
+            final Map<String, TableFilter> sessfilter = (Map<String, TableFilter>) Context
+                            .getThreadContext().getSessionAttribute(sessKey);
+            final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+            if (sessfilter.containsKey(fieldValue.getField().getName())) {
+                final TableFilter filter = sessfilter.get(fieldValue.getField().getName());
+                final Map<String, Object> map = filter.getMap4esjp();
+                if (map != null && map.containsKey(fieldValue.getField().getName())) {
+                    final String[] selected = (String[]) map.get(fieldValue.getField().getName());
+                    if (selected != null && selected.length > 0) {
+                        for (final DropDownPosition position: values) {
+                            for (final String sel : selected) {
+                                if (position.getValue().equals(sel)) {
+                                    position.setSelected(true);
+                                    break;
+                                } else {
+                                    position.setSelected(false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        final Return ret = new Return();
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+    /**
      * Method to get the value for the name.
      *
      * @param _parameter Parameter as passed by the eFaps API for esjp
@@ -2296,6 +2361,14 @@ public abstract class AbstractDocument_Base
         return field.dropDownFieldValue(_parameter);
     }
 
+    /**
+     * Evaluate currency instance.
+     *
+     * @param _parameter the _parameter
+     * @return the instance
+     * @throws CacheReloadException the cache reload exception
+     * @throws EFapsException the e faps exception
+     */
     protected Instance evaluateCurrencyInstance(final Parameter _parameter)
         throws CacheReloadException, EFapsException
     {
@@ -2579,8 +2652,10 @@ public abstract class AbstractDocument_Base
     }
 
     /**
-     * @param _parameter
-     * @return
+     * Gets the unit prices from ui.
+     *
+     * @param _parameter the _parameter
+     * @return the unit prices from ui
      */
     protected String[] getUnitPricesFromUI(final Parameter _parameter)
     {
@@ -2636,6 +2711,13 @@ public abstract class AbstractDocument_Base
         insert.execute();
     }
 
+    /**
+     * Connect document type2 catalog.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return connectDocumentType2Catalog(final Parameter _parameter)
         throws EFapsException
     {
@@ -2656,6 +2738,7 @@ public abstract class AbstractDocument_Base
      *
      * @param _parameter    Parameter as passed from the eFaps API
      * @param _createdDoc   CreatedDoc  to be connected
+     * @return the list
      * @throws EFapsException on error
      */
     protected List<Instance> connect2Derived(final Parameter _parameter,
@@ -2765,6 +2848,7 @@ public abstract class AbstractDocument_Base
      * @param _parameter Parameter as passed by the eFaps API
      * @param _docInst the instance of document that must be checked for selected
      * @return the selected instances4 j s4 doc4 contact
+     * @throws EFapsException the e faps exception
      */
     protected boolean docIsSelected4JS4Doc4Contact(final Parameter _parameter,
                                                    final Instance _docInst)
@@ -2933,6 +3017,7 @@ public abstract class AbstractDocument_Base
          * Sets the storage inst.
          *
          * @param _storageInst the new storage inst
+         * @return the abstract ui position
          */
         public AbstractUIPosition setStorageInst(final Instance _storageInst)
         {
@@ -3240,6 +3325,7 @@ public abstract class AbstractDocument_Base
          * Setter method for instance variable {@link #doc}.
          *
          * @param _doc value for instance variable {@link #doc}
+         * @return the abstract ui position
          */
         public AbstractUIPosition setDoc(final AbstractDocument_Base _doc)
         {

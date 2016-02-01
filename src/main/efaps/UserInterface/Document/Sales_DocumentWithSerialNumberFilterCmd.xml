@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!--
 
  Copyright 2003 - 2016 The eFaps Team
@@ -19,23 +18,17 @@
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>1530bc67-213d-481e-97dd-c7b751ca3a83</uuid>
+    <uuid>0e4903ef-fee0-4324-b209-8a63aeaee4b3</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DeliveryNoteMyDesk</name>
-        <access>
-            <role>Sales_Delivery</role>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <menu>Sales_DeliveryNoteMyDesk_Menu</menu>
-            <table>Sales_DeliveryNoteTable</table>
-            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
-                <property name="Type">Sales_DeliveryNote</property>
-            </evaluate>
+        <name>Sales_DocumentWithSerialNumberFilterCmd</name>
+         <target>
+            <form>Sales_DocumentWithSerialNumberFilterForm</form>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="Target">modal</property>
+        <property name="TargetMode">view</property>
+        <property name="WindowHeight">460</property>
+        <property name="WindowWidth">515</property>
     </definition>
 </ui-command>
