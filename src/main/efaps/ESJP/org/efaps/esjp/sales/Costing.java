@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -42,6 +39,15 @@ public class Costing
     extends Costing_Base
 {
 
+    /**
+     * Gets the costing for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstance the _transaction instance
+     * @return the costing4 currency
+     * @throws EFapsException the e faps exception
+     */
     public static CostingInfo getCosting4Currency(final Parameter _parameter,
                                                   final Instance _currencyInstance,
                                                   final Instance _transactionInstance)
@@ -50,6 +56,16 @@ public class Costing
         return Costing_Base.getCosting4Currency(_parameter, _currencyInstance, _transactionInstance);
     }
 
+    /**
+     * Gets the costing for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _date the _date
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstance the _transaction instance
+     * @return the costing4 currency
+     * @throws EFapsException the e faps exception
+     */
     public static CostingInfo getCosting4Currency(final Parameter _parameter,
                                                   final DateTime _date,
                                                   final Instance _currencyInstance,
@@ -59,6 +75,15 @@ public class Costing
         return Costing_Base.getCosting4Currency(_parameter, _date, _currencyInstance, _transactionInstance);
     }
 
+    /**
+     * Gets the costings for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException the e faps exception
+     */
     public static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
                                                                   final Instance _currencyInstance,
                                                                   final Instance... _transactionInstances)
@@ -67,6 +92,16 @@ public class Costing
         return Costing_Base.getCostings4Currency(_parameter, _currencyInstance, _transactionInstances);
     }
 
+    /**
+     * Gets the costings for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _date the _date
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException the e faps exception
+     */
     public static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
                                                                   final DateTime _date,
                                                                   final Instance _currencyInstance,

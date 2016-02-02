@@ -54,10 +54,17 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ACTIVATECOSTING = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute COSTINGACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "ActivateCosting")
+                    .key(BASE + "Costing.Activate")
                     .description("Allows to activate/deactivate the costing mechanisms.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute COSTINGOO4RT = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Costing.IncludeOrderOutbound4RecievingTicket")
+                    .description("Include the OrderOutbound as last chance for costinrg on reciveing ticket.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -80,7 +87,6 @@ public final class Sales
                     .key(BASE + "AcquisitionCosting.Create")
                     .description("Allows create a AcquisitionCosting manually.");
 
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUND = new BooleanSysConfAttribute()
@@ -96,7 +102,6 @@ public final class Sales
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutboundAutoComplete")
                     .description("Config for a QueryBuilder for Autocomplete and Query of OrderOutbound to create "
                                     + "Incoming Invoice from.");
-
 
     /** See description. */
     @EFapsSysConfAttribute

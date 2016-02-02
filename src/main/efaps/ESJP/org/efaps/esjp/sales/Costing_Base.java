@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -104,7 +101,7 @@ public abstract class Costing_Base
             while (query.next()) {
                 final Company company = Company.get(query.getCurrentValue().getId());
                 Context.getThreadContext().setCompany(company);
-                if (Sales.ACTIVATECOSTING.get()) {
+                if (Sales.COSTINGACTIVATE.get()) {
                     update();
                 }
             }
@@ -1316,7 +1313,6 @@ public abstract class Costing_Base
      * TODO comment!
      *
      * @author The eFaps Team
-     * @version $Id$
      */
     public static class CostDoc
     {
@@ -1439,6 +1435,30 @@ public abstract class Costing_Base
                             }
                         }
                     }
+                    // if activated use the OrderOutbound as last chance
+                    if (!found && Sales.COSTINGOO4RT.get()) {
+                        final QueryBuilder relAttrQueryBldr = new QueryBuilder(CISales.OrderOutbound2RecievingTicket);
+                        relAttrQueryBldr.addWhereAttrEqValue(CISales.OrderOutbound2RecievingTicket.ToLink,
+                                        getBaseDocInst());
+                        final AttributeQuery relAttrQuery = relAttrQueryBldr
+                                        .getAttributeQuery(CISales.OrderOutbound2RecievingTicket.FromLink);
+                        final QueryBuilder posQueryBldr = new QueryBuilder(CISales.OrderOutboundPosition);
+                        posQueryBldr.addWhereAttrInQuery(CISales.OrderOutboundPosition.DocumentAbstractLink,
+                                        relAttrQuery);
+                        posQueryBldr.addWhereAttrEqValue(CISales.OrderOutboundPosition.Product, getProductInst());
+                        final MultiPrintQuery posMulti = posQueryBldr.getPrint();
+                        posMulti.addSelect(docInstSel, docStatusSel);
+                        posMulti.addAttribute(CISales.OrderOutboundPosition.NetUnitPrice);
+                        posMulti.execute();
+                        while (posMulti.next() && !found) {
+                            if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
+                                found = true;
+                                setCost(posMulti.<BigDecimal>getAttribute(
+                                                CISales.OrderOutboundPosition.NetUnitPrice));
+                                setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
+                            }
+                        }
+                    }
                 } else if (CISales.IncomingInvoice.getType().equals(getBaseDocInst().getType())) {
                     final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingInvoicePosition);
                     queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.DocumentAbstractLink,
@@ -1517,7 +1537,8 @@ public abstract class Costing_Base
         {
             return !Status.find(CISales.IncomingInvoiceStatus.Replaced).equals(_status)
                             && !Status.find(CISales.AcquisitionCostingStatus.Canceled).equals(_status)
-                            && !Status.find(CISales.ProductionCostingStatus.Canceled).equals(_status);
+                            && !Status.find(CISales.ProductionCostingStatus.Canceled).equals(_status)
+                            && !Status.find(CISales.OrderOutboundStatus.Canceled).equals(_status);
         }
 
         /**
