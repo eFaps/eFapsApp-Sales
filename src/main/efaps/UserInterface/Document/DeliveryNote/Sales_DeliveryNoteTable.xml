@@ -29,19 +29,28 @@
             <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DeliveryNote/Name.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="serialAccessCheck"
+                name="Sales_OrderInboundForm.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Type">Sales_DeliveryNote</property>
+                <property name="Inverse">true</property>
+            </trigger>
         </field>
          <field name="nameWithSerialNumber">
             <property name="HRef">TREE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_DeliveryNote/Name.Label</property>
             <property name="FilterType">FORM</property>
-            <property name="FilterCmd">Sales_DocumentWithSerialNumberFilterCmd</property>
+            <property name="FilterCmd">Sales_DeliveryNoteSerialNumberFilterCmd</property>
             <property name="FilterAttributes">Name</property>
+            <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
+                method="serialAccessCheck"
+                name="Sales_OrderInboundForm.remark.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
+                <property name="Type">Sales_DeliveryNote</property>
+            </trigger>
         </field>
-
-
-
-
         <field name="documentType">
             <property name="SelectAlternateOID">linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].oid</property>
             <property name="Phrase">$&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Name]&gt; - $&lt;linkfrom[Sales_Document2ProductDocumentType#DocumentLink].linkto[DocumentTypeLink].attribute[Description]&gt;</property>

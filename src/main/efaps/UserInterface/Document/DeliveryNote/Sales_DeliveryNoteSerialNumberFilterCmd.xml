@@ -22,9 +22,9 @@
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DocumentWithSerialNumberFilterCmd</name>
+        <name>Sales_DeliveryNoteSerialNumberFilterCmd</name>
          <target>
-            <form>Sales_DocumentWithSerialNumberFilterForm</form>
+            <form>Sales_DeliveryNoteSerialNumberFilterForm</form>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">view</property>

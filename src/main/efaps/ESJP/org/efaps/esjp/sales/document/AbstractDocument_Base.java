@@ -2283,6 +2283,24 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     *
+     * @param _parameter Parameter as passed from eFaps to an esjp
+     * @return Return with True if VIEW, else false
+     * @throws EFapsException on error
+     */
+    public Return serialAccessCheck(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final boolean access = !getSerialNumbers(_parameter).isEmpty();
+        final boolean inverse = "true".equalsIgnoreCase(getProperty(_parameter, "Inverse"));
+        if (!inverse && access || inverse && !access) {
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    /**
      * Method to get the value for the name.
      *
      * @param _parameter Parameter as passed by the eFaps API for esjp
