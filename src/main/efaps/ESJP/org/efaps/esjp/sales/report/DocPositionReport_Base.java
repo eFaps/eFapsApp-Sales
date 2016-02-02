@@ -237,7 +237,7 @@ public abstract class DocPositionReport_Base
             }
             final ContactGroup contactGroup = evaluateContactGroup(_parameter);
             if (ContactGroup.PRODPRODUCER.equals(contactGroup)
-                            || ContactGroup.PRODPRODUCER.equals(contactGroup)) {
+                            || ContactGroup.PRODSUPPLIER.equals(contactGroup)) {
                 for (final Map<String, Object> value  : this.valueList) {
                     final Instance prodInst = (Instance) value.get("productInst");
                     final CachedPrintQuery print = CachedPrintQuery.get4Request(prodInst);
