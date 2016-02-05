@@ -908,15 +908,21 @@ public abstract class AbstractProductDocument_Base
                         CISales.PositionAbstract.Quantity.name));
         final Object[] uom = (Object[]) map.get(instance.getType().getAttribute(CISales.PositionAbstract.UoM.name));
 
-        final Insert insert = new Insert(_type);
-        insert.add(CIProducts.TransactionAbstract.Quantity, qauntity[0]);
-        insert.add(CIProducts.TransactionAbstract.Storage, _storageId);
-        insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
-        insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
-        insert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime() : date[0]);
-        insert.add(CIProducts.TransactionAbstract.Document, evaluateParentDocId4PositionTrigger(_parameter));
-        insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
-        insert.executeWithoutAccessCheck();
+        // validate that the product is a product that can have stock
+        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StockProductAbstract);
+        queryBldr.addWhereAttrEqValue(CIProducts.StockProductAbstract.ID, productID[0]);
+
+        if (!queryBldr.getQuery().executeWithoutAccessCheck().isEmpty()) {
+            final Insert insert = new Insert(_type);
+            insert.add(CIProducts.TransactionAbstract.Quantity, qauntity[0]);
+            insert.add(CIProducts.TransactionAbstract.Storage, _storageId);
+            insert.add(CIProducts.TransactionAbstract.Product, productID[0]);
+            insert.add(CIProducts.TransactionAbstract.Description, getDescription4PositionTrigger(_parameter));
+            insert.add(CIProducts.TransactionAbstract.Date, date == null ? new DateTime() : date[0]);
+            insert.add(CIProducts.TransactionAbstract.Document, evaluateParentDocId4PositionTrigger(_parameter));
+            insert.add(CIProducts.TransactionAbstract.UoM, uom[0]);
+            insert.executeWithoutAccessCheck();
+        }
     }
 
     /**
