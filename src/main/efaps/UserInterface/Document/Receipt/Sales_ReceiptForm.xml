@@ -265,6 +265,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_ReceiptForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="rateFieldValueUI"
+                name="Sales_ReceiptForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="withoutVAT">
             <property name="Label">Sales_ReceiptForm.withoutVAT.Label</property>
@@ -363,7 +369,11 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">NONE</property>
+             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="rateFieldValueUI"
+                name="Sales_ReceiptForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rate4view">
             <property name="Attribute">Rate</property>
@@ -720,6 +730,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_ReceiptForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="rateFieldValueUI"
+                name="Sales_ReceiptForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="withoutVAT">
             <property name="Label">Sales_ReceiptForm.withoutVAT.Label</property>
@@ -818,7 +834,11 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">NONE</property>
+             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.Receipt"
+                method="rateFieldValueUI"
+                name="Sales_ReceiptForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rate4view">
             <property name="Attribute">Rate</property>

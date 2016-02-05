@@ -178,7 +178,7 @@
                 program="org.efaps.esjp.sales.Channel"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
-                name="Sales_InvoiceForm.condition.UI_ACCESSCHECK"
+                name="Sales_OrderOutboundForm.condition.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
@@ -214,11 +214,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="rateCurrencyFieldValueUI"
                 name="Sales_OrderOutboundForm.currencyId.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="updateFields4RateCurrency"
                 name="Sales_OrderOutboundForm.currencyId.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
@@ -229,6 +229,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_OrderOutboundForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="rateFieldValueUI"
+                name="Sales_OrderOutboundForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
          <field name="withoutVAT">
             <property name="Label">Sales_OrderOutboundForm.withoutVAT.Label</property>
@@ -238,7 +244,7 @@
             <property name="HideLabel">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="withoutVATFieldValue"
                 name="Sales_OrderOutboundForm.withoutVAT.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
@@ -325,7 +331,11 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">NONE</property>
+             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="rateFieldValueUI"
+                name="Sales_OrderOutboundForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rate4view">
             <property name="Attribute">Rate</property>
@@ -599,7 +609,7 @@
                 program="org.efaps.esjp.sales.Channel"/>
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"
-                name="Sales_InvoiceForm.condition.UI_ACCESSCHECK"
+                name="Sales_OrderOutboundForm.condition.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <!-- Sales-Configuration -->
                 <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
@@ -636,11 +646,11 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="rateCurrencyFieldValueUI"
                 name="Sales_OrderOutboundForm.currencyId.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="updateFields4RateCurrency"
                 name="Sales_OrderOutboundForm.currencyId.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
@@ -652,6 +662,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_OrderOutboundForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="rateFieldValueUI"
+                name="Sales_OrderOutboundForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
          <field name="withoutVAT">
             <property name="Label">Sales_OrderOutboundForm.withoutVAT.Label</property>
@@ -661,7 +677,7 @@
             <property name="HideLabel">true</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.BooleanUI</property>
             <property name="UIType">CHECKBOX</property>
-            <trigger program="org.efaps.esjp.sales.document.Invoice"
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
                 method="withoutVATFieldValue"
                 name="Sales_OrderOutboundForm.withoutVAT.UI_FIELD_VALUE"
                 event="UI_FIELD_VALUE" />
@@ -748,6 +764,10 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.OrderOutbound"
+                method="rateFieldValueUI"
+                name="Sales_OrderOutboundForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rate4view">
             <property name="Attribute">Rate</property>

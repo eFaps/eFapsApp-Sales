@@ -14,15 +14,10 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
---><ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+-->
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>8da0b886-5c81-41d3-9486-236378e984ff</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingDetractionForm</name>
@@ -138,7 +133,7 @@
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="updateFields4Contact"
-                name="Sales_IncomingDetractionForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_IncomingDetractionForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="contactData">
             <property name="ModePrint">NONE</property>
@@ -160,9 +155,9 @@
             <property name="ModeEdit">READONLY</property>
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="rateCurrencyFieldValueUI"
-                name="Sales_IncomingDetractionForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
+                name="Sales_IncomingDetractionForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="updateFields4RateCurrency"
-                name="Sales_IncomingDetractionForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+                name="Sales_IncomingDetractionForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="rateCurrencyData">
             <property name="ModePrint">NONE</property>
@@ -171,6 +166,10 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingDetractionForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="rateFieldValueUI" name="Sales_InvoiceForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="detractionPercent">
             <property name="ModeEdit">EDITABLE</property>
@@ -178,16 +177,14 @@
             <property name="Columns">2</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionPercent.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.DecimalUI</property>
-             <trigger program="org.efaps.esjp.sales.document.IncomingDetraction"
-                method="updateFields4DetractionPercent"
-                name="Sales_IncomingDetractionCreateForm.detractionPercent.UI_FIELD_UPDATE"
-                event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="updateFields4DetractionPercent"
+                name="Sales_IncomingDetractionCreateForm.detractionPercent.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
         </field>
         <field name="detractionValue">
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_IncomingDetractionCreateForm.detractionValue.Label</property>
-             <property name="Attribute">RateCrossTotal</property>
+            <property name="Attribute">RateCrossTotal</property>
         </field>
         <field name="crossTotal">
             <property name="ModeEdit">NONE</property>
@@ -195,7 +192,7 @@
             <property name="ModeView">NONE</property>
             <property name="Attribute">RateCrossTotal</property>
         </field>
-         <field character="Group" name="servopTypeGroup">
+        <field character="Group" name="servopTypeGroup">
             <property name="GroupCount">2</property>
             <property name="ModeCreate">READONLY</property>
         </field>
@@ -217,8 +214,6 @@
             <property name="Rows">5</property>
             <property name="Columns">50</property>
         </field>
-
-
         <field character="Heading" name="headingDocuments">
             <property name="Level">2</property>
             <property name="Label">Sales_IncomingDetractionForm.headingDocuments.Heading</property>
@@ -264,6 +259,10 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingDetraction" method="rateFieldValueUI"
+                name="Sales_IncomingDetractionForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">NONE</property>

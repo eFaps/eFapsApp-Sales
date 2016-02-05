@@ -2380,6 +2380,31 @@ public abstract class AbstractDocument_Base
     }
 
     /**
+     * Rate field value ui.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
+    public Return rateFieldValueUI(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
+            // for create mode simulate a value from the Database with the given configuration
+            final Instance currInst = evaluateCurrency4JavaScript(_parameter);
+            final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, (String) null, currInst);
+            if ("true".equalsIgnoreCase(getProperty(_parameter, "UI"))) {
+                ret.put(ReturnValues.VALUES, getRateFrmt(_parameter, rateInfo));
+            } else {
+                final Object[] rateObject = rateInfo.getRateObject();
+                ret.put(ReturnValues.VALUES, new Object[] { rateObject[0], rateObject[1], currInst.getId() });
+            }
+        }
+        return ret;
+    }
+
+    /**
      * Evaluate currency instance.
      *
      * @param _parameter the _parameter

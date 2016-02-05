@@ -203,6 +203,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingReminderForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder"
+                method="rateFieldValueUI"
+                name="Sales_IncomingReminderForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="withoutVAT">
             <property name="Label">Sales_IncomingReminderForm.withoutVAT.Label</property>
@@ -295,12 +301,16 @@
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder"
+                method="rateFieldValueUI"
+                name="Sales_IncomingReminderForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rate4view">
             <property name="Attribute">Rate</property>
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="accessCheck4Rate"
-                name="Sales_IncomingInvoiceForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
+                name="Sales_IncomingIncomingReminderForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateHeadingPositon" character="Heading">
             <property name="Level">3</property>
@@ -491,7 +501,7 @@
             <property name="ModeView">NONE</property>
             <property name="Columns">100</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project" name="Sales_InvoiceForm.project.UI_FIELD_AUTOCOMPLETE"
+            <trigger program="org.efaps.esjp.projects.Project" method="autoComplete4Project" name="Sales_IncomingReminderForm.project.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="StatusGroup">Projects_ProjectServiceStatus</property>
                 <property name="Status">Closed</property>
@@ -576,6 +586,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingReminderForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder"
+                method="rateFieldValueUI"
+                name="Sales_IncomingReminderForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="withoutVAT">
             <property name="Label">Sales_IncomingReminderForm.withoutVAT.Label</property>
@@ -667,13 +683,17 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
-            <property name="ModeView">NONE</property>
+             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingReminder"
+                method="rateFieldValueUI"
+                name="Sales_IncomingReminderForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rate4view">
             <property name="Attribute">Rate</property>
             <property name="ModeEdit">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingReminder" method="accessCheck4Rate"
-                name="Sales_IncomingInvoiceForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
+                name="Sales_IncomingIncomingReminderForm.rate4view.UI_ACCESSCHECK" event="UI_ACCESSCHECK" />
         </field>
         <field name="rateHeadingPositon" character="Heading">
             <property name="Level">3</property>

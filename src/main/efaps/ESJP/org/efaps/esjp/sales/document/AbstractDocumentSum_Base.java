@@ -450,6 +450,13 @@ public abstract class AbstractDocumentSum_Base
         return retVal;
     }
 
+    /**
+     * Update fields4 cross price.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4CrossPrice(final Parameter _parameter)
         throws EFapsException
     {
@@ -687,7 +694,7 @@ public abstract class AbstractDocumentSum_Base
         final Map<String, String> map = new HashMap<String, String>();
         Instance currentInst = new Currency().getCurrencyFromUI(_parameter, "rateCurrencyId_eFapsPrevious");
         final Instance baseInst = Currency.getBaseCurrency();
-        if (currentInst == null || (currentInst != null && !currentInst.isValid())) {
+        if (currentInst == null || currentInst != null && !currentInst.isValid()) {
             currentInst = baseInst;
         }
 
@@ -731,12 +738,12 @@ public abstract class AbstractDocumentSum_Base
                                     getPerceptionTotalFmtStr(_parameter, calculators)));
                 }
             }
-            js.append(getSetFieldValue(0, "rateCurrencyData",  RateInfo.getRateUIFrmt(_parameter, rateInfos[1],
-                            getTypeName4SysConf(_parameter))))
-                .append(getSetFieldValue(0, "rate", RateInfo.getRateUIFrmt(_parameter, rateInfos[1],
-                                getTypeName4SysConf(_parameter))))
+            js.append(getSetFieldValue(0, "rateCurrencyData",  getRateUIFrmt(_parameter, rateInfos[1])))
+                .append(getSetFieldValue(0, "rate", getRateUIFrmt(_parameter, rateInfos[1])))
                 .append(getSetFieldValue(0, "rate" + RateUI.INVERTEDSUFFIX,
                                 Boolean.toString(rateInfos[1].isInvert())))
+                .append(getSetFieldValue(0, "rateCurrencyId_eFapsPrevious",
+                                _parameter.getParameterValue("rateCurrencyId")))
                 .append(addAdditionalFields4CurrencyUpdate(_parameter, calculators));
 
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
@@ -913,7 +920,7 @@ public abstract class AbstractDocumentSum_Base
                                    final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final Instance baseCurrInst =Currency.getBaseCurrency();
+        final Instance baseCurrInst = Currency.getBaseCurrency();
 
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _createdDoc);
         final Object[] rateObj = getRateObject(_parameter);
@@ -1024,7 +1031,7 @@ public abstract class AbstractDocumentSum_Base
                                    final EditedDoc _editDoc)
         throws EFapsException
     {
-        final Instance baseCurrInst =Currency.getBaseCurrency();
+        final Instance baseCurrInst = Currency.getBaseCurrency();
         final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Object[] rateObj = getRateObject(_parameter);

@@ -47,7 +47,7 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="getSalesPersonFieldValue" 
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="getSalesPersonFieldValue"
                 name="Sales_IncomingRetentionCertificateForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
@@ -161,7 +161,7 @@
             <property name="ModeView">NONE</property>
             <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="rateCurrencyFieldValueUI"
                 name="Sales_IncomingRetentionCertificateForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE"/>
-            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="updateFields4RateCurrency" 
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate" method="updateFields4RateCurrency"
                 name="Sales_IncomingRetentionCertificateForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="rateCurrencyData">
@@ -171,6 +171,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingRetentionCertificateForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate"
+                method="rateFieldValueUI"
+                name="Sales_IncomingRetentionForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="crossTotal">
             <property name="ModeEdit">EDITABLE</property>
@@ -231,6 +237,11 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingRetentionCertificate"
+                method="rateFieldValueUI"
+                name="Sales_IncomingRetentionForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">NONE</property>

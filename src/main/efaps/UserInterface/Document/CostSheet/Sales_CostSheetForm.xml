@@ -16,11 +16,6 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd"
@@ -28,7 +23,6 @@
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>96d1dbaf-78e3-4fc9-b9b0-341aad8668ea</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
 
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -185,6 +179,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_CostSheetForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.CostSheet"
+                method="rateFieldValueUI"
+                name="Sales_CostSheetForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="positionTable" character="Target">
             <property name="ModeCreate">EDITABLE</property>
@@ -247,6 +247,10 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+            <trigger program="org.efaps.esjp.sales.document.CostSheet"
+                method="rateFieldValueUI"
+                name="Sales_CostSheetForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rateNetTotal4Read">
             <property name="ModeEdit">READONLY</property>

@@ -14,17 +14,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>49068d55-947e-4f45-9024-dd357ad2b331</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_IncomingExchangeForm</name>
@@ -209,6 +203,12 @@
             <property name="ModeCreate">READONLY</property>
             <property name="Label">Sales_IncomingExchangeForm.rateCurrencyData.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
+                method="rateFieldValueUI"
+                name="Sales_IncomingExchangeForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" >
+                <property name="UI">true</property>
+            </trigger>
         </field>
         <field name="rateCrossTotal">
             <property name="ModeEdit">NONE</property>
@@ -251,6 +251,11 @@
             <property name="Attribute">Rate</property>
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeEdit">HIDDEN</property>
+             <property name="ModeView">NONE</property>
+            <trigger program="org.efaps.esjp.sales.document.IncomingExchange"
+                method="rateFieldValueUI"
+                name="Sales_IncomingExchangeForm.rate.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="rateCrossTotal4Read">
             <property name="ModeEdit">READONLY</property>
