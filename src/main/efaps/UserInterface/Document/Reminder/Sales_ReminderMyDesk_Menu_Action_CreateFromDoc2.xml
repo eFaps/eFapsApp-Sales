@@ -41,7 +41,7 @@
                 <property name="ConnectForeignField">invoices</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Reminder" method="validate" >
-                <property name="Validation">NAME</property>
+                <property name="Validation">SERIAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -80,7 +80,7 @@
                 <property name="ConnectForeignField01">project</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Reminder" method="validate" >
-                <property name="Validation">NAME</property>
+                <property name="Validation">SERIAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>

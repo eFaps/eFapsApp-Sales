@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -16,42 +15,42 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>8030f398-583c-4076-9eb6-7b2c291c8910</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ReminderPositionTable</name>
-        <!-- fields -->
-        <field name="quantity">
+         <field name="quantity">
             <property name="Attribute">Quantity</property>
             <property name="Label">Sales_ReminderPosition/Quantity.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="updateFields4Quantity"
-                name="Sales_ReminderPositionTable.product.UI_FIELD_AUTOCOMPLETE"
+                name="Sales_ReminderPositionTable.product.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="product">
+            <property name="SelectAlternateOID">linkto[Product].oid</property>
             <property name="Select">linkto[Product].attribute[Name]</property>
+            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
             <property name="Label">Sales_ReminderPosition/Product.Label</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="autoComplete4Product"
                 name="Sales_ReminderPositionTable.product.UI_FIELD_AUTOCOMPLETE"
-                event="UI_FIELD_AUTOCOMPLETE" />
+                event="UI_FIELD_AUTOCOMPLETE" >
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.Reminder.AutoCompleteProperties4Products</property>
+                <property name="ExtraParameter">contact</property>
+            </trigger>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="updateFields4Product"
                 name="Sales_ReminderPositionTable.product.UI_FIELD_UPDATE"
@@ -60,49 +59,72 @@
         <field name="productDesc">
             <property name="Columns">90</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">ProductDesc</property>
-            <property name="Label">Sales_ReminderPosition/ProductDesc.Label</property>
+            <property name="Label">Sales_ReminderPositionTable.productDesc.Label</property>
             <property name="Width">10</property>
         </field>
-        <field name="uoM">
+       <field name="uoM">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
+            <property name="ModePrint">NONE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">UoM</property>
             <property name="Label">Sales_ReminderPosition/UoM.Label</property>
+            <trigger program="org.efaps.esjp.sales.document.Reminder"
+                method="updateFields4Uom" name="Sales_ReminderPositionTable.uom.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="uom4View">
-            <property name="Width">1</property>
             <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
             <property name="Select">linkto[UoM].attribute[Name]</property>
-            <property name="Label">Sales_ReceiptPosition/UoM.Label</property>
+            <property name="Label">Sales_ReminderPosition/UoM.Label</property>
         </field>
         <field name="netUnitPrice">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">NetUnitPrice</property>
             <property name="Label">Sales_ReminderPosition/NetUnitPrice.Label</property>
-             <trigger program="org.efaps.esjp.sales.document.Reminder"
+            <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="updateFields4NetUnitPrice"
                 name="Sales_ReminderPositionTable.netUnitPrice.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="discount">
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Discount</property>
             <property name="Label">Sales_ReminderPosition/Discount.Label</property>
+            <property name="Align">right</property>
             <trigger program="org.efaps.esjp.sales.document.Reminder"
                 method="updateFields4Discount"
-                name="Sales_ReminderPositionTable.product.UI_FIELD_UPDATE"
+                name="Sales_ReminderPositionTable.discount.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
         <field name="discountNetUnitPrice">
-           <property name="ModeCreate">READONLY</property>
-           <property name="Attribute">DiscountNetUnitPrice</property>
-           <property name="Label">Sales_ReminderPosition/DiscountNetUnitPrice.Label</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="Attribute">DiscountNetUnitPrice</property>
+            <property name="Label">Sales_ReminderPosition/DiscountNetUnitPrice.Label</property>
+            <property name="Align">right</property>
         </field>
         <field name="netPrice">
             <property name="ModeCreate">READONLY</property>
             <property name="Attribute">NetPrice</property>
             <property name="Label">Sales_ReminderPosition/NetPrice.Label</property>
+            <property name="Align">right</property>
+        </field>
+        <field name="crossPrice">
+            <property name="ModeCreate">READONLY</property>
+            <property name="ModeEdit">READONLY</property>
+            <property name="Attribute">CrossPrice</property>
+            <property name="Label">Sales_ReminderPosition/CrossPrice.Label</property>
+            <property name="Align">right</property>
+            <trigger program="org.efaps.esjp.sales.document.Reminder"
+                method="updateFields4CrossPrice"
+                name="Sales_ReminderPositionTable.crossPrice.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
     </definition>
 </ui-table>
