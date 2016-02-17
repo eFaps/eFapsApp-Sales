@@ -356,14 +356,18 @@ public abstract class SalesReport4Account_Base
                 }
             }
 
-            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, dateFrom);
+            _queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date,
+                            dateFrom.withTimeAtStartOfDay().minusMinutes(1));
             _queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, dateTo.plusDays(1)
                             .withTimeAtStartOfDay());
 
             final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
-            final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
-
+            final AttributeQuery attrQuery;
+            if (this.filteredReport.getReportKey().equals(ReportKey.IN)) {
+                attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink);
+            } else {
+                attrQuery = attrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
+            }
             _queryBldr.addWhereAttrNotInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
         }
 

@@ -151,22 +151,6 @@
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
         </field>
-        <field name="action4View">
-            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionReminder2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
-            <property name="Select">linkfrom[Sales_ActionDefinitionReminder2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
-            <property name="HRef">TREE</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_ActionDefinitionReminder.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
-                name="Sales_IncomingReminderForm.action4View.UI_ACCESSCHECK"
-                program="org.efaps.esjp.sales.document.Reminder">
-                <property name="Access">!NONE</property>
-            </trigger>
-        </field>
         <field name="headingClient" character="Heading">
             <property name="Level">2</property>
             <property name="Label">Sales_ReminderForm.headingClient.Heading</property>
@@ -446,21 +430,6 @@
                 name="Sales_ReminderForm.rateCrossTotal4Read.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK"/>
         </field>
-        <field name="deliveryNotes">
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_ReminderForm.deliveryNote.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_ReminderForm.deliveryNotes.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Reminder.CreateFromDeliveryNote</property>
-           </trigger>
-        </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
             <property name="ModeCreate">HIDDEN</property>
@@ -616,22 +585,6 @@
             <property name="Columns">15</property>
             <property name="ModeEdit">NONE</property>
             <property name="Required">true</property>
-        </field>
-         <field name="action4View">
-            <property name="SelectAlternateOID">linkfrom[Sales_ActionDefinitionReminder2Document#ToLinkAbstract].linkto[FromLinkAbstract].oid</property>
-            <property name="Select">linkfrom[Sales_ActionDefinitionReminder2Document#ToLinkAbstract].linkto[FromLinkAbstract].attribute[Name]</property>
-            <property name="HRef">TREE</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">READONLY</property>
-            <property name="ModeView">READONLY</property>
-            <property name="Label">Sales_ActionDefinitionReminder.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger event="UI_ACCESSCHECK" method="accessCheck4Action"
-                name="Sales_IncomingReminderForm.action4View.UI_ACCESSCHECK"
-                program="org.efaps.esjp.sales.document.Reminder">
-                <property name="Access">!NONE</property>
-            </trigger>
         </field>
         <field name="headingProject" character="Heading">
             <property name="Level">2</property>
@@ -957,21 +910,6 @@
                 method="accessCheck4Rate"
                 name="Sales_ReminderForm.rateCrossTotal4Read.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK"/>
-        </field>
-        <field name="deliveryNotes">
-            <property name="ModeCreate">READONLY</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_ReminderForm.deliveryNote.Label</property>
-            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
-                method="configCheck"
-                name="Sales_ReminderForm.deliveryNotes.UI_ACCESSCHECK"
-                event="UI_ACCESSCHECK">
-                <!-- Sales-Configuration -->
-                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
-                <property name="Attribute">org.efaps.sales.Reminder.CreateFromDeliveryNote</property>
-           </trigger>
         </field>
         <field name="javaScript">
             <property name="ModePrint">NONE</property>
