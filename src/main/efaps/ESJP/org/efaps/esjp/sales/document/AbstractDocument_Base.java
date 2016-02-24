@@ -2376,7 +2376,7 @@ public abstract class AbstractDocument_Base
                 }
             }
         };
-        return field.dropDownFieldValue(_parameter);
+        return field.getOptionListFieldValue(_parameter);
     }
 
     /**
