@@ -293,6 +293,18 @@
                 name="Sales_ProductionCostingForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
         </field>
+        <field name="executeCalculator" character="Command">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="CmdRenderButton">false</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.ProductionCosting"
+                method="executeCalculatorOnScript"
+                name="Sales_ProductionCosting.executeCalculator.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
     </definition>
     <definition>
         <version-expression>(version==latest)</version-expression>
@@ -611,6 +623,17 @@
                 name="Sales_ProductionCostingForm.javaScript.UI_FIELD_VALUE"
                 program="org.efaps.esjp.sales.document.ProductionCosting"/>
         </field>
-
+        <field name="executeCalculator" character="Command">
+            <property name="ModePrint">NONE</property>
+            <property name="ModeCreate">READONLY</property>
+            <property name="CmdRenderButton">false</property>
+            <property name="HideLabel">true</property>
+            <property name="ModeView">NONE</property>
+            <property name="ModeEdit">READONLY</property>
+            <trigger program="org.efaps.esjp.sales.document.ProductionCosting"
+                method="executeCalculatorOnScript"
+                name="Sales_ProductionCosting.executeCalculator.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
+        </field>
     </definition>
 </ui-form>

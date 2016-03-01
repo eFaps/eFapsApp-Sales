@@ -17,11 +17,15 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
@@ -32,6 +36,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.sales.Calculator;
 import org.efaps.util.EFapsException;
 
 /**
@@ -65,8 +70,11 @@ public abstract class ProductionCosting_Base
     }
 
     /**
+     * Connect2 production report.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _createdDoc   created doc
+     * @param _deriveds the deriveds
      * @throws EFapsException on error
      */
     protected void connect2ProductionReport(final Parameter _parameter,
@@ -124,6 +132,27 @@ public abstract class ProductionCosting_Base
         updatePositions(_parameter, editDoc);
         return new Return();
     }
+
+    @Override
+    public Return executeCalculatorOnScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
+        final List<Calculator> calcList = analyseTable(_parameter, null);
+        int i = 0;
+        for (final Calculator cal : calcList) {
+            final Map<String, Object> map = new HashMap<String, Object>();
+            _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
+            add2Map4UpdateField(_parameter, map, calcList, cal);
+            list.add(map);
+            i++;
+        }
+        retVal.put(ReturnValues.VALUES, list);
+        return retVal;
+    }
+
+
 
     @Override
     public Return validate(final Parameter _parameter)
