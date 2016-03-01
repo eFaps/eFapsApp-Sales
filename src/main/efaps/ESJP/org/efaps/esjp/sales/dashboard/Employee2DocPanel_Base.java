@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,120 +135,126 @@ public abstract class Employee2DocPanel_Base
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
-        final Parameter parameter = new Parameter();
-        final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(getMonth());
-        final DateTime end = new DateTime().withTimeAtStartOfDay().plusDays(1);
+        CharSequence ret;
+        if (isCached()) {
+            ret = getFromCache();
+        } else {
+            final Parameter parameter = new Parameter();
+            final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(getMonth());
+            final DateTime end = new DateTime().withTimeAtStartOfDay().plusDays(1);
 
-        final Map<Instance, BigDecimal> values = new HashMap<>();
-        final Map<Instance, String> employees = new HashMap<>();
+            final Map<Instance, BigDecimal> values = new HashMap<>();
+            final Map<Instance, String> employees = new HashMap<>();
 
-        final QueryBuilder queryBldr = AbstractCommon.getQueryBldrFromProperties(getConfig());
+            final QueryBuilder queryBldr = AbstractCommon.getQueryBldrFromProperties(getConfig());
 
-        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
-        queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        // HumanResource_EmployeeMsgPhrase as default
-        final String msgPhraseStr = Sales.EMPLOYEE2DOCREPORT.get().getProperty("EmployeeMsgPhrase",
-                        "f543ca6d-29fb-4f1a-8747-0057b9a08404");
-        final SelectBuilder selEmpl = SelectBuilder.get()
-                        .linkfrom(CIHumanResource.Employee2DocumentAbstract.ToAbstractLink)
-                        .linkto(CIHumanResource.Employee2DocumentAbstract.FromAbstractLink);
-        final SelectBuilder selEmplInst = new SelectBuilder(selEmpl).instance();
-        final MsgPhrase msgPhrase = UUIDUtil.isUUID(msgPhraseStr) ? MsgPhrase.get(UUID.fromString(msgPhraseStr))
-                        : MsgPhrase.get(msgPhraseStr);
-        multi.addMsgPhrase(selEmpl, msgPhrase);
-        multi.addSelect(selEmplInst);
-        multi.addAttribute(CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal,
-                        CISales.DocumentSumAbstract.Date);
-        multi.execute();
-        while (multi.next()) {
-            final DateTime date = multi.getAttribute(CISales.DocumentSumAbstract.Date);
-            final Instance emplInst = multi.getSelect(selEmplInst);
+            queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
+            queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            // HumanResource_EmployeeMsgPhrase as default
+            final String msgPhraseStr = Sales.EMPLOYEE2DOCREPORT.get().getProperty("EmployeeMsgPhrase",
+                            "f543ca6d-29fb-4f1a-8747-0057b9a08404");
+            final SelectBuilder selEmpl = SelectBuilder.get()
+                            .linkfrom(CIHumanResource.Employee2DocumentAbstract.ToAbstractLink)
+                            .linkto(CIHumanResource.Employee2DocumentAbstract.FromAbstractLink);
+            final SelectBuilder selEmplInst = new SelectBuilder(selEmpl).instance();
+            final MsgPhrase msgPhrase = UUIDUtil.isUUID(msgPhraseStr) ? MsgPhrase.get(UUID.fromString(msgPhraseStr))
+                            : MsgPhrase.get(msgPhraseStr);
+            multi.addMsgPhrase(selEmpl, msgPhrase);
+            multi.addSelect(selEmplInst);
+            multi.addAttribute(CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.Date);
+            multi.execute();
+            while (multi.next()) {
+                final DateTime date = multi.getAttribute(CISales.DocumentSumAbstract.Date);
+                final Instance emplInst = multi.getSelect(selEmplInst);
 
-            final RateInfo rateInfo = new Currency().evaluateRateInfo(parameter, date, getCurrencyInst());
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(parameter, date, getCurrencyInst());
 
-            BigDecimal currentValue = multi.<BigDecimal>getAttribute(getTotal().equals("NET")
-                            ? CISales.DocumentSumAbstract.NetTotal : CISales.DocumentSumAbstract.CrossTotal);
+                BigDecimal currentValue = multi.<BigDecimal>getAttribute(getTotal().equals("NET")
+                                ? CISales.DocumentSumAbstract.NetTotal : CISales.DocumentSumAbstract.CrossTotal);
 
-            currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-            BigDecimal val;
-            if (values.containsKey(emplInst)) {
-                val = values.get(emplInst);
-            } else {
-                val = BigDecimal.ZERO;
-            }
-            values.put(emplInst, val.add(currentValue));
-            if (!employees.containsKey(emplInst)) {
-                if (emplInst == null) {
-                    employees.put(emplInst, ERP.COMPANYNAME.get());
+                BigDecimal val;
+                if (values.containsKey(emplInst)) {
+                    val = values.get(emplInst);
                 } else {
-                    employees.put(emplInst, multi.getMsgPhrase(selEmpl, msgPhrase));
+                    val = BigDecimal.ZERO;
+                }
+                values.put(emplInst, val.add(currentValue));
+                if (!employees.containsKey(emplInst)) {
+                    if (emplInst == null) {
+                        employees.put(emplInst, ERP.COMPANYNAME.get());
+                    } else {
+                        employees.put(emplInst, multi.getMsgPhrase(selEmpl, msgPhrase));
+                    }
                 }
             }
-        }
-        final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues = new Comparator<
-                        Map.Entry<Instance, BigDecimal>>()
-        {
-            @Override
-            public int compare(final Map.Entry<Instance, BigDecimal> _left,
-                               final Map.Entry<Instance, BigDecimal> _right)
-            {
-                return _right.getValue().compareTo(_left.getValue());
-            }
-        };
-        // create a list of map entries
-        final List<Map.Entry<Instance, BigDecimal>> sorted = new ArrayList<>();
-
-        // add all candy bars
-        sorted.addAll(values.entrySet());
-        Collections.sort(sorted, byMapValues);
-
-        int y = getCount();
-        final BarsChart chart = new BarsChart()
+            final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues = new Comparator<
+                            Map.Entry<Instance, BigDecimal>>()
             {
                 @Override
-                protected void configurePlot(final org.efaps.esjp.ui.html.dojo.charting.Plot _plot)
+                public int compare(final Map.Entry<Instance, BigDecimal> _left,
+                                   final Map.Entry<Instance, BigDecimal> _right)
                 {
-                    super.configurePlot(_plot);
-                    _plot.addConfig("labelFunc", "function labelFunc(value, fixed, precision) {\n"
-                                    + "    return value.label;\n" + "}");
-                    _plot.addConfig("labels", true);
-                };
-            }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
+                    return _right.getValue().compareTo(_left.getValue());
+                }
+            };
+            // create a list of map entries
+            final List<Map.Entry<Instance, BigDecimal>> sorted = new ArrayList<>();
 
-        chart.setTitle(getTitle());
-        chart.setOrientation(Orientation.CHART_ONLY);
+            // add all candy bars
+            sorted.addAll(values.entrySet());
+            Collections.sort(sorted, byMapValues);
 
-        final Serie<Data> serie = new Serie<Data>();
-        chart.addSerie(serie);
-        boolean added = false;
-        for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
-            final Data dataTmp = new Data().setSimple(false);
-            serie.addData(dataTmp);
-            dataTmp.setXValue(y);
-            dataTmp.setYValue(entry.getValue());
-            dataTmp.addConfig("label", "\"" + StringEscapeUtils.escapeEcmaScript(employees.get(entry.getKey())) + "\"");
-            dataTmp.setTooltip(employees.get(entry.getKey()) + " - "
-                            + NumberFormatter.get().getTwoDigitsFormatter().format(entry.getValue()));
-            y--;
-            if (y < 1) {
+            int y = getCount();
+            final BarsChart chart = new BarsChart()
+                {
+                    @Override
+                    protected void configurePlot(final org.efaps.esjp.ui.html.dojo.charting.Plot _plot)
+                    {
+                        super.configurePlot(_plot);
+                        _plot.addConfig("labelFunc", "function labelFunc(value, fixed, precision) {\n"
+                                        + "    return value.label;\n" + "}");
+                        _plot.addConfig("labels", true);
+                    };
+                }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
+
+            chart.setTitle(getTitle());
+            chart.setOrientation(Orientation.CHART_ONLY);
+
+            final Serie<Data> serie = new Serie<Data>();
+            chart.addSerie(serie);
+            boolean added = false;
+            for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
+                final Data dataTmp = new Data().setSimple(false);
+                serie.addData(dataTmp);
+                dataTmp.setXValue(y);
+                dataTmp.setYValue(entry.getValue());
+                dataTmp.addConfig("label", "\""
+                                + StringEscapeUtils.escapeEcmaScript(employees.get(entry.getKey())) + "\"");
+                dataTmp.setTooltip(employees.get(entry.getKey()) + " - "
+                                + NumberFormatter.get().getTwoDigitsFormatter().format(entry.getValue()));
+                y--;
+                if (y < 1) {
+                    final Data dataTmp2 = new Data().setSimple(false);
+                    serie.addData(dataTmp2);
+                    dataTmp2.setXValue(0);
+                    dataTmp2.setYValue(0);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
                 final Data dataTmp2 = new Data().setSimple(false);
                 serie.addData(dataTmp2);
                 dataTmp2.setXValue(0);
                 dataTmp2.setYValue(0);
-                added = true;
-                break;
             }
+            ret = chart.getHtmlSnipplet();
+            cache(ret);
         }
-        if (!added) {
-            final Data dataTmp2 = new Data().setSimple(false);
-            serie.addData(dataTmp2);
-            dataTmp2.setXValue(0);
-            dataTmp2.setYValue(0);
-        }
-        ret.append(chart.getHtmlSnipplet());
         return ret;
     }
 

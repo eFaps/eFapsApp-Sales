@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -159,126 +159,133 @@ public abstract class SalesPanel_Base
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
-        final Parameter parameter = new Parameter();
-        final boolean isDateStart = isDateGroupStart();
-        final DateTime start;
-        switch (getDateGroup()) {
-            case YEAR:
-                start = isDateStart ? new DateTime().minusYears(getQuantity()).withDayOfYear(1)
-                                : new DateTime().minusYears(getQuantity());
-                break;
-            case HALFYEAR:
-                start = new DateTime().withFieldAdded(JodaTimeUtils.halfYears(), -getQuantity());
-                break;
-            case QUARTER:
-                start = new DateTime().withFieldAdded(JodaTimeUtils.quarters(), -getQuantity());
-                break;
-            case MONTH:
-                start = isDateStart ? new DateTime().minusMonths(getQuantity()).withDayOfMonth(1)
-                                : new DateTime().minusMonths(getQuantity());
-                break;
-            case WEEK:
-                start = isDateStart ? new DateTime().minusWeeks(getQuantity()).withDayOfWeek(1)
-                                : new DateTime().minusWeeks(getQuantity());
-                break;
-            case DAY:
-            default:
-                start = new DateTime().minusDays(getQuantity());
-                break;
-        }
-        final DateTime end = new DateTime().plusDays(1);
+        CharSequence ret;
+        if (isCached()) {
+            ret = getFromCache();
+        } else {
+            final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate();
+            final Parameter parameter = new Parameter();
+            final boolean isDateStart = isDateGroupStart();
+            final DateTime start;
+            switch (getDateGroup()) {
+                case YEAR:
+                    start = isDateStart ? new DateTime().minusYears(getQuantity()).withDayOfYear(1)
+                                    : new DateTime().minusYears(getQuantity());
+                    break;
+                case HALFYEAR:
+                    start = new DateTime().withFieldAdded(JodaTimeUtils.halfYears(), -getQuantity());
+                    break;
+                case QUARTER:
+                    start = new DateTime().withFieldAdded(JodaTimeUtils.quarters(), -getQuantity());
+                    break;
+                case MONTH:
+                    start = isDateStart ? new DateTime().minusMonths(getQuantity()).withDayOfMonth(1)
+                                    : new DateTime().minusMonths(getQuantity());
+                    break;
+                case WEEK:
+                    start = isDateStart ? new DateTime().minusWeeks(getQuantity()).withDayOfWeek(1)
+                                    : new DateTime().minusWeeks(getQuantity());
+                    break;
+                case DAY:
+                default:
+                    start = new DateTime().minusDays(getQuantity());
+                    break;
+            }
+            final DateTime end = new DateTime().plusDays(1);
 
-        final ValueList values = ds.getValueList(parameter, start, end, getDateGroup(),
-                        getConfig()).groupBy("partial");
-        final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
-        chain.addComparator(new Comparator<Map<String, Object>>()
-        {
-            @Override
-            public int compare(final Map<String, Object> _o1,
-                               final Map<String, Object> _o2)
+            final ValueList values = ds.getValueList(parameter, start, end, getDateGroup(),
+                            getConfig()).groupBy("partial");
+            final ComparatorChain<Map<String, Object>> chain = new ComparatorChain<>();
+            chain.addComparator(new Comparator<Map<String, Object>>()
             {
-                return String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial")));
+                @Override
+                public int compare(final Map<String, Object> _o1,
+                                   final Map<String, Object> _o2)
+                {
+                    return String.valueOf(_o1.get("partial")).compareTo(String.valueOf(_o2.get("partial")));
+                }
+            });
+            Collections.sort(values, chain);
+
+            int x = 0;
+            final Map<String, Integer> xmap = new LinkedHashMap<>();
+            final ColumnsChart chart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
+                            .setGap(5).setWidth(getWidth()).setHeight(getHeight());
+            final String title = getTitle();
+            if (title != null && !title.isEmpty()) {
+                chart.setTitle(getTitle());
             }
-        });
-        Collections.sort(values, chain);
+            chart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
 
-        int x = 0;
-        final Map<String, Integer> xmap = new LinkedHashMap<>();
-        final ColumnsChart chart = new ColumnsChart().setPlotLayout(PlotLayout.CLUSTERED)
-                        .setGap(5).setWidth(getWidth()).setHeight(getHeight());
-        final String title = getTitle();
-        if (title != null && !title.isEmpty()) {
-            chart.setTitle(getTitle());
-        }
-        chart.setOrientation(Orientation.VERTICAL_CHART_LEGEND);
+            final Axis xAxis = new Axis().setName("x");
+            chart.addAxis(xAxis);
 
-        final Axis xAxis = new Axis().setName("x");
-        chart.addAxis(xAxis);
-
-        final Map<String, Serie<Data>> series = new HashMap<>();
-        final Serie<Data> baseSerie = new Serie<Data>();
-        baseSerie.setName(DBProperties.getProperty("org.efaps.esjp.sales.report.DocumentSumReport.BASE") + " "
-                        + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
-        series.put("BASE", baseSerie);
-        for (final CurrencyInst curr : CurrencyInst.getAvailable()) {
-            final Serie<Data> serie = new Serie<Data>();
-            serie.setName(curr.getName());
-            series.put(curr.getISOCode(), serie);
-        }
-
-        for (final Map<String, Object> map : values) {
-            if (!xmap.containsKey(map.get("partial"))) {
-                xmap.put((String) map.get("partial"), x++);
+            final Map<String, Serie<Data>> series = new HashMap<>();
+            final Serie<Data> baseSerie = new Serie<Data>();
+            baseSerie.setName(DBProperties.getProperty("org.efaps.esjp.sales.report.DocumentSumReport.BASE") + " "
+                            + CurrencyInst.get(Currency.getBaseCurrency()).getSymbol());
+            series.put("BASE", baseSerie);
+            for (final CurrencyInst curr : CurrencyInst.getAvailable()) {
+                final Serie<Data> serie = new Serie<Data>();
+                serie.setName(curr.getName());
+                series.put(curr.getISOCode(), serie);
             }
-            for (final Entry<String, Object> entry : map.entrySet()) {
-                final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
-                final Data dataTmp = new Data().setSimple(false);
-                final Serie<Data> serie = series.get(entry.getKey());
-                if (serie != null && showSerie(entry.getKey())) {
-                    serie.addData(dataTmp);
-                    final BigDecimal y = (BigDecimal) entry.getValue();
-                    // for the case that negaitve numbers are given
-                    if (y.compareTo(BigDecimal.ZERO) < 0 && chart.getAxis().size() < 2) {
-                        chart.addAxis(new Axis().setName("y").setVertical(true));
+
+            for (final Map<String, Object> map : values) {
+                if (!xmap.containsKey(map.get("partial"))) {
+                    xmap.put((String) map.get("partial"), x++);
+                }
+                for (final Entry<String, Object> entry : map.entrySet()) {
+                    final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
+                    final Data dataTmp = new Data().setSimple(false);
+                    final Serie<Data> serie = series.get(entry.getKey());
+                    if (serie != null && showSerie(entry.getKey())) {
+                        serie.addData(dataTmp);
+                        final BigDecimal y = (BigDecimal) entry.getValue();
+                        // for the case that negaitve numbers are given
+                        if (y.compareTo(BigDecimal.ZERO) < 0 && chart.getAxis().size() < 2) {
+                            chart.addAxis(new Axis().setName("y").setVertical(true));
+                        }
+                        dataTmp.setXValue(xmap.get(map.get("partial")));
+                        dataTmp.setYValue(y);
+                        dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + map.get("partial"));
                     }
-                    dataTmp.setXValue(xmap.get(map.get("partial")));
-                    dataTmp.setYValue(y);
-                    dataTmp.setTooltip(fmtr.format(y) + " " + serie.getName() + " - " + map.get("partial"));
                 }
             }
-        }
-        final List<Map<String, Object>> labels = new ArrayList<>();
-        for (final Entry<String, Integer> entry : xmap.entrySet()) {
-            final Map<String, Object> map = new HashMap<>();
-            map.put("value", entry.getValue());
-            map.put("text", Util.wrap4String(entry.getKey()));
-            labels.add(map);
-        }
+            final List<Map<String, Object>> labels = new ArrayList<>();
+            for (final Entry<String, Integer> entry : xmap.entrySet()) {
+                final Map<String, Object> map = new HashMap<>();
+                map.put("value", entry.getValue());
+                map.put("text", Util.wrap4String(entry.getKey()));
+                labels.add(map);
+            }
 
-        int count = 0;
-        for (final Serie<Data> serie : series.values()) {
-            if (!serie.getData().isEmpty()) {
-                count++;
+            int count = 0;
+            for (final Serie<Data> serie : series.values()) {
+                if (!serie.getData().isEmpty()) {
+                    count++;
+                }
             }
-        }
 
-        for (final Entry<String, Serie<Data>> entry : series.entrySet()) {
-            // only one currency and base is used, do not show base
-            if (count == 2) {
-                if (!"BASE".equals(entry.getKey()) && !entry.getValue().getData().isEmpty()) {
-                    chart.addSerie(entry.getValue());
-                }
-            } else {
-                if (!entry.getValue().getData().isEmpty()) {
-                    chart.addSerie(entry.getValue());
+            for (final Entry<String, Serie<Data>> entry : series.entrySet()) {
+                // only one currency and base is used, do not show base
+                if (count == 2) {
+                    if (!"BASE".equals(entry.getKey()) && !entry.getValue().getData().isEmpty()) {
+                        chart.addSerie(entry.getValue());
+                    }
+                } else {
+                    if (!entry.getValue().getData().isEmpty()) {
+                        chart.addSerie(entry.getValue());
+                    }
                 }
             }
+            if (!labels.isEmpty()) {
+                xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
+            }
+            ret = chart.getHtmlSnipplet();
+            cache(ret);
         }
-        if (!labels.isEmpty()) {
-            xAxis.setLabels(Util.mapCollectionToObjectArray(labels));
-        }
-        return chart.getHtmlSnipplet();
+        return ret;
     }
 
     @Override

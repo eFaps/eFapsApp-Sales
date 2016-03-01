@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,110 +131,117 @@ public abstract class Sales4ContactPanel_Base
     public CharSequence getHtmlSnipplet()
         throws EFapsException
     {
-        final StringBuilder ret = new StringBuilder();
-        final Parameter parameter = new Parameter();
-        final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(getMonth());
-        final DateTime end = new DateTime().withTimeAtStartOfDay().plusDays(1);
+        CharSequence ret;
+        if (isCached()) {
+            ret = getFromCache();
+        } else {
+            final Parameter parameter = new Parameter();
+            final DateTime start = new DateTime().withTimeAtStartOfDay().minusMonths(getMonth());
+            final DateTime end = new DateTime().withTimeAtStartOfDay().plusDays(1);
 
-        final Map<Instance, BigDecimal> values = new HashMap<>();
-        final Map<Instance, String> contacts = new HashMap<>();
+            final Map<Instance, BigDecimal> values = new HashMap<>();
+            final Map<Instance, String> contacts = new HashMap<>();
 
-        final QueryBuilder queryBldr = AbstractCommon.getQueryBldrFromProperties(getConfig());
+            final QueryBuilder queryBldr = AbstractCommon.getQueryBldrFromProperties(getConfig());
 
-        queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
-        queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact).instance();
-        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
-                        .attribute(CIContacts.Contact.Name);
-        multi.addSelect(selContactInst, selContactName);
-        multi.addAttribute(CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal,
-                        CISales.DocumentSumAbstract.Date);
-        multi.execute();
-        while (multi.next()) {
-            final DateTime date = multi.getAttribute(CISales.DocumentSumAbstract.Date);
-            final Instance contactInst = multi.getSelect(selContactInst);
+            queryBldr.addWhereAttrGreaterValue(CISales.DocumentSumAbstract.Date, start);
+            queryBldr.addWhereAttrLessValue(CISales.DocumentSumAbstract.Date, end);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                            .instance();
+            final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                            .attribute(CIContacts.Contact.Name);
+            multi.addSelect(selContactInst, selContactName);
+            multi.addAttribute(CISales.DocumentSumAbstract.NetTotal, CISales.DocumentSumAbstract.CrossTotal,
+                            CISales.DocumentSumAbstract.Date);
+            multi.execute();
+            while (multi.next()) {
+                final DateTime date = multi.getAttribute(CISales.DocumentSumAbstract.Date);
+                final Instance contactInst = multi.getSelect(selContactInst);
 
-            final RateInfo rateInfo = new Currency().evaluateRateInfo(parameter, date, getCurrencyInst());
+                final RateInfo rateInfo = new Currency().evaluateRateInfo(parameter, date, getCurrencyInst());
 
-            BigDecimal currentValue = multi.<BigDecimal>getAttribute(getTotal().equals("NET")
-                            ? CISales.DocumentSumAbstract.NetTotal
-                                            :  CISales.DocumentSumAbstract.CrossTotal);
+                BigDecimal currentValue = multi.<BigDecimal>getAttribute(getTotal().equals("NET")
+                                ? CISales.DocumentSumAbstract.NetTotal
+                                                :  CISales.DocumentSumAbstract.CrossTotal);
 
-            currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
+                currentValue = currentValue.multiply(rateInfo.getRate()).setScale(2, BigDecimal.ROUND_HALF_UP);
 
-            BigDecimal val;
-            if (values.containsKey(contactInst)) {
-                val = values.get(contactInst);
-            } else {
-                val = BigDecimal.ZERO;
-            }
-            values.put(contactInst, val.add(currentValue));
-            if (!contacts.containsKey(contactInst)) {
-                contacts.put(contactInst,  multi.<String>getSelect(selContactName));
-            }
-        }
-        final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues
-            = new Comparator<Map.Entry<Instance, BigDecimal>>()
-            {
-                @Override
-                public int compare(final Map.Entry<Instance, BigDecimal> _left,
-                                   final Map.Entry<Instance, BigDecimal> _right)
-                {
-                    return _right.getValue().compareTo(_left.getValue());
+                BigDecimal val;
+                if (values.containsKey(contactInst)) {
+                    val = values.get(contactInst);
+                } else {
+                    val = BigDecimal.ZERO;
                 }
-            };
-        // create a list of map entries
-        final List<Map.Entry<Instance, BigDecimal>> sorted = new ArrayList<>();
-
-        // add all candy bars
-        sorted.addAll(values.entrySet());
-        Collections.sort(sorted, byMapValues);
-
-        int y = getCount();
-        final BarsChart chart = new BarsChart()
-            {
-                @Override
-                protected void configurePlot(final org.efaps.esjp.ui.html.dojo.charting.Plot _plot)
+                values.put(contactInst, val.add(currentValue));
+                if (!contacts.containsKey(contactInst)) {
+                    contacts.put(contactInst,  multi.<String>getSelect(selContactName));
+                }
+            }
+            final Comparator<Map.Entry<Instance, BigDecimal>> byMapValues
+                = new Comparator<Map.Entry<Instance, BigDecimal>>()
                 {
-                    super.configurePlot(_plot);
-                    _plot.addConfig("labelFunc", "function labelFunc(value, fixed, precision) {\n"
-                                    + "    return value.label;\n"
-                                    + "}");
-                    _plot.addConfig("labels", true);
+                    @Override
+                    public int compare(final Map.Entry<Instance, BigDecimal> _left,
+                                       final Map.Entry<Instance, BigDecimal> _right)
+                    {
+                        return _right.getValue().compareTo(_left.getValue());
+                    }
                 };
-            }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
+            // create a list of map entries
+            final List<Map.Entry<Instance, BigDecimal>> sorted = new ArrayList<>();
 
-        chart.setTitle(getTitle());
-        chart.setOrientation(Orientation.CHART_ONLY);
+            // add all candy bars
+            sorted.addAll(values.entrySet());
+            Collections.sort(sorted, byMapValues);
 
-        final Serie<Data> serie = new Serie<Data>();
-        chart.addSerie(serie);
-        boolean added = false;
-        for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
-            final Data dataTmp = new Data().setSimple(false);
-            serie.addData(dataTmp);
-            dataTmp.setXValue(y);
-            dataTmp.setYValue(entry.getValue());
-            dataTmp.addConfig("label", "\"" + StringEscapeUtils.escapeEcmaScript(contacts.get(entry.getKey())) + "\"");
-            dataTmp.setTooltip(contacts.get(entry.getKey()) + " - " + entry.getValue());
-            y--;
-            if (y < 1) {
+            int y = getCount();
+            final BarsChart chart = new BarsChart()
+                {
+                    @Override
+                    protected void configurePlot(final org.efaps.esjp.ui.html.dojo.charting.Plot _plot)
+                    {
+                        super.configurePlot(_plot);
+                        _plot.addConfig("labelFunc", "function labelFunc(value, fixed, precision) {\n"
+                                        + "    return value.label;\n"
+                                        + "}");
+                        _plot.addConfig("labels", true);
+                    };
+                }.setWidth(getWidth()).setHeight(getHeight()).setGap(2);
+
+            chart.setTitle(getTitle());
+            chart.setOrientation(Orientation.CHART_ONLY);
+
+            final Serie<Data> serie = new Serie<Data>();
+            chart.addSerie(serie);
+            boolean added = false;
+            for (final Map.Entry<Instance, BigDecimal> entry : sorted) {
+                final Data dataTmp = new Data().setSimple(false);
+                serie.addData(dataTmp);
+                dataTmp.setXValue(y);
+                dataTmp.setYValue(entry.getValue());
+                dataTmp.addConfig("label", "\""
+                                + StringEscapeUtils.escapeEcmaScript(contacts.get(entry.getKey())) + "\"");
+                dataTmp.setTooltip(contacts.get(entry.getKey()) + " - " + entry.getValue());
+                y--;
+                if (y < 1) {
+                    final Data dataTmp2 = new Data().setSimple(false);
+                    serie.addData(dataTmp2);
+                    dataTmp2.setXValue(0);
+                    dataTmp2.setYValue(0);
+                    added = true;
+                    break;
+                }
+            }
+            if (!added) {
                 final Data dataTmp2 = new Data().setSimple(false);
                 serie.addData(dataTmp2);
                 dataTmp2.setXValue(0);
                 dataTmp2.setYValue(0);
-                added = true;
-                break;
             }
+            ret = chart.getHtmlSnipplet();
+            cache(ret);
         }
-        if (!added) {
-            final Data dataTmp2 = new Data().setSimple(false);
-            serie.addData(dataTmp2);
-            dataTmp2.setXValue(0);
-            dataTmp2.setYValue(0);
-        }
-        ret.append(chart.getHtmlSnipplet());
         return ret;
     }
 
