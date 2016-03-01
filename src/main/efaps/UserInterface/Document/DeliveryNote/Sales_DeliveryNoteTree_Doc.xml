@@ -37,5 +37,6 @@
         <property name="TargetShowCheckBoxes">true</property>
         <property name="Label">Sales_DocumentAbstractTree_Doc.Label</property>
         <property name="TargetTitle">Sales_DocumentAbstractTree_Doc.Title</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>
