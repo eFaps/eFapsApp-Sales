@@ -47,24 +47,12 @@ public interface SalesSettings
      */
     String CURRENCY4INVOICE = SalesSettings.BASE + "Currency4Invoice";
 
-    /**
-     * Integer.
-     * max number of transaction that will be analyzed at once before committing.
-     */
-    String COSTINGMAXTRANSACTION = SalesSettings.BASE + "CostingMaxTransaction";
 
     /**
      * Boolean.
      * Allows to activate/deactivate the registering of the prices during a purchase.
      */
     String ACTIVATEREGPURPRICE = SalesSettings.BASE + "ActivateRegisterOfPuchasePrice";
-
-    /**
-     * Link.
-     * Storage Group that is used as a filter for using only the transactions
-     * that belong to the given StorageGroup, if not present the calculation is over all Storages.
-     */
-    String COSTINGSTORAGEGROUP = SalesSettings.BASE + "CostingStorageGroup";
 
     /**
      * Boolean (true/false).<br/>
