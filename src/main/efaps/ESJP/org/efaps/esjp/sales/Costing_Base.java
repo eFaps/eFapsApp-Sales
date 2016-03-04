@@ -18,7 +18,6 @@
 package org.efaps.esjp.sales;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -29,14 +28,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.user.Company;
-import org.efaps.api.background.IExecutionBridge;
-import org.efaps.api.background.IJob;
 import org.efaps.ci.CIAdminUser;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -51,8 +47,6 @@ import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
-import org.efaps.esjp.common.background.ExecutionBridge;
-import org.efaps.esjp.common.background.Service;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.Cost;
@@ -108,7 +102,7 @@ public abstract class Costing_Base
                 Context.getThreadContext().setCompany(company);
                 if (Sales.COSTINGACTIVATE.get()) {
                     for (final Instance currencyInst : getCurrencyInstances()) {
-                        update(currencyInst, null);
+                        update(currencyInst);
                     }
                 }
             }
@@ -157,53 +151,11 @@ public abstract class Costing_Base
      * @return new empty Return
      * @throws EFapsException on error
      */
-    public Return executeAsJob(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String jobName = DBProperties.getFormatedDBProperty(Costing.class.getName() + ".JobName",
-                        (Object) Context.getThreadContext().getPerson().getName());
-        final IJob job = new IJob()
-        {
-            /** */
-            private static final long serialVersionUID = 1L;
-
-            @Override
-            public void execute(final IExecutionBridge _bridge)
-            {
-                try {
-                    final ExecutionBridge bridge = (ExecutionBridge) _bridge;
-                    bridge.setJobName(jobName);
-                    bridge.setTarget(0);
-                    bridge.registerProgress();
-                    for (final Instance currencyInst : getCurrencyInstances()) {
-                        update(currencyInst, bridge);
-                    }
-                } catch (final EFapsException e) {
-                    LOG.error("Catched error", e);
-                } finally {
-                    try {
-                        ((ExecutionBridge) _bridge).close();
-                    } catch (final EFapsException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        };
-        Service.get().launch(CISales.BackgroundJobCosting.getType(), job);
-        return new Return();
-    }
-
-    /**
-     * To be able to execute the update from an UserInterface.
-     * @param _parameter Parameter as passed by the eFaps API
-     * @return new empty Return
-     * @throws EFapsException on error
-     */
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
         for (final Instance currencyInst : getCurrencyInstances()) {
-            update(currencyInst, null);
+            update(currencyInst);
         }
         return new Return();
     }
@@ -246,11 +198,9 @@ public abstract class Costing_Base
      * Update.
      *
      * @param _currencyInstance the _currency instance
-     * @param _bridge the bridge
      * @throws EFapsException on error
      */
-    protected void update(final Instance _currencyInstance,
-                          final ExecutionBridge _bridge)
+    protected void update(final Instance _currencyInstance)
         throws EFapsException
     {
         boolean repeat = true;
@@ -279,10 +229,14 @@ public abstract class Costing_Base
             final int maxTrans = getMaxTransaction();
 
             // check for new transactions and add the costing for them
-            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.CostingAbstract);
-            attrQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, _currencyInstance);
+            final SelectBuilder selDocInst = new SelectBuilder()
+                            .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
+            final SelectBuilder selProdInst = new SelectBuilder()
+                            .linkto(CIProducts.TransactionInOutAbstract.Product).instance();
+
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
             final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(CIProducts.CostingAbstract.TransactionAbstractLink);
+                            .getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
             add2QueryBldr4Transaction(queryBldr);
@@ -292,25 +246,21 @@ public abstract class Costing_Base
             final InstanceQuery query = queryBldr.getQuery();
             query.setLimit(maxTrans + 5);
             final MultiPrintQuery multi = new MultiPrintQuery(query.executeWithoutAccessCheck());
-            final SelectBuilder selDocInst = new SelectBuilder()
-                            .linkto(CIProducts.TransactionInOutAbstract.Document).instance();
-            final SelectBuilder selProdInst = new SelectBuilder()
-                            .linkto(CIProducts.TransactionInOutAbstract.Product).instance();
             multi.addSelect(selDocInst, selProdInst);
             multi.setEnforceSorted(true);
             multi.executeWithoutAccessCheck();
 
             final Set<TransCosting> costingTmp = new LinkedHashSet<TransCosting>();
+
             int count = 0;
             while (multi.next()) {
-                final TransCosting transCost = getTransCosting()
-                            .setTransactionInstance(multi.getCurrentInstance())
-                            .setDocInstance(multi.<Instance>getSelect(selDocInst))
-                            .setProductInstance(multi.<Instance>getSelect(selProdInst))
-                            .setCostingQuantity(BigDecimal.ZERO)
-                            .setUpToDate(false)
-                            .setCurrencyInstance(_currencyInstance)
-                            .insertCosting();
+                final TransCosting transCost = getTransCosting();
+                transCost.setTransactionInstance(multi.getCurrentInstance());
+                transCost.setDocInstance(multi.<Instance>getSelect(selDocInst));
+                transCost.setProductInstance(multi.<Instance>getSelect(selProdInst));
+                transCost.setCostingQuantity(BigDecimal.ZERO);
+                transCost.setUpToDate(false);
+                transCost.insertCosting();
                 costingTmp.add(transCost);
                 Costing_Base.LOG.debug("Adding Number: {} for TransCosting: {}", count, transCost);
                 count++;
@@ -330,23 +280,17 @@ public abstract class Costing_Base
 
             final Map<Instance, TransCosting> prod2cost = new HashMap<Instance, TransCosting>();
             for (final Instance inst : updateCost) {
-                final TransCosting transCost = updateCosting(_currencyInstance, inst);
+                final TransCosting transCost = updateCosting(inst);
                 prod2cost.put(transCost.getProductInstance(), transCost);
                 Costing_Base.LOG.debug(" Updated TransCosting: {}", transCost);
-                if (_bridge != null) {
-                    _bridge.registerProgress();
-                }
             }
 
             for (final TransCosting transCost : prod2cost.values()) {
-                updateCost(_currencyInstance, transCost);
+                updateCost(transCost);
             }
 
             if (repeat) {
                 Context.save();
-            }
-            if (_bridge != null) {
-                _bridge.registerProgress();
             }
         }
     }
@@ -369,14 +313,10 @@ public abstract class Costing_Base
     }
 
     /**
-     * Update cost.
-     *
-     * @param _currencyInstance the currency instance
      * @param _transCost TransCosting containing the information to register the cost
      * @throws EFapsException on error
      */
-    protected void updateCost(final Instance _currencyInstance,
-                              final TransCosting _transCost)
+    protected void updateCost(final TransCosting _transCost)
         throws EFapsException
     {
         BigDecimal currPrice = BigDecimal.ZERO;
@@ -399,23 +339,19 @@ public abstract class Costing_Base
             insert.add(CIProducts.ProductCost.Price, _transCost.getResult());
             insert.add(CIProducts.ProductCost.ValidFrom, date);
             insert.add(CIProducts.ProductCost.ValidUntil, date.plusYears(10));
-            insert.add(CIProducts.ProductCost.CurrencyLink, _currencyInstance);
+            insert.add(CIProducts.ProductCost.CurrencyLink, Currency.getBaseCurrency());
             insert.executeWithoutAccessCheck();
         }
     }
 
 
     /**
-     * Update costing.
-     *
-     * @param _currencyInstance the currency instance
      * @param _costingInstance start instance (the instance with the last
      *            correct value)
      * @return last TransCosting containing the final result for the product
      * @throws EFapsException on error
      */
-    protected TransCosting updateCosting(final Instance _currencyInstance,
-                                         final Instance _costingInstance)
+    protected TransCosting updateCosting(final Instance _costingInstance)
         throws EFapsException
     {
         TransCosting ret = null;
@@ -428,8 +364,7 @@ public abstract class Costing_Base
 
         tcList.add(transCosting);
 
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.CostingAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, _currencyInstance);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
         final QueryBuilder queryBldr = new QueryBuilder(CIProducts.TransactionInOutAbstract);
@@ -443,8 +378,8 @@ public abstract class Costing_Base
         final MultiPrintQuery multi = queryBldr.getPrint();
         final SelectBuilder selProdInst = SelectBuilder.get().linkto(CIProducts.TransactionInOutAbstract.Product)
                         .instance();
-        final SelectBuilder selCosting = SelectBuilder.get().linkfrom(
-                        CIProducts.CostingAbstract.TransactionAbstractLink);
+        final SelectBuilder selCosting = SelectBuilder.get().linkfrom(CIProducts.Costing,
+                        CIProducts.Costing.TransactionAbstractLink);
         final SelectBuilder selCostingInst = new SelectBuilder(selCosting).instance();
         final SelectBuilder selCostingQuantity = new SelectBuilder(selCosting).attribute(CIProducts.Costing.Quantity);
         final SelectBuilder selCostingCost = new SelectBuilder(selCosting).attribute(CIProducts.Costing.Cost);
@@ -459,19 +394,18 @@ public abstract class Costing_Base
         boolean start = false;
         while (multi.next()) {
             if (start) {
-                final TransCosting transCostingTmp = getTransCosting()
-                        .setTransactionInstance(multi.getCurrentInstance())
-                        .setDate(multi.<DateTime>getAttribute(CIProducts.TransactionInOutAbstract.Date))
-                        .setTransactionQuantity(
-                                        multi.<BigDecimal>getAttribute(CIProducts.TransactionInOutAbstract.Quantity))
-                        .setProductInstance(multi.<Instance>getSelect(selProdInst))
-                        .setCostingInstance(multi.<Instance>getSelect(selCostingInst))
-                        .setCost(multi.<BigDecimal>getSelect(selCostingCost))
-                        .setCostingQuantity(multi.<BigDecimal>getSelect(selCostingQuantity))
-                        .setResult(multi.<BigDecimal>getSelect(selCostingResult))
-                        .setUpToDate(multi.<Boolean>getSelect(selCostingUTD))
-                        .setCurrencyInstance(_currencyInstance);
+                final TransCosting transCostingTmp = getTransCosting();
                 tcList.add(transCostingTmp);
+                transCostingTmp.setTransactionInstance(multi.getCurrentInstance());
+                transCostingTmp.setDate(multi.<DateTime>getAttribute(CIProducts.TransactionInOutAbstract.Date));
+                transCostingTmp.setTransactionQuantity(
+                                multi.<BigDecimal>getAttribute(CIProducts.TransactionInOutAbstract.Quantity));
+                transCostingTmp.setProductInstance(multi.<Instance>getSelect(selProdInst));
+                transCostingTmp.setCostingInstance(multi.<Instance>getSelect(selCostingInst));
+                transCostingTmp.setCost(multi.<BigDecimal>getSelect(selCostingCost));
+                transCostingTmp.setCostingQuantity(multi.<BigDecimal>getSelect(selCostingQuantity));
+                transCostingTmp.setResult(multi.<BigDecimal>getSelect(selCostingResult));
+                transCostingTmp.setUpToDate(multi.<Boolean>getSelect(selCostingUTD));
             }
             // in case that there were other the same day but before
             if (multi.getCurrentInstance().equals(transCosting.getTransactionInstance())) {
@@ -516,6 +450,7 @@ public abstract class Costing_Base
                         } else {
                             current.setCost(prev.getResult());
                         }
+
                         update = true;
                     }
 
@@ -524,12 +459,12 @@ public abstract class Costing_Base
                     // the previous quantity of the stock was negativ or zero, so result must be the cost
                     if (newCostQuantity.compareTo(BigDecimal.ZERO) <= 0) {
                         result = current.getCost();
-                    // the devisor is not zero
+                    // the devisoer is not zero
                     } else if (divisor.compareTo(BigDecimal.ZERO) != 0) {
                         result = prev.getResult().multiply(newCostQuantity)
                                         .add(current.getCost().multiply(current.getTransactionQuantity()))
-                                        .setScale(12, RoundingMode.HALF_UP)
-                                        .divide(divisor, RoundingMode.HALF_UP);
+                                        .setScale(12, BigDecimal.ROUND_HALF_UP)
+                                        .divide(divisor, BigDecimal.ROUND_HALF_UP);
                     } else {
                         result = BigDecimal.ZERO;
                     }
@@ -586,14 +521,13 @@ public abstract class Costing_Base
         Instance ret = null;
         Instance transInstance = null;
 
-        final TransCosting transCosting = getTransCosting().setCostingInstance(_costingInstance);
+        final TransCosting transCosting = getTransCosting();
+        transCosting.setCostingInstance(_costingInstance);
 
         // in general we do not want the one which are not "UpToDate"
-        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.CostingAbstract);
-        attrQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, _currencyInstance);
-        attrQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, false);
-        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(
-                        CIProducts.CostingAbstract.TransactionAbstractLink);
+        final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.Costing);
+        attrQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
+        final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CIProducts.Costing.TransactionAbstractLink);
 
         Costing_Base.LOG.trace("Searching Penultimate in same date");
         // first check if for the same date exists one (partial update), also must verify the position
@@ -932,11 +866,6 @@ public abstract class Costing_Base
         private Instance productInstance;
 
         /**
-         * Instance of the currency.
-         */
-        private Instance currencyInstance;
-
-        /**
          * Date of the transaction.
          */
         private DateTime date;
@@ -1012,49 +941,42 @@ public abstract class Costing_Base
         protected void initCosting()
             throws EFapsException
         {
-            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
-            queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
-            queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, getTransactionInstance());
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.Costing);
+            queryBldr.addWhereAttrEqValue(CIProducts.Costing.TransactionAbstractLink, getTransactionInstance());
             final MultiPrintQuery multi = queryBldr.getPrint();
             multi.addAttribute(CIProducts.Costing.Cost, CIProducts.Costing.Quantity, CIProducts.Costing.Result,
                             CIProducts.Costing.UpToDate);
             multi.executeWithoutAccessCheck();
             if (multi.next()) {
-                this.upToDate = multi.getAttribute(CIProducts.Costing.UpToDate);
-                this.cost = multi.getAttribute(CIProducts.Costing.Cost);
-                this.costingQuantity = multi.getAttribute(CIProducts.Costing.Quantity);
-                this.result = multi.getAttribute(CIProducts.Costing.Result);
+                this.upToDate = multi.<Boolean>getAttribute(CIProducts.Costing.UpToDate);
+                this.cost = multi.<BigDecimal>getAttribute(CIProducts.Costing.Cost);
+                this.costingQuantity = multi.<BigDecimal>getAttribute(CIProducts.Costing.Quantity);
+                this.result = multi.<BigDecimal>getAttribute(CIProducts.Costing.Result);
                 this.costingInstance = multi.getCurrentInstance();
             }
         }
 
         /**
          * Update the Costing Instance.
-         *
-         * @return the trans costing
          * @throws EFapsException on error
          */
-        public TransCosting updateCosting()
+        public void updateCosting()
             throws EFapsException
         {
             final Update update = new Update(getCostingInstance());
-            update.add(CIProducts.CostingAbstract.Cost, getCost());
-            update.add(CIProducts.CostingAbstract.Quantity, getCostingQuantity());
-            update.add(CIProducts.CostingAbstract.Result, getResult());
-            update.add(CIProducts.CostingAbstract.UpToDate, true);
-            update.add(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
+            update.add(CIProducts.Costing.Cost, getCost());
+            update.add(CIProducts.Costing.Quantity, getCostingQuantity());
+            update.add(CIProducts.Costing.Result, getResult());
+            update.add(CIProducts.Costing.UpToDate, true);
             update.executeWithoutAccessCheck();
             setUpToDate(true);
-            return this;
         }
 
         /**
          * Insert a new Costing Instance.
-         *
-         * @return the trans costing
          * @throws EFapsException on error
          */
-        public TransCosting insertCosting()
+        public void insertCosting()
             throws EFapsException
         {
             final BigDecimal costTmp;
@@ -1063,21 +985,19 @@ public abstract class Costing_Base
             } else {
                 costTmp = getCostFromDocument();
             }
-            final Insert insert = new Insert(Currency.getBaseCurrency().equals(getCurrencyInstance())
-                            ? CIProducts.Costing : CIProducts.CostingAlternative);
-            insert.add(CIProducts.CostingAbstract.Quantity, getCostingQuantity());
-            insert.add(CIProducts.CostingAbstract.TransactionAbstractLink, getTransactionInstance());
-            insert.add(CIProducts.CostingAbstract.Cost, costTmp);
-            insert.add(CIProducts.CostingAbstract.Result, costTmp);
-            insert.add(CIProducts.CostingAbstract.UpToDate, isUpToDate());
-            insert.add(CIProducts.CostingAbstract.CurrencyLink, getCurrencyInstance());
+            final Insert insert = new Insert(CIProducts.Costing);
+            insert.add(CIProducts.Costing.Quantity, getCostingQuantity());
+            insert.add(CIProducts.Costing.TransactionAbstractLink, getTransactionInstance());
+            insert.add(CIProducts.Costing.Cost, costTmp);
+            insert.add(CIProducts.Costing.Result, costTmp);
+            insert.add(CIProducts.Costing.UpToDate, isUpToDate());
             insert.executeWithoutTrigger();
 
             setCost(costTmp);
             setResult(costTmp);
             setCostingInstance(insert.getInstance());
-            return this;
         }
+
 
         /**
          * Sets the costing instance.
@@ -1111,7 +1031,6 @@ public abstract class Costing_Base
          *
          * @param _transactionInstance value for instance variable
          *            {@link #transactionInstance}
-         * @return the trans costing
          */
         public TransCosting setTransactionInstance(final Instance _transactionInstance)
         {
@@ -1295,15 +1214,15 @@ public abstract class Costing_Base
             if (getTransactionInstance().getType().isCIType(CIProducts.TransactionInbound4StaticStorage)) {
                 final PrintQuery print = new PrintQuery(getTransactionInstance());
                 print.addAttribute(CIProducts.TransactionAbstract.Date);
-                print.executeWithoutAccessCheck();
+                print.execute();
                 ret = Cost.getCost4Currency(new Parameter(),
                                 print.<DateTime>getAttribute(CIProducts.TransactionAbstract.Date),
-                                getProductInstance(), getCurrencyInstance());
+                                getProductInstance(), Currency.getBaseCurrency());
             } else {
                 final Instance docInstTmp = getDocInstance();
                 if (docInstTmp != null && docInstTmp.isValid()) {
                     final CostDoc costDoc = new CostDoc(docInstTmp, getProductInstance());
-                    ret = costDoc.getCost(new Parameter(), getCurrencyInstance());
+                    ret = costDoc.getCost();
                 }
             }
             Costing_Base.LOG.debug("Result: {} for  Cost From Document for: {}", ret, this);
@@ -1431,28 +1350,6 @@ public abstract class Costing_Base
             return this;
         }
 
-        /**
-         * Gets the instance of the currency.
-         *
-         * @return the instance of the currency
-         */
-        public Instance getCurrencyInstance()
-        {
-            return this.currencyInstance;
-        }
-
-        /**
-         * Sets the currency instance.
-         *
-         * @param _currencyInstance the currency instance
-         * @return the trans costing
-         */
-        public TransCosting setCurrencyInstance(final Instance _currencyInstance)
-        {
-            this.currencyInstance = _currencyInstance;
-            return this;
-        }
-
         @Override
         public String toString()
         {
@@ -1473,14 +1370,6 @@ public abstract class Costing_Base
          * BigDecimal cost.
          */
         private BigDecimal cost = BigDecimal.ZERO;
-
-        /**
-         * BigDecimal rate cost.
-         */
-        private BigDecimal rateCost = BigDecimal.ZERO;
-
-        /** The rate currency instance. */
-        private Instance rateCurrencyInstance;
 
         /**
          * Boolean (true/false).
@@ -1524,8 +1413,6 @@ public abstract class Costing_Base
                 boolean found = false;
                 final SelectBuilder docInstSel = SelectBuilder.get().linkto(
                                 CISales.PositionAbstract.DocumentAbstractLink).instance();
-                final SelectBuilder rateCurrencyInstSel = SelectBuilder.get().linkto(
-                                CISales.PositionSumAbstract.RateCurrencyId).instance();
                 final SelectBuilder docStatusSel = SelectBuilder.get().linkto(
                                 CISales.PositionAbstract.DocumentAbstractLink).status();
                 if (CISales.RecievingTicket.getType().equals(getBaseDocInst().getType())) {
@@ -1542,18 +1429,14 @@ public abstract class Costing_Base
                                     acRelAttrQuery);
                     acPosQueryBldr.addWhereAttrEqValue(CISales.AcquisitionCostingPosition.Product, getProductInst());
                     final MultiPrintQuery acPosMulti = acPosQueryBldr.getPrint();
-                    acPosMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                    acPosMulti.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice,
-                                    CISales.AcquisitionCostingPosition.RateNetUnitPrice);
+                    acPosMulti.addSelect(docInstSel, docStatusSel);
+                    acPosMulti.addAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice);
                     acPosMulti.execute();
                     while (acPosMulti.next() && !found) {
                         if (validStatus(acPosMulti.<Status>getSelect(docStatusSel))) {
                             found = true;
                             setCost(acPosMulti
                                             .<BigDecimal>getAttribute(CISales.AcquisitionCostingPosition.NetUnitPrice));
-                            setRateCost(acPosMulti.<BigDecimal>getAttribute(
-                                            CISales.AcquisitionCostingPosition.RateNetUnitPrice));
-                            setRateCurrencyInstance(acPosMulti.<Instance>getSelect(rateCurrencyInstSel));
                             setCostDocInst(acPosMulti.<Instance>getSelect(docInstSel));
                         }
                     }
@@ -1568,18 +1451,14 @@ public abstract class Costing_Base
                                         relAttrQuery);
                         posQueryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
                         final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                        posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                        CISales.IncomingInvoicePosition.RateNetUnitPrice);
+                        posMulti.addSelect(docInstSel, docStatusSel);
+                        posMulti.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
                         posMulti.execute();
                         while (posMulti.next() && !found) {
                             if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
                                 found = true;
                                 setCost(posMulti.<BigDecimal>getAttribute(
                                                 CISales.IncomingInvoicePosition.NetUnitPrice));
-                                setRateCost(posMulti.<BigDecimal>getAttribute(
-                                                CISales.IncomingInvoicePosition.RateNetUnitPrice));
-                                setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
                                 setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
                             }
                         }
@@ -1594,16 +1473,12 @@ public abstract class Costing_Base
                         queryBldr.addWhereAttrInQuery(CISales.IncomingInvoicePosition.DocumentAbstractLink, attrQuery);
                         queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
                         final MultiPrintQuery multi = queryBldr.getPrint();
-                        multi.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                        CISales.IncomingInvoicePosition.RateNetUnitPrice);
+                        multi.addSelect(docInstSel, docStatusSel);
+                        multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
                         multi.execute();
                         while (multi.next() && !found) {
                             if (validStatus(multi.<Status>getSelect(docStatusSel))) {
                                 setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                                setRateCost(multi.<BigDecimal>getAttribute(
-                                                CISales.IncomingInvoicePosition.RateNetUnitPrice));
-                                setRateCurrencyInstance(multi.<Instance>getSelect(rateCurrencyInstSel));
                                 setCostDocInst(multi.<Instance>getSelect(docInstSel));
                                 found = true;
                             }
@@ -1621,18 +1496,14 @@ public abstract class Costing_Base
                                         relAttrQuery);
                         posQueryBldr.addWhereAttrEqValue(CISales.OrderOutboundPosition.Product, getProductInst());
                         final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                        posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                        posMulti.addAttribute(CISales.OrderOutboundPosition.NetUnitPrice,
-                                        CISales.IncomingInvoicePosition.RateNetUnitPrice);
+                        posMulti.addSelect(docInstSel, docStatusSel);
+                        posMulti.addAttribute(CISales.OrderOutboundPosition.NetUnitPrice);
                         posMulti.execute();
                         while (posMulti.next() && !found) {
                             if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
                                 found = true;
                                 setCost(posMulti.<BigDecimal>getAttribute(
                                                 CISales.OrderOutboundPosition.NetUnitPrice));
-                                setRateCost(posMulti.<BigDecimal>getAttribute(
-                                                CISales.OrderOutboundPosition.RateNetUnitPrice));
-                                setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
                                 setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
                             }
                         }
@@ -1643,16 +1514,12 @@ public abstract class Costing_Base
                                     getBaseDocInst());
                     queryBldr.addWhereAttrEqValue(CISales.IncomingInvoicePosition.Product, getProductInst());
                     final MultiPrintQuery multi = queryBldr.getPrint();
-                    multi.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                    multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice,
-                                    CISales.IncomingInvoicePosition.RateNetUnitPrice);
+                    multi.addSelect(docInstSel, docStatusSel);
+                    multi.addAttribute(CISales.IncomingInvoicePosition.NetUnitPrice);
                     multi.execute();
                     while (multi.next() && !found) {
                         if (validStatus(multi.<Status>getSelect(docStatusSel))) {
                             setCost(multi.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                            setRateCost(multi.<BigDecimal>getAttribute(
-                                            CISales.IncomingInvoicePosition.RateNetUnitPrice));
-                            setRateCurrencyInstance(multi.<Instance>getSelect(rateCurrencyInstSel));
                             setCostDocInst(multi.<Instance>getSelect(docInstSel));
                             found = true;
                         }
@@ -1666,17 +1533,13 @@ public abstract class Costing_Base
                                 relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
                     posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
                     final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                    posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                    posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
-                                    CISales.PositionSumAbstract.RateNetUnitPrice);
+                    posMulti.addSelect(docInstSel, docStatusSel);
+                    posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice);
                     posMulti.execute();
                     while (posMulti.next() && !found) {
                         if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
                             found = true;
                             setCost(posMulti.<BigDecimal>getAttribute(CISales.IncomingInvoicePosition.NetUnitPrice));
-                            setRateCost(posMulti.<BigDecimal>getAttribute(
-                                            CISales.PositionSumAbstract.RateNetUnitPrice));
-                            setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
                             setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
                             found = true;
                         }
@@ -1690,17 +1553,13 @@ public abstract class Costing_Base
                                 relAttrQueryBldr.getAttributeQuery(CISales.Document2DocumentAbstract.FromAbstractLink));
                     posQueryBldr.addWhereAttrEqValue(CISales.PositionSumAbstract.Product, getProductInst());
                     final MultiPrintQuery posMulti = posQueryBldr.getPrint();
-                    posMulti.addSelect(docInstSel, docStatusSel, rateCurrencyInstSel);
-                    posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice,
-                                    CISales.PositionSumAbstract.RateNetUnitPrice);
+                    posMulti.addSelect(docInstSel, docStatusSel);
+                    posMulti.addAttribute(CISales.PositionSumAbstract.NetUnitPrice);
                     posMulti.execute();
                     while (posMulti.next() && !found) {
                         if (validStatus(posMulti.<Status>getSelect(docStatusSel))) {
                             found = true;
                             setCost(posMulti.<BigDecimal>getAttribute(CISales.PositionSumAbstract.NetUnitPrice));
-                            setRateCost(posMulti.<BigDecimal>getAttribute(
-                                            CISales.PositionSumAbstract.RateNetUnitPrice));
-                            setRateCurrencyInstance(posMulti.<Instance>getSelect(rateCurrencyInstSel));
                             setCostDocInst(posMulti.<Instance>getSelect(docInstSel));
                             found = true;
                         }
@@ -1739,6 +1598,7 @@ public abstract class Costing_Base
         protected boolean analyze()
             throws EFapsException
         {
+            // TODO Auto-generated method stub
             return false;
         }
 
@@ -1767,7 +1627,11 @@ public abstract class Costing_Base
                                   final Instance _currencyInst)
             throws EFapsException
         {
-            return getCost(_parameter, _currencyInst, null);
+            final PrintQuery print = new PrintQuery(getCostDocInst());
+            print.addAttribute(CIERP.DocumentAbstract.Date);
+            print.execute();
+
+            return getCost(_parameter, _currencyInst, print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date));
         }
 
         /**
@@ -1784,37 +1648,23 @@ public abstract class Costing_Base
                                   final DateTime _date)
             throws EFapsException
         {
-            BigDecimal ret = null;
-            if (Currency.getBaseCurrency().equals(_currencyInst)) {
-                ret = getCost();
-            } else if (getRateCurrencyInstance() != null && getRateCurrencyInstance().equals(_currencyInst)) {
-                ret = getRateCost();
-            } else if (getCost() != null && getCost().compareTo(BigDecimal.ZERO) != 0) {
-                DateTime date;
-                if (_date == null) {
-                    final PrintQuery print = new PrintQuery(getCostDocInst());
-                    print.addAttribute(CIERP.DocumentAbstract.Date);
-                    print.executeWithoutAccessCheck();
-                    date = print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date);
-                } else {
-                    date = _date;
+            BigDecimal ret = getCost();
+            if (ret != null && ret.compareTo(BigDecimal.ZERO) != 0) {
+                if (!Currency.getBaseCurrency().equals(_currencyInst)) {
+                    final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, _date, _currencyInst);
+                    ret = ret.multiply(rateInfo.getRate());
                 }
-                final RateInfo rateInfo = new Currency().evaluateRateInfo(_parameter, date, _currencyInst);
-                ret = getCost().multiply(rateInfo.getRate());
             }
-            return ret == null ? BigDecimal.ZERO : ret;
+            return ret;
         }
 
         /**
          * Getter method for the instance variable {@link #docInst}.
          *
          * @return value of instance variable {@link #docInst}
-         * @throws EFapsException on error
          */
         public Instance getBaseDocInst()
-            throws EFapsException
         {
-            init();
             return this.baseDocInst;
         }
 
@@ -1822,24 +1672,19 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #docInst}.
          *
          * @param _docInst value for instance variable {@link #docInst}
-         * @return the cost doc
          */
-        public CostDoc setBaseDocInst(final Instance _docInst)
+        public void setBaseDocInst(final Instance _docInst)
         {
             this.baseDocInst = _docInst;
-            return this;
         }
 
         /**
          * Getter method for the instance variable {@link #productInst}.
          *
          * @return value of instance variable {@link #productInst}
-         * @throws EFapsException on error
          */
         public Instance getProductInst()
-            throws EFapsException
         {
-            init();
             return this.productInst;
         }
 
@@ -1847,24 +1692,20 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #productInst}.
          *
          * @param _productInst value for instance variable {@link #productInst}
-         * @return the cost doc
          */
-        public CostDoc setProductInst(final Instance _productInst)
+        public void setProductInst(final Instance _productInst)
         {
             this.productInst = _productInst;
-            return this;
         }
 
         /**
          * Setter method for instance variable {@link #cost}.
          *
          * @param _cost value for instance variable {@link #cost}
-         * @return the cost doc
          */
-        public CostDoc setCost(final BigDecimal _cost)
+        public void setCost(final BigDecimal _cost)
         {
             this.cost = _cost;
-            return this;
         }
 
         /**
@@ -1884,62 +1725,10 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #costDocInst}.
          *
          * @param _costDocInst value for instance variable {@link #costDocInst}
-         * @return the cost doc
          */
-        public CostDoc setCostDocInst(final Instance _costDocInst)
+        public void setCostDocInst(final Instance _costDocInst)
         {
             this.costDocInst = _costDocInst;
-            return this;
-        }
-
-        /**
-         * Gets the bigDecimal rate cost.
-         *
-         * @return the bigDecimal rate cost
-         * @throws EFapsException on error
-         */
-        public BigDecimal getRateCost()
-            throws EFapsException
-        {
-            init();
-            return this.rateCost;
-        }
-
-        /**
-         * Sets the rate cost.
-         *
-         * @param _rateCost the rate cost
-         * @return the cost doc
-         */
-        public CostDoc setRateCost(final BigDecimal _rateCost)
-        {
-            this.rateCost = _rateCost;
-            return this;
-        }
-
-        /**
-         * Gets the rate currency instance.
-         *
-         * @return the rate currency instance
-         * @throws EFapsException on error
-         */
-        public Instance getRateCurrencyInstance()
-            throws EFapsException
-        {
-            init();
-            return this.rateCurrencyInstance;
-        }
-
-        /**
-         * Sets the rate currency instance.
-         *
-         * @param _rateCurrencyInstance the rate currency instance
-         * @return the cost doc
-         */
-        public CostDoc setRateCurrencyInstance(final Instance _rateCurrencyInstance)
-        {
-            this.rateCurrencyInstance = _rateCurrencyInstance;
-            return this;
         }
     }
 }
