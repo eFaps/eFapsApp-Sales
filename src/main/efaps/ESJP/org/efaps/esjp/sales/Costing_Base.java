@@ -51,7 +51,6 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.RateInfo;
 import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
 import org.joda.time.DateTime;
@@ -102,7 +101,9 @@ public abstract class Costing_Base
                 final Company company = Company.get(query.getCurrentValue().getId());
                 Context.getThreadContext().setCompany(company);
                 if (Sales.COSTINGACTIVATE.get()) {
-                    update();
+                    for (final Instance currencyInst : getCurrencyInstances()) {
+                        update(currencyInst);
+                    }
                 }
             }
             // remove the company to be sure
@@ -144,7 +145,6 @@ public abstract class Costing_Base
         return new Return();
     }
 
-
     /**
      * To be able to execute the update from an UserInterface.
      * @param _parameter Parameter as passed by the eFaps API
@@ -154,8 +154,27 @@ public abstract class Costing_Base
     public Return execute(final Parameter _parameter)
         throws EFapsException
     {
-        update();
+        for (final Instance currencyInst : getCurrencyInstances()) {
+            update(currencyInst);
+        }
         return new Return();
+    }
+
+    /**
+     * Gets the currency instances.
+     *
+     * @return the currency instances
+     * @throws EFapsException the eFaps exception
+     */
+    protected Set<Instance> getCurrencyInstances()
+        throws EFapsException
+    {
+        final Set<Instance> ret = new LinkedHashSet<>();
+        ret.add(Currency.getBaseCurrency());
+        for (final String currencyOID : Sales.COSTINGALTINSTS.get()) {
+            ret.add(Instance.get(currencyOID));
+        }
+        return ret;
     }
 
     /**
@@ -165,7 +184,7 @@ public abstract class Costing_Base
     {
         int ret = Costing_Base.MAXTRANSACTION;
         try {
-            final int tmp = Sales.getSysConfig().getAttributeValueAsInteger(SalesSettings.COSTINGMAXTRANSACTION);
+            final int tmp = Sales.COSTINGMAXTRANSACTION.get();
             if (tmp > 0) {
                 ret = tmp;
             }
@@ -176,9 +195,12 @@ public abstract class Costing_Base
     }
 
     /**
+     * Update.
+     *
+     * @param _currencyInstance the _currency instance
      * @throws EFapsException on error
      */
-    protected void update()
+    protected void update(final Instance _currencyInstance)
         throws EFapsException
     {
         boolean repeat = true;
@@ -191,13 +213,14 @@ public abstract class Costing_Base
             final Set<Instance> updateCost = new LinkedHashSet<Instance>();
 
             // check for costing that must be updated
-            final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.Costing);
-            costQueryBldr.addWhereAttrEqValue(CIProducts.Costing.UpToDate, false);
-            costQueryBldr.addOrderByAttributeAsc(CIProducts.Costing.Created);
+            final QueryBuilder costQueryBldr = new QueryBuilder(CIProducts.CostingAbstract);
+            costQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.UpToDate, false);
+            costQueryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, _currencyInstance);
+            costQueryBldr.addOrderByAttributeAsc(CIProducts.CostingAbstract.Created);
             final InstanceQuery costQuery = costQueryBldr.getQuery();
             costQuery.executeWithoutAccessCheck();
             while (costQuery.next()) {
-                final Instance penultimate = getPenultimate4Costing(costQuery.getCurrentValue());
+                final Instance penultimate = getPenultimate4Costing(_currencyInstance, costQuery.getCurrentValue());
                 if (penultimate != null) {
                     updateCost.add(penultimate);
                     Costing_Base.LOG.debug("Adding Instance for Update: {}", penultimate);
@@ -248,7 +271,7 @@ public abstract class Costing_Base
             }
 
             for (final TransCosting transCost : costingTmp) {
-                final Instance penultimate = getPenultimate4Costing(transCost.getCostingInstance());
+                final Instance penultimate = getPenultimate4Costing(_currencyInstance, transCost.getCostingInstance());
                 if (penultimate != null) {
                     updateCost.add(penultimate);
                     Costing_Base.LOG.debug("Adding TransCost for Update: {}", penultimate);
@@ -279,7 +302,7 @@ public abstract class Costing_Base
     protected void add2QueryBldr4Transaction(final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        final Instance strGrpInst = Sales.getSysConfig().getLink(SalesSettings.COSTINGSTORAGEGROUP);
+        final Instance strGrpInst = Sales.COSTINGSTORAGEGROUP.get();
         if (strGrpInst != null && strGrpInst.isValid()) {
             final QueryBuilder queryBldr = new QueryBuilder(CIProducts.StorageGroupAbstract2StorageAbstract);
             queryBldr.addWhereAttrEqValue(CIProducts.StorageGroupAbstract2StorageAbstract.FromAbstractLink, strGrpInst);
@@ -483,11 +506,15 @@ public abstract class Costing_Base
     }
 
     /**
+     * Gets the penultimate4 costing.
+     *
      * @param _costingInstance instance the penultimate instance is wanted for
+     * @param _currencyInstance the currency instance
      * @return penultimate instance
      * @throws EFapsException on error
      */
-    protected Instance getPenultimate4Costing(final Instance _costingInstance)
+    protected Instance getPenultimate4Costing(final Instance _currencyInstance,
+                                              final Instance _costingInstance)
         throws EFapsException
     {
         Costing_Base.LOG.debug("Searching Penultimate for {}", _costingInstance);
@@ -973,11 +1000,15 @@ public abstract class Costing_Base
 
 
         /**
+         * Sets the costing instance.
+         *
          * @param _costingInstance instance to be set
+         * @return the trans costing
          */
-        public void setCostingInstance(final Instance _costingInstance)
+        public TransCosting setCostingInstance(final Instance _costingInstance)
         {
             this.costingInstance = _costingInstance;
+            return this;
         }
 
         /**
@@ -1001,9 +1032,10 @@ public abstract class Costing_Base
          * @param _transactionInstance value for instance variable
          *            {@link #transactionInstance}
          */
-        public void setTransactionInstance(final Instance _transactionInstance)
+        public TransCosting setTransactionInstance(final Instance _transactionInstance)
         {
             this.transactionInstance = _transactionInstance;
+            return this;
         }
 
         /**
@@ -1040,10 +1072,12 @@ public abstract class Costing_Base
          *
          * @param _productInstance value for instance variable
          *            {@link #productInstance}
+         * @return the trans costing
          */
-        public void setProductInstance(final Instance _productInstance)
+        public TransCosting setProductInstance(final Instance _productInstance)
         {
             this.productInstance = _productInstance;
+            return this;
         }
 
         /**
@@ -1065,10 +1099,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #date}.
          *
          * @param _date value for instance variable {@link #date}
+         * @return the trans costing
          */
-        public void setDate(final DateTime _date)
+        public TransCosting setDate(final DateTime _date)
         {
             this.date = _date;
+            return this;
         }
 
         /**
@@ -1105,11 +1141,12 @@ public abstract class Costing_Base
          *
          * @param _transactionQuantity value for instance variable
          *            {@link #transactionQuantity}
-         *
+         * @return the trans costing
          */
-        public void setTransactionQuantity(final BigDecimal _transactionQuantity)
+        public TransCosting setTransactionQuantity(final BigDecimal _transactionQuantity)
         {
             this.transactionQuantity = _transactionQuantity;
+            return this;
         }
 
         /**
@@ -1141,10 +1178,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #costingQuantity}.
          *
          * @param _costingQuantity value for instance variable {@link #costingQuantity}
+         * @return the trans costing
          */
-        public void setCostingQuantity(final BigDecimal _costingQuantity)
+        public TransCosting setCostingQuantity(final BigDecimal _costingQuantity)
         {
             this.costingQuantity = _costingQuantity;
+            return this;
         }
 
         /**
@@ -1194,10 +1233,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #cost}.
          *
          * @param _cost value for instance variable {@link #cost}
+         * @return the trans costing
          */
-        public void setCost(final BigDecimal _cost)
+        public TransCosting setCost(final BigDecimal _cost)
         {
             this.cost = _cost;
+            return this;
         }
 
         /**
@@ -1220,10 +1261,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #result}.
          *
          * @param _result value for instance variable {@link #result}
+         * @return the trans costing
          */
-        public void setResult(final BigDecimal _result)
+        public TransCosting setResult(final BigDecimal _result)
         {
             this.result = _result;
+            return this;
         }
 
         /**
@@ -1245,10 +1288,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #docInstance}.
          *
          * @param _docInstance value for instance variable {@link #docInstance}
+         * @return the trans costing
          */
-        public void setDocInstance(final Instance _docInstance)
+        public TransCosting setDocInstance(final Instance _docInstance)
         {
             this.docInstance = _docInstance;
+            return this;
         }
 
         /**
@@ -1270,10 +1315,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #upToDate}.
          *
          * @param _upToDate value for instance variable {@link #upToDate}
+         * @return the trans costing
          */
-        public void setUpToDate(final boolean _upToDate)
+        public TransCosting setUpToDate(final boolean _upToDate)
         {
             this.upToDate = _upToDate;
+            return this;
         }
 
         /**
@@ -1295,10 +1342,12 @@ public abstract class Costing_Base
          * Setter method for instance variable {@link #position}.
          *
          * @param _position value for instance variable {@link #position}
+         * @return the trans costing
          */
-        public void setPosition(final Integer _position)
+        public TransCosting setPosition(final Integer _position)
         {
             this.position = _position;
+            return this;
         }
 
         @Override
