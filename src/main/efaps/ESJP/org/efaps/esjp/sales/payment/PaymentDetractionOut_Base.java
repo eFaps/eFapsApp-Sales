@@ -303,13 +303,11 @@ public abstract class PaymentDetractionOut_Base
         return new StringBuilder();
     }
 
-
-
     /**
      * {@inheritDoc}
      */
     @Override
-    protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
+    protected void add2QueryBldr4AutoComplete4CreateDocument(final Parameter _parameter,
                                                              final QueryBuilder _queryBldr)
         throws EFapsException
     {
@@ -320,7 +318,7 @@ public abstract class PaymentDetractionOut_Base
 
             _queryBldr.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
         } else {
-            super.add2QueryBldr4autoComplete4CreateDocument(_parameter, _queryBldr);
+            super.add2QueryBldr4AutoComplete4CreateDocument(_parameter, _queryBldr);
         }
     }
 

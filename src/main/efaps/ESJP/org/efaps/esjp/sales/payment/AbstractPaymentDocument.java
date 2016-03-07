@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
 
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
@@ -32,18 +29,20 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("d1921ce1-a706-48f0-969c-07a5ac3564ef")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractPaymentDocument
     extends AbstractPaymentDocument_Base
 {
 
     /**
-     * @param _parameter
-     * @param _instance
-     * @return
+     * Gets the transaction html.
+     *
+     * @param _parameter the _parameter
+     * @param _instance the _instance
+     * @return the transaction html
+     * @throws EFapsException the e faps exception
      */
     public static StringBuilder getTransactionHtml(final Parameter _parameter,
                                                    final Instance _instance)
@@ -51,5 +50,4 @@ public abstract class AbstractPaymentDocument
     {
         return AbstractPaymentDocument_Base.getTransactionHtml(_parameter, _instance);
     }
-
 }

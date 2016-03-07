@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,21 +15,14 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
---><ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>84030734-f69e-435a-9c0e-3b57dd02ea25</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDepositOutPaymentTable</name>
-        <!-- fields -->
         <field name="date">
             <property name="Attribute">Date</property>
             <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
@@ -50,35 +44,21 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="autoComplete4CreateDocument"
-                name="Sales_PaymentDepositOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
-                <property name="Type">Sales_IncomingInvoice</property>
-                <property name="StatusGroup">Sales_IncomingInvoiceStatus</property>
-                <property name="Status">Open</property>
-                <property name="Type01">Accounting_ExternalVoucher</property>
-                <property name="StatusGroup01">Accounting_ExternalVoucherStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_OrderOutbound</property>
-                <property name="StatusGroup02">Sales_OrderOutboundStatus</property>
-                <property name="Status02">Open</property>
-                <property name="Type03">Sales_Quotation</property>
-                <property name="StatusGroup03">Sales_QuotationStatus</property>
-                <property name="Status03">Open</property>
-                <property name="Type04">Sales_PaymentOrder</property>
-                <property name="StatusGroup04">Sales_PaymentOrderStatus</property>
-                <property name="Status04">Approved</property>
-                <property name="Type05">Sales_IncomingCredit</property>
-                <property name="StatusGroup05">Sales_IncomingCreditStatus</property>
-                <property name="Status05">Open</property>
-                <property name="Type06">Sales_IncomingPerceptionCertificate</property>
-                <property name="StatusGroup06">Sales_IncomingPerceptionCertificateStatus</property>
-                <property name="Status06">Open</property>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="autoComplete4CreateDocument"
+                name="Sales_PaymentDepositOutPaymentTable.product.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.out.Deposit.PayableDocuments</property>
                 <property name="ExtraParameter">contact</property>
                 <property name="ExtraParameter01">checkbox4Invoice</property>
                 <property name="ShowRevision">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4CreateDocument"
-                name="Sales_PaymentDepositOutPaymentTable.product.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4CreateDocument"
+                name="Sales_PaymentDepositOutPaymentTable.product.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="createDocumentDesc">
             <property name="ModeCreate">READONLY</property>
@@ -92,8 +72,10 @@
             <property name="ModeEdit">NONE</property>
             <property name="Attribute">Rate</property>
             <property name="Label">Sales_Payment/Rate.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4PaymentRate"
-                name="Sales_PaymentDepositOutPaymentTable.paymentRate.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4PaymentRate"
+                name="Sales_PaymentDepositOutPaymentTable.paymentRate.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="payment4Pay">
             <property name="ModeEdit">NONE</property>
@@ -106,24 +88,30 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_Payment/Amount.Label</property>
             <property name="Attribute">Amount</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4PaymentAmount"
-                name="Sales_PaymentDepositOutPaymentTable.paymentAmount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4PaymentAmount"
+                name="Sales_PaymentDepositOutPaymentTable.paymentAmount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="paymentDiscount">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="Label">Sales_Payment.paymentDiscount.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4PaymentDiscount"
-            name="Sales_PaymentDepositOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4PaymentDiscount"
+                name="Sales_PaymentDepositOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="paymentAmountDesc">
             <property name="ModeView">NONE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Label">Sales_PaymentDepositOutPaymentTable.paymentAmountDesc.Label</property>
-            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut" method="updateFields4PaymentAmountDesc"
-                name="Sales_PaymentDepositOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
+            <trigger program="org.efaps.esjp.sales.payment.PaymentDepositOut"
+                method="updateFields4PaymentAmountDesc"
+                name="Sales_PaymentDepositOutPaymentTable.paymentDiscount.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="accountLink">
             <property name="SelectAlternateOID">linkfrom[Sales_TransactionOutbound#Payment].linkto[Account].oid</property>
@@ -135,39 +123,15 @@
             <property name="Attribute">CurrencyLink</property>
             <property name="Label">Sales_Payment/CurrencyLink.Label</property>
         </field>
-        <!--
-        <field name="option4DocCreate">
-            <property name="ModeCreate">EDITABLE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_PaymentDepositOutPaymentTable.option4DocCreate.Label</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentDepositOutPaymentTable.option4DocCreate.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
-                <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateOptions4DetAndRet</property>
-            </trigger>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="multiCheckboxFieldValue"
-                name="Sales_PaymentDepositOutPaymentTable.option4DocCreate.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Value">IncomingRetention</property>
-                <property name="Value01">IncomingDetraction</property>
-                <property name="Value02">None</property>
-                <property name="Comment">Sales_PaymentDepositOutPaymentTable.option4DocCreate.IncomingRetention.Label</property>
-                <property name="Comment01">Sales_PaymentDepositOutPaymentTable.option4DocCreate.IncomingDetraction.Label</property>
-                <property name="Comment02">Sales_PaymentDepositOutPaymentTable.option4DocCreate.None.Label</property>
-                <property name="Checked">false</property>
-                <property name="Checked01">false</property>
-                <property name="Checked02">true</property>
-                <property name="JavaScript">true</property>
-            </trigger>
-        </field>
-         -->
         <field name="amount4DocCreate">
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDepositOutPaymentTable.amount4DocCreate.Label</property>
-            <trigger program="org.efaps.esjp.admin.access.AccessOnField" method="configCheck"
-                name="Sales_PaymentDepositOutPaymentTable.amount4DocCreate.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
+            <trigger program="org.efaps.esjp.admin.access.AccessOnField"
+                method="configCheck"
+                name="Sales_PaymentDepositOutPaymentTable.amount4DocCreate.UI_ACCESSCHECK"
+                event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">org.efaps.sales.ActivateOptions4DetAndRet</property>
             </trigger>

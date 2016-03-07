@@ -412,6 +412,40 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTCASHPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Cash.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTCHECKPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Check.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTDEPOSITPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Deposit.PayableDocuments")
+                    .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTDETRACTIONPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Detraction.PayableDocuments")
+                    .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTEXCHANGEPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Exchange.PayableDocuments")
+                    .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCPOSREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocPositionReport")

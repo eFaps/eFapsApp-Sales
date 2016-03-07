@@ -85,12 +85,6 @@ public interface SalesSettings
     String CHANNELBUY = SalesSettings.BASE + "ActivateBuyingRoute";
 
     /**
-     * UUID's. <br/>
-     * UUID of the documents to pay. Incoming Invoice like default.
-     */
-    String PAYABLEDOCS = SalesSettings.BASE + "PayableDocuments";
-
-    /**
      * Boolean (true/false).<br/>
      * The current company is an Agent of Perception.
      */

@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -43,7 +40,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIStatus;
 import org.efaps.ci.CIType;
@@ -77,10 +74,9 @@ import org.joda.time.format.DateTimeFormat;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("9482d7a1-86dd-40f9-b4f6-6a2eac106aeb")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class AbstractPaymentOut_Base
     extends AbstractPaymentDocument
 {
@@ -139,6 +135,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Gets the java script ui value.
+     *
+     * @param _parameter the _parameter
+     * @return the java script ui value
+     * @throws EFapsException the e faps exception
+     */
     public Return getJavaScriptUIValue(final Parameter _parameter)
         throws EFapsException
     {
@@ -162,6 +165,14 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Adds the currency value.
+     *
+     * @param _parameter the _parameter
+     * @param _accountID the _account id
+     * @return the string
+     * @throws EFapsException the e faps exception
+     */
     protected String addCurrencyValue(final Parameter _parameter,
                                       final Long _accountID)
         throws EFapsException
@@ -191,6 +202,13 @@ public abstract class AbstractPaymentOut_Base
         return ret.toString();
     }
 
+    /**
+     * Check access4 bulk payment.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return checkAccess4BulkPayment(final Parameter _parameter)
         throws EFapsException
     {
@@ -202,61 +220,28 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Gets the payment documents4 pay.
+     *
+     * @param _parameter the _parameter
+     * @return the payment documents4 pay
+     * @throws EFapsException the e faps exception
+     */
     public Return getPaymentDocuments4Pay(final Parameter _parameter)
         throws EFapsException
     {
-        final Return ret = new MultiPrint()
-        {
-            @Override
-            protected void add2QueryBldr(final Parameter _parameter,
-                                         final QueryBuilder _queryBldr)
-                throws EFapsException
-            {
-                final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.DocumentSumAbstract);
-                final Object[] ids = getPayableDocuments(_parameter);
-                attrQueryBldr.addWhereAttrNotEqValue(CISales.DocumentSumAbstract.Type, ids);
-                final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.DocumentSumAbstract.ID);
-
-                final QueryBuilder attrQueryBldr2 = new QueryBuilder(CISales.Payment);
-                attrQueryBldr2.addWhereAttrInQuery(CISales.Payment.CreateDocument, attrQuery);
-                final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.Payment.TargetDocument);
-
-                _queryBldr.addWhereAttrInQuery(CISales.PaymentDocumentOutAbstract.ID, attrQuery2);
-
-                _queryBldr.addWhereAttrNotEqValue(CISales.PaymentDocumentOutAbstract.StatusAbstract,
-                                Status.find(CISales.PaymentCashOutStatus.Canceled).getId(),
-                                Status.find(CISales.PaymentCheckOutStatus.Canceled).getId(),
-                                Status.find(CISales.PaymentDepositOutStatus.Canceled).getId(),
-                                Status.find(CISales.PaymentDetractionOutStatus.Canceled).getId(),
-                                Status.find(CISales.PaymentExchangeOutStatus.Canceled).getId(),
-                                Status.find(CISales.PaymentRetentionOutStatus.Canceled).getId(),
-                                Status.find(CISales.PaymentSupplierOutStatus.Canceled).getId());
-            }
-        }.execute(_parameter);
+        final Return ret = new MultiPrint().execute(_parameter);
         return ret;
     }
 
+
     /**
-     * Method to obtains list Ids of the types.
+     * Drop down4 create documents.
      *
-     * @param _parameter Parameter as passed from the eFaps API.
-     * @return Object[] to values.
-     * @throws EFapsException on error.
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
      */
-    protected Object[] getPayableDocuments(final Parameter _parameter)
-        throws EFapsException
-    {
-        final String uuidsStr = Sales.getSysConfig().getAttributeValue(SalesSettings.PAYABLEDOCS);
-        final String[] uuids = uuidsStr.split(";");
-        final List<Long> lstIds = new ArrayList<Long>();
-        for (final String uuid : uuids) {
-            final Type type = Type.get(UUID.fromString(uuid));
-            lstIds.add(type.getId());
-        }
-
-        return lstIds.toArray();
-    }
-
     public Return dropDown4CreateDocuments(final Parameter _parameter)
         throws EFapsException
     {
@@ -282,6 +267,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Update fields4 filtered documents.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4FilteredDocuments(final Parameter _parameter)
         throws EFapsException
     {
@@ -303,7 +295,8 @@ public abstract class AbstractPaymentOut_Base
                     final BigDecimal amount = print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
 
                     final CurrencyInst curr = new CurrencyInst(print.<Instance>getSelect(selCur));
-                    final String valueCrossTotal = curr.getSymbol() + " " + NumberFormatter.get().getTwoDigitsFormatter().format(amount);
+                    final String valueCrossTotal = curr.getSymbol() + " "
+                                    + NumberFormatter.get().getTwoDigitsFormatter().format(amount);
                     map.put("crossTotal4Read", valueCrossTotal);
                     list.add(map);
                 }
@@ -315,6 +308,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Update payable documents.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updatePayableDocuments(final Parameter _parameter)
         throws EFapsException
     {
@@ -375,6 +375,14 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Check difference.
+     *
+     * @param _parameter the _parameter
+     * @param _difference the _difference
+     * @return true, if successful
+     * @throws EFapsException the e faps exception
+     */
     protected boolean checkDifference(final Parameter _parameter,
                                       final BigDecimal _difference)
         throws EFapsException
@@ -400,6 +408,14 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Creates the document.
+     *
+     * @param _parameter the _parameter
+     * @param _infoDoc the _info doc
+     * @param _difference the _difference
+     * @throws EFapsException the e faps exception
+     */
     protected void createDocument(final Parameter _parameter,
                                   final Map<String, Object> _infoDoc,
                                   final BigDecimal _difference)
@@ -451,6 +467,13 @@ public abstract class AbstractPaymentOut_Base
 
     }
 
+    /**
+     * Generate note4 payment out.
+     *
+     * @param _parameter the _parameter
+     * @return the string
+     * @throws EFapsException the e faps exception
+     */
     protected String generateNote4PaymentOut(final Parameter _parameter)
         throws EFapsException
     {
@@ -469,6 +492,13 @@ public abstract class AbstractPaymentOut_Base
         return ret.toString();
     }
 
+    /**
+     * Gets the contact4 payment out.
+     *
+     * @param _parameter the _parameter
+     * @return the contact4 payment out
+     * @throws EFapsException the e faps exception
+     */
     protected Long getContact4PaymentOut(final Parameter _parameter)
         throws EFapsException
     {
@@ -485,6 +515,16 @@ public abstract class AbstractPaymentOut_Base
         return contactId;
     }
 
+    /**
+     * Replace payment info.
+     *
+     * @param _parameter the _parameter
+     * @param _doc4Render the _doc4 render
+     * @param _doc4Replaced the _doc4 replaced
+     * @param _amountDoc4Replaced the _amount doc4 replaced
+     * @param _infoDoc the _info doc
+     * @throws EFapsException the e faps exception
+     */
     protected void replacePaymentInfo(final Parameter _parameter,
                                       final Instance _doc4Render,
                                       final Instance _doc4Replaced,
@@ -583,10 +623,7 @@ public abstract class AbstractPaymentOut_Base
                                             docInst);
                             final AttributeQuery attrQuery = attrQueryBldr
                                             .getAttributeQuery(CISales.Document2DocumentAbstract.ToAbstractLink);
-
                             _queryBldr.addWhereAttrInQuery(CISales.DocumentSumAbstract.ID, attrQuery);
-                            _queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Type,
-                                            getPayableDocuments(_parameter));
                         }
                     }
                     _queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name,
@@ -635,6 +672,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Validate payments.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return validatePayments(final Parameter _parameter)
         throws EFapsException
     {
@@ -643,49 +687,41 @@ public abstract class AbstractPaymentOut_Base
         final StringBuilder error = new StringBuilder();
         final Instance docInstance = Instance.get(_parameter.getParameterValue("createExistDocument"));
         if (docInstance.isValid()) {
-            final Object[] typeIds = getPayableDocuments(_parameter);
-            boolean payment = true;
-            if (typeIds != null && typeIds.length > 0) {
-                for (final Object typeId : typeIds) {
-                    if (docInstance.getType().getId() == (Long) typeId) {
-                        payment = false;
-                        break;
-                    }
-                }
-            }
-            if (payment) {
-                final BigDecimal amount = getAmounts2Payment(_parameter, docInstance, paymentInst);
-                if (amount.compareTo(getAmounts4Render(_parameter)) == 0) {
-                    error.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
-                    ret.put(ReturnValues.SNIPLETT, error.toString());
-                    ret.put(ReturnValues.TRUE, true);
-                } else {
-                    final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
-                    if (difference.signum() == 1) {
-                        error.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
-                    } else {
-                        error.append(DBProperties
-                                    .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountGreater"));
-                    }
-                    error.append(" ").append(difference.abs());
-                    ret.put(ReturnValues.TRUE, true);
-                    ret.put(ReturnValues.SNIPLETT, error.toString());
-                }
-            } else {
+            final BigDecimal amount = getAmounts2Payment(_parameter, docInstance, paymentInst);
+            if (amount.compareTo(getAmounts4Render(_parameter)) == 0) {
                 error.append(DBProperties
-                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.DocumentInvalid"));
+                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountsValid"));
+                ret.put(ReturnValues.SNIPLETT, error.toString());
+                ret.put(ReturnValues.TRUE, true);
+            } else {
+                final BigDecimal difference = amount.subtract(getAmounts4Render(_parameter));
+                if (difference.signum() == 1) {
+                    error.append(DBProperties
+                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountLess"));
+                } else {
+                    error.append(DBProperties
+                                .getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.AmountGreater"));
+                }
+                error.append(" ").append(difference.abs());
+                ret.put(ReturnValues.TRUE, true);
                 ret.put(ReturnValues.SNIPLETT, error.toString());
             }
         } else {
             error.append(DBProperties.getProperty("org.efaps.esjp.sales.payment.AbstractPaymentOut.SelectedDocument"));
             ret.put(ReturnValues.SNIPLETT, error.toString());
         }
-
         return ret;
     }
 
+    /**
+     * Gets the amounts2 payment.
+     *
+     * @param _parameter the _parameter
+     * @param _docInst the _doc inst
+     * @param _payment the _payment
+     * @return the amounts2 payment
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal getAmounts2Payment(final Parameter _parameter,
                                             final Instance _docInst,
                                             final Instance _payment)
@@ -707,6 +743,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Gets the amounts4 render.
+     *
+     * @param _parameter the _parameter
+     * @return the amounts4 render
+     * @throws EFapsException the e faps exception
+     */
     protected BigDecimal getAmounts4Render(final Parameter _parameter)
         throws EFapsException
     {
@@ -726,6 +769,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Check4 doc legal payments.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return check4DocLegalPayments(final Parameter _parameter)
         throws EFapsException
     {
@@ -755,6 +805,13 @@ public abstract class AbstractPaymentOut_Base
         return ret;
     }
 
+    /**
+     * Exclude types4 drop down payments render.
+     *
+     * @param _parameter the _parameter
+     * @return the list
+     * @throws EFapsException the e faps exception
+     */
     protected List<Long> excludeTypes4DropDownPaymentsRender(final Parameter _parameter)
         throws EFapsException
     {
@@ -771,6 +828,13 @@ public abstract class AbstractPaymentOut_Base
         return excludes;
     }
 
+    /**
+     * Update fields4 payment amount desc.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return updateFields4PaymentAmountDesc(final Parameter _parameter)
         throws EFapsException
     {

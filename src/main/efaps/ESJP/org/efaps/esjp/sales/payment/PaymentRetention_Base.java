@@ -90,7 +90,7 @@ public abstract class PaymentRetention_Base
     }
 
     @Override
-    protected void add2QueryBldr4autoComplete4CreateDocument(final Parameter _parameter,
+    protected void add2QueryBldr4AutoComplete4CreateDocument(final Parameter _parameter,
                                                              final QueryBuilder _queryBldr)
         throws EFapsException
     {
