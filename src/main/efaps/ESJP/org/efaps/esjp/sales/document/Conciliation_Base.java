@@ -406,9 +406,14 @@ public abstract class Conciliation_Base
                     query.executeWithoutAccessCheck();
                     while (query.next()) {
                         final Instance payInst = query.getCurrentValue();
+                        final PrintQuery print = new PrintQuery(payInst);
+                        print.addAttribute(CISales.PaymentDocumentIOAbstract.StatusAbstract);
+                        print.executeWithoutAccessCheck();
+                        final Status currentStatus = Status.get(print.<Long>getAttribute(
+                                        CISales.PaymentDocumentIOAbstract.StatusAbstract));
                         final Status payStatus = Status.find(payInst.getType().getStatusAttribute().getLink().getUUID(),
                                         "Closed");
-                        if (payStatus != null) {
+                        if (payStatus != null && !currentStatus.getKey().equalsIgnoreCase("Booked")) {
                             final Update update = new Update(payInst);
                             update.add(CISales.PaymentDocumentIOAbstract.StatusAbstract, payStatus);
                             update.execute();
