@@ -18,8 +18,14 @@
 
 package org.efaps.esjp.sales;
 
+import java.util.List;
+import java.util.Map;
+
+import org.efaps.admin.event.Parameter;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -37,5 +43,23 @@ public class Swap
      * Key used for storing information during request.
      */
     public static final String REQUESTKEY = Swap_Base.REQUESTKEY;
+
+
+    /**
+     * Gets the swap infos.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _callInstance the call instance
+     * @param _relInsts the rel insts
+     * @return the swap infos
+     * @throws EFapsException on error
+     */
+    public static Map<Instance, SwapInfo> getSwapInfos(final Parameter _parameter,
+                                                       final Instance _callInstance,
+                                                       final List<Instance> _relInsts)
+        throws EFapsException
+    {
+        return Swap_Base.getSwapInfos(_parameter, _callInstance, _relInsts);
+    }
 
 }

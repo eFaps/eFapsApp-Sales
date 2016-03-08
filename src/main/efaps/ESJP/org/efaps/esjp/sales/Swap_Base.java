@@ -746,9 +746,9 @@ public abstract class Swap_Base
      * @return map with instance
      * @throws EFapsException on error
      */
-    public static Map<Instance, SwapInfo> getSwapInfos(final Parameter _parameter,
-                                                       final Instance _callInstance,
-                                                       final List<Instance> _relInsts)
+    protected static Map<Instance, SwapInfo> getSwapInfos(final Parameter _parameter,
+                                                          final Instance _callInstance,
+                                                          final List<Instance> _relInsts)
         throws EFapsException
     {
         final Map<Instance, SwapInfo> ret = new HashMap<Instance, SwapInfo>();

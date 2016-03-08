@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>a074ca48-cc7a-4efc-8219-f1654d0ade70</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_SwapTable</name>
@@ -34,6 +29,11 @@
             <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2Document4Swap/FromLink.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="fromLinkStatus">
+            <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
+            <property name="Label">Sales_SwapTable.fromLinkStatus.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="amount">
             <property name="Phrase">$&lt;attribute[Amount].type.label&gt; $&lt;linkto[CurrencyLink].attribute[Symbol]&gt;</property>
@@ -46,6 +46,11 @@
             <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2Document4Swap/ToLink.Label</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+        </field>
+        <field name="toLinkStatus">
+            <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
+            <property name="Label">Sales_SwapTable.toLinkStatus.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
     </definition>
 </ui-table>
