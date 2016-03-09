@@ -38,6 +38,7 @@ import org.efaps.admin.user.Company;
 import org.efaps.api.background.IExecutionBridge;
 import org.efaps.api.background.IJob;
 import org.efaps.ci.CIAdminUser;
+import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -381,25 +382,33 @@ public abstract class Costing_Base
     {
         BigDecimal currPrice = BigDecimal.ZERO;
         final DateTime date = new DateTime();
-        final QueryBuilder costBldr = new QueryBuilder(CIProducts.ProductCost);
-        costBldr.addWhereAttrEqValue(CIProducts.ProductCost.ProductLink, _transCost.getProductInstance());
-        costBldr.addWhereAttrGreaterValue(CIProducts.ProductCost.ValidUntil, date.minusMinutes(1));
-        costBldr.addWhereAttrLessValue(CIProducts.ProductCost.ValidFrom, date.plusMinutes(1));
+
+        final CIType ciType = _transCost.getCostingInstance().getType().isCIType(CIProducts.Costing)
+                         ? CIProducts.ProductCost : CIProducts.ProductCostAlternative;
+
+        final QueryBuilder costBldr = new QueryBuilder(ciType);
+        costBldr.addWhereAttrEqValue(CIProducts.ProductCostAbstract.ProductLink, _transCost.getProductInstance());
+        costBldr.addWhereAttrGreaterValue(CIProducts.ProductCostAbstract.ValidUntil, date.minusMinutes(1));
+        costBldr.addWhereAttrLessValue(CIProducts.ProductCostAbstract.ValidFrom, date.plusMinutes(1));
+        if (ciType.equals(CIProducts.ProductCostAlternative)) {
+            costBldr.addWhereAttrLessValue(CIProducts.ProductCostAlternative.CurrencyLink, _currencyInstance);
+        }
+
         final MultiPrintQuery costMulti = costBldr.getPrint();
-        costMulti.addAttribute(CIProducts.ProductCost.Price);
+        costMulti.addAttribute(CIProducts.ProductCostAbstract.Price);
         costMulti.executeWithoutAccessCheck();
         if (costMulti.next()) {
-            currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCost.Price);
+            currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCostAbstract.Price);
         }
         if (_transCost.getResult().compareTo(BigDecimal.ZERO) != 0
                         && currPrice.compareTo(_transCost.getResult()) != 0) {
             Costing_Base.LOG.debug(" Updating Cost for: {}", _transCost);
-            final Insert insert = new Insert(CIProducts.ProductCost);
-            insert.add(CIProducts.ProductCost.ProductLink, _transCost.getProductInstance());
-            insert.add(CIProducts.ProductCost.Price, _transCost.getResult());
-            insert.add(CIProducts.ProductCost.ValidFrom, date);
-            insert.add(CIProducts.ProductCost.ValidUntil, date.plusYears(10));
-            insert.add(CIProducts.ProductCost.CurrencyLink, _currencyInstance);
+            final Insert insert = new Insert(ciType);
+            insert.add(CIProducts.ProductCostAbstract.ProductLink, _transCost.getProductInstance());
+            insert.add(CIProducts.ProductCostAbstract.Price, _transCost.getResult());
+            insert.add(CIProducts.ProductCostAbstract.ValidFrom, date);
+            insert.add(CIProducts.ProductCostAbstract.ValidUntil, date.plusYears(10));
+            insert.add(CIProducts.ProductCostAbstract.CurrencyLink, _currencyInstance);
             insert.executeWithoutAccessCheck();
         }
     }
