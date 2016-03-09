@@ -94,6 +94,29 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final IntegerSysConfAttribute COSTINGMAXTRANSACTION = new IntegerSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Costing.MaxTransaction")
+                    .description("Max number of transaction that will be analyzed at once before committing.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final ListSysConfAttribute COSTINGALTINSTS = new ListSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Costing.AlternativeCurrencies")
+                    .description("List of Alternative Currency OIDs that will be calculated also.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink COSTINGSTORAGEGROUP = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Costing.StorageGroup")
+                    .description("Storage Group that is used as a filter for using only the transactions "
+                            + "that belong to the given StorageGroup, if not present the "
+                            + "calculation is over all Storages.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROV = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Config4ProductABCReport4Provider")
