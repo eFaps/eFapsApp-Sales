@@ -383,6 +383,7 @@ public abstract class Costing_Base
         throws EFapsException
     {
         BigDecimal currPrice = BigDecimal.ZERO;
+
         final DateTime date = new DateTime().withTimeAtStartOfDay();
 
         final CIType ciType = _transCost.getCostingInstance().getType().isCIType(CIProducts.Costing)
