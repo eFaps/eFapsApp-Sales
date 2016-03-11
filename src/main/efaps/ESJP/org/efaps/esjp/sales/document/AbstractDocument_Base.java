@@ -2619,6 +2619,31 @@ public abstract class AbstractDocument_Base
         return ret;
     }
 
+    @Override
+    protected void addStatus2DocCreate(final Parameter _parameter,
+                                       final Insert _insert,
+                                       final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        Status status = null;
+        //  first check if set via special SystemConfiguration
+        final Type type = getType4DocCreate(_parameter);
+        if (type != null) {
+            // construct the key
+            final String configKey = Sales.BASE + type.getName().replaceFirst("Sales_", "") + ".Status4Create";
+            if (Sales.getSysConfig().containsAttributeValue(configKey)) {
+                final String key = Sales.getSysConfig().getAttributeValue(configKey);
+                status = Status.find(type.getStatusAttribute().getLink().getUUID(), key);
+            }
+        }
+        if (status == null) {
+            super.addStatus2DocCreate(_parameter, _insert, _createdDoc);
+        }  else {
+            _insert.add(type.getStatusAttribute(), status);
+        }
+    }
+
+
     /**
      * Get the name for the document on edit.
      *

@@ -375,6 +375,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute ORDERINBOUNDSTATUS4CREATE = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "OrderInbound.Status4Create")
+                    .description("Key of the Status for create.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute DELIVERYNOTEACTIVATEREMARK = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.ActivateRemark")
