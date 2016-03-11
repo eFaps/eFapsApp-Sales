@@ -383,7 +383,7 @@ public abstract class Costing_Base
         throws EFapsException
     {
         BigDecimal currPrice = BigDecimal.ZERO;
-        final DateTime date = new DateTime();
+        final DateTime date = new DateTime().withTimeAtStartOfDay();
 
         final CIType ciType = _transCost.getCostingInstance().getType().isCIType(CIProducts.Costing)
                          ? CIProducts.ProductCost : CIProducts.ProductCostAlternative;
@@ -393,7 +393,7 @@ public abstract class Costing_Base
         costBldr.addWhereAttrGreaterValue(CIProducts.ProductCostAbstract.ValidUntil, date.minusMinutes(1));
         costBldr.addWhereAttrLessValue(CIProducts.ProductCostAbstract.ValidFrom, date.plusMinutes(1));
         if (ciType.equals(CIProducts.ProductCostAlternative)) {
-            costBldr.addWhereAttrLessValue(CIProducts.ProductCostAlternative.CurrencyLink, _currencyInstance);
+            costBldr.addWhereAttrEqValue(CIProducts.ProductCostAlternative.CurrencyLink, _currencyInstance);
         }
 
         final MultiPrintQuery costMulti = costBldr.getPrint();
@@ -402,8 +402,8 @@ public abstract class Costing_Base
         if (costMulti.next()) {
             currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCostAbstract.Price);
         }
-        if (_transCost.getResult().compareTo(BigDecimal.ZERO) != 0
-                        && currPrice.compareTo(_transCost.getResult()) != 0) {
+        if (_transCost.getResult().compareTo(BigDecimal.ZERO) != 0 && currPrice.compareTo(_transCost.getResult()
+                        .setScale(currPrice.scale(), RoundingMode.HALF_UP)) != 0) {
             Costing_Base.LOG.debug(" Updating Cost for: {}", _transCost);
             final Insert insert = new Insert(ciType);
             insert.add(CIProducts.ProductCostAbstract.ProductLink, _transCost.getProductInstance());
