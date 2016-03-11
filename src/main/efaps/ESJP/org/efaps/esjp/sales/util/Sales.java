@@ -541,6 +541,15 @@ public final class Sales
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for Quotation");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final IntegerSysConfAttribute PRODUCTIONCOSTINGMAXDEV = new IntegerSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ProductionCosting.MaxDeviation")
+                    .defaultValue(0)
+                    .description("Maximum in percent that the new costing can deviat from the "
+                                    + "currenct cost before triggering an alert. ");
+
     /**
      * Singelton.
      */

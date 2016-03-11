@@ -17,6 +17,8 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,7 +38,11 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.erp.AbstractPositionWarning;
+import org.efaps.esjp.erp.IWarning;
+import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
@@ -152,13 +158,40 @@ public abstract class ProductionCosting_Base
         return retVal;
     }
 
-
-
     @Override
     public Return validate(final Parameter _parameter)
         throws EFapsException
     {
-        return new Validation().validate(_parameter, this);
+        return new Validation()
+        {
+            @Override
+            protected List<IWarning> validate(final Parameter _parameter,
+                                              final List<IWarning> _warnings)
+                throws EFapsException
+            {
+                final List<IWarning> ret = super.validate(_parameter, _warnings);
+                if (Sales.PRODUCTIONCOSTINGMAXDEV.get() > 0) {
+                    final List<Calculator> calcs = analyseTable(_parameter, null);
+                    int i = 1;
+                    for (final Calculator calc : calcs) {
+                        final BigDecimal currentCost = Cost.getCost4Currency(_parameter, calc.getProductInstance(),
+                                        getRateCurrencyInstance(_parameter, null));
+                        if (currentCost.compareTo(BigDecimal.ZERO) > 0) {
+                           final BigDecimal deviation = calc.getNetUnitPrice().subtract(currentCost)
+                                           .setScale(4, RoundingMode.HALF_UP)
+                                           .divide(currentCost, RoundingMode.HALF_UP)
+                                           .multiply(new BigDecimal(100)).abs();
+                           if (deviation.compareTo(new BigDecimal(Sales.PRODUCTIONCOSTINGMAXDEV.get())) > 0) {
+                               ret.add(new ProductionCostingMaximumDeviationWarning().setPosition(i));
+                           }
+                        }
+                        i++;
+                    }
+                }
+                return ret;
+            };
+
+        }.validate(_parameter, this);
     }
 
     @Override
@@ -166,5 +199,14 @@ public abstract class ProductionCosting_Base
         throws EFapsException
     {
         return CISales.ProductionCosting;
+    }
+
+    /**
+     * Warning for maximum deviation.
+     */
+    public static class ProductionCostingMaximumDeviationWarning
+        extends AbstractPositionWarning
+    {
+
     }
 }
