@@ -17,6 +17,7 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -78,7 +79,15 @@ public abstract class Exchange_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
+        final Return ret = new Return();
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        connect2Object(_parameter, createdDoc);
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
         return new Return();
     }
 
@@ -101,6 +110,27 @@ public abstract class Exchange_Base
             _insert.add(CISales.Exchange.EntityFinancial, entityFinancial);
             _createdDoc.getValues().put(CISales.Exchange.EntityFinancial.name, entityFinancial);
         }
+    }
+
+    /**
+     * Method for create a new Quotation.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updateConnection2Object(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return new Return();
     }
 
     /**
@@ -139,6 +169,7 @@ public abstract class Exchange_Base
                     ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
                                     CISales.DocumentSumAbstract.DueDate.name), dueDateAr[i]);
                     final CreatedDoc createdDoc = createDoc(parameter);
+                    createReport(_parameter, createdDoc);
                     exchangeMap.put(createdDoc.getInstance(), (BigDecimal) NumberFormatter.get().getFormatter()
                                     .parse(crossAr[i]));
                 }
@@ -167,7 +198,7 @@ public abstract class Exchange_Base
                             stop = true;
                         }
 
-                        Map<Instance, BigDecimal> innermap;
+                        final Map<Instance, BigDecimal> innermap;
                         if (exchangeValuesMap.containsKey(entry.getKey())) {
                             innermap = exchangeValuesMap.get(entry.getKey());
                         } else {
@@ -265,7 +296,7 @@ public abstract class Exchange_Base
             for (int i = 0; i < div; i++) {
                 final Map<String, Object> map = new HashMap<>();
                 strValues.add(map);
-                BigDecimal val;
+                final BigDecimal val;
                 if (first) {
                     val = vals[0].add(vals[1]);
                     first = false;
@@ -281,7 +312,7 @@ public abstract class Exchange_Base
             js.append(getTableRemoveScript(_parameter, "exchangeTable", false, false))
                 .append(getTableAddNewRowsScript(_parameter, "exchangeTable", strValues, null));
             final List<Map<String, Object>> values = new ArrayList<>();
-            final Map<String,Object> map = new HashMap<>();
+            final Map<String, Object> map = new HashMap<>();
             map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
             values.add(map);
             ret.put(ReturnValues.VALUES, values);

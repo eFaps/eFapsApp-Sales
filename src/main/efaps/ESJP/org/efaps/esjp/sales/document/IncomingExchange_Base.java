@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,13 +18,17 @@
 
 package org.efaps.esjp.sales.document;
 
+import java.io.File;
+
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Insert;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.util.EFapsException;
 
@@ -49,8 +53,16 @@ public abstract class IncomingExchange_Base
     public Return create(final Parameter _parameter)
         throws EFapsException
     {
-        createDoc(_parameter);
-        return new Return();
+        final Return ret = new Return();
+        final CreatedDoc createdDoc = createDoc(_parameter);
+        connect2Object(_parameter, createdDoc);
+        final File file = createReport(_parameter, createdDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
+        return ret;
     }
 
     @Override
@@ -71,6 +83,49 @@ public abstract class IncomingExchange_Base
         if (entityFinancial != null) {
             _insert.add(CISales.IncomingExchange.EntityFinancial, entityFinancial);
             _createdDoc.getValues().put(CISales.IncomingExchange.EntityFinancial.name, entityFinancial);
+        }
+    }
+
+    /**
+     * Method for create a new Quotation.
+     *
+     * @param _parameter Parameter as passed from eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final EditedDoc editedDoc = editDoc(_parameter);
+        updateConnection2Object(_parameter, editedDoc);
+        final File file = createReport(_parameter, editedDoc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        final String onlynumber = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.IncomingExchange.OnlyNumber.name));
+        if (onlynumber != null) {
+            _update.add(CISales.IncomingExchange.OnlyNumber, onlynumber);
+            _editDoc.getValues().put(CISales.IncomingExchange.OnlyNumber.name, onlynumber);
+        }
+
+        final String entityFinancial = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.IncomingExchange.EntityFinancial.name));
+        if (entityFinancial != null) {
+            _update.add(CISales.IncomingExchange.EntityFinancial, entityFinancial);
+            _editDoc.getValues().put(CISales.IncomingExchange.EntityFinancial.name, entityFinancial);
         }
     }
 

@@ -32,6 +32,10 @@
                 <property name="StatusGroup">Sales_IncomingExchangeStatus</property>
                 <property name="Status">Open</property>
                 <property name="SwapType">Pay</property>
+                 <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.IncomingExchange.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.IncomingExchange.Mime</property>
             </execute>
             <validate method="validate4CreateCalculated" program="org.efaps.esjp.sales.document.Exchange"/>
         </target>

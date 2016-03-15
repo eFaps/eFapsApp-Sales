@@ -130,6 +130,21 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGEXCHANGEJASPERREPORT
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingExchange.JasperReport")
+                    .description("Name of the jasperReport for IncomingExchange.");
+
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute INCOMINGEXCHANGEMIME
+        = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingExchange.Mime")
+                    .description("Mime of the JasperReport for IncomingExchange.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INCOMINGINVOICEFROMORDEROUTBOUND = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.CreateFromOrderOutbound")

@@ -273,6 +273,13 @@ public abstract class AbstractSumOnlyDocument_Base
             _editDoc.getValues().put(CISales.DocumentSumAbstract.Remark.name, remark);
         }
 
+        final String revision = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.DocumentSumAbstract.Revision.name));
+        if (revision != null) {
+            update.add(CISales.DocumentSumAbstract.Revision, revision);
+            _editDoc.getValues().put(CISales.DocumentSumAbstract.Revision.name, revision);
+        }
+
         final String note = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
                         CISales.DocumentSumAbstract.Note.name));
         if (note != null) {
