@@ -1,34 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DeliveryNotePosition" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="1becb64b-ec22-4075-bf03-ddd7a6e155cb">
-  <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-    <property name="Types" value="Sales_PositionAbstract"/>
-    <property name="LinkFroms" value="DocumentAbstractLink"/>
-  </parameter>
-  <field name="Quantity" class="java.lang.String">
-    <property name="Select" value="attribute[Quantity].format[#,###.####]"/>
+  <parameter name="INSTANCE" class="java.lang.Object">
+        <defaultValueExpression><![CDATA[5877.23954]]></defaultValueExpression>
+    </parameter>
+    <queryString language="eFaps">
+        <![CDATA[query type Sales_PositionAbstract where DocumentAbstractLink == $P!{INSTANCE}
+ select
+ linkto[Product].attribute[Name] as productName,
+ attribute[Quantity] as quantity,
+ linkto[UoM].attribute[Name] as uoM,
+ attribute[ProductDesc] as description]]>
+    </queryString>
+    <field name="productName" class="java.lang.String"/>
+  <field name="quantity" class="java.math.BigDecimal">
   </field>
-  <field name="UoM" class="java.lang.String">
-    <property name="Select" value="linkto[UoM].attribute[Name]"/>
+  <field name="uoM" class="java.lang.String">
   </field>
-  <field name="Description" class="java.lang.String">
-    <property name="Select" value="attribute[ProductDesc]"/>
+  <field name="description" class="java.lang.String">
   </field>
   <detail>
     <band height="20" splitType="Stretch">
       <textField>
         <reportElement uuid="8fcf6be4-edc0-4124-9b5c-93877ee46e54" x="0" y="0" width="62" height="20"/>
         <textElement/>
-        <textFieldExpression><![CDATA[$F{Quantity}]]></textFieldExpression>
+        <textFieldExpression><![CDATA[$F{quantity}]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement uuid="83a8a5f7-3e19-49fb-a5e1-26c7aecfa6ca" x="62" y="0" width="50" height="20"/>
         <textElement/>
-        <textFieldExpression><![CDATA[$F{UoM}]]></textFieldExpression>
+        <textFieldExpression><![CDATA[$F{uoM}]]></textFieldExpression>
       </textField>
       <textField>
         <reportElement uuid="63585a93-2055-4c0f-9050-fa70c684f52e" x="174" y="0" width="381" height="20"/>
         <textElement/>
-        <textFieldExpression><![CDATA[$F{Description}]]></textFieldExpression>
+        <textFieldExpression><![CDATA[$F{description}]]></textFieldExpression>
       </textField>
     </band>
   </detail>

@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 5.2.0-->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DeliveryNote" language="groovy" pageWidth="595" pageHeight="742" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="120" bottomMargin="20" isFloatColumnFooter="true" uuid="954c33bb-f43d-4b3e-83b4-f0c427ec71c3">
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="Instance" value="true"/>
-        <property name="hasSubReport" value="true"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_DeliveryNote" language="groovy" pageWidth="595" pageHeight="742" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="120" bottomMargin="20" isFloatColumnFooter="true" uuid="954c33bb-f43d-4b3e-83b4-f0c427ec71c3">
+   <parameter name="INSTANCE" class="java.lang.Object">
+        <parameterDescription>Instance<![CDATA[]]></parameterDescription>
+        <defaultValueExpression><![CDATA[5828.25277]]></defaultValueExpression>
     </parameter>
-    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
+    <queryString language="eFaps">
+            <![CDATA[print obj $P!{INSTANCE}
+ select
+ attribute[Date] as date,
+ linkto[Contact].attribute[Name] as contactName,
+ linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber] as contactTaxNumber,
+ linkto[Contact].class[Contacts_ClassPerson].attribute[IdentityCard] as contactIdentityCard,
+ linkto[Contact].class[Contacts_ClassLocation].attribute[LocationAdressStreet] as contactAdressStreet,
+ linkto[CarrierLink].attribute[Name] as carrierName,
+ linkto[CarrierLink].class[Contacts_ClassOrganisation].attribute[TaxNumber] as carrierTaxNumber,
+ linkto[CarrierLink].class[Contacts_ClassLocation].attribute[LocationAdressStreet] as carrierTaxNumber,
+ attribute[DeparturePoint] as departurePoint,
+ attribute[ArrivalPoint] as arrivalPoint,
+ attribute[VehicleBrand] as vehicleBrand,
+ attribute[VehicleLicencePlate] as vehicleLicencePlate,
+ attribute[VehicleDriverInfo] as vehicleDriverInfo,
+ attribute[Note] as note,
+ linkto[TransferReason].attribute[Value] as transferReason
+ ]]>
+        </queryString>
     <field name="date" class="org.joda.time.DateTime">
-        <property name="Select" value="attribute[Date]"/>
     </field>
     <field name="contactName" class="java.lang.String">
-        <property name="Select" value="linkto[Contact].attribute[Name]"/>
     </field>
     <field name="contactTaxNumber" class="java.lang.String">
-        <property name="Select" value="linkto[Contact].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
     </field>
     <field name="contactIdentityCard" class="java.lang.String">
-        <property name="Select" value="linkto[Contact].class[Contacts_ClassPerson].attribute[IdentityCard]"/>
     </field>
     <field name="contactAdressStreet" class="java.lang.String">
-        <property name="Select" value="linkto[Contact].class[Contacts_ClassLocation].attribute[LocationAdressStreet]"/>
     </field>
     <field name="carrierName" class="java.lang.String">
-        <property name="Select" value="linkto[CarrierLink].attribute[Name]"/>
     </field>
     <field name="carrierTaxNumber" class="java.lang.String">
-        <property name="Select" value="linkto[CarrierLink].class[Contacts_ClassOrganisation].attribute[TaxNumber]"/>
     </field>
     <field name="carrierAdressStreet" class="java.lang.String">
-        <property name="Select" value="linkto[CarrierLink].class[Contacts_ClassLocation].attribute[LocationAdressStreet]"/>
     </field>
     <field name="departurePoint" class="java.lang.String">
-        <property name="Select" value="attribute[DeparturePoint]"/>
     </field>
     <field name="arrivalPoint" class="java.lang.String">
-        <property name="Select" value="attribute[ArrivalPoint]"/>
     </field>
     <field name="vehicleBrand" class="java.lang.String">
-        <property name="Select" value="attribute[VehicleBrand]"/>
     </field>
     <field name="vehicleLicencePlate" class="java.lang.String">
-        <property name="Select" value="attribute[VehicleLicencePlate]"/>
     </field>
     <field name="vehicleDriverInfo" class="java.lang.String">
-        <property name="Select" value="attribute[VehicleDriverInfo]"/>
     </field>
     <field name="note" class="java.lang.String">
-        <property name="Select" value="attribute[Note]"/>
     </field>
     <field name="transferReason" class="java.lang.String">
-        <property name="Select" value="linkto[TransferReason].attribute[Value]"/>
     </field>
     <pageHeader>
         <band height="104">
@@ -118,8 +123,11 @@
         <band height="24" splitType="Prevent">
             <subreport>
                 <reportElement x="0" y="0" width="555" height="21" uuid="b0a8a765-0598-4f8e-8dd3-96ebd71eae3e"/>
-                <dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_DeliveryNotePosition")]]></dataSourceExpression>
-                <subreportExpression><![CDATA["JasperReport.Sales_DeliveryNotePosition"]]></subreportExpression>
+                <subreportParameter name="INSTANCE">
+                    <subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+                </subreportParameter>
+                 <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                <subreportExpression><![CDATA["Sales_DeliveryNotePosition.jrxml"]]></subreportExpression>
             </subreport>
         </band>
         <band height="26" splitType="Prevent">
