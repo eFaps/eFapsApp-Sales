@@ -35,6 +35,7 @@ import org.efaps.esjp.admin.common.systemconfiguration.ListSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
+import org.efaps.esjp.ci.CIMsgContacts;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -127,6 +128,22 @@ public final class Sales
                     .key(BASE + "DeliveryNote.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for DeliveryNote.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute DELIVERYNOTECONTMSGPH4ARP = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.ContactMsgPhrase4ArrivalPoint")
+                    .defaultValue(CIMsgContacts.ContactAddressMsgPhrase.uuid.toString())
+                    .description("MsgPhrase for a contact applied to ArrivalPoint .");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute DELIVERYNOTESUBCONTMSGPH4ARP = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.SubContactMsgPhrase4ArrivalPoint")
+                    .defaultValue(CIMsgContacts.SubContactAddressMsgPhrase.uuid.toString())
+                    .description("MsgPhrase for a sub contact applied to ArrivalPoint .");
 
     /** See description. */
     @EFapsSysConfAttribute

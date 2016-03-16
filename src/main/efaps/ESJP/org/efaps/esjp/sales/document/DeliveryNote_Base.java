@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -31,8 +28,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang3.StringUtils;
+import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -69,7 +68,6 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("363ad7a5-1e7b-4194-89e3-a31d07d783df")
 @EFapsApplication("eFapsApp-Sales")
@@ -183,12 +181,11 @@ public abstract class DeliveryNote_Base
     {
         super.add2UpdateMap4Contact(_parameter, _contactInstance, _map);
         final PrintQuery print = new PrintQuery(_contactInstance);
-        final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
-                        .attribute(CIContacts.ClassLocation.LocationAdressStreet);
-        print.addSelect(sel);
+        final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+        print.addMsgPhrase(msgPhrase);
         print.execute();
-        final String adress = print.<String>getSelect(sel);
-        _map.put(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress);
+        final String address = print.getMsgPhrase(msgPhrase);
+        _map.put(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, address);
     }
 
 
@@ -377,14 +374,13 @@ public abstract class DeliveryNote_Base
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.contact.name));
         if (contactInst.isValid()) {
             final PrintQuery print = new PrintQuery(contactInst);
-            final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
-                            .attribute(CIContacts.ClassLocation.LocationAdressStreet);
-            print.addSelect(sel);
+            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+            print.addMsgPhrase(msgPhrase);
             print.execute();
-            final String adress = print.<String>getSelect(sel);
-            if (all || StringUtils.startsWithIgnoreCase(adress, input)) {
+            final String address = print.getMsgPhrase(msgPhrase);
+            if (all || StringUtils.startsWithIgnoreCase(address, input)) {
                 final Map<String, String> map = new HashMap<String, String>();
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), adress);
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
                 list.add(map);
             }
 
@@ -395,15 +391,14 @@ public abstract class DeliveryNote_Base
                 queryBldr.addWhereAttrInQuery(CIContacts.SubContact.ID,
                                 attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
                 final MultiPrintQuery multi = queryBldr.getPrint();
-                final SelectBuilder selLo = SelectBuilder.get().clazz(CIContacts.SubContactClassLocation)
-                                .attribute(CIContacts.SubContactClassLocation.LocationAdressStreet);
-                multi.addSelect(selLo);
+                final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTESUBCONTMSGPH4ARP.get()));
+                multi.addMsgPhrase(subMsgPhrase);
                 multi.execute();
                 while (multi.next()) {
-                    final String loAdress = multi.<String>getSelect(selLo);
-                    if (all || StringUtils.startsWithIgnoreCase(loAdress, input)) {
+                    final String loAddress = multi.getMsgPhrase(subMsgPhrase);
+                    if (all || StringUtils.startsWithIgnoreCase(loAddress, input)) {
                         final Map<String, String> map = new HashMap<String, String>();
-                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), loAdress);
+                        map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), loAddress);
                         list.add(map);
                     }
                 }
@@ -414,14 +409,13 @@ public abstract class DeliveryNote_Base
                         .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
         if (carrierInst.isValid()) {
             final PrintQuery print = new PrintQuery(carrierInst);
-            final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
-                            .attribute(CIContacts.ClassLocation.LocationAdressStreet);
-            print.addSelect(sel);
+            final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+            print.addMsgPhrase(msgPhrase);
             print.execute();
-            final String adress = print.<String>getSelect(sel);
-            if (all || StringUtils.startsWithIgnoreCase(adress, input)) {
+            final String address = print.getMsgPhrase(msgPhrase);
+            if (all || StringUtils.startsWithIgnoreCase(address, input)) {
                 final Map<String, String> map = new HashMap<String, String>();
-                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), adress);
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
                 list.add(map);
             }
         }
