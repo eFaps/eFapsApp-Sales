@@ -1,53 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Sales_PaymentDocumentReport" language="groovy" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isFloatColumnFooter="true" uuid="88b0373f-671b-487b-9adf-0af1384350b2">
-    <property name="ireport.zoom" value="1.0"/>
-    <property name="ireport.x" value="0"/>
-    <property name="ireport.y" value="0"/>
     <import value="org.efaps.admin.datamodel.ui.DecimalUI"/>
     <import value="org.efaps.number2words.Converter"/>
-    <parameter name="EFAPS_DEFINITION" class="java.lang.String" isForPrompting="false">
-        <property name="Instance" value="true"/>
-        <property name="hasSubReport" value="true"/>
+    <parameter name="INSTANCE" class="java.lang.Object">
+        <parameterDescription><![CDATA[Object Instance]]></parameterDescription>
     </parameter>
-    <parameter name="EFAPS_SUBREPORT" class="java.util.HashMap"/>
     <parameter name="accountName" class="java.lang.String"/>
     <parameter name="accountCurrencyName" class="java.lang.String"/>
     <parameter name="CompanyName" class="java.lang.String"/>
     <parameter name="CompanyTaxNum" class="java.lang.String"/>
     <parameter name="ClientOrSupplier" class="java.lang.String"/>
-    <field name="date" class="org.joda.time.DateTime">
-        <property name="Select" value="attribute[Date]"/>
-    </field>
-    <field name="rate" class="java.math.BigDecimal">
-        <property name="Select" value="attribute[Rate].label"/>
-    </field>
-    <field name="contactName" class="java.lang.String">
-        <property name="Select" value="linkto[Contact].attribute[Name]"/>
-    </field>
-    <field name="currencyName" class="java.lang.String">
-        <property name="Select" value="linkto[RateCurrencyLink].attribute[Name]"/>
-    </field>
-    <field name="note" class="java.lang.String">
-        <property name="Select" value="attribute[Note]"/>
-    </field>
-    <field name="name" class="java.lang.String">
-        <property name="Select" value="attribute[Name]"/>
-    </field>
-    <field name="amount" class="java.math.BigDecimal">
-        <property name="Select" value="attribute[Amount]"/>
-    </field>
-    <field name="code" class="java.lang.String">
-        <property name="Select" value="attribute[Code]"/>
-    </field>
-    <field name="type" class="java.lang.String">
-        <property name="Select" value="type.label"/>
-    </field>
-    <field name="TypeUUID" class="java.util.UUID">
-        <property name="Select" value="type.uuid"/>
-    </field>
-    <field name="dueDate" class="org.joda.time.DateTime">
-        <property name="Select" value="attribute[DueDate]"/>
-    </field>
+    <queryString language="eFaps">
+        <![CDATA[print obj $P!{INSTANCE}
+ select
+ attribute[Date] as date,
+ attribute[Rate].label as rate,
+ linkto[Contact].attribute[Name] as contactName,
+ linkto[RateCurrencyLink].attribute[Name] as currencyName,
+ attribute[Note] as note,
+ attribute[Name] as name,
+ attribute[Amount] as amount,
+ attribute[Code] as code,
+ type.label as type,
+ type.uuid as TypeUUID,
+ attribute[DueDate] as dueDate]]>
+    </queryString>
+    <field name="date" class="org.joda.time.DateTime"/>
+    <field name="rate" class="java.math.BigDecimal"/>
+    <field name="contactName" class="java.lang.String"/>
+    <field name="currencyName" class="java.lang.String"/>
+    <field name="note" class="java.lang.String"/>
+    <field name="name" class="java.lang.String"/>
+    <field name="amount" class="java.math.BigDecimal"/>
+    <field name="code" class="java.lang.String"/>
+    <field name="type" class="java.lang.String"/>
+    <field name="TypeUUID" class="java.util.UUID"/>
+    <field name="dueDate" class="org.joda.time.DateTime"/>
     <pageHeader>
         <band height="90">
             <staticText>
@@ -196,12 +184,13 @@
         <band height="20" splitType="Stretch">
             <subreport isUsingCache="false">
                 <reportElement uuid="0f249bf2-0682-4b37-ad3f-00c18b204767" stretchType="RelativeToTallestObject" x="0" y="0" width="555" height="20"/>
-                <subreportParameter name="EFAPS_DEFINITION"/>
+                <subreportParameter name="INSTANCE">
+                    <subreportParameterExpression><![CDATA[$P{INSTANCE}]]></subreportParameterExpression>
+                </subreportParameter>
                 <subreportParameter name="ClientOrSupplier">
                     <subreportParameterExpression><![CDATA[$P{ClientOrSupplier}]]></subreportParameterExpression>
                 </subreportParameter>
-                <dataSourceExpression><![CDATA[$P{EFAPS_SUBREPORT}.get("Sales_PaymentDocumentPosition")]]></dataSourceExpression>
-                <subreportExpression><![CDATA["JasperReport.Sales_PaymentDocumentPosition"]]></subreportExpression>
+                <subreportExpression><![CDATA["Sales_PaymentDocumentPosition.jrxml"]]></subreportExpression>
             </subreport>
         </band>
     </detail>

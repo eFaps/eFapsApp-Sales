@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,18 +15,11 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
-<ui-table xmlns="http://www.efaps.org/xsd"
-          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
           xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>fd5b8044-5827-408e-a1e2-e819fd7dcc3c</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDocumentAbstractTable</name>
@@ -47,13 +41,13 @@
         <field name="name">
             <property name="Attribute">Name</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Name.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="contact">
             <property name="SelectAlternateOID">linkto[Contact].oid</property>
             <property name="Select">linkto[Contact].attribute[Name]</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Contact.Label</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
         </field>
         <field name="issued">
             <property name="Attribute">Issued</property>
@@ -64,7 +58,7 @@
             <property name="FilterType">FREETEXT</property>
             <property name="FilterRequired">TRUE</property>
             <property name="FilterBase">DATABASE</property>
-            <property name="FilterDefault">MONTH</property>
+            <property name="FilterDefault">WEEK</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Date.Label</property>
         </field>
         <field name="status">
@@ -75,18 +69,13 @@
         <field name="amount">
             <property name="Attribute">Amount</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Amount.Label</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="Align">right</property>
         </field>
-        <field name="currencyLink">
-            <property name="SelectAlternateOID">linkto[RateCurrencyLink].oid</property>
-            <property name="Select">linkto[RateCurrencyLink].attribute[Name]</property>
-            <property name="Label">Sales_PaymentDocumentAbstract.Currency.Label</property>
-        </field>
-        <field name="buttonOpenInNewWindow">
-            <icon>eFapsActionNewWindow</icon>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Target">popup</property>
-            <property name="SortAble">false</property>
-            <property name="Width">15px</property>
+        <field name="rateCurrencyLink">
+            <property name="Select">linkto[RateCurrencyLink].attribute[Symbol]</property>
+            <property name="Label">Sales_PaymentDocumentAbstract/RateCurrencyLink.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
     </definition>
 </ui-table>
