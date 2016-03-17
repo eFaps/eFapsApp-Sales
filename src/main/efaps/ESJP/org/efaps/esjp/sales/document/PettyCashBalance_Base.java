@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -36,7 +33,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIType;
@@ -51,13 +48,13 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnAction;
 import org.efaps.esjp.sales.Account;
-import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
@@ -70,10 +67,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("d93f298b-f0bf-4278-a18e-b065cc330e50")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaspApp-Sales")
 public abstract class PettyCashBalance_Base
     extends AbstractDocumentSum
 {
@@ -111,6 +107,7 @@ public abstract class PettyCashBalance_Base
      * @return new Return.
      * @throws EFapsException on error.
      */
+    @Override
     public Return createReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -135,8 +132,6 @@ public abstract class PettyCashBalance_Base
     {
         Instance ret = null;
         final Instance inst = _parameter.getCallInstance();
-        final boolean withDateConf = Sales.getSysConfig()
-                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
 
         final PrintQuery print = new PrintQuery(inst);
         print.addAttribute(CISales.AccountAbstract.CurrencyLink,
@@ -149,7 +144,8 @@ public abstract class PettyCashBalance_Base
         }
         final Account acc = new Account();
 
-        final String startAmountStr = _parameter.getParameterValue("startAmount");
+        final String startAmountStr = _parameter.getParameterValue(
+                        CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.startAmount.name);
         final BigDecimal amount = acc.getAmountPayments(_parameter);
 
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
@@ -157,7 +153,7 @@ public abstract class PettyCashBalance_Base
         try {
             startAmount = (BigDecimal) formater.parse(startAmountStr);
         } catch (final ParseException e) {
-            throw new EFapsException(Account_Base.class, "ParseException", e);
+            LOG.error("Catched parsing error", e);
         }
         final BigDecimal difference;
         // the transactions sum to Zero
@@ -182,7 +178,7 @@ public abstract class PettyCashBalance_Base
             final Insert insert = new Insert(CISales.PettyCashBalance);
             insert.add(CISales.PettyCashBalance.Name, getDocName4Create(_parameter));
             insert.add(CISales.PettyCashBalance.Salesperson, Context.getThreadContext().getPersonId());
-            if (withDateConf) {
+            if (_parameter.getParameterValue("date") != null) {
                 insert.add(CISales.PettyCashBalance.Date, _parameter.getParameterValue("date"));
             } else {
                 insert.add(CISales.PettyCashBalance.Date, new DateTime());
@@ -202,8 +198,11 @@ public abstract class PettyCashBalance_Base
             ret = insert.getInstance();
 
             final List<Instance> lstInst = new ArrayList<Instance>();
-            if (withDateConf) {
-                final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
+
+            if (Context.getThreadContext().containsSessionAttribute(
+                            CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name)) {
+                final String[] oids = (String[]) Context.getThreadContext().getSessionAttribute(
+                                            CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name);
                 if (oids != null) {
                     for (int i = 0; i < oids.length; i++) {
                         final Instance instPay = Instance.get(oids[i]);
@@ -212,6 +211,8 @@ public abstract class PettyCashBalance_Base
                 } else {
                     lstInst.addAll(acc.getPayments(_parameter));
                 }
+                Context.getThreadContext().removeSessionAttribute(
+                                CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name);
             } else {
                 lstInst.addAll(acc.getPayments(_parameter));
             }
@@ -266,7 +267,7 @@ public abstract class PettyCashBalance_Base
             payInsert.add(CISales.Payment.TargetDocument, balanceInst);
             payInsert.execute();
 
-            CIType type;
+            final CIType type;
             if (difference.compareTo(BigDecimal.ZERO) < 0) {
                 type = CISales.TransactionOutbound;
             } else {
@@ -400,7 +401,7 @@ public abstract class PettyCashBalance_Base
             final InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
-                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.REQUIREBOOKED4PETTYCASHPAYMENT)) {
+                if (Sales.PETTYCASHBALANCEREQUIREBOOKED4PAY.get()) {
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashReceipt);
                     attrQueryBldr.addWhereAttrNotEqValue(CISales.PettyCashReceipt.Status,
                                     Status.find(CISales.PettyCashReceiptStatus.Booked));

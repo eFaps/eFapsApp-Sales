@@ -58,6 +58,42 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ACTIVATECOMPANYINDREPORT = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.ActivateCompanyIndependent")
+                    .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute ACQUISITIONCOSTINGCREATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "AcquisitionCosting.Create")
+                    .description("Allows create a AcquisitionCosting manually.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute CALCULATORCONFIG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4Calculator")
+                    .concatenate(true)
+                    .description(" Configuration for Calculators.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CHACTIVATESALESCOND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Channel.ActivateSalesCondition")
+                    .description("Activate the Sales Conditions.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CHACTIVATEPURCHASECOND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Channel.ActivatePurchaseCondition")
+                    .description("Activate the Purchase Conditions");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute COSTINGACTIVATE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Costing.Activate")
@@ -95,24 +131,18 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROV = new PropertiesSysConfAttribute()
+    public static final StringSysConfAttribute CREDITNOTEJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Config4ProductABCReport4Provider")
-                    .description("Configures the ABC Report for Providers.");
+                    .key(BASE + "CreditNote.JasperReport")
+                    .description("Name of the jasperReport for CreditNote");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROD = new PropertiesSysConfAttribute()
+    public static final EnumSysConfAttribute<JasperMime> CREDITNOTEMIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Config4ProductABCReport4Product")
-                    .description("Configures the ABC Report for Products..");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ACQUISITIONCOSTINGCREATE = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "AcquisitionCosting.Create")
-                    .description("Allows create a AcquisitionCosting manually.");
+                    .key(BASE + "CreditNote.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for CreditNote");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -147,12 +177,63 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute DELIVERYNOTEACTIVATEREMARK = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.ActivateRemark")
+                    .description("Activate the Remark Attribute for Order Inbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocSituationReport")
+                    .description("Properties 4 DocSituationReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCPOSREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport")
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute DOCPOSREPORTBOM = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocPositionReport.ActivateBOM")
+                    .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCVSDOCREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocVsDocReport")
+                    .description("Properties to configure the DocVsDocReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute DOCSUMREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.DocumentSumReport")
+                    .concatenate(true)
+                    .description("Properties to configure the DocumentSumReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute EMPLOYEE2DOCREPORT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.Employee2DocReport")
+                    .description("Autocomplete Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute INCOMINGEXCHANGEJASPERREPORT
         = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.JasperReport")
                     .description("Name of the jasperReport for IncomingExchange.");
 
+    /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute INCOMINGEXCHANGEMIME
         = new PropertiesSysConfAttribute()
@@ -219,70 +300,6 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute CHACTIVATESALESCOND = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Channel.ActivateSalesCondition")
-                    .description("Activate the Sales Conditions.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute CHACTIVATEPURCHASECOND = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Channel.ActivatePurchaseCondition")
-                    .description("Activate the Purchase Conditions");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECEIPTASSIGNEMPLOYEE = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Receipt.AssignEmployee")
-                    .description("Activate the mechanism to assign employee to Receipt");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECEIPTACTIVATECONDITION = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Receipt.ActivateCondition")
-                    .description("Activate the mechanism to assign a condition in Receipt");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "OrderOutbound.ActivateCondition")
-                    .description("Activate the mechanism to assign a condition in Order Outbound");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final StringSysConfAttribute ORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "OrderOutbound.JasperReport")
-                    .description("Name of the jasperReport for Order Outbound");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute ORDEROUTBOUNDPRODUCTAC = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "OrderOutbound.ProductAutoComplete")
-                    .description("Configuration for the AutoComplete for Products in OrderOutbound")
-                    .addDefaultValue("Type", "Products_ProductAbstract");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "ServiceOrderOutbound.ActivateCondition")
-                    .description("Activate the mechanism to assign a condition in Order Outbound");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final StringSysConfAttribute SERVICEORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "ServiceOrderOutbound.JasperReport")
-                    .description("Name of the jasperReport for Order Outbound");
-
-    /** See description. */
-    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute INVOICEACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Invoice.ActivateCondition")
@@ -333,70 +350,25 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute CREDITNOTEJASPERREPORT = new StringSysConfAttribute()
+    public static final BooleanSysConfAttribute ORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "CreditNote.JasperReport")
-                    .description("Name of the jasperReport for CreditNote");
+                    .key(BASE + "OrderOutbound.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> CREDITNOTEMIME = new EnumSysConfAttribute<JasperMime>()
+    public static final StringSysConfAttribute ORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "CreditNote.Mime")
-                    .clazz(JasperMime.class)
-                    .description("Name of the jasperReport for CreditNote");
+                    .key(BASE + "OrderOutbound.JasperReport")
+                    .description("Name of the jasperReport for Order Outbound");
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final StringSysConfAttribute REMINDERJASPERREPORT = new StringSysConfAttribute()
+    public static final PropertiesSysConfAttribute ORDEROUTBOUNDPRODUCTAC = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Reminder.JasperReport")
-                    .description("Name of the jasperReport for CreditNote");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> REMINDERMIME = new EnumSysConfAttribute<JasperMime>()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "Reminder.Mime")
-                    .clazz(JasperMime.class)
-                    .description("Name of the jasperReport for CreditNote");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute EMPLOYEE2DOCREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.Employee2DocReport")
-                    .description("Autocomplete Properties 4 Products in Invoice");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final StringSysConfAttribute USAGEREPORTJASPERREPORT = new StringSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "UsageReport.JasperReport")
-                    .description("Name of the jasperReport for UsageReport");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> USAGEREPORTMIME = new EnumSysConfAttribute<JasperMime>()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "UsageReport.Mime")
-                    .clazz(JasperMime.class)
-                    .description("Mime for the jasperReport for UsageReport");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final StringSysConfAttribute RETUSAGEREPJASPERREPORT = new StringSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "ReturnUsageReport.JasperReport")
-                    .description("Name of the jasperReport for ReturnUsageReport");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final EnumSysConfAttribute<JasperMime> RETUSAGEREPMIME = new EnumSysConfAttribute<JasperMime>()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "ReturnUsageReport.Mime")
-                    .clazz(JasperMime.class)
-                    .description("Mime for the jasperReport for ReturnUsageReport");
+                    .key(BASE + "OrderOutbound.ProductAutoComplete")
+                    .description("Configuration for the AutoComplete for Products in OrderOutbound")
+                    .addDefaultValue("Type", "Products_ProductAbstract");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -414,10 +386,73 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute DELIVERYNOTEACTIVATEREMARK = new BooleanSysConfAttribute()
+    public static final PropertiesSysConfAttribute PAYMENTTHRESHOLD4PAID = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "DeliveryNote.ActivateRemark")
-                    .description("Activate the Remark Attribute for Order Inbound");
+                    .key(BASE + "payment.Threshold4Paid")
+                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTCASHPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Cash.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTCHECKPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Check.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTDEPOSITPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Deposit.PayableDocuments")
+                    .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTDETRACTIONPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Detraction.PayableDocuments")
+                    .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTOUTEXCHANGEPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.out.Exchange.PayableDocuments")
+                    .description("Properties to define the Query for Documents taht can be payed.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASHERMITPARTIAL = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "AccountPettyCash.PermitPartialBalance")
+                    .description("Permit the partial Balance of a AccountPettyCash.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PETTYCASHBALANCEREQUIREBOOKED4PAY = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PettyCashBalance.RequireBooked4Payment")
+                    .description("Permit the partial Balance of a AccountPettyCash.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROV = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4ProductABCReport4Provider")
+                    .description("Configures the ABC Report for Providers.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PRODUCTABCREPORT4PROD = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4ProductABCReport4Product")
+                    .description("Configures the ABC Report for Products..");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -442,114 +477,26 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
+    public static final IntegerSysConfAttribute PRODUCTIONCOSTINGMAXDEV = new IntegerSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.DocSituationReport")
-                    .description("Properties 4 DocSituationReport");
+                    .key(BASE + "ProductionCosting.MaxDeviation")
+                    .defaultValue(0)
+                    .description("Maximum in percent that the new costing can deviat from the "
+                                    + "currenct cost before triggering an alert. ");
 
     /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
+    @EFapsSysConfLink
+    public static final SysConfLink RETURNUSAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.SalesReport4Account.IN")
-                    .description("Properties 4 SalesReport4Account IN.");
+                    .key(BASE + "ReturnUsageReport.DefaultProductDocumentType")
+                    .description("Default product document type for ReturnUsageReport.");
 
     /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTOUT = new PropertiesSysConfAttribute()
+    @EFapsSysConfLink
+    public static final SysConfLink PRODUCTIONREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.SalesReport4Account.OUT")
-                    .description("Properties 4 SalesReport4Account OUT.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute ACTIVATECOMPANYINDREPORT = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.ActivateCompanyIndependent")
-                    .description("Activate the Company Independent Reports.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTTHRESHOLD4PAID = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.Threshold4Paid")
-                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTOUTCASHPAYABLE = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.out.Cash.PayableDocuments")
-                    .description("Properties to define the Query for Documents that can be payed.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTOUTCHECKPAYABLE = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.out.Check.PayableDocuments")
-                    .description("Properties to define the Query for Documents that can be payed.");
-
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTOUTDEPOSITPAYABLE = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.out.Deposit.PayableDocuments")
-                    .description("Properties to define the Query for Documents taht can be payed.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTOUTDETRACTIONPAYABLE = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.out.Detraction.PayableDocuments")
-                    .description("Properties to define the Query for Documents taht can be payed.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute PAYMENTOUTEXCHANGEPAYABLE = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.out.Exchange.PayableDocuments")
-                    .description("Properties to define the Query for Documents taht can be payed.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute DOCPOSREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.DocPositionReport")
-                    .description("Properties to define a paid threshold for types. e.g. Sale_Invoice=0.05");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute DOCPOSREPORTBOM = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.DocPositionReport.ActivateBOM")
-                    .description("Activate the Company Independent Reports.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute DOCVSDOCREPORT = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "report.DocVsDocReport")
-                    .description("Properties to configure the DocVsDocReport.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUND = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "RecievingTicket.CreateFromOrderOutbound")
-                    .description("Activate the Company Independent Reports.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete")
-                    .description(" QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.");
-
-    /** See description. */
-    @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute RECIEVINGTICKETPOSREMARK = new BooleanSysConfAttribute()
-                    .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "RecievingTicket.ActivateRemark4Position")
-                    .description("Activate the Company Independent Reports.");
+                    .key(BASE + "ProductionReport.DefaultProductDocumentType")
+                    .description("Default product document type for ProductionReport.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -575,12 +522,118 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final IntegerSysConfAttribute PRODUCTIONCOSTINGMAXDEV = new IntegerSysConfAttribute()
+    public static final BooleanSysConfAttribute RECEIPTASSIGNEMPLOYEE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "ProductionCosting.MaxDeviation")
-                    .defaultValue(0)
-                    .description("Maximum in percent that the new costing can deviat from the "
-                                    + "currenct cost before triggering an alert. ");
+                    .key(BASE + "Receipt.AssignEmployee")
+                    .description("Activate the mechanism to assign employee to Receipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECEIPTACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Receipt.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Receipt");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUND = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.CreateFromOrderOutbound")
+                    .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute RECIEVINGTICKETFROMORDEROUTBOUNDAC = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.CreateFromOrderOutboundAutoComplete")
+                    .description(" QueryBuilder for Autocomplete of OrderOutbound to create Recieving Ticket from.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RECIEVINGTICKETPOSREMARK = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.ActivateRemark4Position")
+                    .description("Activate the Company Independent Reports.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute REMINDERJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Reminder.JasperReport")
+                    .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> REMINDERMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Reminder.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute RETUSAGEREPJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ReturnUsageReport.JasperReport")
+                    .description("Name of the jasperReport for ReturnUsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> RETUSAGEREPMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ReturnUsageReport.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime for the jasperReport for ReturnUsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTIN = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesReport4Account.IN")
+                    .description("Properties 4 SalesReport4Account IN.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTOUT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesReport4Account.OUT")
+                    .description("Properties 4 SalesReport4Account OUT.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SERVICEORDEROUTBOUNDACTIVATECONDITION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceOrderOutbound.ActivateCondition")
+                    .description("Activate the mechanism to assign a condition in Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute SERVICEORDEROUTBOUNDJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ServiceOrderOutbound.JasperReport")
+                    .description("Name of the jasperReport for Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.DefaultProductDocumentType")
+                    .description("Default product document type for UsageReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute USAGEREPORTJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.JasperReport")
+                    .description("Name of the jasperReport for UsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> USAGEREPORTMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Mime for the jasperReport for UsageReport");
 
     /**
      * Singelton.

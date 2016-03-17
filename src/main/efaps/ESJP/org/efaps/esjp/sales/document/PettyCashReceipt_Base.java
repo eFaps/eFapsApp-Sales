@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.document;
@@ -27,14 +24,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.ci.CIType;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -67,10 +66,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("9b1b92aa-550a-48d3-a58e-2c47e54802f9")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFaspApp-Sales")
 public abstract class PettyCashReceipt_Base
     extends AbstractDocumentSum
 {
@@ -213,7 +211,7 @@ public abstract class PettyCashReceipt_Base
                         .getValue(CISales.DocumentSumAbstract.CurrencyId.name));
 
         // evaluate if the amount must be changed to the currency of the account
-        Object ret;
+        final Object ret;
         if (_accCurrencyInst.getInstance().equals(rateCurrencyInst.getInstance())) {
             ret = _createdDoc.getValue(CISales.DocumentSumAbstract.RateCrossTotal.name);
         } else if (_accCurrencyInst.getInstance().equals(currencyInst.getInstance())) {
@@ -292,6 +290,36 @@ public abstract class PettyCashReceipt_Base
         }
         return ret;
     }
+
+    /**
+     * @param _parameter Parameter as passed by the eFasp API
+     * @return instance of the currency
+     * @throws EFapsException on error
+     */
+    @Override
+    protected Instance evaluateCurrency4JavaScript(final Parameter _parameter)
+        throws EFapsException
+    {
+        Instance ret = null;
+        if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE)) && _parameter.getCallInstance() != null
+                        && _parameter.getCallInstance().isValid() && _parameter.getCallInstance().getType().isCIType(
+                                        CISales.AccountPettyCash)) {
+            final Instance inst = _parameter.getCallInstance();
+
+            final PrintQuery print = CachedPrintQuery.get4Request(inst);
+            final SelectBuilder sel = SelectBuilder.get().linkto(CISales.AccountPettyCash.CurrencyLink).instance();
+            print.addSelect(sel);
+            print.executeWithoutAccessCheck();
+            final Instance instTmp = print.<Instance>getSelect(sel);
+            if (instTmp != null && instTmp.isValid()) {
+                ret = instTmp;
+            }
+        } else {
+            ret = super.evaluateCurrency4JavaScript(_parameter);
+        }
+        return ret;
+    }
+
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -526,19 +554,6 @@ public abstract class PettyCashReceipt_Base
         return ret;
     }
 
-    @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getType4SysConf(_parameter).getName();
-    }
-
-    @Override
-    protected Type getType4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return  getCIType().getType();
-    }
 
     @Override
     public CIType getCIType()
@@ -583,7 +598,7 @@ public abstract class PettyCashReceipt_Base
             update.add(CISales.PettyCashReceipt.Contact, Instance.get(contact));
             update.add(CISales.PettyCashReceipt.Name, docName);
 
-            Update relUpdate;
+            final Update relUpdate;
             if (docTypeRelInst != null && docTypeRelInst.isValid()) {
                 relUpdate = new Update(docTypeRelInst);
             } else {
@@ -623,7 +638,7 @@ public abstract class PettyCashReceipt_Base
         final Instance currActionInst = print.getSelect(selActionInst);
         if (!actionInst.equals(currActionInst)) {
             final Instance relInst = print.getSelect(selRelInst);
-            Update actionUpdate;
+            final Update actionUpdate;
             if (currActionInst != null && currActionInst.isValid()) {
                 actionUpdate = new Update(relInst);
             } else {
@@ -657,43 +672,66 @@ public abstract class PettyCashReceipt_Base
         } .dropDownFieldValue(_parameter);
     }
 
+    /**
+     * The Class EvaluatePositionWarning.
+     */
     public static class EvaluatePositionWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate position warning.
+         */
         public EvaluatePositionWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * The Class EvaluateDeducibleDocWarning.
+     */
     public static class EvaluateDeducibleDocWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate deducible doc warning.
+         */
         public EvaluateDeducibleDocWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * The Class EvaluateNotDeducibleDocWarning.
+     */
     public static class EvaluateNotDeducibleDocWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate not deducible doc warning.
+         */
         public EvaluateNotDeducibleDocWarning()
         {
             setError(true);
         }
     }
 
+    /**
+     * The Class EvaluateBalanceAccountDocWarning.
+     */
     public static class EvaluateBalanceAccountDocWarning
         extends AbstractWarning
     {
 
+        /**
+         * Instantiates a new evaluate balance account doc warning.
+         */
         public EvaluateBalanceAccountDocWarning()
         {
-
         }
     }
 

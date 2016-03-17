@@ -46,7 +46,6 @@ import org.efaps.esjp.sales.tax.TaxCat;
 import org.efaps.esjp.sales.tax.TaxCat_Base;
 import org.efaps.esjp.sales.tax.Tax_Base;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -423,7 +422,7 @@ public abstract class Calculator_Base
     protected ProductPrice evalPriceFromDB(final Parameter _parameter)
         throws EFapsException
     {
-        ProductPrice ret;
+        final ProductPrice ret;
         final String config = getConfig(getDocKey(), Keys.PRICEEVALUATION, "PriceList");
         switch (config) {
             case "Latest":
@@ -453,7 +452,7 @@ public abstract class Calculator_Base
     {
         final String typeStr = getConfig(getDocKey(), Keys.PRICEEVALTYPE,
                         CISales.DocumentSumAbstract.getType().getUUID().toString());
-        Type ret;
+        final Type ret;
         if (isUUID(typeStr)) {
             ret = Type.get(UUID.fromString(typeStr));
         } else {
@@ -537,8 +536,7 @@ public abstract class Calculator_Base
                                final String _default)
         throws EFapsException
     {
-        final Properties props = Sales.getSysConfig()
-                        .getAttributeValueAsProperties(SalesSettings.CALCULATORCONFIG, true);
+        final Properties props = Sales.CALCULATORCONFIG.get();
         final String keyStr = _mainKey + "." + _propkey.name();
         return _default == null ? props.getProperty(keyStr) : props.getProperty(keyStr, _default);
     }
@@ -969,7 +967,7 @@ public abstract class Calculator_Base
     public BigDecimal getCrossUnitPrice()
         throws EFapsException
     {
-        BigDecimal ret;
+        final BigDecimal ret;
         if (this.withoutTax) {
             ret = getNetUnitPrice();
         } else {

@@ -61,7 +61,6 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.listener.IOnDocumentSumReport;
 import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.dojo.charting.Axis;
 import org.efaps.esjp.ui.html.dojo.charting.ColumnsChart;
 import org.efaps.esjp.ui.html.dojo.charting.Data;
@@ -86,8 +85,9 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRRewindableDataSource;
 import net.sf.jasperreports.engine.data.JRMapCollectionDataSource;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO comment!
+ * TODO comment!.
  *
  * @author The eFaps Team
  */
@@ -97,16 +97,38 @@ public abstract class DocumentSumReport_Base
     extends FilteredReport
 {
 
+    /**
+     * The Enum GROUP.
+     *
+     * @author The eFaps Team
+     */
     public enum GROUP
     {
-        NONE, CONTACT;
+
+        /** The none. */
+        NONE,
+
+        /** The contact. */
+        CONTACT;
     }
 
+    /**
+     * The Enum User.
+     *
+     */
     public enum User
     {
+
+        /** The none. */
         NONE,
+
+        /** The creator. */
         CREATOR,
+
+        /** The modifier. */
         MODIFIER,
+
+        /** The person. */
         PERSON;
     }
 
@@ -121,6 +143,8 @@ public abstract class DocumentSumReport_Base
     private ValueList valueList;
 
     /**
+     * Generate report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing html snipplet
      * @throws EFapsException on error
@@ -237,6 +261,8 @@ public abstract class DocumentSumReport_Base
     }
 
     /**
+     * Export report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return Return containing the file
      * @throws EFapsException on error
@@ -261,6 +287,8 @@ public abstract class DocumentSumReport_Base
     }
 
     /**
+     * Gets the data.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return list of DataBeans
      * @throws EFapsException on error
@@ -294,7 +322,7 @@ public abstract class DocumentSumReport_Base
                 typeList = getTypeList(_parameter);
             }
             final Properties props = getProperties4TypeList(_parameter);
-            DocumentSumGroupedByDate_Base.DateGroup dateGroup;
+            final DocumentSumGroupedByDate_Base.DateGroup dateGroup;
             if (filter.containsKey("dateGroup") && filter.get("dateGroup") != null) {
                 dateGroup = (DateGroup) ((EnumFilterValue) filter.get("dateGroup")).getObject();
             } else {
@@ -373,7 +401,7 @@ public abstract class DocumentSumReport_Base
                     switch ((User) filterValue.getObject()) {
                         case CREATOR:
                             // Admin_User_PersonMsgPhrase
-                            _map.put("user",_multi.getMsgPhrase(
+                            _map.put("user", _multi.getMsgPhrase(
                                             SelectBuilder.get().linkto(CIERP.DocumentAbstract.Creator),
                                             MsgPhrase.get(UUID.fromString("eec67428-1228-4b91-88c7-e600901887b2"))));
                             break;
@@ -430,7 +458,7 @@ public abstract class DocumentSumReport_Base
                                      final String _default)
         throws EFapsException
     {
-        Object ret;
+        final Object ret;
         if ("Type".equalsIgnoreCase(_type)) {
             final Set<Long> set = new HashSet<>();
             final List<Type> types = getTypeList(_parameter);
@@ -444,6 +472,9 @@ public abstract class DocumentSumReport_Base
         return ret;
     }
 
+    /* (non-Javadoc)
+     * @see org.efaps.esjp.erp.FilteredReport_Base#getProperties4TypeList(org.efaps.admin.event.Parameter)
+     */
     @Override
     protected Properties getProperties4TypeList(final Parameter _parameter)
         throws EFapsException
@@ -462,12 +493,14 @@ public abstract class DocumentSumReport_Base
             }
         }
         if (ret == null) {
-            ret = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.DOCSUMREPORT, true);
+            ret = Sales.DOCSUMREPORT.get();
         }
         return ret;
     }
 
     /**
+     * Gets the report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return the report class
      * @throws EFapsException on error
@@ -480,6 +513,8 @@ public abstract class DocumentSumReport_Base
 
     /**
      * Dynamic Report.
+     *
+     * @author The eFaps Team
      */
     public static class DynDocumentSumReport
         extends AbstractDynamicReport
@@ -491,6 +526,8 @@ public abstract class DocumentSumReport_Base
         private final DocumentSumReport_Base sumReport;
 
         /**
+         * Instantiates a new dyn document sum report.
+         *
          * @param _sumReport report
          */
         public DynDocumentSumReport(final DocumentSumReport_Base _sumReport)
@@ -503,7 +540,7 @@ public abstract class DocumentSumReport_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            JRRewindableDataSource ret;
+            final JRRewindableDataSource ret;
             if (getSumReport().isCached(_parameter)) {
                 ret = getSumReport().getDataSourceFromCache(_parameter);
                 try {

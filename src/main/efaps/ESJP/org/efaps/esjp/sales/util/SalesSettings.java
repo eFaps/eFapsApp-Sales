@@ -227,23 +227,7 @@ public interface SalesSettings
      */
     String PERMITAUGMENT4FUNDSTBS = SalesSettings.BASE + "AccountFundsToBeSettledPermitAugment";
 
-    /**
-     * Boolean.
-     * Permit the augmentation for FundstoBeSettled..
-     */
-    String PERMITPARTIAL4PETTYCASH = SalesSettings.BASE + "AccountPettyCashPermitPartial";
 
-    /**
-     * Boolean.
-     * Permit the augmentation for FundstoBeSettled..
-     */
-    String REQUIREBOOKED4PETTYCASHPAYMENT = SalesSettings.BASE + "AccountPettyCashBalanceRequireBooked4Payment";
-
-    /**
-     * Boolean.
-     * Permit the augmentation for FundstoBeSettled..
-     */
-    String ACTIVATEPICKER4PETTYCASHRECIPT = SalesSettings.BASE + "PettyCashReceiptActivateContactPicker";
 
     /**
      * Properties. Can be concatenated.
@@ -262,31 +246,5 @@ public interface SalesSettings
      * A mapping for AutoComplete etc.
      */
     String CREATEFROMCONFIG = SalesSettings.BASE + "Config4CreateFrom";
-
-    /**
-     * Properties. Can be concatenated.
-     * A mapping for AutoComplete etc.
-     */
-    String CALCULATORCONFIG = SalesSettings.BASE + "Config4Calculator";
-
-    /**
-     * Properties. Can be concatenated.
-     */
-    String DOCSUMREPORT = SalesSettings.BASE + "DocumentSumReport";
-
-    /**
-     * Link.
-     */
-    String USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "UsageReport.DefaultProductDocumentType";
-
-    /**
-     * Link.
-     */
-    String RETURNUSAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "ReturnUsageReport.DefaultProductDocumentType";
-
-    /**
-     * Link.
-     */
-    String PRODUCTIONREPORTDEFAULTPRODUCTDOCUMENTTYPE = SalesSettings.BASE + "ProductionReport.DefaultProductDocumentType";
 
 }

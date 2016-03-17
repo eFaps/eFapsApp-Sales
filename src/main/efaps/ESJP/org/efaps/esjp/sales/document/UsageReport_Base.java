@@ -32,7 +32,6 @@ import org.efaps.db.Instance;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -77,8 +76,7 @@ public abstract class UsageReport_Base
         if (instDocType.isValid() && _createdDoc.getInstance().isValid()) {
             super.connect2ProductDocumentType(_parameter, _createdDoc);
         } else {
-            final Instance productDocType = Sales.getSysConfig().getLink(
-                            SalesSettings.USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE);
+            final Instance productDocType = Sales.USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE.get();
             if (productDocType != null && productDocType.isValid()) {
                 insert2DocumentTypeAbstract(CISales.Document2ProductDocumentType, _createdDoc, productDocType);
             }

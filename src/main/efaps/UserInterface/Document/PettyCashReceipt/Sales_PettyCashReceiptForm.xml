@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
-  Copyright 2003 - 2010 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -16,18 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 
 <ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>d480f26d-d21d-47d8-bde8-bb202397e57f</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -39,8 +32,10 @@
             <property name="ModeEdit">HIDDEN</property>
             <property name="ModeView">NONE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="activatePositionsCalculator"
-                name="Sales_PettyCashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="activatePositionsCalculator"
+                name="Sales_PettyCashReceiptForm.activatePositionsCalculator.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
         </field>
         <field name="dategroup" character="Group">
             <property name="GroupCount">2</property>
@@ -61,8 +56,10 @@
             <property name="ModePrint">NONE</property>
             <property name="ModeView">NONE</property>
             <property name="Required">true</property>
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="getSalesPersonFieldValue"
-                name="Sales_PettyCashReceiptForm.salesperson.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="getSalesPersonFieldValue"
+                name="Sales_PettyCashReceiptForm.salesperson.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE">
                 <property name="Type">Admin_User_Person</property>
                 <property name="Phrase">$&lt;attribute[LastName]&gt;, $&lt;attribute[FirstName]&gt;</property>
                 <property name="OrderSelect">attribute[LastName]</property>
@@ -181,14 +178,18 @@
                 <property name="Attribute">org.efaps.sales.PettyCashReceiptActivateContactPicker</property>
                 <property name="Inverse">true</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="autoComplete4Contact"
-                name="Sales_PettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE" event="UI_FIELD_AUTOCOMPLETE">
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="autoComplete4Contact"
+                name="Sales_PettyCashReceiptForm.contact.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Classification">Contacts_ClassSupplier</property>
             </trigger>
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="updateFields4Contact"
-                name="Sales_PettyCashReceiptForm.contact.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="updateFields4Contact"
+                name="Sales_PettyCashReceiptForm.contact.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
-         <field name="contactPicker" character="Picker">
+        <field name="contactPicker" character="Picker">
             <property name="Label">Sales_PettyCashReceiptForm.contact.Label</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
@@ -267,10 +268,14 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="ModeEdit">EDITABLE</property>
             <property name="ModeView">NONE</property>
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="rateCurrencyFieldValueUI"
-                name="Sales_PettyCashReceiptForm.currencyId.UI_FIELD_VALUE" event="UI_FIELD_VALUE" />
-            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt" method="updateFields4RateCurrency"
-                name="Sales_PettyCashReceiptForm.currencyId.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE" />
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="rateCurrencyFieldValueUI"
+                name="Sales_PettyCashReceiptForm.currencyId.UI_FIELD_VALUE"
+                event="UI_FIELD_VALUE" />
+            <trigger program="org.efaps.esjp.sales.document.PettyCashReceipt"
+                method="updateFields4RateCurrency"
+                name="Sales_PettyCashReceiptForm.currencyId.UI_FIELD_UPDATE"
+                event="UI_FIELD_UPDATE" />
         </field>
         <field name="rate">
             <property name="Attribute">Rate</property>

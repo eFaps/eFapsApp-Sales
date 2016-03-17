@@ -57,6 +57,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.StandartReport;
 import org.efaps.esjp.common.parameter.ParameterUtil;
@@ -607,18 +608,17 @@ public abstract class Account_Base
     {
         BigDecimal ret = BigDecimal.ZERO;
 
-        final boolean withDateConf = Sales.getSysConfig()
-                        .getAttributeValueAsBoolean("PettyCashBalance_CommandWithDate");
         final AbstractCommand command = _parameter.get(ParameterValues.UIOBJECT) instanceof AbstractCommand
                         ? (AbstractCommand) _parameter.get(ParameterValues.UIOBJECT) : null;
         final List<Instance> lstInst = new ArrayList<Instance>();
 
         String[] oids = _parameter.getParameterValues("selectedRow");
-        if (withDateConf && command != null
+        if (_parameter.getParameterValue("date") != null  && command != null
                         && command.getTargetCreateType().isKindOf(CISales.PettyCashBalance.getType())
                         || oids != null) {
             if (oids == null) {
-                oids = (String[]) Context.getThreadContext().getSessionAttribute("paymentsOid");
+                oids = (String[]) Context.getThreadContext().getSessionAttribute(
+                                CIFormSales.Sales_AccountPettyCashBalancingWithDateForm.paymentsOIDs.name);
             }
             if (oids != null) {
                 for (int i = 0; i < oids.length; i++) {

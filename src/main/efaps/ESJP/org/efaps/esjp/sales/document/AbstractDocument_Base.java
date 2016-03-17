@@ -66,6 +66,7 @@ import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
 import org.efaps.ci.CIType;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Context;
 import org.efaps.db.Delete;
 import org.efaps.db.Insert;
@@ -206,7 +207,7 @@ public abstract class AbstractDocument_Base
     {
         final Type type = Type.get(_typeUUID);
         // if the status is not set explicitly we analyze the properties
-        Status[] status;
+        final Status[] status;
         if (_status == null && type.isCheckStatus()) {
             final Type statusType = type.getStatusAttribute().getLink();
             final List<Status> statusList = new ArrayList<Status>();
@@ -938,7 +939,7 @@ public abstract class AbstractDocument_Base
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             final Instance inst = _parameter.getInstance();
             if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
-                final PrintQuery print = new PrintQuery(inst);
+                final PrintQuery print = CachedPrintQuery.get4Request(inst);
                 final SelectBuilder sel = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.RateCurrencyId)
                                 .instance();
                 print.addSelect(sel);
@@ -1658,7 +1659,7 @@ public abstract class AbstractDocument_Base
             final String desc = print.<String>getAttribute(CIProducts.ProductAbstract.Description);
             final Long dimId = print.<Long>getAttribute(CIProducts.ProductAbstract.Dimension);
             final Long dUoMId = print.<Long>getAttribute(CIProducts.ProductAbstract.DefaultUoM);
-            long selectedUoM;
+            final long selectedUoM;
             if (dUoMId == null) {
                 selectedUoM = Dimension.get(dimId).getBaseUoM().getId();
             } else {
@@ -1705,7 +1706,7 @@ public abstract class AbstractDocument_Base
             // TODO make configurable from properties
             final String fieldName = "individual";
             final String qfieldName = "quantity";
-            int quantity;
+            final int quantity;
             switch (_individual) {
                 // only for individual it is necessary to now the quantity
                 case INDIVIDUAL:
@@ -2112,7 +2113,7 @@ public abstract class AbstractDocument_Base
         String ret = null;
         QueryBuilder queryBuilder = null;
         for (final String typeStr : _types) {
-            Type type;
+            final Type type;
             if (isUUID(typeStr)) {
                 type = Type.get(UUID.fromString(typeStr));
             } else {
@@ -2188,7 +2189,7 @@ public abstract class AbstractDocument_Base
         final String fieldName = fieldValue.getField().getName() + "_SN";
         final List<DropDownPosition> options = getSerialNumbers(_parameter);
         String serial = "001";
-        StringBuilder snHtml;
+        final StringBuilder snHtml;
         if (options.size() == 1) {
             serial = options.get(0).getValue().toString();
             snHtml = new StringBuilder().append("<input type=\"hidden\" value=\"").append(serial).append("\" name=\"")
@@ -2698,7 +2699,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final Type typeTmp = getType4PositionCreate(_parameter);
-        String ret;
+        final String ret;
         if (typeTmp != null) {
             ret = typeTmp.getName();
         } else {

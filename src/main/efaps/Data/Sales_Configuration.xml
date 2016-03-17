@@ -197,7 +197,7 @@ Sales_Exchange.Filter4Contact=true
 ]]></value>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.DocumentSumReport</key>
+            <key>org.efaps.sales.report.DocumentSumReport</key>
             <value><![CDATA[Type01=Sales_Invoice
 Type02=Sales_IncomingInvoice
 Type03=Sales_IncomingReceipt
