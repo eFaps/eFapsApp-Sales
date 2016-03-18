@@ -381,6 +381,7 @@ public abstract class DeliveryNote_Base
             if (all || StringUtils.startsWithIgnoreCase(address, input)) {
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
+                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), getFormatedDBProperty("ContactArrivalPoint", address));
                 list.add(map);
             }
 
@@ -391,15 +392,21 @@ public abstract class DeliveryNote_Base
                 queryBldr.addWhereAttrInQuery(CIContacts.SubContact.ID,
                                 attrQueryBldr.getAttributeQuery(CIContacts.Contact2SubContact.To));
                 final MultiPrintQuery multi = queryBldr.getPrint();
+                multi.addAttribute(CIContacts.SubContact.Name);
                 final MsgPhrase subMsgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTESUBCONTMSGPH4ARP.get()));
                 multi.addMsgPhrase(subMsgPhrase);
                 multi.execute();
+                int idx = 1;
                 while (multi.next()) {
                     final String loAddress = multi.getMsgPhrase(subMsgPhrase);
                     if (all || StringUtils.startsWithIgnoreCase(loAddress, input)) {
                         final Map<String, String> map = new HashMap<String, String>();
                         map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), loAddress);
+                        map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
+                                        getFormatedDBProperty("SubContactArrivalPoint", loAddress, idx,
+                                                        multi.getAttribute(CIContacts.SubContact.Name)));
                         list.add(map);
+                        idx++;
                     }
                 }
             }
@@ -416,20 +423,21 @@ public abstract class DeliveryNote_Base
             if (all || StringUtils.startsWithIgnoreCase(address, input)) {
                 final Map<String, String> map = new HashMap<String, String>();
                 map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), address);
+                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(), getFormatedDBProperty("CarrierArrivalPoint", address));
                 list.add(map);
             }
         }
 
-        final String destinationsStr = Sales.getSysConfig()
-                        .getAttributeValue(SalesSettings.DEFAULTARRIVALPOINTS);
-        if (destinationsStr != null && !destinationsStr.isEmpty()) {
-            final String[] destinations = destinationsStr.split("\n");
-            for (final String destination : destinations) {
-                if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
-                    final Map<String, String> map = new HashMap<String, String>();
-                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
-                    list.add(map);
-                }
+        final List<String> destinations = Sales.DELIVERYNOTEDEFAULTARRIVALPOINTS.get();
+        int idx = 1;
+        for (final String destination : destinations) {
+            if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
+                map.put(EFapsKey.AUTOCOMPLETE_CHOICE.getKey(),
+                                getFormatedDBProperty("ConfiguredArrivalPoint", destination, idx));
+                list.add(map);
+                idx++;
             }
         }
 
@@ -437,13 +445,12 @@ public abstract class DeliveryNote_Base
 
         Collections.sort(list, new Comparator<Map<String, String>>()
         {
-
             @Override
             public int compare(final Map<String, String> _o1,
                                final Map<String, String> _o2)
             {
-                return _o1.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()).compareTo(
-                                _o2.get(EFapsKey.AUTOCOMPLETE_VALUE.getKey()));
+                return _o1.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()).compareTo(
+                                _o2.get(EFapsKey.AUTOCOMPLETE_CHOICE.getKey()));
             }
         });
         ret.put(ReturnValues.VALUES, list);
@@ -538,7 +545,7 @@ public abstract class DeliveryNote_Base
                         insert.execute();
 
                         final Instance resInst = Instance.get(multi.<String>getSelect(sel));
-                        Map<Instance, BigDecimal> pos2Reserved;
+                        final Map<Instance, BigDecimal> pos2Reserved;
                         if (res2pos.containsKey(resInst)) {
                             pos2Reserved = res2pos.get(resInst);
                         } else {

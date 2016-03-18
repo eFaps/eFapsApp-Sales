@@ -184,6 +184,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final ListSysConfAttribute DELIVERYNOTEDEFAULTARRIVALPOINTS = new ListSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.DefaultArrivalPoints")
+                    .description("Default addresses used as the departure point in delivery note.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocSituationReport")
@@ -235,11 +242,11 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final PropertiesSysConfAttribute INCOMINGEXCHANGEMIME
-        = new PropertiesSysConfAttribute()
+    public static final EnumSysConfAttribute<JasperMime> INCOMINGEXCHANGEMIME = new EnumSysConfAttribute<JasperMime>()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.Mime")
-                    .description("Mime of the JasperReport for IncomingExchange.");
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for IncomingExchange");
 
     /** See description. */
     @EFapsSysConfAttribute

@@ -171,12 +171,6 @@ public interface SalesSettings
     String DEFAULTDEPARTUREPOINTS = SalesSettings.BASE + "DefaultDeparturePoints";
 
     /**
-     * Listing seperated by LineBreak<br/>
-     * Default addresses used as the departure point in delivery note.
-     */
-    String DEFAULTARRIVALPOINTS = SalesSettings.BASE + "DefaultArrivalPoints";
-
-    /**
      * Properties. Can be concatenated;
      */
     String AUTOCOMPLETE4PRODUCT = SalesSettings.BASE + "AutoComplete4Product";
