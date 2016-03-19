@@ -2,7 +2,7 @@
 
 <!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -45,17 +45,6 @@
             <value>false</value>
             <description>boolean (true/false). Activate the command to create a balance setting the date and choosing the petty cash
                 receipts.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateCode4PaymentDocument</key>
-            <value>true</value>
-            <description>boolean (true/false). Activate the code to generated a new code string to insert payment document.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateCode4PaymentDocumentOut</key>
-            <value>true</value>
-            <description>boolean (true/false). Activate the code to generated a new code string to insert payment document out.
-            </description>
         </attribute>
         <attribute>
             <key>org.efaps.sales.NumberGenerator4PaymentDocument</key>

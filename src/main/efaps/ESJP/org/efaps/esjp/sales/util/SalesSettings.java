@@ -97,29 +97,6 @@ public interface SalesSettings
     String ACTIVATERETENTION = SalesSettings.BASE + "ActivateRetention";
 
     /**
-     * Boolean (true/false).<br/>
-     * Activate the show variable.
-     */
-    String ACTIVATECODE4PAYMENTDOCUMENT = SalesSettings.BASE + "ActivateCode4PaymentDocument";
-
-
-    /**
-     * Boolean (true/false).<br/>
-     * Activate the show variable.
-     */
-    String ACTIVATECODE4PAYMENTDOCUMENTOUT = SalesSettings.BASE + "ActivateCode4PaymentDocumentOut";
-
-    /**
-     * UUID of the Sequence to payments document.
-     */
-    String SEQUENCE4PAYMENTDOCUMENT = SalesSettings.BASE + "NumberGenerator4PaymentDocument";
-
-    /**
-     * UUID of the Sequence to payments document out.
-     */
-    String SEQUENCE4PAYMENTDOCUMENTOUT = SalesSettings.BASE + "NumberGenerator4PaymentDocumentOut";
-
-    /**
      * UUID of the Sequence to payments document report.
      */
     String ACTIVATEPRINTREPORT4PAYMENTDOCUMENT = SalesSettings.BASE + "ActivatePrintReport4PaymentDocument";

@@ -71,6 +71,7 @@ import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.CommonDocument;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
+import org.efaps.esjp.erp.Naming;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.sales.Account;
@@ -204,7 +205,7 @@ public abstract class AbstractPaymentDocument_Base
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Rate.name, getRateObject(_parameter));
         }
 
-        final String code = getCode4GeneratedDocWithSysConfig(_parameter);
+        final String code = getCode4CreateDoc(_parameter);
         if (code != null) {
             insert.add(CISales.PaymentDocumentAbstract.Code, code);
             createdDoc.getValues().put(CISales.PaymentDocumentAbstract.Code.name, code);
@@ -217,6 +218,43 @@ public abstract class AbstractPaymentDocument_Base
         createdDoc.setInstance(insert.getInstance());
 
         return createdDoc;
+    }
+
+    /**
+     * Gets the code4 create doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the code4 create doc
+     * @throws EFapsException on error
+     */
+    protected String getCode4CreateDoc(final Parameter _parameter)
+        throws EFapsException
+    {
+        String ret = null;
+        if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
+                        && !Sales.PAYMENTDOCUMENTDEACTIVATECODE.get()) {
+         // explecitely set
+            if (Sales.PAYMENTDOCUMENTNUMGEN.exists()) {
+                final String numGenkey = Sales.PAYMENTDOCUMENTNUMGEN.get();
+                final NumberGenerator numGen = isUUID(numGenkey) ? NumberGenerator.get(UUID.fromString(numGenkey))
+                                : NumberGenerator.get(numGenkey);
+                ret = numGen.getNextVal();
+            } else {
+                ret = new Naming().fromNumberGenerator(_parameter, CISales.PaymentDocumentAbstract.getType().getName());
+            }
+        } else if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentOutAbstract.getType())
+                        && !Sales.PAYMENTDOCUMENTDEACTIVATECODE.get()) {
+            // explecitely set
+            if (Sales.PAYMENTDOCUMENTOUTNUMGEN.exists()) {
+                final String numGenkey = Sales.PAYMENTDOCUMENTOUTNUMGEN.get();
+                final NumberGenerator numGen = isUUID(numGenkey) ? NumberGenerator.get(UUID.fromString(numGenkey))
+                                : NumberGenerator.get(numGenkey);
+                ret = numGen.getNextVal();
+            } else {
+                ret = new Naming().fromNumberGenerator(_parameter, CISales.PaymentDocumentAbstract.getType().getName());
+            }
+        }
+        return ret;
     }
 
     /**
@@ -1162,30 +1200,6 @@ public abstract class AbstractPaymentDocument_Base
         final boolean rInv = "true"
                         .equalsIgnoreCase(_parameter.getParameterValues(_field + RateUI.INVERTEDSUFFIX)[_index]);
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
-    }
-
-    protected String getCode4GeneratedDocWithSysConfig(final Parameter _parameter)
-        throws EFapsException
-    {
-        String ret = "";
-        // Sales-Configuration
-        final SystemConfiguration config = Sales.getSysConfig();
-        if (config != null) {
-            if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())) {
-                final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENT);
-                if (active) {
-                    final String uuid = config.getAttributeValue(SalesSettings.SEQUENCE4PAYMENTDOCUMENT);
-                    ret = NumberGenerator.get(UUID.fromString(uuid)).getNextVal();
-                }
-            } else if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentOutAbstract.getType())) {
-                final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENTOUT);
-                if (active) {
-                    final String uuid = config.getAttributeValue(SalesSettings.SEQUENCE4PAYMENTDOCUMENTOUT);
-                    ret = NumberGenerator.get(UUID.fromString(uuid)).getNextVal();
-                }
-            }
-        }
-        return !ret.isEmpty() ? ret : null;
     }
 
     protected boolean getActive4GenerateReport(final Parameter _parameter)

@@ -30,10 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 
-import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.FieldValue;
@@ -60,8 +57,6 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.payment.AbstractPaymentDocument;
-import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -136,7 +131,7 @@ public abstract class Payment_Base
                                     docPrint.<Long>getAttribute(CIERP.DocumentAbstract.Contact));
                     targetDocIns.add(CISales.PaymentDocumentAbstract.Name,
                                     docPrint.<String>getAttribute(CIERP.DocumentAbstract.Name));
-                    final String code = getCode4GeneratedDocWithSysConfig(_parameter);
+                    final String code = getCode4CreateDoc(_parameter);
                     if (code != null) {
                         targetDocIns.add(CISales.PaymentDocumentOutAbstract.Code, code);
                     }
@@ -567,23 +562,6 @@ public abstract class Payment_Base
                     .append("</span>").append("';");
         }
         return html.toString();
-    }
-
-    @Override
-    protected String getCode4GeneratedDocWithSysConfig(final Parameter _parameter)
-        throws EFapsException
-    {
-        String ret = "";
-        // Sales-Configuration
-        final SystemConfiguration config = Sales.getSysConfig();
-        if (config != null) {
-            final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATECODE4PAYMENTDOCUMENT);
-            if (active) {
-                // Sales_PaymentDocumentAbstractSequence
-                ret = NumberGenerator.get(UUID.fromString("617c3a4c-a06d-462b-8460-92cb194f1235")).getNextVal();
-            }
-        }
-        return !ret.isEmpty() ? ret : null;
     }
 
     /**

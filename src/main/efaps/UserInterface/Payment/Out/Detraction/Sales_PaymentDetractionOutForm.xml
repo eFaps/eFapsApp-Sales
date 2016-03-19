@@ -43,7 +43,7 @@
                 name="Sales_PaymentDetractionOutForm.code.UI_ACCESSCHECK"
                 event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateCode4PaymentDocumentOut</property>
+                <property name="Attribute">!org.efaps.sales.payment.out.DeactivateCodeGeneration</property>
             </trigger>
         </field>
         <field character="Group" name="nameGroup">
