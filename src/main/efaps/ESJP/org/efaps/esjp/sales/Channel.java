@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev: 8120 $
- * Last Changed:    $Date: 2012-10-26 13:21:34 -0500 (vie, 26 oct 2012) $
- * Last Changed By: $Author: jorge.cueva@moxter.net $
  */
 
 package org.efaps.esjp.sales;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Channel.java 8120 2012-10-26 18:21:34Z jorge.cueva@moxter.net $
  */
 @EFapsUUID("4b82cfd8-2332-481c-9f93-84e47d32db08")
-@EFapsRevision("$Rev: 8120 $")
+@EFapsApplication("efapsApp-Sales")
 public class Channel
     extends Channel_Base
 {

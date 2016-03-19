@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,5 +32,9 @@ import org.efaps.admin.program.esjp.EFapsUUID;
 public class IncomingInvoice
     extends IncomingInvoice_Base
 {
+    /**
+     * Used to store the Revision in the Context.
+     */
+    public static final String REVISIONKEY = IncomingInvoice_Base.REVISIONKEY;
 
 }

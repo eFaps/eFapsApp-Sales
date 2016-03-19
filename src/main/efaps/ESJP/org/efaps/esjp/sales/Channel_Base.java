@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.CommonDocument;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -75,7 +76,7 @@ public abstract class Channel_Base
             if (addDays == null) {
                 addDays = 0;
             }
-            DateTime date;
+            final DateTime date;
             if (_parameter.getParameterValue("date_eFapsDate") != null) {
                 date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
             } else {
@@ -113,7 +114,8 @@ public abstract class Channel_Base
                             .linkto(CISales.ChannelConditionAbstract2ContactAbstract.FromAbstractLink);
             final SelectBuilder selInst = new SelectBuilder(sel).instance();
             final SelectBuilder selName = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.Name);
-            final SelectBuilder selDays = new SelectBuilder(sel).attribute(CISales.ChannelConditionAbstract.QuantityDays);
+            final SelectBuilder selDays = new SelectBuilder(sel).attribute(
+                            CISales.ChannelConditionAbstract.QuantityDays);
             multi.addSelect(selInst, selName, selDays);
             multi.addAttribute(CISales.ChannelConditionAbstract2ContactAbstract.IsDefault);
             multi.execute();
@@ -134,10 +136,10 @@ public abstract class Channel_Base
             {
 
                 @Override
-                public int compare(final Object[] arg0,
-                                   final Object[] arg1)
+                public int compare(final Object[] _arg0,
+                                   final Object[] _arg1)
                 {
-                    return String.valueOf(arg0[1]).compareTo(String.valueOf(arg1[1]));
+                    return String.valueOf(_arg0[1]).compareTo(String.valueOf(_arg1[1]));
                 }
             });
 
@@ -151,7 +153,7 @@ public abstract class Channel_Base
                 }
 
                 js.append(")); ");
-                DateTime date;
+                final DateTime date;
                 if (_parameter.getParameterValue("date_eFapsDate") != null) {
                     date = DateUtil.getDateFromParameter(_parameter.getParameterValue("date_eFapsDate"));
                 } else {
@@ -161,5 +163,43 @@ public abstract class Channel_Base
             }
         }
         return js;
+    }
+
+    /**
+     * Add to the  java script used on "create from" for documents.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instances the instances
+     * @return the string builder
+     * @throws EFapsException on error
+     */
+    public StringBuilder add2JavaScript4Document(final Parameter _parameter,
+                                                 final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder ret = new StringBuilder();
+        if (!_instances.isEmpty() && _instances.get(0).isValid()) {
+            final Instance docInst = _instances.get(0);
+            CIType ciType = null;
+            if (docInst.getType().isCIType(CISales.OrderOutbound) && Sales.ORDEROUTBOUNDACTIVATECONDITION.get()) {
+                ciType = CISales.ChannelPurchaseCondition2OrderOutbound;
+            }
+            if (ciType != null) {
+                final QueryBuilder queryBldr = new QueryBuilder(ciType);
+                queryBldr.addWhereAttrEqValue(CISales.Channel2DocumentAbstract.ToAbstractLink, docInst);
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selChanInst = SelectBuilder.get().linkto(
+                                CISales.Channel2DocumentAbstract.FromAbstractLink).instance();
+                multi.addSelect(selChanInst);
+                multi.executeWithoutAccessCheck();
+                if (multi.next()) {
+                    final Instance chanInst = multi.getSelect(selChanInst);
+                    if (chanInst.isValid()) {
+                        ret.append(getSetFieldValue(0, "condition", chanInst.getOid()));
+                    }
+                }
+            }
+        }
+        return ret;
     }
 }

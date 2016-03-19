@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.common.SystemConfiguration;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -59,6 +58,7 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
+import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
@@ -82,7 +82,7 @@ public abstract class IncomingInvoice_Base
     /**
      * Used to store the Revision in the Context.
      */
-    public static final String REVISIONKEY = IncomingInvoice.class.getName() + "RevisionKey";
+    protected static final String REVISIONKEY = IncomingInvoice.class.getName() + "RevisionKey";
 
     /**
      * Logging instance used in this class.
@@ -244,7 +244,7 @@ public abstract class IncomingInvoice_Base
                             AbstractDocument_Base.CALCULATORS_VALUE);
             if (calcList != null) {
                 final String dateStr = (String) _createdDoc.getValue(CISales.DocumentSumAbstract.Date.name);
-                DateTime date;
+                final DateTime date;
                 if (dateStr == null) {
                     date = new DateTime().withTimeAtStartOfDay();
                 } else {
@@ -260,7 +260,7 @@ public abstract class IncomingInvoice_Base
                     final ProductPrice prodPrice = new PriceUtil().getPrice(_parameter, date, calc.getProductInstance(),
                                     CIProducts.ProductPricelistPurchase);
                     final BigDecimal basePrice = prodPrice.getBasePrice();
-                    BigDecimal price;
+                    final BigDecimal price;
                     if (Calculator.priceIsNet(_parameter, this)) {
                         price = calc.getNetUnitPrice().divide(rate, BigDecimal.ROUND_HALF_UP)
                                         .setScale(uScale, BigDecimal.ROUND_HALF_UP);
@@ -436,6 +436,16 @@ public abstract class IncomingInvoice_Base
     }
 
     @Override
+    protected StringBuilder add2JavaScript4Document(final Parameter _parameter,
+                                                    final List<Instance> _instances)
+        throws EFapsException
+    {
+        final StringBuilder ret =  super.add2JavaScript4Document(_parameter, _instances);
+        ret.append(new Channel().add2JavaScript4Document(_parameter, _instances));
+        return ret;
+    }
+
+    @Override
     protected void add2UpdateMap4Contact(final Parameter _parameter,
                                          final Instance _contactInstance,
                                          final Map<String, Object> _map)
@@ -475,7 +485,7 @@ public abstract class IncomingInvoice_Base
                         ||  _docInst.getType().isCIType(CISales.RecievingTicket))) {
             final boolean isOrder = _docInst.getType().isCIType(CISales.OrderOutbound);
             final QueryBuilder queryBldr = new QueryBuilder(CISales.OrderOutbound2RecievingTicket);
-            SelectBuilder selInst;
+            final SelectBuilder selInst;
             if (isOrder) {
                 queryBldr.addWhereAttrEqValue(CISales.OrderOutbound2RecievingTicket.ToLink,
                                 getInstances4Derived(_parameter).toArray());
@@ -848,26 +858,11 @@ public abstract class IncomingInvoice_Base
     }
 
     @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getType4SysConf(_parameter).getName();
-    }
-
-    @Override
-    protected Type getType4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return  getCIType().getType();
-    }
-
-    @Override
     public CIType getCIType()
         throws EFapsException
     {
         return CISales.IncomingInvoice;
     }
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
