@@ -37,6 +37,7 @@ import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
+import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
@@ -52,6 +53,7 @@ import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -222,7 +224,7 @@ public abstract class SalesReport4Account_Base
         protected JRDataSource createDataSource(final Parameter _parameter)
             throws EFapsException
         {
-            JRRewindableDataSource ret;
+            final JRRewindableDataSource ret;
             if (getFilteredReport().isCached(_parameter)) {
                 ret = getFilteredReport().getDataSourceFromCache(_parameter);
                 try {
@@ -258,13 +260,14 @@ public abstract class SalesReport4Account_Base
                 multi.addSelect(selContactInst, selContactName, selStatus);
                 multi.execute();
                 while (multi.next()) {
-                    final DataBean dataBean = new DataBean().setDocInst(multi.getCurrentInstance()).setDocCreated(multi
-                                    .<DateTime>getAttribute(CISales.DocumentSumAbstract.Created)).setDocDate(multi
-                                                    .<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
-                                    .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
-                                    .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
-                                    .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
-                                    .setDocStatus(multi.<String>getSelect(selStatus));
+                    final DataBean dataBean = new DataBean()
+                                .setDocInst(multi.getCurrentInstance())
+                                .setDocCreated(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Created))
+                                .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
+                                .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
+                                .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
+                                .setDocStatus(multi.<String>getSelect(selStatus));
 
                     if (isCurrencyBase(_parameter)) {
                         dataBean.setCurrencyBase(true).addCross(multi.<Long>getAttribute(
@@ -304,8 +307,13 @@ public abstract class SalesReport4Account_Base
                 });
                 Collections.sort(dataSource, chain);
                 final Collection<Map<String, ?>> col = new ArrayList<>();
+                final boolean showCondition = Sales.CHACTIVATESALESCOND.get()
+                                && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
+                            || Sales.CHACTIVATEPURCHASECOND.get()
+                                && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+
                 for (final DataBean bean : dataSource) {
-                    col.add(bean.getMap());
+                    col.add(bean.getMap(showCondition));
                 }
                 ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
@@ -419,6 +427,10 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "Status"), "docStatus",
                             DynamicReports.type.stringType());
 
+            final TextColumnBuilder<String> conditionColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Condition"), "condition",
+                            DynamicReports.type.stringType());
+
             final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
@@ -444,6 +456,13 @@ public abstract class SalesReport4Account_Base
             if (Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT)) {
                 gridList.add(revisionColumn);
             }
+
+            if (Sales.CHACTIVATESALESCOND.get() && Report4Account.this.filteredReport.getReportKey().equals(
+                            ReportKey.IN) || Sales.CHACTIVATEPURCHASECOND.get() && Report4Account.this.filteredReport
+                                            .getReportKey().equals(ReportKey.OUT)) {
+                gridList.add(conditionColumn);
+            }
+
             gridList.add(contactNameColumn);
             gridList.add(dueDateColumn);
             gridList.add(docStatusColumn);
@@ -490,8 +509,15 @@ public abstract class SalesReport4Account_Base
                             createdColumn,
                             dateColumn,
                             nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(140),
-                            revisionColumn,
-                            contactNameColumn.setFixedWidth(200),
+                            revisionColumn);
+
+            if (Sales.CHACTIVATESALESCOND.get() && Report4Account.this.filteredReport.getReportKey().equals(
+                            ReportKey.IN) || Sales.CHACTIVATEPURCHASECOND.get() && Report4Account.this.filteredReport
+                                            .getReportKey().equals(ReportKey.OUT)) {
+                _builder.addColumn(conditionColumn);
+            }
+
+            _builder.addColumn(contactNameColumn.setFixedWidth(200),
                             dueDateColumn,
                             docStatusColumn);
             if (!showDetails) {
@@ -639,6 +665,9 @@ public abstract class SalesReport4Account_Base
         /** The currency base. */
         private boolean currencyBase;
 
+        /** The condition. */
+        private String condition;
+
         /**
          * Checks if is currency base.
          *
@@ -667,7 +696,7 @@ public abstract class SalesReport4Account_Base
          * @return the map
          * @throws EFapsException on error
          */
-        public Map<String, ?> getMap()
+        public Map<String, ?> getMap(final boolean _showCondition)
             throws EFapsException
         {
             if (this.payments.isEmpty()) {
@@ -683,6 +712,9 @@ public abstract class SalesReport4Account_Base
             ret.put("docStatus", getDocStatus());
             ret.put("docContactName", getDocContactName());
             ret.put("docDueDate", getDocDueDate());
+            if (_showCondition) {
+                ret.put("condition", getCondition());;
+            }
 
             if (isCurrencyBase()) {
                 ret.put("crossTotal_BASE", this.cross.get(Currency.getBaseCurrency().getId()));
@@ -928,6 +960,51 @@ public abstract class SalesReport4Account_Base
         public DataBean setDocStatus(final String _docStatus)
         {
             this.docStatus = _docStatus;
+            return this;
+        }
+
+        /**
+         * Gets the condition.
+         *
+         * @return the condition
+         * @throws EFapsException on error
+         */
+        public String getCondition()
+            throws EFapsException
+        {
+            if (this.condition == null) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.ChannelCondition2DocumentAbstract);
+                queryBldr.addWhereAttrEqValue(CISales.Channel2DocumentAbstract.ToAbstractLink, getDocInst());
+                final CachedMultiPrintQuery multi = queryBldr.getCachedPrint4Request();
+                final SelectBuilder selName = SelectBuilder.get()
+                                .linkto(CISales.Channel2DocumentAbstract.FromAbstractLink)
+                                .attribute(CISales.ChannelAbstract.Name);
+                multi.addSelect(selName);
+                multi.execute();
+                while (multi.next()) {
+                    if (this.condition != null && !this.condition.isEmpty()) {
+                        this.condition = this.condition + ", ";
+                    } else {
+                        this.condition = "";
+                    }
+                    this.condition = this.condition + multi.getSelect(selName);
+                }
+                if (this.condition == null) {
+                    this.condition = "";
+                }
+            }
+            return this.condition;
+        }
+
+        /**
+         * Sets the condition.
+         *
+         * @param _condition the condition
+         * @return the data bean
+         */
+        public DataBean setCondition(final String _condition)
+        {
+            this.condition = _condition;
             return this;
         }
     }

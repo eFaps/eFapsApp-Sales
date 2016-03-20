@@ -18,12 +18,12 @@
 -->
 <datamodel-type xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>993d04f2-4b34-48dd-be0f-81938f862505</uuid>
+    <uuid>ad3fb64c-fbeb-4302-8db3-69b1bdd78c60</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_ChannelSalesCondition2DocumentAbstract</name>
-        <parent>Sales_ChannelCondition2DocumentAbstract</parent>
+        <name>Sales_ChannelCondition2DocumentAbstract</name>
+        <parent>Sales_Channel2DocumentAbstract</parent>
         <purpose abstract="true" />
     </definition>
 </datamodel-type>
