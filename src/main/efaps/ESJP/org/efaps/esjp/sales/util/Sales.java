@@ -76,7 +76,17 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Config4Calculator")
                     .concatenate(true)
-                    .description(" Configuration for Calculators.");
+                    .description("Configuration for Calculators.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute COMPARATORCONFIG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4Comparator")
+                    .concatenate(true)
+                    .description("Configuration for Comparator. e.g. Default.Deviation4Quantity=0.01\n"
+                                    + "Sales_OrderOutbound.Deviation4Net=0.01\n"
+                                    + "Sales_OrderOutbound.EvaluateRateCurrency=true");
 
     /** See description. */
     @EFapsSysConfAttribute
