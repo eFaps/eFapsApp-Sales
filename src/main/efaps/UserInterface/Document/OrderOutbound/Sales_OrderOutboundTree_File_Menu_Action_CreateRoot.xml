@@ -17,15 +17,15 @@
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0634a95a-529b-464b-a6ae-5285b08934a0</uuid>
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>e1a2ec4c-b9c6-4984-b737-a6db2fb53b72</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives" />
+            <application name="eFapsApp-Archives"/>
         </application-dependencies>
-        <name>Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot</name>
+        <name>Sales_OrderOutboundTree_File_Menu_Action_CreateRoot</name>
         <access>
             <role>Archives_Admin</role>
             <role>Archives_Modifier</role>
@@ -33,15 +33,16 @@
         <target>
             <form>Archives_ArchiveRootForm</form>
             <execute method="createRoot" program="org.efaps.esjp.archives.Archive">
-                <property name="ConnectType">Sales_IncomingInvoice2ArchiveAbstract</property>
+                <property name="ConnectType">Sales_OrderOutbound2ArchiveAbstract</property>
                 <property name="ConnectChildAttribute">ToLink</property>
                 <property name="ConnectParentAttribute">FromLink</property>
                 <property name="StatusGroup">Archives_ArchiveNodeStatus</property>
                 <property name="Status">Editable</property>
             </execute>
             <trigger event="UI_ACCESSCHECK" method="checkAccess2ArchiveRoot"
-                name="Sales_IncomingInvoiceTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK" program="org.efaps.esjp.archives.Archive">
-                <property name="Object2ArchiveType">Sales_IncomingInvoice2ArchiveAbstract</property>
+                    name="Sales_OrderOutboundTree_File_Menu_Action_CreateRoot.UI_ACCESSCHECK"
+                    program="org.efaps.esjp.archives.Archive">
+                <property name="Object2ArchiveType">Sales_OrderOutbound2ArchiveAbstract</property>
             </trigger>
         </target>
         <property name="Target">modal</property>

@@ -17,28 +17,28 @@
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>7871791a-a621-407b-820f-3192387c1367</uuid>
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>f2b9b161-3379-4cff-b9d3-cd12c04029ed</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <application-dependencies>
-            <application name="eFapsApp-Archives" />
+            <application name="eFapsApp-Archives"/>
         </application-dependencies>
-        <name>Sales_IncomingInvoiceTree_File</name>
+        <name>Sales_OrderOutboundTree_File</name>
         <target>
-            <menu>Sales_IncomingInvoiceTree_File_Menu</menu>
+            <menu>Sales_OrderOutboundTree_File_Menu</menu>
             <table>Archives_ArchiveTable</table>
             <evaluate program="org.efaps.esjp.archives.ArchiveStructurBrowser">
                 <property name="Type">Archives_ArchiveRoot</property>
-                <property name="Object2ArchiveType">Sales_IncomingInvoice2ArchiveAbstract</property>
+                <property name="Object2ArchiveType">Sales_OrderOutbound2ArchiveAbstract</property>
                 <property name="Child_Type">Archives_ArchiveNode</property>
                 <property name="Child_LinkFrom">ParentLink</property>
             </evaluate>
         </target>
         <!-- adding via parent due to application Dependency -->
         <parents>
-            <parent>Sales_IncomingInvoiceTree</parent>
+            <parent>Sales_OrderOutboundTree</parent>
         </parents>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
