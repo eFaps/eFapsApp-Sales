@@ -112,6 +112,7 @@ import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
 import org.efaps.ui.wicket.models.objects.UITable.TableFilter;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.efaps.util.cache.CacheReloadException;
@@ -992,7 +993,8 @@ public abstract class AbstractDocument_Base
                         CISales.DocumentSumAbstract.RateTaxes,
                         CIERP.DocumentAbstract.Name,
                         CIERP.DocumentAbstract.Note,
-                        CIERP.DocumentAbstract.Remark);
+                        CIERP.DocumentAbstract.Remark,
+                        CIERP.DocumentAbstract.Date);
         final SelectBuilder selContInst = new SelectBuilder().linkto(CIERP.DocumentAbstract.Contact).instance();
         print.addSelect(selContInst);
         print.execute();
@@ -1015,6 +1017,11 @@ public abstract class AbstractDocument_Base
             js.append(getSetFieldValue(0, "name4create", name)).append("\n");
         }
 
+        final Map<Integer, String> copyDates = analyseProperty(_parameter, "CopyDate4Type");
+        if (copyDates.containsValue(docInst.getType().getName())) {
+            js.append(getSetFieldValue(0, "date_eFapsDate", DateUtil.getDate4Parameter(
+                            print.<DateTime>getAttribute(CIERP.DocumentAbstract.Date)))).append("\n");
+        }
         js.append(getSetFieldValue(0, "netTotal", netTotal == null
                             ? BigDecimal.ZERO.toString() : formater.format(netTotal))).append("\n")
             .append(getSetFieldValue(0, "crossTotal", netTotal == null
