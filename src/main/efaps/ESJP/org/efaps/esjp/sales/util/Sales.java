@@ -660,6 +660,18 @@ public final class Sales
                     .description("Name of the jasperReport for Order Outbound");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SWAPCONFIG = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Config4Swap")
+                    .concatenate(true)
+                    .description("Configuration for Swap. e.g.\n"
+                                    + "TYPE.Type=TYPE\n"
+                                    + "TYPE.StatusGroup=STATUSTYPE\n"
+                                    + "TYPE.Status=STATUSKEY\n"
+                                    + "TYPE.Filter4Contact=true\n");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)

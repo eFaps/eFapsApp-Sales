@@ -52,6 +52,8 @@ import org.efaps.esjp.ci.CIContacts;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
+import org.efaps.esjp.common.parameter.ParameterUtil;
+import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.erp.AbstractWarning;
 import org.efaps.esjp.erp.CommonDocument;
@@ -66,7 +68,6 @@ import org.efaps.esjp.sales.document.Validation;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.payment.DocumentUpdate;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -107,35 +108,8 @@ public abstract class Swap_Base
         final List<Map<String, String>> list = new ArrayList<>();
         final Map<String, Map<String, String>> tmpMap = new TreeMap<String, Map<String, String>>();
 
-        final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.SWAPCONFIG, true);
-        final String propkey;
-        if (_parameter.getCallInstance() != null) {
-            propkey = _parameter.getCallInstance().getType().getName();
-        } else if (_parameter.get(ParameterValues.CALL_CMD) != null) {
-            final AbstractCommand cmd = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
-            propkey = cmd.getTargetCreateType().getName();
-        } else {
-            propkey = "Unknown";
-        }
-        final QueryBuilder queryBldr;
-        if ("true".equalsIgnoreCase(getProperty(_parameter, "UseSystemConfig"))) {
-            queryBldr = getQueryBldrFromProperties(_parameter, props, propkey);
-        } else {
-            queryBldr = getQueryBldrFromProperties(_parameter);
-        }
-        if ("true".equalsIgnoreCase(props.getProperty(propkey + ".Filter4Contact"))) {
-            final Instance callInst = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
-            if (callInst != null && callInst.isValid()) {
-                final PrintQuery print = new PrintQuery(callInst);
-                print.addAttribute(CISales.DocumentSumAbstract.Contact);
-                print.executeWithoutAccessCheck();
-                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact,
-                                print.<Long>getAttribute(CISales.DocumentSumAbstract.Contact));
-            } else if (_parameter.getParameterValue("contact") != null) {
-                final Instance inst = Instance.get(_parameter.getParameterValue("contact"));
-                queryBldr.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid() ? inst : 0);
-            }
-        }
+        final QueryBuilder queryBldr = getQueryBldr4Documents(_parameter);
+
         InterfaceUtils.addMaxResult2QueryBuilder4AutoComplete(_parameter, queryBldr);
         queryBldr.addWhereAttrMatchValue(CISales.DocumentSumAbstract.Name, req + "*").setIgnoreCase(true);
 
@@ -173,6 +147,108 @@ public abstract class Swap_Base
     }
 
     /**
+     * Gets the QueryBuilder for documents.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the query bldr4 documents
+     * @throws EFapsException on error
+     */
+    protected QueryBuilder getQueryBldr4Documents(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Properties props = Sales.SWAPCONFIG.get();
+        final String propkey;
+        if (_parameter.getCallInstance() != null) {
+            propkey = _parameter.getCallInstance().getType().getName();
+        } else if (_parameter.get(ParameterValues.CALL_CMD) != null) {
+            final AbstractCommand cmd = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
+            propkey = cmd.getTargetCreateType().getName();
+        } else if (containsProperty(_parameter, "CreateType")) {
+            propkey = getProperty(_parameter, "CreateType");
+        } else {
+            propkey = "Unknown";
+        }
+        QueryBuilder ret = getQueryBldrFromProperties(_parameter, props, propkey);
+        if (ret == null) {
+            ret = getQueryBldrFromProperties(_parameter);
+        }
+        if ("true".equalsIgnoreCase(props.getProperty(propkey + ".Filter4Contact"))) {
+            final Instance callInst = (Instance) _parameter.get(ParameterValues.CALL_INSTANCE);
+            if (callInst != null && callInst.isValid()) {
+                final PrintQuery print = new PrintQuery(callInst);
+                print.addAttribute(CISales.DocumentSumAbstract.Contact);
+                print.executeWithoutAccessCheck();
+                ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, print.<Long>getAttribute(
+                                CISales.DocumentSumAbstract.Contact));
+            } else if (_parameter.getParameterValue("contact") != null) {
+                final Instance inst = Instance.get(_parameter.getParameterValue("contact"));
+                ret.addWhereAttrEqValue(CISales.DocumentSumAbstract.Contact, inst.isValid() ? inst : 0);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Picker multi print.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return pickerMultiPrint(final Parameter _parameter)
+        throws EFapsException
+    {
+        final MultiPrint multi = new MultiPrint() {
+            @Override
+            public List<Instance> getInstances(final Parameter _parameter)
+                throws EFapsException
+            {
+                final List<Instance> ret = new ArrayList<>();
+                final QueryBuilder queryBldr = getQueryBldr4Documents(_parameter);
+                if (queryBldr != null) {
+                    ret.addAll(queryBldr.getQuery().execute());
+                }
+                return ret;
+            }
+        };
+        return multi.execute(_parameter);
+    }
+
+    /**
+     * Picker4 document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
+    public Return picker4Document(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        final Map<String, String> map = new HashMap<>();
+        retVal.put(ReturnValues.VALUES, map);
+
+        final StringBuilder js = new StringBuilder();
+        js.append(getTableRemoveScript(_parameter, "swapTable"));
+        final List<Map<String, Object>> values = new ArrayList<>();
+
+        final List<Instance> docInsts = getSelectedInstances(_parameter);
+        if (!docInsts.isEmpty()) {
+            final Parameter parameter = ParameterUtil.clone(_parameter, ParameterValues.PARAMETERS,
+                            _parameter.get(ParameterValues.PARENTPARAMETERS));
+            for (final Instance docInst : docInsts) {
+                values.add(getPositionUpdateMap4Doc(parameter, docInst, true));
+            }
+        }
+        final List<Map<String, Object>> sums = new ArrayList<>();
+        sums.add(getSumUpdateMap(_parameter, values, false));
+        js.append(getSetFieldValuesScript(_parameter, sums, null));
+        js.append(getTableAddNewRowsScript(_parameter, "swapTable", values, null));
+        map.put(EFapsKey.PICKER_JAVASCRIPT.getKey(), js.toString());
+        return retVal;
+    }
+
+    /**
      * @param _parameter Parameter as passed by the eFaps API
      * @return Return containing map for fieldupdate
      * @throws EFapsException on error
@@ -185,32 +261,7 @@ public abstract class Swap_Base
         final int idx = getSelectedRow(_parameter);
         final Instance docInst = Instance.get(_parameter.getParameterValues("document")[idx]);
         if (docInst.isValid()) {
-            final PrintQuery print = new PrintQuery(docInst);
-            final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
-                            .attribute(CIContacts.Contact.Name);
-            final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.CurrencyId)
-                            .instance();
-            final SelectBuilder selRateCurrInst = SelectBuilder.get()
-                            .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
-                            .instance();
-            print.addSelect(selContactName, selCurrInst, selRateCurrInst);
-            print.addAttribute(CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
-                            CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.RateCrossTotal,
-                            CISales.DocumentSumAbstract.StatusAbstract);
-            print.execute();
-            final CurrencyInst currInst = CurrencyInst.get(print.<Instance>getSelect(selCurrInst));
-            final CurrencyInst rateCurrInst = CurrencyInst.get(print.<Instance>getSelect(selRateCurrInst));
-
-            map.put("contact4Doc", print.getSelect(selContactName));
-            map.put("crossTotal", print.getAttribute(CISales.DocumentSumAbstract.CrossTotal) + currInst.getSymbol());
-            map.put("netTotal", print.getAttribute(CISales.DocumentSumAbstract.NetTotal) + currInst.getSymbol());
-            map.put("rateCrossTotal",
-                            print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal) + rateCurrInst.getSymbol());
-            map.put("rateNetTotal",
-                            print.getAttribute(CISales.DocumentSumAbstract.RateNetTotal) + rateCurrInst.getSymbol());
-            map.put("status", Status.get(
-                            print.<Long>getAttribute(CISales.DocumentSumAbstract.StatusAbstract)).getLabel());
-            map.putAll(getPositionUpdateMap(_parameter, docInst));
+            map.putAll(getPositionUpdateMap4Doc(_parameter, docInst, false));
             map.put(EFapsKey.FIELDUPDATE_USEIDX.getKey(), idx);
         }
         values.add(map);
@@ -371,6 +422,55 @@ public abstract class Swap_Base
         final Return retVal = new Return();
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
+    }
+
+    /**
+     * Gets the position update map4 doc.
+     *
+     * @param _parameter parameter as passed by the eFasp API
+     * @param _docInst instance of the document the map is wanted for
+     * @param _addDocInfo the add doc info
+     * @return map containing values for update
+     * @throws EFapsException on error
+     */
+    protected Map<String, Object> getPositionUpdateMap4Doc(final Parameter _parameter,
+                                                           final Instance _docInst,
+                                                           final boolean _addDocInfo)
+        throws EFapsException
+    {
+        final Map<String, Object> ret = new HashMap<>();
+        final PrintQuery print = new PrintQuery(_docInst);
+        final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.Contact)
+                        .attribute(CIContacts.Contact.Name);
+        final SelectBuilder selCurrInst = SelectBuilder.get().linkto(CISales.DocumentSumAbstract.CurrencyId)
+                        .instance();
+        final SelectBuilder selRateCurrInst = SelectBuilder.get()
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .instance();
+        print.addSelect(selContactName, selCurrInst, selRateCurrInst);
+        print.addAttribute(CISales.DocumentSumAbstract.Name,
+                        CISales.DocumentSumAbstract.CrossTotal, CISales.DocumentSumAbstract.NetTotal,
+                        CISales.DocumentSumAbstract.RateNetTotal, CISales.DocumentSumAbstract.RateCrossTotal,
+                        CISales.DocumentSumAbstract.StatusAbstract);
+        print.execute();
+        final CurrencyInst currInst = CurrencyInst.get(print.<Instance>getSelect(selCurrInst));
+        final CurrencyInst rateCurrInst = CurrencyInst.get(print.<Instance>getSelect(selRateCurrInst));
+        if (_addDocInfo) {
+            ret.put("document", new String[] { _docInst.getOid(),
+                            print.getAttribute(CISales.DocumentSumAbstract.Name) });
+        }
+
+        ret.put("contact4Doc", print.getSelect(selContactName));
+        ret.put("crossTotal", print.getAttribute(CISales.DocumentSumAbstract.CrossTotal) + currInst.getSymbol());
+        ret.put("netTotal", print.getAttribute(CISales.DocumentSumAbstract.NetTotal) + currInst.getSymbol());
+        ret.put("rateCrossTotal",
+                        print.getAttribute(CISales.DocumentSumAbstract.RateCrossTotal) + rateCurrInst.getSymbol());
+        ret.put("rateNetTotal",
+                        print.getAttribute(CISales.DocumentSumAbstract.RateNetTotal) + rateCurrInst.getSymbol());
+        ret.put("status", Status.get(
+                        print.<Long>getAttribute(CISales.DocumentSumAbstract.StatusAbstract)).getLabel());
+        ret.putAll(getPositionUpdateMap(_parameter, _docInst));
+        return ret;
     }
 
     /**
@@ -585,7 +685,7 @@ public abstract class Swap_Base
     protected Map<Instance, SwapInfo> getInfos(final Parameter _parameter)
         throws EFapsException
     {
-        Map<Instance, SwapInfo> ret;
+        final Map<Instance, SwapInfo> ret;
         if (Context.getThreadContext().containsRequestAttribute(Swap.REQUESTKEY)) {
             ret = (Map<Instance, SwapInfo>) Context.getThreadContext().getRequestAttribute(Swap.REQUESTKEY);
         } else {

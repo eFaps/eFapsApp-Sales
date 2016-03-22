@@ -111,7 +111,7 @@ public abstract class DocPaymentInfo_Base
     /**
      * Account Info.
      */
-    private TargetInfo targetInfo;
+    private AbstractTargetInfo targetInfo;
 
     /**
      * Name of the document.
@@ -329,7 +329,8 @@ public abstract class DocPaymentInfo_Base
         } catch (final ParseException e) {
             throw new EFapsException("catched ParseException", e);
         }
-        return this.crossTotal.subtract(getPaid()).abs().compareTo(threshold) <= 0;
+        return this.crossTotal.subtract(getPaid()).abs().compareTo(threshold) <= 0
+                        || this.rateCrossTotal.subtract(getRatePaid()).abs().compareTo(threshold) <= 0;
     }
 
     /**
@@ -442,7 +443,7 @@ public abstract class DocPaymentInfo_Base
      * @return value of instance variable {@link #accountInfo}
      * @throws EFapsException on error
      */
-    public TargetInfo getTargetInfo()
+    public AbstractTargetInfo getTargetInfo()
         throws EFapsException
     {
         initialize();
@@ -475,7 +476,7 @@ public abstract class DocPaymentInfo_Base
         objects.add(currInst.getSymbol());
         objects.add(currInst.getISOCode());
 
-        String key;
+        final String key;
         if (getTargetInfo() == null) {
             setTargetDocInst(getInstance());
         }
@@ -813,6 +814,9 @@ public abstract class DocPaymentInfo_Base
     }
 
     /**
+     * Register Swap information a payments. Only the "from" one is payed,
+     * the "to" one is the one paying.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _infos infos to be initialized with the base information
      * @throws EFapsException on error
@@ -823,9 +827,6 @@ public abstract class DocPaymentInfo_Base
     {
         final Map<Instance, DocPaymentInfo_Base> instance2info = getInfoMap(_parameter, _infos);
 
-        // check related taxdocs for retention. For retention the emission
-        // of a certificate counts as payment
-        // check swap
         final QueryBuilder swapQueryBldr = new QueryBuilder(CISales.Document2Document4Swap);
         swapQueryBldr.setOr(true);
         swapQueryBldr.addWhereAttrEqValue(CISales.Document2Document4Swap.FromAbstractLink,
@@ -839,26 +840,14 @@ public abstract class DocPaymentInfo_Base
                         .linkto(CISales.Document2Document4Swap.CurrencyLink).instance();
         final SelectBuilder selDocFromInst = SelectBuilder.get()
                         .linkto(CISales.Document2Document4Swap.FromAbstractLink).instance();
-        final SelectBuilder selDocToInst = SelectBuilder.get()
-                        .linkto(CISales.Document2Document4Swap.ToAbstractLink).instance();
-        swapMulti.addSelect(selCur3, selDocFromInst, selDocToInst);
+        swapMulti.addSelect(selCur3, selDocFromInst);
         swapMulti.executeWithoutAccessCheck();
         while (swapMulti.next()) {
             if (!verifySet.contains(swapMulti.getCurrentInstance())) {
                 verifySet.add(swapMulti.getCurrentInstance());
-
                 final Instance docFromInst = swapMulti.getSelect(selDocFromInst);
-                final Instance docToInst = swapMulti.getSelect(selDocToInst);
-
                 if (instance2info.containsKey(docFromInst)) {
                     final DocPaymentInfo_Base info = instance2info.get(docFromInst);
-                    final Instance curInst = swapMulti.getSelect(selCur3);
-                    final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
-                    info.payPos.add(new PayPos(info.date, amount, curInst));
-                }
-
-                if (instance2info.containsKey(docToInst)) {
-                    final DocPaymentInfo_Base info = instance2info.get(docToInst);
                     final Instance curInst = swapMulti.getSelect(selCur3);
                     final BigDecimal amount = swapMulti.getAttribute(CISales.Document2Document4Swap.Amount);
                     info.payPos.add(new PayPos(info.date, amount, curInst));
@@ -959,7 +948,10 @@ public abstract class DocPaymentInfo_Base
         }
     }
 
-    public abstract static class TargetInfo
+    /**
+     * The Class TargetInfo.
+     */
+    public abstract static class AbstractTargetInfo
     {
 
         /**
@@ -977,7 +969,13 @@ public abstract class DocPaymentInfo_Base
          */
         private CurrencyInst currencyInst;
 
-        public TargetInfo(final Instance _instance)
+        /**
+         * Instantiates a new target info.
+         *
+         * @param _instance the instance
+         * @throws EFapsException on error
+         */
+        public AbstractTargetInfo(final Instance _instance)
             throws EFapsException
         {
             this.instance = _instance;
@@ -1010,7 +1008,6 @@ public abstract class DocPaymentInfo_Base
             return this.instance;
         }
 
-
         /**
          * Setter method for instance variable {@link #currencyInstance}.
          *
@@ -1020,7 +1017,6 @@ public abstract class DocPaymentInfo_Base
         {
             this.currencyInstance = _currencyInstance;
         }
-
 
         /**
          * Setter method for instance variable {@link #currencyInst}.
@@ -1033,9 +1029,11 @@ public abstract class DocPaymentInfo_Base
         }
     }
 
-
+    /**
+     * The Class TargetDocInfo.
+     */
     public static class TargetDocInfo
-        extends TargetInfo
+        extends AbstractTargetInfo
     {
         /**
          * /**
@@ -1063,7 +1061,7 @@ public abstract class DocPaymentInfo_Base
      * Account info.
      */
     public static class AccountInfo
-        extends TargetInfo
+        extends AbstractTargetInfo
     {
         /**
         /**
@@ -1085,6 +1083,4 @@ public abstract class DocPaymentInfo_Base
             }
         }
     }
-
-
 }

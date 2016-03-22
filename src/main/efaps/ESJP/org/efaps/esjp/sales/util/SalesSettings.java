@@ -198,14 +198,6 @@ public interface SalesSettings
      */
     String PERMITAUGMENT4FUNDSTBS = SalesSettings.BASE + "AccountFundsToBeSettledPermitAugment";
 
-
-
-    /**
-     * Properties. Can be concatenated.
-     * A mapping for AutoComplete etc.
-     */
-    String SWAPCONFIG = SalesSettings.BASE + "Config4Swap";
-
     /**
      * Properties. Can be concatenated.
      * A mapping for AutoComplete etc.

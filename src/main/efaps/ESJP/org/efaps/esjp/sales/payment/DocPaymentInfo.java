@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,6 +44,13 @@ public class DocPaymentInfo
         super(_docInst);
     }
 
+    /**
+     * Initialize.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
     public static void initialize(final Parameter _parameter,
                                   final DocPaymentInfo_Base... _infos)
         throws EFapsException
@@ -51,6 +58,13 @@ public class DocPaymentInfo
         DocPaymentInfo_Base.initialize(_parameter, _infos);
     }
 
+    /**
+     * Inits the base doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
     public static void initBaseDoc(final Parameter _parameter,
                                    final DocPaymentInfo_Base... _infos)
         throws EFapsException
@@ -58,6 +72,13 @@ public class DocPaymentInfo
         DocPaymentInfo_Base.initBaseDoc(_parameter, _infos);
     }
 
+    /**
+     * Inits the payments.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
     public static void initPayments(final Parameter _parameter,
                                     final DocPaymentInfo_Base... _infos)
         throws EFapsException
@@ -65,6 +86,13 @@ public class DocPaymentInfo
         DocPaymentInfo_Base.initPayments(_parameter, _infos);
     }
 
+    /**
+     * Inits the detraction.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
     public static void initDetraction(final Parameter _parameter,
                                       final DocPaymentInfo_Base... _infos)
         throws EFapsException
@@ -72,6 +100,13 @@ public class DocPaymentInfo
         DocPaymentInfo_Base.initDetraction(_parameter, _infos);
     }
 
+    /**
+     * Inits the retention.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
     public static void initRetention(final Parameter _parameter,
                                         final DocPaymentInfo_Base... _infos)
         throws EFapsException
@@ -79,11 +114,17 @@ public class DocPaymentInfo
         DocPaymentInfo_Base.initRetention(_parameter, _infos);
     }
 
+    /**
+     * Inits the swap.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _infos the infos
+     * @throws EFapsException on error
+     */
     public static void initSwap(final Parameter _parameter,
                                    final DocPaymentInfo_Base... _infos)
         throws EFapsException
     {
         DocPaymentInfo_Base.initSwap(_parameter, _infos);
     }
-
 }

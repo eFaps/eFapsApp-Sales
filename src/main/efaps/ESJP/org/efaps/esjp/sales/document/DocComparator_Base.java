@@ -39,7 +39,10 @@ import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 /**
- * TODO comment!
+ * Compares to documents to evaluate if they have the same information,
+ * e.g. is the quantity or the amount of the positions are equal. It is
+ * used to change the status of one document if it is related to another one
+ * like an Invoice to a DeliveryNote.
  *
  * @author The eFaps Team
  */
@@ -83,7 +86,7 @@ public abstract class DocComparator_Base
     {
         if (!this.init) {
             this.init = true;
-            QueryBuilder queryBldr;
+            final QueryBuilder queryBldr;
             if (isSumDoc()) {
                 final PrintQuery print = new PrintQuery(getDocInstance());
                 final SelectBuilder selCurInst = SelectBuilder.get()
@@ -272,7 +275,7 @@ public abstract class DocComparator_Base
         throws EFapsException
     {
         final Properties properties = Sales.COMPARATORCONFIG.get();
-        BigDecimal ret;
+        final BigDecimal ret;
         if (properties.containsKey(getDocInstance().getType().getName() + ".Deviation4Quantity")) {
             ret = new BigDecimal(properties.getProperty(getDocInstance().getType().getName() + ".Deviation4Quantity"));
         } else if (properties.containsKey("Default.Deviation4Quantity")) {
@@ -293,7 +296,7 @@ public abstract class DocComparator_Base
         throws EFapsException
     {
         final Properties properties = Sales.COMPARATORCONFIG.get();
-        BigDecimal ret;
+        final BigDecimal ret;
         if (properties.containsKey(getDocInstance().getType().getName() + ".Deviation4Net")) {
             ret = new BigDecimal(properties.getProperty(getDocInstance().getType().getName() + ".Deviation4Net"));
         } else if (properties.containsKey("Default.Deviation4Net")) {

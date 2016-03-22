@@ -36,11 +36,13 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.ci.CITableSales;
 import org.efaps.esjp.common.parameter.ParameterUtil;
 import org.efaps.esjp.erp.AbstractWarning;
+import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.IWarning;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Swap;
@@ -160,18 +162,23 @@ public abstract class Exchange_Base
                 final Map<Instance, Map<Instance, BigDecimal>> exchangeValuesMap = new LinkedHashMap<>();
 
                 for (int i = 0; i < nameAr.length; i++) {
+                    final Instance rateCurInst = Instance.get(CIERP.Currency.getType(), currAr[i]);
+                    final String rate = new Currency().evaluateRateInfo(_parameter, new DateTime(), rateCurInst)
+                                    .getRateFrmt();
                     final Parameter parameter = ParameterUtil.clone(_parameter);
                     ParameterUtil.setParmeterValue(parameter, "name4create", nameAr[i]);
+                    ParameterUtil.setParmeterValue(parameter, "rate", rate);
                     ParameterUtil.setParmeterValue(parameter, "rateCrossTotal", crossAr[i]);
                     ParameterUtil.setParmeterValue(parameter, "rateCurrencyId", currAr[i]);
                     ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
                                     CISales.DocumentSumAbstract.Date.name), dateAr[i]);
                     ParameterUtil.setParmeterValue(parameter, getFieldName4Attribute(_parameter,
                                     CISales.DocumentSumAbstract.DueDate.name), dueDateAr[i]);
+
                     final CreatedDoc createdDoc = createDoc(parameter);
                     createReport(_parameter, createdDoc);
-                    exchangeMap.put(createdDoc.getInstance(), (BigDecimal) NumberFormatter.get().getFormatter()
-                                    .parse(crossAr[i]));
+                    exchangeMap.put(createdDoc.getInstance(), (BigDecimal) NumberFormatter.get().getFormatter().parse(
+                                    crossAr[i]));
                 }
                 final Iterator<Entry<Instance, BigDecimal>> exchangeIter = exchangeMap.entrySet().iterator();
                 int start = 0;

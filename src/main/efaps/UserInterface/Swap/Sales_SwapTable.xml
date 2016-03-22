@@ -28,29 +28,56 @@
             <property name="SelectAlternateOID">linkto[FromAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[FromAbstractLink].type.label&gt; - $&lt;linkto[FromAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2Document4Swap/FromLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="fromLinkStatus">
             <property name="Select">linkto[FromAbstractLink].attribute[StatusAbstract]</property>
             <property name="Label">Sales_SwapTable.fromLinkStatus.Label</property>
             <property name="FilterType">PICKLIST</property>
         </field>
+        <field name="fromLinkContact">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[FromAbstractLink].linkto[Contact].oid</property>
+            <property name="Select">linkto[FromAbstractLink].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_SwapTable.fromLinkContact.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
         <field name="amount">
-            <property name="Phrase">$&lt;attribute[Amount].type.label&gt; $&lt;linkto[CurrencyLink].attribute[Symbol]&gt;</property>
+            <property name="Attribute">Amount</property>
             <property name="Label">Sales_Document2Document4Swap/Amount.Label</property>
             <property name="Align">right</property>
+        </field>
+        <field name="currencyLink">
+            <property name="Select">linkto[CurrencyLink].attribute[Symbol]</property>
+            <property name="Label">Sales_Document2Document4Swap/CurrencyLink.Label</property>
+            <property name="FilterType">PICKLIST</property>
         </field>
         <field name="toLink">
             <property name="HRef">TREE</property>
             <property name="SelectAlternateOID">linkto[ToAbstractLink].oid</property>
             <property name="Phrase">$&lt;linkto[ToAbstractLink].type.label&gt; - $&lt;linkto[ToAbstractLink].attribute[Name]&gt;</property>
             <property name="Label">Sales_Document2Document4Swap/ToLink.Label</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
         <field name="toLinkStatus">
             <property name="Select">linkto[ToAbstractLink].attribute[StatusAbstract]</property>
             <property name="Label">Sales_SwapTable.toLinkStatus.Label</property>
             <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="toLinkContact">
+            <property name="HRef">TREE</property>
+            <property name="SelectAlternateOID">linkto[ToAbstractLink].linkto[Contact].oid</property>
+            <property name="Select">linkto[ToAbstractLink].linkto[Contact].attribute[Name]</property>
+            <property name="Label">Sales_SwapTable.toLinkContact.Label</property>
+            <property name="FilterType">PICKLIST</property>
+        </field>
+        <field name="created">
+            <property name="Attribute">Created</property>
+            <property name="Label">Sales_Document2Document4Swap/Created.Label</property>
+            <property name="FilterType">FREETEXT</property>
+            <property name="FilterRequired">TRUE</property>
+            <property name="FilterBase">DATABASE</property>
+            <property name="FilterDefault">MONTH</property>
         </field>
     </definition>
 </ui-table>

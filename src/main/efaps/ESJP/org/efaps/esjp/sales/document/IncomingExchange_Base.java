@@ -20,7 +20,6 @@ package org.efaps.esjp.sales.document;
 
 import java.io.File;
 
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -162,20 +161,6 @@ public abstract class IncomingExchange_Base
         throws EFapsException
     {
         return new Exchange().createCalculated(_parameter);
-    }
-
-    @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getType4SysConf(_parameter).getName();
-    }
-
-    @Override
-    protected Type getType4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getCIType().getType();
     }
 
     @Override
