@@ -33,7 +33,6 @@ import java.util.UUID;
 
 import org.apache.commons.collections4.comparators.ComparatorChain;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -208,7 +207,7 @@ public abstract class ProductStockReport_Base
         public String getLabel(final Parameter _parameter)
             throws EFapsException
         {
-            String ret;
+            final String ret;
             if (getObject().isValid()) {
                 final PrintQuery print = new PrintQuery(getObject());
                 print.addAttribute("Name", "Description");
@@ -470,8 +469,7 @@ public abstract class ProductStockReport_Base
             throws EFapsException
         {
             final BigDecimal[] quantities = new BigDecimal[] { BigDecimal.ZERO, BigDecimal.ZERO };
-            final SystemConfiguration config = Sales.getSysConfig();
-            final Instance storGrpInstance = config.getLink(SalesSettings.STORAGEGROUP4PRODUCTREQUESTREPORT);
+            final Instance storGrpInstance = Sales.PRODSTOCKRPTSTORAGEGRP.get();
 
             if (storGrpInstance != null && storGrpInstance.isValid()) {
                 final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.StorageGroupAbstract2StorageAbstract);
@@ -493,7 +491,8 @@ public abstract class ProductStockReport_Base
                     quantities[1] = quantities[1].add(reservedTmp);
                 }
             } else {
-                ProductStockReport_Base.LOG.warn("It's required a system configuration for Storage Group");
+                ProductStockReport_Base.LOG.warn("Missing System Configuration Link for Storage Group {}",
+                                Sales.PRODSTOCKRPTSTORAGEGRP.getKey());
             }
             return quantities;
         }

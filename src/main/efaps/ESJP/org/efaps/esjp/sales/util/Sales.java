@@ -522,6 +522,13 @@ public final class Sales
                     .description("Properties 4 Products in Invoice");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink PRODSTOCKRPTSTORAGEGRP = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.ProductStockReport.StorageGroup")
+                    .description("StorageGroup applied for the ProductStockReport.");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final IntegerSysConfAttribute PRODUCTIONCOSTINGMAXDEV = new IntegerSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)

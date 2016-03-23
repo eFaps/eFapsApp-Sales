@@ -127,11 +127,6 @@ public interface SalesSettings
     String INCOMINGINVOICESEQUENCE = SalesSettings.BASE + "IncomingInvoiceSequence";
 
     /**
-     *  OID default productDocumentType to return usage report.
-     */
-    String STORAGEGROUP4PRODUCTREQUESTREPORT = SalesSettings.BASE + "StorageGroup4ProductRequestReport";
-
-    /**
      * OID default to insert spending into PaymentOrder.
      */
     String DEFAULTSPENDING = SalesSettings.BASE + "DefaultSpending";
