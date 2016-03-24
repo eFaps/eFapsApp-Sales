@@ -647,10 +647,24 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SALESREPORT4ACCOUNTINASSIGENED = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesReport4Account.IN.ActivateContactAssigned2Employee")
+                    .description("Activate the column for Employee Assigned to Contact.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute SALESREPORT4ACCOUNTOUT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.OUT")
                     .description("Properties 4 SalesReport4Account OUT.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute SALESREPORT4ACCOUNTOUTASSIGENED = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "report.SalesReport4Account.OUT.ActivateContactAssigned2Employee")
+                    .description("Activate the column for Employee Assigned to Contact.");
 
     /** See description. */
     @EFapsSysConfAttribute

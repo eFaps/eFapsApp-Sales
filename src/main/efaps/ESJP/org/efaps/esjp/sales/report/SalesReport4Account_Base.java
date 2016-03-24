@@ -52,6 +52,7 @@ import org.efaps.esjp.common.jasperreport.datatype.DateTimeYear;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.FilteredReport;
+import org.efaps.esjp.humanresource.Employee;
 import org.efaps.esjp.sales.payment.DocPaymentInfo;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.ui.wicket.models.EmbeddedLink;
@@ -266,6 +267,7 @@ public abstract class SalesReport4Account_Base
                                 .setDocDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.Date))
                                 .setDocDueDate(multi.<DateTime>getAttribute(CISales.DocumentSumAbstract.DueDate))
                                 .setDocName(multi.<String>getAttribute(CISales.DocumentSumAbstract.Name))
+                                .setContactInst(multi.<Instance>getSelect(selContactInst))
                                 .setDocRevision(multi.<String>getAttribute(CISales.DocumentSumAbstract.Revision))
                                 .setDocStatus(multi.<String>getSelect(selStatus));
 
@@ -307,18 +309,44 @@ public abstract class SalesReport4Account_Base
                 });
                 Collections.sort(dataSource, chain);
                 final Collection<Map<String, ?>> col = new ArrayList<>();
-                final boolean showCondition = Sales.CHACTIVATESALESCOND.get()
-                                && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
-                            || Sales.CHACTIVATEPURCHASECOND.get()
-                                && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+
 
                 for (final DataBean bean : dataSource) {
-                    col.add(bean.getMap(showCondition));
+                    col.add(bean.getMap(isShowCondition(), isShowAssigned()));
                 }
                 ret = new JRMapCollectionDataSource(col);
                 getFilteredReport().cache(_parameter, ret);
             }
             return ret;
+        }
+
+
+        /**
+         * Checks if is show condition.
+         *
+         * @return true, if is show condition
+         * @throws EFapsException on error
+         */
+        protected boolean isShowCondition() throws EFapsException
+        {
+            return Sales.CHACTIVATESALESCOND.get()
+                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
+                        || Sales.CHACTIVATEPURCHASECOND.get()
+                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
+        }
+
+        /**
+         * Checks if is show assigned.
+         *
+         * @return true, if is show assigned
+         * @throws EFapsException on error
+         */
+        protected boolean isShowAssigned() throws EFapsException
+        {
+            return Sales.SALESREPORT4ACCOUNTINASSIGENED.get()
+                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.IN)
+                        || Sales.SALESREPORT4ACCOUNTOUTASSIGENED.get()
+                            && Report4Account.this.filteredReport.getReportKey().equals(ReportKey.OUT);
         }
 
         /**
@@ -431,6 +459,10 @@ public abstract class SalesReport4Account_Base
                             this.filteredReport.getLabel(_parameter, "Condition"), "condition",
                             DynamicReports.type.stringType());
 
+            final TextColumnBuilder<String> assignedColumn = DynamicReports.col.column(
+                            this.filteredReport.getLabel(_parameter, "Assigned"), "assigned",
+                            DynamicReports.type.stringType());
+
             final ColumnGroupBuilder yearGroup = DynamicReports.grp.group(yearColumn).groupByDataType();
             final ColumnGroupBuilder monthGroup = DynamicReports.grp.group(monthColumn).groupByDataType();
 
@@ -457,13 +489,16 @@ public abstract class SalesReport4Account_Base
                 gridList.add(revisionColumn);
             }
 
-            if (Sales.CHACTIVATESALESCOND.get() && Report4Account.this.filteredReport.getReportKey().equals(
-                            ReportKey.IN) || Sales.CHACTIVATEPURCHASECOND.get() && Report4Account.this.filteredReport
-                                            .getReportKey().equals(ReportKey.OUT)) {
+            if (isShowCondition()) {
                 gridList.add(conditionColumn);
             }
 
             gridList.add(contactNameColumn);
+
+            if (isShowAssigned()) {
+                gridList.add(assignedColumn);
+            }
+
             gridList.add(dueDateColumn);
             gridList.add(docStatusColumn);
 
@@ -511,15 +546,17 @@ public abstract class SalesReport4Account_Base
                             nameColumn.setHorizontalTextAlignment(HorizontalTextAlignment.CENTER).setFixedWidth(140),
                             revisionColumn);
 
-            if (Sales.CHACTIVATESALESCOND.get() && Report4Account.this.filteredReport.getReportKey().equals(
-                            ReportKey.IN) || Sales.CHACTIVATEPURCHASECOND.get() && Report4Account.this.filteredReport
-                                            .getReportKey().equals(ReportKey.OUT)) {
+            if (isShowCondition()) {
                 _builder.addColumn(conditionColumn);
             }
 
-            _builder.addColumn(contactNameColumn.setFixedWidth(200),
-                            dueDateColumn,
-                            docStatusColumn);
+            _builder.addColumn(contactNameColumn.setFixedWidth(200));
+
+            if (isShowAssigned()) {
+                _builder.addColumn(assignedColumn);
+            }
+
+            _builder.addColumn(dueDateColumn, docStatusColumn);
             if (!showDetails) {
                 _builder.setShowColumnValues(false);
             }
@@ -653,6 +690,9 @@ public abstract class SalesReport4Account_Base
         /** The doc contact name. */
         private String docContactName;
 
+        /** The contact inst. */
+        private Instance contactInst;
+
         /** The cross. */
         private final Map<Long, BigDecimal> cross = new HashMap<>();
 
@@ -693,10 +733,13 @@ public abstract class SalesReport4Account_Base
         /**
          * Gets the map.
          *
+         * @param _showCondition the show condition
+         * @param _showAssigned the show assigned
          * @return the map
          * @throws EFapsException on error
          */
-        public Map<String, ?> getMap(final boolean _showCondition)
+        public Map<String, ?> getMap(final boolean _showCondition,
+                                     final boolean _showAssigned)
             throws EFapsException
         {
             if (this.payments.isEmpty()) {
@@ -713,7 +756,10 @@ public abstract class SalesReport4Account_Base
             ret.put("docContactName", getDocContactName());
             ret.put("docDueDate", getDocDueDate());
             if (_showCondition) {
-                ret.put("condition", getCondition());;
+                ret.put("condition", getCondition());
+            }
+            if (_showAssigned) {
+                ret.put("assigned", getAssigned());
             }
 
             if (isCurrencyBase()) {
@@ -1005,6 +1051,52 @@ public abstract class SalesReport4Account_Base
         public DataBean setCondition(final String _condition)
         {
             this.condition = _condition;
+            return this;
+        }
+
+        /**
+         * Gets the assigned.
+         *
+         * @return the assigned
+         * @throws EFapsException on error
+         */
+        public String getAssigned()
+            throws EFapsException
+        {
+            return Employee.getEmployeeAssigned2Contact(new Parameter(), getContactInst());
+        }
+
+        /**
+         * Sets the condition.
+         *
+         * @param _assigned the assigned
+         * @return the data bean
+         */
+        public DataBean setAssigned(final String _assigned)
+        {
+            this.condition = _assigned;
+            return this;
+        }
+
+        /**
+         * Gets the contact inst.
+         *
+         * @return the contact inst
+         */
+        public Instance getContactInst()
+        {
+            return this.contactInst;
+        }
+
+        /**
+         * Sets the contact inst.
+         *
+         * @param _contactInst the contact inst
+         * @return the data bean
+         */
+        public DataBean setContactInst(final Instance _contactInst)
+        {
+            this.contactInst = _contactInst;
             return this;
         }
     }

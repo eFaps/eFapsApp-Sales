@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.humanresource;
 
+import org.efaps.admin.event.Parameter;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsNoUpdate;
-import org.efaps.admin.program.esjp.EFapsRevision;
 import org.efaps.admin.program.esjp.EFapsUUID;
+import org.efaps.db.Instance;
+import org.efaps.util.EFapsException;
 
 
 /**
@@ -31,12 +31,25 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * HumanResource App.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("f7291f1c-260b-49ec-be6c-aeaf653fed1b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 @EFapsNoUpdate
 public class Employee
 {
 
+    /**
+     * Gets the employee assigned to contact.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _contactInstance the contact instance
+     * @return the employee assigned2 contact
+     * @throws EFapsException on error
+     */
+    public static String getEmployeeAssigned2Contact(final Parameter _parameter,
+                                                     final Instance _contactInstance)
+        throws EFapsException
+    {
+        return "";
+    }
 }
