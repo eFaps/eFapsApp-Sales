@@ -66,6 +66,12 @@ public final class Sales
                     .concatenate(true)
                     .description("General Configuration for Autocomplete for Products.");
 
+    @EFapsSysConfLink
+    public static final SysConfLink DEFAULTTAXCAT4PRODUCT = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DefaultTaxCatergory4Product")
+                    .description("Default product document type for UsageReport.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute AFUNDSSETTLEDPERMITA = new BooleanSysConfAttribute()
