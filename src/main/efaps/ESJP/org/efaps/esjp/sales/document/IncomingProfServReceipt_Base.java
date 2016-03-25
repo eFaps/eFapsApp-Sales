@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -28,16 +25,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.ci.CIType;
 import org.efaps.db.Context;
@@ -49,7 +44,6 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.Calculator;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,10 +53,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("f6743e59-52f3-491e-8183-588982c787dc")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingProfServReceipt_Base
     extends AbstractDocumentSum
 {
@@ -119,10 +112,7 @@ public abstract class IncomingProfServReceipt_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration config = Sales.getSysConfig();
-        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGINVOICESEQUENCE);
-
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGPROFSERVRECEIPTREVSEQ.get()));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(REVISIONKEY, revision);
@@ -289,7 +279,7 @@ public abstract class IncomingProfServReceipt_Base
         final Return retVal = new Return();
         final DocTaxInfo doctaxInfo = AbstractDocumentTax.getDocTaxInfo(_parameter, _parameter.getInstance());
         if (doctaxInfo.isProfServInsurance()) {
-            retVal.put(ReturnValues.VALUES,doctaxInfo.getPercent(CISales.IncomingProfServInsurance));
+            retVal.put(ReturnValues.VALUES, doctaxInfo.getPercent(CISales.IncomingProfServInsurance));
         }
         return retVal;
     }

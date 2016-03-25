@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -27,8 +24,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -37,7 +32,7 @@ import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.program.esjp.Listener;
 import org.efaps.ci.CIType;
@@ -59,7 +54,6 @@ import org.efaps.esjp.erp.listener.IOnAction;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.Account_Base;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -68,10 +62,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("4957283f-22c6-4b31-90be-948547309d13")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class FundsToBeSettledBalance_Base
     extends AbstractDocumentSum
 {
@@ -274,7 +267,7 @@ public abstract class FundsToBeSettledBalance_Base
             payInsert.add(CISales.Payment.TargetDocument, balanceInst);
             payInsert.execute();
 
-            CIType type;
+            final CIType type;
             if (difference.compareTo(BigDecimal.ZERO) < 0) {
                 type = CISales.TransactionOutbound;
             } else {
@@ -286,8 +279,8 @@ public abstract class FundsToBeSettledBalance_Base
             transInsert.add(CISales.TransactionAbstract.CurrencyId, curId);
             transInsert.add(CISales.TransactionAbstract.Payment,  payInsert.getInstance().getId());
             transInsert.add(CISales.TransactionAbstract.Account, inst.getId());
-            transInsert.add(CISales.TransactionAbstract.Description,
-                        DBProperties.getProperty("org.efaps.esjp.sales.Account_Base.Transaction.FundsToBeSettledBalance"));
+            transInsert.add(CISales.TransactionAbstract.Description, DBProperties.getProperty(
+                            "org.efaps.esjp.sales.Account_Base.Transaction.FundsToBeSettledBalance"));
             transInsert.add(CISales.TransactionAbstract.Date, new DateTime());
             transInsert.execute();
         }
@@ -301,6 +294,13 @@ public abstract class FundsToBeSettledBalance_Base
         return new DateTime().toLocalTime().toString();
     }
 
+    /**
+     * Creates the doc4 account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return createDoc4Account(final Parameter _parameter)
         throws EFapsException
     {
@@ -430,9 +430,7 @@ public abstract class FundsToBeSettledBalance_Base
                 recUpdate.add(CISales.FundsToBeSettledReceipt.Status,
                                 Status.find(CISales.FundsToBeSettledReceiptStatus.Closed));
                 if (contactObj != null) {
-                    final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                    SalesSettings.INCOMINGINVOICESEQUENCE);
-                    final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                    final NumberGenerator numgen = NumberGenerator.get(Sales.FUNDSTOBESETTLEDRECEIPTREVSEQ.get());
                     if (numgen != null) {
                         final String revision = numgen.getNextVal();
                         recUpdate.add(CISales.FundsToBeSettledReceipt.Revision, revision);
@@ -440,9 +438,7 @@ public abstract class FundsToBeSettledBalance_Base
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
-                final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                SalesSettings.INCOMINGCREDITNOTESEQUENCE);
-                final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGCREDITNOTEREVSEQ.get());
                 if (numgen != null) {
                     final String revision = numgen.getNextVal();
                     recUpdate.add(CISales.IncomingCreditNote.Revision, revision);

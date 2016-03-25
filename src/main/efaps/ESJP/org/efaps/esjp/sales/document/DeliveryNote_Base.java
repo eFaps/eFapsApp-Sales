@@ -59,7 +59,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.erp.Revision;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -108,10 +107,10 @@ public abstract class DeliveryNote_Base
     {
         final Return ret = new Return();
         if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
-            final String depPointsStr = Sales.getSysConfig().getAttributeValue(SalesSettings.DEFAULTDEPARTUREPOINTS);
-            if (depPointsStr != null  && !depPointsStr.isEmpty()) {
+            final List<String> depPoints = Sales.DELIVERYNOTEDEFAULTDEPARTUREPOINTS.get();
+            if (!depPoints.isEmpty()) {
                 final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-                fieldValue.setValue(depPointsStr.split("\n")[0].trim());
+                fieldValue.setValue(depPoints.get(0).trim());
             }
         }
         return ret;
@@ -132,16 +131,12 @@ public abstract class DeliveryNote_Base
             all = true;
         }
         final List<Map<String, String>> list = new ArrayList<Map<String, String>>();
-        final String destinationsStr = Sales.getSysConfig()
-                        .getAttributeValue(SalesSettings.DEFAULTDEPARTUREPOINTS);
-        if (destinationsStr != null && !destinationsStr.isEmpty()) {
-            final String[] destinations = destinationsStr.split("\n");
-            for (final String destination : destinations) {
-                if (all || StringUtils.startsWithIgnoreCase(destination, input)) {
-                    final Map<String, String> map = new HashMap<String, String>();
-                    map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), destination);
-                    list.add(map);
-                }
+        final List<String> depPoints = Sales.DELIVERYNOTEDEFAULTDEPARTUREPOINTS.get();
+        for (final String depPoint : depPoints) {
+            if (all || StringUtils.startsWithIgnoreCase(depPoint, input)) {
+                final Map<String, String> map = new HashMap<String, String>();
+                map.put(EFapsKey.AUTOCOMPLETE_VALUE.getKey(), depPoint);
+                list.add(map);
             }
         }
         add2AutoComplete4DeparturePoint(_parameter, list);
@@ -502,7 +497,7 @@ public abstract class DeliveryNote_Base
         }
 
         final Long storageID = evaluateStorage4PositionTrigger(_parameter);
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATETRANSTRIG4RES)) {
+        if (Sales.RESERVATIONACTIVATETRANSTRIG.get()) {
             final Instance contactInst = Instance.get(param.get("contact")[0]);
             String quantitystring = qauntity[0].toString();
             quantitystring = quantitystring.replace(",", "");

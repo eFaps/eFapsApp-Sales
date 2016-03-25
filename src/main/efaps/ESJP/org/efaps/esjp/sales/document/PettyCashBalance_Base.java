@@ -23,7 +23,6 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
@@ -56,7 +55,6 @@ import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.listener.IOnAction;
 import org.efaps.esjp.sales.Account;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -69,7 +67,7 @@ import org.slf4j.LoggerFactory;
  * @author The eFaps Team
  */
 @EFapsUUID("d93f298b-f0bf-4278-a18e-b065cc330e50")
-@EFapsApplication("eFaspApp-Sales")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PettyCashBalance_Base
     extends AbstractDocumentSum
 {
@@ -327,7 +325,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.CollectionOrderStatus.Open);
             relation = CISales.AccountPettyCash2CollectionOrder.getType();
             bal2orderType = CISales.PettyCashBalance2CollectionOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4COLORDPC);
+            actDefInst = Sales.PETTYCASHBALACTDEF4COLORD.get();
             actDef2doc = CISales.ActionDefinitionCollectionOrder2Document;
         } else if (crossTotal.compareTo(BigDecimal.ZERO) > 0) {
             type = CISales.PaymentOrder.getType();
@@ -335,7 +333,7 @@ public abstract class PettyCashBalance_Base
             status = Status.find(CISales.PaymentOrderStatus.Open);
             relation = CISales.AccountPettyCash2PaymentOrder.getType();
             bal2orderType = CISales.PettyCashBalance2PaymentOrder.getType();
-            actDefInst = Sales.getSysConfig().getLink(SalesSettings.ACTDEF4PAYORDPC);
+            actDefInst = Sales.PETTYCASHBALACTDEF4PAYORD.get();
             actDef2doc = CISales.ActionDefinitionPaymentOrder2Document;
         }
         if (type != null && accountInst != null && accountInst.isValid()) {
@@ -379,7 +377,7 @@ public abstract class PettyCashBalance_Base
                 actDef2DocInsert.execute();
             } else {
                 LOG.error("Missing or wrong Configuration Links for ActionDefinition: '{}', '{}'",
-                                SalesSettings.ACTDEF4COLORDPC, SalesSettings.ACTDEF4PAYORDPC);
+                                Sales.PETTYCASHBALACTDEF4COLORD.getKey(),Sales.PETTYCASHBALACTDEF4PAYORD.getKey());
             }
         }
         return new Return();
@@ -401,7 +399,7 @@ public abstract class PettyCashBalance_Base
             final InstanceQuery query = queryBldr.getQuery();
             query.executeWithoutAccessCheck();
             if (!query.next()) {
-                if (Sales.PETTYCASHBALANCEREQUIREBOOKED4PAY.get()) {
+                if (Sales.PETTYCASHBALREQUIREBOOKED4PAY.get()) {
                     final QueryBuilder attrQueryBldr = new QueryBuilder(CISales.PettyCashReceipt);
                     attrQueryBldr.addWhereAttrNotEqValue(CISales.PettyCashReceipt.Status,
                                     Status.find(CISales.PettyCashReceiptStatus.Booked));
@@ -455,9 +453,8 @@ public abstract class PettyCashBalance_Base
                 recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                 if (contactObj != null) {
                     // legal documents
-                    final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                    SalesSettings.INCOMINGINVOICESEQUENCE);
-                    final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                    final NumberGenerator numgen = NumberGenerator.get(
+                                    UUID.fromString(Sales.PETTYCASHRECEIPTREVSEQ.get()));
                     if (numgen != null) {
                         final String revision = numgen.getNextVal();
                         recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
@@ -465,9 +462,7 @@ public abstract class PettyCashBalance_Base
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
-                final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                SalesSettings.INCOMINGCREDITNOTESEQUENCE);
-                final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+                final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGCREDITNOTEREVSEQ.get()));
                 if (numgen != null) {
                     final String revision = numgen.getNextVal();
                     recUpdate.add(CISales.IncomingCreditNote.Revision, revision);

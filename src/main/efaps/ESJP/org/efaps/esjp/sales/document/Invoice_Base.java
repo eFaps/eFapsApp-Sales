@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.sales.Channel;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -65,7 +64,7 @@ public abstract class Invoice_Base
         connect2Derived(_parameter, createdDoc);
         connect2Object(_parameter, createdDoc);
 
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
+        if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
             new PerceptionCertificate().create4Doc(_parameter, createdDoc);
         }
 

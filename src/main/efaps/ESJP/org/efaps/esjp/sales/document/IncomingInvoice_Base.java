@@ -25,11 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -63,7 +61,6 @@ import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.PriceUtil_Base.ProductPrice;
 import org.efaps.esjp.sales.document.AbstractDocumentTax_Base.DocTaxInfo;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
@@ -238,7 +235,7 @@ public abstract class IncomingInvoice_Base
                                           final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATEREGPURPRICE)) {
+        if (Sales.INCOMINGINVOICEACTIVATEREGPURPRICE.get()) {
             @SuppressWarnings("unchecked")
             final List<Calculator> calcList = (List<Calculator>) _createdDoc.getValue(
                             AbstractDocument_Base.CALCULATORS_VALUE);
@@ -335,10 +332,7 @@ public abstract class IncomingInvoice_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration config = Sales.getSysConfig();
-        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGINVOICESEQUENCE);
-
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGINVOICEREVSEQ.get());
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);
@@ -933,7 +927,7 @@ public abstract class IncomingInvoice_Base
                 ret.add(new OnlyOneTaxDocWarning());
             }
 
-            if (isPerception && Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
+            if (isPerception && Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
                 final Instance inst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.contact.name));
                 final PrintQuery print = new PrintQuery(inst);
@@ -947,7 +941,7 @@ public abstract class IncomingInvoice_Base
                 }
             }
 
-            if (isRetention && Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISRETENTIONAGENT)) {
+            if (isRetention && Sales.RETENTIONCERTIFICATEACTIVATE.get()) {
                 final Instance inst = Instance.get(_parameter
                                 .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.contact.name));
                 final PrintQuery print = new PrintQuery(inst);

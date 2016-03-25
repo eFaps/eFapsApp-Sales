@@ -36,17 +36,6 @@
                 the insertion of a Incoming Invoice.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.ActivateMinRetailPrice</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate the possibility to define a minimum retail price. </description>
-        </attribute>
-        <attribute>
-            <key>PettyCashBalance_CommandWithDate</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate the command to create a balance setting the date and choosing the petty cash
-                receipts.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.NumberGenerator4PaymentDocument</key>
             <value><![CDATA[617c3a4c-a06d-462b-8460-92cb194f1235]]></value>
             <description>Generated number if case code is active to payment documents.</description>
@@ -57,24 +46,9 @@
             <description>Generated sequence if case code is active to payment documents out.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.ActivatePrintReport4PaymentDocument</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate generated report to create a payments documents.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.IncomingInvoiceSequence</key>
-            <value><![CDATA[UUID=935a2a87-056d-4278-916b-388c53fa98e0]]></value>
-            <description>Company should be setted.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.ActivateSalesChannel</key>
             <value>false</value>
             <description>Boolean (true/false). Activate the UserInterface for Sales Channel.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateBuyingRoute</key>
-            <value>false</value>
-            <description>Boolean (true/false). Activate the UserInterface for Buying Route.</description>
         </attribute>
         <attribute>
             <key>org.efaps.sales.PayableDocuments</key>
@@ -132,30 +106,6 @@ Set a Price List for a Type to Calculator. Used for Sales Documents.</descriptio
             <description>Default addresses used as the arrival point in delivery note.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.IsPerceptionAgent</key>
-            <value>false</value>
-            <description><![CDATA[Boolean (true/false).
-The current company is an Agent of Perception.]]></description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivatePerception</key>
-            <value>true</value>
-            <description><![CDATA[Boolean (true/false).
-Activate the calculation of Perception.]]></description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.IsRetentionAgent</key>
-            <value>false</value>
-            <description><![CDATA[Boolean (true/false).
-The current company is an Agent of Retention.]]></description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.ActivateRetention</key>
-            <value>true</value>
-            <description><![CDATA[Boolean (true/false).
-Activate the calculation of retention.]]></description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.Config4Swap</key>
             <value><![CDATA[Sales_IncomingExchange.Type=Sales_Invoice
 Sales_IncomingExchange.StatusGroup=Sales_InvoiceStatus
@@ -201,10 +151,6 @@ Sales_Invoice.Total=NET
             <key>org.efaps.sales.payment.Config4Rate</key>
             <value><![CDATA[Sales_PaymentRetentionOut=false]]>
             </value>
-        </attribute>
-         <attribute>
-            <key>org.efaps.sales.ActivateReservation</key>
-            <value>true</value>
         </attribute>
         <attribute>
             <key>org.efaps.sales.DocPositionReport</key>

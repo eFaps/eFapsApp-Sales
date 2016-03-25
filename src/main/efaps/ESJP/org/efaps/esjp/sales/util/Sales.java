@@ -36,6 +36,7 @@ import org.efaps.esjp.admin.common.systemconfiguration.PropertiesSysConfAttribut
 import org.efaps.esjp.admin.common.systemconfiguration.StringSysConfAttribute;
 import org.efaps.esjp.admin.common.systemconfiguration.SysConfLink;
 import org.efaps.esjp.ci.CIMsgContacts;
+import org.efaps.esjp.ci.CINumGenSales;
 import org.efaps.esjp.common.jasperreport.StandartReport_Base.JasperMime;
 import org.efaps.util.cache.CacheReloadException;
 
@@ -55,6 +56,22 @@ public final class Sales
 
     /** Sales-Configuration. */
     public static final UUID SYSCONFUUID = UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute AUTOCOMPLETE4PRODUCT = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "AutoComplete4Product")
+                    .concatenate(true)
+                    .description("General Configuration for Autocomplete for Products.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute AFUNDSSETTLEDPERMITA = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "AccountFundsToBeSettled.PermitAugment")
+                    .description("Permit the augmentation for FundstoBeSettled.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -80,6 +97,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute CLASSTAXINFOACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "class.TaxInfo.Activate")
+                    .description("Activate the classification Sales_Contacts_ClassTaxinfo.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute COMPARATORCONFIG = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Config4Comparator")
@@ -101,6 +125,13 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Channel.ActivatePurchaseCondition")
                     .description("Activate the Purchase Conditions");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink CONCIL4AUTO = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Conciliation.Link4Automation")
+                    .description("The Conciliation used for Automation Mechanism.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -155,6 +186,13 @@ public final class Sales
                     .description("Name of the jasperReport for CreditNote");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink DEFAULTCURRENCY4DOC = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DefaultCurrency4Documents")
+                    .description("Activate the Remark Attribute for Order Inbound");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute DELIVERYNOTEJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
@@ -201,6 +239,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final ListSysConfAttribute DELIVERYNOTEDEFAULTDEPARTUREPOINTS = new ListSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.DefaultDeparturePoints")
+                    .description("Default addresses used as the departure point in delivery note.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute DOCSITUATIONREPORT = new PropertiesSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.DocSituationReport")
@@ -241,6 +286,22 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.Employee2DocReport")
                     .description("Autocomplete Properties 4 Products in Invoice");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPTREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "FundsToBeSettledReceipt.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGCREDITNOTEREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingCreditNote.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -314,6 +375,89 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingInvoice.ActivateCondition")
                     .description("Activate the mechanism to assign a condition in Order Outbound");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEACTIVATEREGPURPRICE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.ActivateRegisterOfPuchasePrice")
+                    .description("Allows to activate/deactivate the registering of the prices during a purchase.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEACTPERC = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.ActivatePerception")
+                    .description("Activate the calculation of Perception.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGINVOICEACTRET = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.ActivateRetention")
+                    .description("Activate the calculation of Retention.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGINVOICEREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingInvoice.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGPROFSERVRECACTRET = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingProfServReceipt.ActivateRetention")
+                    .description("Activate the calculation of Retention.");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGPROFSERVRECEIPTREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingProfServReceipt.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGPERCEPTIONCERTIFICATEACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingPerceptionCertificate.Activate")
+                    .description("Activate Perception Certificates");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGRECEIPTREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReceipt.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute INCOMINGREMINDERREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingReminder.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGRETENTIONCERTIFICATEACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingRetentionCertificate.Activate")
+                    .description("Activate Incoming Retention Certificates");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGRETENTIONACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingRetention.Activate")
+                    .description("Activate Incoming Retention Certificates");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -410,6 +554,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PAYMENTAMOUNT4CREATEDDOC = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.Threshold4CreateOrder")
+                    .description("Threshold  generated payment order or collection order.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PAYMENTDOCUMENTDEACTIVATECODE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.DeactivateCodeGeneration")
@@ -422,6 +573,12 @@ public final class Sales
                     .key(BASE + "payment.NumberGenerator")
                     .description("NumberGenerator Payment Documents.");
 
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTGENERATEREPORT = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.GenerateReport")
+                    .description("Activate the generation of a report for every payment.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -481,10 +638,32 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
-    public static final BooleanSysConfAttribute PETTYCASHBALANCEREQUIREBOOKED4PAY = new BooleanSysConfAttribute()
+    public static final BooleanSysConfAttribute PETTYCASHBALREQUIREBOOKED4PAY = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "PettyCashBalance.RequireBooked4Payment")
                     .description("Permit the partial Balance of a AccountPettyCash.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink PETTYCASHBALACTDEF4COLORD = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PettyCashBalance.ActionDefinition4CollectionOrder")
+                    .description("Default ActionDefinition for the creation of a Collection Order.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink PETTYCASHBALACTDEF4PAYORD = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PettyCashBalance.ActionDefinition4PaymentOrder")
+                    .description("Default ActionDefinition for the creation of a Payment Order..");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute PETTYCASHRECEIPTREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PettyCashReceipt.RevisionSequence")
+                    .defaultValue(CINumGenSales.IncomingInvoiceRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -538,6 +717,13 @@ public final class Sales
                                     + "currenct cost before triggering an alert. ");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PERCEPTIONCERTIFICATEACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "PerceptionCertificate.Activate")
+                    .description("Activate Perception Certificates");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink RETURNUSAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
@@ -550,6 +736,13 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "ProductionReport.DefaultProductDocumentType")
                     .description("Default product document type for ProductionReport.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PROFSERVRETENTIONCERTIFICATEACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ProfServRetentionCertificate.Activate")
+                    .description("Activate Retention Certificates");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -610,6 +803,14 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final StringSysConfAttribute RECIEVINGTICKETREVSEQ = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.RevisionSequence")
+                    .defaultValue(CINumGenSales.RecievingTicketRevisionSequence.uuid.toString())
+                    .description("UUID of the Sequence used for the Revision.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute REMINDERJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Reminder.JasperReport")
@@ -622,6 +823,13 @@ public final class Sales
                     .key(BASE + "Reminder.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RETENTIONCERTIFICATEACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RetentionCertificate.Activate")
+                    .description("Activate Retention Certificates");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -665,6 +873,22 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "report.SalesReport4Account.OUT.ActivateContactAssigned2Employee")
                     .description("Activate the column for Employee Assigned to Contact.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute SERIALNUMBERS = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "SerialNumbers")
+                    .concatenate(true)
+                    .description("A mapping like: Sales_Invoice=001;002;003.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final IntegerSysConfAttribute SERIALNUMBERSUFFIXLENGTH = new IntegerSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "SerialNumbers.SuffixLength")
+                    .defaultValue(6)
+                    .description("Length of the number part of a Serialnumber .\"001-NNNNNN\". Default Value: 6");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -713,6 +937,20 @@ public final class Sales
                     .key(BASE + "UsageReport.Mime")
                     .clazz(JasperMime.class)
                     .description("Mime for the jasperReport for UsageReport");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RESERVATIONACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Reservation.Activate")
+                    .description("Activate reservations.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute RESERVATIONACTIVATETRANSTRIG = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Reservation.ActivateTransactionTrigger")
+                    .description(" Activate the reservation trigger mechanism on transactions..");
 
     /**
      * Singelton.

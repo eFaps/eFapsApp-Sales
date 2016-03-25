@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -81,7 +81,6 @@ import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.TaxEntry;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 
@@ -518,7 +517,7 @@ public abstract class AbstractDocumentSum_Base
         js.append(getTaxesScript(_parameter,
                         new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null))));
         _map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
+        if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
             _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
         }
     }
@@ -740,7 +739,7 @@ public abstract class AbstractDocumentSum_Base
                 if (_parameter.getParameterValue("openAmount") != null) {
                     js.append(getSetFieldValue(0, "openAmount", getBaseCrossTotalFmtStr(_parameter, calculators)));
                 }
-                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT)) {
+                if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
                     js.append(getSetFieldValue(0, "perceptionTotal",
                                     getPerceptionTotalFmtStr(_parameter, calculators)));
                 }
@@ -1431,7 +1430,7 @@ public abstract class AbstractDocumentSum_Base
         while (multi.next()) {
             final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
             final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
-            BigDecimal unitPrice;
+            final BigDecimal unitPrice;
             if (Calculator.priceIsNet(_parameter, this)) {
                 unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
             } else {
@@ -1709,7 +1708,7 @@ public abstract class AbstractDocumentSum_Base
     public Return changeDocumentType(final Parameter _parameter)
         throws EFapsException
     {
-        String value;
+        final String value;
         if (_parameter.getParameterValue("documentType") != null) {
             value = _parameter.getParameterValue("documentType");
         } else {
@@ -1723,7 +1722,7 @@ public abstract class AbstractDocumentSum_Base
             final InstanceQuery query = queryBldr.getQuery();
             query.execute();
 
-            Update update;
+            final Update update;
             if (query.next()) {
                 update = new Update(query.getCurrentValue());
             } else {
@@ -1736,6 +1735,13 @@ public abstract class AbstractDocumentSum_Base
         return new Return();
     }
 
+    /**
+     * Validate connect document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return validateConnectDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -1797,6 +1803,14 @@ public abstract class AbstractDocumentSum_Base
         return ret;
     }
 
+    /**
+     * Check4 relation.
+     *
+     * @param _typeUUID the type uuid
+     * @param _instance the instance
+     * @return the multi print query
+     * @throws EFapsException on error
+     */
     protected MultiPrintQuery check4Relation(final UUID _typeUUID,
                                              final Instance _instance)
         throws EFapsException
@@ -1809,6 +1823,13 @@ public abstract class AbstractDocumentSum_Base
         return multi;
     }
 
+    /**
+     * Gets the string4 return invalidate.
+     *
+     * @param _child the child
+     * @return the string4 return invalidate
+     * @throws EFapsException on error
+     */
     protected StringBuilder getString4ReturnInvalidate(final Instance _child)
         throws EFapsException
     {

@@ -47,7 +47,6 @@ import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -186,11 +185,11 @@ public abstract class Conciliation_Base
                                           final Instance _paymentDocInst)
         throws EFapsException
     {
-        final Instance conciliationInst = Sales.getSysConfig().getLink(SalesSettings.CONCIL4AUTO);
+        final Instance conciliationInst = Sales.CONCIL4AUTO.get();
         if (conciliationInst.isValid()) {
             createPositions(_parameter, conciliationInst, _paymentDocInst);
         } else {
-            LOG.error("Missing configuration '{}' for automatic conciliation", SalesSettings.CONCIL4AUTO);
+            LOG.error("Missing configuration '{}' for automatic conciliation", Sales.CONCIL4AUTO.getKey());
         }
     }
 

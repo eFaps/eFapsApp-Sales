@@ -63,7 +63,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.sales.PriceUtil;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
@@ -389,8 +388,7 @@ public abstract class AbstractPaymentOut_Base
     {
         boolean ret = false;
 
-        final String defaultAmount = Sales.getSysConfig().getAttributeValue(SalesSettings.DEFAULTSAMOUNT4CREATEDDOC);
-
+        final String defaultAmount = Sales.PAYMENTAMOUNT4CREATEDDOC.get();
         if (defaultAmount != null && !defaultAmount.isEmpty()) {
             final DecimalFormat fmtr = NumberFormatter.get().getFormatter();
             try {
@@ -437,7 +435,6 @@ public abstract class AbstractPaymentOut_Base
             status = CISales.PaymentOrderStatus.Approved;
             // Sales_PaymentOrderSequence
             name = NumberGenerator.get(UUID.fromString("f15f6031-c5d3-4bf8-89f4-a7a1b244d22e")).getNextVal();
-            Sales.getSysConfig().getLink(SalesSettings.DEFAULTSPENDING);
         }
 
         final Instance rateCurrInst = Instance.get(CIERP.Currency.getType(), (Long) _infoDoc.get("currency"));

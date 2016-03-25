@@ -34,7 +34,6 @@ import java.util.UUID;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.datamodel.ui.RateUI;
@@ -83,7 +82,6 @@ import org.efaps.esjp.sales.listener.IOnPayment;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.esjp.sales.util.Sales.AccountAutomation;
 import org.efaps.esjp.sales.util.Sales.AccountCDActivation;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.EFapsKey;
 import org.efaps.util.EFapsException;
@@ -107,13 +105,14 @@ public abstract class AbstractPaymentDocument_Base
      */
     private static final Logger LOG = LoggerFactory.getLogger(AbstractPaymentDocument.class);
 
+    /** The Constant INVOICE_SESSIONKEY. */
     public static final String INVOICE_SESSIONKEY = "eFaps_Selected_Sales_Invoice";
 
+    /** The Constant CONTACT_SESSIONKEY. */
     public static final String CONTACT_SESSIONKEY = "eFaps_Selected_Contact";
 
+    /** The Constant CHANGE_AMOUNT. */
     public static final String CHANGE_AMOUNT = "eFaps_Selected_ChangeAmount";
-
-
 
     /**
      * @param _parameter Parameter as passed by the eFaps API
@@ -621,6 +620,13 @@ public abstract class AbstractPaymentDocument_Base
     }
 
 
+    /**
+     * Gets the rate currency link4 account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the rate currency link4 account
+     * @throws EFapsException on error
+     */
     protected String getRateCurrencyLink4Account(final Parameter _parameter)
         throws EFapsException
     {
@@ -636,8 +642,11 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     /**
-     * @param _parameter
-     * @param _createdDoc
+     * Creates the payment.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
      */
     protected void createPayment(final Parameter _parameter,
                                  final CreatedDoc _createdDoc)
@@ -650,7 +659,7 @@ public abstract class AbstractPaymentDocument_Base
         for (int i = 0; i < getPaymentCount(_parameter); i++) {
 
             final Insert payInsert = new Insert(getPaymentType(_parameter, _createdDoc));
-            Insert transIns;
+            final Insert transIns;
             if (getType4DocCreate(_parameter) != null
                         && getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
                     || _parameter.getInstance() != null
@@ -696,6 +705,13 @@ public abstract class AbstractPaymentDocument_Base
         }
     }
 
+    /**
+     * Creates the document tax.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
+     */
     protected void createDocumentTax(final Parameter _parameter,
                                      final CreatedDoc _createdDoc)
         throws EFapsException
@@ -725,6 +741,14 @@ public abstract class AbstractPaymentDocument_Base
         }
     }
 
+    /**
+     * Checks if is incoming invoice valid.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @param _index the index
+     * @return true, if is incoming invoice valid
+     */
     protected boolean isIncomingInvoiceValid(final Parameter _parameter,
                                              final CreatedDoc _createdDoc,
                                              final int _index)
@@ -737,6 +761,13 @@ public abstract class AbstractPaymentDocument_Base
         return ret;
     }
 
+    /**
+     * Gets the payment type.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @return the payment type
+     */
     protected Type getPaymentType(final Parameter _parameter,
                                   final CreatedDoc _createdDoc)
     {
@@ -757,11 +788,12 @@ public abstract class AbstractPaymentDocument_Base
     }
 
     /**
-     * Method is calles in the preocess of creation
+     * Method is calles in the preocess of creation.
      *
      * @param _parameter Parameter as passed by the eFaps API
-     * @param _posInsert insert to add to
+     * @param _payInsert the pay insert
      * @param _createdDoc document created
+     * @param _idx the idx
      * @throws EFapsException on error
      */
     protected void add2PaymentCreate(final Parameter _parameter,
@@ -1202,20 +1234,6 @@ public abstract class AbstractPaymentDocument_Base
         return new Object[] { rInv ? BigDecimal.ONE : rate, rInv ? rate : BigDecimal.ONE };
     }
 
-    protected boolean getActive4GenerateReport(final Parameter _parameter)
-        throws EFapsException
-    {
-        boolean ret = false;
-        final SystemConfiguration config = Sales.getSysConfig();
-        if (config != null) {
-            final boolean active = config.getAttributeValueAsBoolean(SalesSettings.ACTIVATEPRINTREPORT4PAYMENTDOCUMENT);
-            if (active) {
-                ret = true;
-            }
-        }
-        return ret;
-    }
-
     public Return validatePaymentDocument(final Parameter _parameter)
         throws EFapsException
     {
@@ -1316,7 +1334,7 @@ public abstract class AbstractPaymentDocument_Base
         throws EFapsException
     {
         File file = null;
-        if (getActive4GenerateReport(_parameter)) {
+        if (Sales.PAYMENTGENERATEREPORT.get()) {
             final Object name = _createdDoc.getValues().get(CISales.PaymentDocumentAbstract.Code.name);
             if (name == null) {
                 _createdDoc.getValues().put(CIERP.DocumentAbstract.Name.name, name);

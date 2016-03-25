@@ -598,7 +598,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
         </field>
         <field name="perceptionCheckbox">
@@ -612,7 +612,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionCheckbox.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionCheckbox.UI_FIELD_VALUE"
@@ -633,7 +633,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_FIELD_VALUE"
@@ -650,7 +650,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_FIELD_VALUE"
@@ -663,7 +663,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="retentionCheckbox">
@@ -677,7 +677,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionCheckbox.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.retentionCheckbox.UI_FIELD_VALUE"
@@ -701,7 +701,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="retentionValue">
@@ -718,7 +718,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="detractionGroup" character="Group">
@@ -1432,7 +1432,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
         </field>
         <field name="perceptionCheckbox">
@@ -1446,7 +1446,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionCheckbox.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionCheckbox.UI_FIELD_VALUE"
@@ -1467,7 +1467,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_FIELD_VALUE"
@@ -1484,7 +1484,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_FIELD_VALUE"
@@ -1497,7 +1497,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="retentionCheckbox">
@@ -1511,7 +1511,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionCheckbox.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.retentionCheckbox.UI_FIELD_VALUE"
@@ -1535,7 +1535,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="retentionValue">
@@ -1552,7 +1552,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="detractionGroup" character="Group">
@@ -2297,7 +2297,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
         </field>
         <field name="perceptionCheckbox">
@@ -2311,7 +2311,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionCheckbox.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionCheckbox.UI_FIELD_VALUE"
@@ -2332,7 +2332,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionPercent.UI_FIELD_VALUE"
@@ -2349,7 +2349,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivatePerception</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivatePerception</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.perceptionValue.UI_FIELD_VALUE"
@@ -2362,7 +2362,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionGroup.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="retentionCheckbox">
@@ -2376,7 +2376,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionCheckbox.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.document.IncomingInvoice"
                 name="Sales_IncomingInvoiceForm.retentionCheckbox.UI_FIELD_VALUE"
@@ -2400,7 +2400,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionPercent.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="retentionValue">
@@ -2417,7 +2417,7 @@
             <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI" method="configCheck"
                 name="Sales_IncomingInvoiceForm.retentionValue.UI_ACCESSCHECK" event="UI_ACCESSCHECK">
                 <property name="SystemConfig">Sales-Configuration</property>
-                <property name="Attribute">org.efaps.sales.ActivateRetention</property>
+                <property name="Attribute">org.efaps.sales.IncomingInvoice.ActivateRetention</property>
             </trigger>
         </field>
         <field name="detractionGroup" character="Group">

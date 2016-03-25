@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
@@ -47,7 +45,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.util.InterfaceUtils;
 import org.efaps.esjp.contacts.Contacts;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
@@ -61,6 +58,7 @@ public abstract class IncomingCreditNote_Base
     extends AbstractDocumentSum
 {
 
+    /** The Constant REVISIONKEY. */
     public static final String REVISIONKEY = IncomingCreditNote.class.getName() + ".RevisionKey";
 
     /**
@@ -175,10 +173,7 @@ public abstract class IncomingCreditNote_Base
         throws EFapsException
     {
         if (_parameter.getInstance() == null) {
-            final SystemConfiguration config = Sales.getSysConfig();
-            final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGCREDITNOTESEQUENCE);
-
-            final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+            final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGCREDITNOTEREVSEQ.get());
             if (numgen != null) {
                 final String revision = numgen.getNextVal();
                 Context.getThreadContext().setSessionAttribute(IncomingCreditNote_Base.REVISIONKEY, revision);
@@ -188,6 +183,13 @@ public abstract class IncomingCreditNote_Base
     }
 
 
+    /**
+     * Auto complete4 petty cash receipt.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return autoComplete4PettyCashReceipt(final Parameter _parameter)
         throws EFapsException
     {

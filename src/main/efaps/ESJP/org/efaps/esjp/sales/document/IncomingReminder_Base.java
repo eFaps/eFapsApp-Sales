@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,11 +17,9 @@
 
 package org.efaps.esjp.sales.document;
 
-import java.util.Properties;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -31,7 +29,6 @@ import org.efaps.db.Context;
 import org.efaps.db.Insert;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 
@@ -46,6 +43,7 @@ public abstract class IncomingReminder_Base
     extends AbstractDocumentSum
 {
 
+    /** The Constant REVISIONKEY. */
     public static final String REVISIONKEY = "org.efaps.esjp.sales.document.IncomingReminder.RevisionKey";
 
     /**
@@ -87,16 +85,14 @@ public abstract class IncomingReminder_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration config = Sales.getSysConfig();
-        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGREMINDERSEQUENCE);
-
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGREMINDERREVSEQ.get()));
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingReminder_Base.REVISIONKEY, revision);
             _insert.add(CISales.IncomingReminder.Revision, revision);
         }
     }
+
     @Override
     public CIType getCIType()
         throws EFapsException

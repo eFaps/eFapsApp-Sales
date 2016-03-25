@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 - 2013 The eFaps Team
+ * Copyright 2013 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
 package org.efaps.esjp.sales.document;
 
 import java.util.List;
-import java.util.Properties;
-import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Context;
 import org.efaps.db.Insert;
@@ -41,7 +35,6 @@ import org.efaps.db.PrintQuery;
 import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -49,10 +42,9 @@ import org.joda.time.DateTime;
  * Base class for Type Incoming Invoice.
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("e740fd7c-4601-4595-8a7e-0175522cbd74")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingReceipt_Base
     extends AbstractDocumentSum
 {
@@ -144,10 +136,7 @@ public abstract class IncomingReceipt_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final SystemConfiguration config = Sales.getSysConfig();
-        final Properties props = config.getAttributeValueAsProperties(SalesSettings.INCOMINGRECEIPTSEQUENCE);
-
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(props.getProperty("UUID")));
+        final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGRECEIPTREVSEQ.get());
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingReceipt_Base.REVISIONKEY, revision);

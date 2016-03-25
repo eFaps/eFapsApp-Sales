@@ -107,7 +107,6 @@ import org.efaps.esjp.sales.listener.IOnQuery;
 import org.efaps.esjp.sales.tax.TaxesAttribute;
 import org.efaps.esjp.sales.tax.xml.Taxes;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.ui.wicket.models.cell.UITableCell;
 import org.efaps.ui.wicket.models.objects.UIForm;
 import org.efaps.ui.wicket.models.objects.UITable;
@@ -936,7 +935,7 @@ public abstract class AbstractDocument_Base
     protected Instance evaluateCurrency4JavaScript(final Parameter _parameter)
         throws EFapsException
     {
-        Instance ret = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+        Instance ret = Sales.DEFAULTCURRENCY4DOC.get();
         if (TargetMode.EDIT.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             final Instance inst = _parameter.getInstance();
             if (inst != null && inst.isValid() && inst.getType().isKindOf(CISales.DocumentSumAbstract.getType())) {
@@ -1346,85 +1345,75 @@ public abstract class AbstractDocument_Base
             statusGrps = analyseProperty(_parameter, "DerivedStatusGrp");
             status = analyseProperty(_parameter, "DerivedStatus");
             substracts = analyseProperty(_parameter, "RelationSubstracts");
-        } else {
-            final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(SalesSettings.CREATEFROMCONFIG,
-                            true);
-            final String baseKey = getTypeName4SysConf(_parameter);
-            relTypes = analyseProperty(_parameter, props, baseKey + ".RelationType");
-            linkFroms = analyseProperty(_parameter, props, baseKey + ".RelationLinkFrom");
-            linkTos = analyseProperty(_parameter, props, baseKey + ".RelationLinkTo");
-            types = analyseProperty(_parameter, props, baseKey + ".DerivedType");
-            statusGrps = analyseProperty(_parameter, props, baseKey + ".DerivedStatusGrp");
-            status = analyseProperty(_parameter, props, baseKey + ".DerivedStatus");
-            substracts = analyseProperty(_parameter, props, baseKey + ".RelationSubstracts");
-        }
 
-        NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
-        final List<AbstractUIPosition> lstRemove = new ArrayList<>();
-        for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
-            final Integer key = relTypeEntry.getKey();
-            final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
-            final Type relType = Type.get(relTypeEntry.getValue());
-            final Map<String, BigDecimal> prodQuantMap = new HashMap<String, BigDecimal>();
 
-            final QueryBuilder attrQueryBldr = new QueryBuilder(relType);
-            attrQueryBldr.addWhereAttrEqValue(linkFroms.get(key), (Object[]) _instances);
-            final AttributeQuery attrQuery = attrQueryBldr
-                            .getAttributeQuery(linkTos.get(key));
+            NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+            final List<AbstractUIPosition> lstRemove = new ArrayList<>();
+            for (final Entry<Integer, String> relTypeEntry : relTypes.entrySet()) {
+                final Integer key = relTypeEntry.getKey();
+                final boolean substract = "true".equalsIgnoreCase(substracts.get(key));
+                final Type relType = Type.get(relTypeEntry.getValue());
+                final Map<String, BigDecimal> prodQuantMap = new HashMap<String, BigDecimal>();
 
-            final Type type = Type.get(types.get(key));
-            final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
-            final String[] statusArr = status.get(key).split(";");
-            final List<Status> statusLst = new ArrayList<Status>();
-            for (final String stat : statusArr) {
-                final Status st = Status.find(statusGrps.get(key), stat);
-                statusLst.add(st);
-            }
-            attrQueryBldr2.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusLst.toArray());
-            attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
-            final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.DocumentAbstract.ID);
+                final QueryBuilder attrQueryBldr = new QueryBuilder(relType);
+                attrQueryBldr.addWhereAttrEqValue(linkFroms.get(key), (Object[]) _instances);
+                final AttributeQuery attrQuery = attrQueryBldr
+                                .getAttributeQuery(linkTos.get(key));
 
-            final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
-            queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, attrQuery2);
-
-            final MultiPrintQuery multi = queryBldr.getPrint();
-            final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
-            multi.addAttribute(CISales.PositionAbstract.Quantity);
-            multi.addSelect(selProdOID);
-            multi.execute();
-            while (multi.next()) {
-                final String prodOid = multi.<String>getSelect(selProdOID);
-                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
-
-                if (prodQuantMap.containsKey(prodOid)) {
-                    prodQuantMap.put(prodOid, prodQuantMap.get(prodOid).add(quantity));
-                } else {
-                    prodQuantMap.put(prodOid, quantity);
+                final Type type = Type.get(types.get(key));
+                final QueryBuilder attrQueryBldr2 = new QueryBuilder(type);
+                final String[] statusArr = status.get(key).split(";");
+                final List<Status> statusLst = new ArrayList<Status>();
+                for (final String stat : statusArr) {
+                    final Status st = Status.find(statusGrps.get(key), stat);
+                    statusLst.add(st);
                 }
-            }
+                attrQueryBldr2.addWhereAttrEqValue(CISales.DocumentAbstract.StatusAbstract, statusLst.toArray());
+                attrQueryBldr2.addWhereAttrInQuery(CISales.DocumentAbstract.ID, attrQuery);
+                final AttributeQuery attrQuery2 = attrQueryBldr2.getAttributeQuery(CISales.DocumentAbstract.ID);
 
-            for (final AbstractUIPosition uiPosition : _values) {
+                final QueryBuilder queryBldr = new QueryBuilder(CISales.PositionAbstract);
+                queryBldr.addWhereAttrInQuery(CISales.PositionAbstract.DocumentAbstractLink, attrQuery2);
 
-                if (prodQuantMap.containsKey(uiPosition.getProdInstance().getOid())) {
-                    final BigDecimal quantityPartial = prodQuantMap.get(uiPosition.getProdInstance().getOid());
-                    if (substract) {
-                        final BigDecimal quantityCurr = uiPosition.getQuantity().subtract(quantityPartial);
-                        if (quantityCurr.compareTo(BigDecimal.ZERO) > 0) {
-                            uiPosition.setQuantity(quantityCurr);
-                        } else {
-                            lstRemove.add(uiPosition);
-                        }
+                final MultiPrintQuery multi = queryBldr.getPrint();
+                final SelectBuilder selProdOID = new SelectBuilder().linkto(CISales.PositionSumAbstract.Product).oid();
+                multi.addAttribute(CISales.PositionAbstract.Quantity);
+                multi.addSelect(selProdOID);
+                multi.execute();
+                while (multi.next()) {
+                    final String prodOid = multi.<String>getSelect(selProdOID);
+                    final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionAbstract.Quantity);
+
+                    if (prodQuantMap.containsKey(prodOid)) {
+                        prodQuantMap.put(prodOid, prodQuantMap.get(prodOid).add(quantity));
                     } else {
-                        final BigDecimal quantityCurr = uiPosition.getQuantity().add(quantityPartial);
-                        uiPosition.setQuantity(quantityCurr);
+                        prodQuantMap.put(prodOid, quantity);
+                    }
+                }
+
+                for (final AbstractUIPosition uiPosition : _values) {
+
+                    if (prodQuantMap.containsKey(uiPosition.getProdInstance().getOid())) {
+                        final BigDecimal quantityPartial = prodQuantMap.get(uiPosition.getProdInstance().getOid());
+                        if (substract) {
+                            final BigDecimal quantityCurr = uiPosition.getQuantity().subtract(quantityPartial);
+                            if (quantityCurr.compareTo(BigDecimal.ZERO) > 0) {
+                                uiPosition.setQuantity(quantityCurr);
+                            } else {
+                                lstRemove.add(uiPosition);
+                            }
+                        } else {
+                            final BigDecimal quantityCurr = uiPosition.getQuantity().add(quantityPartial);
+                            uiPosition.setQuantity(quantityCurr);
+                        }
                     }
                 }
             }
+            for (final AbstractUIPosition remove : lstRemove) {
+                _values.remove(remove);
+            }
         }
 
-        for (final AbstractUIPosition remove : lstRemove) {
-            _values.remove(remove);
-        }
     }
 
     /**
@@ -1833,8 +1822,7 @@ public abstract class AbstractDocument_Base
 
         catalogFilter4productAutoComplete(_parameter, _queryBldr);
         if (Products.ACTIVATEINDIVIDUAL.get()) {
-            final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
-                            SalesSettings.AUTOCOMPLETE4PRODUCT, true);
+            final Properties properties = Sales.AUTOCOMPLETE4PRODUCT.get();
             final String typeName = getTypeName4AutoComplete4Product(_parameter);
             // show products of type Individual and Batch
             final boolean showIndividual = "true".equalsIgnoreCase(properties.getProperty(typeName + ".ShowIndividual",
@@ -2228,10 +2216,7 @@ public abstract class AbstractDocument_Base
                 numberInt = Integer.parseInt(numTmp) + 1;
             }
         }
-        int length = Sales.getSysConfig().getAttributeValueAsInteger(SalesSettings.SERIALNUMBERSUFFIXLENGTH);
-        if (length < 1) {
-            length = 6;
-        }
+        final int length = Sales.SERIALNUMBERSUFFIXLENGTH.get();
         final NumberFormat nf = NumberFormat.getInstance();
         nf.setMinimumIntegerDigits(length);
         nf.setMaximumIntegerDigits(length);
@@ -2319,8 +2304,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final String type = getProperty(_parameter, "Type");
-        final Properties properties = Sales.getSysConfig().getAttributeValueAsProperties(
-                        SalesSettings.SERIALNUMBERS, true);
+        final Properties properties = Sales.SERIALNUMBERS.get();
         final String serialStr = properties.getProperty(type, "001");
         final List<DropDownPosition> ret = new ArrayList<DropDownPosition>();
         final org.efaps.esjp.common.uiform.Field field = new org.efaps.esjp.common.uiform.Field();
@@ -2458,14 +2442,7 @@ public abstract class AbstractDocument_Base
             final Taxes taxes = print.getAttribute(CISales.DocumentSumAbstract.Taxes);
             ret.put(ReturnValues.VALUES, taxes == null || taxes.getEntries().isEmpty());
         } else if (TargetMode.CREATE.equals(mode)) {
-            if (containsProperty(_parameter, "DefaultValue")) {
-                ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(getProperty(_parameter, "DefaultValue")));
-            } else {
-                final Properties props = Sales.getSysConfig().getAttributeValueAsProperties(
-                                SalesSettings.WITHOUTTAXCONFIG, true);
-                final String value = props.getProperty(getTypeName4SysConf(_parameter), "false");
-                ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(value));
-            }
+            ret.put(ReturnValues.VALUES, BooleanUtils.toBoolean(getProperty(_parameter, "DefaultValue", "false")));
         }
         return ret;
     }

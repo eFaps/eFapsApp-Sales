@@ -29,7 +29,7 @@ import org.efaps.admin.program.esjp.EFapsUUID;
  * @author The eFaps Team
  */
 @EFapsUUID("308df349-ce3f-47e5-8d07-9330184f923c")
-@EFapsApplication("eFaspApp-Sales")
+@EFapsApplication("eFapsApp-Sales")
 public class PettyCashBalance
     extends PettyCashBalance_Base
 {

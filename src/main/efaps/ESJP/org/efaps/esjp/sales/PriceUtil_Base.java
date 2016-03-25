@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,6 @@ import org.efaps.esjp.common.uitable.MultiPrint;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.products.PriceList;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.esjp.ui.html.HtmlTable;
 import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.ui.wicket.util.EFapsKey;
@@ -421,7 +420,7 @@ public abstract class PriceUtil_Base
     public BigDecimal getExchangeRate(final DateTime _date)
         throws EFapsException
     {
-        final Instance curInstance = Sales.getSysConfig().getLink(SalesSettings.CURRENCY4INVOICE);
+        final Instance curInstance = Sales.DEFAULTCURRENCY4DOC.get();
         return getExchangeRate(_date, curInstance)[0];
     }
 

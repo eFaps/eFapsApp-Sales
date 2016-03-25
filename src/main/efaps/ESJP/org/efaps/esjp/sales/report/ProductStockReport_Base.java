@@ -56,7 +56,6 @@ import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.FilteredReport;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -346,7 +345,7 @@ public abstract class ProductStockReport_Base
                 }
             });
             Instance current = null;
-            int cont = Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATERESERVATIONS) ? 2 : 1;
+            int cont = Sales.RESERVATIONACTIVATE.get() ? 2 : 1;
             for (final DataBean bean : dataSource) {
                 if (!bean.getDocInst().equals(current)) {
                     cont++;
@@ -363,7 +362,7 @@ public abstract class ProductStockReport_Base
                                 .setProdInst(prodInst)
                                 .setDocName(docName)
                                 .setQuantity(quantities[0]));
-                if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ACTIVATERESERVATIONS)) {
+                if (Sales.RESERVATIONACTIVATE.get()) {
                     final String docName2 = String.format("%0" + rowQ + "d", 2) + ". " + DBProperties
                                     .getProperty("org.efaps.esjp.sales.report.ProductStockReport.Reserved");
                     dataSource.add(getDataBean()

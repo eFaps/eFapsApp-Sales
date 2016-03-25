@@ -1,6 +1,6 @@
 /*
 
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -27,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedPrintQuery;
 import org.efaps.db.Instance;
@@ -37,17 +34,15 @@ import org.efaps.esjp.ci.CIProducts;
 import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.erp.Currency;
 import org.efaps.esjp.sales.util.Sales;
-import org.efaps.esjp.sales.util.SalesSettings;
 import org.efaps.util.EFapsException;
 
 /**
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("00006add-415a-4bfa-b669-8dd9b6d87146")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Perception_Base
 {
     /**
@@ -62,7 +57,7 @@ public abstract class Perception_Base
     {
         boolean ret = false;
         // only if activated by SytemConfguration
-        if (Sales.getSysConfig().getAttributeValueAsBoolean(SalesSettings.ISPERCEPTIONAGENT) && _instance.isValid()) {
+        if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get() && _instance.isValid()) {
             final PerceptionInfo info = evalProduct4Perception(_parameter, _instance);
             if (info != null) {
                 ret = info.isApply();
@@ -151,6 +146,8 @@ public abstract class Perception_Base
     }
 
     /**
+     * Calculate perception.
+     *
      * @param _parameter parameter as passed by the eFaps API
      * @param _calculator Claculator to be used for calculation
      * @return Perception calculated
@@ -160,7 +157,7 @@ public abstract class Perception_Base
                                           final Calculator_Base _calculator)
         throws EFapsException
     {
-        BigDecimal ret;
+        final BigDecimal ret;
         final BigDecimal cross = _calculator.getCrossPrice();
         final PerceptionInfo info = getPerceptionInfo(_parameter, Instance.get(_calculator.getOid()));
         if (info.isApply()) {
@@ -168,7 +165,7 @@ public abstract class Perception_Base
             if (currenctCurInst == null) {
                 currenctCurInst = Currency.getBaseCurrency();
             }
-            boolean min;
+            final boolean min;
             if (info.getCurrencyInst().equals(currenctCurInst)) {
                 min = info.getAmount().compareTo(cross) < 0;
             } else {
@@ -199,7 +196,7 @@ public abstract class Perception_Base
                                             final Instance _prodInstance)
         throws EFapsException
     {
-        PerceptionInfo ret;
+        final PerceptionInfo ret;
         if (productIsPerception(_parameter, _prodInstance)) {
             ret = evalProduct4Perception(_parameter, _prodInstance);
         } else {
