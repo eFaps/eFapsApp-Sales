@@ -40,42 +40,6 @@ public class Costing
 {
 
     /**
-     * Gets the costing for a currency.
-     *
-     * @param _parameter the _parameter
-     * @param _currencyInstance the _currency instance
-     * @param _transactionInstance the _transaction instance
-     * @return the costing4 currency
-     * @throws EFapsException the e faps exception
-     */
-    public static CostingInfo getCosting4Currency(final Parameter _parameter,
-                                                  final Instance _currencyInstance,
-                                                  final Instance _transactionInstance)
-        throws EFapsException
-    {
-        return Costing_Base.getCosting4Currency(_parameter, _currencyInstance, _transactionInstance);
-    }
-
-    /**
-     * Gets the costing for a currency.
-     *
-     * @param _parameter the _parameter
-     * @param _date the _date
-     * @param _currencyInstance the _currency instance
-     * @param _transactionInstance the _transaction instance
-     * @return the costing4 currency
-     * @throws EFapsException the e faps exception
-     */
-    public static CostingInfo getCosting4Currency(final Parameter _parameter,
-                                                  final DateTime _date,
-                                                  final Instance _currencyInstance,
-                                                  final Instance _transactionInstance)
-        throws EFapsException
-    {
-        return Costing_Base.getCosting4Currency(_parameter, _date, _currencyInstance, _transactionInstance);
-    }
-
-    /**
      * Gets the costings for a currency.
      *
      * @param _parameter the _parameter
@@ -109,5 +73,48 @@ public class Costing
         throws EFapsException
     {
         return Costing_Base.getCostings4Currency(_parameter, _date, _currencyInstance, _transactionInstances);
+    }
+
+
+    /**
+     * Gets the alternative costings for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _alterCurrencyInstance the alternative currency instance
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException on error
+     */
+    public static Map<Instance, CostingInfo> getAlternativeCostings4Currency(final Parameter _parameter,
+                                                                             final Instance _alterCurrencyInstance,
+                                                                             final Instance _currencyInstance,
+                                                                             final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        return Costing_Base.getAlternativeCostings4Currency(_parameter, _alterCurrencyInstance, _currencyInstance,
+                        _transactionInstances);
+    }
+
+    /**
+     * Gets the alternative costings for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _date the date
+     * @param _alterCurrencyInstance the alternative currency instance
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException on error
+     */
+    public static Map<Instance, CostingInfo> getAlternativeCostings4Currency(final Parameter _parameter,
+                                                                             final DateTime _date,
+                                                                             final Instance _alterCurrencyInstance,
+                                                                             final Instance _currencyInstance,
+                                                                             final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        return Costing_Base.getAlternativeCostings4Currency(_parameter, _date, _alterCurrencyInstance,
+                        _currencyInstance, _transactionInstances);
     }
 }

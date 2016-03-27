@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,18 +18,30 @@
 package org.efaps.esjp.sales.report;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+import org.apache.commons.lang3.ArrayUtils;
+import org.efaps.admin.datamodel.ui.IUIValue;
+import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
+import org.efaps.admin.event.Parameter.ParameterValues;
+import org.efaps.admin.event.Return;
+import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
+import org.efaps.esjp.common.uiform.Field;
+import org.efaps.esjp.common.uiform.Field_Base.DropDownPosition;
 import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.products.Cost;
 import org.efaps.esjp.products.reports.TransactionResultReport;
 import org.efaps.esjp.products.reports.TransactionResultReport_Base;
 import org.efaps.esjp.sales.Costing;
 import org.efaps.esjp.sales.Costing_Base.CostingInfo;
+import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
@@ -38,8 +50,9 @@ import net.sf.dynamicreports.report.builder.column.TextColumnBuilder;
 import net.sf.dynamicreports.report.builder.subtotal.AggregationSubtotalBuilder;
 import net.sf.dynamicreports.report.constant.Calculation;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO comment!
+ * TODO comment!.
  *
  * @author The eFaps Team
  */
@@ -51,6 +64,8 @@ public abstract class ProductsTransactionResultReport_Base
 
     /**
      * The Enum Valuation.
+     *
+     * @author The eFaps Team
      */
     public enum Valuation
     {
@@ -65,6 +80,8 @@ public abstract class ProductsTransactionResultReport_Base
     }
 
     /**
+     * Gets the report.
+     *
      * @param _parameter Parameter as passed by the eFasp API
      * @return the report class
      * @throws EFapsException on error
@@ -77,7 +94,35 @@ public abstract class ProductsTransactionResultReport_Base
     }
 
     /**
+     * Gets the cost type field value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the cost type field value
+     * @throws EFapsException on error
+     */
+    public Return getCostTypeFieldValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
+        final String key = value.getField().getName();
+        final Map<String, Object> map = getFilterMap(_parameter);
+        final String selected = map.containsKey(key) ? ((CostTypeFilterValue) map.get(key)).getObject() : "DEFAULT";
+        final List<DropDownPosition> values = new ArrayList<DropDownPosition>();
+        values.add(new Field.DropDownPosition("DEFAULT", new CostTypeFilterValue().getLabel(_parameter))
+                        .setSelected(selected == null || "DEFAULT".equals(selected)));
+        for (final String oid : Sales.COSTINGALTINSTS.get()) {
+            values.add(new Field.DropDownPosition(oid, new CostTypeFilterValue().setObject(oid).getLabel(_parameter))
+                            .setSelected(oid.equals(selected)));
+        }
+        ret.put(ReturnValues.VALUES, values);
+        return ret;
+    }
+
+    /**
      * The Class DynProductsTransactionResultReport.
+     *
+     * @author The eFaps Team
      */
     public static class DynProductsTransactionResultReport
         extends DynTransactionResultReport
@@ -98,21 +143,24 @@ public abstract class ProductsTransactionResultReport_Base
                                 final DataBean _bean)
             throws EFapsException
         {
-            final CurrencyFilterValue filter = (CurrencyFilterValue) getFilteredReport().getFilterMap(
-                            _parameter).get("currency");
+            final CurrencyFilterValue filter = (CurrencyFilterValue) getFilteredReport().getFilterMap(_parameter).get(
+                            "currency");
+            final Instance costCurrencyInst = getCostTypeInstance(_parameter);
+
             switch (getValuation(_parameter)) {
                 case COST:
                     final Instance prodInst = _parameter.getInstance();
-                    final BigDecimal cost = Cost.getCost4Currency(_parameter, _bean.getDate(), prodInst,
-                                    filter.getObject());
+                    final BigDecimal cost = Cost.getCost4Currency(_parameter, _bean.getDate(), prodInst, filter
+                                    .getObject());
                     ((CostDataBean) _bean).setCost(cost).setCurrency(CurrencyInst.get(filter.getObject()).getSymbol());
                     break;
                 case COSTING:
-                    final CostingInfo costing = Costing.getCosting4Currency(_parameter, _bean.getDate(),
-                                    filter.getObject(), _bean.getTransInst());
-                    if (costing != null) {
+                    final Map<Instance, CostingInfo> costings = Costing.getAlternativeCostings4Currency(_parameter,
+                                    _bean.getDate(), costCurrencyInst, filter.getObject(), _bean.getTransInst());
+                    if (costings.containsKey(_bean.getTransInst())) {
+                        final CostingInfo costing = costings.get(_bean.getTransInst());
                         ((CostDataBean) _bean).setAverage(costing.getResult()).setCost(costing.getCost()).setCurrency(
-                                    CurrencyInst.get(filter.getObject()).getSymbol());
+                                        CurrencyInst.get(filter.getObject()).getSymbol());
                     }
                     break;
                 default:
@@ -198,7 +246,7 @@ public abstract class ProductsTransactionResultReport_Base
         {
             final EnumFilterValue filter = (EnumFilterValue) getFilteredReport().getFilterMap(_parameter).get(
                             "valuation");
-            Valuation ret;
+            final Valuation ret;
             if (filter != null) {
                 ret = (Valuation) filter.getObject();
             } else {
@@ -206,10 +254,27 @@ public abstract class ProductsTransactionResultReport_Base
             }
             return ret;
         }
+
+        /**
+         * Gets the valuation.
+         *
+         * @param _parameter the _parameter
+         * @return the valuation
+         * @throws EFapsException on error
+         */
+        protected Instance getCostTypeInstance(final Parameter _parameter)
+            throws EFapsException
+        {
+            final CostTypeFilterValue filter = (CostTypeFilterValue) getFilteredReport().getFilterMap(_parameter).get(
+                            "costType");
+            return filter == null ? Instance.get("") : Instance.get(filter.getObject());
+        }
     }
 
     /**
      * The Class CostDataBean.
+     *
+     * @author The eFaps Team
      */
     public static class CostDataBean
         extends DataBean
@@ -253,7 +318,7 @@ public abstract class ProductsTransactionResultReport_Base
          */
         public BigDecimal getTotalCost()
         {
-            BigDecimal ret;
+            final BigDecimal ret;
             if (getTotal() == null || getCost() == null) {
                 ret = BigDecimal.ZERO;
             } else {
@@ -269,7 +334,7 @@ public abstract class ProductsTransactionResultReport_Base
          */
         public BigDecimal getTotalAverage()
         {
-            BigDecimal ret;
+            final BigDecimal ret;
             if (getTotal() == null || getCost() == null) {
                 ret = BigDecimal.ZERO;
             } else {
@@ -320,6 +385,42 @@ public abstract class ProductsTransactionResultReport_Base
         {
             this.average = _average;
             return this;
+        }
+    }
+
+    /**
+     * The Class CostTypeFilter.
+     */
+    public static class CostTypeFilterValue
+        extends AbstractFilterValue<String>
+    {
+        /** The Constant serialVersionUID. */
+        private static final long serialVersionUID = 1L;
+
+        /**
+         * @param _parameter Parameter as passed by the eFaps API
+         * @return the label for this filter
+         * @throws EFapsException on error
+         */
+        @Override
+        public String getLabel(final Parameter _parameter)
+            throws EFapsException
+        {
+            return getObject() == null || getObject() != null && !Instance.get(getObject()).isValid()
+                            ? DBProperties.getProperty(
+                                            ProductsTransactionResultReport.class.getName() + ".CostType.Standart")
+                            : DBProperties.getFormatedDBProperty(ProductsTransactionResultReport.class.getName()
+                                            + ".CostType.Alternative",
+                                            (Object) CurrencyInst.get(Instance.get(getObject())).getName());
+        }
+
+        @Override
+        public AbstractFilterValue<String> parseObject(final String[] _values)
+        {
+            if (!ArrayUtils.isEmpty(_values)) {
+                setObject(_values[0]);
+            }
+            return super.parseObject(_values);
         }
     }
 }

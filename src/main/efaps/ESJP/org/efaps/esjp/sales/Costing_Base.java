@@ -677,20 +677,45 @@ public abstract class Costing_Base
     }
 
     /**
-     * Gets the costing4 currency.
+     * Gets the alternative costings for a currency.
      *
      * @param _parameter the _parameter
+     * @param _alterCurrencyInstance the alternative currency instance
      * @param _currencyInstance the _currency instance
      * @param _transactionInstances the _transaction instances
-     * @return the costing4 currency
+     * @return the costings4 currency
      * @throws EFapsException on error
      */
-    protected static CostingInfo getCosting4Currency(final Parameter _parameter,
-                                                     final Instance _currencyInstance,
-                                                     final Instance _transactionInstances)
+    protected static Map<Instance, CostingInfo> getAlternativeCostings4Currency(final Parameter _parameter,
+                                                                                final Instance _alterCurrencyInstance,
+                                                                                final Instance _currencyInstance,
+                                                                                final Instance... _transactionInstances)
         throws EFapsException
     {
-        return Costing_Base.getCosting4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
+        return Costing.getAlternativeCostings4Currency(_parameter, new DateTime(), _alterCurrencyInstance,
+                        _currencyInstance, _transactionInstances);
+    }
+
+    /**
+     * Gets the alternative costings for a currency.
+     *
+     * @param _parameter the _parameter
+     * @param _date the date
+     * @param _alterCurrencyInstance the alternative currency instance
+     * @param _currencyInstance the _currency instance
+     * @param _transactionInstances the _transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException on error
+     */
+    protected static Map<Instance, CostingInfo> getAlternativeCostings4Currency(final Parameter _parameter,
+                                                                                final DateTime _date,
+                                                                                final Instance _alterCurrencyInstance,
+                                                                                final Instance _currencyInstance,
+                                                                                final Instance... _transactionInstances)
+        throws EFapsException
+    {
+        return Costing_Base.getCostings4Currency(_parameter, _date, _alterCurrencyInstance,
+                        _currencyInstance, _transactionInstances);
     }
 
     /**
@@ -707,27 +732,7 @@ public abstract class Costing_Base
                                                                      final Instance... _transactionInstances)
         throws EFapsException
     {
-        return Costing_Base.getCostings4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
-    }
-
-    /**
-     * Gets the costing4 currency.
-     *
-     * @param _parameter the _parameter
-     * @param _date the _date
-     * @param _currencyInstance the _currency instance
-     * @param _transactionInstances the _transaction instances
-     * @return the costing4 currency
-     * @throws EFapsException on error
-     */
-    protected static CostingInfo getCosting4Currency(final Parameter _parameter,
-                                                     final DateTime _date,
-                                                     final Instance _currencyInstance,
-                                                     final Instance _transactionInstances)
-        throws EFapsException
-    {
-        return Costing_Base.getCostings4Currency(_parameter, _date, _currencyInstance, _transactionInstances)
-                        .get(_transactionInstances);
+        return Costing.getCostings4Currency(_parameter, new DateTime(), _currencyInstance, _transactionInstances);
     }
 
     /**
@@ -746,28 +751,63 @@ public abstract class Costing_Base
                                                                      final Instance... _transactionInstances)
         throws EFapsException
     {
+
+        return Costing_Base.getCostings4Currency(_parameter, _date, null, _currencyInstance, _transactionInstances);
+    }
+
+    /**
+     * Gets the costings4 currency.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _date the date
+     * @param _alterCurrencyInstance the alter currency instance
+     * @param _currencyInstance the currency instance
+     * @param _transactionInstances the transaction instances
+     * @return the costings4 currency
+     * @throws EFapsException on error
+     */
+    protected static Map<Instance, CostingInfo> getCostings4Currency(final Parameter _parameter,
+                                                                     final DateTime _date,
+                                                                     final Instance _alterCurrencyInstance,
+                                                                     final Instance _currencyInstance,
+                                                                     final Instance... _transactionInstances)
+        throws EFapsException
+    {
         final Map<Instance, CostingInfo> ret = new HashMap<>();
-        final QueryBuilder query = new QueryBuilder(CIProducts.CostingAbstract);
+        final QueryBuilder query;
+        if (_alterCurrencyInstance != null && _alterCurrencyInstance.isValid()) {
+            query = new QueryBuilder(CIProducts.CostingAlternative);
+            query.addWhereAttrEqValue(CIProducts.CostingAlternative.CurrencyLink, _alterCurrencyInstance);
+        } else {
+            query = new QueryBuilder(CIProducts.Costing);
+        }
+
         query.addWhereAttrEqValue(CIProducts.CostingAbstract.TransactionAbstractLink, (Object[]) _transactionInstances);
 
         final MultiPrintQuery multi = query.getPrint();
         final SelectBuilder selTransInst = SelectBuilder.get()
                         .linkto(CIProducts.CostingAbstract.TransactionAbstractLink).instance();
-        multi.addSelect(selTransInst);
+        final SelectBuilder selCurrInst = SelectBuilder.get()
+                        .linkto(CIProducts.CostingAbstract.CurrencyLink).instance();
+        multi.addSelect(selTransInst, selCurrInst);
         multi.addAttribute(CIProducts.CostingAbstract.Result, CIProducts.CostingAbstract.Cost,
                         CIProducts.CostingAbstract.Quantity);
         multi.execute();
         while (multi.next()) {
             final Instance transactionInst = multi.getSelect(selTransInst);
+            final Instance currencyInst = multi.getSelect(selCurrInst);
             final BigDecimal quantity = multi.getAttribute(CIProducts.CostingAbstract.Quantity);
             final BigDecimal cost = multi.getAttribute(CIProducts.CostingAbstract.Cost);
             final BigDecimal result = multi.getAttribute(CIProducts.CostingAbstract.Result);
-            if (_currencyInstance.equals(Currency.getBaseCurrency())) {
+            // no rate conversion needed if not an alternative and the base currency is wanted or
+            // if alternative and the wanted is equal as the currency for the transaction
+            if (_alterCurrencyInstance == null && _currencyInstance.equals(Currency.getBaseCurrency())
+                            || _alterCurrencyInstance != null && _currencyInstance.equals(currencyInst)) {
                 final CostingInfo info = new CostingInfo().setQuantity(quantity).setCost(cost).setResult(result);
                 ret.put(transactionInst, info);
             } else {
-                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date,
-                                Currency.getBaseCurrency(), _currencyInstance);
+                final RateInfo[] rateInfos = new Currency().evaluateRateInfos(_parameter, _date, currencyInst,
+                                _currencyInstance);
                 final RateInfo rateInfo = rateInfos[2];
                 final CostingInfo info = new CostingInfo().setQuantity(quantity)
                                 .setCost(cost.setScale(8, BigDecimal.ROUND_HALF_UP)
@@ -779,6 +819,8 @@ public abstract class Costing_Base
         }
         return ret;
     }
+
+
 
     /**
      * @return new TransCosting instance

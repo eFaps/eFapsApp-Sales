@@ -36,6 +36,7 @@
                 <property name="Field05">storageDisplay</property>
                 <property name="Field06">valuation</property>
                 <property name="Field07">currency</property>
+                <property name="Field08">costType</property>
                 <property name="FilterType01">DateTime</property>
                 <property name="FilterType02">DateTime</property>
                 <property name="FilterType03">Instance</property>
@@ -43,6 +44,7 @@
                 <property name="FilterType05">Enum</property>
                 <property name="FilterType06">Enum</property>
                 <property name="FilterType07">Currency</property>
+                <property name="FilterType08">FilterValue</property>
                 <property name="FilterDefault01">YEARS:-1</property>
                 <property name="FilterDefault02">TODAY</property>
                 <property name="FilterDefault03">-</property>
@@ -50,6 +52,10 @@
                 <property name="FilterDefault05">org.efaps.esjp.products.reports.TransactionResultReport_Base$StorageDisplay</property>
                 <property name="FilterDefault06">org.efaps.esjp.sales.report.ProductsTransactionResultReport_Base$Valuation</property>
                 <property name="FilterDefault07">BASECURRENCY</property>
+                <property name="FilterDefault08">org.efaps.esjp.sales.report.ProductsTransactionResultReport_Base$CostTypeFilterValue</property>
+                <property name="AccessAttributeExists08">org.efaps.sales.Costing.AlternativeCurrencies</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
             <trigger event="UI_FIELD_VALUE" index="2" method="getFilterFieldValue"
                 name="Sales_Products_ProductsTransactionResultReportForm.filter.UI_FIELD_VALUE.2"
@@ -62,6 +68,7 @@
                 <property name="Field05">storageDisplay</property>
                 <property name="Field06">valuation</property>
                 <property name="Field07">currency</property>
+                <property name="Field08">costType</property>
                 <property name="DBProperty01">org.efaps.esjp.products.reports.TransactionResultReport.dateFrom</property>
                 <property name="DBProperty02">org.efaps.esjp.products.reports.TransactionResultReport.dateTo</property>
                 <property name="DBProperty03">org.efaps.esjp.products.reports.TransactionResultReport.storageGroup</property>
@@ -69,9 +76,13 @@
                 <property name="DBProperty05">org.efaps.esjp.products.reports.TransactionResultReport.storageDisplay</property>
                 <property name="DBProperty06">org.efaps.esjp.sales.report.ProductsTransactionResultReport.valuation</property>
                 <property name="DBProperty07">org.efaps.esjp.sales.report.ProductsTransactionResultReport.currency</property>
+                <property name="DBProperty08">org.efaps.esjp.sales.report.ProductsTransactionResultReport.costType</property>
                 <property name="Products_WarehouseGroup_Select">attribute[Name]</property>
                 <property name="Products_Warehouse_Select">attribute[Name]</property>
                 <property name="CachedReportAddInstanceCriteria">true</property>
+                <property name="AccessAttributeExists08">org.efaps.sales.Costing.AlternativeCurrencies</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
             </trigger>
         </field>
         <field name="report">
