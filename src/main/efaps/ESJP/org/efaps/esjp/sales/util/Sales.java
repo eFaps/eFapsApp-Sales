@@ -57,7 +57,6 @@ public final class Sales
     /** Sales-Configuration. */
     public static final UUID SYSCONFUUID = UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f");
 
-
     /** See description. */
     @EFapsSysConfAttribute
     public static final PropertiesSysConfAttribute AUTOCOMPLETE4PRODUCT = new PropertiesSysConfAttribute()
@@ -66,6 +65,7 @@ public final class Sales
                     .concatenate(true)
                     .description("General Configuration for Autocomplete for Products.");
 
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink DEFAULTTAXCAT4PRODUCT = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
@@ -249,6 +249,14 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "DeliveryNote.DefaultDeparturePoints")
                     .description("Default addresses used as the departure point in delivery note.");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink DELIVERYNOTEDEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "DeliveryNote.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse fo0r DeliveryNote. If not set "
+                                    + "the default from Products applies.");
 
     /** See description. */
     @EFapsSysConfAttribute
@@ -721,6 +729,14 @@ public final class Sales
                     .defaultValue(0)
                     .description("Maximum in percent that the new costing can deviat from the "
                                     + "currenct cost before triggering an alert. ");
+
+    /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink PRODUCTIONREPORTDEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "ProductionReport.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse for ProductionReport. If not set "
+                                    + "the default from Products applies.");
 
     /** See description. */
     @EFapsSysConfAttribute

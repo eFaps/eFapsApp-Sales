@@ -2535,7 +2535,7 @@ public abstract class AbstractDocument_Base
     protected Instance getDefaultStorage(final Parameter _parameter)
         throws EFapsException
     {
-        return Storage.getDefaultStorage(_parameter, getTypeName4SysConf(_parameter));
+        return Storage.getDefaultStorage(_parameter);
     }
 
     /**
