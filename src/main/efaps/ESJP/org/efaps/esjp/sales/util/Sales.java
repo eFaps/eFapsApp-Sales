@@ -303,6 +303,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute EXCHANGEACTIVATEGUARANTEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Exchange.ActivateGuarantee")
+                    .description("Allows to activate/deactivate the realtion to a Guarantee.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute EXCHANGEACTIVATESITUATION = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "Exchange.ActivateSituationLink")
@@ -339,6 +346,13 @@ public final class Sales
                     .key(BASE + "IncomingExchange.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for IncomingExchange");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGEXCHANGEACTIVATEGUARANTEE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingExchange.ActivateGuarantee")
+                    .description("Allows to activate/deactivate the realtion to a Guarantee.");
 
     /** See description. */
     @EFapsSysConfAttribute

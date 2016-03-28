@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,20 +15,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
     <uuid>7084e6ac-57a1-403e-82d5-541015f03c52</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
-
-    <definition>
+      <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ExchangeTree_Menu_Action_Edit</name>
         <access>
@@ -35,7 +28,22 @@
         </access>
         <target>
             <form>Sales_ExchangeForm</form>
-            <execute program="org.efaps.esjp.common.uiform.Edit" />
+             <execute program="org.efaps.esjp.sales.document.Exchange" method="edit">
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.Exchange.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.Exchange.Mime</property>
+                <!-- Sales_Contact2Exchange -->
+                <property name="ConnectType">8804677a-df96-47f9-9c33-cb836f2e7ff7</property>
+                <property name="ConnectCurrentLink">ToLink</property>
+                <property name="ConnectForeignLink">FromLink</property>
+                <property name="ConnectForeignField">guarantee</property>
+            </execute>
+            <trigger event="UI_ACCESSCHECK" method="check4Status"
+                name="Sales_ExchangeTree_Menu_Action_Edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <property name="Status">Open</property>
+            </trigger>
         </target>
         <property name="Target">modal</property>
         <property name="TargetMode">edit</property>

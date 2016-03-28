@@ -152,6 +152,47 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
+        <field name="guarantee">
+            <property name="SelectAlternateOID">linkfrom[Sales_Contact2IncomingExchange#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_Contact2IncomingExchange#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="Label">Sales_IncomingExchangeForm.guarantee.Label</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
+            <property name="Columns">80</property>
+            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <trigger program="org.efaps.esjp.contacts.Contacts"
+                method="autoComplete4Contact"
+                name="Sales_IncomingExchangeForm.guarantee.UI_FIELD_AUTOCOMPLETE"
+                event="UI_FIELD_AUTOCOMPLETE">
+                <property name="Type">Contacts_Contact</property>
+                <property name="StatusGroup">Contacts_ContactStatus</property>
+                <property name="Status">Active</property>
+            </trigger>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_IncomingExchangeorm.guarantee.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingExchange.ActivateGuarantee</property>
+            </trigger>
+        </field>
+        <field name="guarantee4View">
+            <property name="SelectAlternateOID">linkfrom[Sales_Contact2IncomingExchange#ToLink].linkto[FromLink].oid</property>
+            <property name="Select">linkfrom[Sales_Contact2IncomingExchange#ToLink].linkto[FromLink].attribute[Name]</property>
+            <property name="HRef">TREE</property>
+            <property name="Label">Sales_IncomingExchangeForm.guarantee.Label</property>
+            <property name="ModeCreate">NONE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">READONLY</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_IncomingExchangeorm.guarantee4View.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingExchange.ActivateGuarantee</property>
+            </trigger>
+        </field>
         <field name="situationLink">
             <property name="Attribute">SituationLink</property>
             <property name="ModeCreate">EDITABLE</property>
