@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!--
 
-  Copyright 2003 - 2015 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -15,8 +14,6 @@
   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   See the License for the specific language governing permissions and
   limitations under the License.
-
-  Author:          The eFaps Team
 
 -->
 
@@ -205,7 +202,11 @@
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+               <!-- Sales-Configuration -->
+               <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+               <property name="Link4DefaultStorage">org.efaps.sales.UsageReport.DefaultWareHouse</property>
+            </trigger>
         </field>
     </definition>
     <definition>
@@ -428,7 +429,11 @@
             <trigger program="org.efaps.esjp.sales.document.UsageReport"
                 method="getJavaScriptUIValue"
                 name="Sales_InvoiceForm.javaScript.UI_Field_Value"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <!-- Sales-Configuration -->
+               <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+               <property name="Link4DefaultStorage">org.efaps.sales.UsageReport.DefaultWareHouse</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

@@ -946,6 +946,14 @@ public final class Sales
                     .description("Default product document type for UsageReport.");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink USAGEREPORTDEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "UsageReport.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse fo0r DeliveryNote. If not set "
+                                    + "the default from Products applies.");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute USAGEREPORTJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
