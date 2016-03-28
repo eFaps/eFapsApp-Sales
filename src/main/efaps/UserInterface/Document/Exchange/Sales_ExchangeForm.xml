@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -19,7 +19,6 @@
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>c3cc2e9a-4c32-4e29-8ca3-a8a4a4585b28</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_ExchangeForm</name>
@@ -130,31 +129,18 @@
             <property name="ModeCreate">READONLY</property>
             <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
         </field>
-        <field name="entityFinancial">
-            <property name="Attribute">EntityFinancial</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
-            <property name="Label">Sales_ExchangeForm.entityFinancial.Label</property>
-            <trigger program="org.efaps.esjp.common.uiform.Field" method="dropDownFieldValue"
-                name="Sales_ExchangeForm.entityFinancial.UI_FIELD_VALUE" event="UI_FIELD_VALUE">
-                <property name="Type">Contacts_AttributeDefinitionFinancialInstitution</property>
-                <property name="ValueSelect">id</property>
-                <property name="Phrase">$&lt;attribute[Value]&gt;</property>
-                <property name="OrderSelect">attribute[Value]</property>
-                <property name="SetSelected">true</property>
+         <field name="situationLink">
+            <property name="Attribute">SituationLink</property>
+            <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
+            <property name="Label">Sales_Exchange/SituationLink.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_Exchangeorm.situationLink.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Exchange.ActivateSituationLink</property>
             </trigger>
-        </field>
-        <field name="entityFinancial4View">
-            <property name="SelectAlternateOID">linkto[EntityFinancial].oid</property>
-            <property name="Select">linkto[EntityFinancial].attribute[Value]</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
-            <property name="Label">Sales_ExchangeForm.entityFinancial.Label</property>
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">NONE</property>
-            <property name="ModePrint">NONE</property>
-            <property name="ModeView">NONE</property>
         </field>
         <field character="Heading" name="headingTotal">
             <property name="Level">2</property>

@@ -36,6 +36,7 @@ import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
+import org.efaps.db.Update;
 import org.efaps.esjp.ci.CIERP;
 import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
@@ -106,11 +107,11 @@ public abstract class Exchange_Base
             _createdDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
         }
 
-        final String entityFinancial = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.Exchange.EntityFinancial.name));
-        if (entityFinancial != null) {
-            _insert.add(CISales.Exchange.EntityFinancial, entityFinancial);
-            _createdDoc.getValues().put(CISales.Exchange.EntityFinancial.name, entityFinancial);
+        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.Exchange.SituationLink.name));
+        if (situationLink != null) {
+            _insert.add(CISales.Exchange.SituationLink, situationLink);
+            _createdDoc.getValues().put(CISales.Exchange.SituationLink.name, situationLink);
         }
     }
 
@@ -133,6 +134,29 @@ public abstract class Exchange_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return new Return();
+    }
+
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        final String onlynumber = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.Exchange.OnlyNumber.name));
+        if (onlynumber != null) {
+            _update.add(CISales.Exchange.OnlyNumber, onlynumber);
+            _editDoc.getValues().put(CISales.Exchange.OnlyNumber.name, onlynumber);
+        }
+
+        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.Exchange.SituationLink.name));
+        if (situationLink != null) {
+            _update.add(CISales.Exchange.SituationLink, situationLink);
+            _editDoc.getValues().put(CISales.Exchange.SituationLink.name, situationLink);
+        }
     }
 
     /**

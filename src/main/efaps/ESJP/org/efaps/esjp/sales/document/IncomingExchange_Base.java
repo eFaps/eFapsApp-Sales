@@ -77,11 +77,11 @@ public abstract class IncomingExchange_Base
             _createdDoc.getValues().put(CISales.IncomingExchange.OnlyNumber.name, onlynumber);
         }
 
-        final String entityFinancial = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.IncomingExchange.EntityFinancial.name));
-        if (entityFinancial != null) {
-            _insert.add(CISales.IncomingExchange.EntityFinancial, entityFinancial);
-            _createdDoc.getValues().put(CISales.IncomingExchange.EntityFinancial.name, entityFinancial);
+        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.IncomingExchange.SituationLink.name));
+        if (situationLink != null) {
+            _insert.add(CISales.IncomingExchange.SituationLink, situationLink);
+            _createdDoc.getValues().put(CISales.IncomingExchange.SituationLink.name, situationLink);
         }
     }
 
@@ -120,11 +120,11 @@ public abstract class IncomingExchange_Base
             _editDoc.getValues().put(CISales.IncomingExchange.OnlyNumber.name, onlynumber);
         }
 
-        final String entityFinancial = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
-                        CISales.IncomingExchange.EntityFinancial.name));
-        if (entityFinancial != null) {
-            _update.add(CISales.IncomingExchange.EntityFinancial, entityFinancial);
-            _editDoc.getValues().put(CISales.IncomingExchange.EntityFinancial.name, entityFinancial);
+        final String situationLink = _parameter.getParameterValue(getFieldName4Attribute(_parameter,
+                        CISales.IncomingExchange.SituationLink.name));
+        if (situationLink != null) {
+            _update.add(CISales.IncomingExchange.SituationLink, situationLink);
+            _editDoc.getValues().put(CISales.IncomingExchange.SituationLink.name, situationLink);
         }
     }
 

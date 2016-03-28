@@ -25,7 +25,7 @@
         <name>Sales_IncomingExchangeTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
-            <property name="HRef">${COMMONURL}/MenuTree.jsp</property>
+            <property name="HRef">TREE</property>
             <property name="Label">Sales_IncomingExchange/Type.Label</property>
             <property name="ShowTypeIcon">true</property>
         </field>
@@ -87,6 +87,18 @@
             <property name="FilterBase">DATABASE</property>
             <property name="Attribute">Status</property>
             <property name="Label">Sales_IncomingExchange/Status.Label</property>
+        </field>
+        <field name="situationLink">
+            <property name="Attribute">SituationLink</property>
+            <property name="FilterType">PICKLIST</property>
+            <property name="Label">Sales_IncomingExchange/SituationLink.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_IncomingExchangeTable.situationLink.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.IncomingExchange.ActivateSituationLink</property>
+            </trigger>
         </field>
     </definition>
 </ui-table>

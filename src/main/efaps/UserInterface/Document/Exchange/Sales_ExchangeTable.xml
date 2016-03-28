@@ -88,5 +88,17 @@
             <property name="Attribute">Status</property>
             <property name="Label">Sales_Exchange/Status.Label</property>
         </field>
+        <field name="situationLink">
+            <property name="Attribute">SituationLink</property>
+            <property name="FilterType">PICKLIST</property>
+            <property name="Label">Sales_Exchange/SituationLink.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_ExchangeTable.situationLink.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Exchange.ActivateSituationLink</property>
+            </trigger>
+        </field>
     </definition>
 </ui-table>

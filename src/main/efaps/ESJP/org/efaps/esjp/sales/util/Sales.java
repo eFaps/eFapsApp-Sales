@@ -303,6 +303,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute EXCHANGEACTIVATESITUATION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Exchange.ActivateSituationLink")
+                    .description("Allows to activate/deactivate the SituationLink.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPTREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "FundsToBeSettledReceipt.RevisionSequence")
@@ -332,6 +339,13 @@ public final class Sales
                     .key(BASE + "IncomingExchange.Mime")
                     .clazz(JasperMime.class)
                     .description("Name of the jasperReport for IncomingExchange");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGEXCHANGEACTIVATESITUATION = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingExchange.ActivateSituationLink")
+                    .description("Allows to activate/deactivate the SituationLink.");
 
     /** See description. */
     @EFapsSysConfAttribute
