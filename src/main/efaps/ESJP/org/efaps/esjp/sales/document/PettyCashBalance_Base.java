@@ -453,8 +453,10 @@ public abstract class PettyCashBalance_Base
                 recUpdate.add(CISales.PettyCashReceipt.Status, Status.find(CISales.PettyCashReceiptStatus.Closed));
                 if (contactObj != null) {
                     // legal documents
-                    final NumberGenerator numgen = NumberGenerator.get(
-                                    UUID.fromString(Sales.PETTYCASHRECEIPTREVSEQ.get()));
+                    final String seqKey = Sales.PETTYCASHRECEIPTREVSEQ.get();
+                    final NumberGenerator numgen = isUUID(seqKey)
+                                    ? NumberGenerator.get(UUID.fromString(seqKey))
+                                    : NumberGenerator.get(seqKey);
                     if (numgen != null) {
                         final String revision = numgen.getNextVal();
                         recUpdate.add(CISales.PettyCashReceipt.Revision, revision);
@@ -462,7 +464,10 @@ public abstract class PettyCashBalance_Base
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
-                final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGCREDITNOTEREVSEQ.get()));
+                final String seqKey = Sales.INCOMINGCREDITNOTEREVSEQ.get();
+                final NumberGenerator numgen = isUUID(seqKey)
+                                ? NumberGenerator.get(UUID.fromString(seqKey))
+                                : NumberGenerator.get(seqKey);
                 if (numgen != null) {
                     final String revision = numgen.getNextVal();
                     recUpdate.add(CISales.IncomingCreditNote.Revision, revision);

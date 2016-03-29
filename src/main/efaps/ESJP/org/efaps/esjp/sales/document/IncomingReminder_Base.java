@@ -85,7 +85,10 @@ public abstract class IncomingReminder_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGREMINDERREVSEQ.get()));
+        final String seqKey = Sales.INCOMINGREMINDERREVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingReminder_Base.REVISIONKEY, revision);

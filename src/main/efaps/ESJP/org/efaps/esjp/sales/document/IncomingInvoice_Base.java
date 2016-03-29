@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.UUID;
 
 import org.apache.commons.lang3.BooleanUtils;
 import org.efaps.admin.common.NumberGenerator;
@@ -332,7 +333,10 @@ public abstract class IncomingInvoice_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGINVOICEREVSEQ.get());
+        final String seqKey = Sales.INCOMINGINVOICEREVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingInvoice_Base.REVISIONKEY, revision);

@@ -19,6 +19,7 @@
 package org.efaps.esjp.sales.document;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Type;
@@ -136,7 +137,10 @@ public abstract class IncomingReceipt_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGRECEIPTREVSEQ.get());
+        final String seqKey = Sales.INCOMINGRECEIPTREVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(IncomingReceipt_Base.REVISIONKEY, revision);

@@ -112,7 +112,10 @@ public abstract class IncomingProfServReceipt_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(UUID.fromString(Sales.INCOMINGPROFSERVRECEIPTREVSEQ.get()));
+        final String seqKey = Sales.INCOMINGPROFSERVRECEIPTREVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(REVISIONKEY, revision);

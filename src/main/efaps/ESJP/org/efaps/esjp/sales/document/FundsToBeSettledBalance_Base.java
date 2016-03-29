@@ -24,6 +24,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
@@ -430,7 +431,10 @@ public abstract class FundsToBeSettledBalance_Base
                 recUpdate.add(CISales.FundsToBeSettledReceipt.Status,
                                 Status.find(CISales.FundsToBeSettledReceiptStatus.Closed));
                 if (contactObj != null) {
-                    final NumberGenerator numgen = NumberGenerator.get(Sales.FUNDSTOBESETTLEDRECEIPTREVSEQ.get());
+                    final String seqKey = Sales.FUNDSTOBESETTLEDRECEIPTREVSEQ.get();
+                    final NumberGenerator numgen = isUUID(seqKey)
+                                    ? NumberGenerator.get(UUID.fromString(seqKey))
+                                    : NumberGenerator.get(seqKey);
                     if (numgen != null) {
                         final String revision = numgen.getNextVal();
                         recUpdate.add(CISales.FundsToBeSettledReceipt.Revision, revision);
@@ -438,7 +442,10 @@ public abstract class FundsToBeSettledBalance_Base
                 }
             } else {
                 recUpdate.add(CISales.IncomingCreditNote.Status, Status.find(CISales.IncomingCreditNoteStatus.Paid));
-                final NumberGenerator numgen = NumberGenerator.get(Sales.INCOMINGCREDITNOTEREVSEQ.get());
+                final String seqKey = Sales.INCOMINGCREDITNOTEREVSEQ.get();
+                final NumberGenerator numgen = isUUID(seqKey)
+                                ? NumberGenerator.get(UUID.fromString(seqKey))
+                                : NumberGenerator.get(seqKey);
                 if (numgen != null) {
                     final String revision = numgen.getNextVal();
                     recUpdate.add(CISales.IncomingCreditNote.Revision, revision);

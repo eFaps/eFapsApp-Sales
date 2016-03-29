@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.TreeMap;
+import java.util.UUID;
 
 import org.apache.commons.lang3.SerializationUtils;
 import org.efaps.admin.common.NumberGenerator;
@@ -91,7 +92,10 @@ public abstract class RecievingTicket_Base
                                  final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        final NumberGenerator numgen = NumberGenerator.get(Sales.RECIEVINGTICKETREVSEQ.get());
+        final String seqKey = Sales.RECIEVINGTICKETREVSEQ.get();
+        final NumberGenerator numgen = isUUID(seqKey)
+                        ? NumberGenerator.get(UUID.fromString(seqKey))
+                        : NumberGenerator.get(seqKey);
         if (numgen != null) {
             final String revision = numgen.getNextVal();
             Context.getThreadContext().setSessionAttribute(RecievingTicket_Base.REVISIONKEY, revision);
