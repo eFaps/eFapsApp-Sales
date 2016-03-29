@@ -16,13 +16,13 @@
 
 
 -->
-<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+<ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>66369853-11c6-432c-b4d3-93edfbc73569</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckDiferedTable</name>
-        <!-- fields -->
+        <name>Sales_PaymentCheckDeferredTable</name>
         <field name="type">
             <property name="Attribute">Type</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Type.Label</property>
@@ -31,7 +31,8 @@
         <field name="code">
             <property name="Attribute">Code</property>
             <property name="Label">Sales_PaymentDocumentAbstract/Code.Label</property>
-            <trigger event="UI_ACCESSCHECK" method="configCheck" name="Sales_PaymentDocumentAbstractTable.code.UI_ACCESSCHECK"
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PaymentDocumentAbstractTable.code.UI_ACCESSCHECK"
                 program="org.efaps.esjp.admin.access.AccessOnField">
                 <property name="SystemConfig">Sales-Configuration</property>
                 <property name="Attribute">!org.efaps.sales.payment.DeactivateCodeGeneration</property>

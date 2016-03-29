@@ -617,23 +617,38 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTCREDITCARDACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.CreditCard.Activate")
+                    .description("Deactivate the automatic generation of a code for every Payment Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute PAYMENTDEBITCARDACTIVATE = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.DebitCard.Activate")
+                    .description("Deactivate the automatic generation of a code for every Payment Documents.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PAYMENTDOCUMENTDEACTIVATECODE = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.DeactivateCodeGeneration")
+                    .key(BASE + "payment.in.DeactivateCodeGeneration")
                     .description("Deactivate the automatic generation of a code for every Payment Documents.");
 
     /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute PAYMENTDOCUMENTNUMGEN = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.NumberGenerator")
+                    .key(BASE + "payment.in.NumberGenerator")
+                    .defaultValue(CINumGenSales.PaymentDocumentSequence.uuid.toString())
                     .description("NumberGenerator Payment Documents.");
 
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PAYMENTGENERATEREPORT = new BooleanSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
-                    .key(BASE + "payment.GenerateReport")
+                    .key(BASE + "payment.in.GenerateReport")
                     .description("Activate the generation of a report for every payment.");
 
     /** See description. */
@@ -648,6 +663,7 @@ public final class Sales
     public static final StringSysConfAttribute PAYMENTDOCUMENTOUTNUMGEN = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "payment.out.NumberGenerator")
+                    .defaultValue(CINumGenSales.PaymentDocumentOutSequence.uuid.toString())
                     .description("NumberGenerator Payment Out Documents.");
 
     /** See description. */

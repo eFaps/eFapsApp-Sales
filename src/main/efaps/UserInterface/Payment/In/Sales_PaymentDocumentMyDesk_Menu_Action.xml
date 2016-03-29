@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -17,18 +18,20 @@
 -->
 <ui-menu xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>deb49b6f-1bcc-4a2c-bfb6-ea86d6f55b06</uuid>
+    <uuid>521d6efc-6484-4785-afbc-1cbaa3babc34</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentAbstractMyDesk</name>
+        <name>Sales_PaymentDocumentMyDesk_Menu_Action</name>
         <childs>
-            <child>Sales_PaymentDocumentMyDesk</child>
-            <child>Sales_PaymentExchangeMyDesk</child>
-            <child>Sales_PaymentDocument_Report4AccountMyDesk</child>
-            <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk</child>
-            <child>Sales_CollectionOrderMyDesk</child>
-            <child>Sales_DatedCheckMyDesk</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCheck</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDeposit</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCash</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDebitCard</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCard</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentRetention</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction</child>
+            <child>Sales_PaymentDocumentMyDesk_Menu_Action_Delete</child>
         </childs>
     </definition>
 </ui-menu>

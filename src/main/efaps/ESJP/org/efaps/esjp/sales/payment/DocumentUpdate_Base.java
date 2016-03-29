@@ -243,8 +243,6 @@ public abstract class DocumentUpdate_Base
             createFile(_parameter, instance, "Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDeposit");
         } else if (instance.getType().getUUID().equals(CISales.PaymentDetraction.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentDetraction");
-        } else if (instance.getType().getUUID().equals(CISales.PaymentExchange.uuid)) {
-            createFile(_parameter, instance, "Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentExchange");
         } else if (instance.getType().getUUID().equals(CISales.PaymentRetention.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentRetention");
         } else if (instance.getType().getUUID().equals(CISales.PaymentCashOut.uuid)) {
@@ -255,12 +253,8 @@ public abstract class DocumentUpdate_Base
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDepositOut");
         } else if (instance.getType().getUUID().equals(CISales.PaymentDetractionOut.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentDetractionOut");
-        } else if (instance.getType().getUUID().equals(CISales.PaymentExchangeOut.uuid)) {
-            createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentExchangeOut");
         } else if (instance.getType().getUUID().equals(CISales.PaymentRetentionOut.uuid)) {
             createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentRetentionOut");
-        } else if (instance.getType().getUUID().equals(CISales.PaymentSupplierOut.uuid)) {
-            createFile(_parameter, instance, "Sales_PaymentDocumentOutMyDesk_Menu_Action_CreatePaymentSupplierOut");
         }
         return ret;
     }

@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2012 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,22 +15,18 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>0cac4e83-b8d0-410d-8fd2-36c6805a008a</uuid>
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>382ad839-2673-4b61-82e8-ac2e8797391e</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCardMasterCard</name>
+        <name>Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCard</name>
         <access>
             <role>Sales_Admin</role>
         </access>
-        <!-- target definitions -->
         <target>
             <form>Sales_PaymentCreditCardForm</form>
             <execute method="create" program="org.efaps.esjp.sales.payment.PaymentCreditCard">
@@ -38,11 +35,17 @@
                 <property name="StatusGroup">Sales_PaymentCreditCardAbstractStatus</property>
                 <property name="Status">Open</property>
             </execute>
-            <validate program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="validatePaymentDocument"/>
+            <validate program="org.efaps.esjp.sales.payment.PaymentCreditCard" method="validatePaymentDocument" />
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_PaymentDocumentMyDesk_Menu_Action_CreatePaymentCreditCard.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.payment.in.CreditCard.Activate</property>
+            </trigger>
         </target>
-        <!-- properties -->
         <property name="Target">modal</property>
-        <property name="TargetCreateType">Sales_PaymentCreditCardMastercard</property>
+        <property name="TargetCreateType">Sales_PaymentCreditCardVisa</property>
         <property name="TargetMode">create</property>
         <property name="WindowHeight">600</property>
         <property name="WindowWidth">800</property>

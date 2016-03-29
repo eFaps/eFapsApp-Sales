@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,31 +15,24 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev: 8215 $
- Last Changed:    $Date: 2012-11-12 13:36:45 -0500 (lun, 12 nov 2012) $
- Last Changed By: $Author: m.aranya@moxter.net $
 
---><ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-
+-->
+<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>38ae4843-1189-4b39-89c8-fa4163a05f83</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev: 8215 $</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_DatedCheckMyDesk</name>
+        <name>Sales_PaymentCheckDeferredMyDesk</name>
         <access>
             <role>Sales_Admin</role>
         </access>
         <target>
-            <menu>Sales_PaymentDocumentMyDesk_Menu</menu>
-            <table>Sales_PaymentCheckDiferedTable</table>
-            <evaluate method="returnDiffered" program="org.efaps.esjp.sales.payment.PaymentCheck">
+            <table>Sales_PaymentCheckDeferredTable</table>
+            <evaluate method="deferredMultiPrint" program="org.efaps.esjp.sales.payment.PaymentCheck">
                 <property name="Types">Sales_PaymentCheck</property>
             </evaluate>
         </target>
-
-        <!-- properties -->
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
     </definition>

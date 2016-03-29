@@ -232,7 +232,7 @@ public abstract class AbstractPaymentDocument_Base
         String ret = null;
         if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentAbstract.getType())
                         && !Sales.PAYMENTDOCUMENTDEACTIVATECODE.get()) {
-         // explecitely set
+            // explecitely set
             if (Sales.PAYMENTDOCUMENTNUMGEN.exists()) {
                 final String numGenkey = Sales.PAYMENTDOCUMENTNUMGEN.get();
                 final NumberGenerator numGen = isUUID(numGenkey) ? NumberGenerator.get(UUID.fromString(numGenkey))
@@ -242,7 +242,7 @@ public abstract class AbstractPaymentDocument_Base
                 ret = new Naming().fromNumberGenerator(_parameter, CISales.PaymentDocumentAbstract.getType().getName());
             }
         } else if (getType4DocCreate(_parameter).isKindOf(CISales.PaymentDocumentOutAbstract.getType())
-                        && !Sales.PAYMENTDOCUMENTDEACTIVATECODE.get()) {
+                        && !Sales.PAYMENTDOCUMENTOUTACTIVATECODE.get()) {
             // explecitely set
             if (Sales.PAYMENTDOCUMENTOUTNUMGEN.exists()) {
                 final String numGenkey = Sales.PAYMENTDOCUMENTOUTNUMGEN.get();

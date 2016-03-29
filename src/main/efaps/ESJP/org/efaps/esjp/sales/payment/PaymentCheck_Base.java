@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2012 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.payment;
@@ -31,7 +28,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Insert;
 import org.efaps.db.Instance;
@@ -46,11 +43,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id: Payment_Base.java 7671 2012-06-14 17:25:53Z
- *          jorge.cueva@moxter.net $
  */
 @EFapsUUID("39feb877-6310-4170-816d-173f89347e3d")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentCheck_Base
     extends AbstractPaymentIn
 {
@@ -155,14 +150,14 @@ public abstract class PaymentCheck_Base
         }.dropDownFieldValue(_parameter);
     }
 
-    public Return returnDiffered(final Parameter _parameter)
+    public Return deferredMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
 
         final Return ret = new Return();
         final Map<?, ?> properties = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
         final String typeStr = (String) properties.get("Types");
-        Type type;
+        final Type type;
         final List<Instance> instances = new ArrayList<Instance>();
         if (typeStr != null) {
             type = Type.get(typeStr);

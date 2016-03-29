@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -31,7 +28,7 @@ import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Context;
@@ -55,10 +52,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("806c701d-ca2a-4e71-b6b1-7777a77299e4")
-@EFapsRevision("$Rev: 1$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class PaymentSchedule_Base
     extends EventSchedule
 {
@@ -304,9 +300,7 @@ public abstract class PaymentSchedule_Base
                         Status.find(CISales.PaymentCheckOutStatus.Canceled).getId(),
                         Status.find(CISales.PaymentDepositOutStatus.Canceled).getId(),
                         Status.find(CISales.PaymentDetractionOutStatus.Canceled).getId(),
-                        Status.find(CISales.PaymentExchangeOutStatus.Canceled).getId(),
-                        Status.find(CISales.PaymentRetentionOutStatus.Canceled).getId(),
-                        Status.find(CISales.PaymentSupplierOutStatus.Canceled).getId());
+                        Status.find(CISales.PaymentRetentionOutStatus.Canceled).getId());
         final AttributeQuery attrQuery = attrQueryBldr.getAttributeQuery(CISales.PaymentDocumentOutAbstract.ID);
 
         final QueryBuilder queryBldr = new QueryBuilder(CISales.Payment);
