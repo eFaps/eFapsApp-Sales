@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,8 +33,6 @@
                 <property name="PositionType">Sales_ReturnUsageReportPosition</property>
                 <property name="StatusGroup">Sales_ReturnUsageReportStatus</property>
                 <property name="Status">Closed</property>
-                <property name="UseNumberGenerator4Name">true</property>
-
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.ReturnUsageReport.JasperReport</property>

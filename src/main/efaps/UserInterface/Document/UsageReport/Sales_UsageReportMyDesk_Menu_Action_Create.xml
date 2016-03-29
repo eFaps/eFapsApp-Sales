@@ -35,7 +35,7 @@
         <target>
             <form>Sales_UsageReportForm</form>
             <execute program="org.efaps.esjp.sales.document.UsageReport" method="create">
-                <property name="UseNumberGenerator4Name">true</property>
+
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.UsageReport.JasperReport</property>
@@ -78,7 +78,6 @@
                 <property name="JasperConfigReport">org.efaps.sales.UsageReport.JasperReport</property>
                 <property name="JasperConfigMime">org.efaps.sales.UsageReport.Mime</property>
                 <property name="NoDataSource">true</property>
-                <property name="UseNumberGenerator4Name">true</property>
                 <property name="PositionType">Sales_UsageReportPosition</property>
                 <property name="StatusGroup">Sales_UsageReportStatus</property>
                 <property name="Status">Closed</property>

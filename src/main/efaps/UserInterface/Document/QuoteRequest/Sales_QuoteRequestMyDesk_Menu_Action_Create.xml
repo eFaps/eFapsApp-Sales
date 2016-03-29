@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2013 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,17 +14,12 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>186655c3-9df0-45aa-9c97-3008c462be03</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -40,7 +35,7 @@
                 <property name="PositionType">Sales_QuoteRequestPosition</property>
                 <property name="StatusGroup">Sales_QuoteRequestStatus</property>
                 <property name="Status">Open</property>
-                <property name="UseNumberGenerator4Name">true</property>
+
             </execute>
             <validate program="org.efaps.esjp.sales.document.QuoteRequest" method="validate">
                 <property name="Validation">QUANTITYGREATERZERO</property>
@@ -68,7 +63,7 @@
                 <property name="PositionType">Sales_QuoteRequestPosition</property>
                 <property name="StatusGroup">Sales_QuoteRequestStatus</property>
                 <property name="Status">Open</property>
-                <property name="UseNumberGenerator4Name">true</property>
+
                 <!-- Projects_ProjectService2QuoteRequest -->
                 <property name="ConnectType">f70db3d7-6fd7-4d4f-a718-82920edc10b6</property>
                 <property name="ConnectCurrentLink">ToLink</property>

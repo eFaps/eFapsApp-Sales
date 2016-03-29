@@ -32,7 +32,6 @@
             <execute method="create" program="org.efaps.esjp.sales.document.PettyCashBalance">
                 <property name="JasperReport">Sales_PettyCashBalance</property>
                 <property name="Mime">pdf</property>
-                <property name="UseNumberGenerator4Name">true</property>
             </execute>
         </target>
         <property name="Target">modal</property>

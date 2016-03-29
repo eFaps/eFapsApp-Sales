@@ -33,7 +33,7 @@
                 <property name="PositionType">Sales_QuotationPosition</property>
                 <property name="StatusGroup">Sales_QuotationStatus</property>
                 <property name="Status">Draft</property>
-                <property name="UseNumberGenerator4Name">true</property>
+                 
 
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>

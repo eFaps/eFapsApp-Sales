@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -45,7 +44,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.common.NumberGenerator;
+import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
@@ -94,7 +93,6 @@ import org.efaps.esjp.erp.CurrencyInst;
 import org.efaps.esjp.erp.NumberFormatter;
 import org.efaps.esjp.erp.RateFormatter;
 import org.efaps.esjp.erp.RateInfo;
-import org.efaps.esjp.erp.util.ERP;
 import org.efaps.esjp.products.Batch;
 import org.efaps.esjp.products.Product;
 import org.efaps.esjp.products.Storage;
@@ -2571,31 +2569,11 @@ public abstract class AbstractDocument_Base
     protected String getDocName4Create(final Parameter _parameter)
         throws EFapsException
     {
-        final boolean useNumGen = "true".equalsIgnoreCase(getProperty(_parameter, "UseNumberGenerator4Name"));
-        final String uuidStr = getProperty(_parameter, "NumberGenerator4NameUUID");
-        String ret;
-        if (useNumGen) {
+        //first priority are values from the UserInterface
+        String ret = _parameter.getParameterValue("name4create");
+        if (StringUtils.isEmpty(ret)) {
             ret = super.getDocName4Create(_parameter);
-        } else if (uuidStr != null && !uuidStr.isEmpty()) {
-            final Type type = getType4DocCreate(_parameter);
-            final Properties props = ERP.NUMBERGENERATOR.get();
-
-            Date date = null;
-            for (int i = 1; i < 10; i++) {
-                final String params = props.getProperty(type.getName() + ".Parameter" + String.format("%02d", i));
-                if ("date".equalsIgnoreCase(params)) {
-                    date = new Date();
-                }
-            }
-
-            final NumberGenerator numGen = NumberGenerator.get(UUID.fromString(uuidStr));
-            if (date != null) {
-                ret = numGen.getNextVal(date);
-            } else {
-                ret = numGen.getNextVal();
-            }
         } else {
-            ret = _parameter.getParameterValue("name4create");
             final String sn = _parameter.getParameterValue("name4create_SN");
             if (sn != null && !sn.isEmpty()) {
                 ret = sn + "-" + ret;

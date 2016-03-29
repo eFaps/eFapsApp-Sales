@@ -33,7 +33,6 @@
             <execute program="org.efaps.esjp.sales.document.PettyCashBalance" method="create">
                 <property name="JasperReport">Sales_PettyCashBalance</property>
                 <property name="Mime">pdf</property>
-                <property name="UseNumberGenerator4Name">true</property>
             </execute>
              <trigger program="org.efaps.esjp.admin.access.AccessCheck4UI"
                 method="configCheck"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
- Copyright 2003 - 2015 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
- Author:          The eFaps Team
 
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -34,7 +33,7 @@
             <form>Sales_AcquisitionCostingForm</form>
             <execute method="create" program="org.efaps.esjp.sales.document.AcquisitionCosting">
                 <property name="PositionType">Sales_AcquisitionCostingPosition</property>
-                <property name="UseNumberGenerator4Name">true</property>
+
                 <property name="StatusGroup">Sales_AcquisitionCostingStatus</property>
                 <property name="Status">Draft</property>
             </execute>
