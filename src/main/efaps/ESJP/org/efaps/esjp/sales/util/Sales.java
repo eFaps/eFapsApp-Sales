@@ -317,6 +317,13 @@ public final class Sales
 
     /** See description. */
     @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute EXCHANGEUSENUMGEN = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "Exchange.UseNumberGenerator")
+                    .description("Use a NumberGenerator for the Name.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
     public static final StringSysConfAttribute FUNDSTOBESETTLEDRECEIPTREVSEQ = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "FundsToBeSettledReceipt.RevisionSequence")
@@ -360,6 +367,13 @@ public final class Sales
                     .sysConfUUID(SYSCONFUUID)
                     .key(BASE + "IncomingExchange.ActivateSituationLink")
                     .description("Allows to activate/deactivate the SituationLink.");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final BooleanSysConfAttribute INCOMINGEXCHANGEUSENUMGEN = new BooleanSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "IncomingExchange.UseNumberGenerator")
+                    .description("Use a NumberGenerator for the Name.");
 
     /** See description. */
     @EFapsSysConfAttribute

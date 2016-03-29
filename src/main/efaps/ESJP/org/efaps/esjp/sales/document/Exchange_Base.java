@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
@@ -180,17 +181,19 @@ public abstract class Exchange_Base
 
         final String[] docOids = _parameter.getParameterValues(CITableSales.Sales_SwapPayTable.document.name);
         final List<Instance> docInsts = new ArrayList<>();
-        if (nameAr != null && crossAr != null && currAr != null && docOids != null) {
+        if (!ArrayUtils.isEmpty(crossAr) && !ArrayUtils.isEmpty(currAr) && !ArrayUtils.isEmpty(docOids)) {
             try {
                 final Map<Instance, BigDecimal> exchangeMap = new LinkedHashMap<>();
                 final Map<Instance, Map<Instance, BigDecimal>> exchangeValuesMap = new LinkedHashMap<>();
 
-                for (int i = 0; i < nameAr.length; i++) {
+                for (int i = 0; i < crossAr.length; i++) {
                     final Instance rateCurInst = Instance.get(CIERP.Currency.getType(), currAr[i]);
                     final String rate = new Currency().evaluateRateInfo(_parameter, new DateTime(), rateCurInst)
                                     .getRateFrmt();
                     final Parameter parameter = ParameterUtil.clone(_parameter);
-                    ParameterUtil.setParmeterValue(parameter, "name4create", nameAr[i]);
+                    if (!ArrayUtils.isEmpty(nameAr) && nameAr.length > i) {
+                        ParameterUtil.setParmeterValue(parameter, "name4create", nameAr[i]);
+                    }
                     ParameterUtil.setParmeterValue(parameter, "rate", rate);
                     ParameterUtil.setParmeterValue(parameter, "rateCrossTotal", crossAr[i]);
                     ParameterUtil.setParmeterValue(parameter, "rateCurrencyId", currAr[i]);

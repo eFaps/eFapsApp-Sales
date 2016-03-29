@@ -32,6 +32,8 @@
                 <property name="StatusGroup">Sales_ExchangeStatus</property>
                 <property name="Status">Open</property>
                 <property name="SwapType">Pay</property>
+                <!-- default Numbergenerator Sales_ExchangeSequence-->
+                <property name="NumberGenerator">81cfbd93-7b1a-4db7-bc5f-370c9cda33f7</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.Exchange" method="validate4CreateCalculated"/>
         </target>

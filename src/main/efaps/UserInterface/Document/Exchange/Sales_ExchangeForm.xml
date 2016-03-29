@@ -83,12 +83,48 @@
             <property name="ModeView">NONE</property>
             <property name="ModeCreate">EDITABLE</property>
             <property name="Required">true</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_Exchangeorm.name4create.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">!org.efaps.sales.Exchange.UseNumberGenerator</property>
+            </trigger>
         </field>
-          <field name="name">
+        <field name="name4edit">
             <property name="Attribute">Name</property>
             <property name="Columns">15</property>
             <property name="ModeEdit">EDITABLE</property>
+            <property name="ModeView">NONE</property>
             <property name="Required">true</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_Exchangeorm.name4edit.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">!org.efaps.sales.Exchange.UseNumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="name4view">
+            <property name="Attribute">Name</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_Exchangeorm.name4view.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">org.efaps.sales.Exchange.UseNumberGenerator</property>
+            </trigger>
+        </field>
+        <field name="name">
+            <property name="Attribute">Name</property>
+            <property name="ModeEdit">NONE</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="Sales_Exchangeorm.name.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">!org.efaps.sales.Exchange.UseNumberGenerator</property>
+            </trigger>
         </field>
          <field name="revision">
             <property name="Attribute">Revision</property>

@@ -27,6 +27,13 @@
             <property name="ModeCreate">EDITABLE</property>
             <property name="Attribute">Name</property>
             <property name="Label">Sales_Exchange/Name.Label</property>
+            <trigger event="UI_ACCESSCHECK" method="configCheck"
+                name="SSales_ExchangeCreateCalculatedTable.name4Exchange.UI_ACCESSCHECK"
+                program="org.efaps.esjp.admin.access.AccessCheck4UI">
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Attribute">!org.efaps.sales.IncomingExchange.UseNumberGenerator</property>
+            </trigger>
         </field>
         <field name="crossTotal4Exchange">
             <property name="ModeCreate">EDITABLE</property>

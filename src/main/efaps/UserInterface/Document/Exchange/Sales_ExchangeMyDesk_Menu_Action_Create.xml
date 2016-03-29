@@ -31,6 +31,9 @@
             <execute method="create" program="org.efaps.esjp.sales.document.Exchange">
                 <property name="StatusGroup">Sales_ExchangeStatus</property>
                 <property name="Status">Open</property>
+                <!-- default Numbergenerator Sales_ExchangeSequence-->
+                <property name="NumberGenerator">81cfbd93-7b1a-4db7-bc5f-370c9cda33f7</property>
+
                 <!-- Sales-Configuration -->
                 <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
                 <property name="JasperConfigReport">org.efaps.sales.Exchange.JasperReport</property>
