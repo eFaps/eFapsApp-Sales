@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
- Copyright 2003 - 2009 The eFaps Team
+ Copyright 2003 - 2016 The eFaps Team
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -13,11 +14,6 @@
  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  See the License for the specific language governing permissions and
  limitations under the License.
-
- Author:          The eFaps Team
- Revision:        $Rev$
- Last Changed:    $Date$
- Last Changed By: $Author$
 
 -->
 <ui-table xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -36,18 +32,7 @@
                 method="autoComplete4Document"
                 name="Sales_SwapCollectTable.document.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
-                 <property name="Type">Sales_Invoice</property>
-                <property name="StatusGroup">Sales_InvoiceStatus</property>
-                <property name="Status">Open</property>
-                <property name="Type01">Sales_Receipt</property>
-                <property name="StatusGroup01">Sales_ReceiptStatus</property>
-                <property name="Status01">Open</property>
-                <property name="Type02">Sales_CollectionOrder</property>
-                <property name="StatusGroup02">Sales_CollectionOrderStatus</property>
-                <property name="Status02">Approved</property>
-                <property name="Type03">Sales_Credit</property>
-                <property name="StatusGroup03">Sales_CreditStatus</property>
-                <property name="Status03">Open</property>
+               <property name="SwapType">Collect</property>
             </trigger>
             <trigger program="org.efaps.esjp.sales.Swap"
                 method="updateFields4Document"

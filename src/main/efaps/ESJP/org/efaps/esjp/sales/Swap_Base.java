@@ -157,16 +157,19 @@ public abstract class Swap_Base
         throws EFapsException
     {
         final Properties props = Sales.SWAPCONFIG.get();
-        final String propkey;
+        String propkey = null;
+
         if (_parameter.getCallInstance() != null) {
             propkey = _parameter.getCallInstance().getType().getName();
         } else if (_parameter.get(ParameterValues.CALL_CMD) != null) {
             final AbstractCommand cmd = (AbstractCommand) _parameter.get(ParameterValues.CALL_CMD);
-            propkey = cmd.getTargetCreateType().getName();
-        } else if (containsProperty(_parameter, "CreateType")) {
-            propkey = getProperty(_parameter, "CreateType");
-        } else {
-            propkey = "Unknown";
+            if (cmd.getTargetCreateType() != null) {
+                propkey = cmd.getTargetCreateType().getName();
+            }
+        }
+
+        if (propkey == null && containsProperty(_parameter, "SwapType")) {
+            propkey = getProperty(_parameter, "SwapType");
         }
         QueryBuilder ret = getQueryBldrFromProperties(_parameter, props, propkey);
         if (ret == null) {
