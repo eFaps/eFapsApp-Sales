@@ -239,7 +239,7 @@ public abstract class Validation_Base
             final Instance prodInst = Instance.get(product[i]);
             if (currentProdInst == null) {
                 currentProdInst = prodInst;
-            } else if (!currentProdInst.equals(prodInst)){
+            } else if (!currentProdInst.equals(prodInst)) {
                 ret.add(new OnlyOneProductWarning());
             }
         }
@@ -519,7 +519,7 @@ public abstract class Validation_Base
         for (int i = 0; i < getPositionsCount(_parameter); i++) {
 
             final Instance prodInst = Instance.get(product[i]);
-            if (prodInst.isValid()) {
+            if (prodInst.isValid() && !prodInst.getType().isCIType(CIProducts.ProductInfinite)) {
                 BigDecimal currQuantity = BigDecimal.ZERO;
                 final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
                 queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, prodInst);

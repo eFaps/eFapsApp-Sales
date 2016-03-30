@@ -692,21 +692,26 @@ public abstract class AbstractProductDocument_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
 
-        final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
-        queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, _storageInst);
-        queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, _productinst);
-        final MultiPrintQuery multi = queryBldr.getPrint();
-        multi.addAttribute(CIProducts.InventoryAbstract.Quantity, CIProducts.InventoryAbstract.Reserved);
-        multi.execute();
-        if (multi.next()) {
-            final BigDecimal quantity = multi.getAttribute(CIProducts.InventoryAbstract.Quantity);
-            final BigDecimal quantityReserved = multi.getAttribute(CIProducts.InventoryAbstract.Reserved);
-
-            ret.append(qtyFrmt.format(quantity)).append(" / ").append(qtyFrmt.format(quantityReserved));
+        if (_productinst.getType().isCIType(CIProducts.ProductInfinite)) {
+            ret.append("\u221e");
         } else {
-            ret.append("0 / 0");
+            final DecimalFormat qtyFrmt = NumberFormatter.get().getFrmt4Quantity(getTypeName4SysConf(_parameter));
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.InventoryAbstract);
+            queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Storage, _storageInst);
+            queryBldr.addWhereAttrEqValue(CIProducts.InventoryAbstract.Product, _productinst);
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            multi.addAttribute(CIProducts.InventoryAbstract.Quantity, CIProducts.InventoryAbstract.Reserved);
+            multi.execute();
+            if (multi.next()) {
+                final BigDecimal quantity = multi.getAttribute(CIProducts.InventoryAbstract.Quantity);
+                final BigDecimal quantityReserved = multi.getAttribute(CIProducts.InventoryAbstract.Reserved);
+
+                ret.append(qtyFrmt.format(quantity)).append(" / ").append(qtyFrmt.format(quantityReserved));
+            } else {
+                ret.append("0 / 0");
+            }
         }
         return ret.toString();
     }
