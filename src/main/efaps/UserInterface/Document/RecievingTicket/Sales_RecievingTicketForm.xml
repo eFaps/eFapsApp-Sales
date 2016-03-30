@@ -308,7 +308,11 @@
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Link4DefaultStorage">org.efaps.sales.RecievingTicket.DefaultWareHouse</property>
+             </trigger>
         </field>
     </definition>
     <definition>
@@ -633,7 +637,11 @@
             <trigger program="org.efaps.esjp.sales.document.RecievingTicket"
                 method="getJavaScriptUIValue"
                 name="Sales_OrderOutboundForm.javaScript.UI_FIELD_VALUE"
-                event="UI_FIELD_VALUE" />
+                event="UI_FIELD_VALUE" >
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Link4DefaultStorage">org.efaps.sales.RecievingTicket.DefaultWareHouse</property>
+            </trigger>
         </field>
     </definition>
 </ui-form>

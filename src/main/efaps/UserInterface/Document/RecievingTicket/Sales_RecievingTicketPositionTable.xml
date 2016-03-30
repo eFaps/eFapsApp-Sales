@@ -91,6 +91,9 @@
                 event="UI_ACCESSCHECK" >
                 <property name="CheckCallingCommand">true</property>
                 <property name="Property">ShowStorage</property>
+                <!-- Sales-Configuration -->
+                <property name="SystemConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="Link4DefaultStorage">org.efaps.sales.RecievingTicket.DefaultWareHouse</property>
             </trigger>
         </field>
         <field name="remark">

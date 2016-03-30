@@ -890,6 +890,14 @@ public final class Sales
                     .description("UUID of the Sequence used for the Revision.");
 
     /** See description. */
+    @EFapsSysConfLink
+    public static final SysConfLink RECIEVINGTICKETDEFAULTWAREHOUSE = new SysConfLink()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "RecievingTicket.DefaultWareHouse")
+                    .description("Possibility to set a default Warehouse for RecievingTicket. If not set "
+                                    + "the default from Products applies.");
+
+    /** See description. */
     @EFapsSysConfAttribute
     public static final StringSysConfAttribute REMINDERJASPERREPORT = new StringSysConfAttribute()
                     .sysConfUUID(SYSCONFUUID)
