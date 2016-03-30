@@ -30,12 +30,6 @@
             <description>Do the product prices include already the tax, or must it be added? (Crossprice or netprice)</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.ActivateCalculateCosts</key>
-            <value>false</value>
-            <description>boolean (true/false). Activate the calculation of Costs for a product in stock. Executed by calling en esjp after
-                the insertion of a Incoming Invoice.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.payment.in.NumberGenerator</key>
             <value><![CDATA[617c3a4c-a06d-462b-8460-92cb194f1235]]></value>
             <description>Generated number if case code is active to payment documents.</description>
@@ -96,16 +90,6 @@ can be concatenated
 Set a Price List for a Type to Calculator. Used for Sales Documents.</description>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.DefaultDeparturePoints</key>
-            <value>To be set by implementation</value>
-            <description>Default addresses used as the departure point in delivery note.</description>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.DefaultArrivalPoints</key>
-            <value>To be set by implementation</value>
-            <description>Default addresses used as the arrival point in delivery note.</description>
-        </attribute>
-        <attribute>
             <key>org.efaps.sales.Config4Swap</key>
             <value><![CDATA[Sales_IncomingExchange.Type=Sales_Invoice
 Sales_IncomingExchange.StatusGroup=Sales_InvoiceStatus
@@ -148,12 +132,7 @@ Sales_Invoice.Total=NET
             ]]></value>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.payment.Config4Rate</key>
-            <value><![CDATA[Sales_PaymentRetentionOut=false]]>
-            </value>
-        </attribute>
-        <attribute>
-            <key>org.efaps.sales.DocPositionReport</key>
+            <key>org.efaps.sales.report.DocPositionReport</key>
             <value><![CDATA[Type01=Sales_Invoice
 Type02=Sales_IncomingInvoice
 Type03=Sales_IncomingReceipt
@@ -165,7 +144,7 @@ Sales_Invoice.Total=NET
             ]]></value>
         </attribute>
          <attribute>
-            <key>org.efaps.sales.DocSituationReport</key>
+            <key>org.efaps.sales.report.DocSituationReport</key>
             <value><![CDATA[Type01=Sales_Invoice
 Type02=Sales_IncomingInvoice
 StatusGroup01=Sales_InvoiceStatus
@@ -178,7 +157,7 @@ StatusGroup04=Sales_IncomingInvoiceStatus
 Status04=Digitized]]></value>
         </attribute>
         <attribute>
-            <key>org.efaps.sales.SalesProductReport</key>
+            <key>org.efaps.sales.report.SalesProductReport</key>
             <value><![CDATA[Type01=Sales_Invoice
 StatusGroup01=Sales_InvoiceStatus
 Status01=!Replaced

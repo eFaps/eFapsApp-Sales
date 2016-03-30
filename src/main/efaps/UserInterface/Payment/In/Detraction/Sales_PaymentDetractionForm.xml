@@ -16,15 +16,13 @@
 
 
 -->
-<ui-form xmlns="http://www.efaps.org/xsd"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<ui-form xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>2b6d9831-7c5c-41ba-a76b-231ca958cf20</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <name>Sales_PaymentDetractionForm</name>
-        <!-- fields -->
         <field name="deactivateFiltered4Invoice">
             <property name="ModeCreate">HIDDEN</property>
             <property name="ModeView">NONE</property>
@@ -146,8 +144,6 @@
                 name="Sales_PaymentDetractionForm.amount.UI_FIELD_UPDATE" event="UI_FIELD_UPDATE"/>
         </field>
         <field name="status">
-            <property name="ModeCreate">NONE</property>
-            <property name="ModeEdit">EDITABLE</property>
             <property name="Attribute">Status</property>
         </field>
         <field character="Group" name="createGroup">
@@ -188,6 +184,8 @@
          <field name="docPicker" character="Picker">
             <property name="HideLabel">true</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">NONE</property>
+            <property name="ModeView">NONE</property>
             <property name="Label">Sales_PaymentDetractionForm.docPicker.Label</property>
             <property name="UIType">BUTTON</property>
             <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
