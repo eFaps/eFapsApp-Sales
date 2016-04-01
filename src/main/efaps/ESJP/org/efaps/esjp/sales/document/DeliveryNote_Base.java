@@ -98,6 +98,139 @@ public abstract class DeliveryNote_Base
     }
 
     /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void add2DocCreate(final Parameter _parameter,
+                                 final Insert _insert,
+                                 final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        super.add2DocCreate(_parameter, _insert, _createdDoc);
+
+        final String arrivalPoint = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name);
+        if (arrivalPoint != null) {
+            _insert.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
+            _createdDoc.getValues().put(CISales.DeliveryNote.ArrivalPoint.name, arrivalPoint);
+        }
+
+        final String departurePoint = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.departurePoint.name);
+        if (departurePoint != null) {
+            _insert.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
+            _createdDoc.getValues().put(CISales.DeliveryNote.DeparturePoint.name, departurePoint);
+        }
+
+        final String vehicleBrand = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleBrand.name);
+        if (vehicleBrand != null) {
+            _insert.add(CISales.DeliveryNote.VehicleBrand, vehicleBrand);
+            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleBrand.name, vehicleBrand);
+        }
+
+        final String vehicleDriverInfo = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name);
+        if (vehicleDriverInfo != null) {
+            _insert.add(CISales.DeliveryNote.VehicleDriverInfo, vehicleDriverInfo);
+            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleDriverInfo.name, vehicleDriverInfo);
+        }
+
+        final String vehicleLicencePlate = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleLicencePlate.name);
+        if (vehicleLicencePlate != null) {
+            _insert.add(CISales.DeliveryNote.VehicleLicencePlate, vehicleLicencePlate);
+            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleLicencePlate.name, vehicleLicencePlate);
+        }
+
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            _insert.add(CISales.DeliveryNote.CarrierLink, carrierInst);
+            _createdDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
+        }
+
+        final String transferReason = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.transferReason.name);
+        if (transferReason != null && !transferReason.isEmpty()) {
+            _insert.add(CISales.DeliveryNote.TransferReason, transferReason);
+            _createdDoc.getValues().put(CISales.DeliveryNote.TransferReason.name, transferReason);
+        }
+    }
+
+    /**
+     * @param _parameter Parameter as passed from the eFaps API.
+     * @return new Return.
+     * @throws EFapsException on error.
+     */
+    public Return edit(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return ret = new Return();
+        final CreatedDoc doc = editDoc(_parameter);
+        connect2Object(_parameter, doc);
+        final File file = createReport(_parameter, doc);
+        if (file != null) {
+            ret.put(ReturnValues.VALUES, file);
+            ret.put(ReturnValues.TRUE, true);
+        }
+        return ret;
+    }
+
+    @Override
+    protected void add2DocEdit(final Parameter _parameter,
+                               final Update _update,
+                               final EditedDoc _editDoc)
+        throws EFapsException
+    {
+        super.add2DocEdit(_parameter, _update, _editDoc);
+        final String arrivalPoint = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name);
+        if (arrivalPoint != null) {
+            _update.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
+            _editDoc.getValues().put(CISales.DeliveryNote.ArrivalPoint.name, arrivalPoint);
+        }
+
+        final String departurePoint = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.departurePoint.name);
+        if (departurePoint != null) {
+            _update.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
+            _editDoc.getValues().put(CISales.DeliveryNote.DeparturePoint.name, departurePoint);
+        }
+
+        final String vehicleBrand = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleBrand.name);
+        if (vehicleBrand != null) {
+            _update.add(CISales.DeliveryNote.VehicleBrand, vehicleBrand);
+            _editDoc.getValues().put(CISales.DeliveryNote.VehicleBrand.name, vehicleBrand);
+        }
+
+        final String vehicleDriverInfo = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name);
+        if (vehicleDriverInfo != null) {
+            _update.add(CISales.DeliveryNote.VehicleDriverInfo, vehicleDriverInfo);
+            _editDoc.getValues().put(CISales.DeliveryNote.VehicleDriverInfo.name, vehicleDriverInfo);
+        }
+
+        final String vehicleLicencePlate = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleLicencePlate.name);
+        if (vehicleLicencePlate != null) {
+            _update.add(CISales.DeliveryNote.VehicleLicencePlate, vehicleLicencePlate);
+            _editDoc.getValues().put(CISales.DeliveryNote.VehicleLicencePlate.name, vehicleLicencePlate);
+        }
+
+        final Instance carrierInst = Instance.get(_parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
+        if (carrierInst.isValid()) {
+            _update.add(CISales.DeliveryNote.CarrierLink, carrierInst);
+            _editDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
+        }
+
+        final String transferReason = _parameter
+                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.transferReason.name);
+        if (transferReason != null && !transferReason.isEmpty()) {
+            _update.add(CISales.DeliveryNote.TransferReason, transferReason);
+            _editDoc.getValues().put(CISales.DeliveryNote.TransferReason.name, transferReason);
+        }
+    }
+
+    /**
      * @param _parameter Parameter as passed from the eFaps API.
      * @return return containing default value for create mode
      * @throws EFapsException on error
@@ -199,65 +332,6 @@ public abstract class DeliveryNote_Base
         final String adress = print.<String>getSelect(sel);
         ret.append(getSetFieldValue(0, CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress));
         return ret;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void add2DocCreate(final Parameter _parameter,
-                                 final Insert _insert,
-                                 final CreatedDoc _createdDoc)
-        throws EFapsException
-    {
-        super.add2DocCreate(_parameter, _insert, _createdDoc);
-
-        final String arrivalPoint = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name);
-        if (arrivalPoint != null) {
-            _insert.add(CISales.DeliveryNote.ArrivalPoint, arrivalPoint);
-            _createdDoc.getValues().put(CISales.DeliveryNote.ArrivalPoint.name, arrivalPoint);
-        }
-
-        final String departurePoint = _parameter
-                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.departurePoint.name);
-        if (departurePoint != null) {
-            _insert.add(CISales.DeliveryNote.DeparturePoint, departurePoint);
-            _createdDoc.getValues().put(CISales.DeliveryNote.DeparturePoint.name, departurePoint);
-        }
-
-        final String vehicleBrand = _parameter.getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleBrand.name);
-        if (vehicleBrand != null) {
-            _insert.add(CISales.DeliveryNote.VehicleBrand, vehicleBrand);
-            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleBrand.name, vehicleBrand);
-        }
-
-        final String vehicleDriverInfo = _parameter
-                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleDriverInfo.name);
-        if (vehicleDriverInfo != null) {
-            _insert.add(CISales.DeliveryNote.VehicleDriverInfo, vehicleDriverInfo);
-            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleDriverInfo.name, vehicleDriverInfo);
-        }
-
-        final String vehicleLicencePlate = _parameter
-                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.vehicleLicencePlate.name);
-        if (vehicleLicencePlate != null) {
-            _insert.add(CISales.DeliveryNote.VehicleLicencePlate, vehicleLicencePlate);
-            _createdDoc.getValues().put(CISales.DeliveryNote.VehicleLicencePlate.name, vehicleLicencePlate);
-        }
-
-        final Instance carrierInst = Instance.get(_parameter
-                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.carrierLink.name));
-        if (carrierInst.isValid()) {
-            _insert.add(CISales.DeliveryNote.CarrierLink, carrierInst);
-            _createdDoc.getValues().put(CISales.DeliveryNote.CarrierLink.name, carrierInst);
-        }
-
-        final String transferReason = _parameter
-                        .getParameterValue(CIFormSales.Sales_DeliveryNoteForm.transferReason.name);
-        if (transferReason != null && !transferReason.isEmpty()) {
-            _insert.add(CISales.DeliveryNote.TransferReason, transferReason);
-            _createdDoc.getValues().put(CISales.DeliveryNote.TransferReason.name, transferReason);
-        }
     }
 
     /**

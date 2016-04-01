@@ -281,6 +281,7 @@
             <property name="Label">Sales_DeliveryNote/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Carrier"
@@ -716,6 +717,7 @@
             <property name="Label">Sales_DeliveryNote/CarrierLink.Label</property>
             <property name="Select">linkto[CarrierLink].attribute[Name]</property>
             <property name="ModeCreate">EDITABLE</property>
+            <property name="ModeEdit">EDITABLE</property>
             <property name="Columns">80</property>
             <trigger program="org.efaps.esjp.sales.document.DeliveryNote"
                 method="autoComplete4Carrier"
