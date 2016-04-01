@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
 
  Copyright 2003 - 2016 The eFaps Team
 
@@ -15,25 +14,27 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>38ae4843-1189-4b39-89c8-fa4163a05f83</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>5683ab95-d6de-46c2-8ab0-9692dd6badd4</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckDeferredMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_IncomingCheckTree_Doc</name>
         <target>
-            <table>Sales_PaymentCheckDeferredTable</table>
-            <evaluate method="deferredMultiPrint" program="org.efaps.esjp.sales.payment.PaymentCheck">
-                <property name="Type">Sales_PaymentCheck</property>
+            <menu>Sales_IncomingCheckTree_Doc_Menu</menu>
+            <table>Sales_Document2DocumentTable</table>
+            <evaluate program="org.efaps.esjp.common.uitable.MultiPrint">
+                <property name="Type01">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom01">FromAbstractLink</property>
+                <property name="Type02">ERP_Document2DocumentAbstract</property>
+                <property name="LinkFrom02">ToAbstractLink</property>
             </evaluate>
         </target>
         <property name="Target">content</property>
         <property name="TargetShowCheckBoxes">true</property>
+        <property name="Label">Sales_DocumentAbstractTree_Doc.Label</property>
+        <property name="TargetMode">view</property>
     </definition>
 </ui-command>

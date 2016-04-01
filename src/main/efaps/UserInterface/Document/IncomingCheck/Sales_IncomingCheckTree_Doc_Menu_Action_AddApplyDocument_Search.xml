@@ -15,25 +15,19 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>38ae4843-1189-4b39-89c8-fa4163a05f83</uuid>
+<ui-search xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>b475673e-9549-4196-b1de-6a1b740d3a51</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckDeferredMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <table>Sales_PaymentCheckDeferredTable</table>
-            <evaluate method="deferredMultiPrint" program="org.efaps.esjp.sales.payment.PaymentCheck">
-                <property name="Type">Sales_PaymentCheck</property>
-            </evaluate>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_IncomingCheckTree_Doc_Menu_Action_AddApplyDocument_Search</name>
+        <default>
+            <command>Sales_IncomingCheckApplyDocumentSearch</command>
+        </default>
+        <childs>
+            <child>Sales_IncomingCheckApplyDocumentSearch</child>
+        </childs>
     </definition>
-</ui-command>
+</ui-search>

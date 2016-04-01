@@ -28,6 +28,7 @@
             <child>Sales_PaymentDocument_Report4AccountCompIndMyDesk</child>
             <child>Sales_CollectionOrderMyDesk</child>
             <child>Sales_PaymentCheckDeferredMyDesk</child>
+            <child>Sales_IncomingCheckMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

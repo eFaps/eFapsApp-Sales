@@ -35,6 +35,7 @@
             <child>Sales_IncomingExchangeMyDesk</child>
             <child>Sales_IncomingPerceptionCertificateMyDesk</child>
             <child>Sales_IncomingRetentionCertificateMyDesk</child>
+            <child>Sales_IncomingCheckMyDesk</child>
         </childs>
     </definition>
 </ui-menu>

@@ -15,25 +15,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
-<ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>38ae4843-1189-4b39-89c8-fa4163a05f83</uuid>
+<datamodel-statusgroup xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>d607385d-12f6-4d46-8033-e7615b164df7</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckDeferredMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
-        <target>
-            <table>Sales_PaymentCheckDeferredTable</table>
-            <evaluate method="deferredMultiPrint" program="org.efaps.esjp.sales.payment.PaymentCheck">
-                <property name="Type">Sales_PaymentCheck</property>
-            </evaluate>
-        </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <name>Sales_IncomingCheckStatus</name>
+        <parent>Sales_DocumentStatus</parent>
+        <status key="Open">
+            <description>IncomingCheck is open. (Pendiente)</description>
+        </status>
+        <status key="Closed">
+            <description>IncomingCheck is closed. (Cobrado) </description>
+        </status>
+        <status key="Canceled">
+            <description>IncomingCheck was canceled. (Anulado)</description>
+        </status>
     </definition>
-</ui-command>
+</datamodel-statusgroup>

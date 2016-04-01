@@ -92,7 +92,7 @@ public abstract class Exchange_Base
             ret.put(ReturnValues.TRUE, true);
         }
         ret.put(ReturnValues.INSTANCE, createdDoc.getInstance());
-        return new Return();
+        return ret;
     }
 
     @Override
@@ -134,7 +134,7 @@ public abstract class Exchange_Base
             ret.put(ReturnValues.VALUES, file);
             ret.put(ReturnValues.TRUE, true);
         }
-        return new Return();
+        return ret;
     }
 
 

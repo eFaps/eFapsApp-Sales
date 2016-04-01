@@ -237,6 +237,8 @@ public abstract class AbstractSumOnlyDocument_Base
         final Object[] rateObj = getRateObject(_parameter);
         final BigDecimal rate = ((BigDecimal) rateObj[0]).divide((BigDecimal) rateObj[1], 12,
                         BigDecimal.ROUND_HALF_UP);
+        final Instance baseCurrInst = Currency.getBaseCurrency();
+        final Instance rateCurrInst = getRateCurrencyInstance(_parameter, _editDoc);
 
         final Update update = new Update(_editDoc.getInstance());
         final String name = getDocName4Edit(_parameter);
@@ -337,6 +339,9 @@ public abstract class AbstractSumOnlyDocument_Base
                     _editDoc.getValues().put(CISales.DocumentSumAbstract.NetTotal.name, crossTotal);
                 }
             }
+            update.add(CISales.DocumentSumAbstract.CurrencyId, baseCurrInst);
+            update.add(CISales.DocumentSumAbstract.Rate, rateObj);
+            update.add(CISales.DocumentSumAbstract.RateCurrencyId, rateCurrInst);
         } catch (final ParseException e) {
             throw new EFapsException("Parsing Error", e);
         }

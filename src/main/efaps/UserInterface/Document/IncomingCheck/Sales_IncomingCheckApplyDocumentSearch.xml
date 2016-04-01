@@ -15,25 +15,23 @@
  See the License for the specific language governing permissions and
  limitations under the License.
 
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
-    <uuid>38ae4843-1189-4b39-89c8-fa4163a05f83</uuid>
+    xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
+    <uuid>120f98da-877b-43ee-ad99-83b7b619c5bf</uuid>
     <file-application>eFapsApp-Sales</file-application>
     <definition>
         <version-expression>(version==latest)</version-expression>
-        <name>Sales_PaymentCheckDeferredMyDesk</name>
-        <access>
-            <role>Sales_Admin</role>
-        </access>
+        <name>Sales_IncomingCheckApplyDocumentSearch</name>
         <target>
-            <table>Sales_PaymentCheckDeferredTable</table>
-            <evaluate method="deferredMultiPrint" program="org.efaps.esjp.sales.payment.PaymentCheck">
-                <property name="Type">Sales_PaymentCheck</property>
+            <form>Sales_InvoiceSearchForm</form>
+            <table>Sales_DocumentAbstractUnfilteredTable</table>
+            <evaluate program="org.efaps.esjp.common.uisearch.Search">
+                 <!-- Sales-Configuration -->
+                <property name="QueryBldrConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="QueryBldrConfigAttribute">org.efaps.sales.payment.in.Check.PayableDocuments</property>
             </evaluate>
         </target>
-        <property name="Target">content</property>
-        <property name="TargetShowCheckBoxes">true</property>
+        <property name="TargetMode">search</property>
     </definition>
 </ui-command>

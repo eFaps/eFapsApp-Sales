@@ -19,13 +19,13 @@ package org.efaps.esjp.sales.payment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
-import org.efaps.admin.datamodel.Type;
+import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.event.Parameter;
-import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
 import org.efaps.admin.program.esjp.EFapsApplication;
@@ -35,7 +35,13 @@ import org.efaps.db.Instance;
 import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.PrintQuery;
 import org.efaps.db.QueryBuilder;
+import org.efaps.db.SelectBuilder;
+import org.efaps.db.Update;
+import org.efaps.esjp.ci.CIContacts;
+import org.efaps.esjp.ci.CIFormSales;
 import org.efaps.esjp.ci.CISales;
+import org.efaps.esjp.common.util.InterfaceUtils;
+import org.efaps.ui.wicket.util.DateUtil;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
 
@@ -59,6 +65,7 @@ public abstract class PaymentCheck_Base
         throws EFapsException
     {
         final CreatedDoc createdDoc = createDoc(_parameter);
+        connectIncomingCheck(_parameter, createdDoc);
         createPayment(_parameter, createdDoc);
         executeAutomation(_parameter, createdDoc);
         final Return ret = new Return();
@@ -68,6 +75,29 @@ public abstract class PaymentCheck_Base
             ret.put(ReturnValues.TRUE, true);
         }
         return ret;
+    }
+
+    /**
+     * Connect incoming check.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _createdDoc the created doc
+     * @throws EFapsException on error
+     */
+    protected void connectIncomingCheck(final Parameter _parameter,
+                                        final CreatedDoc _createdDoc)
+        throws EFapsException
+    {
+        if (_parameter.getInstance() != null && _parameter.getInstance().getType().isCIType(CISales.IncomingCheck)) {
+            final Insert insert = new Insert(CISales.IncomingCheck2PaymentCheck);
+            insert.add(CISales.IncomingCheck2PaymentCheck.FromLink, _parameter.getInstance());
+            insert.add(CISales.IncomingCheck2PaymentCheck.ToLink, _createdDoc.getInstance());
+            insert.execute();
+
+            final Update update = new Update(_parameter.getInstance());
+            update.add(CISales.IncomingCheck.Status, Status.find(CISales.IncomingCheckStatus.Closed));
+            update.execute();
+        }
     }
 
     @Override
@@ -82,11 +112,17 @@ public abstract class PaymentCheck_Base
                         CISales.PaymentCheck.Issued.name));
         if (issued != null) {
             _insert.add(CISales.PaymentCheck.Issued, issued);
-            _createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Issued.name),
-                            issued);
+            _createdDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Issued.name), issued);
         }
     }
 
+    /**
+     * Creates the with out doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return createWithOutDoc(final Parameter _parameter)
         throws EFapsException
     {
@@ -94,6 +130,13 @@ public abstract class PaymentCheck_Base
         return new Return();
     }
 
+    /**
+     * Adds the doc2 payment doc.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return addDoc2PaymentDoc(final Parameter _parameter)
         throws EFapsException
     {
@@ -108,13 +151,18 @@ public abstract class PaymentCheck_Base
         return ret;
     }
 
+    /**
+     * Gets the creates the doc2add payment.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the creates the doc2add payment
+     * @throws EFapsException on error
+     */
     protected CreatedDoc getCreateDoc2addPayment(final Parameter _parameter)
         throws EFapsException
     {
         final PrintQuery print = new PrintQuery(_parameter.getInstance());
-        print.addAttribute(CISales.PaymentCheck.Name,
-                        CISales.PaymentCheck.RateCurrencyLink,
-                        CISales.PaymentCheck.Date);
+        print.addAttribute(CISales.PaymentCheck.Name, CISales.PaymentCheck.RateCurrencyLink, CISales.PaymentCheck.Date);
         print.execute();
         final String name = print.<String>getAttribute(CISales.PaymentCheck.Name);
         final Long curId = print.<Long>getAttribute(CISales.PaymentCheck.RateCurrencyLink);
@@ -122,13 +170,20 @@ public abstract class PaymentCheck_Base
 
         final CreatedDoc createDoc = new CreatedDoc(_parameter.getInstance());
         createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Name.name), name);
-        createDoc.getValues()
-                        .put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.RateCurrencyLink.name), curId);
+        createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.RateCurrencyLink.name),
+                        curId);
         createDoc.getValues().put(getFieldName4Attribute(_parameter, CISales.PaymentCheck.Date.name), date);
 
         return createDoc;
     }
 
+    /**
+     * Drop down field value4 account.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return dropDownFieldValue4Account(final Parameter _parameter)
         throws EFapsException
     {
@@ -150,33 +205,95 @@ public abstract class PaymentCheck_Base
         }.dropDownFieldValue(_parameter);
     }
 
+    /**
+     * Deferred multi print.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return deferredMultiPrint(final Parameter _parameter)
         throws EFapsException
     {
-
         final Return ret = new Return();
-        final Map<?, ?> properties = (HashMap<?, ?>) _parameter.get(ParameterValues.PROPERTIES);
-        final String typeStr = (String) properties.get("Types");
-        final Type type;
-        final List<Instance> instances = new ArrayList<Instance>();
-        if (typeStr != null) {
-            type = Type.get(typeStr);
-            final QueryBuilder queryBldr = new QueryBuilder(type);
-            final MultiPrintQuery multi = queryBldr.getPrint();
-
-            multi.addAttribute(CISales.PaymentDocumentAbstract.Date, CISales.PaymentDocumentAbstract.DueDate);
-            multi.execute();
-            while (multi.next()) {
-                final Instance inst = multi.getCurrentInstance();
-                final DateTime date = multi.<DateTime>getAttribute(CISales.PaymentDocumentAbstract.Date);
-                final DateTime dueDate = multi.<DateTime>getAttribute(CISales.PaymentDocumentAbstract.DueDate);
-                if (!(date.compareTo(dueDate) == 0)) {
-                    instances.add(inst);
-                }
+        final List<Instance> instances = new ArrayList<>();
+        final QueryBuilder queryBldr = getQueryBldrFromProperties(_parameter);
+        final MultiPrintQuery multi = queryBldr.getPrint();
+        multi.addAttribute(CISales.PaymentDocumentAbstract.Date, CISales.PaymentDocumentAbstract.DueDate);
+        multi.execute();
+        while (multi.next()) {
+            final Instance inst = multi.getCurrentInstance();
+            final DateTime date = multi.<DateTime>getAttribute(CISales.PaymentDocumentAbstract.Date);
+            final DateTime dueDate = multi.<DateTime>getAttribute(CISales.PaymentDocumentAbstract.DueDate);
+            if (!(date.compareTo(dueDate) == 0)) {
+                instances.add(inst);
             }
-
         }
         ret.put(ReturnValues.VALUES, instances);
         return ret;
+    }
+
+    /**
+     * Gets the java script ui value.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the java script ui value
+     * @throws EFapsException on error
+     */
+    @SuppressWarnings("unchecked")
+    public Return getJavaScriptUIValue(final Parameter _parameter)
+        throws EFapsException
+    {
+        final Return retVal = new Return();
+        if (_parameter.getInstance() != null && _parameter.getInstance().getType().isCIType(CISales.IncomingCheck)) {
+            final StringBuilder js = new StringBuilder();
+            final PrintQuery print = new PrintQuery(_parameter.getInstance());
+            final SelectBuilder selContactInst = SelectBuilder.get().linkto(CISales.IncomingCheck.Contact).instance();
+            final SelectBuilder selContactName = SelectBuilder.get().linkto(CISales.IncomingCheck.Contact).attribute(
+                            CIContacts.Contact.Name);
+            print.addSelect(selContactInst, selContactName);
+            print.addAttribute(CISales.IncomingCheck.Name, CISales.IncomingCheck.Date, CISales.IncomingCheck.DueDate);
+            print.execute();
+
+            final Instance contactInst = print.getSelect(selContactInst);
+            final String contactName = print.getSelect(selContactName);
+
+            js.append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.name.name, print.<String>getAttribute(
+                            CISales.IncomingCheck.Name)))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.contact.name, contactInst.getOid(),
+                                            contactName))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.account.name,
+                        _parameter.getParameterValue(CIFormSales.Sales_IncomingCheckSelectAccountForm.account.name)))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.date.name + "_eFapsDate",
+                               DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.Date))))
+                .append(getSetFieldValue(0, CIFormSales.Sales_PaymentCheckForm.dueDate.name + "_eFapsDate",
+                            DateUtil.getDate4Parameter(print.<DateTime>getAttribute(CISales.IncomingCheck.DueDate))));
+
+            final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingCheck2ApplyDocument);
+            queryBldr.addWhereAttrEqValue(CISales.IncomingCheck2ApplyDocument.FromLink, _parameter.getInstance());
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selDocInst = SelectBuilder.get().linkto(CISales.IncomingCheck2ApplyDocument.ToLink)
+                            .instance();
+            final SelectBuilder selDocName = SelectBuilder.get().linkto(CISales.IncomingCheck2ApplyDocument.ToLink)
+                            .attribute(CISales.DocumentSumAbstract.Name);
+            multi.addSelect(selDocInst, selDocName);
+            multi.execute();
+            final Collection<Map<String, Object>> values = new ArrayList<>();
+            while (multi.next()) {
+                final Instance docInst = multi.getSelect(selDocInst);
+                final Map<String, Object> map = getPositionUpdateMap(_parameter, docInst, true);
+                values.add(map);
+            }
+
+            for ( final Entry<String, Object> entry: getSumUpdateMap(_parameter, values, true).entrySet()) {
+                js.append(getSetFieldValue(0, entry.getKey(), String.valueOf(entry.getValue())));
+            }
+
+            js.append(getTableRemoveScript(_parameter, CIFormSales.Sales_PaymentCheckForm.paymentTable.name))
+                .append(getTableAddNewRowsScript(_parameter, CIFormSales.Sales_PaymentCheckForm.paymentTable.name,
+                                values, null));
+            retVal.put(ReturnValues.SNIPLETT, InterfaceUtils.wrappInScriptTag(_parameter, js, true, 1500));
+        }
+        return retVal;
     }
 }

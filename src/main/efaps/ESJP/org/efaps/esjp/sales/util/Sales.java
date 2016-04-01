@@ -622,6 +622,12 @@ public final class Sales
                     .key(BASE + "payment.in.CreditCard.Activate")
                     .description("Deactivate the automatic generation of a code for every Payment Documents.");
 
+    @EFapsSysConfAttribute
+    public static final PropertiesSysConfAttribute PAYMENTCHECKPAYABLE = new PropertiesSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "payment.in.Check.PayableDocuments")
+                    .description("Properties to define the Query for Documents that can be payed.");
+
     /** See description. */
     @EFapsSysConfAttribute
     public static final BooleanSysConfAttribute PAYMENTDEBITCARDACTIVATE = new BooleanSysConfAttribute()
