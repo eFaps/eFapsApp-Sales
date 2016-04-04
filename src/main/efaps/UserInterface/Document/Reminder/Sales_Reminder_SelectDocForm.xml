@@ -25,15 +25,19 @@
         <field name="invoice">
             <property name="Label">Sales_Invoice.Label</property>
             <property name="ModeCreate">EDITABLE</property>
-            <property name="ClassNameUI">org.efaps.admin.datamodel.ui.StringUI</property>
+            <property name="UIProvider">org.efaps.admin.datamodel.ui.StringUI</property>
             <trigger program="org.efaps.esjp.sales.document.CreditNote"
                 method="autoComplete4Doc"
                 name="Sales_Reminder_SelectDocForm.invoice.UI_FIELD_AUTOCOMPLETE"
                 event="UI_FIELD_AUTOCOMPLETE">
                 <property name="Type01">Sales_Invoice</property>
+                <property name="StatusGroup01">Sales_InvoiceStatus</property>
+                <property name="Status01">!Replaced</property>
                 <property name="AutoType">TOKEN</property>
+                <property name="ExtraParameter">invoice</property>
             </trigger>
-             <trigger program="org.efaps.esjp.sales.document.CreditNote" method="updateFields4Document"
+             <trigger program="org.efaps.esjp.sales.document.CreditNote"
+                method="updateFields4Document"
                 name="Sales_Reminder_SelectDocForm.invoice.UI_FIELD_UPDATE"
                 event="UI_FIELD_UPDATE" />
         </field>
