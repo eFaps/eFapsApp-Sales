@@ -388,7 +388,7 @@ public abstract class DocComparator_Base
          */
         public Position add2RateNetPrice(final BigDecimal _rateNetPrice)
         {
-            setNetPrice(getNetPrice().add(_rateNetPrice));
+            setRateNetPrice(getRateNetPrice().add(_rateNetPrice));
             return this;
         }
 
