@@ -1011,6 +1011,21 @@ public final class Sales
                                     + "TYPE.Filter4Contact=true\n");
 
     /** See description. */
+    @EFapsSysConfAttribute
+    public static final StringSysConfAttribute TRANSDOCJASPERREPORT = new StringSysConfAttribute()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "TransactionDocument.JasperReport")
+                    .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
+    @EFapsSysConfAttribute
+    public static final EnumSysConfAttribute<JasperMime> TRANSDOCMIME = new EnumSysConfAttribute<JasperMime>()
+                    .sysConfUUID(SYSCONFUUID)
+                    .key(BASE + "TransactionDocument.Mime")
+                    .clazz(JasperMime.class)
+                    .description("Name of the jasperReport for CreditNote");
+
+    /** See description. */
     @EFapsSysConfLink
     public static final SysConfLink USAGEREPORTDEFAULTPRODUCTDOCUMENTTYPE = new SysConfLink()
                     .sysConfUUID(SYSCONFUUID)
