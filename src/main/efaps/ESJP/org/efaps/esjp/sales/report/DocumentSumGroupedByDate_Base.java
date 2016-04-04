@@ -267,7 +267,10 @@ public abstract class DocumentSumGroupedByDate_Base
                         }
                     }
                 } else {
-                    newMap = map;
+                    newMap = new HashMap<>();
+                    for (final Entry<String, Object> entry : map.entrySet()) {
+                        newMap.put(entry.getKey(), entry.getValue());
+                    }
                     tmpMap.put(key, newMap);
                     ret.add(newMap);
                 }
