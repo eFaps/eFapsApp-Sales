@@ -20,6 +20,8 @@ package org.efaps.esjp.sales;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -28,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.ArrayUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
@@ -67,8 +70,9 @@ import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
- * TODO comment!
+ * TODO comment!.
  *
  * @author The eFaps Team
  */
@@ -92,9 +96,9 @@ public abstract class Costing_Base
      * Called by the <code>Scheduler</code> when a <code>Trigger</code>
      * fires that is associated with the <code>Job</code>.
      * </p>
-     * @param   _context JobExecutionContext for this job
-     * @throws JobExecutionException
-     *           if there is an exception while executing the job.
+     *
+     * @param _context the _context
+     * @throws JobExecutionException           if there is an exception while executing the job.
      */
     @Override
     public void execute(final JobExecutionContext _context)
@@ -227,6 +231,8 @@ public abstract class Costing_Base
     }
 
     /**
+     * Gets the max transaction.
+     *
      * @return the max value of transactions to be read before saving the context.
      */
     protected int getMaxTransaction()
@@ -355,6 +361,8 @@ public abstract class Costing_Base
     }
 
     /**
+     * Add2 query bldr4 transaction.
+     *
      * @param _queryBldr queryBuilder to add to
      * @throws EFapsException on error
      */
@@ -572,8 +580,8 @@ public abstract class Costing_Base
     /**
      * Gets the penultimate4 costing.
      *
-     * @param _costingInstance instance the penultimate instance is wanted for
      * @param _currencyInstance the currency instance
+     * @param _costingInstance instance the penultimate instance is wanted for
      * @return penultimate instance
      * @throws EFapsException on error
      */
@@ -820,9 +828,9 @@ public abstract class Costing_Base
         return ret;
     }
 
-
-
     /**
+     * Gets the trans costing.
+     *
      * @return new TransCosting instance
      * @throws EFapsException on error
      */
@@ -830,6 +838,121 @@ public abstract class Costing_Base
         throws EFapsException
     {
         return new TransCosting();
+    }
+
+    /**
+     * Creates the historic cost. To be executed using the console to generate
+     * historic data.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the eFaps exception
+     */
+    public Return createHistoricCost(final Parameter _parameter)
+        throws EFapsException
+    {
+        // Admin_Program_Java
+        final String[] keyFields = _parameter.getParameterValues("keyField");
+        final String[] valueFields = _parameter.getParameterValues("valueField");
+        if (ArrayUtils.isEmpty(keyFields) || ArrayUtils.isEmpty(valueFields)) {
+            LOG.error("Missing Parameter 'CurrencyOID'");
+            throw new EFapsException(Costing.class, "MissingParameter");
+        } else {
+            String currencyOID = "";
+            for (int i = 0; i < keyFields.length; i++) {
+                switch (keyFields[i]) {
+                    case "CurrencyOID":
+                        currencyOID = valueFields[i];
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+            final Instance currencyInstance = Instance.get(currencyOID);
+            if (!currencyInstance.isValid()) {
+                LOG.error("Missing Parameter 'CurrencyOID'");
+                throw new EFapsException(Costing.class, "MissingParameter");
+            }
+            final QueryBuilder attrQueryBldr = new QueryBuilder(CIProducts.TransactionInbound);
+            attrQueryBldr.addType(CIProducts.TransactionInbound4StaticStorage);
+
+            final QueryBuilder queryBldr = new QueryBuilder(CIProducts.CostingAbstract);
+            queryBldr.addWhereAttrEqValue(CIProducts.CostingAbstract.CurrencyLink, currencyInstance);
+            queryBldr.addWhereAttrInQuery(CIProducts.CostingAbstract.TransactionAbstractLink,
+                            attrQueryBldr.getAttributeQuery(CIProducts.TransactionInbound.ID));
+            final MultiPrintQuery multi = queryBldr.getPrint();
+            final SelectBuilder selTrans = SelectBuilder.get()
+                            .linkto(CIProducts.CostingAbstract.TransactionAbstractLink);
+            final SelectBuilder selTransDate = new SelectBuilder(selTrans)
+                            .attribute(CIProducts.TransactionAbstract.Date);
+            final SelectBuilder selTransProdInst = new SelectBuilder(selTrans)
+                            .linkto(CIProducts.TransactionAbstract.Product).instance();
+            multi.addSelect(selTransDate, selTransProdInst);
+            multi.addAttribute(CIProducts.CostingAbstract.Result);
+            multi.executeWithoutAccessCheck();
+            final List<TransCosting> costings = new ArrayList<>();
+            CIType costType = null;
+            while (multi.next()) {
+                if (costType == null) {
+                    costType = multi.getCurrentInstance().getType().isCIType(CIProducts.Costing)
+                                    ? CIProducts.ProductCost : CIProducts.ProductCostAlternative;
+                }
+                costings.add(getTransCosting()
+                                .setCurrencyInstance(currencyInstance)
+                                .setResult(multi.<BigDecimal>getAttribute(CIProducts.CostingAbstract.Result))
+                                .setDate(multi.<DateTime>getSelect(selTransDate))
+                                .setProductInstance(multi.<Instance>getSelect(selTransProdInst)));
+            }
+
+            Collections.sort(costings, new Comparator<TransCosting>() {
+
+                @Override
+                public int compare(final TransCosting _arg0,
+                                   final TransCosting _arg1)
+                {
+                    int ret = 0;
+                    try {
+                        ret  =  _arg0.getDate().compareTo(_arg1.getDate());
+                    } catch (final EFapsException e) {
+                        LOG.error("Catched EFapsException", e);
+                    }
+                    return ret;
+                }});
+
+            for (final TransCosting transCost : costings) {
+                final QueryBuilder costBldr = new QueryBuilder(costType);
+                costBldr.addWhereAttrEqValue(CIProducts.ProductCostAbstract.ProductLink,
+                                transCost.getProductInstance());
+                costBldr.addWhereAttrGreaterValue(CIProducts.ProductCostAbstract.ValidUntil,
+                                transCost.getDate().withTimeAtStartOfDay().minusMinutes(1));
+                costBldr.addWhereAttrLessValue(CIProducts.ProductCostAbstract.ValidFrom,
+                                transCost.getDate().withTimeAtStartOfDay().plusMinutes(1));
+                if (costType.equals(CIProducts.ProductCostAlternative)) {
+                    costBldr.addWhereAttrEqValue(CIProducts.ProductCostAlternative.CurrencyLink, currencyInstance);
+                }
+                BigDecimal currPrice = BigDecimal.ZERO;
+                final MultiPrintQuery costMulti = costBldr.getPrint();
+                costMulti.addAttribute(CIProducts.ProductCostAbstract.Price);
+                costMulti.executeWithoutAccessCheck();
+                if (costMulti.next()) {
+                    currPrice = costMulti.<BigDecimal>getAttribute(CIProducts.ProductCostAbstract.Price);
+                }
+                if (transCost.getResult().compareTo(BigDecimal.ZERO) != 0 && currPrice.compareTo(transCost.getResult()
+                                .setScale(currPrice.scale(), RoundingMode.HALF_UP)) != 0) {
+                    Costing_Base.LOG.debug(" Updating Cost for: {}", transCost);
+                    final Insert insert = new Insert(costType);
+                    insert.add(CIProducts.ProductCostAbstract.ProductLink, transCost.getProductInstance());
+                    insert.add(CIProducts.ProductCostAbstract.Price, transCost.getResult());
+                    insert.add(CIProducts.ProductCostAbstract.ValidFrom, transCost.getDate().withTimeAtStartOfDay());
+                    insert.add(CIProducts.ProductCostAbstract.ValidUntil,
+                                    transCost.getDate().plusYears(10).withTimeAtStartOfDay());
+                    insert.add(CIProducts.ProductCostAbstract.CurrencyLink, currencyInstance);
+                    insert.executeWithoutAccessCheck();
+                }
+            }
+        }
+        return new Return();
     }
 
     /**
@@ -1014,6 +1137,8 @@ public abstract class Costing_Base
         private Integer position;
 
         /**
+         * Inits the transaction.
+         *
          * @throws EFapsException on error
          */
         protected void initTransaction()
@@ -1049,6 +1174,8 @@ public abstract class Costing_Base
         }
 
         /**
+         * Inits the costing.
+         *
          * @throws EFapsException on error
          */
         protected void initCosting()
@@ -1252,6 +1379,8 @@ public abstract class Costing_Base
         }
 
         /**
+         * Checks if is out bound.
+         *
          * @return true if it is an outbound transaction
          */
         public boolean isOutBound()
@@ -1288,6 +1417,8 @@ public abstract class Costing_Base
         }
 
         /**
+         * Gets the quantity.
+         *
          * @return the Quantity of this instance = CostingQuantity + TransactionQuantity
          * @throws EFapsException on error
          */
@@ -1324,6 +1455,8 @@ public abstract class Costing_Base
         }
 
         /**
+         * Gets the cost from document.
+         *
          * @return the Cost to be used for Costing retrieved by analyzing the related Documents
          * @throws EFapsException on error
          */
@@ -1495,6 +1628,9 @@ public abstract class Costing_Base
             return this;
         }
 
+        /* (non-Javadoc)
+         * @see java.lang.Object#toString()
+         */
         @Override
         public String toString()
         {
@@ -1502,11 +1638,8 @@ public abstract class Costing_Base
         }
     }
 
-
     /**
-     * TODO comment!
-     *
-     * @author The eFaps Team
+     * The Class CostDoc.
      */
     public static class CostDoc
     {
@@ -1545,6 +1678,8 @@ public abstract class Costing_Base
         private Instance productInst;
 
         /**
+         * Instantiates a new cost doc.
+         *
          * @param _docInst Instance of the document.
          * @param _productInst Instance of the product.
          */
@@ -1556,6 +1691,8 @@ public abstract class Costing_Base
         }
 
         /**
+         * Inits the.
+         *
          * @throws EFapsException on error.
          */
         protected void init()
@@ -1774,8 +1911,9 @@ public abstract class Costing_Base
         }
 
         /**
-         * @return boolean (true/false).
+         * Analyze.
          *
+         * @return boolean (true/false).
          * @throws EFapsException on error.
          */
         protected boolean analyze()
