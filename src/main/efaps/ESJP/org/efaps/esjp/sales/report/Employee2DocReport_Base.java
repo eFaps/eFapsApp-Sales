@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import org.efaps.db.MultiPrintQuery;
 import org.efaps.db.QueryBuilder;
 import org.efaps.db.SelectBuilder;
 import org.efaps.esjp.ci.CIHumanResource;
+import org.efaps.esjp.ci.CISales;
 import org.efaps.esjp.common.jasperreport.AbstractDynamicReport;
 import org.efaps.esjp.erp.AbstractGroupedByDate_Base.DateGroup;
 import org.efaps.esjp.erp.Currency;
@@ -50,6 +51,8 @@ import org.efaps.esjp.sales.report.DocumentSumGroupedByDate_Base.ValueList;
 import org.efaps.esjp.sales.util.Sales;
 import org.efaps.util.EFapsException;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.sf.dynamicreports.jasper.builder.JasperReportBuilder;
 import net.sf.dynamicreports.report.builder.DynamicReports;
@@ -74,6 +77,18 @@ public abstract class Employee2DocReport_Base
     extends FilteredReport
 {
 
+    /**
+     * Logging instance used in this class.
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(Employee2DocReport.class);
+
+    /**
+     * Generate report.
+     *
+     * @param _parameter the _parameter
+     * @return the return
+     * @throws EFapsException the e faps exception
+     */
     public Return generateReport(final Parameter _parameter)
         throws EFapsException
     {
@@ -143,12 +158,21 @@ public abstract class Employee2DocReport_Base
         return ret;
     }
 
+    /**
+     * The Class DynEmployee2DocReport.
+     */
     public static class DynEmployee2DocReport
         extends AbstractDynamicReport
     {
 
+        /** The filtered report. */
         private final Employee2DocReport_Base filteredReport;
 
+        /**
+         * Instantiates a new dyn employee2 doc report.
+         *
+         * @param _employee2DocReport the _employee2 doc report
+         */
         public DynEmployee2DocReport(final Employee2DocReport_Base _employee2DocReport)
         {
             this.filteredReport = _employee2DocReport;
@@ -165,8 +189,7 @@ public abstract class Employee2DocReport_Base
                 try {
                     ret.moveFirst();
                 } catch (final JRException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    LOG.error("Catched JRException", e);
                 }
             } else {
                 final ValueList values = getDocumentData(_parameter);
@@ -204,29 +227,53 @@ public abstract class Employee2DocReport_Base
             return ret;
         }
 
+        /**
+         * Add2 query builder.
+         *
+         * @param _parameter the _parameter
+         * @param _queryBldr the _query bldr
+         * @throws EFapsException the e faps exception
+         */
         protected void add2QueryBuilder(final Parameter _parameter,
                                         final QueryBuilder _queryBldr)
-                                            throws EFapsException
+            throws EFapsException
         {
         }
 
+        /**
+         * Add2 document query builder.
+         *
+         * @param _parameter the _parameter
+         * @param _queryBldr the _query bldr
+         * @throws EFapsException the e faps exception
+         */
         protected void add2DocumentQueryBuilder(final Parameter _parameter,
                                                 final QueryBuilder _queryBldr)
-                                                    throws EFapsException
+            throws EFapsException
         {
+            final Map<String, Object> filter = getFilteredReport().getFilterMap(_parameter);
+            final InstanceFilterValue filterValue = (InstanceFilterValue) filter.get("contact");
+            if (filterValue != null && filterValue.getObject() != null && filterValue.getObject().isValid()) {
+                _queryBldr.addWhereAttrEqValue(CISales.DocumentAbstract.Contact, filterValue.getObject());
+            }
         }
 
+        /**
+         * Gets the document data.
+         *
+         * @param _parameter the _parameter
+         * @return the document data
+         * @throws EFapsException the e faps exception
+         */
         protected ValueList getDocumentData(final Parameter _parameter)
             throws EFapsException
         {
-
             final DocumentSumGroupedByDate ds = new DocumentSumGroupedByDate()
             {
-
                 @Override
                 protected void add2QueryBuilder(final Parameter _parameter,
                                                 final QueryBuilder _queryBldr)
-                                                    throws EFapsException
+                    throws EFapsException
                 {
                     super.add2QueryBuilder(_parameter, _queryBldr);
                     DynEmployee2DocReport.this.add2DocumentQueryBuilder(_parameter, _queryBldr);
@@ -341,6 +388,11 @@ public abstract class Employee2DocReport_Base
             _builder.addSummary(crosstab);
         }
 
+        /**
+         * Gets the filtered report.
+         *
+         * @return the filtered report
+         */
         public Employee2DocReport_Base getFilteredReport()
         {
             return this.filteredReport;
