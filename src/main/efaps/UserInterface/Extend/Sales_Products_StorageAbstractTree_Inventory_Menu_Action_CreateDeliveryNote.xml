@@ -1,6 +1,7 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!--
 
-  Copyright 2003 - 2013 The eFaps Team
+  Copyright 2003 - 2016 The eFaps Team
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.
@@ -14,17 +15,11 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 
-  Author:          The eFaps Team
-  Revision:        $Rev$
-  Last Changed:    $Date$
-  Last Changed By: $Author$
-
 -->
 <ui-command xmlns="http://www.efaps.org/xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.efaps.org/xsd http://www.efaps.org/xsd/eFaps_1.0.xsd">
     <uuid>daaa2340-74af-4414-999d-19ecffa4c5e4</uuid>
     <file-application>eFapsApp-Sales</file-application>
-    <file-revision>$Rev$</file-revision>
     <definition>
         <version-expression>(version==latest)</version-expression>
         <profiles>
@@ -41,16 +36,23 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
-                <property name="JasperReport">Sales_DeliveryNote</property>
-                <property name="Mime">pdf</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.DeliveryNote.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.DeliveryNote.Mime</property>
             </execute>
             <validate program="org.efaps.esjp.sales.document.DeliveryNote" method="validate">
                 <property name="Validation">POSITION</property>
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
                 <property name="Validation03">DUPLICATEDPOSITION</property>
+                <property name="Validation04">INDIVIDUAL</property>
             </validate>
         </target>
+        <parents>
+            <parent>Products_StorageAbstractTree_Inventory_Menu_Action</parent>
+            <parent>Products_StorageAbstractTree_InventoryIndividual_Menu_Action</parent>
+        </parents>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_DeliveryNote</property>
         <property name="TargetMode">create</property>
@@ -77,8 +79,10 @@
                 <property name="PositionType">Sales_DeliveryNotePosition</property>
                 <property name="StatusGroup">Sales_DeliveryNoteStatus</property>
                 <property name="Status">Open</property>
-                <property name="JasperReport">Sales_DeliveryNote</property>
-                <property name="Mime">pdf</property>
+                <!-- Sales-Configuration -->
+                <property name="JasperConfig">c9a1cbc3-fd35-4463-80d2-412422a3802f</property>
+                <property name="JasperConfigReport">org.efaps.sales.DeliveryNote.JasperReport</property>
+                <property name="JasperConfigMime">org.efaps.sales.DeliveryNote.Mime</property>
                 <!-- Projects_ProjectService2DeliveryNote -->
                 <property name="ConnectType">80a26199-4c5a-4b93-a1d9-fb7eace93ea7</property>
                 <property name="ConnectCurrentLink">ToLink</property>
@@ -89,8 +93,14 @@
                 <property name="Validation">POSITION</property>
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
+                <property name="Validation03">DUPLICATEDPOSITION</property>
+                <property name="Validation04">INDIVIDUAL</property>
             </validate>
         </target>
+        <parents>
+            <parent>Products_StorageAbstractTree_Inventory_Menu_Action</parent>
+            <parent>Products_StorageAbstractTree_InventoryIndividual_Menu_Action</parent>
+        </parents>
         <property name="Target">modal</property>
         <property name="TargetCreateType">Sales_DeliveryNote</property>
         <property name="TargetMode">create</property>

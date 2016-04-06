@@ -48,6 +48,7 @@
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
                 <property name="Validation03">DUPLICATEDPOSITION</property>
+                <property name="Validation04">INDIVIDUAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>
@@ -89,6 +90,8 @@
                 <property name="Validation">POSITION</property>
                 <property name="Validation01">QUANTITYGREATERZERO</property>
                 <property name="Validation02">QUANTITYINSTOCK</property>
+                <property name="Validation03">DUPLICATEDPOSITION</property>
+                <property name="Validation04">INDIVIDUAL</property>
             </validate>
         </target>
         <property name="Target">modal</property>
