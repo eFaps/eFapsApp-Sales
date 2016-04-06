@@ -22,6 +22,7 @@ import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -449,7 +450,7 @@ public abstract class AbstractDocumentSum_Base
 
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, cal);
+            add2Map4UpdateField(_parameter, map, calcList, cal, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -477,7 +478,7 @@ public abstract class AbstractDocumentSum_Base
         final Calculator cal = calcList.get(selected);
         cal.setCrossPrice(_parameter.getParameterValues("crossPrice")[selected]);
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, cal);
+            add2Map4UpdateField(_parameter, map, calcList, cal, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -485,16 +486,20 @@ public abstract class AbstractDocumentSum_Base
     }
 
     /**
+     * Add to the map for update field.
+     *
      * @param _parameter    Parameter as passed by the eFaps API
      * @param _map          Map the values will be added to
      * @param _calcList      list of all calculators
      * @param _cal           current calculator
+     * @param _includeTotal the include total
      * @throws EFapsException on error
      */
     protected void add2Map4UpdateField(final Parameter _parameter,
                                        final Map<String, Object> _map,
                                        final List<Calculator> _calcList,
-                                       final Calculator _cal)
+                                       final Calculator _cal,
+                                       final boolean _includeTotal)
         throws EFapsException
     {
         // positions
@@ -506,19 +511,18 @@ public abstract class AbstractDocumentSum_Base
             _map.put("discount", _cal.getDiscountFmtStr());
             _map.put("crossPrice", _cal.getCrossPriceFmtStr());
         }
-        // totals
-        _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
-        _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
+        if (_includeTotal) {
+            // totals
+            _map.put("netTotal", getNetTotalFmtStr(_parameter, _calcList));
+            _map.put("crossTotal", getCrossTotalFmtStr(_parameter, _calcList));
 
-        final StringBuilder js = new StringBuilder();
-        if (_map.containsKey(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey())) {
-            js.append(_map.get(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey())).append("\n");
-        }
-        js.append(getTaxesScript(_parameter,
-                        new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null))));
-        _map.put(EFapsKey.FIELDUPDATE_JAVASCRIPT.getKey(), js.toString());
-        if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
-            _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
+            final StringBuilder js = new StringBuilder();
+            js.append(getTaxesScript(_parameter,
+                            new TaxesAttribute().getUI4ReadOnly(getRateTaxes(_parameter, _calcList, null))));
+            InterfaceUtils.appendScript4FieldUpdate(_map, js);
+            if (Sales.PERCEPTIONCERTIFICATEACTIVATE.get()) {
+                _map.put("perceptionTotal", getPerceptionTotalFmtStr(_parameter, _calcList));
+            }
         }
     }
 
@@ -570,7 +574,7 @@ public abstract class AbstractDocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, cal);
+            add2Map4UpdateField(_parameter, map, calcList, cal, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -596,7 +600,7 @@ public abstract class AbstractDocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
         final Calculator cal = calcList.get(selected);
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, cal);
+            add2Map4UpdateField(_parameter, map, calcList, cal, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -628,7 +632,7 @@ public abstract class AbstractDocumentSum_Base
             final List<Calculator> calcList = analyseTable(_parameter, selected);
             if (calcList.size() > 0) {
                 final Calculator cal = calcList.get(selected);
-                add2Map4UpdateField(_parameter, map, calcList, cal);
+                add2Map4UpdateField(_parameter, map, calcList, cal, true);
             }
         }
         list.add(map);
@@ -658,7 +662,7 @@ public abstract class AbstractDocumentSum_Base
             final BigDecimal up = cal.getProductPrice().getCurrentPrice().multiply(new BigDecimal(uom.getNumerator()))
                             .divide(new BigDecimal(uom.getDenominator()));
             cal.setUnitPrice(up);
-            add2Map4UpdateField(_parameter, map, calcList, cal);
+            add2Map4UpdateField(_parameter, map, calcList, cal, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -1150,10 +1154,13 @@ public abstract class AbstractDocumentSum_Base
         final List<Calculator> calcList = analyseTable(_parameter, row4priceFromDB);
         int i = 0;
         for (final Calculator cal : calcList) {
-            final Map<String, Object> map = new HashMap<String, Object>();
-            _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
-            add2Map4UpdateField(_parameter, map, calcList, cal);
-            list.add(map);
+            // always add the first and than only the ones visible in the userinterface
+            if (i == 0 || !cal.isBackground()) {
+                final Map<String, Object> map = new HashMap<String, Object>();
+                _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
+                add2Map4UpdateField(_parameter, map, calcList, cal, i == 0);
+                list.add(map);
+            }
             i++;
         }
         retVal.put(ReturnValues.VALUES, list);
@@ -1406,13 +1413,17 @@ public abstract class AbstractDocumentSum_Base
     }
 
     /**
+     * Gets the calculators for a document.
+     *
      * @param _parameter Parameter as passed by the eFaps API
      * @param _docInst  Instance of a Document the List of Calculator is wanted for
+     * @param _excludes Collection of Instances no Calculator is wanted for
      * @return List of Calculator
      * @throws EFapsException on error
      */
-    protected List<Calculator> getCalulators4Doc(final Parameter _parameter,
-                                                 final Instance _docInst)
+    protected List<Calculator> getCalculators4Doc(final Parameter _parameter,
+                                                  final Instance _docInst,
+                                                  final Collection<Instance> _excludes)
         throws EFapsException
     {
         final List<Calculator> ret = new ArrayList<Calculator>();
@@ -1428,19 +1439,22 @@ public abstract class AbstractDocumentSum_Base
                         CISales.PositionSumAbstract.PositionNumber);
         multi.execute();
         while (multi.next()) {
-            final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
-            final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
-            final BigDecimal unitPrice;
-            if (Calculator.priceIsNet(_parameter, this)) {
-                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
-            } else {
-                unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossUnitPrice);
+            if (_excludes == null || _excludes != null && !_excludes.contains(multi.getCurrentInstance())) {
+                final BigDecimal quantity = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Quantity);
+                final BigDecimal discount = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.Discount);
+                final BigDecimal unitPrice;
+                if (Calculator.priceIsNet(_parameter, this)) {
+                    unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateNetUnitPrice);
+                } else {
+                    unitPrice = multi.<BigDecimal>getAttribute(CISales.PositionSumAbstract.RateCrossUnitPrice);
+                }
+                final Integer idx = multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber);
+                final Instance prodInst = multi.<Instance>getSelect(selProdInst);
+                ret.add(getCalculator(_parameter, null, prodInst, quantity, unitPrice, discount, false, idx));
             }
-            final Integer idx = multi.<Integer>getAttribute(CISales.PositionSumAbstract.PositionNumber);
-            final Instance prodInst = multi.<Instance>getSelect(selProdInst);
-            ret.add(getCalculator(_parameter, null, prodInst, quantity, unitPrice, discount, false, idx));
         }
         return ret;
+
     }
 
     /**

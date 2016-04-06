@@ -28,7 +28,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import org.efaps.admin.common.NumberGenerator;
-import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
@@ -333,7 +332,7 @@ public abstract class IncomingProfServReceipt_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, null);
+            add2Map4UpdateField(_parameter, map, calcList, null, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -355,25 +354,11 @@ public abstract class IncomingProfServReceipt_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, null);
+            add2Map4UpdateField(_parameter, map, calcList, null, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
         return retVal;
-    }
-
-    @Override
-    public String getTypeName4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return getType4SysConf(_parameter).getName();
-    }
-
-    @Override
-    protected Type getType4SysConf(final Parameter _parameter)
-        throws EFapsException
-    {
-        return  getCIType().getType();
     }
 
     @Override
@@ -387,10 +372,11 @@ public abstract class IncomingProfServReceipt_Base
     protected void add2Map4UpdateField(final Parameter _parameter,
                                        final Map<String, Object> _map,
                                        final List<Calculator> _calcList,
-                                       final Calculator _cal)
+                                       final Calculator _cal,
+                                       final boolean _includeTotal)
         throws EFapsException
     {
-        super.add2Map4UpdateField(_parameter, _map, _calcList, _cal);
+        super.add2Map4UpdateField(_parameter, _map, _calcList, _cal, _includeTotal);
 
         final String insurancePercentStr = _parameter
                         .getParameterValue(CIFormSales.Sales_IncomingProfServReceiptForm.insurancePercent.name);

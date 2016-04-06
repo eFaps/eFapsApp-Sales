@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -34,7 +31,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
@@ -58,10 +55,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("15c2a1f5-9b93-4389-a298-5c4116ecf614")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingDetraction_Base
     extends AbstractDocumentTax
 {
@@ -132,21 +128,18 @@ public abstract class IncomingDetraction_Base
         return new Return();
     }
 
-    /**
-     * @param _parameter
-     * @param _createdDoc
-     */
+
     @Override
     protected void add2createUpdate4Doc(final Parameter _parameter,
                                         final CreatedDoc _createdDoc,
-                                        final Update update)
+                                        final Update _update)
         throws EFapsException
     {
-        super.add2createUpdate4Doc(_parameter, _createdDoc, update);
+        super.add2createUpdate4Doc(_parameter, _createdDoc, _update);
         final Instance serviceInst = Instance.get(_parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.detractionServiceType.name));
         if (serviceInst.isValid()) {
-            update.add(CISales.IncomingDetraction.ServiceType, serviceInst);
+            _update.add(CISales.IncomingDetraction.ServiceType, serviceInst);
         }
     }
 
@@ -243,7 +236,7 @@ public abstract class IncomingDetraction_Base
                                                final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        Instance ret;
+        final Instance ret;
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
                         && _parameter.getInstance().getType().isKindOf(CISales.IncomingDetraction.getType())) {
             final PrintQuery print = new PrintQuery(_parameter.getInstance());
@@ -266,7 +259,7 @@ public abstract class IncomingDetraction_Base
     protected Object[] getRateObject(final Parameter _parameter)
         throws EFapsException
     {
-        Object[] ret;
+        final Object[] ret;
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
                         && _parameter.getInstance().getType().isKindOf(CISales.IncomingDetraction.getType())) {
             final PrintQuery print = new PrintQuery(_parameter.getInstance());
@@ -311,7 +304,7 @@ public abstract class IncomingDetraction_Base
             print.execute();
             final Object[] rate = print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
 
-            final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
+            final List<Calculator> calcList = getCalculators4Doc(_parameter, docInst, null);
 
             final String detractionPercentStr = _parameter
                             .getParameterValue(CIFormSales.Sales_IncomingDetractionCreateForm.detractionPercent.name);
@@ -326,7 +319,7 @@ public abstract class IncomingDetraction_Base
                     final String detractionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
                                     .format(detraction);
                     BigDecimal totalAmount = detraction;
-                    if(!rate[2].equals(rate[3])) {
+                    if (!rate[2].equals(rate[3])) {
                         totalAmount = totalAmount.multiply((BigDecimal) rate[1])
                                         .setScale(8, BigDecimal.ROUND_HALF_UP);
                     }
@@ -359,14 +352,15 @@ public abstract class IncomingDetraction_Base
         String ret = "";
         final PrintQuery print = new PrintQuery(_instance);
         final SelectBuilder selSymbol = new SelectBuilder()
-        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .attribute(CIERP.Currency.Symbol);
 
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         print.addSelect(selSymbol);
         print.execute();
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final String symbol = print.<String>getSelect(selSymbol);
-        if(crossTotal != null) {
+        if (crossTotal != null) {
             ret =  " - " + symbol + " " + crossTotal;
         }
         return ret;
@@ -384,14 +378,15 @@ public abstract class IncomingDetraction_Base
         String ret = "";
         final PrintQuery print = new PrintQuery(_instance);
         final SelectBuilder selSymbol = new SelectBuilder()
-        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .attribute(CIERP.Currency.Symbol);
 
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         print.addSelect(selSymbol);
         print.execute();
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final String symbol = print.<String>getSelect(selSymbol);
-        if(crossTotal != null) {
+        if (crossTotal != null) {
             ret =  " - " + symbol + " " + crossTotal;
         }
         return ret;
@@ -402,36 +397,25 @@ public abstract class IncomingDetraction_Base
                                  final QueryBuilder _queryBldr)
         throws EFapsException
     {
-        /*
-        final QueryBuilder detractionQueryBldr = new QueryBuilder(CISales.IncomingDetraction);
-        detractionQueryBldr.addWhereAttrEqValue(CISales.IncomingDetraction.Status, Status.find(CISales.IncomingDetractionStatus.Canceled));
-        final AttributeQuery detractionAttrQueryBldr = detractionQueryBldr.getAttributeQuery(CISales.IncomingDetraction.ID);
-
-        final QueryBuilder retentionQueryBldr = new QueryBuilder(CISales.IncomingRetention);
-        retentionQueryBldr.addWhereAttrEqValue(CISales.IncomingRetention.Status, Status.find(CISales.IncomingRetentionStatus.Canceled));
-        final AttributeQuery retentionAttrQueryBldr = retentionQueryBldr.getAttributeQuery(CISales.IncomingRetention.ID);
-
-        final QueryBuilder perceptionQueryBldr = new QueryBuilder(CISales.IncomingPerceptionCertificate);
-        perceptionQueryBldr.addWhereAttrEqValue(CISales.IncomingPerceptionCertificate.Status, Status.find(CISales.IncomingPerceptionCertificateStatus.Canceled));
-        final AttributeQuery perceptionAttrQueryBldr = perceptionQueryBldr.getAttributeQuery(CISales.IncomingPerceptionCertificate.ID);
-*/
         final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingDetraction);
         queryBldr.addType(CISales.IncomingRetention, CISales.IncomingPerceptionCertificate);
-        queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract,
-                        Status.find(CISales.IncomingDetractionStatus.Canceled),
-                        Status.find(CISales.IncomingRetentionStatus.Canceled),
-                        Status.find(CISales.IncomingPerceptionCertificateStatus.Canceled));
+        queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract, Status.find(
+                        CISales.IncomingDetractionStatus.Canceled), Status.find(
+                                        CISales.IncomingRetentionStatus.Canceled), Status.find(
+                                                        CISales.IncomingPerceptionCertificateStatus.Canceled));
         final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.DocumentAbstract.ID);
 
         final QueryBuilder queryBldr2 = new QueryBuilder(CISales.IncomingDocumentTax2Document);
         queryBldr2.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, attrQuery);
-        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink);
+        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(
+                        CISales.IncomingDocumentTax2Document.ToAbstractLink);
 
         final QueryBuilder queryBldr3 = new QueryBuilder(CISales.IncomingInvoice);
         queryBldr3.setOr(true);
         queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Open));
         queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Paid));
-        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Digitized));
+        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(
+                        CISales.IncomingInvoiceStatus.Digitized));
         final AttributeQuery attrQuery3 = queryBldr3.getAttributeQuery(CISales.IncomingInvoice.ID);
 
         final QueryBuilder queryBldr4 = new QueryBuilder(CISales.IncomingInvoice);
@@ -459,6 +443,13 @@ public abstract class IncomingDetraction_Base
         return retVal;
     }
 
+    /**
+     * Clean fields.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return cleanFields(final Parameter _parameter)
         throws EFapsException
     {
@@ -472,5 +463,4 @@ public abstract class IncomingDetraction_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
-
 }

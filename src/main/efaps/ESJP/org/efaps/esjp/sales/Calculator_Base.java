@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -203,7 +203,6 @@ public abstract class Calculator_Base
      */
     private final String docKey;
 
-
     /**
      * Key used to access SystemConfigurations belonging to the Positions.
      */
@@ -213,6 +212,9 @@ public abstract class Calculator_Base
      * List of taxes for the Calculator.
      */
     private final List<Tax> taxes = new ArrayList<Tax>();
+
+    /** Stores if the calculator was used for Background or for the UserInterface. */
+    private boolean background = false;
 
     /**
      * Constructor used to instantiate an empty calculator.
@@ -1659,6 +1661,26 @@ public abstract class Calculator_Base
     public void setEmpty(final boolean _empty)
     {
         this.empty = _empty;
+    }
+
+    /**
+     * Checks if is background.
+     *
+     * @return the background
+     */
+    public boolean isBackground()
+    {
+        return this.background;
+    }
+
+    /**
+     * Sets the background.
+     *
+     * @param _background the new background
+     */
+    public void setBackground(final boolean _background)
+    {
+        this.background = _background;
     }
 
     /**

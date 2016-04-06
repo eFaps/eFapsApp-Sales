@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.tax;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.CachedMultiPrintQuery;
 import org.efaps.db.Instance;
@@ -35,12 +33,15 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("89710086-ecfa-4868-a185-cf4f6e8f290b")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Tax_Base
+    implements Serializable
 {
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * The TAXFREE Tax mining no Tax at all.
@@ -149,7 +150,7 @@ public abstract class Tax_Base
             queryBldr.addWhereAttrEqValue(CISales.Tax.UUID, this.uuid.toString());
             queryBldr.addWhereAttrEqValue(CISales.Tax.TaxCategory, getTaxCat().getInstance());
             queryBldr.addOrderByAttributeDesc(CISales.Tax.ValidFrom);
-            final CachedMultiPrintQuery multi = queryBldr.getCachedPrint(TaxCat_Base.CACHEKEY);
+            final CachedMultiPrintQuery multi = queryBldr.getCachedPrint(TaxCat.CACHEKEY);
             multi.setEnforceSorted(true);
             multi.addAttribute(CISales.Tax.Name, CISales.Tax.Numerator, CISales.Tax.Denominator, CISales.Tax.ValidFrom,
                             CISales.Tax.UUID);

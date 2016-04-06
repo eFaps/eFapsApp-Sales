@@ -348,10 +348,11 @@ public abstract class IncomingInvoice_Base
     protected void add2Map4UpdateField(final Parameter _parameter,
                                        final Map<String, Object> _map,
                                        final List<Calculator> _calcList,
-                                       final Calculator _cal)
+                                       final Calculator _cal,
+                                       final boolean _includeTotal)
         throws EFapsException
     {
-        super.add2Map4UpdateField(_parameter, _map, _calcList, _cal);
+        super.add2Map4UpdateField(_parameter, _map, _calcList, _cal, _includeTotal);
         final String perceptionPercentStr = _parameter
                         .getParameterValue(CIFormSales.Sales_IncomingInvoiceForm.perceptionPercent.name);
         if (perceptionPercentStr != null && !perceptionPercentStr.isEmpty()) {
@@ -707,7 +708,7 @@ public abstract class IncomingInvoice_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, null);
+            add2Map4UpdateField(_parameter, map, calcList, null, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -729,7 +730,7 @@ public abstract class IncomingInvoice_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, null);
+            add2Map4UpdateField(_parameter, map, calcList, null, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -751,7 +752,7 @@ public abstract class IncomingInvoice_Base
         final List<Calculator> calcList = analyseTable(_parameter, null);
 
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, null);
+            add2Map4UpdateField(_parameter, map, calcList, null, true);
             list.add(map);
             retVal.put(ReturnValues.VALUES, list);
         }
@@ -783,7 +784,7 @@ public abstract class IncomingInvoice_Base
 
         final List<Calculator> calcList = analyseTable(_parameter, null);
         if (calcList.size() > 0) {
-            add2Map4UpdateField(_parameter, map, calcList, null);
+            add2Map4UpdateField(_parameter, map, calcList, null, true);
         }
 
         list.add(map);

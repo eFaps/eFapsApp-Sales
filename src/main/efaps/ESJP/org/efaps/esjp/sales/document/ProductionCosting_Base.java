@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2015 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,7 +150,7 @@ public abstract class ProductionCosting_Base
         for (final Calculator cal : calcList) {
             final Map<String, Object> map = new HashMap<String, Object>();
             _parameter.getParameters().put("eFapsRowSelectedRow", new String[] { "" + i });
-            add2Map4UpdateField(_parameter, map, calcList, cal);
+            add2Map4UpdateField(_parameter, map, calcList, cal, i == 0);
             list.add(map);
             i++;
         }
@@ -164,6 +164,7 @@ public abstract class ProductionCosting_Base
     {
         return new Validation()
         {
+
             @Override
             protected List<IWarning> validate(final Parameter _parameter,
                                               final List<IWarning> _warnings)
@@ -177,20 +178,18 @@ public abstract class ProductionCosting_Base
                         final BigDecimal currentCost = Cost.getCost4Currency(_parameter, calc.getProductInstance(),
                                         getRateCurrencyInstance(_parameter, null));
                         if (currentCost.compareTo(BigDecimal.ZERO) > 0) {
-                           final BigDecimal deviation = calc.getNetUnitPrice().subtract(currentCost)
-                                           .setScale(4, RoundingMode.HALF_UP)
-                                           .divide(currentCost, RoundingMode.HALF_UP)
-                                           .multiply(new BigDecimal(100)).abs();
-                           if (deviation.compareTo(new BigDecimal(Sales.PRODUCTIONCOSTINGMAXDEV.get())) > 0) {
-                               ret.add(new ProductionCostingMaximumDeviationWarning().setPosition(i));
-                           }
+                            final BigDecimal deviation = calc.getNetUnitPrice().subtract(currentCost).setScale(4,
+                                            RoundingMode.HALF_UP).divide(currentCost, RoundingMode.HALF_UP).multiply(
+                                                            new BigDecimal(100)).abs();
+                            if (deviation.compareTo(new BigDecimal(Sales.PRODUCTIONCOSTINGMAXDEV.get())) > 0) {
+                                ret.add(new ProductionCostingMaximumDeviationWarning().setPosition(i));
+                            }
                         }
                         i++;
                     }
                 }
                 return ret;
             };
-
         }.validate(_parameter, this);
     }
 

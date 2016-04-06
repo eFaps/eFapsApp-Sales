@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.tax;
@@ -28,7 +25,7 @@ import org.efaps.admin.datamodel.Attribute;
 import org.efaps.admin.datamodel.IJaxb;
 import org.efaps.admin.datamodel.ui.UIValue;
 import org.efaps.admin.dbproperty.DBProperties;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.db.Context;
@@ -42,10 +39,9 @@ import org.efaps.util.EFapsException;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("da82900f-88f7-43c9-a331-b894f3d337e3")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class TaxesAttribute_Base
     implements IJaxb
 {
@@ -67,7 +63,7 @@ public abstract class TaxesAttribute_Base
                                 final UIValue _value)
         throws EFapsException
     {
-        String ret;
+        final String ret;
         if (_value.getDbValue() == null) {
             ret = "";
         } else if (_value.getDbValue() instanceof Taxes) {
@@ -136,7 +132,7 @@ public abstract class TaxesAttribute_Base
             currSymbol = currencyInst.getSymbol();
             currISOCode = currencyInst.getISOCode();
         }
-        DecimalFormat formatter;
+        final DecimalFormat formatter;
         if (_attribute != null) {
             formatter = NumberFormatter.get().getFrmt4Total(_attribute.getParent().getName());
         } else {

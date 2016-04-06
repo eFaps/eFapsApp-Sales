@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
@@ -34,7 +31,7 @@ import org.efaps.admin.datamodel.Type;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.AttributeQuery;
 import org.efaps.db.Insert;
@@ -57,10 +54,9 @@ import org.slf4j.LoggerFactory;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("6c067449-1aba-42ea-b259-38a3d1e32658")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class IncomingRetention_Base
     extends AbstractDocumentTax
 {
@@ -158,7 +154,14 @@ public abstract class IncomingRetention_Base
         return CISales.IncomingRetention.getType();
     }
 
-
+    /**
+     * Gets the doc name4 document.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @param _instance the instance
+     * @return the doc name4 document
+     * @throws EFapsException on error
+     */
     protected String getDocName4Document(final Parameter _parameter,
                                          final Instance _instance)
         throws EFapsException
@@ -189,7 +192,7 @@ public abstract class IncomingRetention_Base
                                                final CreatedDoc _createdDoc)
         throws EFapsException
     {
-        Instance ret;
+        final Instance ret;
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
                         && _parameter.getInstance().getType().isKindOf(CISales.IncomingRetention.getType())) {
             final PrintQuery print = new PrintQuery(_parameter.getInstance());
@@ -212,7 +215,7 @@ public abstract class IncomingRetention_Base
     protected Object[] getRateObject(final Parameter _parameter)
         throws EFapsException
     {
-        Object[] ret;
+        final Object[] ret;
         if (_parameter.getInstance() != null && _parameter.getInstance().isValid()
                         && _parameter.getInstance().getType().isKindOf(CISales.IncomingRetention.getType())) {
             final PrintQuery print = new PrintQuery(_parameter.getInstance());
@@ -279,7 +282,7 @@ public abstract class IncomingRetention_Base
             print.execute();
             final Object[] rate = print.<Object[]>getAttribute(CISales.DocumentSumAbstract.Rate);
 
-            final List<Calculator> calcList = getCalulators4Doc(_parameter, docInst);
+            final List<Calculator> calcList = getCalculators4Doc(_parameter, docInst, null);
 
             final String retentionPercentStr = _parameter
                             .getParameterValue(CIFormSales.Sales_IncomingRetentionCreateForm.retentionPercent.name);
@@ -294,7 +297,7 @@ public abstract class IncomingRetention_Base
                     final String retentionStr = NumberFormatter.get().getFrmt4Total(getTypeName4SysConf(_parameter))
                                     .format(retention);
                     BigDecimal totalAmount = retention;
-                    if(!rate[2].equals(rate[3])) {
+                    if (!rate[2].equals(rate[3])) {
                         totalAmount = totalAmount.multiply((BigDecimal) rate[1])
                                         .setScale(8, BigDecimal.ROUND_HALF_UP);
                     }
@@ -315,10 +318,6 @@ public abstract class IncomingRetention_Base
         return retVal;
     }
 
-    /**
-     * @param _parameter
-     * @param _instance
-     */
     @Override
     protected String add2ChoiceAutoComplete4Doc(final Parameter _parameter,
                                               final Instance _instance)
@@ -327,23 +326,20 @@ public abstract class IncomingRetention_Base
         String ret = "";
         final PrintQuery print = new PrintQuery(_instance);
         final SelectBuilder selSymbol = new SelectBuilder()
-        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .attribute(CIERP.Currency.Symbol);
 
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         print.addSelect(selSymbol);
         print.execute();
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final String symbol = print.<String>getSelect(selSymbol);
-        if(crossTotal != null) {
+        if (crossTotal != null) {
             ret =  " - " + symbol + " " + crossTotal;
         }
         return ret;
     }
 
-    /**
-     * @param _parameter
-     * @param _instance
-     */
     @Override
     protected String add2LabelUpdateFields4Doc(final Parameter _parameter,
                                              final Instance _instance)
@@ -352,14 +348,15 @@ public abstract class IncomingRetention_Base
         String ret = "";
         final PrintQuery print = new PrintQuery(_instance);
         final SelectBuilder selSymbol = new SelectBuilder()
-        .linkto(CISales.DocumentSumAbstract.RateCurrencyId).attribute(CIERP.Currency.Symbol);
+                        .linkto(CISales.DocumentSumAbstract.RateCurrencyId)
+                        .attribute(CIERP.Currency.Symbol);
 
         print.addAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         print.addSelect(selSymbol);
         print.execute();
         final BigDecimal crossTotal = print.<BigDecimal>getAttribute(CISales.DocumentSumAbstract.RateCrossTotal);
         final String symbol = print.<String>getSelect(selSymbol);
-        if(crossTotal != null) {
+        if  (crossTotal != null) {
             ret =  " - " + symbol + " " + crossTotal;
         }
         return ret;
@@ -372,21 +369,23 @@ public abstract class IncomingRetention_Base
     {
         final QueryBuilder queryBldr = new QueryBuilder(CISales.IncomingRetention);
         queryBldr.addType(CISales.IncomingRetention, CISales.IncomingPerceptionCertificate);
-        queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract,
-                        Status.find(CISales.IncomingDetractionStatus.Canceled),
-                        Status.find(CISales.IncomingRetentionStatus.Canceled),
-                        Status.find(CISales.IncomingPerceptionCertificateStatus.Canceled));
+        queryBldr.addWhereAttrNotEqValue(CISales.DocumentAbstract.StatusAbstract, Status.find(
+                        CISales.IncomingDetractionStatus.Canceled), Status.find(
+                                        CISales.IncomingRetentionStatus.Canceled), Status.find(
+                                                        CISales.IncomingPerceptionCertificateStatus.Canceled));
         final AttributeQuery attrQuery = queryBldr.getAttributeQuery(CISales.DocumentAbstract.ID);
 
         final QueryBuilder queryBldr2 = new QueryBuilder(CISales.IncomingDocumentTax2Document);
         queryBldr2.addWhereAttrInQuery(CISales.IncomingDocumentTax2Document.FromAbstractLink, attrQuery);
-        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(CISales.IncomingDocumentTax2Document.ToAbstractLink);
+        final AttributeQuery attrQuery2 = queryBldr2.getAttributeQuery(
+                        CISales.IncomingDocumentTax2Document.ToAbstractLink);
 
         final QueryBuilder queryBldr3 = new QueryBuilder(CISales.IncomingInvoice);
         queryBldr3.setOr(true);
         queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Open));
         queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Paid));
-        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(CISales.IncomingInvoiceStatus.Digitized));
+        queryBldr3.addWhereAttrEqValue(CISales.IncomingInvoice.Status, Status.find(
+                        CISales.IncomingInvoiceStatus.Digitized));
         final AttributeQuery attrQuery3 = queryBldr3.getAttributeQuery(CISales.IncomingInvoice.ID);
 
         final QueryBuilder queryBldr4 = new QueryBuilder(CISales.IncomingInvoice);
@@ -414,6 +413,13 @@ public abstract class IncomingRetention_Base
         return retVal;
     }
 
+    /**
+     * Clean fields.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return cleanFields(final Parameter _parameter)
         throws EFapsException
     {
@@ -427,6 +433,4 @@ public abstract class IncomingRetention_Base
         retVal.put(ReturnValues.VALUES, list);
         return retVal;
     }
-
-
 }

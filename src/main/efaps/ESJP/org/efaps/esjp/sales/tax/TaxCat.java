@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,16 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.tax;
 
 import java.util.UUID;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
 import org.efaps.util.EFapsException;
@@ -33,13 +30,18 @@ import org.efaps.util.EFapsException;
  * class.
  *
  * @author The eFasp Team
- * @version $Id$
  */
 @EFapsUUID("11947a89-f648-46c4-b5f0-db572ff23e17")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class TaxCat
     extends TaxCat_Base
 {
+
+    /** The Constant CACHEKEY. */
+    public static final String CACHEKEY = TaxCat_Base.CACHEKEY;
+
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
 
     /**
      * @param _instance Instance of the TaxCategory

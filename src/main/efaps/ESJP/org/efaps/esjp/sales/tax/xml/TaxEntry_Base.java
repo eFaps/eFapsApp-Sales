@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales.tax.xml;
@@ -30,7 +27,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.joda.time.DateTime;
 
@@ -38,11 +35,10 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 
 @EFapsUUID("eec76d1d-b62b-42db-beb3-d94905a1fcf6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 @XmlAccessorType(XmlAccessType.NONE)
 public abstract class TaxEntry_Base
     implements Serializable
@@ -186,7 +182,7 @@ public abstract class TaxEntry_Base
     @Override
     public boolean equals(final Object _obj)
     {
-        boolean ret;
+        final boolean ret;
         if (_obj instanceof TaxEntry_Base) {
             ret = this.uuid.equals(((TaxEntry_Base) _obj).getUUID());
         } else {

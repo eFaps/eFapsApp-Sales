@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2013 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 
 package org.efaps.esjp.sales.tax;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.db.Instance;
-
-
 
 /**
  * This class must be replaced for customization, therefore it is left empty.
@@ -33,20 +28,25 @@ import org.efaps.db.Instance;
  * class.
  *
  * @author The eFasp Team
- * @version $Id$
  */
 @EFapsUUID("b74fc4d7-aee7-4300-bd1a-7bf59486deca")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public class Tax
     extends Tax_Base
 {
 
+    /** The Constant serialVersionUID. */
+    private static final long serialVersionUID = 1L;
+
     /**
-     * @param _currentInstance
-     * @param _nameTmp
-     * @param _uuidTmp
-     * @param _numerator
-     * @param _denominator
+     * Instantiates a new tax.
+     *
+     * @param _taxcat the taxcat
+     * @param _instance the instance
+     * @param _nameTmp the name tmp
+     * @param _uuidTmp the uuid tmp
+     * @param _numerator the numerator
+     * @param _denominator the denominator
      */
     public Tax(final TaxCat_Base _taxcat,
                final Instance _instance,
@@ -58,7 +58,11 @@ public class Tax
         super(_taxcat, _instance, _nameTmp, _uuidTmp, _numerator, _denominator);
     }
 
-    public Tax(){
+    /**
+     * Instantiates a new tax.
+     */
+    public Tax()
+    {
         super();
     }
 }
