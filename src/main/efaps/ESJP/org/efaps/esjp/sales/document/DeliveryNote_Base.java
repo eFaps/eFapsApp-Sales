@@ -325,11 +325,10 @@ public abstract class DeliveryNote_Base
     {
         final StringBuilder ret = super.add2JavaScript4DocumentContact(_parameter, _instances, _contactInstance);
         final PrintQuery print = new PrintQuery(_contactInstance);
-        final SelectBuilder sel = SelectBuilder.get().clazz(CIContacts.ClassLocation)
-                        .attribute(CIContacts.ClassLocation.LocationAdressStreet);
-        print.addSelect(sel);
+        final MsgPhrase msgPhrase = MsgPhrase.get(UUID.fromString(Sales.DELIVERYNOTECONTMSGPH4ARP.get()));
+        print.addMsgPhrase(msgPhrase);
         print.execute();
-        final String adress = print.<String>getSelect(sel);
+        final String adress = print.getMsgPhrase(msgPhrase);
         ret.append(getSetFieldValue(0, CIFormSales.Sales_DeliveryNoteForm.arrivalPoint.name, adress));
         return ret;
     }
