@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
@@ -363,7 +363,7 @@ public abstract class EventSchedule_Base
     {
         final StringBuilder js = new StringBuilder();
         js.append("<script type=\"text/javascript\">\n");
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final String[] oids = _parameter.getParameterValues("selectedRow");
         final DecimalFormat formatter = NumberFormatter.get().getTwoDigitsFormatter();
         if (oids != null && oids.length > 0) {

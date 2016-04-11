@@ -33,7 +33,7 @@ import org.apache.commons.collections.comparators.ComparatorChain;
 import org.efaps.admin.common.SystemConfiguration;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -546,13 +546,13 @@ public abstract class DocReport_Base
     public Return getRateFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final StringBuilder html = new StringBuilder();
         // Sales-Configuration
         final Instance baseInst = SystemConfiguration.get(UUID.fromString("c9a1cbc3-fd35-4463-80d2-412422a3802f"))
                         .getLink("CurrencyBase");
         final String symbol = new CurrencyInst(baseInst).getSymbol();
-        if (fieldValue.getTargetMode().equals(TargetMode.CREATE)) {
+        if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             if (fieldValue.getField().getName().equals("rate")) {
                 html.append("<input type='text' value='1' name=\"").append(fieldValue.getField().getName())
                                 .append("\" /> ").append("<span id='convert'>").append(symbol).append(" -> ")

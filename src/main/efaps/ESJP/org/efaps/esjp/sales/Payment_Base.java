@@ -33,7 +33,7 @@ import java.util.Set;
 
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -225,7 +225,7 @@ public abstract class Payment_Base
         } else if (_parameter.getParameterValue("createdocument") != null) {
             instance = Instance.get(_parameter.getParameterValue("createdocument"));
         }
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
 
         if (instance != null && instance.isValid()) {
             final OpenAmount openAmount = getOpenAmount(_parameter, instance);

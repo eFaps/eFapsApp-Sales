@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2014 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
@@ -39,13 +36,13 @@ import java.util.UUID;
 import org.efaps.admin.common.NumberGenerator;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
 import org.efaps.admin.event.Return;
 import org.efaps.admin.event.Return.ReturnValues;
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 import org.efaps.admin.ui.AbstractUserInterfaceObject.TargetMode;
 import org.efaps.admin.ui.field.Field;
@@ -78,10 +75,9 @@ import org.joda.time.DateTime;
  * TODO comment!
  *
  * @author The eFaps Team
- * @version $Id$
  */
 @EFapsUUID("417d2eff-b3ab-4f1a-91f4-c75da34570f6")
-@EFapsRevision("$Rev$")
+@EFapsApplication("eFapsApp-Sales")
 public abstract class Transaction_Base
     extends CommonDocument
 {
@@ -447,25 +443,39 @@ public abstract class Transaction_Base
         return new Return();
     }
 
+    /**
+     * Format date.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the return
+     * @throws EFapsException on error
+     */
     public Return formatDate(final Parameter _parameter)
         throws EFapsException
     {
         final StringBuilder js = new StringBuilder();
         final Return retVal = new Return();
-        final FieldValue value = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue value = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         if (value.getDisplay().equals(Display.READONLY)) {
-            String dec = (String) value.getValue();
+            String dec = (String) value.getObject();
             if (dec == null || dec != null && dec.contains("null")) {
                 dec = "";
             }
             js.append(dec);
         } else {
-            js.append(value.getValue());
+            js.append(value.getObject());
         }
         retVal.put(ReturnValues.VALUES, js.toString());
         return retVal;
     }
 
+    /**
+     * Gets the table4 transaction field value ui.
+     *
+     * @param _parameter Parameter as passed by the eFaps API
+     * @return the table4 transaction field value ui
+     * @throws EFapsException on error
+     */
     public Return getTable4TransactionFieldValueUI(final Parameter _parameter)
         throws EFapsException
     {

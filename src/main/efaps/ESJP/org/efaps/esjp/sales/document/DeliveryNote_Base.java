@@ -33,7 +33,6 @@ import java.util.UUID;
 import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.common.MsgPhrase;
 import org.efaps.admin.datamodel.Status;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -242,8 +241,7 @@ public abstract class DeliveryNote_Base
         if (TargetMode.CREATE.equals(_parameter.get(ParameterValues.ACCESSMODE))) {
             final List<String> depPoints = Sales.DELIVERYNOTEDEFAULTDEPARTUREPOINTS.get();
             if (!depPoints.isEmpty()) {
-                final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-                fieldValue.setValue(depPoints.get(0).trim());
+                ret.put(ReturnValues.VALUES, depPoints.get(0));
             }
         }
         return ret;

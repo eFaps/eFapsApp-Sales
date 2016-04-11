@@ -28,7 +28,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
+import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.dbproperty.DBProperties;
 import org.efaps.admin.event.Parameter;
 import org.efaps.admin.event.Parameter.ParameterValues;
@@ -208,11 +208,11 @@ public abstract class AbstractDocumentTax_Base
         throws EFapsException
     {
         final StringBuilder ret = new StringBuilder();
-        final Object uiObject = _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue uiObject = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final DocTaxInfo doctaxInfo = AbstractDocumentTax_Base.getDocTaxInfo(_parameter, _docInst);
         final DecimalFormat formater = NumberFormatter.get().getTwoDigitsFormatter();
-        if (uiObject instanceof Field || ((FieldValue) uiObject).getDisplay().equals(Display.EDITABLE)
-                        || ((FieldValue) uiObject).getDisplay().equals(Display.HIDDEN)) {
+        if (uiObject instanceof Field ||  uiObject.getDisplay().equals(Display.EDITABLE)
+                        || uiObject.getDisplay().equals(Display.HIDDEN)) {
             // TODO configurable
             final String fieldName = "taxDocType" + _docInst.getOid();
             final String id1 = RandomStringUtils.randomAlphanumeric(6);
@@ -261,8 +261,8 @@ public abstract class AbstractDocumentTax_Base
             ret.append("<input type=\"text\" name=\"taxDocAmount\" size=\"6\" value=\"")
                             .append(formater.format(doctaxInfo.getTaxAmount()))
                             .append("\">");
-        } else if (((FieldValue) uiObject).getDisplay().equals(Display.READONLY)
-                        || ((FieldValue) uiObject).getDisplay().equals(Display.NONE)) {
+        } else if ( uiObject.getDisplay().equals(Display.READONLY)
+                        || uiObject.getDisplay().equals(Display.NONE)) {
             if (!doctaxInfo.isValid()) {
                 ret.append(DBProperties.getProperty(AbstractDocumentTax.class.getName() + ".NoneSmallLabel"));
             } else {

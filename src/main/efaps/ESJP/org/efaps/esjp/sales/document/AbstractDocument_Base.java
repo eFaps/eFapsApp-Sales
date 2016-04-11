@@ -48,7 +48,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.efaps.admin.datamodel.Dimension;
 import org.efaps.admin.datamodel.Status;
 import org.efaps.admin.datamodel.Type;
-import org.efaps.admin.datamodel.ui.FieldValue;
 import org.efaps.admin.datamodel.ui.IUIValue;
 import org.efaps.admin.datamodel.ui.RateUI;
 import org.efaps.admin.dbproperty.DBProperties;
@@ -817,9 +816,8 @@ public abstract class AbstractDocument_Base
         final StringBuilder js = new StringBuilder()
             .append("var pN = query('.eFapsContentDiv')[0];\n");
 
-        final FieldValue command = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
-        final TargetMode mode = command.getTargetMode();
-        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY, mode);
+        Context.getThreadContext().setSessionAttribute(AbstractDocument_Base.TARGETMODE_DOC_KEY,
+                        _parameter.get(ParameterValues.ACCESSMODE));
 
         boolean copy = _parameter.getParameterValue("selectedRow") != null;
         if (copy || _parameter.getParameterValue("selectedDoc") != null || _parameter.getCallInstance() != null) {
@@ -2178,7 +2176,7 @@ public abstract class AbstractDocument_Base
         throws EFapsException
     {
         final StringBuilder html = new StringBuilder();
-        final FieldValue fieldValue = (FieldValue) _parameter.get(ParameterValues.UIOBJECT);
+        final IUIValue fieldValue = (IUIValue) _parameter.get(ParameterValues.UIOBJECT);
         final String fieldName = fieldValue.getField().getName() + "_SN";
         final List<DropDownPosition> options = getSerialNumbers(_parameter);
         String serial = "001";

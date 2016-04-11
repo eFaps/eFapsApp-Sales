@@ -1,5 +1,5 @@
 /*
- * Copyright 2003 - 2009 The eFaps Team
+ * Copyright 2003 - 2016 The eFaps Team
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,26 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * Revision:        $Rev$
- * Last Changed:    $Date$
- * Last Changed By: $Author$
  */
 
 package org.efaps.esjp.sales;
 
-import org.efaps.admin.program.esjp.EFapsRevision;
+import org.efaps.admin.program.esjp.EFapsApplication;
 import org.efaps.admin.program.esjp.EFapsUUID;
 
 /**
  * TODO comment!
  *
  * @author The eFasp Team
- * @version $Id$
  */
 @EFapsUUID("3c03241e-cb6a-4eb2-8815-4c818f3b901c")
-@EFapsRevision("$Rev$")
-public class TextModule extends TextModule_Base
+@EFapsApplication("eFapsApp-Sales")
+public class TextModule
+    extends TextModule_Base
 {
-
 
 }
